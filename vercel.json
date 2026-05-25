@@ -1,1 +1,17 @@
-{"cleanUrls":true,"trailingSlash":false}
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.seanali.online"
+        }
+      ],
+      "destination": "https://seanali.online/$1",
+      "permanent": true
+    }
+  ]
+}
