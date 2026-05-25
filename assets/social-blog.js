@@ -19,6 +19,16 @@ const cleanLikeText = (text) => {
   return match ? match[1].replace(/\s+/g, ' ') : '';
 };
 
+const removeBlueprintIconFragment = () => {
+  if (!/\/blueprint(?:\.html)?\/?$/.test(window.location.pathname)) return;
+  document.querySelectorAll('body > rect, body > text').forEach((node) => node.remove());
+  document.body.childNodes.forEach((node) => {
+    if (node.nodeType === Node.TEXT_NODE && node.textContent.includes('"/>')) node.remove();
+  });
+};
+
+removeBlueprintIconFragment();
+
 const countSets = [
   ['2.8K', '143', '81'],
   ['1.9K', '98', '57'],
