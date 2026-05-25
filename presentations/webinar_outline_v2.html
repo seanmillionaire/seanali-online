@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta charset=\"UTF-8\">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Webinar Outline v2 — Sean Ali</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0c0c0c;
+  --surface: #151515;
+  --surface2: #1c1c1c;
+  --border: #262626;
+  --gold: #C9A84C;
+  --gold-dim: #6a5520;
+  --gold-bg: rgba(201,168,76,0.07);
+  --white: #eeebe5;
+  --muted: #777;
+  --muted2: #555;
+  --green: #2ecc71;
+  --green-bg: #0d1f14;
+  --green-border: #1a4a28;
+  --red-bg: #1a0d0d;
+  --red-border: #4a1a1a;
+  --red: #e74c3c;
+}
+html { font-family: 'IBM Plex Sans', sans-serif; background: var(--bg); color: var(--white); font-size: 16px; line-height: 1.6; }
+body { max-width: 880px; margin: 0 auto; padding: 52px 24px 120px; }
+
+/* HEADER */
+.doc-header { padding-bottom: 36px; margin-bottom: 52px; border-bottom: 1px solid var(--border); }
+.doc-version { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; margin-bottom: 14px; }
+h1.doc-title { font-family: 'Playfair Display', serif; font-size: clamp(26px, 5vw, 46px); line-height: 1.18; color: var(--white); margin-bottom: 10px; }
+h1.doc-title em { font-style: italic; color: var(--gold); }
+.doc-meta { font-size: 12px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
+.version-note { display: inline-block; margin-top: 12px; background: var(--gold-bg); border: 1px solid var(--gold-dim); border-radius: 6px; padding: 6px 14px; font-size: 12px; color: var(--gold); font-family: 'IBM Plex Mono', monospace; }
+
+/* FLOW BAR */
+.flow-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; margin: 0 0 52px; }
+.flow-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 5px; padding: 7px 13px; font-size: 12px; font-weight: 500; color: var(--muted); font-family: 'IBM Plex Mono', monospace; letter-spacing: .5px; }
+.flow-item.on { background: var(--gold-bg); border-color: var(--gold-dim); color: var(--gold); }
+.flow-arrow { color: var(--muted2); font-size: 12px; padding: 0 2px; }
+
+/* SECTION */
+.section { margin-bottom: 56px; }
+.section-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 18px; }
+.sec-tag { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--gold); background: var(--gold-bg); border: 1px solid var(--gold-dim); border-radius: 4px; padding: 3px 9px; white-space: nowrap; margin-top: 5px; flex-shrink: 0; letter-spacing: .5px; }
+.sec-title { font-family: 'Playfair Display', serif; font-size: 21px; color: var(--white); line-height: 1.3; }
+.sec-sub { font-size: 12px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; margin-top: 3px; }
+
+/* CARD */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin-bottom: 10px; }
+
+/* TIME */
+.time-badge { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px; margin-bottom: 16px; }
+
+/* SAY THIS */
+.say { background: var(--gold-bg); border-left: 3px solid var(--gold); border-radius: 0 8px 8px 0; padding: 16px 18px; margin: 14px 0; font-family: 'Playfair Display', serif; font-style: italic; font-size: 16px; color: var(--white); line-height: 1.65; }
+.say-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--gold); text-transform: uppercase; margin-bottom: 8px; font-style: normal; display: block; }
+
+/* NOTE */
+.note { font-size: 13px; color: var(--muted); margin-top: 12px; padding: 10px 14px; border-left: 2px solid var(--border); line-height: 1.7; background: var(--surface2); border-radius: 0 6px 6px 0; }
+
+/* BULLETS */
+ul.b { list-style: none; padding: 0; margin: 12px 0; }
+ul.b li { padding: 7px 0 7px 22px; position: relative; font-size: 15px; color: #bbb; border-bottom: 1px solid var(--border); line-height: 1.55; }
+ul.b li:last-child { border-bottom: none; }
+ul.b li::before { content: '→'; position: absolute; left: 0; color: var(--gold); font-size: 11px; top: 9px; }
+ul.b li strong { color: var(--white); }
+
+/* BELIEF GRID */
+.belief-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; margin: 14px 0; }
+.bc { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+.bc-type { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.bc-old { font-size: 13px; color: #666; text-decoration: line-through; margin-bottom: 6px; line-height: 1.5; }
+.bc-arr { color: var(--gold); font-size: 11px; margin: 4px 0; }
+.bc-new { font-size: 14px; color: var(--white); font-weight: 500; line-height: 1.55; }
+
+/* SECRETS */
+.secret { background: var(--surface); border: 1px solid var(--gold-dim); border-radius: 10px; padding: 20px 22px; margin-bottom: 10px; }
+.secret-num { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+.secret-title { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--white); margin-bottom: 10px; line-height: 1.35; }
+
+/* MONEY LOOP VISUAL */
+.loop-wrap { margin: 20px 0; }
+.loop-title { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--gold); text-transform: uppercase; margin-bottom: 16px; }
+.loop-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; }
+.loop-node { background: var(--red-bg); border: 1px solid var(--red-border); border-radius: 8px; padding: 14px 12px; text-align: center; position: relative; }
+.loop-node-label { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--red); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+.loop-node-text { font-size: 13px; color: #ccc; line-height: 1.4; }
+.loop-connector { display: flex; align-items: center; justify-content: center; color: var(--muted2); font-size: 18px; padding: 0 4px; }
+.loop-break { margin-top: 20px; background: var(--green-bg); border: 1px solid var(--green-border); border-radius: 8px; padding: 16px; text-align: center; }
+.loop-break-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--green); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+.loop-break-text { font-size: 14px; color: #aaa; }
+.loop-break-text strong { color: var(--white); }
+@media(max-width: 600px) { .loop-grid { grid-template-columns: 1fr 1fr; } }
+
+/* DEMO BLOCK */
+.demo-block { background: #0a0f1a; border: 1px solid #1a2a4a; border-radius: 10px; padding: 22px; margin: 14px 0; }
+.demo-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #5a8fd4; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+.demo-step { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid #1a2a4a; }
+.demo-step:last-child { border-bottom: none; }
+.demo-n { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5a8fd4; flex-shrink: 0; width: 20px; margin-top: 2px; }
+.demo-text { font-size: 14px; color: #aaa; line-height: 1.55; }
+.demo-text strong { color: var(--white); }
+
+/* COST OF STAYING */
+.cost-block { background: var(--red-bg); border: 1px solid var(--red-border); border-radius: 10px; padding: 20px; margin: 14px 0; }
+.cost-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--red); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+
+/* OFFER STACK */
+.offer-tier { margin-bottom: 16px; }
+.offer-tier-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; padding-left: 4px; }
+.stack-item { display: flex; align-items: flex-start; gap: 14px; padding: 14px 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 6px; }
+.stack-item.bonus { border-left: 3px solid var(--gold); }
+.si-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+.si-name { font-weight: 600; color: var(--white); font-size: 15px; margin-bottom: 2px; }
+.si-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+.si-val { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--gold); margin-top: 4px; }
+
+/* PRICE ROW */
+.price-row { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 22px 24px; margin-top: 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.price-was { font-size: 13px; color: var(--muted); text-decoration: line-through; font-family: 'IBM Plex Mono', monospace; }
+.price-now { font-family: 'Playfair Display', serif; font-size: 42px; color: var(--gold); line-height: 1; }
+.price-note { font-size: 12px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; margin-top: 4px; }
+.code-box { background: var(--green-bg); border: 1px solid var(--green-border); border-radius: 8px; padding: 14px 18px; text-align: center; }
+.code-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--green); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+.code-val { font-family: 'IBM Plex Mono', monospace; font-size: 18px; color: var(--white); letter-spacing: 3px; }
+.code-exp { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+/* HT BLOCK */
+.ht-block { background: #0d1a14; border: 1px solid #1e4a2e; border-radius: 10px; padding: 20px; margin-top: 10px; }
+.ht-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--green); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+
+/* CLOSE */
+.close-card { background: linear-gradient(140deg, #120f00, #0c0c0c); border: 1px solid var(--gold-dim); border-radius: 12px; padding: 28px; }
+
+/* DIVIDER */
+hr.div { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+/* UPGRADE BADGE */
+.upgrade { display: inline-flex; align-items: center; gap: 6px; background: rgba(46,204,113,0.08); border: 1px solid var(--green-border); border-radius: 4px; padding: 3px 10px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--green); letter-spacing: 1px; text-transform: uppercase; margin-left: 8px; vertical-align: middle; }
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <div class="doc-version">Webinar Outline · v2 · Upgraded</div>
+  <h1 class="doc-title">Why Nothing Has Stuck:<br><em>The Real Reason Your Mind Keeps Blocking Wealth</em></h1>
+  <div class="doc-meta">Sean Ali · HypnoticMeditations.ai · ~60 min · List-only · 600 engaged subscribers</div>
+  <div class="version-note">↑ v2 adds: Money Loop visual · Live theta demo (7-Min Script) · Cost of staying · Tighter offer stack · Raw story moments · Upgraded close</div>
+</div>
+
+<div class="flow-bar">
+  <div class="flow-item on">PAIN</div><div class="flow-arrow">→</div>
+  <div class="flow-item on">REFRAME</div><div class="flow-arrow">→</div>
+  <div class="flow-item on">NEW BELIEF</div><div class="flow-arrow">→</div>
+  <div class="flow-item on">MECHANISM</div><div class="flow-arrow">→</div>
+  <div class="flow-item on">EXPERIENCE</div><div class="flow-arrow">→</div>
+  <div class="flow-item on">PROOF</div><div class="flow-arrow">→</div>
+  <div class="flow-item on">OFFER</div><div class="flow-arrow">→</div>
+  <div class="flow-item on">RELIEF</div>
+</div>
+
+<!-- 01 HOOK -->
+<div class="section">
+  <div class="section-header">
+    <div class="sec-tag">01 · HOOK</div>
+    <div>
+      <div class="sec-title">Registration Hook</div>
+      <div class="sec-sub">Email invite · Goal: get them to show up, not buy</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="time-badge">Pre-webinar · Email invite to list</div>
+    <div class="say">
+      <span class="say-lbl">Subject line (best option)</span>
+      Why affirmations, meditations, and visualization haven't changed your money reality (yet)
+    </div>
+    <div class="say">
+      <span class="say-lbl">Webinar title</span>
+      Why Nothing Has Stuck: The Real Reason Your Mind Keeps Blocking Wealth — And The 7-Minute Fix That Works While You Sleep
+    </div>
+    <div class="say">
+      <span class="say-lbl">Email body (keep it short)</span>
+      I'm doing something I've never done before for this list. A live session where I walk you through the exact reason most subconscious reprogramming fails — and what actually works instead. No pitch. No fluff. Just the real explanation, and something I'm giving away live that I've never made available publicly. [DATE] · [TIME] · Free for subscribers. Link below.
+    </div>
+    <p class="note">Send 3 emails: 5 days out (save the date), 1 day out (reminder + what they'll learn), morning of (final reminder + "I'm going live tonight"). Keep all three short. One paragraph each.</p>
+  </div>
+</div>
+
+<!-- 02 BIG PROMISE -->
+<div class="section">
+  <div class="section-header">
+    <div class="sec-tag">02 · OPEN</div>
+    <div>
+      <div class="sec-title">The Big Promise</div>
+      <div class="sec-sub">0:00 – 5:00 · Set the destination · Drop the guard</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="time-badge">0:00 – 5:00</div>
+    <div class="say">
+      <span class="say-lbl">Sean opens</span>
+      "By the end of this session you're going to understand three things. Why your brain keeps snapping back into scarcity no matter what you try. Why effort and information haven't fixed it — and why they never will on their own. And the specific window that exists every single night where your subconscious is actually open to new programming. I'm also going to let you feel it — not just hear about it. And I'm giving something away tonight I've never made available publicly. Stay until the end."
+    </div>
+    <p class="note">Don't say "I'm not selling anything." Your list knows you have products. Say "this isn't a pitch session" — then let the offer feel like a natural conclusion, not a hard pivot.</p>
+  </div>
+</div>
+
+<!-- 03 ORIGIN STORY -->
+<div class="section">
+  <div class="section-header">
+    <div class="sec-tag">03 · STORY</div>
+    <div>
+      <div class="sec-title">Sean's Origin Story <span class="upgrade">upgraded: micro-realism</span></div>
+      <div class="sec-sub">5:00 – 18:00 · "This person understands my pain" · More human, less polished</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="time-badge">5:00 – 18:00</div>
+
+    <div class="belief-grid" style="margin-bottom:18px;">
+      <div class="bc">
+        <div class="bc-type">A · Before — go specific</div>
+        <div class="bc-new">Not just "empty fridge." Tell them: you remember standing there staring into it pretending you weren't hungry. You remember hearing your mom stress over the phone about bills and acting like you didn't hear. You learned early that money was something other people had.</div>
+      </div>
+      <div class="bc">
+        <div class="bc-type">B · Frustration — make it feel familiar</div>
+        <div class="bc-new">You hit six figures and still felt the same tightness. You bought the courses. You did Bob Proctor. You made the vision board. You stayed up at 2am watching seminars. And you'd feel it working — for about a week. Then you'd slide right back.</div>
+      </div>
+      <div class="bc">
+        <div class="bc-type">C · Discovery — the moment</div>
+        <div class="bc-new">You stopped trying to think your way out of it and started studying what was actually running underneath. That's where you found theta. And that's when everything changed — not because you tried harder, but because you finally stopped fighting with the part of the brain that was blocking you.</div>
+      </div>
+      <div class="bc">
+        <div class="bc-type">D · Result + Mission</div>
+        <div class="bc-new">$300k saved. $156k in one day. Panama. Not because of hustle. Because the brake came off. And the reason I'm showing you this tonight is because I spent a decade broke with the right information and the wrong brain state. I don't want that for you.</div>
+      </div>
+    </div>
+
+    <p class="note">The micro-details are where people feel seen. "Pretending you weren't hungry." "Sliding back after one week." These are the lines that make people think you're reading their journal. Don't skip them for the polished version.</p>
+  </div>
+</div>
+
+<!-- 04 FALSE BELIEFS -->
+<div class="section">
+  <div class="section-header">
+    <div class="sec-tag">04 · BELIEFS</div>
+    <div>
+      <div class="sec-title">Destroy the Three False Beliefs</div>
+      <div class="sec-sub">18:00 – 32:00 · This is the real webinar · Lean hardest here</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="time-badge">18:00 – 32:00</div>
+    <div class="belief-grid">
+      <div class="bc">
+        <div class="bc-type">Vehicle False Belief</div>
+        <div class="bc-old">"I just need better affirmations / more discipline / a better routine"</div>
+        <div class="bc-arr">↓</div>
+        <div class="bc-new">"The method isn't broken. The timing is. You've been trying to install new software while the firewall is fully active. That's not a willpower problem. That's a biology problem."</div>
+      </div>
+      <div class="bc">
+        <div class="bc-type">Internal False Belief</div>
+        <div class="bc-old">"Maybe I'm just not built for more. Maybe it's me."</div>
+        <div class="bc-arr">↓</div>
+        <div class="bc-new">"You're not broken. Your brain learned survival patterns before you could choose. It did exactly what it was designed to do. That's not a character flaw. That's old code."</div>
+      </div>
+      <div class="bc">
+        <div class="bc-type">External False Belief</div>
+        <div class="bc-old">"The economy. Rich people had advantages. The system is rigged."</div>
+        <div class="bc-arr">↓</div>
+        <div class="bc-new">"The environment installed the program. But the program runs in your brain now — not in the environment. Moving cities doesn't delete it. Earning more doesn't delete it. Rewiring does."</div>
+      </div>
+    </div>
+    <div class="say" style="margin-top:16px;">
+      <span class="say-lbl">The line to land hardest</span>
+      "You weren't stupid for trying affirmations. You were trying to install software while the firewall was active. Of course it didn't stick."
+    </div>
+    <p class="note">Spend the most time here. This is the longest section intentionally. Don't rush to the mechanism. Each belief needs to land, then flip, before you move to the next. Watch the chat — people will start typing "omg yes" and "this is me." That's your signal it's working.</p>
+  </div>
+</div>
+
+<!-- 05 MONEY LOOP VISUAL -->
+<div class="section">
+  <div class="section-header">
+    <div class="sec-tag">05 · VISUAL</div>
+    <div>
+      <div class="sec-title">The Money Loop Framework <span class="upgrade">new</span></div>
+      <div class="sec-sub">32:00 – 36:00 · One slide · Makes the mechanism visual · Increases perceived depth</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="time-badge">32:00 – 36:00</div>
+    <div class="say">
+      <span class="say-lbl">Sean introduces</span>
+      "Let me show you exactly what's happening in your brain when money gets close. I call this the Money Loop. And once you see it you can't unsee it."
+    </div>
+
+    <div class="loop-wrap">
+      <div class="loop-title">The Money Loop · Show this slide</div>
+      <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;">
+        <div class="loop-node" style="flex:1;min-width:120px;">
+          <div class="loop-node-label">Trigger</div>
+          <div class="loop-node-text">Money opportunity appears. Raise. Client. Investment.</div>
+        </div>
+        <div class="loop-connector">→</div>
+        <div class="loop-node" style="flex:1;min-width:120px;">
+          <div class="loop-node-label">Pattern fires</div>
+          <div class="loop-node-text">Old code activates. Hesitation. Fear. Overthinking.</div>
+        </div>
+        <div class="loop-connector">→</div>
+        <div class="loop-node" style="flex:1;min-width:120px;">
+          <div class="loop-node-label">Avoidance</div>
+          <div class="loop-node-text">You shrink. Delay. Undersell. Talk yourself out of it.</div>
+        </div>
+        <div class="loop-connector">→</div>
+        <div class="loop-node" style="flex:1;min-width:120px;">
+          <div class="loop-node-label">Reinforcement</div>
+          <div class="loop-node-text">Pattern strengthens. Brain confirms: "money isn't safe."</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin:10px 0;color:var(--muted);font-size:22px;">↻ repeats</div>
+      <div class="loop-break">
+        <div class="loop-break-label">The interruption</div>
+        <div class="loop-break-text">The <strong>theta window</strong> is the only point where the loop can be broken — because it's the only moment where the subconscious is open to a new instruction.</div>
+      </div>
+    </div>
+
+    <div class="say">
+      <span class="say-lbl">Sean lands it</span>
+      "Most people try to interrupt this loop at the trigger point — using willpower and conscious effort. But the loop doesn't live there. It lives in the subconscious. That's why you keep ending up in the same place no matter how hard you try at the surface level."
+    </div>
+    <p class="note">Build this as one screen in your slide deck. Keep it simple — boxes and arrows. The visual does the work. You're not trying to look like a researcher; you're giving them a map they can see their own life in.</p>
+  </div>
+</div>
+
+<!-- 06 MECHANISM -->
+<div class="section">
+  <div class="section-header">
+    <div class="sec-tag">06 · MECHANISM</div>
+    <div>
+      <div class="sec-title">The New Opportunity — The Theta Window</div>
+      <div class="sec-sub">36:00 – 42:00 · This is where people mentally buy · Not the offer yet</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="time-badge">36:00 – 42:00</div>
+    <div class="say">
+      <span class="say-lbl">The pivot</span>
+      "What if the real issue was never your mindset? What if it was your timing? There's a 20-minute window every single night where your brain enters theta state — the same state children are in from ages 0 to 7 when every belief about money, safety, and worth got installed. Your subconscious is wide open. No filter. No resistance. And most people scroll their phones straight through it."
+    </div>
+    <ul class="b">
+      <li>Conscious mind controls 5% of behavior. Subconscious runs 95%. Affirmations target the 5%.</li>
+      <li>Theta is the same state hypnosis uses. Same state that recorded the original money beliefs when you were a child.</li>
+      <li>The window opens as you fall asleep. It's nightly. It's free. Most people have never used it intentionally.</li>
+      <li>This is why the 7-minute audio works when everything else didn't — it's engineered to run specifically in that window.</li>
+    </ul>
+    <p class="note">Do NOT name the product here. Let them sit with the mechanism. The product comes after the live demo — when they've already felt it working.</p>
+  </div>
+</div>
+
+<!-- 07 COST OF STAYING (NEW) -->
+<div class="section">
+  <div class="section-header">
+    <div class="sec-tag">07 · COST</div>
+    <div>
+      <div class="sec-title">The Cost of Staying Stuck <span class="upgrade">new</span></div>
+      <div class="sec-sub">42:00 – 45:00 · Organic urgency · No fake scarcity needed</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="time-badge">42:00 – 45:00</div>
+    <div class="cost-block">
+      <div class="cost-label">What happens if the loop keeps running</div>
+      <ul class="b" style="margin:0;">
+        <li>The stress doesn't stay as stress. It becomes your baseline. You stop noticing it — because it's just how things feel.</li>
+        <li>Scarcity stops being a circumstance. It becomes a personality. You start making every decision from that place without realizing it.</li>
+        <li>Your nervous system normalizes the fear. And then it starts protecting the fear — because at least fear is familiar.</li>
+        <li>Five years from now the loop is still running. The only difference is it's more deeply grooved.</li>
+      </ul>
+    </div>
+    <div class="say">
+      <span class="say-lbl">Sean says</span>
+      "The pattern doesn't get easier to break with time. It gets harder. Because every day it runs, the brain confirms it a little more. That's not meant to scare you — it's just how the brain works. The good news is the window exists. Tonight."
+    </div>
+    <p class="note">This section creates urgency without any countdown timer or fake scarcity. The urgency is real: the longer the pattern runs, the more entrenched it becomes. That's true and your audience feels it.</p>
+  </div>
+</div>
+
+<!-- 08 LIVE THETA DEMO (NEW) -->
+<div class="section">
+  <div class="section-header">
+    <div class="sec-tag">08 · DEMO</div>
+    <div>
+      <div class="sec-title">Live Theta Experience — 7-Minute Script Clip <span class="upgrade">new</span></div>
+      <div class="sec-sub">45:00 – 48:00 · Highest-leverage conversion moment in the webinar</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="time-badge">45:00 – 48:00</div>
+    <div class="demo-block">
+      <div class="demo-label">Exact sequence — do not rush this</div>
+      <div class="demo-step">
+        <div class="demo-n">1</div>
+        <div class="demo-text"><strong>Sean says:</strong> "Before I show you what's available tonight, I want you to actually feel what this does. Not hear about it. Feel it. Close your eyes if you're comfortable. Take one breath in through your nose. Hold it. And let it out slowly." — pause 5 seconds —</div>
+      </div>
+      <div class="demo-step">
+        <div class="demo-n">2</div>
+        <div class="demo-text"><strong>Sean says:</strong> "Notice how much tension you've been carrying in your chest that you stopped noticing. That's the normalized stress. That's the pattern running in the background. Now I'm going to play 60 seconds of the 7-Minute Script. Just let it run. Don't try to do anything with it."</div>
+      </div>
+      <div class="demo-step">
+        <div class="demo-n">3</div>
+        <div class="demo-text"><strong>Play the clip.</strong> 60–90 seconds of the 7-Minute Script. Sean stays completely silent. Do not talk over it. Do not narrate. Let the audio do the work.</div>
+      </div>
+      <div class="demo-step">
+        <div class="demo-n">4</div>
+        <div class="demo-text"><strong>After the clip ends, pause 5 seconds. Then Sean says:</strong> "That's the theta window. That's what your brain just started to drop into. Imagine doing that every night before sleep — with the full track, engineered to go deeper. That's what we built."</div>
+      </div>
+      <div class="demo-step">
+        <div class="demo-n">5</div>
+        <div class="demo-text"><strong>Move directly into proof.</strong> No gap. The emotional state they're in right now is the highest-receptivity moment of the entire webinar. Don't break it with logistics.</div>
+      </div>
+    </div>
+    <p class="note">This is the moment Sean = relief gets installed. Watch the chat — people will type "wow," "I felt that," "shivers." Screenshot those reactions. They become your next ad creative and email proof.</p>
+  </div>
+</div>
+
+<!-- 09 PROOF -->
+<div class="section">
+  <div class="section-header">
+    <div class="sec-tag">09 · PROOF</div>
+    <div>
+      <div class="sec-title">Case Studies + Social Proof</div>
+      <div class="sec-sub">48:00 – 52:00 · Proof must connect to the mechanism</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="time-badge">48:00 – 52:00</div>
+    <ul class="b">
+      <li><strong>Nova M.</strong> — "First time I listened, it clicked. That week I finally asked for the raise I'd been avoiding." → One session. The pattern broke. Behavior changed.</li>
+      <li><strong>Jerome S.</strong> — "I thought it was all woo-woo. Then I got two new clients within days." → Skeptic proof. You don't have to believe it. The brain doesn't care.</li>
+      <li><strong>Nina T.</strong> — "Confident. Deserving. Like the world finally saw me." → Identity shift. It's not just money — it's who you become when the brake comes off.</li>
+      <li><strong>Stewart M.</strong> — "Closed two new clients in 72 hours of starting the money track." → Speed proof. Fast signal that something shifted.</li>
+      <li><strong>Sean's own numbers</strong> — $300k. $156k single day. Panama. Show the proof if you have it on screen. Connect it back: "Not because I worked harder. Because the loop finally broke."</li>
+    </ul>
+    <p class="note">Every testimonial should connect back to the mechanism. Not "great product!" — "this happened because the pattern changed." That's what sells the idea, not just the product.</p>
+  </div>
+</div>
+
+<!-- 10 TRANSITION -->
+<div class="section">
+  <div class="section-header">
+    <div class="sec-tag">10 · PIVOT</div>
+    <div>
+      <div class="sec-title">The Smooth Stack Transition</div>
+      <div class="sec-sub">52:00 – 54:00 · No hard sell · Natural conclusion</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="time-badge">52:00 – 54:00</div>
+    <div class="say">
+      <span class="say-lbl">Sean says</span>
+      "People started asking: Sean, where do I start? Do I need all of them? What do I listen to first? So I mapped the whole system — and tonight I'm making it available as one thing, at a price I've never offered publicly, for this room only."
+    </div>
+  </div>
+</div>
+
+<!-- 11 OFFER STACK -->
+<div class="section">
+  <div class="section-header">
+    <div class="sec-tag">11 · OFFER</div>
+    <div>
+      <div class="sec-title">The Offer Stack — 3 Clean Tiers <span class="upgrade">regrouped</span></div>
+      <div class="sec-sub">54:00 – 58:00 · Sell the outcome, not the files · Grouped for clarity</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="time-badge">54:00 – 58:00</div>
+
+    <div class="offer-tier">
+      <div class="offer-tier-label">Tier 1 · Core System — Break the loop</div>
+      <div class="stack-item">
+        <div class="si-icon">💰</div>
+        <div>
+          <div class="si-name">Money Flow</div>
+          <div class="si-desc">The primary theta audio for the pre-sleep window. Targets the scarcity loop at the source.</div>
+          <div class="si-val">$27 value</div>
+        </div>
+      </div>
+      <div class="stack-item">
+        <div class="si-icon">🧠</div>
+        <div>
+          <div class="si-name">The 7-Minute Script</div>
+          <div class="si-desc">Morning activation — the track you just felt. Creates a morning/night reprogramming cycle.</div>
+          <div class="si-val">$27 value</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="offer-tier">
+      <div class="offer-tier-label">Tier 2 · Identity Expansion — Build the new self-concept</div>
+      <div class="stack-item">
+        <div class="si-icon">🌊</div>
+        <div>
+          <div class="si-name">ATM In Your Mind + Money Wave + Vault of Infinite Wealth</div>
+          <div class="si-desc">For when the anxiety quiets. These tracks work on the identity layer — who you become when scarcity stops running the show.</div>
+          <div class="si-val">$81 value</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="offer-tier">
+      <div class="offer-tier-label">Tier 3 · Nervous System Reset — Fix the delivery mechanism</div>
+      <div class="stack-item">
+        <div class="si-icon">🌙</div>
+        <div>
+          <div class="si-name">Sleep Stack — Sleep Reset System + Superior Health Reset</div>
+          <div class="si-desc">Broken sleep breaks the theta window. This fixes the delivery mechanism so everything else can work.</div>
+          <div class="si-val">$54 value</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="offer-tier">
+      <div class="offer-tier-label">Bonuses — Drop in tonight only</div>
+      <div class="stack-item bonus">
+        <div class="si-icon">✨</div>
+        <div>
+          <div class="si-name">The Ritual Stack</div>
+          <div class="si-desc">11:11 Ritual + 7-Minute Accelerator. The morning-to-night system that locks the new pattern in.</div>
+          <div class="si-val">Bonus · $67 value</div>
+        </div>
+      </div>
+      <div class="stack-item bonus">
+        <div class="si-icon">📓</div>
+        <div>
+          <div class="si-name">Manifestation Journal</div>
+          <div class="si-desc">2-minute nightly tool. Tracks the shifts, builds momentum, trains your brain to notice what's changing.</div>
+          <div class="si-val">Bonus · $27 value</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="price-row">
+      <div>
+        <div class="price-was">Total value: $283+ · Retail: $197</div>
+        <div class="price-now">$147</div>
+        <div class="price-note">Tonight only · Webinar attendees only · Expires midnight</div>
+      </div>
+      <div class="code-box">
+        <div class="code-lbl">Drop in chat · Pin it</div>
+        <div class="code-val">[ YOUR CODE ]</div>
+        <div class="code-exp">Say it out loud + post the link</div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:16px;">Don't say "audio files." Say: "This is the complete system — every stage, morning to night, sleep to identity." Present the tiers in order when you walk through the stack. It feels like a journey, not a pile.</p>
+  </div>
+</div>
+
+<!-- 12 GUARANTEE -->
+<div class="section">
+  <div class="section-header">
+    <div class="sec-tag">12 · GUARANTEE</div>
+    <div>
+      <div class="sec-title">Kill the Risk</div>
+      <div class="sec-sub">58:00 – 59:00</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="time-badge">58:00 – 59:00</div>
+    <div class="say">
+      <span class="say-lbl">Sean says</span>
+      "Try it tonight. Press play before you fall asleep. If you wake up tomorrow and you don't feel something shift — email us within 30 days. Every dollar back. No questions. I only want people in this library who are getting results."
+    </div>
+  </div>
+</div>
+
+<!-- 13 HIGH TICKET -->
+<div class="section">
+  <div class="section-header">
+    <div class="sec-tag">13 · HIGH TICKET</div>
+    <div>
+      <div class="sec-title">The Private Immersion — Your Closer Takes These</div>
+      <div class="sec-sub">59:00 – 60:00 · Calm. Selective. No desperation.</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="time-badge">59:00 – 60:00</div>
+    <div class="ht-block">
+      <div class="ht-label">For the 5–10% who want Sean to build something custom</div>
+      <div class="say" style="margin:0;">
+        <span class="say-lbl">Sean says</span>
+        "For most of you, the Complete Library is everything you need. But some of you are going to watch this and think: I want Sean to build something specifically for me. My goals. My specific blocks. Not a template — mine. If that's you, and you're serious about changing your income, your environment, and your identity — there's a link in the chat. Book a call. We'll see if it's the right fit. I'm genuinely selective about who I work with at this level. If it's not right, I'll tell you."
+      </div>
+    </div>
+    <p class="note">Drop Calendly link in chat immediately after saying this. Your closer handles all calls. The qualifier "serious about changing your income, your environment, and your identity" filters tire-kickers before they book.</p>
+  </div>
+</div>
+
+<!-- 14 CLOSE -->
+<div class="section">
+  <div class="section-header">
+    <div class="sec-tag">14 · CLOSE</div>
+    <div>
+      <div class="sec-title">Close the Loop — Return to the Beginning <span class="upgrade">tightened</span></div>
+      <div class="sec-sub">60:00 · Inevitable. Not speechy.</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="close-card">
+      <div class="time-badge">60:00</div>
+      <div class="say">
+        <span class="say-lbl">Sean closes</span>
+        "You can keep trying to fight this consciously. Or you can finally work with the part of your brain that's actually been running the pattern. The code got installed years ago. Tonight you begin rewriting it. Link's below. Code's in the chat. See you on the other side."
+      </div>
+      <p class="note" style="margin-top:14px;">Stop there. Don't add another paragraph. The strongest closes feel inevitable — not speechy. Those four sentences are the close. Land them and go straight to Q&A.</p>
+    </div>
+  </div>
+</div>
+
+<!-- 15 QA -->
+<div class="section">
+  <div class="section-header">
+    <div class="sec-tag">15 · Q&A</div>
+    <div>
+      <div class="sec-title">Q&A + Closer Intelligence</div>
+      <div class="sec-sub">60:00 – 70:00 · Stay live · Collect everything</div>
+    </div>
+  </div>
+  <div class="card">
+    <ul class="b">
+      <li>Stay live for 10 minutes after the close. Answer questions openly. The people still watching are your hottest buyers.</li>
+      <li>Have someone log every question asked. These become your next 2 weeks of email content and your closer's objection-handling script.</li>
+      <li>Screenshot every "I felt that," "this is me," "omg" reaction from the demo moment. That's ad creative.</li>
+      <li>Re-drop the coupon code and Calendly link in chat every few minutes during Q&A. People join late.</li>
+      <li>End with: "Code expires at midnight. Link stays up. See you inside." Then close the stream.</li>
+    </ul>
+  </div>
+</div>
+
+<hr class="div">
+<div style="text-align:center;padding:20px 0;">
+  <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;">HypnoticMeditations.ai · Webinar Outline v2 · Internal Use Only</div>
+</div>
+
+</body>
+</html>

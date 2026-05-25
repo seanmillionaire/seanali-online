@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta charset=\"UTF-8\">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Free Training — From $800 to $150K+/mo | Sean Ali</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Georgia', serif;
+    background: #fff;
+    color: #111;
+    line-height: 1.4;
+  }
+
+  .top-bar {
+    background: #c0392b;
+    color: #fff;
+    text-align: center;
+    padding: 13px 16px;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 0.3px;
+    transition: all 0.2s ease;
+  }
+
+  /* timer highlight styling */
+  .reserve-timer {
+    background: #fff0e8;
+    color: #c0392b;
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 40px;
+    font-family: 'Courier New', 'Arial Black', monospace;
+    font-weight: 900;
+    font-size: 15px;
+    margin-left: 6px;
+    letter-spacing: 0.5px;
+    box-shadow: inset 0 0 0 1px rgba(192,57,43,0.3), 0 1px 2px rgba(0,0,0,0.05);
+  }
+
+  .hero {
+    text-align: center;
+    padding: 44px 20px 16px;
+    max-width: 820px;
+    margin: 0 auto;
+  }
+
+  .hero h1 {
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-size: 38px;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: #111;
+    line-height: 1.1;
+  }
+
+  .hero p {
+    margin-top: 18px;
+    font-size: 17px;
+    color: #333;
+    line-height: 1.65;
+    max-width: 660px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero p strong { font-style: italic; }
+
+  .main {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 0 20px 40px;
+    align-items: flex-start;
+  }
+
+  .form-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 36px 30px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.09);
+  }
+
+  .profile-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 22px;
+  }
+
+  .profile-img {
+    width: 74px;
+    height: 74px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #c0392b;
+    flex-shrink: 0;
+  }
+
+  .profile-info h3 { font-family: Arial, sans-serif; font-size: 18px; font-weight: 800; color: #111; }
+  .profile-info p  { font-family: Arial, sans-serif; font-size: 13px; color: #666; margin-top: 3px; }
+
+  .form-card h2 {
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+    text-align: center;
+    text-transform: uppercase;
+    color: #111;
+    margin-bottom: 20px;
+  }
+
+  .form-card input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+    font-family: Arial, sans-serif;
+    margin-bottom: 12px;
+    outline: none;
+  }
+
+  .form-card input:focus { border-color: #c0392b; }
+
+  .btn-red {
+    width: 100%;
+    background: #c0392b;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 17px;
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    cursor: pointer;
+    transition: background .2s;
+    margin-top: 4px;
+  }
+
+  .btn-red:hover { background: #a93226; }
+
+  .recording-link {
+    text-align: center;
+    margin-top: 14px;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    color: #27ae60;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .no-spam {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    color: #888;
+    margin-top: 10px;
+  }
+
+  .results-col {
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .results-col h3 {
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: #c0392b;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  .money-img {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 6px 28px rgba(0,0,0,.13);
+  }
+
+  /* BIG CENTER CHECKMARK BULLET LIST */
+  .checklist-section {
+    padding: 60px 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    background: #fff;
+  }
+
+  .checklist-section h2 {
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-size: 28px;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: #111;
+    text-align: center;
+    margin-bottom: 48px;
+    letter-spacing: -0.2px;
+  }
+
+  .checklist-container {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    margin-bottom: 36px;
+    background: #fefaf9;
+    padding: 14px 20px 14px 18px;
+    border-radius: 20px;
+    transition: all 0.2s;
+    border: 1px solid #f0e2df;
+  }
+
+  .checkmark-icon {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    background: #c0392b;
+    color: white;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 4px 8px rgba(192,57,43,0.2);
+  }
+
+  .checklist-text {
+    flex: 1;
+  }
+
+  .checklist-text strong {
+    display: block;
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 6px;
+    letter-spacing: -0.2px;
+  }
+
+  .checklist-text span {
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    color: #3c3c3c;
+    line-height: 1.45;
+    display: block;
+  }
+
+  /* PROOF GALLERY - REMOVED COCONUT + USERS IMAGES, CENTERED TEACHING IMAGE */
+  .proof-section {
+    background: #f8f8f8;
+    padding: 50px 20px;
+    border-top: 1px solid #eee;
+  }
+
+  .proof-section h2 {
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-size: 22px;
+    font-weight: 900;
+    text-transform: uppercase;
+    text-align: center;
+    color: #111;
+    margin-bottom: 8px;
+  }
+
+  .proof-section .sub {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  /* gallery of remaining 4 images (les brown, russell, jubril, wifey) */
+  .proof-grid-remaining {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    max-width: 1060px;
+    margin: 0 auto 40px auto;
+  }
+
+  .proof-grid-remaining img {
+    width: 100%;
+    border-radius: 16px;
+    object-fit: cover;
+    aspect-ratio: 3/4;
+    box-shadow: 0 8px 24px rgba(0,0,0,.12);
+    display: block;
+    transition: transform 0.2s;
+  }
+
+  /* centered teaching image */
+  .teaching-centered {
+    text-align: center;
+    margin: 20px auto 20px;
+  }
+
+  .teaching-centered img {
+    max-width: 90%;
+    width: auto;
+    max-height: 550px;
+    border-radius: 28px;
+    box-shadow: 0 20px 35px -10px rgba(0,0,0,0.2);
+    border: 2px solid rgba(255,255,255,0.5);
+    background: #fff;
+  }
+
+  /* stats row */
+  .stats-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    border-top: 1px solid #eee;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 20px;
+  }
+
+  .stat {
+    flex: 1;
+    min-width: 150px;
+    text-align: center;
+    padding: 10px 20px;
+    border-right: 1px solid #eee;
+  }
+
+  .stat:last-child { border-right: none; }
+  .stat .num { font-family: 'Arial Black', Arial, sans-serif; font-size: 36px; font-weight: 900; color: #c0392b; }
+  .stat .desc { font-family: Arial, sans-serif; font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+  footer {
+    text-align: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    color: #aaa;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  @media (max-width: 800px) {
+    .hero h1 { font-size: 28px; }
+    .checklist-item { gap: 14px; padding: 12px 16px; }
+    .checklist-text strong { font-size: 17px; }
+    .checkmark-icon { width: 32px; height: 32px; font-size: 20px; }
+    .proof-grid-remaining { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .teaching-centered img { max-width: 95%; border-radius: 20px; }
+    .reserve-timer { font-size: 13px; padding: 2px 6px;}
+  }
+
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 26px; }
+    .stats-row { flex-direction: column; }
+    .stat { border-right: none; border-bottom: 1px solid #eee; }
+    .checklist-section h2 { font-size: 22px; margin-bottom: 32px; }
+    .checklist-text span { font-size: 13px; }
+  }
+</style>
+<meta name="description" content="Learn how Sean Ali went from $800/month to a six-figure AI business — the complete free training covering the 6-layer income system.">
+<meta name="robots" content="index, follow">
+</head>
+<body>
+
+<div class="top-bar" id="dynamicTopBar">
+  ⚡ FREE TRAINING — Limited spots available. Yours is reserved for <span class="reserve-timer" id="countdownClock">60:00</span>
+</div>
+
+<div class="hero">
+  <h1>$150K+ IN ONE MONTH AS A<br>COLLEGE DROPOUT</h1>
+  <p>I went from living in my mom's basement to <strong>$150K+/month</strong> with 0 experience, 0 followers, and 0 tech skills. I dropped out, turned to the internet, and found my dream life. This free 90-minute training shows you the <strong>exact system I used</strong>.</p>
+</div>
+
+<div class="main">
+
+  <div class="form-card">
+    <div class="profile-row">
+      <img class="profile-img" src="https://hypnoticmeditations.b-cdn.net/images/proof/sean%20profile.png" alt="Sean Ali">
+      <div class="profile-info">
+        <h3>Sean Ali</h3>
+        <p>Digital Entrepreneur · Panama</p>
+      </div>
+    </div>
+
+    <h2>SECURE YOUR FREE SPOT NOW</h2>
+
+    <input type="text" placeholder="First Name">
+    <input type="email" placeholder="Email Address">
+    <button class="btn-red">YES! I WANT FREE ACCESS NOW!</button>
+
+    <div class="recording-link">📹 Register to receive the recording!</div>
+    <div class="no-spam">We'll send your training link + reminders. No spam — ever. ❤️</div>
+  </div>
+
+  <div class="results-col">
+    <h3>MY PERSONAL RESULTS</h3>
+    <img class="money-img" src="https://hypnoticmeditations.b-cdn.net/images/proof/sean-money.png" alt="Sean Ali $150K+ results">
+  </div>
+</div>
+
+<!-- BIG CENTER CHECKMARK BULLET LIST (WHAT YOU'LL LEARN) -->
+<div class="checklist-section">
+  <h2>✓ WHAT THIS TRAINING COVERS</h2>
+  <div class="checklist-container">
+    <div class="checklist-item">
+      <div class="checkmark-icon">✓</div>
+      <div class="checklist-text">
+        <strong>How to pick the right product</strong>
+        <span>Digital products with no inventory, no shipping, and margins that make sense.</span>
+      </div>
+    </div>
+    <div class="checklist-item">
+      <div class="checkmark-icon">✓</div>
+      <div class="checklist-text">
+        <strong>The ad system that actually works</strong>
+        <span>Simple paid ads that bring in buyers every day — no guessing, no wasted money.</span>
+      </div>
+    </div>
+    <div class="checklist-item">
+      <div class="checkmark-icon">✓</div>
+      <div class="checklist-text">
+        <strong>Using AI to do the heavy lifting</strong>
+        <span>How I use AI tools to write, test, and run my marketing so I don't have to do it all myself.</span>
+      </div>
+    </div>
+    <div class="checklist-item">
+      <div class="checkmark-icon">✓</div>
+      <div class="checklist-text">
+        <strong>Building it with no team</strong>
+        <span>I run 3 businesses by myself. I'll show you the tools and shortcuts that make that possible.</span>
+      </div>
+    </div>
+    <div class="checklist-item">
+      <div class="checkmark-icon">✓</div>
+      <div class="checklist-text">
+        <strong>Living where you want</strong>
+        <span>I do this from Panama. This works from anywhere — your house, another country, wherever.</span>
+      </div>
+    </div>
+    <div class="checklist-item">
+      <div class="checkmark-icon">✓</div>
+      <div class="checklist-text">
+        <strong>The money mindset shift</strong>
+        <span>I bought Bitcoin early and I think differently about money. I'll show you why that matters more than tactics.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROOF SECTION - REMAINING IMAGES (coconut and user images removed) -->
+<div class="proof-section">
+  <h2>The Life Behind The Numbers</h2>
+  <p class="sub">Not rented props. Real people, real places, real results.</p>
+
+  <!-- remaining images: les brown, russell brunson, jubril agoro, wifey.jpg -->
+  <div class="proof-grid-remaining">
+    <img src="https://hypnoticmeditations.b-cdn.net/images/proof/with%20les%20brown.jpg" alt="Sean with Les Brown">
+    <img src="https://hypnoticmeditations.b-cdn.net/images/proof/with%20russell%20brunson.jpg" alt="Sean with Russell Brunson">
+    <img src="https://hypnoticmeditations.b-cdn.net/images/proof/with%20jubril%20agoro.jpg" alt="Sean with Jubril Agoro">
+    <img src="https://hypnoticmeditations.b-cdn.net/images/proof/with%20wifey.jpeg" alt="Sean with partner">
+  </div>
+
+  <!-- CENTERED teaching around the world image -->
+  <div class="teaching-centered">
+    <img src="https://hypnoticmeditations.b-cdn.net/images/proof/teaching%20around%20the%20world.jpg" alt="Sean teaching around the world">
+  </div>
+</div>
+
+<!-- STATS ROW - updated $150K+ -->
+<div class="stats-row">
+  <div class="stat"><div class="num">$150K+</div><div class="desc">In One Month</div></div>
+  <div class="stat"><div class="num">90 min</div><div class="desc">Free Training</div></div>
+  <div class="stat"><div class="num">0</div><div class="desc">Experience Needed</div></div>
+  <div class="stat"><div class="num">FREE</div><div class="desc">No Credit Card</div></div>
+</div>
+
+<footer>© 2025 Sean Ali · All Rights Reserved</footer>
+
+<!-- UPDATED HOURLY COUNTDOWN TIMER (resets every hour based on real wall-clock time) -->
+<script>
+  (function() {
+    // Get reference to timer display element
+    let timerElement = document.getElementById('countdownClock');
+    
+    // Helper: format MM:SS from total seconds (0 to 3600)
+    function formatTimeFromSeconds(totalSeconds) {
+      if (totalSeconds < 0) totalSeconds = 0;
+      const mins = Math.floor(totalSeconds / 60);
+      const secs = totalSeconds % 60;
+      // Always use two digits for minutes and two digits for seconds (e.g., 59:09)
+      return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+    
+    // Core function: compute seconds remaining until the next full hour (e.g., 2:00:00 -> next 3:00:00)
+    // Returns integer between 1 and 3600. At exact hour boundary (e.g., 14:00:00.000), returns 3600 (full 60 minutes until next hour)
+    function getSecondsUntilNextHour() {
+      const now = new Date();
+      // Current hour, minute, second, millisecond
+      const currentMinutes = now.getMinutes();
+      const currentSeconds = now.getSeconds();
+      const currentMilliseconds = now.getMilliseconds();
+      
+      // Total seconds remaining in this hour: (60 - minutes) * 60 - seconds, minus milliseconds fraction.
+      // But we floor to whole seconds. At exactly e.g., 14:00:00.000, remaining = 3600 secs.
+      // General formula: seconds left = (60 - currentMinutes) * 60 - currentSeconds;
+      // However if minutes=0 and seconds=0, (60-0)*60 - 0 = 3600. Good.
+      // Edge: if we are at 14:59:59, seconds left = (60-59)*60 - 59 = 1*60 - 59 = 1 second left.
+      let secondsLeft = (60 - currentMinutes) * 60 - currentSeconds;
+      
+      // Adjust for milliseconds: if milliseconds > 0, we need to ensure we don't overshoot the exact second.
+      // If secondsLeft === 0 at the exact turn of the hour? Actually when minutes=0,seconds=0 -> secondsLeft = 3600.
+      // When secondsLeft === 0 and it's not exactly the new hour? That can happen only when currentMinutes=0 and currentSeconds=0? No.
+      // Because (60-0)*60 - 0 = 3600. So secondsLeft is never 0 with this formula, except if (currentMinutes=60?) impossible.
+      // So we're safe. But to guarantee correct floor due to ms, we add a tiny epsilon to avoid showing 59:59 when 0.2 sec left, it's fine.
+      // However if due to rounding we get 3600.0 at :00:00.000 it's correct.
+      
+      // If milliseconds cause a fractional remainder, we ensure that we don't display a second that hasn't fully passed.
+      // Because setInterval ticks every 1000ms, the first update might be slightly after the exact second. So we recalc each second anyway.
+      // Keep secondsLeft as integer floor based on full seconds (ignore ms).
+      return secondsLeft;
+    }
+    
+    // Update the timer DOM element using real-time calculation
+    function updateTimerDisplay() {
+      if (!timerElement) {
+        // fallback: try to reacquire element if DOM changed (unlikely)
+        timerElement = document.getElementById('countdownClock');
+        if (!timerElement) return;
+      }
+      let secondsRemaining = getSecondsUntilNextHour();
+      // Ensure we never show 00:00 but show 60:00 exactly on the hour when remaining = 3600
+      if (secondsRemaining <= 0) secondsRemaining = 3600;
+      if (secondsRemaining > 3600) secondsRemaining = 3600;
+      timerElement.textContent = formatTimeFromSeconds(secondsRemaining);
+    }
+    
+    // Also handle top-bar structure in case any external script tries to modify, but we attach to load and run interval.
+    // Start the timer: update every second exactly with system clock sync. No drifting issues.
+    let intervalId = null;
+    
+    function startHourlyCountdown() {
+      if (intervalId) clearInterval(intervalId);
+      // initial update immediately
+      updateTimerDisplay();
+      // schedule updates every 1000ms, but because we recalc based on actual date, it stays perfectly in sync
+      intervalId = setInterval(() => {
+        updateTimerDisplay();
+      }, 1000);
+    }
+    
+    // Make sure the timer element exists, if not due to async, observe or retry
+    if (timerElement) {
+      startHourlyCountdown();
+    } else {
+      // Fallback: wait for DOM to ensure element is present (for any edge case)
+      const observer = new MutationObserver(() => {
+        timerElement = document.getElementById('countdownClock');
+        if (timerElement) {
+          observer.disconnect();
+          startHourlyCountdown();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+      // also try after a short delay
+      setTimeout(() => {
+        if (!timerElement) {
+          timerElement = document.getElementById('countdownClock');
+          if (timerElement) startHourlyCountdown();
+        }
+      }, 100);
+    }
+    
+    // optional: ensure the timer doesn't get stuck if page goes idle (but setInterval is fine)
+    window.addEventListener('beforeunload', () => {
+      if (intervalId) clearInterval(intervalId);
+    });
+  })();
+</script>
+<footer style="text-align:center;padding:48px 20px 24px;font-size:13px;color:#888;border-top:1px solid rgba(0,0,0,0.08);margin-top:40px;font-family:sans-serif;line-height:2.2;"><div style="display:flex;justify-content:center;flex-wrap:wrap;gap:6px 20px;margin-bottom:14px;"><a href="/" style="color:#888;text-decoration:none;">Home</a><a href="/story.html" style="color:#888;text-decoration:none;">My Story</a><a href="/what-are-money-blocks.html" style="color:#888;text-decoration:none;">Money Blocks</a><a href="/how-to-reprogram-your-subconscious-mind.html" style="color:#888;text-decoration:none;">Reprogram Your Mind</a><a href="/best-ai-manifestation-app.html" style="color:#888;text-decoration:none;">AI Manifestation App</a><a href="/quit-your-9-to-5-with-ai.html" style="color:#888;text-decoration:none;">Quit Your 9–5</a><a href="/reset/" style="color:#888;text-decoration:none;">Free Reset</a><a href="/webinar/" style="color:#888;text-decoration:none;">Free Training</a><a href="/guide.html" style="color:#888;text-decoration:none;">Money Guide</a><a href="/blueprint.html" style="color:#c6a43b;text-decoration:none;">Blueprint</a></div>© Sean Ali · seanali.online<br>Join the movement: 125,000+ people already living their version of freedom</footer>
+</body>
+</html>

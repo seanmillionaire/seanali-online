@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta charset=\"UTF-8\">
+<!-- Meta Pixel Code (2 pixels: 878451855254470 & 1586097145783190) -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '878451855254470');
+fbq('init', '1586097145783190');
+fbq('track', 'PageView');
+fbq('track', 'Lead');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=878451855254470&ev=PageView&noscript=1"
+/></noscript>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1586097145783190&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Guide Sent – Claude27</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #FFFFFF;
+      color: #111827;
+      line-height: 1.5;
+    }
+
+    :root {
+      --orange-red: #FF3B1D;
+      --orange-soft: #FFF1ED;
+      --gray-600: #4B5563;
+      --gray-400: #9CA3AF;
+      --shadow-card: 0 20px 35px -12px rgba(0, 0, 0, 0.08);
+    }
+
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 3rem;
+      text-align: center;
+    }
+
+    /* checkmark icon - larger */
+    .check-circle {
+      background: var(--orange-red);
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 25px -5px rgba(255,59,29,0.3);
+    }
+    .check-circle i {
+      font-size: 3.5rem;
+      color: white;
+    }
+
+    /* main headline - larger */
+    h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #111827 0%, #FF3B1D 70%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 1.8rem;
+    }
+
+    /* responsive video wrapper (16:9) - modern, matches card styling */
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 aspect ratio */
+      height: 0;
+      overflow: hidden;
+      border-radius: 28px;
+      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.2);
+      margin: 1.5rem 0 1.8rem;
+      background: #000;
+    }
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    /* full size product image - much larger, responsive */
+    .product-full {
+      max-width: 380px;
+      width: 100%;
+      margin: 0 auto 2rem auto;
+      display: block;
+      border-radius: 28px;
+      box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    /* larger confirmation text */
+    .sub-confirm {
+      font-size: 1.35rem;
+      color: var(--gray-600);
+      margin-bottom: 2rem;
+      border-left: 4px solid var(--orange-red);
+      padding-left: 1.2rem;
+      display: inline-block;
+      text-align: left;
+      font-weight: 500;
+    }
+
+    .sub-confirm i {
+      font-size: 1.4rem;
+      margin-right: 8px;
+    }
+
+    /* email guide card - REPLACES old bonus-cta */
+    .email-guide-card {
+      background: var(--orange-soft);
+      border-radius: 32px;
+      padding: 2rem;
+      margin: 2rem 0 1.5rem;
+      border: 1px solid rgba(255,59,29,0.2);
+      text-align: left;
+    }
+    .email-guide-card h3 {
+      font-size: 1.7rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .email-guide-card h3 i {
+      color: var(--orange-red);
+      font-size: 1.8rem;
+    }
+    .email-guide-card p {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      color: #1f2937;
+    }
+    .checklist {
+      background: white;
+      border-radius: 20px;
+      padding: 1.2rem 1.5rem;
+      margin-top: 1.2rem;
+      border-left: 4px solid var(--orange-red);
+    }
+    .checklist p {
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .checklist i {
+      color: var(--orange-red);
+      width: 24px;
+      font-size: 1.1rem;
+    }
+    .small-note {
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(0,0,0,0.05);
+    }
+
+    /* sean note larger */
+    .sean-note {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      background: white;
+      border-radius: 80px;
+      padding: 1rem 2rem;
+      margin-top: 2rem;
+      border: 1px solid #F0F0F0;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .sean-note img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid var(--orange-red);
+    }
+    .sean-note p {
+      font-size: 0.95rem;
+      color: #4B5563;
+      line-height: 1.4;
+    }
+    .sean-note strong {
+      font-size: 1rem;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #9ca3af;
+      border-top: 1px solid #f0f0f0;
+      margin-top: 3rem;
+      padding: 2rem 1rem 0.5rem;
+    }
+
+    /* mobile friendly adjustments */
+    @media (max-width: 600px) {
+      .container {
+        padding: 1.5rem 1.2rem 2.5rem;
+      }
+      h1 {
+        font-size: 2.2rem;
+      }
+      .check-circle {
+        width: 80px;
+        height: 80px;
+      }
+      .check-circle i {
+        font-size: 2.5rem;
+      }
+      .video-wrapper {
+        border-radius: 24px;
+        margin: 1rem 0 1.4rem;
+      }
+      .product-full {
+        max-width: 280px;
+      }
+      .sub-confirm {
+        font-size: 1.1rem;
+      }
+      .email-guide-card h3 {
+        font-size: 1.4rem;
+      }
+      .email-guide-card p {
+        font-size: 1rem;
+      }
+      .checklist p {
+        font-size: 0.9rem;
+      }
+      .sean-note {
+        padding: 0.8rem 1.2rem;
+        gap: 12px;
+      }
+      .sean-note img {
+        width: 48px;
+        height: 48px;
+      }
+      .sean-note p {
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (max-width: 450px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+      .product-full {
+        max-width: 240px;
+      }
+      .video-wrapper {
+        border-radius: 20px;
+      }
+      .email-guide-card h3 i {
+        font-size: 1.4rem;
+      }
+    }
+  </style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/social-blog.css">
+</head>
+
+<body class="social-legacy">
+
+<header class="social-topbar">
+  <a class="social-logo" href="/" aria-label="Sean Ali home">
+    <span class="social-logo-mark">SA</span>
+    <span>Sean Ali</span>
+  </a>
+  <label class="social-search" aria-label="Search the blog">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.75 4a6.75 6.75 0 0 1 5.33 10.89l3.52 3.51-1.2 1.2-3.51-3.52A6.75 6.75 0 1 1 10.75 4Zm0 1.7a5.05 5.05 0 1 0 0 10.1 5.05 5.05 0 0 0 0-10.1Z"/></svg>
+    <input data-feed-search type="search" placeholder="Search AI income, money blocks, reset...">
+  </label>
+  <nav class="social-nav"><a class="social-nav-link " href="/">Home</a><a class="social-nav-link " href="/quit-your-9-to-5-with-ai.html">AI Freedom</a><a class="social-nav-link active" href="/prompts.html">Prompts</a><a class="social-nav-link " href="/story.html">Story</a><a class="social-nav-link " href="/reset/">Reset</a></nav>
+  <a class="social-primary" href="/webinar/">Free training</a>
+</header>
+
+<main class="social-legacy-wrap">
+  <article class="legacy-card">
+    <header class="legacy-intro">
+      <img src="https://statics.myclickfunnels.com/workspace/vGVGzP/image/20204117/file/904663e23eb23a39d6f2459104b7bccc.png" alt="Sean Ali">
+      <div><strong>Guide Sent</strong><span>The Claude27 delivery confirmation page with the original video and confirmation content preserved.</span></div>
+    </header>
+    <div class="legacy-content"><div class="container">
+  <div class="check-circle">
+    <i class="fas fa-check"></i>
+  </div>
+  <h1>Guide sent! 🎉</h1>
+  
+  <!-- Embedded YouTube video right under the headline -->
+  <div class="video-wrapper">
+    <iframe 
+      src="https://www.youtube.com/embed/PFMNhetseZE?rel=0&modestbranding=1" 
+      title="Claude27 Insight - Build Your Digital Freedom" 
+      frameborder="0" 
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+      referrerpolicy="strict-origin-when-cross-origin" 
+      allowfullscreen
+      loading="lazy">
+    </iframe>
+  </div>
+  
+  <!-- Full size product image (larger, responsive) -->
+  <img class="product-full" 
+       src="https://hypnoticmeditations.b-cdn.net/images/claude27-img.png" 
+       alt="Claude27 Guide"
+       onerror="this.src='https://placehold.co/600x600/FFF1ED/FF3B1D?text=CLAUDE27'">
+
+  <div class="sub-confirm">
+    <i class="fas fa-envelope-open-text"></i> Confirmed delivery – check your email
+  </div>
+
+  <!-- NEW SECTION: Guide user to find the email with Claude27 access -->
+  <div class="email-guide-card">
+    <h3>
+      <i class="fas fa-envelope"></i> 
+      Find your Claude27 access
+    </h3>
+    <p>I just sent your personal Claude27 guide to the email you provided.<br> 
+    <strong>Open the email from “Sean / Claude27”</strong> and click the link inside to get instant access.</p>
+    
+    <div class="small-note">
+      <i class="fas fa-clock"></i> Still don’t see it? It may take 2–3 minutes. Refresh your inbox or click “Resend” on the signup page.
+    </div>
+  </div>
+
+  <div class="sean-note">
+    <img src="https://hypnoticmeditations.b-cdn.net/images/proof/sean%20profile.png" alt="Sean Ali" onerror="this.src='https://placehold.co/100x100/FF3B1D/white?text=SA'">
+    <p><strong>Sean Ali</strong><br>10+ years building online income streams. Now sharing what actually works.</p>
+  </div>
+</div>
+<footer>
+  <p>© 2026 Claude27 · All Rights Reserved</p>
+  <p style="margin-top: 8px;"><a href="#">Privacy Policy</a> | <a href="#">Terms of Use</a></p>
+</footer></div>
+  </article>
+  
+<aside class="social-sidebar">
+  <section class="side-card profile-mini">
+    <img src="https://statics.myclickfunnels.com/workspace/vGVGzP/image/20204117/file/904663e23eb23a39d6f2459104b7bccc.png" alt="Sean Ali">
+    <div>
+      <strong>Sean Ali</strong>
+      <span>AI income, subconscious reprogramming, and location freedom.</span>
+    </div>
+  </section>
+  <section class="side-card">
+    <h3>Start Here</h3>
+    <a class="side-link hot" href="/prompts.html"><span>AI Freedom</span><strong>Get the 27 Claude prompts</strong></a>
+    <a class="side-link" href="/webinar/"><span>Training</span><strong>Watch the free AI business class</strong></a>
+    <a class="side-link" href="/quit-your-9-to-5-with-ai.html"><span>Blueprint</span><strong>Quit your 9-5 with AI</strong></a>
+    <a class="side-link" href="/story.html"><span>Origin</span><strong>Read Sean's story</strong></a>
+  </section>
+  <section class="side-card">
+    <h3>Brands & Tools</h3>
+    <a class="brand-row" href="https://hypnoticmeditations.ai/pages/moneyflow" target="_blank"><span>Money Flow</span><em>Mindset audio</em></a>
+    <a class="brand-row" href="https://www.manifestationgenie.ai" target="_blank"><span>Manifestation Genie</span><em>AI coach</em></a>
+    <a class="brand-row" href="https://trythescript.com/watch" target="_blank"><span>Night Reset</span><em>7-minute audio</em></a>
+    <a class="brand-row" href="https://panamauntold.com" target="_blank"><span>Panama Untold</span><em>Location freedom</em></a>
+  </section>
+</aside>
+
+</main>
+<nav class="mobile-tabbar"><a class="" href="/"><span>Home</span></a><a class="" href="/quit-your-9-to-5-with-ai.html"><span>AI</span></a><a class="active" href="/prompts.html"><span>Prompts</span></a><a class="" href="/reset/"><span>Reset</span></a></nav>
+
+<footer class="social-footer">
+  <div>© 2026 Sean Ali · seanali.online</div>
+  <div class="social-footer-links">
+    <a href="/story.html">Story</a>
+    <a href="/prompts-guide.html">Prompts Guide</a>
+    <a href="/blueprint.html">Blueprint</a>
+  </div>
+</footer>
+<script src="assets/social-blog.js"></script>
+
+</body>
+</html>

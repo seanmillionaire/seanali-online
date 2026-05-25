@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta charset=\"UTF-8\">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>You're Confirmed – Sean Ali Training Access</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Georgia', serif;
+    background: #fff;
+    color: #111;
+    line-height: 1.4;
+  }
+
+  .top-bar {
+    background: #c0392b;
+    color: #fff;
+    text-align: center;
+    padding: 13px 16px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .confirmation-hero {
+    text-align: center;
+    padding: 40px 20px 20px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .confirmation-hero h1 {
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-size: 32px;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: #c0392b;
+    margin-bottom: 10px;
+  }
+
+  .confirmation-hero .subhead {
+    font-size: 18px;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    color: #222;
+    margin-top: 6px;
+  }
+
+  .confirmation-hero p {
+    margin-top: 14px;
+    font-size: 16px;
+    color: #333;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .steps-grid {
+    max-width: 1100px;
+    margin: 20px auto;
+    padding: 0 20px;
+  }
+
+  .steps-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+    margin: 35px 0;
+  }
+
+  .step-card {
+    background: #fefaf9;
+    border-radius: 20px;
+    border: 1px solid #f0e2df;
+    padding: 24px 18px;
+    text-align: center;
+  }
+
+  .step-number {
+    width: 42px;
+    height: 42px;
+    background: #c0392b;
+    color: white;
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-size: 22px;
+    font-weight: 900;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 60px;
+    margin-bottom: 14px;
+  }
+
+  .step-card h3 {
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 900;
+    margin-bottom: 10px;
+  }
+
+  .step-card p {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.45;
+    color: #3c3c3c;
+  }
+
+  .btn-outline-red {
+    display: inline-block;
+    border: 2px solid #c0392b;
+    color: #c0392b;
+    padding: 8px 16px;
+    border-radius: 40px;
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-weight: bold;
+    font-size: 13px;
+    text-decoration: none;
+    margin-top: 12px;
+    transition: 0.2s;
+    background: white;
+  }
+
+  .btn-outline-red:hover {
+    background: #c0392b;
+    color: white;
+  }
+
+  .details-card {
+    background: #fff2ef;
+    border-radius: 28px;
+    padding: 22px 20px;
+    text-align: center;
+    margin: 20px 0 30px;
+  }
+
+  .details-card h2 {
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-size: 20px;
+    color: #c0392b;
+    margin-bottom: 12px;
+  }
+
+  .badge {
+    font-size: 18px;
+    font-weight: bold;
+    font-family: 'Arial Black', Arial, sans-serif;
+    background: white;
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 60px;
+    color: #c0392b;
+  }
+
+  .bonus-section {
+    background: #f8f8f8;
+    border-radius: 28px;
+    padding: 28px 24px;
+    margin: 35px 0;
+    text-align: center;
+  }
+
+  .bonus-section h3 {
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-size: 20px;
+    color: #c0392b;
+    margin-bottom: 12px;
+  }
+
+  .download-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin: 25px 0 10px;
+  }
+
+  .download-btn {
+    background: #c0392b;
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 60px;
+    cursor: pointer;
+    transition: 0.2s;
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+
+  .download-btn:hover {
+    background: #a93226;
+    transform: scale(1.02);
+  }
+
+  .signature {
+    text-align: center;
+    padding: 30px 20px 40px;
+    border-top: 1px solid #eee;
+  }
+
+  .signature h3 {
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-size: 22px;
+  }
+
+  .btn-red-large {
+    background: #c0392b;
+    color: white;
+    border: none;
+    padding: 12px 26px;
+    font-size: 14px;
+    font-family: 'Arial Black', Arial, sans-serif;
+    border-radius: 60px;
+    margin: 16px 0;
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+  }
+
+  footer {
+    text-align: center;
+    padding: 18px;
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    color: #aaa;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  @media (max-width: 700px) {
+    .confirmation-hero h1 { font-size: 26px; }
+    .steps-container { gap: 16px; }
+    .download-btn { padding: 10px 20px; font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">✅ CONFIRMED – Your access is ready</div>
+
+<div class="confirmation-hero">
+  <h1>✅ YOU'RE IN!</h1>
+  <div class="subhead">Training access – start right now</div>
+  <p>90-minute session + bonuses. No waiting. Start immediately.</p>
+</div>
+
+<div class="steps-grid">
+  <div class="details-card">
+    <h2>🔥 INSTANT ACCESS – FULL TRAINING</h2>
+    <div class="badge">🎬 90 min training ● Ready now</div>
+  </div>
+
+  <h2 style="font-family:'Arial Black',Arial,sans-serif; font-size:22px; text-align:center;">⚡ 4 SIMPLE STEPS</h2>
+  <div class="steps-container">
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <h3>🚫 Remove all distractions</h3>
+      <p>Close extra tabs, put phone on silent. Get focused.</p>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">2</div>
+      <h3>📧 Check email from Sean</h3>
+      <p>Look for <strong>aiacademy@gmail.com</strong>. Check spam if needed.</p>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <h3>🔖 Bookmark this page</h3>
+      <p>Save this link so you never lose access.</p>
+      <a href="#" class="btn-outline-red" id="reminderBookmark">⭐ Bookmark now</a>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">4</div>
+      <h3>💻 Watch & take notes</h3>
+      <p>No camera or mic needed. Just listen and learn.</p>
+      <p style="margin-top:8px;"><span style="background:#c0392b20; padding:3px 10px; border-radius:50px; font-size:12px;">🎁 Bonuses inside</span></p>
+    </div>
+  </div>
+
+  <!-- BONUS SECTION with download buttons, no photos -->
+  <div class="bonus-section">
+    <h3>🎁 Exclusive bonuses (all registrants)</h3>
+    <p style="margin-top:8px;">Watch anytime, get the same bonus resources.</p>
+    <div class="download-buttons">
+      <button class="download-btn" id="downloadBtn1">📥 DOWNLOAD BONUS #1</button>
+      <button class="download-btn" id="downloadBtn2">📥 DOWNLOAD BONUS #2</button>
+    </div>
+  </div>
+
+  <!-- SIGNATURE / FINAL CTA -->
+  <div class="signature">
+    <h3>🔥 START THE TRAINING NOW 🔥</h3>
+    <p style="margin: 10px 0;">Watch the full 90-min session & claim your bonuses.</p>
+    <p><strong>📩 Check your inbox</strong> (from aiacademy@gmail.com)</p>
+    <a href="#" class="btn-red-large" id="watchNowBtn">🎬 WATCH NOW → 🎬</a>
+    <p style="margin-top: 20px;">Questions? <a href="mailto:aiacademy@gmail.com" style="color:#c0392b;">aiacademy@gmail.com</a></p>
+    <p style="margin-top: 16px;">— <strong>Sean Ali</strong> ❤️</p>
+  </div>
+</div>
+
+<footer>© 2026 Sean Ali – Training Access. All rights reserved.</footer>
+
+<script>
+  const watchBtn = document.getElementById('watchNowBtn');
+  const bookmarkBtn = document.getElementById('reminderBookmark');
+  const downloadBtn1 = document.getElementById('downloadBtn1');
+  const downloadBtn2 = document.getElementById('downloadBtn2');
+  
+  function showAccess() {
+    alert("🔓 TRAINING ACCESS READY\n\nIn the live implementation, this would open your secure video training page.\n\nEmail: aiacademy@gmail.com\n\nWatch the 90-min session + get bonuses.");
+  }
+  
+  if(watchBtn) watchBtn.addEventListener('click', (e) => { e.preventDefault(); showAccess(); });
+  if(bookmarkBtn) bookmarkBtn.addEventListener('click', (e) => { e.preventDefault(); alert("⭐ Bookmark this page (Ctrl+D) to never lose access."); });
+  
+  // Download buttons (no actual links for now)
+  if(downloadBtn1) downloadBtn1.addEventListener('click', () => { alert("Bonus #1 download will be available after watching the training. Stay tuned!"); });
+  if(downloadBtn2) downloadBtn2.addEventListener('click', () => { alert("Bonus #2 download will be available after watching the training. Stay tuned!"); });
+</script>
+</body>
+</html>

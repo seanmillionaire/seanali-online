@@ -1,0 +1,1911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta charset=\"UTF-8\">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude27 — 27 Prompts To Build Your First AI Income Stream</title>
+<meta name="description" content="27 real, copy-paste prompts to create content, build products, write emails, and launch an AI income stream. No coding. No fluff.">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#ffffff;
+  --off:#f7f5f2;
+  --rule:#e8e5e0;
+  --black:#0d0d0d;
+  --ink:#1a1a1a;
+  --muted:#888480;
+  --light:#bbb8b3;
+  --accent:#ff3c00;
+  --accent2:#ff8c42;
+  --br:14px;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  font-family:"DM Sans",sans-serif;
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  font-size:20px;
+  line-height:1.6;
+}
+.shell{
+  max-width:700px;
+  margin:0 auto;
+  padding-bottom:120px;
+}
+.section{
+  padding:52px 32px;
+  border-bottom:1px solid var(--rule);
+  animation:fadeUp 0.5s ease;
+}
+.section:last-of-type{border-bottom:none}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(16px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.section-header{margin-bottom:28px}
+.kicker{
+  font-size:14px;
+  font-weight:800;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:10px;
+}
+.display{
+  font-family:"Bebas Neue",sans-serif;
+  font-size:clamp(52px,13vw,80px);
+  line-height:0.95;
+  margin-bottom:22px;
+}
+.display .orange{color:var(--accent)}
+.body-text{
+  font-size:1.2rem;
+  line-height:1.7;
+  color:var(--ink);
+  font-weight:420;
+  margin-bottom:22px;
+}
+.video-wrapper{
+  position:relative;
+  padding-bottom:56.25%;
+  height:0;
+  overflow:hidden;
+  border-radius:24px;
+  box-shadow:0 20px 35px -12px rgba(0,0,0,0.2);
+  margin:24px 0 28px;
+  background:#000;
+}
+.video-wrapper iframe{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  border:0;
+  display:block;
+}
+
+/* ═══ MAIN CTA BUTTONS ═══ */
+.cta-block,.start-link{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  background:linear-gradient(105deg,#ff3c00 0%,#ff8c42 100%);
+  border-radius:20px;
+  padding:20px 28px;
+  text-decoration:none;
+  color:white;
+  font-weight:700;
+  font-size:1.15rem;
+  transition:all 0.25s cubic-bezier(0.2,0.9,0.4,1.1);
+  box-shadow:0 14px 28px -6px rgba(255,60,0,0.55),0 3px 8px rgba(0,0,0,0.1);
+  border:1px solid rgba(255,255,255,0.25);
+  position:relative;
+  overflow:hidden;
+  cursor:pointer;
+}
+.cta-block:hover,.start-link:hover{
+  transform:scale(1.02) translateY(-3px);
+  box-shadow:0 22px 36px -8px rgba(255,60,0,0.65);
+}
+.cta-block::before,.start-link::before{
+  content:"";position:absolute;top:0;left:-100%;
+  width:100%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);
+  transition:left 0.5s;pointer-events:none;
+}
+.cta-block:hover::before,.start-link:hover::before{left:100%}
+.cta-icon{
+  font-size:32px;width:56px;height:56px;
+  background:rgba(0,0,0,0.2);border-radius:16px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.cta-body{flex:1}
+.cta-title{
+  font-family:"Bebas Neue",sans-serif;
+  font-size:1.8rem;letter-spacing:0.02em;line-height:1.1;
+}
+.cta-sub{font-size:0.8rem;font-weight:600;opacity:0.9;margin-top:3px}
+.cta-arrow{font-size:32px;transition:transform 0.2s ease;flex-shrink:0}
+.cta-block:hover .cta-arrow,.start-link:hover .cta-arrow{transform:translateX(6px) scale(1.1)}
+.start-link{animation:gentlePulse 2.5s infinite ease}
+@keyframes gentlePulse{
+  0%{transform:scale(1);box-shadow:0 14px 28px -6px rgba(255,60,0,0.55)}
+  50%{transform:scale(1.015);box-shadow:0 20px 36px -5px rgba(255,60,0,0.75)}
+  100%{transform:scale(1);box-shadow:0 14px 28px -6px rgba(255,60,0,0.55)}
+}
+
+/* ═══ BRIDGE BOXES — beefed up ═══ */
+.bridge-box{
+  background:linear-gradient(140deg,#fff3ef 0%,#fff8f5 60%,#ffffff 100%);
+  border:2px solid #ffb89a;
+  border-radius:24px;
+  padding:32px 28px;
+  margin:32px 0;
+  position:relative;
+  overflow:hidden;
+}
+.bridge-box::before{
+  content:"";
+  position:absolute;top:-30px;right:-30px;
+  width:120px;height:120px;
+  background:radial-gradient(circle,rgba(255,60,0,0.08) 0%,transparent 70%);
+  pointer-events:none;
+}
+.bridge-box .bridge-eyebrow{
+  font-size:12px;font-weight:800;letter-spacing:0.12em;
+  text-transform:uppercase;color:var(--accent);margin-bottom:8px;
+}
+.bridge-box .bridge-title{
+  font-family:"Bebas Neue",sans-serif;
+  font-size:clamp(28px,6vw,38px);
+  line-height:1;
+  margin-bottom:10px;
+  color:var(--ink);
+}
+.bridge-box p{
+  font-size:1.05rem;color:var(--ink);line-height:1.65;margin-bottom:20px;
+}
+.bridge-btn{
+  display:inline-flex;align-items:center;gap:10px;
+  background:linear-gradient(105deg,#ff3c00,#ff8c42);
+  color:white;text-decoration:none;
+  font-family:"Bebas Neue",sans-serif;
+  font-size:1.3rem;letter-spacing:0.04em;
+  padding:14px 24px;border-radius:14px;
+  box-shadow:0 8px 20px -4px rgba(255,60,0,0.45);
+  transition:all 0.2s ease;
+  position:relative;overflow:hidden;
+}
+.bridge-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 14px 28px -4px rgba(255,60,0,0.55);
+}
+.bridge-btn::before{
+  content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent);
+  transition:left 0.4s;pointer-events:none;
+}
+.bridge-btn:hover::before{left:100%}
+.bridge-btn-icon{font-size:22px}
+.bridge-btn-arrow{font-size:20px;transition:transform 0.2s}
+.bridge-btn:hover .bridge-btn-arrow{transform:translateX(4px)}
+/* legacy link style kept for fallback */
+.bridge-link{
+  display:inline-flex;align-items:center;gap:6px;
+  color:var(--accent);font-weight:700;font-size:1rem;
+  text-decoration:none;
+}
+.bridge-link:hover{opacity:0.7}
+
+/* Sean note */
+.sean-note{
+  background:var(--off);
+  border-radius:20px;
+  padding:22px 26px;
+  border-left:5px solid var(--accent);
+  margin:28px 0;
+  font-size:1rem;
+  line-height:1.65;
+}
+.sean-note strong{display:block;margin-bottom:6px;font-size:0.88rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent)}
+
+/* Progress bar */
+.progress-wrap{
+  position:sticky;top:0;z-index:100;
+  background:white;
+  border-bottom:1px solid var(--rule);
+  padding:14px 32px;
+  display:flex;align-items:center;gap:16px;
+}
+.progress-bar-outer{
+  flex:1;height:8px;background:var(--off);border-radius:99px;overflow:hidden;
+}
+.progress-bar-inner{
+  height:100%;background:linear-gradient(90deg,#ff3c00,#ff8c42);
+  border-radius:99px;transition:width 0.4s ease;
+}
+.progress-label{font-size:14px;font-weight:800;color:var(--muted);white-space:nowrap}
+.progress-count{color:var(--accent);font-weight:800}
+
+/* Path tiles */
+.path-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:28px 0;
+}
+.path-tile{
+  background:var(--off);border-radius:22px;padding:22px;
+  border:2px solid transparent;cursor:pointer;
+  transition:all 0.2s ease;text-decoration:none;color:var(--ink);
+}
+.path-tile:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 8px 20px -4px rgba(255,60,0,0.15)}
+.path-tile .tile-icon{font-size:36px;margin-bottom:12px}
+.path-tile .tile-title{
+  font-family:"Bebas Neue",sans-serif;
+  font-size:24px;letter-spacing:0.02em;margin-bottom:5px;
+}
+.path-tile .tile-desc{font-size:0.88rem;color:var(--muted);line-height:1.4}
+
+/* Prompt card */
+.prompt-card{
+  background:var(--off);border-radius:22px;padding:28px;
+  margin-bottom:20px;border-left:5px solid var(--accent);
+  position:relative;
+}
+.prompt-num{
+  font-size:12px;font-weight:800;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--accent);margin-bottom:6px;
+}
+.prompt-title{
+  font-family:"Bebas Neue",sans-serif;font-size:34px;
+  line-height:1;margin-bottom:10px;
+}
+.prompt-use{
+  font-size:0.95rem;color:var(--muted);margin-bottom:18px;
+  font-style:italic;line-height:1.55;
+}
+.prompt-box{
+  background:white;border-radius:16px;padding:18px 20px;
+  font-size:0.95rem;line-height:1.7;
+  border:1px solid var(--rule);
+  white-space:pre-wrap;font-family:"DM Sans",sans-serif;
+  color:var(--ink);
+  position:relative;
+}
+.copy-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  margin-top:14px;background:var(--accent);color:white;
+  border:none;border-radius:12px;padding:12px 22px;
+  font-size:0.95rem;font-weight:700;cursor:pointer;
+  transition:all 0.2s;font-family:"DM Sans",sans-serif;
+  box-shadow:0 4px 12px -2px rgba(255,60,0,0.35);
+}
+.copy-btn:hover{background:#e03400;transform:scale(1.03);box-shadow:0 8px 18px -2px rgba(255,60,0,0.45)}
+.copy-btn.copied{background:#22c55e;box-shadow:none}
+.prompt-next{
+  margin-top:18px;background:white;border-radius:16px;
+  padding:16px 20px;border:1px solid var(--rule);
+}
+.prompt-next-label{
+  font-size:12px;font-weight:800;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:10px;
+}
+.prompt-next ul{list-style:none;padding:0}
+.prompt-next ul li{
+  padding:5px 0;font-size:1rem;
+  display:flex;align-items:flex-start;gap:10px;
+  line-height:1.55;
+}
+.prompt-next ul li::before{content:"→";color:var(--accent);font-weight:bold;flex-shrink:0;margin-top:2px}
+.prompt-link{
+  display:inline-block;margin-top:10px;
+  font-size:0.9rem;color:var(--accent);font-weight:700;
+  text-decoration:none;border-bottom:1px solid var(--accent);
+}
+.prompt-link:hover{opacity:0.7}
+
+/* Check off */
+.check-wrap{position:absolute;top:22px;right:22px}
+.check-btn{
+  width:32px;height:32px;border-radius:50%;
+  border:2px solid var(--light);background:white;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:16px;transition:all 0.2s;
+}
+.check-btn.done{background:var(--accent);border-color:var(--accent);color:white}
+
+/* Section divider */
+.section-divider{padding:44px 32px 0;border-bottom:none}
+.section-divider .display{font-size:clamp(44px,10vw,66px)}
+
+/* Start-here fast path */
+.fast-path-grid{display:flex;flex-direction:column;gap:14px;margin:24px 0}
+.fast-path-item{
+  background:var(--off);border-radius:18px;padding:18px 22px;
+  display:flex;align-items:center;gap:16px;
+}
+.fast-path-emoji{font-size:30px;flex-shrink:0}
+.fast-path-title{font-weight:700;font-size:1.05rem;margin-bottom:3px}
+.fast-path-links{font-size:0.9rem;color:var(--muted)}
+.fast-path-links a{color:var(--accent);text-decoration:none;font-weight:600}
+.fast-path-links a:hover{text-decoration:underline}
+
+/* Tools stack */
+.tools-grid{display:flex;flex-direction:column;gap:14px;margin:24px 0}
+.tool-row{
+  display:flex;align-items:center;gap:18px;
+  background:var(--off);border-radius:16px;padding:16px 20px;
+}
+.tool-icon{font-size:28px;flex-shrink:0;width:38px;text-align:center}
+.tool-name{font-weight:700;font-size:1rem}
+.tool-desc{font-size:0.88rem;color:var(--muted)}
+
+/* ═══ STICKY FOOTER BAR — beefed up ═══ */
+.sticky-bar{
+  position:fixed;bottom:0;left:0;right:0;
+  background:white;
+  border-top:2px solid var(--rule);
+  padding:14px 24px;
+  display:flex;align-items:center;gap:16px;
+  z-index:200;
+  box-shadow:0 -6px 30px rgba(0,0,0,0.1);
+}
+.sticky-bar p{font-size:0.92rem;font-weight:600;flex:1;color:var(--muted)}
+.sticky-bar p span{color:var(--ink)}
+.sticky-cta{
+  background:linear-gradient(105deg,#ff3c00,#ff8c42);
+  color:white;text-decoration:none;font-weight:700;
+  border-radius:14px;padding:12px 22px;font-size:0.95rem;
+  white-space:nowrap;flex-shrink:0;
+  transition:all 0.2s;
+  box-shadow:0 6px 16px -4px rgba(255,60,0,0.45);
+  font-family:"Bebas Neue",sans-serif;
+  letter-spacing:0.04em;
+  font-size:1.1rem;
+}
+.sticky-cta:hover{transform:scale(1.04);box-shadow:0 10px 24px -4px rgba(255,60,0,0.55)}
+
+/* Two buttons */
+.two-buttons{display:flex;flex-direction:column;gap:16px}
+
+/* simple list */
+.simple-list{list-style:none;padding:0;margin:18px 0}
+.simple-list li{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:7px 0;font-size:1.05rem;line-height:1.55;
+}
+.simple-list li::before{
+  content:"→";color:var(--accent);font-weight:bold;flex-shrink:0;margin-top:2px;
+}
+
+/* footer */
+.footer{
+  text-align:center;padding:44px 20px 28px;
+  font-size:14px;color:#888;
+  border-top:1px solid rgba(0,0,0,0.08);
+  margin-top:40px;
+}
+.footer a{color:#888;text-decoration:none}
+.footer a:hover{color:var(--accent)}
+
+/* Prompt section label */
+.section-label{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--accent);color:white;
+  font-size:12px;font-weight:800;letter-spacing:0.1em;
+  text-transform:uppercase;padding:6px 16px;border-radius:40px;
+  margin-bottom:18px;
+}
+
+/* Responsive */
+@media(max-width:500px){
+  .path-grid{grid-template-columns:1fr 1fr}
+  .path-tile{padding:16px}
+  .section{padding:40px 20px}
+  .progress-wrap{padding:12px 20px}
+  .sticky-bar{padding:10px 16px}
+  .sticky-bar p{display:none}
+  body{font-size:19px}
+}
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/social-blog.css">
+</head>
+
+<body class="social-legacy">
+
+<header class="social-topbar">
+  <a class="social-logo" href="/" aria-label="Sean Ali home">
+    <span class="social-logo-mark">SA</span>
+    <span>Sean Ali</span>
+  </a>
+  <label class="social-search" aria-label="Search the blog">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.75 4a6.75 6.75 0 0 1 5.33 10.89l3.52 3.51-1.2 1.2-3.51-3.52A6.75 6.75 0 1 1 10.75 4Zm0 1.7a5.05 5.05 0 1 0 0 10.1 5.05 5.05 0 0 0 0-10.1Z"/></svg>
+    <input data-feed-search type="search" placeholder="Search AI income, money blocks, reset...">
+  </label>
+  <nav class="social-nav"><a class="social-nav-link " href="/">Home</a><a class="social-nav-link " href="/quit-your-9-to-5-with-ai.html">AI Freedom</a><a class="social-nav-link active" href="/prompts.html">Prompts</a><a class="social-nav-link " href="/story.html">Story</a><a class="social-nav-link " href="/reset/">Reset</a></nav>
+  <a class="social-primary" href="/webinar/">Free training</a>
+</header>
+
+<main class="social-legacy-wrap">
+  <article class="legacy-card">
+    <header class="legacy-intro">
+      <img src="https://statics.myclickfunnels.com/workspace/vGVGzP/image/20204117/file/904663e23eb23a39d6f2459104b7bccc.png" alt="Sean Ali">
+      <div><strong>Claude27 Prompts Guide</strong><span>The full 27-prompt operating manual for building your first AI income stream.</span></div>
+    </header>
+    <div class="legacy-content"><!-- PROGRESS BAR -->
+<div class="progress-wrap">
+  <div class="progress-bar-outer">
+    <div class="progress-bar-inner" id="progressBar" style="width:0%"></div>
+  </div>
+  <div class="progress-label"><span class="progress-count" id="doneCount">0</span>/27 done</div>
+</div>
+
+<div class="shell">
+
+<!-- HERO -->
+<div class="section" style="padding-top:52px">
+  <div class="kicker">Claude27 · Free Guide</div>
+  <div class="display">Most people will never<br>make money with AI.<br><span class="orange">You will.</span></div>
+  <p class="body-text">27 real copy-paste prompts for complete beginners. No experience needed. Just open ChatGPT or Claude, paste, and follow the steps.</p>
+  <div class="video-wrapper">
+    <iframe
+      src="https://www.youtube.com/embed/PFMNhetseZE?rel=0&modestbranding=1"
+      title="Claude27 Insight - Build Your Digital Freedom"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen
+      loading="lazy">
+    </iframe>
+  </div>
+  <ul class="simple-list" style="margin-bottom:28px">
+    <li>No coding</li>
+    <li>No prior experience</li>
+    <li>No fluff — every prompt has exact steps to follow after</li>
+  </ul>
+  <p style="font-size:0.9rem;color:var(--muted);margin-bottom:20px;">Works with free ChatGPT or Claude. You do not need a paid account to start.</p>
+  <a href="#start-here" class="start-link" style="margin-bottom:0;text-decoration:none">
+    <div class="cta-icon">⚡</div>
+    <div class="cta-body">
+      <div class="cta-title">Start With Prompt #1</div>
+      <div class="cta-sub">Takes 3 minutes · No login required</div>
+    </div>
+    <div class="cta-arrow">↓</div>
+  </a>
+</div>
+
+<!-- BEFORE YOU START -->
+<div class="section">
+  <div class="kicker">Before you start</div>
+  <div class="display" style="font-size:clamp(40px,10vw,60px);">Read this<br><span class="orange">first.</span></div>
+  <p class="body-text">If you've never made money online — that's fine. That's exactly who this is for.</p>
+  <p class="body-text">You do <strong>not</strong> need:</p>
+  <ul class="simple-list" style="margin-bottom:24px">
+    <li>A website (yet)</li>
+    <li>A big following</li>
+    <li>A logo, LLC, or business plan</li>
+    <li>Any tech skills</li>
+    <li>Money to start</li>
+  </ul>
+  <p class="body-text">All you need is a phone, a free AI account, and the willingness to try one thing. That's it.</p>
+  <p class="body-text">Each prompt in this guide tells you exactly what to type, and exactly what to do with the result. No guessing.</p>
+  <div class="sean-note">
+    <strong>⚡ Sean note</strong>
+    "I started with zero audience, zero followers, zero budget. The only thing that worked was actually doing something — not planning to do it."
+  </div>
+</div>
+
+<!-- PICK YOUR PATH -->
+<div class="section" id="start-here">
+  <div class="kicker">Step 1 — Pick your path</div>
+  <div class="display" style="font-size:clamp(38px,9vw,56px);">Where do you<br><span class="orange">want to start?</span></div>
+  <p class="body-text" style="margin-bottom:0">Each tile jumps to that section. Or scroll through all 27.</p>
+  <div class="path-grid">
+    <a href="#section-content" class="path-tile">
+      <div class="tile-icon">📱</div>
+      <div class="tile-title">Make Content</div>
+      <div class="tile-desc">TikToks, hooks, scripts, carousels</div>
+    </a>
+    <a href="#section-products" class="path-tile">
+      <div class="tile-icon">📦</div>
+      <div class="tile-title">Build Products</div>
+      <div class="tile-desc">Ebooks, courses, $27 offers</div>
+    </a>
+    <a href="#section-money" class="path-tile">
+      <div class="tile-icon">💸</div>
+      <div class="tile-title">Make Money</div>
+      <div class="tile-desc">DMs, emails, landing pages</div>
+    </a>
+    <a href="#section-brand" class="path-tile">
+      <div class="tile-icon">🧠</div>
+      <div class="tile-title">Build A Brand</div>
+      <div class="tile-desc">Positioning, authority, content system</div>
+    </a>
+  </div>
+</div>
+
+<!-- FAST TRACK -->
+<div class="section">
+  <div class="kicker">Overwhelmed? Start here</div>
+  <div class="display" style="font-size:clamp(34px,8vw,50px);">Your <span class="orange">fast track</span><br>by goal</div>
+  <div class="fast-path-grid">
+    <div class="fast-path-item">
+      <div class="fast-path-emoji">🆕</div>
+      <div class="fast-path-body">
+        <div class="fast-path-title">Brand new — never posted</div>
+        <div class="fast-path-links">Start: <a href="#p1">Prompt 1</a> → <a href="#p7">7</a> → <a href="#p10">10</a> → <a href="#p3">3</a></div>
+      </div>
+    </div>
+    <div class="fast-path-item">
+      <div class="fast-path-emoji">💰</div>
+      <div class="fast-path-body">
+        <div class="fast-path-title">Want fast cash now</div>
+        <div class="fast-path-links">Start: <a href="#p8">Prompt 8</a> → <a href="#p3">3</a> → <a href="#p11">11</a> → <a href="#p15">15</a></div>
+      </div>
+    </div>
+    <div class="fast-path-item">
+      <div class="fast-path-emoji">📱</div>
+      <div class="fast-path-body">
+        <div class="fast-path-title">Want to grow on TikTok/Reels</div>
+        <div class="fast-path-links">Start: <a href="#p1">Prompt 1</a> → <a href="#p4">4</a> → <a href="#p6">6</a> → <a href="#p20">20</a></div>
+      </div>
+    </div>
+    <div class="fast-path-item">
+      <div class="fast-path-emoji">🏗️</div>
+      <div class="fast-path-body">
+        <div class="fast-path-title">Want to build a real system</div>
+        <div class="fast-path-links">Start: <a href="#p10">Prompt 10</a> → <a href="#p23">23</a> → <a href="#p25">25</a> → <a href="#p27">27</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- SECTION 1 — CONTENT -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section section-divider" id="section-content">
+  <div class="section-label">📱 Section 1 of 5</div>
+  <div class="display"><span class="orange">Make content</span><br>fast</div>
+  <p class="body-text">The fastest way to build an audience is volume. These prompts remove every excuse not to post today.</p>
+</div>
+
+<!-- PROMPT 1 -->
+<div class="section" id="p1">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'1')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #1</div>
+    <div class="prompt-title">Turn One Idea Into 10 TikTok Hooks</div>
+    <div class="prompt-use">Perfect first prompt. Use it even if you have no idea what your niche is yet.</div>
+    <div class="prompt-box">I want to make videos about [TOPIC — example: saving money, losing weight, learning a skill].
+
+Give me 10 short hooks (opening lines) for TikTok or Instagram Reels.
+
+Make them:
+- Simple enough for a 5th grader to understand
+- Sound like a real person, not a marketer
+- Make someone stop scrolling
+- Focus on a problem, a mistake, or a surprising fact
+
+Example format:
+Hook 1:
+Hook 2:
+Hook 3: (etc.)</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="sean-note" style="margin-top:14px;margin-bottom:0">
+      <strong>🆕 Never posted before? Here's exactly what to do:</strong>
+      Replace [TOPIC] with something you know or care about. Even "saving money as a student" or "meals under $10" works. Paste into ChatGPT (free at chat.openai.com). Read the hooks out loud. Pick the one that feels most natural to say.
+    </div>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Pick ONE hook — the one you'd actually say out loud</li>
+        <li>Open your phone camera and film yourself saying it</li>
+        <li>Post it to TikTok, Instagram Reels, or YouTube Shorts</li>
+        <li>Done. That's your first piece of content.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="sean-note">
+    <strong>⚡ Real result</strong>
+    "This exact format pulled 1,200 clicks on a hook about money stress. The ugliest video I ever filmed."
+  </div>
+</div>
+
+<!-- PROMPT 2 -->
+<div class="section" id="p2">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'2')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #2</div>
+    <div class="prompt-title">Generate Viral "Pain First" Hooks</div>
+    <div class="prompt-use">Use this when you want content ideas that actually make people feel something — even if you're brand new.</div>
+    <div class="prompt-box">I want to make content about [TOPIC].
+
+Give me 20 short opening lines for social media videos.
+
+Focus on:
+- Problems people have but feel embarrassed to talk about
+- Things that feel unfair or frustrating
+- Mistakes people make without realizing it
+- Hidden truths that most people don't know
+
+Keep every line under 15 words. Sound like a normal person, not a salesperson.</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Run the prompt — you'll get 20 ideas in seconds</li>
+        <li>Screenshot the 5 you like most</li>
+        <li>Film one today, save the rest for later</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- PROMPT 3 -->
+<div class="section" id="p3">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'3')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #3</div>
+    <div class="prompt-title">Write A Simple Landing Page</div>
+    <div class="prompt-use">Use this even if you've never written a sales page before. Just fill in the blanks.</div>
+    <div class="prompt-box">Write me a simple page to promote this:
+
+What I'm offering: [EXAMPLE: A free guide on saving money / An affiliate product that helps people lose weight]
+Who it's for: [EXAMPLE: Busy moms / College students / People who hate the gym]
+The main benefit they get: [EXAMPLE: Save $500 this month / Lose 10 lbs without a diet]
+
+Write it with:
+1. One big headline (the main promise)
+2. Two sentences explaining who it's for
+3. Three bullet points — what they get or learn
+4. One button (what should it say?)
+5. One closing sentence that makes them want to click
+
+Use simple words. Short sentences. No hype.</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="sean-note" style="margin-top:14px;margin-bottom:0">
+      <strong>🆕 Where to put this page:</strong>
+      Copy the text into a free Carrd account (carrd.co — free plan works). Or paste it into your Linktree or Beacons bio link. You don't need to build a real website yet.
+    </div>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Fill in the three blanks above — takes 2 minutes</li>
+        <li>Paste into ChatGPT and get your page copy</li>
+        <li>Go to carrd.co → create a free page → paste the text in</li>
+        <li>Put the link in your bio</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- PROMPT 4 -->
+<div class="section" id="p4">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'4')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #4</div>
+    <div class="prompt-title">Turn Long Content Into 10 Shorts</div>
+    <div class="prompt-use">Use after any podcast, YouTube video, or long post you've already made.</div>
+    <div class="prompt-box">Take this transcript or text:
+
+[PASTE YOUR CONTENT HERE]
+
+Turn it into:
+- 5 TikTok/Reels scripts (under 60 seconds each)
+- 3 Twitter/X posts (punchy, standalone)
+- 2 Instagram captions (hook + story + CTA)
+
+For every piece:
+- Start with the most emotional or surprising line
+- Keep it conversational
+- End with a call to action or open loop</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Take one YouTube video or podcast you already have</li>
+        <li>Paste the transcript (use YouTube auto-captions)</li>
+        <li>Post the first short immediately</li>
+      </ul>
+    </div>
+  </div>
+  <div class="sean-note">
+    <strong>🧠 Sean note</strong>
+    "One 10-minute video becomes 30 pieces of content. Stop creating from scratch every day."
+  </div>
+</div>
+
+<!-- PROMPT 5 -->
+<div class="section" id="p5">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'5')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #5</div>
+    <div class="prompt-title">Build A Faceless TikTok Channel Plan</div>
+    <div class="prompt-use">Use if you don't want to show your face but still want to build an audience.</div>
+    <div class="prompt-box">Give me a full faceless TikTok content plan for this niche:
+
+[YOUR NICHE]
+
+Include:
+- 10 content ideas (specific, not generic)
+- Posting style and tone
+- AI tools I can use to make videos without showing my face
+- Monetization methods realistic for a beginner
+- Example hook for the first video
+- Ideal video structure (seconds 0–5, 5–20, 20–45, CTA)
+
+Keep it realistic. I'm starting from zero.</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Pick the first content idea from the output</li>
+        <li>Use CapCut or HeyGen to create the video</li>
+        <li>Post within 24 hours</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- PROMPT 6 -->
+<div class="section" id="p6">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'6')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #6</div>
+    <div class="prompt-title">Write A Raw iPhone Hook Script</div>
+    <div class="prompt-use">Use this before you film. Copy the script into your notes app and read it off your phone while you record.</div>
+    <div class="prompt-box">Write me a 30-second script for a casual phone video about [TOPIC].
+
+Rules:
+- Start talking immediately — no "hey guys" or intro
+- The first sentence should make someone curious
+- Talk like you're explaining something to a friend
+- End by telling them what to do next (follow, click link, comment)
+- Keep it simple enough to remember after one read
+
+Write 3 short versions so I can pick the one I like best.</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="sean-note" style="margin-top:14px;margin-bottom:0">
+      <strong>🆕 Never filmed before? Here's the setup:</strong>
+      Prop your phone against something. Natural light from a window is enough. Press record. Read the script from your notes. If you mess up, just keep going — you can trim it in CapCut (free app) after.
+    </div>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Pick one of the 3 scripts</li>
+        <li>Read it out loud once before filming</li>
+        <li>Film it — one take is fine</li>
+        <li>Post it. Imperfect and posted beats perfect and sitting in your camera roll.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- BRIDGE → SwapYour9to5 -->
+<div class="section">
+  <div class="bridge-box">
+    <div class="bridge-eyebrow">🎬 Free Training</div>
+    <div class="bridge-title">Want my full AI content system?</div>
+    <p>I break down exactly how I use AI to create, distribute, and monetize content — without burning out. Free. No pitch. Just the system.</p>
+    <a href="https://www.swapyour9to5.com" target="_blank" class="bridge-btn">
+      <span class="bridge-btn-icon">🚀</span>
+      Watch The Free Breakdown
+      <span class="bridge-btn-arrow">→</span>
+    </a>
+    <div style="font-size:0.8rem;color:var(--muted);margin-top:12px">SwapYour9to5.com · Free access</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- SECTION 2 — BUILD PRODUCTS -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section section-divider" id="section-products">
+  <div class="section-label">📦 Section 2 of 5</div>
+  <div class="display"><span class="orange">Build digital</span><br>products</div>
+  <p class="body-text">You don't need a team, a studio, or funding. You need one useful thing. These prompts help you create it fast.</p>
+</div>
+
+<!-- PROMPT 7 -->
+<div class="section" id="p7">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'7')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #7</div>
+    <div class="prompt-title">Find A Profitable Niche</div>
+    <div class="prompt-use">Use this if you have zero idea what to make content about. Takes 5 minutes.</div>
+    <div class="prompt-box">I'm completely new to making money online. Help me figure out what topic I should make content about.
+
+Here's what I know about myself:
+- Things I'm good at or know a lot about: [LIST 2–3 THINGS]
+- Things I'm interested in: [LIST 2–3 INTERESTS]
+- Problems I've personally solved: [EXAMPLE: paid off debt, lost weight, learned a skill]
+
+Based on this, give me:
+1. The top 3 topics I should consider making content about
+2. For each topic: who would watch my videos
+3. For each topic: how someone could eventually make money from it
+4. Which one you recommend I start with and why
+
+Keep everything simple. I've never made content before.</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="sean-note" style="margin-top:14px;margin-bottom:0">
+      <strong>🆕 Can't think of anything?</strong>
+      Everyone knows something. Think about what friends and family ask YOU for help with. That's usually a great starting niche.
+    </div>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Fill in the blanks honestly — the more specific the better</li>
+        <li>Read what AI recommends</li>
+        <li>Pick one topic. You can always change later. Just pick.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="sean-note">
+    <strong>🧠 Sean note</strong>
+    "Most people spend 3 weeks picking a niche. Spend 30 minutes. Momentum beats optimization."
+  </div>
+</div>
+
+<!-- PROMPT 8 -->
+<div class="section" id="p8">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'8')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #8</div>
+    <div class="prompt-title">Create A $27 Offer In 24 Hours</div>
+    <div class="prompt-use">Use this even if you've never sold anything online before. This is how you create your first product.</div>
+    <div class="prompt-box">Help me create my first simple digital product to sell online.
+
+I know how to help people with: [EXAMPLE: budgeting, meal prep, studying, getting fit, social media]
+The person buying this is: [EXAMPLE: a college student, a stay-at-home parent, someone who wants to quit their job]
+Their main problem: [EXAMPLE: they don't know where to start, they keep failing, they feel overwhelmed]
+
+Keep the product super simple — something I can create this weekend.
+I want to sell it for around $17–$27.
+
+Give me:
+1. 3 product ideas I could actually create fast
+2. What each one includes (keep it simple — 1 or 2 things)
+3. What format works best (PDF guide, checklist, short video, audio, etc.)
+4. A simple name for the product
+5. One sentence that explains what they get
+
+No complicated tech. No courses. Something a beginner can build in a weekend.</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="sean-note" style="margin-top:14px;margin-bottom:0">
+      <strong>🆕 Where to sell it:</strong>
+      Go to Gumroad.com — it's free to sign up. Upload your product, set a price, and you get a buy link. No website needed. Gumroad handles payments and delivery automatically.
+    </div>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Pick the simplest product idea from the output</li>
+        <li>Create it in Google Docs or Canva (free)</li>
+        <li>Upload it to Gumroad and set a price</li>
+        <li>Share the link in your next video</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- PROMPT 9 -->
+<div class="section" id="p9">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'9')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #9</div>
+    <div class="prompt-title">Turn A Skill Into A Digital Product</div>
+    <div class="prompt-use">Use this if you already know how to do something but have never thought of it as something you could sell.</div>
+    <div class="prompt-box">I know how to [SKILL OR TOPIC — example: cook healthy on a budget / stay organized / learn languages fast / fix computers].
+
+I've never sold anything online before.
+
+Help me figure out:
+1. What kind of simple product could I make from this knowledge?
+2. Who would actually pay for this and why?
+3. What's the easiest version I could create this week?
+4. How much should I charge as a beginner?
+5. What would I call it?
+
+Give me 3 ideas, ranked from easiest to hardest to create.
+Keep everything beginner-friendly. I don't want to build a big course.</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Pick the easiest idea — the one you could do this weekend</li>
+        <li>Don't overthink it. A simple 5-page PDF can sell for $17.</li>
+        <li>Create it. Upload to Gumroad. Done.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- PROMPT 10 -->
+<div class="section" id="p10">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'10')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #10</div>
+    <div class="prompt-title">Build A Mini-Course Outline</div>
+    <div class="prompt-use">Use this when you want to sell something more valuable than a PDF but don't know where to start.</div>
+    <div class="prompt-box">Help me plan a simple beginner course I can sell online.
+
+The topic is: [WHAT YOU KNOW HOW TO DO]
+The person buying it wants to: [WHAT THEY WANT TO ACHIEVE]
+I want to charge around: [$47 / $97 / $197 — pick one]
+
+Give me:
+- A simple course name
+- 4 or 5 short sections (not too long — each one should take under 20 minutes)
+- What the student learns in each section
+- One simple action they take after each section
+- What they'll be able to do when they finish
+
+Important: Keep it simple. I'm not making a university degree. I'm helping one person solve one problem.</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="sean-note" style="margin-top:14px;margin-bottom:0">
+      <strong>🆕 Where to host it:</strong>
+      Use Loom (free) to record your videos. Host the course on Gumroad or Teachable's free plan. You don't need fancy software to sell a course.
+    </div>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Look at the outline AI gives you</li>
+        <li>Record just Section 1 first — use your phone or Loom</li>
+        <li>You can sell the course before it's fully finished</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- PROMPT 11 -->
+<div class="section" id="p11">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'11')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #11</div>
+    <div class="prompt-title">Build A Lead Magnet That Actually Converts</div>
+    <div class="prompt-use">Use this to create a free thing you give away to collect email addresses — your first step to building an audience you own.</div>
+    <div class="prompt-box">I want to create something free to give away online to grow my email list.
+
+My topic is: [YOUR TOPIC]
+The person I'm trying to help: [WHO THEY ARE]
+Their biggest frustration: [WHAT THEY STRUGGLE WITH]
+
+Help me create a simple free giveaway (called a lead magnet).
+
+Give me:
+1. 3 ideas for what I could give away for free (keep it simple — a checklist, a short guide, a list of tips, etc.)
+2. A title for each one
+3. Which one would be easiest to create
+4. What I would actually write inside it (a simple outline)
+5. A one-sentence description I can use when promoting it
+
+I want to be able to create this in one afternoon.</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="sean-note" style="margin-top:14px;margin-bottom:0">
+      <strong>🆕 How to collect emails:</strong>
+      Use ConvertKit (free for up to 1,000 subscribers). Create a simple form, paste the link in your bio, and every person who downloads your freebie gets added to your list automatically.
+    </div>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Pick the easiest lead magnet idea to create</li>
+        <li>Write it in Google Docs — even 1 page works</li>
+        <li>Export as a PDF and set up a free ConvertKit form</li>
+        <li>Put the link in your bio and mention it in your next video</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- BRIDGE → products -->
+<div class="section">
+  <div class="bridge-box">
+    <div class="bridge-eyebrow">💡 Free Funnel Training</div>
+    <div class="bridge-title">Want to see how I structure real offers?</div>
+    <p>I show exactly how I set up digital product funnels — from idea to checkout page to email sequence. Free training, no fluff.</p>
+    <a href="https://www.swapyour9to5.com" target="_blank" class="bridge-btn">
+      <span class="bridge-btn-icon">📦</span>
+      Watch The Funnel Breakdown
+      <span class="bridge-btn-arrow">→</span>
+    </a>
+    <div style="font-size:0.8rem;color:var(--muted);margin-top:12px">SwapYour9to5.com · Free access</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- SECTION 3 — AI FOR MONEY -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section section-divider" id="section-money">
+  <div class="section-label">💸 Section 3 of 5</div>
+  <div class="display">AI for<br><span class="orange">real money</span></div>
+  <p class="body-text">Most people don't have an information problem. They have an execution problem. These prompts close the gap.</p>
+</div>
+
+<!-- PROMPT 12 -->
+<div class="section" id="p12">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'12')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #12</div>
+    <div class="prompt-title">Write Emails That Sound Human</div>
+    <div class="prompt-use">Use this even if you've never sent a marketing email before. Just fill in the blanks.</div>
+    <div class="prompt-box">Write me a short email I can send to my subscribers.
+
+The topic or story I want to share: [EXAMPLE: a mistake I made / a tip I learned / something that surprised me]
+What I want them to do at the end: [EXAMPLE: click a link / reply to me / check out my product]
+
+Rules for the email:
+- Sound like a real person, not a salesperson
+- Short sentences — nothing longer than 2 lines
+- Start with something interesting, not "I hope you're having a great day"
+- End with one simple action — not multiple things
+- Under 200 words total
+
+Write a subject line too. Make it curious, not clickbait.</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="sean-note" style="margin-top:14px;margin-bottom:0">
+      <strong>🆕 How to send it:</strong>
+      Use ConvertKit or AWeber. Write the email in their editor, add your subject line, and click send. That's it. Start emailing your list at least once a week — even if it's small.
+    </div>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Read the email out loud — if it sounds robotic, tell AI to rewrite it simpler</li>
+        <li>Send it to your list today — even if it's only 10 people</li>
+        <li>Your email list is more valuable than your follower count</li>
+      </ul>
+    </div>
+  </div>
+  <div class="sean-note">
+    <strong>🧠 Sean note</strong>
+    "Short, human, and a little vulnerable always wins. Don't try to sound professional. Just sound real."
+  </div>
+</div>
+
+<!-- PROMPT 13 -->
+<div class="section" id="p13">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'13')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #13</div>
+    <div class="prompt-title">Write Cold Outreach That Gets Replies</div>
+    <div class="prompt-use">Use this when you want to reach out to someone but don't know what to say — without sounding like a spam bot.</div>
+    <div class="prompt-box">Help me write a short message to send to someone I want to connect with.
+
+I'm reaching out to: [EXAMPLE: a small business owner / a content creator in my niche / a potential client]
+Why I'm reaching out: [EXAMPLE: I want to collaborate / I want to offer my service / I want to introduce myself]
+Platform: [EXAMPLE: Instagram DM / Email / TikTok comment]
+
+Write me 2 versions:
+1. Very short and casual (under 3 sentences)
+2. A little longer with more context (under 60 words)
+
+Rules:
+- Don't start with "I hope this finds you well"
+- Don't make it about me — focus on them first
+- Sound like a real person, not a template
+- End with one easy question or action</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Pick the version that feels most natural to you</li>
+        <li>Edit it slightly so it sounds like your own voice</li>
+        <li>Send it to 5 people today — don't overthink it</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- PROMPT 14 -->
+<div class="section" id="p14">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'14')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #14</div>
+    <div class="prompt-title">Write A Simple DM To Make A Sale</div>
+    <div class="prompt-use">Use when someone comments on your video or follows you and you want to start a conversation that could lead to a sale — without being pushy.</div>
+    <div class="prompt-box">Help me write a natural DM to send to someone who seems interested in what I do.
+
+Context: [EXAMPLE: They commented "this is so helpful" on my TikTok / They followed me after I posted about X]
+What I offer: [YOUR PRODUCT OR SERVICE]
+Price: [PRICE]
+
+Write me:
+1. An opening message that starts a conversation (not a pitch)
+2. A follow-up question to understand what they need
+3. A simple way to mention my offer naturally (not pushy)
+4. What to say if they say "how much is it?" 
+5. What to say if they say "I'll think about it"
+
+Keep every message under 3 sentences. Friendly, not salesy.</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Go to your most recent post and look at who commented</li>
+        <li>Send the opening message to 3 people who engaged</li>
+        <li>Just start a conversation — you don't have to pitch right away</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- PROMPT 15 -->
+<div class="section" id="p15">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'15')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #15</div>
+    <div class="prompt-title">Find Products To Promote As An Affiliate</div>
+    <div class="prompt-use">Use this if you don't want to create your own product yet. Affiliate marketing = promoting someone else's product and earning a commission when people buy through your link.</div>
+    <div class="prompt-box">I'm a beginner and I want to make money by promoting other people's products online.
+
+My topic is: [YOUR TOPIC]
+My platform is: [TIKTOK / INSTAGRAM / YOUTUBE]
+
+Help me understand:
+1. What is affiliate marketing in simple terms?
+2. What type of products could I promote in my niche?
+3. Where do I find these products? (give me beginner-friendly platforms)
+4. How does the link work — how do I actually get paid?
+5. What kind of video content would make someone want to click my link?
+
+Give me one example of what a real video promoting an affiliate product would look and sound like.</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="sean-note" style="margin-top:14px;margin-bottom:0">
+      <strong>🆕 Where to find affiliate products:</strong>
+      Start with Amazon Associates (easy to join), ClickBank (digital products, high commissions), or ShareASale. Search "[your niche] + affiliate program" on Google to find specific programs.
+    </div>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Sign up for one affiliate program today</li>
+        <li>Get your unique link</li>
+        <li>Make one video talking about the product honestly</li>
+        <li>Put the link in your bio</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- PROMPT 16 -->
+<div class="section" id="p16">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'16')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #16</div>
+    <div class="prompt-title">Write A Simple Sales Video Script</div>
+    <div class="prompt-use">Use this when you want to make a video that actually gets people to buy something — without feeling like a commercial.</div>
+    <div class="prompt-box">Write me a script for a simple 60-second video that sells [PRODUCT OR OFFER].
+
+Who I'm selling to: [DESCRIBE THEM]
+The main problem it solves: [WHAT PROBLEM]
+The price: [PRICE]
+
+Structure it like this:
+1. Start with the problem (first 10 seconds — make them nod yes)
+2. Briefly mention why other solutions don't work
+3. Introduce what I'm offering and what it does
+4. Say the price and what they get
+5. Tell them exactly what to do to buy it
+
+Rules:
+- Under 60 seconds when spoken out loud
+- Simple words — no jargon
+- Sound like a recommendation from a friend, not an advertisement</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Read it out loud — time it. Should be under 60 seconds.</li>
+        <li>Film it on your phone in one take</li>
+        <li>Post it with your product link in the bio or caption</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Mindset Bridge → Money Wave / HM -->
+<div class="section">
+  <div class="sean-note" style="border-left-color:#ff3c00">
+    <strong>⚡ Why most people still don't execute</strong>
+    "Most people don't fail because AI is hard. They fail because their brain is trained to consume instead of build. That's why they watch tutorials, save videos, buy courses — and never move."
+  </div>
+  <div class="bridge-box" style="margin-top:0">
+    <div class="bridge-eyebrow">🎧 Free Tonight</div>
+    <div class="bridge-title">If your brain feels stuck or overloaded</div>
+    <p>That's not laziness. It's subconscious programming. I built a free 7-minute audio to interrupt that pattern — play it before bed, no effort required. Used by 125,000+ people.</p>
+    <a href="https://hypnoticmeditations.ai/pages/moneyflow" target="_blank" class="bridge-btn" style="background:linear-gradient(105deg,#2c2c2c,#1a1a1a);box-shadow:0 8px 20px -4px rgba(0,0,0,0.3)">
+      <span class="bridge-btn-icon">🌙</span>
+      Try The Free Money Wave Audio
+      <span class="bridge-btn-arrow">→</span>
+    </a>
+    <div style="font-size:0.8rem;color:var(--muted);margin-top:12px">hypnoticmeditations.ai · Free · No signup needed</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- SECTION 4 — BUILD A BRAND -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section section-divider" id="section-brand">
+  <div class="section-label">🧠 Section 4 of 5</div>
+  <div class="display">Build an<br><span class="orange">AI brand</span></div>
+  <p class="body-text">Your face + AI + consistency is an unfair advantage in 2026. These prompts build the foundation.</p>
+</div>
+
+<!-- PROMPT 17 -->
+<div class="section" id="p17">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'17')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #17</div>
+    <div class="prompt-title">Position Your Personal Brand</div>
+    <div class="prompt-use">Use this even if you have zero followers. This helps you figure out how to present yourself before you start posting consistently.</div>
+    <div class="prompt-box">I'm new to making content online and I want to build a personal brand.
+
+About me:
+- Things I've done or learned: [BE HONEST — even small things count]
+- What I want to help people with: [EXAMPLE: saving money, getting fit, learning skills, making money online]
+- Why I want to do this: [YOUR REAL REASON]
+
+Help me figure out:
+1. How should I describe myself in my bio? (one or two sentences)
+2. What should I post about consistently? (give me 3 simple topics)
+3. What makes me different from other people talking about the same thing?
+4. Write me a simple Instagram/TikTok bio I can use right now
+
+Be honest and specific. Don't make it sound fake or "guru-like."</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="sean-note" style="margin-top:14px;margin-bottom:0">
+      <strong>🆕 You don't need to be an expert:</strong>
+      People don't follow experts. They follow people who are relatable, honest, and one step ahead of them. You don't need 10 years of experience. You need to be genuine.
+    </div>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Update your Instagram and TikTok bio with what AI writes today</li>
+        <li>Pick ONE of the 3 topics and commit to it for 30 days</li>
+        <li>Post about that topic tomorrow — even one video</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- PROMPT 18 -->
+<div class="section" id="p18">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'18')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #18</div>
+    <div class="prompt-title">Generate 30 Days Of Content Ideas</div>
+    <div class="prompt-use">Use this when you sit down to post and have no idea what to say. Run it once and you'll have ideas for the next 30 days.</div>
+    <div class="prompt-box">I'm new to posting content online. Help me come up with simple video ideas.
+
+My topic is: [YOUR TOPIC]
+Platform I'm posting on: [TIKTOK / INSTAGRAM / YOUTUBE SHORTS]
+
+Give me 30 simple video ideas I could make with just my phone.
+
+For each idea:
+- What would I say in the first 5 seconds to grab attention?
+- Is it educational, entertaining, or personal?
+- Would this work as a talking-head video or do I need something else?
+
+Keep every idea realistic for a beginner with no video experience and no budget.
+No ideas that require editing skills, a studio, or a team.</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Copy the list into your Notes app or Notion</li>
+        <li>Pick 3 ideas to film this week</li>
+        <li>Film all 3 in one sitting — takes about 30 minutes total</li>
+        <li>Post one today, save the others for later</li>
+      </ul>
+    </div>
+  </div>
+  <div class="sean-note">
+    <strong>🧠 Sean note</strong>
+    "I batch-filmed 30 videos in one afternoon. Consistency isn't about discipline. It's about removing decisions."
+  </div>
+</div>
+
+<!-- PROMPT 19 -->
+<div class="section" id="p19">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'19')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #19</div>
+    <div class="prompt-title">Get More Mileage From Content You Already Made</div>
+    <div class="prompt-use">Use this after any video or post that got comments, likes, or shares. Double the value of content you already made.</div>
+    <div class="prompt-box">I made a [VIDEO / POST] about [TOPIC] and people liked it.
+
+Here's what it said or was about:
+[DESCRIBE THE CONTENT IN 2–3 SENTENCES]
+
+I want to get more mileage out of this same idea without just reposting it.
+
+Help me turn this into:
+1. A simple caption for Instagram or TikTok (different angle from the original)
+2. A short text post for Twitter/X
+3. An email I can send to my list about this topic
+4. A follow-up video idea that goes one level deeper
+5. One question I could ask my audience to get comments
+
+Keep everything beginner-friendly. I don't want to overthink it.</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Think of your best performing piece of content</li>
+        <li>Run this prompt on it today</li>
+        <li>Post at least 2 of the outputs this week</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- PROMPT 20 -->
+<div class="section" id="p20">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'20')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #20</div>
+    <div class="prompt-title">Write Your Story (Even If Nothing Dramatic Happened)</div>
+    <div class="prompt-use">Use this to write the "about me" post or pinned video that makes people want to follow you. You don't need a crazy story — just an honest one.</div>
+    <div class="prompt-box">Help me write a short story about myself for social media.
+
+Where I started: [BE HONEST — even boring starting points work]
+Something I struggled with or wanted to change: [REAL STRUGGLE]
+What I did about it or what changed: [WHAT HAPPENED]
+Where I am now or what I'm working toward: [NOW]
+Who I want to help with my content: [YOUR AUDIENCE]
+
+Write me:
+1. A short version (under 100 words) for a pinned post or bio link page
+2. A 60-second version I can film as a "meet me" video script
+
+Rules:
+- Do NOT make it sound like a motivational speech
+- DO make it sound like a real conversation
+- Include one small, specific detail that makes it feel real (not vague)
+
+Make it raw. Not inspirational poster quotes. Real.</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Film the 60-second version on your phone today</li>
+        <li>Pin it to your TikTok or Instagram profile</li>
+        <li>This single video will do more for your brand than 50 random posts</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Brand bridge → Sean Ali socials -->
+<div class="section">
+  <div class="bridge-box">
+    <div class="bridge-eyebrow">📲 Free Daily Content</div>
+    <div class="bridge-title">Follow Sean for daily AI + brand breakdowns</div>
+    <p>YouTube, TikTok, Instagram — I share exactly what's working in real time. No fluff, no theory. Just what I'm actually doing.</p>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <a href="https://www.youtube.com/@RealSeanAli" target="_blank" class="bridge-btn">
+        <span class="bridge-btn-icon">▶️</span>
+        Subscribe On YouTube
+        <span class="bridge-btn-arrow">→</span>
+      </a>
+      <a href="https://www.instagram.com/seanaliofficial" target="_blank" class="bridge-btn" style="background:linear-gradient(105deg,#833ab4,#e1306c);">
+        <span class="bridge-btn-icon">📸</span>
+        Follow On Instagram
+        <span class="bridge-btn-arrow">→</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- SECTION 5 — AI OPERATOR STACK -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section section-divider" id="section-operator">
+  <div class="section-label">🤖 Section 5 of 5</div>
+  <div class="display">Make AI do<br><span class="orange">the boring stuff</span></div>
+  <p class="body-text">Once you start making money, use these prompts to automate the repetitive tasks — so you spend time creating and earning, not copy-pasting the same replies over and over.</p>
+  <div class="sean-note">
+    <strong>🆕 Save these for later if you're just starting out</strong>
+    If you're brand new, finish Sections 1–4 first. Come back to this section when you have your first offer live and your first subscribers coming in.
+  </div>
+</div>
+
+<!-- PROMPT 21 -->
+<div class="section" id="p21">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'21')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #21</div>
+    <div class="prompt-title">Write Your Automated Welcome Emails</div>
+    <div class="prompt-use">Use this when you want emails to go out automatically when someone joins your list — without you having to send them manually every time.</div>
+    <div class="prompt-box">Help me write a simple series of automated emails for new subscribers.
+
+My topic: [YOUR TOPIC]
+What they signed up for: [LEAD MAGNET OR FREEBIE]
+What I eventually want to sell them: [YOUR PRODUCT OR OFFER]
+
+Write me 5 emails to send automatically over the first week:
+
+Email 1 (sent immediately): Welcome them and give them what they signed up for
+Email 2 (day 2): Share something useful — a tip, a mistake, or a lesson
+Email 3 (day 3): A short personal story that makes me relatable
+Email 4 (day 5): Introduce my product in a natural way (not a hard sell)
+Email 5 (day 7): A simple, clear invitation to buy or take the next step
+
+Rules:
+- Under 200 words each
+- Sound like a real person
+- Include a subject line for each email</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="sean-note" style="margin-top:14px;margin-bottom:0">
+      <strong>🆕 How to set this up:</strong>
+      In ConvertKit or AWeber, create a new "sequence." Paste each email and set the delay (immediately, day 2, day 3, etc.). Once set up, it runs forever automatically — even while you sleep.
+    </div>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Write all 5 emails using this prompt</li>
+        <li>Set them up in your email platform this week</li>
+        <li>Every new subscriber will now get a full week of emails from you automatically</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- PROMPT 22 -->
+<div class="section" id="p22">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'22')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #22</div>
+    <div class="prompt-title">Write Ready-To-Go Replies For Common Questions</div>
+    <div class="prompt-use">Use when you're getting the same questions over and over and want pre-written answers you can paste and send in seconds.</div>
+    <div class="prompt-box">Help me write simple, friendly reply templates for common messages I receive.
+
+My business or content is about: [YOUR TOPIC]
+Common questions or messages I receive:
+1. [QUESTION 1 — example: "How do I get started?"]
+2. [QUESTION 2 — example: "Do you have a payment plan?"]
+3. [QUESTION 3 — example: "Is this for beginners?"]
+4. [QUESTION 4 — example: "How long until I see results?"]
+5. [QUESTION 5 — example: "I can't afford it right now"]
+
+For each one, write:
+- A short, friendly reply (under 80 words)
+- Sound like a real person, not a business
+- End each reply with one next step for them</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>List the 5 questions you get asked most often</li>
+        <li>Run the prompt and save the replies in your Notes or Google Doc</li>
+        <li>Next time someone asks — copy, paste, done. Saves hours every week.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- PROMPT 23 -->
+<div class="section" id="p23">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'23')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #23</div>
+    <div class="prompt-title">Build A Simple Daily Routine For Your Business</div>
+    <div class="prompt-use">Use this when you feel overwhelmed and don't know what to do each day. Turns chaos into a clear checklist.</div>
+    <div class="prompt-box">Help me create a simple daily routine for my online business.
+
+What I'm trying to do: [EXAMPLE: grow on TikTok and sell a digital product]
+How much time I have per day: [EXAMPLE: 1 hour / 2 hours / 30 minutes]
+What I currently struggle with most: [EXAMPLE: staying consistent / knowing what to post / following up with people]
+
+Give me:
+1. A realistic daily checklist that takes [TIME AMOUNT] or less
+2. What to do first, second, and third — in order of importance
+3. What to skip until I'm more established
+4. One thing I should do every single day no matter what
+
+Keep it simple. I'm a beginner. Don't overwhelm me.</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Run this prompt and save the checklist to your phone</li>
+        <li>Follow it tomorrow morning</li>
+        <li>Consistency with a simple system beats sporadic effort with a complex one</li>
+      </ul>
+    </div>
+  </div>
+  <div class="sean-note">
+    <strong>🧠 Sean note</strong>
+    "Systems let you take weekends off. Before systems, the business runs you. After systems, you run it."
+  </div>
+</div>
+
+<!-- PROMPT 24 -->
+<div class="section" id="p24">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'24')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #24</div>
+    <div class="prompt-title">Write A Thank-You Email For New Customers</div>
+    <div class="prompt-use">Use this right after you make your first sale. A great thank-you email builds trust, reduces refund requests, and makes people want to buy from you again.</div>
+    <div class="prompt-box">Help me write a thank-you email to send automatically when someone buys my product.
+
+My product: [PRODUCT NAME]
+What they get: [WHAT'S INCLUDED]
+How they access it: [EXAMPLE: download link / login / email attachment]
+One thing I want them to do first: [MOST IMPORTANT FIRST STEP]
+
+Write a short email (under 150 words) that:
+- Thanks them genuinely (not in a corporate way)
+- Tells them exactly what to do to access their purchase
+- Gives them one simple first step to take right now
+- Makes them feel like they made a smart decision</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Set this up as an automatic email in your platform</li>
+        <li>It sends the moment someone buys — no manual work from you</li>
+        <li>First impressions after the sale matter as much as before</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- PROMPT 25 -->
+<div class="section" id="p25">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'25')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #25</div>
+    <div class="prompt-title">Ask For A Testimonial (Without Being Awkward)</div>
+    <div class="prompt-use">Use this after a customer has had time to use your product. Testimonials are the fastest way to get your next sale.</div>
+    <div class="prompt-box">Help me write a short message asking a customer for a review or testimonial.
+
+My product: [PRODUCT]
+When I'm sending this: [EXAMPLE: 1 week after purchase / after they said something positive]
+Platform: [DM / EMAIL]
+
+Write me:
+1. A casual DM version (under 50 words)
+2. A slightly longer email version (under 100 words)
+
+Rules:
+- Don't make it feel like a form
+- Sound like a real person following up
+- Make it easy to respond — tell them exactly what to say or share
+- If they have something positive to say, ask if you can share it</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Paste into Respond.io, Manychat, or your chatbot platform</li>
+        <li>Test it yourself — ask the questions your leads would ask</li>
+        <li>Deploy it on your website or social DMs</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- PROMPT 26 -->
+<div class="section" id="p26">
+  <div class="prompt-card">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'26')" title="Mark done">✓</button></div>
+    <div class="prompt-num">Prompt #26</div>
+    <div class="prompt-title">Map Your Full AI Funnel</div>
+    <div class="prompt-use">Use when you want to see your entire business as one connected system.</div>
+    <div class="prompt-box">Help me map out a complete AI-powered funnel for my business.
+
+My niche: [NICHE]
+My traffic source: [WHERE LEADS COME FROM]
+My lead magnet: [LEAD MAGNET]
+My core offer: [MAIN OFFER + PRICE]
+My upsell: [UPSELL IF ANY]
+My email platform: [EMAIL PLATFORM]
+My tools: [LIST TOOLS YOU USE]
+
+Map out every step:
+1. Traffic → opt-in
+2. Opt-in → welcome sequence
+3. Welcome sequence → first purchase
+4. First purchase → upsell
+5. Post-purchase → retention and referral
+6. Identify: where can AI automate each step?
+7. Identify: what can I set up this week vs. later?
+
+Be specific. Include tool recommendations at each stage.</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Draw this funnel on paper first — one page, no software</li>
+        <li>Identify the biggest leak (where do people drop off?)</li>
+        <li>Fix that one thing before adding more complexity</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- PROMPT 27 -->
+<div class="section" id="p27">
+  <div class="prompt-card" style="border-left-color:#ff8c42;background:linear-gradient(135deg,#fff8f5,#f7f5f2)">
+    <div class="check-wrap"><button class="check-btn" onclick="toggleCheck(this,'27')" title="Mark done">✓</button></div>
+    <div class="prompt-num" style="color:#ff8c42">Prompt #27 — The System Prompt</div>
+    <div class="prompt-title">Build Your Personal AI Operating System</div>
+    <div class="prompt-use">Use this last. This is the meta-prompt — one that turns AI into your daily business partner.</div>
+    <div class="prompt-box">You are my AI business partner. Here is context about me and my business:
+
+Name: [YOUR NAME]
+Niche: [NICHE]
+Business model: [HOW YOU MAKE MONEY]
+Current focus: [WHAT YOU'RE WORKING ON RIGHT NOW]
+My voice: [HOW I SOUND — raw, educational, motivational, conversational]
+My audience: [WHO THEY ARE]
+My products: [LIST PRODUCTS]
+My goals for the next 90 days: [GOALS]
+Things I struggle with: [HONEST WEAKNESSES]
+
+Every time I come to you with a task, use this context.
+
+When I give you a task, ask yourself:
+1. What does [MY NAME] actually need here?
+2. What's the fastest path to the outcome?
+3. Does this sound like [MY NAME] would write it?
+
+Always default to: simple language, short sentences, action-oriented output.
+Never give me theory I can't execute today.</div>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy Prompt</button>
+    <div class="prompt-next">
+      <div class="prompt-next-label">Your move right now</div>
+      <ul>
+        <li>Fill this in and save it as a Claude or ChatGPT Project prompt</li>
+        <li>Every session starts with this context — AI knows your business</li>
+        <li>This is the upgrade from "user" to "operator"</li>
+      </ul>
+    </div>
+  </div>
+  <div class="sean-note" style="border-left-color:#ff8c42">
+    <strong>🎯 You made it through all 27</strong>
+    "Most people will download this and never use it. You just read every single prompt. That already puts you in the top 1%. Now close this tab and execute one thing."
+  </div>
+</div>
+
+<!-- Operator bridge → Manifestation Genie -->
+<div class="section">
+  <div class="bridge-box">
+    <div class="bridge-eyebrow">🧠 AI + The Human Mind</div>
+    <div class="bridge-title">The closest thing to an AI subconscious coach</div>
+    <p>I use AI across sales, emails, customer support, funnels, content, and product creation. Manifestation Genie is what I built at the intersection of AI and the human mind.</p>
+    <a href="https://manifestationgenie.ai" target="_blank" class="bridge-btn" style="background:linear-gradient(105deg,#6c3fc7,#9b5de5);">
+      <span class="bridge-btn-icon">✨</span>
+      Explore Manifestation Genie
+      <span class="bridge-btn-arrow">→</span>
+    </a>
+    <div style="font-size:0.8rem;color:var(--muted);margin-top:12px">manifestationgenie.ai</div>
+  </div>
+</div>
+
+<!-- TOOLS I USE -->
+<div class="section">
+  <div class="kicker">The real stack</div>
+  <div class="display" style="font-size:clamp(36px,9vw,54px);">Tools I<br><span class="orange">actually use</span></div>
+  <p class="body-text" style="margin-bottom:4px">Not affiliate spam. This is the real stack behind my business.</p>
+  <div class="tools-grid">
+    <div class="tool-row">
+      <div class="tool-icon">🧠</div>
+      <div class="tool-body">
+        <div class="tool-name">Claude</div>
+        <div class="tool-desc">Writing, strategy, system prompts, VSL scripts, email sequences</div>
+      </div>
+    </div>
+    <div class="tool-row">
+      <div class="tool-icon">💬</div>
+      <div class="tool-body">
+        <div class="tool-name">ChatGPT</div>
+        <div class="tool-desc">Brainstorming, research, bulk content generation</div>
+      </div>
+    </div>
+    <div class="tool-row">
+      <div class="tool-icon">🎬</div>
+      <div class="tool-body">
+        <div class="tool-name">CapCut</div>
+        <div class="tool-desc">Short-form video editing — fast, free, powerful</div>
+      </div>
+    </div>
+    <div class="tool-row">
+      <div class="tool-icon">🎭</div>
+      <div class="tool-body">
+        <div class="tool-name">HeyGen</div>
+        <div class="tool-desc">AI avatar videos — faceless content at scale</div>
+      </div>
+    </div>
+    <div class="tool-row">
+      <div class="tool-icon">🎙️</div>
+      <div class="tool-body">
+        <div class="tool-name">ElevenLabs</div>
+        <div class="tool-desc">AI voiceovers for audio products and video narration</div>
+      </div>
+    </div>
+    <div class="tool-row">
+      <div class="tool-icon">📹</div>
+      <div class="tool-body">
+        <div class="tool-name">Loom</div>
+        <div class="tool-desc">Course content, video walkthroughs, quick demos</div>
+      </div>
+    </div>
+    <div class="tool-row">
+      <div class="tool-icon">🎨</div>
+      <div class="tool-body">
+        <div class="tool-name">Canva</div>
+        <div class="tool-desc">Lead magnets, social graphics, product covers</div>
+      </div>
+    </div>
+    <div class="tool-row">
+      <div class="tool-icon">📧</div>
+      <div class="tool-body">
+        <div class="tool-name">AWeber</div>
+        <div class="tool-desc">Email list management, automation, sequences</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FINAL CTA -->
+<div class="section" style="background:linear-gradient(150deg,#fff3ef 0%,#fff8f5 50%,#ffffff 100%);border-radius:32px;margin:24px 20px 0 20px;border:2px solid #ffb89a;padding:44px 32px;position:relative;overflow:hidden;">
+  <!-- decorative glow -->
+  <div style="position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(255,60,0,0.1) 0%,transparent 70%);pointer-events:none;"></div>
+  <div style="position:absolute;bottom:-40px;left:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(255,140,66,0.08) 0%,transparent 70%);pointer-events:none;"></div>
+
+  <div style="text-align:center;margin-bottom:20px;position:relative">
+    <span style="display:inline-block;background:var(--accent);color:white;font-size:12px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:6px 18px;border-radius:40px;">🎉 You finished all 27 prompts</span>
+  </div>
+
+  <div class="display" style="font-size:clamp(42px,10vw,62px);text-align:center;position:relative">Now build your<br><span class="orange">first income stream</span></div>
+
+  <p style="text-align:center;font-size:1.2rem;line-height:1.65;margin:0 auto 32px auto;max-width:480px;color:var(--muted);position:relative">Stop consuming. Start building.<br>One prompt. One post. One offer. <strong style="color:var(--ink)">Today.</strong></p>
+
+  <div style="display:flex;flex-direction:column;gap:16px;position:relative">
+    <a href="https://www.seanali.online" target="_blank" class="start-link" style="text-decoration:none;border-radius:20px;padding:22px 28px">
+      <div class="cta-icon" style="font-size:34px;width:60px;height:60px;border-radius:18px">👤</div>
+      <div class="cta-body">
+        <div class="cta-title" style="font-size:2rem">Learn More About Sean</div>
+        <div class="cta-sub" style="font-size:0.85rem">seanali.online — Full story, tools, and free resources</div>
+      </div>
+      <div class="cta-arrow" style="font-size:34px">→</div>
+    </a>
+
+    <a href="https://hypnoticmeditations.ai/pages/moneyflow" target="_blank" class="cta-block" style="background:linear-gradient(105deg,#1a1a1a,#2c2c2c);box-shadow:0 10px 28px -6px rgba(0,0,0,0.3);text-decoration:none;border-radius:20px;padding:22px 28px">
+      <div class="cta-icon" style="font-size:34px;width:60px;height:60px;border-radius:18px">🎧</div>
+      <div class="cta-body">
+        <div class="cta-title" style="font-size:2rem">Free 7-Min Money Reset Audio</div>
+        <div class="cta-sub" style="font-size:0.85rem">Play before bed tonight · No signup · 125,000+ people</div>
+      </div>
+      <div class="cta-arrow" style="font-size:28px">🌙</div>
+    </a>
+
+    <a href="https://www.swapyour9to5.com" target="_blank" class="cta-block" style="background:linear-gradient(105deg,#1e3a5f,#2d5a8e);box-shadow:0 10px 28px -6px rgba(30,58,95,0.4);text-decoration:none;border-radius:20px;padding:22px 28px">
+      <div class="cta-icon" style="font-size:34px;width:60px;height:60px;border-radius:18px">🚀</div>
+      <div class="cta-body">
+        <div class="cta-title" style="font-size:2rem">Watch The Free AI Training</div>
+        <div class="cta-sub" style="font-size:0.85rem">SwapYour9to5.com — How to make your first $1K with AI</div>
+      </div>
+      <div class="cta-arrow" style="font-size:28px">▶</div>
+    </a>
+  </div>
+
+  <div style="font-size:0.82rem;text-align:center;color:var(--muted);margin-top:24px;position:relative">
+    ✓ Built by Sean Ali &nbsp;·&nbsp; Panama &nbsp;·&nbsp; 125,000+ people and counting
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div style="margin-bottom:12px;display:flex;justify-content:center;flex-wrap:wrap;gap:6px 20px">
+    <a href="https://seanali.online">seanali.online</a>
+    <a href="https://www.swapyour9to5.com" target="_blank">SwapYour9to5</a>
+    <a href="https://hypnoticmeditations.ai" target="_blank">Hypnotic Meditations</a>
+    <a href="https://www.youtube.com/@RealSeanAli" target="_blank">YouTube</a>
+    <a href="https://www.instagram.com/seanaliofficial" target="_blank">Instagram</a>
+  </div>
+  © Sean Ali · Claude27 Guide<br>
+  27 prompts. No fluff. Build something real.
+</div>
+
+</div><!-- end shell -->
+
+<!-- STICKY BAR -->
+<div class="sticky-bar">
+  <p><span id="stickyCount">0</span>/27 prompts done</p>
+  <a href="https://www.seanali.online" target="_blank" class="sticky-cta">Learn More About Sean →</a>
+</div>
+
+<script>
+// Check/done system with localStorage
+const TOTAL = 27;
+
+function updateProgress(){
+  let done = 0;
+  for(let i=1;i<=TOTAL;i++){
+    if(localStorage.getItem('p'+i)==='1') done++;
+  }
+  const pct = Math.round((done/TOTAL)*100);
+  document.getElementById('progressBar').style.width = pct+'%';
+  document.getElementById('doneCount').textContent = done;
+  document.getElementById('stickyCount').textContent = done;
+}
+
+function toggleCheck(btn, num){
+  const isDone = localStorage.getItem('p'+num)==='1';
+  if(isDone){
+    localStorage.removeItem('p'+num);
+    btn.classList.remove('done');
+  } else {
+    localStorage.setItem('p'+num,'1');
+    btn.classList.add('done');
+  }
+  updateProgress();
+}
+
+function copyPrompt(btn){
+  const box = btn.previousElementSibling;
+  const text = box.textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const orig = btn.innerHTML;
+    btn.innerHTML='✅ Copied!';
+    btn.classList.add('copied');
+    setTimeout(()=>{btn.innerHTML=orig;btn.classList.remove('copied')},2000);
+  });
+}
+
+// Restore check state on load
+window.addEventListener('DOMContentLoaded',()=>{
+  for(let i=1;i<=TOTAL;i++){
+    if(localStorage.getItem('p'+i)==='1'){
+      const btn = document.querySelector(`#p${i} .check-btn`);
+      if(btn) btn.classList.add('done');
+    }
+  }
+  updateProgress();
+});
+</script></div>
+  </article>
+  
+<aside class="social-sidebar">
+  <section class="side-card profile-mini">
+    <img src="https://statics.myclickfunnels.com/workspace/vGVGzP/image/20204117/file/904663e23eb23a39d6f2459104b7bccc.png" alt="Sean Ali">
+    <div>
+      <strong>Sean Ali</strong>
+      <span>AI income, subconscious reprogramming, and location freedom.</span>
+    </div>
+  </section>
+  <section class="side-card">
+    <h3>Start Here</h3>
+    <a class="side-link hot" href="/prompts.html"><span>AI Freedom</span><strong>Get the 27 Claude prompts</strong></a>
+    <a class="side-link" href="/webinar/"><span>Training</span><strong>Watch the free AI business class</strong></a>
+    <a class="side-link" href="/quit-your-9-to-5-with-ai.html"><span>Blueprint</span><strong>Quit your 9-5 with AI</strong></a>
+    <a class="side-link" href="/story.html"><span>Origin</span><strong>Read Sean's story</strong></a>
+  </section>
+  <section class="side-card">
+    <h3>Brands & Tools</h3>
+    <a class="brand-row" href="https://hypnoticmeditations.ai/pages/moneyflow" target="_blank"><span>Money Flow</span><em>Mindset audio</em></a>
+    <a class="brand-row" href="https://www.manifestationgenie.ai" target="_blank"><span>Manifestation Genie</span><em>AI coach</em></a>
+    <a class="brand-row" href="https://trythescript.com/watch" target="_blank"><span>Night Reset</span><em>7-minute audio</em></a>
+    <a class="brand-row" href="https://panamauntold.com" target="_blank"><span>Panama Untold</span><em>Location freedom</em></a>
+  </section>
+</aside>
+
+</main>
+<nav class="mobile-tabbar"><a class="" href="/"><span>Home</span></a><a class="" href="/quit-your-9-to-5-with-ai.html"><span>AI</span></a><a class="active" href="/prompts.html"><span>Prompts</span></a><a class="" href="/reset/"><span>Reset</span></a></nav>
+
+<footer class="social-footer">
+  <div>© 2026 Sean Ali · seanali.online</div>
+  <div class="social-footer-links">
+    <a href="/story.html">Story</a>
+    <a href="/prompts-guide.html">Prompts Guide</a>
+    <a href="/blueprint.html">Blueprint</a>
+  </div>
+</footer>
+<script src="assets/social-blog.js"></script>
+
+</body>
+</html>

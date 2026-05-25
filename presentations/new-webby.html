@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta charset=\"UTF-8\">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Reprogramming Protocol | Personal Session + Free Toolkit</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #FFFFFF;
+      font-family: 'Inter', sans-serif;
+      color: #111111;
+      line-height: 1.3;
+    }
+
+    .ds-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 2rem 2rem 5rem 2rem;
+    }
+
+    .slide {
+      background: #FFFFFF;
+      margin-bottom: 3rem;
+      padding: 3rem 2.5rem;
+      border-radius: 32px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02), 0 2px 6px rgba(0, 0, 0, 0.02);
+      border: 1px solid #F0F0F0;
+    }
+    @media (max-width: 700px) {
+      .slide {
+        padding: 2rem 1.5rem;
+      }
+      .ds-container {
+        padding: 1.5rem;
+      }
+    }
+
+    .slide-label {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 0.75rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #888888;
+      margin-bottom: 1.2rem;
+      display: inline-block;
+      border-left: 3px solid #FF2B2B;
+      padding-left: 10px;
+    }
+
+    .main-headline {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 3.5rem;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
+      color: #111111;
+    }
+    @media (max-width: 700px) {
+      .main-headline {
+        font-size: 2.2rem;
+      }
+    }
+
+    .red-emphasis {
+      color: #FF2B2B;
+      font-weight: 900;
+      display: inline-block;
+    }
+
+    .marker-underline {
+      border-bottom: 6px solid #FF2B2B;
+      display: inline-block;
+      line-height: 0.9;
+      padding-bottom: 4px;
+    }
+
+    .icon-bullet-list {
+      list-style: none;
+      margin-top: 1.8rem;
+    }
+    .icon-bullet-list li {
+      font-size: 1.2rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      line-height: 1.3;
+    }
+    .bullet-icon {
+      font-size: 1.7rem;
+      min-width: 40px;
+    }
+
+    .hand-arrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #FF2B2B;
+      font-weight: 800;
+      font-size: 1.1rem;
+      margin: 1rem 0;
+      background: rgba(255, 43, 43, 0.05);
+      padding: 6px 16px 6px 12px;
+      border-radius: 40px;
+      width: fit-content;
+    }
+
+    .red-circle {
+      display: inline-block;
+      border: 3px solid #FF2B2B;
+      border-radius: 100%;
+      padding: 4px 12px;
+      font-weight: 800;
+      background: white;
+      box-shadow: 0 0 0 2px white, 0 0 0 5px #FF2B2B20;
+      margin: 0 4px;
+      font-size: 1.2rem;
+    }
+
+    .price-circle {
+      font-size: 2rem;
+      font-weight: 900;
+      border-width: 4px;
+      padding: 8px 24px;
+      border-radius: 60px;
+      background: #FFF3F3;
+    }
+
+    .value-stack {
+      background: #F9F9F9;
+      padding: 1.5rem;
+      border-radius: 28px;
+      margin: 1.8rem 0;
+    }
+
+    .bonus-card {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid #E6E6E6;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .strikethrough-red {
+      text-decoration: line-through;
+      color: #FF2B2B;
+      font-weight: 800;
+      margin-right: 12px;
+    }
+
+    .testimonial-quote {
+      font-size: 1.9rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin: 1.2rem 0;
+      color: #111;
+      border-left: 6px solid #FF2B2B;
+      padding-left: 1.5rem;
+    }
+
+    .testimonial-author {
+      margin-top: 1rem;
+      font-weight: 500;
+      color: #3D3D3D;
+    }
+
+    .loop-comparison {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: space-between;
+      margin: 2rem 0;
+    }
+    .old-loop, .new-loop {
+      flex: 1;
+      background: #F8F8F8;
+      padding: 1.5rem;
+      border-radius: 24px;
+    }
+
+    .cta-button {
+      background: #111111;
+      color: white;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 1.5rem;
+      padding: 1rem 2rem;
+      border-radius: 60px;
+      display: inline-block;
+      text-decoration: none;
+      letter-spacing: -0.2px;
+      transition: all 0.2s;
+      margin-top: 1.2rem;
+      border: none;
+      box-shadow: 0 6px 0 #FF2B2B;
+      transform: translateY(-2px);
+      cursor: pointer;
+    }
+    .cta-button:hover {
+      background: #FF2B2B;
+      box-shadow: 0 4px 0 #991b1f;
+      transform: translateY(0px);
+    }
+
+    .flex-between {
+      display: flex;
+      gap: 0.5rem;
+      align-items: baseline;
+      flex-wrap: wrap;
+    }
+
+    .bg-soft-red {
+      background: rgba(255, 43, 43, 0.05);
+    }
+
+    .small-caption {
+      font-size: 0.85rem;
+      color: #4a4a4a;
+    }
+
+    .black-slide {
+      background: #000000;
+      color: white;
+      border: none;
+    }
+    .black-slide .main-headline {
+      color: white;
+    }
+    .black-slide .slide-label {
+      color: #FF2B2B;
+      border-left-color: #FF2B2B;
+    }
+    .black-slide .hand-arrow {
+      background: rgba(255, 43, 43, 0.2);
+      color: #FF8A8A;
+    }
+
+    .urgency-badge {
+      background: #FF2B2B10;
+      border-left: 4px solid #FF2B2B;
+      padding: 1rem 1.5rem;
+      border-radius: 20px;
+      font-weight: 700;
+      margin-top: 1rem;
+    }
+
+    .comparison-table {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      margin: 2rem 0;
+    }
+    .comparison-col {
+      flex: 1;
+      background: #F8F8F8;
+      border-radius: 24px;
+      padding: 1.5rem;
+    }
+    .comparison-col h3 {
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+    }
+    .comparison-col ul {
+      list-style: none;
+    }
+    .comparison-col li {
+      margin-bottom: 0.8rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .process-step {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      margin-bottom: 1.2rem;
+    }
+    .step-number {
+      background: #FF2B2B;
+      color: white;
+      font-weight: 800;
+      width: 32px;
+      height: 32px;
+      border-radius: 60px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .emotional-spike {
+      font-size: 1.8rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+<div class="ds-container">
+  <!-- ========== HOOK ========== -->
+  <div class="slide">
+    <div class="slide-label">HOOK // YOUR MONEY COMFORT ZONE</div>
+    <div class="main-headline">Your Brain Keeps Pulling You Back To The <span class="red-emphasis marker-underline">Same Money Level</span></div>
+    <div class="main-headline" style="font-size: 2rem; margin-top: -0.7rem;">That’s why you freeze, spend, hide, or mess things up when more money shows up.</div>
+    <div class="icon-bullet-list"><li><span class="bullet-icon">🧠</span> You're not lazy. You're not broken. Your body just thinks more money might be unsafe.</li></div>
+    <div class="hand-arrow">⬅️ Being broke feels familiar. Having more money can feel scary.</div>
+  </div>
+
+  <!-- “Why You Mess Things Up Right After A Win” -->
+  <div class="slide">
+    <div class="slide-label">THE PATTERN YOU RECOGNIZE</div>
+    <div class="main-headline" style="font-size: 2.4rem;">Why You Mess Things Up Right After A Win</div>
+    <div class="icon-bullet-list">
+      <li><span class="bullet-icon">📉</span> You make more money… then you spend too much, freeze, or stop replying to people.</li>
+      <li><span class="bullet-icon">🔄</span> Big opportunity lands → avoid calls, procrastinate, lose discipline</li>
+      <li><span class="bullet-icon">🧩</span> Your brain pulls you back to the money life it already knows.</li>
+    </div>
+    <div class="bg-soft-red" style="padding: 1.2rem; border-radius: 24px; margin-top: 1rem;">
+      <p style="font-weight: 700;">That does not mean you have no discipline. It means your brain is trying to keep you safe.</p>
+      <p class="small-caption" style="margin-top: 0.5rem;">Your money comfort zone is the amount of money your brain thinks is safe.</p>
+    </div>
+  </div>
+
+  <!-- EMOTIONAL RELEASE: "You Were Not Lazy. You Were Scared." -->
+  <div class="slide" style="background: #FFFDF5;">
+    <div class="slide-label">THE MOMENT // TRUTH</div>
+    <div class="main-headline" style="font-size: 2.8rem;">You Were Not Lazy. You Were Scared.</div>
+    <div class="value-stack" style="background: #FFFFFF; border-left: 8px solid #FF2B2B;">
+      <p style="font-weight: 500; font-size: 1.2rem;">What if the freeze, avoidance, and panic… weren't character flaws?</p>
+      <p style="margin-top: 1.2rem;">What if your body learned that money means stress, pressure, judgment, or losing control?</p>
+      <p style="margin-top: 1.2rem; font-weight: 700;">Then suddenly… your behavior finally makes sense. And that means it can change.</p>
+    </div>
+    <div class="hand-arrow">✨ Recognition lowers resistance. That’s the first unlock.</div>
+  </div>
+
+  <!-- HOLY SHIT STATEMENT -->
+  <div class="slide" style="background: #111; color: white;">
+    <div class="slide-label" style="color: #FF2B2B;">HARD TRUTH</div>
+    <div class="emotional-spike" style="font-size: 2.8rem; font-weight: 800;">Your money life keeps going back to the <span class="red-emphasis">same setting</span>.</div>
+    <div class="value-stack" style="background: #1E1E1E; color: white; margin-top: 1.5rem;">
+      <p style="font-size: 1.2rem;">Most people do not rise to their goals.</p>
+      <p style="font-size: 1.2rem; margin-top: 0.5rem;">They fall back to what feels normal.</p>
+      <p style="margin-top: 1.2rem; font-weight: 800;">Which means: every time your income rises… your brain tries to return to familiar territory.</p>
+    </div>
+    <div class="hand-arrow" style="background: rgba(255,43,43,0.2); color: #FF8A8A;">⬅️ That is the hidden cycle.</div>
+  </div>
+
+  <!-- SIGNS YOUR BRAIN IS PULLING YOU BACK -->
+  <div class="slide">
+    <div class="slide-label">SIGNS YOUR BRAIN IS PULLING YOU BACK</div>
+    <div class="main-headline" style="font-size: 2rem;">“That’s literally me” moments</div>
+    <div class="icon-bullet-list">
+      <li><span class="bullet-icon">⏳</span> You put things off right before money could come in.</li>
+      <li><span class="bullet-icon">🎢</span> You suddenly lose focus right after a win</li>
+      <li><span class="bullet-icon">💸</span> You charge too little, even when people are ready to pay.</li>
+      <li><span class="bullet-icon">👀</span> You avoid looking at numbers until the last minute</li>
+      <li><span class="bullet-icon">😣</span> You feel guilt or shame after making more money</li>
+      <li><span class="bullet-icon">🌀</span> You create chaos or distraction after progress</li>
+    </div>
+    <div class="bg-soft-red" style="padding: 1rem; border-radius: 24px; margin-top: 1rem;">
+      <p><strong>These are not random.</strong> They are signs your money comfort zone is too low.</p>
+    </div>
+  </div>
+
+  <!-- WHY NOTHING ELSE WORKED -->
+  <div class="slide">
+    <div class="slide-label">WHY NOTHING ELSE WORKED</div>
+    <div class="main-headline" style="font-size: 2.2rem;">Why People Stay Stuck For So Long</div>
+    <div class="loop-comparison">
+      <div class="old-loop">💪 Most people try to force better habits. But habits come from what your body feels is safe.</div>
+      <div class="new-loop">🔄 So they push harder, get tired, quit, then start over again. The comfort zone never moves.</div>
+    </div>
+    <div class="hand-arrow" style="justify-content: center;">This works differently because it targets the emotional pattern FIRST.</div>
+  </div>
+
+  <!-- MECHANISM CLARITY -->
+  <div class="slide">
+    <div class="slide-label">HOW WE RAISE YOUR MONEY COMFORT ZONE</div>
+    <div class="main-headline" style="font-size: 2.3rem;">Your brain would rather stay with pain it knows than success it does not know.</div>
+    <div class="bg-soft-red" style="padding: 1.2rem; border-radius: 24px; margin: 1rem 0;">
+      <p><strong>We do not fight your brain. We train it at night, when it is calm and easier to teach.</strong></p>
+      <p class="small-caption" style="margin-top: 0.5rem;">Your brain listens better when the words are about your real life.</p>
+    </div>
+  </div>
+
+  <!-- SEAN STORY -->
+  <div class="slide">
+    <div class="slide-label">WHY THIS ISN'T THEORY</div>
+    <div class="main-headline" style="font-size: 2rem;">“I made money online… but I still felt broke inside.”</div>
+    <div class="value-stack">
+      <p><span class="bullet-icon">🎧</span> Put a beat online → woke up to <span class="red-circle">$19.99</span> recurring.</p>
+      <p style="margin-top: 1rem;"><span class="bullet-icon">💔</span> Even with income growing, I still panicked checking my account. The money changed. But my fear did not.</p>
+      <p style="margin-top: 1rem; font-weight: 500;">That’s when I realized: <span class="red-emphasis">money problems are often safety problems.</span></p>
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <div class="slide">
+    <div class="slide-label">TRANSFORMATION PROOF</div>
+    <div class="testimonial-quote">“I realized I wasn’t afraid of failing. I was afraid of visibility. After the session I stopped avoiding sales calls. Closed two $8k clients that week.”</div>
+    <div class="testimonial-author">— Marcus, agency owner ($12k/month → $24k/month in 45 days)</div>
+    <div class="testimonial-quote" style="font-size: 1.5rem; margin-top: 1.5rem;">“For 2 years I avoided my bank account. Three nights after the session, I asked for a $35k raise and negotiated without shaking. Promoted 6 weeks later.”</div>
+    <div class="testimonial-author">— Rachel, senior account manager</div>
+    <div class="hand-arrow" style="margin-top: 1rem;">🔁 Internal shift → behavioral shift → external result.</div>
+  </div>
+
+  <!-- WHAT CHANGES IN REAL LIFE -->
+  <div class="slide">
+    <div class="slide-label">WHAT CHANGES IN REAL LIFE</div>
+    <div class="main-headline" style="font-size: 2rem;">This is not about pretending to feel good.</div>
+    <div class="icon-bullet-list">
+      <li><span class="bullet-icon">🔄</span> Your reaction to money</li>
+      <li><span class="bullet-icon">🧭</span> Your behavior under pressure</li>
+      <li><span class="bullet-icon">🤲</span> Your ability to receive without guilt</li>
+      <li><span class="bullet-icon">🚪</span> Your emotional response to opportunity</li>
+      <li><span class="bullet-icon">📈</span> Your consistency after success</li>
+    </div>
+    <div class="hand-arrow">This helps change your money reactions, not just your mood.</div>
+  </div>
+
+  <!-- OLD VS NEW IDENTITY -->
+  <div class="slide">
+    <div class="slide-label">WHO YOU BECOME</div>
+    <div class="comparison-table">
+      <div class="comparison-col">
+        <h3 class="red-emphasis">OLD IDENTITY</h3>
+        <ul>
+          <li>🔻 avoids opportunities</li>
+          <li>😰 panic after success</li>
+          <li>💸 undercharges, discounts</li>
+          <li>❄️ freezes on decisions</li>
+          <li>⚠️ survival mode</li>
+          <li>😞 apologizes for prices</li>
+        </ul>
+      </div>
+      <div class="comparison-col" style="background:#FFF0F0; border:2px solid #FF2B2B;">
+        <h3 class="red-emphasis">NEW IDENTITY</h3>
+        <ul>
+          <li>✅ moves toward opportunities</li>
+          <li>😌 stability after success</li>
+          <li>💰 receives comfortably</li>
+          <li>⚡ acts with momentum</li>
+          <li>🌱 expansion mode</li>
+          <li>💪 stops negotiating against yourself</li>
+        </ul>
+      </div>
+    </div>
+    <div class="hand-arrow" style="justify-content: center;">Same person. Different money comfort zone.</div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="slide">
+    <div class="slide-label">HOW IT WORKS</div>
+    <div class="main-headline" style="font-size: 1.8rem;">From stuck to calm in 5 steps</div>
+    <div class="value-stack" style="background: #FFFFFF;">
+      <div class="process-step"><div class="step-number">1</div> <strong>Fill out your money-pattern intake form</strong> — describe triggers, history, goals.</div>
+      <div class="process-step"><div class="step-number">2</div> <strong>Sean identifies your money comfort zone</strong> — emotional triggers, stress loops, sabotage patterns.</div>
+      <div class="process-step"><div class="step-number">3</div> <strong>Your custom audio is written for you</strong> — built around YOUR words and fears.</div>
+      <div class="process-step"><div class="step-number">4</div> <strong>You listen at night, when your brain is calmer</strong> (just before sleep).</div>
+      <div class="process-step"><div class="step-number">5</div> <strong>Hearing it again and again helps money feel safer.</strong> — your comfort zone expands.</div>
+    </div>
+    <div class="hand-arrow">🎯 No guesswork. A personalized key for your lock.</div>
+  </div>
+
+  <!-- ========== PERSONAL REPROGRAMMING SESSION ========== -->
+  <div class="slide">
+    <div class="slide-label">THE DEEP SOLUTION</div>
+    <div class="main-headline" style="font-size: 2.4rem;"><span class="red-emphasis marker-underline">Personal Reprogramming Session</span></div>
+    <div class="urgency-badge" style="background:#F0F0F0; border-left-color:#FF2B2B;">
+      <p><span class="red-emphasis">🔥 Normally custom 1-on-1 scripting is $1,500+</span> — due to time, personalization and deep pattern recognition.</p>
+    </div>
+    <div class="value-stack" style="margin-top:1rem;">
+      <p style="font-weight:800;">Sean creates your session around:</p>
+      <ul style="margin-top:0.8rem; list-style:none;">
+        <li>✓ Your exact money blocks & emotional triggers</li>
+        <li>✓ Your financial stress loops & freeze patterns</li>
+        <li>✓ The ways you get in your own way (undercharging, avoidance, panic)</li>
+        <li>✓ Your goals and hidden resistance</li>
+      </ul>
+      <p class="hand-arrow" style="margin-top: 1rem;">Built once. For you. Only you.</p>
+    </div>
+    <div class="flex-between" style="justify-content: center; margin: 1.5rem 0;">
+      <div class="price-circle red-circle" style="font-size: 2rem; background: white;">$297</div>
+    </div>
+    <p class="small-caption" style="text-align:center;">One-time creation — you keep it forever.</p>
+  </div>
+
+  <!-- ========== GIVEAWAY SLIDE (FROM ATTACHMENT: $197 PROTOCOL FREE) ========== -->
+  <div class="slide">
+    <div class="slide-label">AND IF YOU DECIDE TO DO THAT…</div>
+    <div class="main-headline" style="font-size: 2.8rem;">I’m giving you the entire <span class="red-emphasis">Reprogramming Protocol</span> <span class="marker-underline">FREE</span>.</div>
+    <div class="value-stack" style="background: #F9F9F9; margin-top: 1rem;">
+      <p style="font-weight: 800; font-size: 1.2rem;">Everything included (instant access):</p>
+      <div class="bonus-card">💰 <strong>Money Flow + 7-Minute Script</strong> – Calms spirals, lowers fear, stops the old pattern</div>
+      <div class="bonus-card">📈 <strong>ATM · Vault · Money Wave</strong> – Helps more money feel NORMAL, not scary</div>
+      <div class="bonus-card">😴 <strong>Sleep Reset + Health Reset</strong> – Your inner programming feels safe enough to change</div>
+    </div>
+    <div class="hand-arrow" style="margin: 1rem auto;">⬅️ Included when you join the Personal Reprogramming Session tonight.</div>
+    <div class="flex-between" style="justify-content: center; gap: 2rem; margin-top: 1.5rem; flex-wrap: wrap;">
+      <div><span class="strikethrough-red">$197 value</span> → <span class="red-emphasis">FREE</span></div>
+      <div><span class="red-circle">Total Included Value: $494</span></div>
+    </div>
+    <p style="margin-top: 1.2rem; font-weight: 500; text-align: center;">The Protocol is proof of depth. If the bonus is this good, imagine what a custom session does.</p>
+  </div>
+
+  <!-- URGENCY + CONSEQUENCE (NO REFUNDS) -->
+  <div class="slide">
+    <div class="slide-label">WHY ACT TONIGHT</div>
+    <div class="urgency-badge" style="background:#FF2B2B10; border-left: 6px solid #FF2B2B;">
+      <p><span class="red-emphasis">🔴 Limited capacity:</span> Sean can only build a limited number of personalized sessions each week. When slots fill, this offer closes.</p>
+    </div>
+    <div class="bg-soft-red" style="padding: 1rem; border-radius: 20px; margin-top: 1rem;">
+      <p><strong>Most people wait until another financial collapse, burnout cycle, or panic spiral before changing the underlying pattern.</strong></p>
+      <p style="margin-top: 0.8rem;">You can change the pattern now… or live the same money stress for another year.</p>
+    </div>
+    <div class="hand-arrow">⏳ That’s the real cost of waiting.</div>
+  </div>
+
+  <!-- FUTURE PACING -->
+  <div class="slide" style="background: #FEFAF5;">
+    <div class="slide-label">EMOTIONAL IMAGINATION</div>
+    <div class="main-headline">Imagine 30 Days From Now…</div>
+    <div class="icon-bullet-list">
+      <li><span class="bullet-icon">💳</span> You open your bank account and don’t tense up.</li>
+      <li><span class="bullet-icon">🗣️</span> You quote your price without apologizing or shrinking.</li>
+      <li><span class="bullet-icon">📈</span> You stop checking numbers in fear after a big sale.</li>
+      <li><span class="bullet-icon">🧠</span> You stop going back into panic after good things happen.</li>
+    </div>
+    <div class="hand-arrow" style="margin-top: 0.5rem;">✨ That’s the difference between understanding and raising your money comfort zone.</div>
+  </div>
+
+  <!-- DECISION PRESSURE: emotional crossroads -->
+  <div class="slide" style="background: #111; color: white; text-align: center;">
+    <div class="slide-label" style="color: #FF2B2B;">THE CROSSROADS</div>
+    <div class="emotional-spike" style="font-size: 2.2rem;">A year from now… your money comfort zone will still be running your financial life.</div>
+    <div class="emotional-spike" style="font-size: 2.2rem; margin-top: 0.5rem;">The only question is: <span class="red-emphasis">will it still be the OLD one?</span></div>
+    <div class="hand-arrow" style="background: rgba(255,43,43,0.2); margin: 2rem auto; justify-content: center;">You can either raise it now… or repeat the same cycle again.</div>
+  </div>
+
+  <!-- FINAL OFFER SLIDE (NO REFUNDS, PURE OFFER) -->
+  <div class="slide" style="text-align: center;">
+    <div class="slide-label" style="margin: 0 auto 1rem auto;">TONIGHT’S INVESTMENT</div>
+    <div class="main-headline" style="font-size: 2.6rem;">Personal Reprogramming Session</div>
+    <div class="red-circle price-circle" style="font-size: 3rem; margin: 0.5rem 0;">$297</div>
+    <div class="value-stack" style="background: #F3F3F3; display: inline-block; width: auto; padding: 1rem 2rem;">
+      <p>✔ <span class="red-emphasis">INCLUDES FREE:</span> $197 Reprogramming Protocol (Money Flow, ATM·Vault·Money Wave, Sleep Reset + Health Reset)</p>
+      <p>✔ Custom session built around YOUR money pattern & stress loops</p>
+      <p>✔ Lifetime access to your personal audio + the bonus toolkit</p>
+    </div>
+    <div class="cta-button" style="margin-top: 1rem;">Claim Your Personal Session →</div>
+    <div class="hand-arrow" style="margin: 1.5rem auto; justify-content: center;">✨ Start listening tonight. Your money comfort zone can finally expand. ✨</div>
+  </div>
+
+  <!-- FINAL CLOSE (identity elevation + power, no refund text) -->
+  <div class="slide" style="background: #FFFFFF; border-top: 8px solid #FF2B2B;">
+    <div class="main-headline" style="font-size: 2.2rem;">You can keep stacking generic advice…</div>
+    <div class="main-headline" style="font-size: 2.5rem; margin-top: 0.5rem;"><span class="red-emphasis marker-underline">or finally raise your comfort zone.</span></div>
+    <div class="hand-arrow" style="font-size: 1.4rem; margin-top: 2rem;">━━━━━━━━━━━ You stop shrinking around success. You stop apologizing for your prices. You stop feeling emotionally smaller than opportunity.</div>
+    <div class="cta-button" style="margin-top: 2rem;">Get Your Personal Session →</div>
+    <p class="small-caption" style="margin-top: 1.5rem;">No more guessing. No more freezing. Just a money audio made for you.</p>
+  </div>
+</div>
+</body>
+</html>

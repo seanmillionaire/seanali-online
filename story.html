@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta charset=\"UTF-8\">
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '878451855254470');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=878451855254470&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+<link rel="icon" type="image/png" href="https://hypnoticmeditations.b-cdn.net/images/fav/headphones.png"><link rel="apple-touch-icon" href="https://hypnoticmeditations.b-cdn.net/images/fav/headphones.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sean Ali — The Story: From Empty Fridge to Panama</title>
+<meta name="description" content="The full story of how Sean Ali went from a single-parent home in Canada, to managing $100K/day in ad spend at Virgin Media, to building three AI businesses and living in Panama.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://seanali.online/story.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0a0906;
+  --cream: #f5f1ea;
+  --gold: #c9921e;
+  --gold-light: #f0c96a;
+  --orange: #e8530a;
+  --purple: #3a2d6e;
+  --teal: #0c6e56;
+  --muted: #8a8680;
+  --border: rgba(0,0,0,0.08);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+  overflow-x: hidden;
+}
+
+/* ── NOISE TEXTURE ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.025;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  background: var(--ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 80px 40px;
+}
+
+.hero-bg-text {
+  position: absolute;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(120px, 20vw, 280px);
+  color: rgba(255,255,255,0.03);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+
+.hero-eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 24px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.2s forwards;
+}
+
+.hero-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(72px, 14vw, 180px);
+  color: #fff;
+  line-height: 0.9;
+  letter-spacing: 0.01em;
+  text-align: center;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.4s forwards;
+}
+
+.hero-name span {
+  color: var(--gold);
+}
+
+.hero-tagline {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(18px, 3vw, 28px);
+  color: rgba(255,255,255,0.5);
+  margin-top: 28px;
+  text-align: center;
+  max-width: 600px;
+  line-height: 1.5;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.6s forwards;
+}
+
+.hero-line {
+  width: 1px;
+  height: 80px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+  margin-top: 60px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.9s forwards;
+}
+
+.rhonda-badge {
+  margin-top: 32px;
+  border: 1px solid rgba(201,146,30,0.3);
+  border-radius: 100px;
+  padding: 10px 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 1.1s forwards;
+}
+
+.rhonda-badge .badge-icon { font-size: 16px; }
+.rhonda-badge .badge-text {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.6);
+}
+.rhonda-badge .badge-text strong {
+  color: var(--gold-light);
+  font-weight: 500;
+}
+
+/* ── ACTS NAVIGATION ── */
+.acts-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10,9,6,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  overflow-x: auto;
+}
+
+.acts-nav a {
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  padding: 18px 20px;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: color 0.2s, border-color 0.2s;
+}
+.acts-nav a:hover { color: rgba(255,255,255,0.8); }
+.acts-nav a.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* ── SECTION BASE ── */
+.act {
+  padding: 100px 0 80px;
+  position: relative;
+}
+
+.act:nth-child(odd) { background: var(--cream); }
+.act:nth-child(even) { background: #f0ebe2; }
+
+.act-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+/* ── ACT HEADER ── */
+.act-header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 32px;
+  align-items: start;
+  margin-bottom: 64px;
+}
+
+.act-number {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 120px;
+  line-height: 0.85;
+  color: rgba(0,0,0,0.06);
+  letter-spacing: -0.03em;
+  user-select: none;
+}
+
+.act-meta { padding-top: 8px; }
+
+.act-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.act-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(38px, 5vw, 64px);
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+
+.act-desc {
+  margin-top: 14px;
+  font-size: 15px;
+  color: var(--muted);
+  max-width: 520px;
+  line-height: 1.7;
+}
+
+/* ── STORY CARDS ── */
+.cards-grid {
+  display: grid;
+  gap: 20px;
+}
+.cards-grid.two { grid-template-columns: 1fr 1fr; }
+.cards-grid.one { grid-template-columns: 1fr; }
+
+.story-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 36px;
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.story-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+}
+
+.story-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 16px 16px 0 0;
+}
+
+.card-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+.card-eyebrow {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.card-headline {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(18px, 2vw, 22px);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+
+.card-body {
+  font-size: 14px;
+  line-height: 1.75;
+  color: #5a5650;
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 20px;
+}
+
+.tag {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  padding: 4px 10px;
+  border-radius: 100px;
+  border: 1px solid;
+}
+
+/* ── MARKETING USE STRIP ── */
+.use-strip {
+  margin-top: 20px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.use-strip strong {
+  font-weight: 500;
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+/* ── HIGHLIGHT QUOTE CARD ── */
+.quote-block {
+  background: var(--ink);
+  border-radius: 20px;
+  padding: 48px 52px;
+  margin: 48px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.quote-block::before {
+  content: '\201C';
+  font-family: 'Playfair Display', serif;
+  font-size: 200px;
+  color: rgba(255,255,255,0.04);
+  position: absolute;
+  top: -30px;
+  left: 30px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.quote-text {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(22px, 3vw, 34px);
+  color: #fff;
+  line-height: 1.4;
+  position: relative;
+  z-index: 1;
+  max-width: 780px;
+}
+
+.quote-text em {
+  color: var(--gold-light);
+  font-style: normal;
+}
+
+.quote-source {
+  margin-top: 24px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+}
+
+/* ── THE RHONDA PARALLEL ── */
+.parallel-section {
+  background: var(--ink);
+  padding: 100px 0;
+}
+
+.parallel-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.parallel-eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.parallel-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(44px, 7vw, 88px);
+  color: #fff;
+  text-align: center;
+  line-height: 0.95;
+  margin-bottom: 60px;
+}
+
+.parallel-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 32px;
+  align-items: center;
+}
+
+.parallel-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 36px;
+}
+
+.parallel-card .pc-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 12px;
+}
+
+.parallel-card .pc-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 40px;
+  line-height: 1;
+  margin-bottom: 20px;
+}
+
+.parallel-card .pc-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.parallel-card .pc-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  margin-top: 7px;
+  flex-shrink: 0;
+}
+
+.parallel-card .pc-text {
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.65);
+}
+
+.vs-circle {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.12);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  color: rgba(255,255,255,0.3);
+  flex-shrink: 0;
+}
+
+/* ── MARKETING PLAYBOOK SECTION ── */
+.playbook-section {
+  background: var(--cream);
+  padding: 100px 0;
+}
+
+.playbook-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.section-eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(42px, 6vw, 76px);
+  line-height: 0.95;
+  color: var(--ink);
+  margin-bottom: 52px;
+}
+
+.playbook-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+.pb-card {
+  border-radius: 14px;
+  padding: 28px;
+  border: 1px solid var(--border);
+  background: #fff;
+  transition: transform 0.2s ease;
+}
+
+.pb-card:hover { transform: translateY(-2px); }
+
+.pb-channel {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 100px;
+  display: inline-block;
+  margin-bottom: 14px;
+}
+
+.pb-story {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.pb-hook {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.65;
+  font-style: italic;
+}
+
+/* ── TIMELINE ── */
+.timeline-section {
+  background: #0a0906;
+  padding: 100px 0;
+}
+
+.timeline-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.tl-eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.tl-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(42px, 6vw, 72px);
+  color: #fff;
+  line-height: 0.95;
+  text-align: center;
+  margin-bottom: 64px;
+}
+
+.timeline {
+  position: relative;
+  padding-left: 40px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 8px;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--gold), rgba(201,146,30,0.1));
+}
+
+.tl-item {
+  position: relative;
+  margin-bottom: 48px;
+  opacity: 0;
+  transform: translateX(-16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.tl-item.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.tl-dot {
+  position: absolute;
+  left: -38px;
+  top: 5px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  background: var(--ink);
+  z-index: 1;
+}
+
+.tl-dot.active {
+  background: var(--gold);
+}
+
+.tl-year {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+
+.tl-event {
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  margin-bottom: 6px;
+  line-height: 1.35;
+}
+
+.tl-detail {
+  font-size: 13px;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.6;
+}
+
+/* ── MANIFESTO ── */
+.manifesto-section {
+  background: var(--gold);
+  padding: 100px 40px;
+  text-align: center;
+}
+
+.manifesto-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(48px, 8vw, 110px);
+  color: var(--ink);
+  line-height: 0.9;
+  margin-bottom: 32px;
+}
+
+.manifesto-body {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(18px, 2.5vw, 26px);
+  color: rgba(10,9,6,0.65);
+  max-width: 680px;
+  margin: 0 auto 40px;
+  line-height: 1.5;
+}
+
+.manifesto-rule {
+  width: 60px;
+  height: 2px;
+  background: rgba(10,9,6,0.2);
+  margin: 0 auto 32px;
+}
+
+.manifesto-cta {
+  display: inline-block;
+  background: var(--ink);
+  color: #fff;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 16px 36px;
+  border-radius: 100px;
+  transition: opacity 0.2s;
+}
+.manifesto-cta:hover { opacity: 0.8; }
+
+/* ── COLOR THEMES PER ACT ── */
+/* ACT 1 — Origin (Purple) */
+.act-1 .act-label { color: var(--purple); }
+.act-1 .story-card::after { background: var(--purple); }
+.act-1 .card-eyebrow { color: var(--purple); }
+.act-1 .card-icon { background: rgba(58,45,110,0.08); }
+.act-1 .tag { border-color: rgba(58,45,110,0.2); color: var(--purple); background: rgba(58,45,110,0.05); }
+.act-1 .use-strip { background: rgba(58,45,110,0.05); border: 1px solid rgba(58,45,110,0.1); color: #3a2d6e; }
+.act-1 .use-strip strong { color: var(--purple); }
+
+/* ACT 2 — Struggle (Orange) */
+.act-2 .act-label { color: var(--orange); }
+.act-2 .story-card::after { background: var(--orange); }
+.act-2 .card-eyebrow { color: var(--orange); }
+.act-2 .card-icon { background: rgba(232,83,10,0.08); }
+.act-2 .tag { border-color: rgba(232,83,10,0.2); color: var(--orange); background: rgba(232,83,10,0.05); }
+.act-2 .use-strip { background: rgba(232,83,10,0.05); border: 1px solid rgba(232,83,10,0.12); color: #8a3a08; }
+.act-2 .use-strip strong { color: var(--orange); }
+
+/* ACT 3 — Pivot (Teal) */
+.act-3 .act-label { color: var(--teal); }
+.act-3 .story-card::after { background: var(--teal); }
+.act-3 .card-eyebrow { color: var(--teal); }
+.act-3 .card-icon { background: rgba(12,110,86,0.08); }
+.act-3 .tag { border-color: rgba(12,110,86,0.2); color: var(--teal); background: rgba(12,110,86,0.05); }
+.act-3 .use-strip { background: rgba(12,110,86,0.05); border: 1px solid rgba(12,110,86,0.12); color: #0c5040; }
+.act-3 .use-strip strong { color: var(--teal); }
+
+/* ACT 4 — Proof (Gold) */
+.act-4 .act-label { color: var(--gold); }
+.act-4 .story-card::after { background: var(--gold); }
+.act-4 .card-eyebrow { color: var(--gold); }
+.act-4 .card-icon { background: rgba(201,146,30,0.1); }
+.act-4 .tag { border-color: rgba(201,146,30,0.25); color: #8a6010; background: rgba(201,146,30,0.08); }
+.act-4 .use-strip { background: rgba(201,146,30,0.07); border: 1px solid rgba(201,146,30,0.15); color: #7a5510; }
+.act-4 .use-strip strong { color: var(--gold); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 800px) {
+  .cards-grid.two { grid-template-columns: 1fr; }
+  .playbook-grid { grid-template-columns: 1fr; }
+  .parallel-grid { grid-template-columns: 1fr; }
+  .vs-circle { display: none; }
+  .act-header { grid-template-columns: 1fr; gap: 12px; }
+  .act-number { font-size: 60px; }
+  .story-card { padding: 24px; }
+  .quote-block { padding: 32px 28px; }
+  .acts-nav { padding: 0 20px; }
+  .act-inner, .parallel-inner, .playbook-inner, .timeline-inner { padding: 0 20px; }
+  .hero { padding: 60px 24px; }
+}
+
+/* ── RHONDA card styling ── */
+.rhonda-card { color: #ffe9a8; }
+.sean-card { color: var(--gold-light); }
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/social-blog.css">
+</head>
+
+<body class="social-legacy">
+
+<header class="social-topbar">
+  <a class="social-logo" href="/" aria-label="Sean Ali home">
+    <span class="social-logo-mark">SA</span>
+    <span>Sean Ali</span>
+  </a>
+  <label class="social-search" aria-label="Search the blog">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.75 4a6.75 6.75 0 0 1 5.33 10.89l3.52 3.51-1.2 1.2-3.51-3.52A6.75 6.75 0 1 1 10.75 4Zm0 1.7a5.05 5.05 0 1 0 0 10.1 5.05 5.05 0 0 0 0-10.1Z"/></svg>
+    <input data-feed-search type="search" placeholder="Search AI income, money blocks, reset...">
+  </label>
+  <nav class="social-nav"><a class="social-nav-link " href="/">Home</a><a class="social-nav-link " href="/quit-your-9-to-5-with-ai.html">AI Freedom</a><a class="social-nav-link " href="/prompts.html">Prompts</a><a class="social-nav-link active" href="/story.html">Story</a><a class="social-nav-link " href="/reset/">Reset</a></nav>
+  <a class="social-primary" href="/webinar/">Free training</a>
+</header>
+
+<main class="social-legacy-wrap">
+  <article class="legacy-card">
+    <header class="legacy-intro">
+      <img src="https://statics.myclickfunnels.com/workspace/vGVGzP/image/20204117/file/904663e23eb23a39d6f2459104b7bccc.png" alt="Sean Ali">
+      <div><strong>Sean's Story</strong><span>The origin story behind the AI freedom, subconscious reprogramming, and location freedom work.</span></div>
+    </header>
+    <div class="legacy-content"><!-- ══════════════════════════ HERO ══════════════════════════ -->
+<section class="hero">
+  <div class="hero-bg-text">STORY</div>
+  <div class="hero-eyebrow">The Brand Narrative</div>
+  <h1 class="hero-name">SEAN<br><span>ALI</span></h1>
+  <p class="hero-tagline">He didn't write a book about the subconscious. He reprogrammed his own — and rebuilt his entire life around it.</p>
+  <div class="hero-line"></div>
+  <div class="rhonda-badge">
+    <span class="badge-icon">📖</span>
+    <span class="badge-text">Like <strong>Rhonda Byrne</strong> is the story for The Secret — <strong>Sean Ali</strong> is the story for his empire.</span>
+  </div>
+</section>
+
+<!-- ══════════════════════════ NAV ══════════════════════════ -->
+<nav class="acts-nav" id="acts-nav">
+  <a href="#act1" class="active">Act I — Origin</a>
+  <a href="#act2">Act II — Breaking Point</a>
+  <a href="#act3">Act III — Pivot</a>
+  <a href="#act4">Act IV — Living Proof</a>
+  <a href="#parallel">The Parallel</a>
+  <a href="#playbook">Marketing Playbook</a>
+  <a href="#timeline">Timeline</a>
+</nav>
+
+<!-- ══════════════════════════ ACT 1 ══════════════════════════ -->
+<section class="act act-1" id="act1">
+  <div class="act-inner">
+    <div class="act-header reveal">
+      <div class="act-number">01</div>
+      <div class="act-meta">
+        <div class="act-label">Act I</div>
+        <h2 class="act-title">The Corporate<br>Cage</h2>
+        <p class="act-desc">10+ years inside someone else's empire. Total mastery. Someone else's ceiling. This is where the hunger was forged.</p>
+      </div>
+    </div>
+
+    <div class="cards-grid two">
+      <div class="story-card reveal">
+        <div class="card-icon">🏢</div>
+        <div class="card-eyebrow">The Day Job</div>
+        <h3 class="card-headline">Managing $100,000/day of someone else's money at Virgin Media</h3>
+        <p class="card-body">Senior Media Buyer. Multi-million dollar revenue. Full command of the machine — funnels, creative testing, CPA optimization. But every dollar he made went to building someone else's empire. He knew exactly how wealth was built. He just wasn't building his own.</p>
+        <div class="card-tags">
+          <span class="tag">Virgin Media 2018–2024</span>
+          <span class="tag">$100K/day ad spend</span>
+          <span class="tag">full funnel mastery</span>
+        </div>
+        <div class="use-strip">
+          <strong>📢 Use In</strong>
+          Ads targeting high earners who feel trapped. Hook: "I ran $100K/day in ads — for someone else. Here's what I did with that knowledge when I finally kept it for myself."
+        </div>
+      </div>
+
+      <div class="story-card reveal">
+        <div class="card-icon">₿</div>
+        <div class="card-eyebrow">The Contrarian Bet</div>
+        <h3 class="card-headline">He bought Bitcoin at ~$6,000 when everyone called it a scam</h3>
+        <p class="card-body">5+ years on Binance. Not hype — conviction. A deep belief that old systems have invisible ceilings and new ones don't. This same pattern-recognition muscle would later tell him that willpower was the wrong tool, and the subconscious was the right one.</p>
+        <div class="card-tags">
+          <span class="tag">BTC at ~$6K</span>
+          <span class="tag">5+ yrs Binance</span>
+          <span class="tag">pattern recognition</span>
+        </div>
+        <div class="use-strip">
+          <strong>📢 Use In</strong>
+          Crypto content & authority-building. Hook: "I bought Bitcoin before most people knew what a wallet was. I take the same long view with the mind."
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ ACT 2 ══════════════════════════ -->
+<section class="act act-2" id="act2">
+  <div class="act-inner">
+    <div class="act-header reveal">
+      <div class="act-number">02</div>
+      <div class="act-meta">
+        <div class="act-label">Act II</div>
+        <h2 class="act-title">The Breaking<br>Point</h2>
+        <p class="act-desc">The moment the body forces a reckoning the mind keeps postponing. Every great origin story has one.</p>
+      </div>
+    </div>
+
+    <div class="quote-block reveal">
+      <p class="quote-text">"The night I couldn't sleep for <em>3 days straight</em> — that's where Hypnotic Meditations was born. Not as a product. As survival."</p>
+      <p class="quote-source">— Sean Ali, Email #3 Sequence</p>
+    </div>
+
+    <div class="cards-grid two">
+      <div class="story-card reveal">
+        <div class="card-icon">🌑</div>
+        <div class="card-eyebrow">The Night Everything Broke</div>
+        <h3 class="card-headline">3 days. No sleep. Corporate performer by day, solo founder by night.</h3>
+        <p class="card-body">The pressure of running two lives — high-performance media buyer plus secret empire-builder — broke his sleep completely. His body forced the question his mind kept avoiding: Is this really working? This is the rawest, most human story beat in the entire brand.</p>
+        <div class="card-tags">
+          <span class="tag">insomnia</span>
+          <span class="tag">burnout trigger</span>
+          <span class="tag">real origin of HM</span>
+        </div>
+        <div class="use-strip">
+          <strong>📢 Use In</strong>
+          Email #3. Sleep Reset ads. YouTube hook. The most relatable story — "I wasn't studying sleep science. I was desperate."
+        </div>
+      </div>
+
+      <div class="story-card reveal">
+        <div class="card-icon">🧱</div>
+        <div class="card-eyebrow">The Invisible Ceiling</div>
+        <h3 class="card-headline">He knew everything about growth. His own income still had a ceiling he couldn't break.</h3>
+        <p class="card-body">This is the pivot insight: knowing how to build wealth and actually building it are different problems. One is strategy. The other is identity. He had the strategy. What blocked him was his own subconscious cap — an invisible limit running silently under everything.</p>
+        <div class="card-tags">
+          <span class="tag">wealth ceiling</span>
+          <span class="tag">identity block</span>
+          <span class="tag">the real enemy</span>
+        </div>
+        <div class="use-strip">
+          <strong>📢 Use In</strong>
+          Wealth audio ads. Manifestation Genie positioning. Hook: "I had the strategy. I didn't have the identity. Nobody tells you those are different problems."
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ ACT 3 ══════════════════════════ -->
+<section class="act act-3" id="act3">
+  <div class="act-inner">
+    <div class="act-header reveal">
+      <div class="act-number">03</div>
+      <div class="act-meta">
+        <div class="act-label">Act III</div>
+        <h2 class="act-title">The Discovery<br>& The Pivot</h2>
+        <p class="act-desc">He built the protocol for himself first. It worked. Then he turned it into products, companies, and a movement.</p>
+      </div>
+    </div>
+
+    <div class="cards-grid two">
+      <div class="story-card reveal">
+        <div class="card-icon">🧠</div>
+        <div class="card-eyebrow">The Discovery</div>
+        <h3 class="card-headline">Sleep is the only moment your subconscious is fully open. He was wasting 8 hours every night.</h3>
+        <p class="card-body">"Sleep is the most underused personal development tool on earth. You're unconscious for 8 hours. Why waste it?" The answer: hypnotic audio. Identity rewiring running while he slept. He built the program for himself out of desperation — and it worked well enough that he knew he had to share it.</p>
+        <div class="card-tags">
+          <span class="tag">hypnotic audio</span>
+          <span class="tag">subconscious access</span>
+          <span class="tag">built for himself first</span>
+        </div>
+        <div class="use-strip">
+          <strong>📢 Use In</strong>
+          HypnoticMeditations landing page. Organic content. Quote this line verbatim — it's the brand's core insight hook.
+        </div>
+      </div>
+
+      <div class="story-card reveal">
+        <div class="card-icon">🌴</div>
+        <div class="card-eyebrow">The Build</div>
+        <h3 class="card-headline">Left corporate. Moved to Panama. Built three companies — alone — with the same mind he'd reprogrammed.</h3>
+        <p class="card-body">HypnoticMeditations.ai. ManifestationGenie.ai. TryTheScript.com. No co-founder. No venture funding. A new country. Enterprise-grade marketing skills now deployed on his own empire. The reprogramming didn't just improve his sleep — it completely rewired what he believed was possible for his life.</p>
+        <div class="card-tags">
+          <span class="tag">sole founder ×3</span>
+          <span class="tag">Panama</span>
+          <span class="tag">AI-native stack</span>
+        </div>
+        <div class="use-strip">
+          <strong>📢 Use In</strong>
+          Panama Freedom Blueprint offer. Coach positioning. Proof that the method scales beyond audio — it rebuilds entire lives.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ ACT 4 ══════════════════════════ -->
+<section class="act act-4" id="act4">
+  <div class="act-inner">
+    <div class="act-header reveal">
+      <div class="act-number">04</div>
+      <div class="act-meta">
+        <div class="act-label">Act IV</div>
+        <h2 class="act-title">Living<br>Proof</h2>
+        <p class="act-desc">He is the product. Panama isn't a flex — it's evidence. The lifestyle is the marketing.</p>
+      </div>
+    </div>
+
+    <div class="cards-grid one">
+      <div class="story-card reveal">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:32px; align-items:start;">
+          <div>
+            <div class="card-icon">🌎</div>
+            <div class="card-eyebrow">The Proof</div>
+            <h3 class="card-headline">Panama isn't a story — it's a destination. He shows people what's possible by simply existing the way he does.</h3>
+            <p class="card-body">Location freedom. Three revenue streams. Built entirely on mind, strategy, and the tools he sells. Every photo from Panama. Every "day in my life" post. Every morning routine — all of it is living marketing. The audience doesn't just buy a product. They buy the belief that his life is available to them.</p>
+          </div>
+          <div>
+            <div style="height:16px"></div>
+            <div class="card-eyebrow">What He Actually Sells</div>
+            <div style="margin-top:12px;">
+              <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;padding:16px;background:rgba(201,146,30,0.06);border-radius:10px;border:1px solid rgba(201,146,30,0.12);">
+                <span style="font-size:18px;margin-top:1px;">🎧</span>
+                <div>
+                  <div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:3px;">Surface Product</div>
+                  <div style="font-size:13px;color:var(--muted);">Audio files, AI app, scripts, courses</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;padding:16px;background:rgba(201,146,30,0.06);border-radius:10px;border:1px solid rgba(201,146,30,0.12);">
+                <span style="font-size:18px;margin-top:1px;">💡</span>
+                <div>
+                  <div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:3px;">Real Product</div>
+                  <div style="font-size:13px;color:var(--muted);">The belief that change is possible</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:12px;padding:16px;background:rgba(201,146,30,0.1);border-radius:10px;border:1px solid rgba(201,146,30,0.2);">
+                <span style="font-size:18px;margin-top:1px;">🏆</span>
+                <div>
+                  <div style="font-size:12px;font-weight:500;color:#8a6010;margin-bottom:3px;">The Deepest Product</div>
+                  <div style="font-size:13px;color:#7a5510;font-weight:500;">Proof that he lived it — and you can too</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-tags" style="margin-top:24px;">
+          <span class="tag">you are the product</span>
+          <span class="tag">lifestyle as proof</span>
+          <span class="tag">Panama = destination</span>
+          <span class="tag">three revenue streams</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ RHONDA PARALLEL ══════════════════════════ -->
+<section class="parallel-section" id="parallel">
+  <div class="parallel-inner">
+    <div class="parallel-eyebrow reveal">The Core Positioning</div>
+    <h2 class="parallel-title reveal">THE RHONDA<br>PARALLEL</h2>
+
+    <div class="parallel-grid">
+      <div class="parallel-card reveal rhonda-card">
+        <div class="pc-label">Rhonda Byrne</div>
+        <div class="pc-name">THE SECRET</div>
+        <div class="pc-item">
+          <div class="pc-dot" style="background:#ffe9a8"></div>
+          <div class="pc-text">Discovered The Law of Attraction during personal rock-bottom</div>
+        </div>
+        <div class="pc-item">
+          <div class="pc-dot" style="background:#ffe9a8"></div>
+          <div class="pc-text">Didn't sell a book — sold the belief that reality bends toward thought</div>
+        </div>
+        <div class="pc-item">
+          <div class="pc-dot" style="background:#ffe9a8"></div>
+          <div class="pc-text">Her transformation was the product. The book was just the vehicle.</div>
+        </div>
+        <div class="pc-item">
+          <div class="pc-dot" style="background:#ffe9a8"></div>
+          <div class="pc-text">Built a global movement from a single insight</div>
+        </div>
+      </div>
+
+      <div class="vs-circle">VS</div>
+
+      <div class="parallel-card reveal sean-card">
+        <div class="pc-label">Sean Ali</div>
+        <div class="pc-name" style="color:var(--gold-light);">THE EMPIRE</div>
+        <div class="pc-item">
+          <div class="pc-dot" style="background:var(--gold)"></div>
+          <div class="pc-text">Discovered subconscious reprogramming during 3-day insomnia crisis</div>
+        </div>
+        <div class="pc-item">
+          <div class="pc-dot" style="background:var(--gold)"></div>
+          <div class="pc-text">Doesn't sell audio — sells the belief that your identity can change</div>
+        </div>
+        <div class="pc-item">
+          <div class="pc-dot" style="background:var(--gold)"></div>
+          <div class="pc-text">His Panama life is the product. The apps are just the vehicle.</div>
+        </div>
+        <div class="pc-item">
+          <div class="pc-dot" style="background:var(--gold)"></div>
+          <div class="pc-text">Building a movement from one idea — infinite formats</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ MARKETING PLAYBOOK ══════════════════════════ -->
+<section class="playbook-section" id="playbook">
+  <div class="playbook-inner">
+    <div class="section-eyebrow reveal">Deploy The Story</div>
+    <h2 class="section-title reveal">MARKETING<br>PLAYBOOK</h2>
+
+    <div class="playbook-grid">
+
+      <div class="pb-card reveal">
+        <span class="pb-channel" style="background:rgba(58,45,110,0.08);color:var(--purple);border:1px solid rgba(58,45,110,0.15);">Paid Ads — Cold Traffic</span>
+        <div class="pb-story">The Corporate Cage Story</div>
+        <div class="pb-hook">"I ran $100K/day in ads for a corporation. Here's what I did with that knowledge when I finally kept it for myself."</div>
+      </div>
+
+      <div class="pb-card reveal">
+        <span class="pb-channel" style="background:rgba(232,83,10,0.07);color:var(--orange);border:1px solid rgba(232,83,10,0.15);">Email #3 — Story</span>
+        <div class="pb-story">The 3-Day Insomnia Story</div>
+        <div class="pb-hook">"The night I couldn't sleep for 3 days straight…" — Use verbatim. This is the rawest, most human hook in the sequence.</div>
+      </div>
+
+      <div class="pb-card reveal">
+        <span class="pb-channel" style="background:rgba(201,146,30,0.08);color:#8a6010;border:1px solid rgba(201,146,30,0.2);">YouTube / Organic</span>
+        <div class="pb-story">The Sleep Insight Discovery</div>
+        <div class="pb-hook">"Sleep is the most underused personal development tool on earth." — Thumbnail line. Use exactly as written.</div>
+      </div>
+
+      <div class="pb-card reveal">
+        <span class="pb-channel" style="background:rgba(12,110,86,0.07);color:var(--teal);border:1px solid rgba(12,110,86,0.15);">X / Twitter</span>
+        <div class="pb-story">The Invisible Ceiling Story</div>
+        <div class="pb-hook">"I had the strategy. I didn't have the identity. Nobody tells you those are two completely different problems."</div>
+      </div>
+
+      <div class="pb-card reveal">
+        <span class="pb-channel" style="background:rgba(201,146,30,0.08);color:#8a6010;border:1px solid rgba(201,146,30,0.2);">Email #5 — Proof</span>
+        <div class="pb-story">The Panama Relocation Story</div>
+        <div class="pb-hook">"How I moved to Panama (the real story)." Aspirational proof email. Introduces ManifestationGenie. The lifestyle makes the offer real.</div>
+      </div>
+
+      <div class="pb-card reveal">
+        <span class="pb-channel" style="background:rgba(58,45,110,0.08);color:var(--purple);border:1px solid rgba(58,45,110,0.15);">Wealth Audio Ads</span>
+        <div class="pb-story">The Bitcoin Conviction Story</div>
+        <div class="pb-hook">"I bought Bitcoin before most people knew what a wallet was. I take the same long view with the mind. Both paid off."</div>
+      </div>
+
+      <div class="pb-card reveal">
+        <span class="pb-channel" style="background:rgba(232,83,10,0.07);color:var(--orange);border:1px solid rgba(232,83,10,0.15);">Coaching / High Ticket</span>
+        <div class="pb-story">The Solo Founder Arc</div>
+        <div class="pb-hook">"Three companies. No co-founder. New country. Same mind — just reprogrammed." For Panama Freedom Blueprint & 1:1 coaching positioning.</div>
+      </div>
+
+      <div class="pb-card reveal">
+        <span class="pb-channel" style="background:rgba(12,110,86,0.07);color:var(--teal);border:1px solid rgba(12,110,86,0.15);">All Channels — Brand</span>
+        <div class="pb-story">The Living Proof Angle</div>
+        <div class="pb-hook">Every photo from Panama. Every morning routine post. Every lifestyle content piece. "The locked door is in your mind — and I found the key because I had to unlock my own."</div>
+      </div>
+
+      <div class="pb-card reveal" style="border-color:var(--gold);background:rgba(201,146,30,0.04);">
+        <span class="pb-channel" style="background:var(--gold);color:#fff;border-color:var(--gold);">The Master Hook</span>
+        <div class="pb-story" style="color:var(--ink);font-weight:500;">Use Across Everything</div>
+        <div class="pb-hook" style="font-style:normal;font-size:13px;line-height:1.6;color:#5a5650;">"Like Rhonda Byrne is the story for The Secret — I am the story for my empire. I didn't write a book about the subconscious. I reprogrammed my own and rebuilt my life around it."</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ TIMELINE ══════════════════════════ -->
+<section class="timeline-section" id="timeline">
+  <div class="timeline-inner">
+    <div class="tl-eyebrow">The Journey</div>
+    <h2 class="tl-title">HOW WE<br>GOT HERE</h2>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot active"></div>
+        <div class="tl-year">Pre-2018</div>
+        <div class="tl-event">Early crypto conviction</div>
+        <div class="tl-detail">Invests in Bitcoin at ~$6,000. Joins Binance. Begins developing the pattern-recognition mindset that will later define the brand.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-year">2018 – 2024</div>
+        <div class="tl-event">Senior Media Buyer, Virgin Media</div>
+        <div class="tl-detail">Manages $10K–$100K/day in Meta Ads. Drives multi-million dollar revenue. Masters the full acquisition machine — while building his own quietly on the side.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-year">2023–2024</div>
+        <div class="tl-event">The Breaking Point & The Discovery</div>
+        <div class="tl-detail">3-day insomnia crisis during transition period. Discovers hypnotic audio as a subconscious reprogramming tool. Uses it on himself first. The foundation of HypnoticMeditations is laid.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-year">2024</div>
+        <div class="tl-event">HypnoticMeditations.ai — Founded</div>
+        <div class="tl-detail">Builds a profitable digital wellness brand as sole founder. Email marketing, paid social, YouTube. Proves the model works before scaling.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-year">2024</div>
+        <div class="tl-event">Relocates to Panama</div>
+        <div class="tl-detail">Leaves the UK. Moves to Panama. Location freedom becomes real — and becomes the living proof that the brand sells. Panama Untold is born.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot active"></div>
+        <div class="tl-year">2025 – Present</div>
+        <div class="tl-event">ManifestationGenie.ai — Founded</div>
+        <div class="tl-detail">AI-powered consumer platform built end-to-end. Owns product, tech, brand, and full acquisition funnel. The empire expands. Three brands. One idea. Infinite formats.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot active"></div>
+        <div class="tl-year">Now</div>
+        <div class="tl-event">Building the movement</div>
+        <div class="tl-detail">"Products come and go. Movements compound forever." The subconscious reprogramming movement — with Sean Ali as the living proof at its center.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ MANIFESTO ══════════════════════════ -->
+<section class="manifesto-section">
+  <div class="manifesto-rule"></div>
+  <h2 class="manifesto-title reveal">YOUR<br>SUBCONSCIOUS<br>IS RUNNING<br>YOUR LIFE.</h2>
+  <p class="manifesto-body reveal">I know — because mine was running mine. Until I learned how to get in there and change the code. That's the only reason I'm in Panama. That's the only reason any of this exists.</p>
+  <div class="manifesto-rule"></div>
+  <br><br>
+  <a href="https://seanali.online" class="manifesto-cta reveal">seanali.online</a>
+</section>
+
+<script>
+// Intersection observer for reveal animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => {
+        entry.target.classList.add('visible');
+      }, entry.target.dataset.delay || 0);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach((el, i) => {
+  // Stagger sibling cards
+  const siblings = el.parentElement.querySelectorAll('.reveal');
+  const index = Array.from(siblings).indexOf(el);
+  el.dataset.delay = index * 80;
+  observer.observe(el);
+});
+
+// Timeline observer
+const tlObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => {
+        entry.target.classList.add('visible');
+      }, i * 120);
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.tl-item').forEach(el => tlObserver.observe(el));
+
+// Active nav on scroll
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.acts-nav a');
+
+const navObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+      });
+    }
+  });
+}, { threshold: 0.4 });
+
+sections.forEach(s => navObserver.observe(s));
+</script>
+<footer style="text-align:center;padding:48px 20px 24px;font-size:13px;color:#888;border-top:1px solid rgba(0,0,0,0.08);margin-top:40px;font-family:sans-serif;line-height:2.2;"><div style="display:flex;justify-content:center;flex-wrap:wrap;gap:6px 20px;margin-bottom:14px;"><a href="/" style="color:#888;text-decoration:none;">Home</a><a href="/story.html" style="color:#888;text-decoration:none;">My Story</a><a href="/what-are-money-blocks.html" style="color:#888;text-decoration:none;">Money Blocks</a><a href="/how-to-reprogram-your-subconscious-mind.html" style="color:#888;text-decoration:none;">Reprogram Your Mind</a><a href="/best-ai-manifestation-app.html" style="color:#888;text-decoration:none;">AI Manifestation App</a><a href="/quit-your-9-to-5-with-ai.html" style="color:#888;text-decoration:none;">Quit Your 9–5</a><a href="/reset/" style="color:#888;text-decoration:none;">Free Reset</a><a href="/webinar/" style="color:#888;text-decoration:none;">Free Training</a><a href="/guide.html" style="color:#888;text-decoration:none;">Money Guide</a><a href="/blueprint.html" style="color:#c6a43b;text-decoration:none;">Blueprint</a></div>© Sean Ali · seanali.online<br>Join the movement: 125,000+ people already living their version of freedom</footer></div>
+  </article>
+  
+<aside class="social-sidebar">
+  <section class="side-card profile-mini">
+    <img src="https://statics.myclickfunnels.com/workspace/vGVGzP/image/20204117/file/904663e23eb23a39d6f2459104b7bccc.png" alt="Sean Ali">
+    <div>
+      <strong>Sean Ali</strong>
+      <span>AI income, subconscious reprogramming, and location freedom.</span>
+    </div>
+  </section>
+  <section class="side-card">
+    <h3>Start Here</h3>
+    <a class="side-link hot" href="/prompts.html"><span>AI Freedom</span><strong>Get the 27 Claude prompts</strong></a>
+    <a class="side-link" href="/webinar/"><span>Training</span><strong>Watch the free AI business class</strong></a>
+    <a class="side-link" href="/quit-your-9-to-5-with-ai.html"><span>Blueprint</span><strong>Quit your 9-5 with AI</strong></a>
+    <a class="side-link" href="/story.html"><span>Origin</span><strong>Read Sean's story</strong></a>
+  </section>
+  <section class="side-card">
+    <h3>Brands & Tools</h3>
+    <a class="brand-row" href="https://hypnoticmeditations.ai/pages/moneyflow" target="_blank"><span>Money Flow</span><em>Mindset audio</em></a>
+    <a class="brand-row" href="https://www.manifestationgenie.ai" target="_blank"><span>Manifestation Genie</span><em>AI coach</em></a>
+    <a class="brand-row" href="https://trythescript.com/watch" target="_blank"><span>Night Reset</span><em>7-minute audio</em></a>
+    <a class="brand-row" href="https://panamauntold.com" target="_blank"><span>Panama Untold</span><em>Location freedom</em></a>
+  </section>
+</aside>
+
+</main>
+<nav class="mobile-tabbar"><a class="" href="/"><span>Home</span></a><a class="" href="/quit-your-9-to-5-with-ai.html"><span>AI</span></a><a class="" href="/prompts.html"><span>Prompts</span></a><a class="" href="/reset/"><span>Reset</span></a></nav>
+
+<footer class="social-footer">
+  <div>© 2026 Sean Ali · seanali.online</div>
+  <div class="social-footer-links">
+    <a href="/story.html">Story</a>
+    <a href="/prompts-guide.html">Prompts Guide</a>
+    <a href="/blueprint.html">Blueprint</a>
+  </div>
+</footer>
+<script src="assets/social-blog.js"></script>
+
+</body>
+</html>

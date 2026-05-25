@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta charset=\"UTF-8\">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Sean Ali | Theta Waves & Binaural Beats – Free Educational Presentation</title>
+  <!-- Google Fonts + Font Awesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0c10;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* premium million-dollar container */
+    .presentation-container {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    /* each slide = EXACT same size: full viewport */
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1), visibility 0.6s;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 2rem 2rem;
+      background: #ffffff;
+      scrollbar-width: thin;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      z-index: 10;
+    }
+
+    .slide::-webkit-scrollbar {
+      width: 6px;
+    }
+    .slide::-webkit-scrollbar-track {
+      background: #f0f0f0;
+      border-radius: 10px;
+    }
+    .slide::-webkit-scrollbar-thumb {
+      background: #c7a45b;
+      border-radius: 10px;
+    }
+
+    .slide-content {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 1rem 0.5rem;
+      min-height: calc(100vh - 4rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 4.2rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #1e2a3a 0%, #b47c2e 80%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 1.2rem;
+      line-height: 1.2;
+    }
+
+    h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.8rem;
+      font-weight: 500;
+      color: #1f2a3e;
+      margin-bottom: 1.2rem;
+      border-left: 5px solid #d4af37;
+      padding-left: 1.2rem;
+    }
+
+    h3 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #2c3e50;
+    }
+
+    .lead {
+      font-size: 1.2rem;
+      color: #4a5b6e;
+      margin-bottom: 2rem;
+      line-height: 1.4;
+      font-weight: 400;
+    }
+
+    .icon-list {
+      list-style: none;
+      padding-left: 0;
+    }
+    .icon-list li {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      font-size: 1.05rem;
+      line-height: 1.4;
+      color: #1f2a3e;
+    }
+    .icon-list li i {
+      width: 2rem;
+      font-size: 1.4rem;
+      color: #d4af37;
+      text-align: center;
+    }
+
+    .premium-card {
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 2rem;
+      padding: 1.6rem;
+      box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0,0,0,0.02);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      transition: all 0.2s ease;
+      backdrop-filter: blur(2px);
+    }
+
+    .gold-badge {
+      background: linear-gradient(135deg, #f9f3e0 0%, #f1e7d2 100%);
+      color: #9b6d2c;
+      font-weight: 700;
+      font-size: 0.75rem;
+      padding: 0.3rem 1rem;
+      border-radius: 60px;
+      display: inline-block;
+      margin-bottom: 1rem;
+      border: 1px solid #e9dcb0;
+    }
+
+    .btn-primary {
+      background: #1f2a3e;
+      color: white;
+      border-radius: 60px;
+      padding: 0.8rem 2rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      transition: 0.25s ease;
+      font-size: 1rem;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.03);
+    }
+    .btn-primary:hover {
+      background: #d4af37;
+      color: #1f2a3e;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 20px -8px rgba(0,0,0,0.1);
+    }
+
+    .btn-outline {
+      border: 1px solid #d4af37;
+      background: transparent;
+      border-radius: 60px;
+      padding: 0.7rem 1.8rem;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: #2c3e50;
+      transition: 0.2s;
+    }
+    .btn-outline:hover {
+      background: #fefaf0;
+      border-color: #b47c2e;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.8rem;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.8rem;
+    }
+
+    .wave-table {
+      background: #fefcf7;
+      border-radius: 1.5rem;
+      border: 1px solid #efe6d7;
+      overflow: hidden;
+    }
+    .wave-item {
+      display: flex;
+      border-bottom: 1px solid #efe6d7;
+      padding: 0.9rem 1.2rem;
+    }
+    .wave-name {
+      width: 30%;
+      font-weight: 700;
+      color: #9b6d2c;
+    }
+    .wave-desc {
+      width: 70%;
+      color: #2c3e50;
+    }
+
+    footer {
+      margin-top: 2rem;
+      text-align: center;
+      font-size: 0.7rem;
+      color: #9aa9bb;
+      border-top: 1px solid #edeef2;
+      padding-top: 1rem;
+    }
+
+    .nav-controls {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      z-index: 200;
+      display: flex;
+      gap: 12px;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      padding: 0.5rem 1rem;
+      border-radius: 60px;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+      border: 1px solid rgba(212,175,55,0.3);
+    }
+    .nav-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 60px;
+      background: white;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: #2c3e50;
+      transition: 0.2s;
+    }
+    .nav-btn:hover {
+      background: #d4af37;
+      color: white;
+    }
+    .slide-dots {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(6px);
+      padding: 8px 20px;
+      border-radius: 60px;
+      z-index: 200;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      background: #cbd5e1;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .dot.active-dot {
+      width: 32px;
+      background: #d4af37;
+    }
+
+    @media (max-width: 780px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      h1 { font-size: 2.6rem; }
+      h2 { font-size: 2rem; }
+      .slide { padding: 1.5rem; }
+    }
+
+    .text-gold {
+      color: #d4af37;
+    }
+  </style>
+</head>
+<body>
+<div class="presentation-container">
+  <!-- SLIDE 1 - Welcome -->
+  <div class="slide active" id="slide1">
+    <div class="slide-content">
+      <div class="gold-badge"><i class="fas fa-crown"></i> Sean Ali · Brainwave Education</div>
+      <h1>🌊 Theta Waves & Binaural Beats<br>Made as Easy as Pie</h1>
+      <p class="lead">No hard meditation. No fancy words. Just put on headphones, press play, and float into a calm, creative zone.</p>
+      <ul class="icon-list">
+        <li><i class="fas fa-check-circle"></i> Feel peaceful in minutes – like a mini vacation for your brain</li>
+        <li><i class="fas fa-lightbulb"></i> Get brilliant ideas without even trying</li>
+        <li><i class="fas fa-moon"></i> Sleep better and wake up feeling refreshed</li>
+      </ul>
+      <div style="margin-top: 2rem;">
+        <button class="btn-primary" id="startTour"><i class="fas fa-play-circle"></i> Start learning →</button>
+        <span class="btn-outline" style="margin-left: 1rem;"><i class="fas fa-headphones"></i> By Sean Ali</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2 - What are binaural beats? -->
+  <div class="slide" id="slide2">
+    <div class="slide-content">
+      <h2>🎧 What Are Binaural Beats?</h2>
+      <div class="grid-2">
+        <div class="premium-card">
+          <i class="fas fa-ear-listen" style="font-size: 2rem; color:#d4af37;"></i>
+          <ul class="icon-list" style="margin-top: 0.5rem;">
+            <li><i class="fas fa-head-side-headphones"></i> Left ear hears one sound, right ear a different one.</li>
+            <li><i class="fas fa-magic"></i> Your brain creates a third “magic beat” inside your head.</li>
+            <li><i class="fas fa-waveform"></i> That beat guides your brain into a super calm state (theta).</li>
+          </ul>
+        </div>
+        <div class="premium-card">
+          <i class="fas fa-chalkboard" style="font-size: 2rem; color:#d4af37;"></i>
+          <ul class="icon-list">
+            <li><i class="fas fa-dial"></i> Like tuning a radio to “relax FM.”</li>
+            <li><i class="fas fa-bed"></i> No effort – just listen and let it happen.</li>
+            <li><i class="fas fa-star"></i> Sean Ali’s tracks are crystal clear & scientifically designed.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="premium-card" style="margin-top: 0.8rem; text-align: center;">
+        <i class="fas fa-smile-wink"></i> “It’s a lullaby for your brain – but you stay awake, feeling awesome.”
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3 - How it works -->
+  <div class="slide" id="slide3">
+    <div class="slide-content">
+      <h2>⚙️ How Does It Work? (Simple)</h2>
+      <ul class="icon-list">
+        <li><i class="fas fa-tachometer-alt"></i> Your brain cells love to copy the beat they hear.</li>
+        <li><i class="fas fa-charging-station"></i> Scientists call it “Frequency Following Response” – brain follows the sound.</li>
+        <li><i class="fas fa-water"></i> When the beat is slow (4–8 Hz), you enter Theta – that dreamy, peaceful zone.</li>
+      </ul>
+      <div class="premium-card" style="background: #fefaf2;">
+        <i class="fas fa-tree"></i> <strong>Kitchen table talk:</strong> Think of binaural beats as a path through the woods. Normally you'd need years to find the path. Sean Ali’s audio clears the path so you walk straight into deep meditation in minutes.
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4 - Theta waves explained -->
+  <div class="slide" id="slide4">
+    <div class="slide-content">
+      <h2>🌙 Theta Waves: Your Brain’s Twilight Zone</h2>
+      <ul class="icon-list">
+        <li><i class="fas fa-dove"></i> Theta waves are slow brainwaves – like floating on a lazy river.</li>
+        <li><i class="fas fa-moon"></i> You feel them when you’re daydreaming or drifting off to sleep.</li>
+        <li><i class="fas fa-paintbrush"></i> In Theta, creativity explodes! Great for art, problem-solving, and feeling peaceful.</li>
+        <li><i class="fas fa-hand-peace"></i> Many people feel “one with everything” – super connected and calm.</li>
+      </ul>
+      <div class="gold-badge"><i class="fas fa-seedling"></i> Fun fact: Kids live in Theta naturally – that’s why they learn so fast!</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5 - Brainwave chart -->
+  <div class="slide" id="slide5">
+    <div class="slide-content">
+      <h2>📊 Brainwaves at a Glance</h2>
+      <div class="wave-table">
+        <div class="wave-item"><div class="wave-name">⚡ Gamma (super fast)</div><div class="wave-desc">Aha moments, sudden insights</div></div>
+        <div class="wave-item"><div class="wave-name">🔊 Beta (fast)</div><div class="wave-desc">Focus, math, work, thinking hard</div></div>
+        <div class="wave-item"><div class="wave-name">😌 Alpha (medium)</div><div class="wave-desc">Chilling, relaxing, light creativity</div></div>
+        <div class="wave-item"><div class="wave-name">🌙 Theta (slow)</div><div class="wave-desc">Deep meditation, vivid dreams, intuition</div></div>
+        <div class="wave-item"><div class="wave-name">💤 Delta (slowest)</div><div class="wave-desc">Deep sleep, healing, body repair</div></div>
+      </div>
+      <p class="lead" style="margin-top: 1rem;"><i class="fas fa-arrow-down text-gold"></i> Theta is the goldilocks zone – not asleep, not awake. Just perfect.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 6 - Benefits -->
+  <div class="slide" id="slide6">
+    <div class="slide-content">
+      <h2>✅ Why Theta Will Change Your Life</h2>
+      <div class="grid-3">
+        <div class="premium-card"><i class="fas fa-spa" style="font-size: 1.8rem; color:#d4af37;"></i><p><strong>Stress? Gone.</strong> Like a warm hug for your brain.</p></div>
+        <div class="premium-card"><i class="fas fa-lightbulb" style="font-size: 1.8rem;"></i><p><strong>Ideas flow</strong> – creativity on tap.</p></div>
+        <div class="premium-card"><i class="fas fa-database" style="font-size: 1.8rem;"></i><p><strong>Memory boost</strong> – ace tests, remember names.</p></div>
+        <div class="premium-card"><i class="fas fa-bed" style="font-size: 1.8rem;"></i><p><strong>Fall asleep fast</strong> – stop racing thoughts.</p></div>
+        <div class="premium-card"><i class="fas fa-brain" style="font-size: 1.8rem;"></i><p><strong>Kick out negativity</strong> – rewire your mind.</p></div>
+        <div class="premium-card"><i class="fas fa-hand-sparkles" style="font-size: 1.8rem;"></i><p><strong>Feel connected</strong> – to yourself and the universe.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7 - Extra superpowers -->
+  <div class="slide" id="slide7">
+    <div class="slide-content">
+      <h2>🦸 Extra Superpowers of Theta</h2>
+      <ul class="icon-list">
+        <li><i class="fas fa-child"></i> <strong>Learn like a kid again</strong> – Theta turns your brain into a sponge.</li>
+        <li><i class="fas fa-heartbeat"></i> <strong>Heals your body</strong> – boosts immune system and cellular repair.</li>
+        <li><i class="fas fa-chart-line"></i> <strong>Memory champion</strong> – long-term memory gets supercharged.</li>
+        <li><i class="fas fa-feather-alt"></i> <strong>Inspiration magnet</strong> – artists and writers love Theta.</li>
+        <li><i class="fas fa-eye"></i> <strong>Intuition upgrade</strong> – trust your gut feeling more.</li>
+      </ul>
+      <div class="premium-card"><i class="fas fa-quote-left text-gold"></i> “With Sean Ali’s theta tracks, even first-timers feel the shift in one session.”</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8 - Training wheels for meditation -->
+  <div class="slide" id="slide8">
+    <div class="slide-content">
+      <h2>🚲 Training Wheels for Your Brain</h2>
+      <ul class="icon-list">
+        <li><i class="fas fa-hourglass-half"></i> Normal meditation takes years of practice.</li>
+        <li><i class="fas fa-bicycle"></i> Binaural beats are like training wheels – you ride smoothly from day one.</li>
+        <li><i class="fas fa-clock"></i> Just 10 minutes a day = the calm of a Zen monk.</li>
+        <li><i class="fas fa-sync-alt"></i> Your brain automatically syncs – zero struggle.</li>
+      </ul>
+      <div class="gold-badge"><i class="fas fa-flask"></i> Backed by science (Lavallee 2011, Huang 2008) – but you don’t need a PhD to enjoy it.</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9 - FAQ simple -->
+  <div class="slide" id="slide9">
+    <div class="slide-content">
+      <h2>❓ Your Questions (Answered Simply)</h2>
+      <div class="premium-card"><i class="fas fa-question-circle"></i> <strong>What’s the best hertz for meditation?</strong><br>⚡ 4 to 8 Hz – that’s the theta sweet spot. Deep calm + cool ideas.</div>
+      <div class="premium-card"><i class="fas fa-shield-alt"></i> <strong>Is it safe?</strong><br>✅ Yes! Millions use binaural beats. Just don’t drive while listening.</div>
+      <div class="premium-card"><i class="fas fa-dove"></i> <strong>Will I become spiritual?</strong><br>🕊️ Many feel more connected and intuitive – it's gentle and natural.</div>
+      <div class="premium-card"><i class="fas fa-clock"></i> <strong>When will I notice a difference?</strong><br>⏱️ Some feel relaxed right away. After a few days, better sleep & sharper mind.</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 10 - Theta & Spirituality -->
+  <div class="slide" id="slide10">
+    <div class="slide-content">
+      <h2>✨ Does Theta Open Your Spiritual Side?</h2>
+      <ul class="icon-list">
+        <li><i class="fas fa-eye"></i> <strong>Intuition grows</strong> – you just "know" things.</li>
+        <li><i class="fas fa-feather"></i> <strong>Inspiration strikes</strong> – like a lightbulb turning on.</li>
+        <li><i class="fas fa-water"></i> <strong>Feel clean inside</strong> – old worries melt away.</li>
+        <li><i class="fas fa-globe"></i> <strong>Feel connected</strong> – to yourself, others, the whole universe.</li>
+      </ul>
+      <div class="premium-card"><i class="fas fa-music"></i> Theta is where people say “I felt like I was floating” or “Everything made sense.” It’s beautiful.</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 11 - Attract Wealth (educational only, no pricing) -->
+  <div class="slide" id="slide11">
+    <div class="slide-content">
+      <h2>💰 Attract Wealth with Theta Waves</h2>
+      <div class="premium-card">
+        <i class="fas fa-chart-line" style="font-size: 2rem; color:#d4af37;"></i>
+        <ul class="icon-list" style="margin-top: 1rem;">
+          <li><i class="fas fa-brain"></i> Theta waves help you feel worthy of success and abundance.</li>
+          <li><i class="fas fa-headphones"></i> By listening to theta binaural beats, your subconscious shifts from “lack” to “prosperity.”</li>
+          <li><i class="fas fa-star"></i> Sean Ali’s “Attract Wealth” audio uses theta frequencies to rewire your mindset for abundance.</li>
+          <li><i class="fas fa-smile"></i> No effort – just relax, listen, and let your mind attract positive opportunities.</li>
+        </ul>
+      </div>
+      <div class="gold-badge" style="margin-top: 0.5rem;"><i class="fas fa-gem"></i> Included in Sean Ali’s library of brainwave tools – learn more at seanali.com</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 12 - Newsletter & footer (no paid mentions) -->
+  <div class="slide" id="slide12">
+    <div class="slide-content">
+      <h2>📬 Get More Brain Magic</h2>
+      <div class="premium-card" style="text-align: center;">
+        <i class="fas fa-envelope-open-text" style="font-size: 2.5rem; color:#d4af37;"></i>
+        <p style="margin: 0.8rem 0;">Sign up for Sean Ali’s newsletter – free meditation tips, new tracks, and theta science in plain English.</p>
+        <div style="display: flex; gap: 0.5rem; max-width: 450px; margin: 1rem auto;">
+          <input type="email" placeholder="Your email address" style="flex:1; border-radius: 60px; border:1px solid #e2e8f0; padding: 0.8rem 1rem; font-size: 0.9rem;">
+          <button class="btn-primary" style="padding: 0.8rem 1.5rem;">Sync Me Up</button>
+        </div>
+        <footer>
+          <p>© Sean Ali 2026 – All Rights Reserved. | Contact | Privacy Policy</p>
+          <p><i class="fas fa-waveform"></i> Theta binaural beats | Meditation made easy | Science for everyone</p>
+          <p style="font-size: 0.65rem;">References: Lavallee et al. (2011), Jirakittayakorn & Wongsawat (2017)</p>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+  <!-- navigation UI -->
+  <div class="nav-controls">
+    <button class="nav-btn" id="prevSlide"><i class="fas fa-chevron-left"></i></button>
+    <button class="nav-btn" id="nextSlide"><i class="fas fa-chevron-right"></i></button>
+  </div>
+  <div class="slide-dots" id="dotsContainer"></div>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let currentIdx = 0;
+  const total = slides.length;
+
+  function updateSlides() {
+    slides.forEach((slide, idx) => {
+      slide.classList.toggle('active', idx === currentIdx);
+    });
+    updateDots();
+  }
+  function nextSlide() { currentIdx = (currentIdx + 1) % total; updateSlides(); }
+  function prevSlide() { currentIdx = (currentIdx - 1 + total) % total; updateSlides(); }
+  
+  const dotsContainer = document.getElementById('dotsContainer');
+  function updateDots() {
+    dotsContainer.innerHTML = '';
+    for (let i = 0; i < total; i++) {
+      const dot = document.createElement('div');
+      dot.classList.add('dot');
+      if (i === currentIdx) dot.classList.add('active-dot');
+      dot.addEventListener('click', () => {
+        currentIdx = i;
+        updateSlides();
+      });
+      dotsContainer.appendChild(dot);
+    }
+  }
+  
+  document.getElementById('nextSlide').addEventListener('click', nextSlide);
+  document.getElementById('prevSlide').addEventListener('click', prevSlide);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') nextSlide();
+    if (e.key === 'ArrowLeft') prevSlide();
+  });
+  
+  document.getElementById('startTour')?.addEventListener('click', () => {
+    currentIdx = 1;
+    updateSlides();
+  });
+  
+  updateDots();
+  updateSlides();
+</script>
+</body>
+</html>

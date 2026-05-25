@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta charset=\"UTF-8\">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>AI Freedom System | Escape The 9-5 Rat Race</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #e5e7eb;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* presentation deck container */
+    .presentation-deck {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+      width: 100%;
+    }
+
+    /* each slide card */
+    .slide {
+      width: 1280px;
+      min-height: 720px;
+      background: #FFFFFF;
+      border-radius: 40px;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 30px 55px -12px rgba(0, 0, 0, 0.3);
+    }
+
+    /* inner content padding */
+    .slide-content {
+      flex: 1;
+      padding: 60px 70px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* utility classes */
+    .text-center { text-align: center; }
+    .gold-accent { color: #FCA311; }
+    .dark-bg { background: #0D1B2A; color: white; }
+    .gold-border { border: 2px solid #FCA311; }
+    .rounded-xl { border-radius: 28px; }
+
+    h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 84px;
+      font-weight: 800;
+      line-height: 1.1;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      color: #0D1B2A;
+    }
+
+    h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 58px;
+      font-weight: 800;
+      line-height: 1.2;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      color: #0D1B2A;
+      margin-bottom: 32px;
+    }
+
+    h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 34px;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+    .big-number {
+      font-size: 96px;
+      font-weight: 800;
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #FCA311 0%, #FFB347 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      line-height: 1;
+    }
+
+    .stat-card {
+      background: #F8FAFE;
+      border-radius: 32px;
+      padding: 30px 20px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.02);
+      border: 1px solid #EFF3F8;
+      transition: all 0.2s;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      margin: 40px 0;
+    }
+
+    .icon-large {
+      font-size: 54px;
+      color: #FCA311;
+      margin-bottom: 20px;
+    }
+
+    .price-tag {
+      font-size: 120px;
+      font-weight: 800;
+      font-family: 'Montserrat', sans-serif;
+      color: #FCA311;
+      line-height: 1;
+    }
+
+    .btn-cta {
+      display: inline-block;
+      background: #FCA311;
+      color: #0D1B2A;
+      font-weight: 800;
+      font-size: 28px;
+      padding: 20px 50px;
+      border-radius: 60px;
+      text-decoration: none;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      transition: 0.2s;
+      box-shadow: 0 10px 15px -5px rgba(252,163,17,0.4);
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-cta:hover {
+      background: #e09500;
+      transform: scale(1.02);
+      box-shadow: 0 20px 25px -8px rgba(252,163,17,0.5);
+    }
+
+    .check-list i {
+      color: #FCA311;
+      font-size: 28px;
+      width: 48px;
+    }
+
+    .check-list div {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .warning-band {
+      background: #FEF3C7;
+      border-left: 8px solid #FCA311;
+      padding: 20px 30px;
+      font-weight: 700;
+      font-size: 28px;
+      color: #0D1B2A;
+      margin: 30px 0;
+    }
+
+    .divider {
+      height: 4px;
+      background: #FCA311;
+      width: 100px;
+      margin: 20px auto;
+    }
+
+    @media (max-width: 1320px) {
+      .slide { width: 95%; min-height: auto; margin: 0 auto; }
+      .slide-content { padding: 50px 40px; }
+      h2 { font-size: 44px; }
+    }
+  </style>
+</head>
+<body>
+<div class="presentation-deck">
+
+  <!-- SLIDE 1: TITLE / HOOK -->
+  <div class="slide">
+    <div class="slide-content text-center">
+      <div class="divider" style="margin-bottom: 25px;"></div>
+      <h1>ESCAPE THE 9-5<br>RAT RACE WITH AI</h1>
+      <p style="font-size: 36px; color: #415A77; margin: 30px 0 20px; font-weight: 500;">How To Build A $1,000/Month Income Engine In 90 Days Without Coding Or Tech Overwhelm</p>
+      <div style="background: #0D1B2A; display: inline-block; margin: 20px auto; padding: 12px 32px; border-radius: 50px;">
+        <span style="color: #FCA311; font-weight: 800; font-size: 28px; letter-spacing: 2px;">PRESENTED BY SEAN ALI</span>
+      </div>
+      <p style="font-size: 22px; margin-top: 40px; font-weight: 500;"><i class="fas fa-chart-line gold-accent"></i> The only system turning AI into automatic paydays</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: MY GOAL - BOLD PROMISE -->
+  <div class="slide">
+    <div class="slide-content text-center">
+      <h2>⚡ MY GOAL FOR YOU</h2>
+      <div class="stat-card dark-bg gold-border" style="background: #0D1B2A; margin: 20px 0;">
+        <div style="font-size: 68px; font-weight: 800; color: #FCA311;">$1,000 / MONTH</div>
+        <p style="font-size: 32px; color: white;">Income Engine • 90 Days</p>
+      </div>
+      <p style="font-size: 28px; margin-top: 25px;"><i class="fas fa-check-circle gold-accent"></i> No coding • No tech overwhelm • No massive following</p>
+      <div class="warning-band" style="background: #0D1B2A; color: white; border-left-color: #FCA311; margin-top: 30px;">
+        ⚠️ If you follow the math, failure is impossible.
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: OPPORTUNITY COST - PAIN -->
+  <div class="slide">
+    <div class="slide-content">
+      <h2 class="text-center">EVERY MONTH YOU DELAY = <span class="gold-accent">-$1,000</span></h2>
+      <div class="grid-3" style="margin-top: 20px;">
+        <div class="stat-card"><i class="fas fa-hourglass-half icon-large"></i><div style="font-size: 24px; font-weight: 700;">Endless AI videos, $0 banked</div></div>
+        <div class="stat-card"><i class="fas fa-stop-circle icon-large"></i><div style="font-size: 24px; font-weight: 700;">Start-stop side hustles = burnout</div></div>
+        <div class="stat-card"><i class="fas fa-brain icon-large"></i><div style="font-size: 24px; font-weight: 700;">Anxiety with every "new AI update"</div></div>
+      </div>
+      <div class="text-center" style="background: #FEF3C7; padding: 30px; border-radius: 48px; margin-top: 20px;">
+        <span style="font-size: 32px; font-weight: 800;">⚠️ STOP WATCHING. START BUILDING. ⚠️</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: PROOF / SOCIAL PROOF (no images needed, just numbers) -->
+  <div class="slide">
+    <div class="slide-content text-center">
+      <h2>REAL RESULTS. REAL SYSTEM.</h2>
+      <div class="grid-3">
+        <div class="stat-card"><i class="fas fa-dollar-sign icon-large"></i><div class="big-number" style="font-size: 56px;">$156,277</div><div style="font-size: 20px;">Generated In A SINGLE DAY</div></div>
+        <div class="stat-card"><i class="fas fa-piggy-bank icon-large"></i><div class="big-number" style="font-size: 56px;">$1.12M</div><div style="font-size: 20px;">Cash In Savings</div></div>
+        <div class="stat-card"><i class="fas fa-chart-simple icon-large"></i><div class="big-number" style="font-size: 56px;">$21,139</div><div style="font-size: 20px;">Consistent Weekly Payouts</div></div>
+      </div>
+      <p style="font-size: 16px; color: #6c757d; margin-top: 20px;">*Disclaimer: personal results, not typical. But this blueprint works if you do.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: EPIPHANY - MATH NOT MAGIC -->
+  <div class="slide">
+    <div class="slide-content text-center">
+      <div style="background: #FCA311; display: inline-block; padding: 10px 40px; border-radius: 40px; margin-bottom: 25px;"><span style="font-weight: 800; font-size: 28px;">💡 EPIPHANY</span></div>
+      <h2>$1,000 IS JUST <span class="gold-accent">A MATH PROBLEM</span></h2>
+      <p style="font-size: 36px; margin: 30px 0;">10 sales of $100 commission = $1,000 pure profit</p>
+      <div class="stat-card dark-bg gold-border" style="background: #0D1B2A;">
+        <p style="font-size: 32px; color: white;">Control the math → Control the money</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: THE 100-10-1 RULE (simple) -->
+  <div class="slide">
+    <div class="slide-content text-center">
+      <h2>THE ONLY METRIC THAT MATTERS</h2>
+      <div style="display: flex; justify-content: center; gap: 60px; margin: 40px 0; flex-wrap: wrap;">
+        <div style="background: #0D1B2A; padding: 30px 40px; border-radius: 40px; color: white;"><span style="font-size: 64px; font-weight: 800;">100</span><br>CLICKS</div>
+        <i class="fas fa-arrow-right" style="font-size: 56px; color: #FCA311;"></i>
+        <div style="background: #0D1B2A; padding: 30px 40px; border-radius: 40px; color: white;"><span style="font-size: 64px; font-weight: 800;">10</span><br>LEADS</div>
+        <i class="fas fa-arrow-right" style="font-size: 56px; color: #FCA311;"></i>
+        <div style="background: #FCA311; padding: 30px 40px; border-radius: 40px; color: #0D1B2A;"><span style="font-size: 64px; font-weight: 800;">1</span><br>SALE 💰</div>
+      </div>
+      <p style="font-size: 28px; font-weight: 600;">1,000 clicks = 10 sales = $1,000 <br>One viral video = 10k+ clicks → math in your favor</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: 9-DAY WINDOW (action beats theory) -->
+  <div class="slide">
+    <div class="slide-content text-center">
+      <h2>⏱️ THE 9-DAY WINDOW</h2>
+      <p style="font-size: 32px; margin-bottom: 20px;">You only need <strong class="gold-accent">9 days of focused action</strong> to see results</p>
+      <div class="stat-card" style="background: #F8FAFE; border: 2px solid #FCA311;">
+        <i class="fas fa-calendar-week icon-large"></i>
+        <p style="font-size: 24px;">Day 1-3: Setup + First video<br>Day 4-6: Traffic & bridge<br>Day 7-9: Optimize & first sale potential</p>
+      </div>
+      <p class="warning-band" style="margin-top: 35px;">🚀 72-hour first sale goal — prove the system works FAST</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: COMPLEXITY KILLER (one page blueprint) -->
+  <div class="slide">
+    <div class="slide-content">
+      <h2 class="text-center">MODULE 1: <span class="gold-accent">NO WEBSITE? NO PROBLEM</span></h2>
+      <div class="grid-3" style="margin-top: 20px;">
+        <div><i class="fas fa-file-alt icon-large"></i><div style="font-size: 26px; font-weight: 800;">Headline</div></div>
+        <div><i class="fas fa-video icon-large"></i><div style="font-size: 26px; font-weight: 800;">Video</div></div>
+        <div><i class="fas fa-hand-pointer icon-large"></i><div style="font-size: 26px; font-weight: 800;">1 Button</div></div>
+      </div>
+      <div class="stat-card dark-bg gold-border text-center">
+        <p style="font-size: 38px; font-weight: 800;">= MONEY in the bank</p>
+        <p style="font-size: 20px;">No logo obsession. No over-engineering. Just a BRIDGE from TikTok → Checkout.</p>
+      </div>
+      <p class="text-center" style="margin-top: 25px; font-size: 22px;"><i class="fas fa-clock"></i> Live in 20 minutes (Carrd + $19/year)</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: AI SCRIPT FORMULA (hook/problem/fix) -->
+  <div class="slide">
+    <div class="slide-content text-center">
+      <div style="background: #0D1B2A; display: inline-block; padding: 8px 35px; border-radius: 60px; margin-bottom: 20px;"><span style="color:#FCA311; font-weight: 800;">🎯 AI IS A MIRROR, NOT A BRAIN</span></div>
+      <h2>THE 3-SECOND HOOK FORMULA</h2>
+      <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; margin: 40px 0;">
+        <div class="stat-card"><span style="font-size: 48px; font-weight: 800;">HOOK</span><br>Stop scroll</div>
+        <div class="stat-card"><span style="font-size: 48px; font-weight: 800;">PROBLEM</span><br>Agitate pain</div>
+        <div class="stat-card"><span style="font-size: 48px; font-weight: 800;">FIX</span><br>Your solution</div>
+      </div>
+      <p class="warning-band" style="font-size: 22px;"><i class="fas fa-key"></i> "I hand you the exact ChatGPT prompt that prints money"</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 10: TRAFFIC ARBITRAGE (3 platforms) -->
+  <div class="slide">
+    <div class="slide-content text-center">
+      <h2>VIEWS ARE VANITY, CLICKS ARE SANITY</h2>
+      <div class="stat-card dark-bg gold-border" style="background: #0D1B2A; margin-bottom: 20px;">
+        <i class="fab fa-tiktok" style="font-size: 70px; margin: 0 15px;"></i>
+        <i class="fab fa-instagram" style="font-size: 70px; margin: 0 15px;"></i>
+        <i class="fab fa-youtube" style="font-size: 70px; margin: 0 15px;"></i>
+        <p style="font-size: 32px; margin-top: 20px;">Post Once → Profit Thrice</p>
+      </div>
+      <p style="font-size: 26px;">3 platforms = 3x the opportunity. No following? No problem. Algorithm does the heavy lifting.</p>
+      <div class="text-center" style="margin-top: 30px;"><i class="fas fa-user-secret gold-accent"></i> Faceless-friendly system (but face = faster wealth)</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 11: FRICTION KILLS (mobile first) -->
+  <div class="slide">
+    <div class="slide-content text-center">
+      <h2>⚡ EVERY EXTRA CLICK COSTS YOU 20%</h2>
+      <div class="grid-3" style="margin: 30px 0;">
+        <div><i class="fas fa-mobile-alt icon-large"></i><div style="font-weight: 800;">Mobile-first</div><div>99% traffic from phone</div></div>
+        <div><i class="fas fa-hand-point-up icon-large"></i><div style="font-weight: 800;">One button</div><div>One offer rule</div></div>
+        <div><i class="fas fa-bolt icon-large"></i><div style="font-weight: 800;">1 second load</div><div>Carrd + $19/year</div></div>
+      </div>
+      <p class="warning-band">80% of beginners pick "pretty" over fast. They make $0. Don't be them.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 12: SCALING = ADDITION, NOT INNOVATION -->
+  <div class="slide">
+    <div class="slide-content text-center">
+      <h2>FROM $1K → $3K / MONTH</h2>
+      <p style="font-size: 32px; margin-bottom: 20px;">Double down on what works</p>
+      <div class="stat-card" style="background: #FCA31122; border: 2px solid #FCA311;">
+        <i class="fas fa-chart-line icon-large"></i>
+        <p style="font-size: 28px;">Find 1 winning video → Make 5 variations → Post 3x/day = 3x the math</p>
+      </div>
+      <p class="text-center" style="margin-top: 35px; font-size: 22px;"><strong>☝️ System over hustle — escape the matrix</strong></p>
+    </div>
+  </div>
+
+  <!-- SLIDE 13: WHO THIS IS FOR (simple) -->
+  <div class="slide">
+    <div class="slide-content">
+      <h2 class="text-center">THIS BLUEPRINT IS FOR YOU IF...</h2>
+      <div class="grid-3" style="gap: 20px; margin-top: 25px;">
+        <div><i class="fas fa-seedling gold-accent"></i> Complete beginner? ✔️ Fast-start track</div>
+        <div><i class="fas fa-briefcase gold-accent"></i> Freelancer? ✔️ Add AI services, raise rates</div>
+        <div><i class="fas fa-clock gold-accent"></i> 9-5 employee? ✔️ Side income safety net</div>
+        <div><i class="fas fa-rocket gold-accent"></i> Creator? ✔️ Ship products 10x faster</div>
+        <div><i class="fas fa-chart-line gold-accent"></i> Side hustler? ✔️ Real income system</div>
+        <div><i class="fas fa-sync-alt gold-accent"></i> Career changer? ✔️ AI-powered path</div>
+      </div>
+      <div class="text-center" style="margin-top: 30px; background: #0D1B2A; color: white; padding: 20px; border-radius: 48px;">
+        ⚡ You're ONE system away from freedom.
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 14: THE OPPORTUNITY (10 spots only) -->
+  <div class="slide">
+    <div class="slide-content text-center">
+      <h2>⚠️ 10 PEOPLE ONLY ⚠️</h2>
+      <p style="font-size: 34px; margin: 20px 0;">I don't need another "job." I'm hand-picking <strong class="gold-accent">10 builders</strong> to escape the matrix.</p>
+      <div class="stat-card dark-bg gold-border" style="background: #0D1B2A;">
+        <span style="font-size: 48px; font-weight: 800; color: #FCA311;">ONLY 10 SPOTS</span>
+        <p style="font-size: 20px; color: white;">Once filled – this offer disappears forever</p>
+      </div>
+      <div class="warning-band" style="margin-top: 25px;"><i class="fas fa-fire"></i> 10 builders. 9-day results. Don't be the one who watches from the sidelines.</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 15: BONUS STACK (urgency stacked) -->
+  <div class="slide">
+    <div class="slide-content">
+      <h2 class="text-center">🔥 THE "ALMIGHTY" BONUS STACK</h2>
+      <div class="check-list" style="margin: 30px auto; max-width: 800px;">
+        <div><i class="fas fa-check-circle"></i> 10 Done-For-You AI Scripts (copy-paste)</div>
+        <div><i class="fas fa-check-circle"></i> 20 Winning TikTok Hooks (stop scroll)</div>
+        <div><i class="fas fa-check-circle"></i> Pre-Vetted Offer List + Sign-Up Links</div>
+        <div><i class="fas fa-check-circle"></i> Landing Page Template (Carrd ready)</div>
+        <div><i class="fas fa-check-circle"></i> 30-Day Daily Action Checklist</div>
+      </div>
+      <div class="text-center">
+        <span class="stat-card" style="background: #FCA311; color: #0D1B2A; font-size: 38px; font-weight: 800;">TOTAL BONUS VALUE: $497 → YOURS FREE</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 16: REAL WORLD VALUE vs TODAY'S PRICE -->
+  <div class="slide">
+    <div class="slide-content text-center">
+      <h2>TOTAL REAL WORLD VALUE</h2>
+      <div class="big-number" style="font-size: 110px;">$8,980</div>
+      <div class="divider"></div>
+      <p style="font-size: 32px; text-decoration: line-through; color: #aaa;">$997</p>
+      <p style="font-size: 36px; font-weight: 800;">TODAY'S INVESTMENT:</p>
+      <div class="price-tag">$297</div>
+      <div class="stat-card" style="background: #FCA31120; margin-top: 25px;">
+        <p><i class="fas fa-hourglass-half"></i> Less than a night out → 5-figure potential</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 17: "WHAT IF YOU WALK AWAY?" (FEAR + REGRET) -->
+  <div class="slide">
+    <div class="slide-content text-center">
+      <h2>THE COST OF <span class="gold-accent">DOING NOTHING</span></h2>
+      <div class="grid-3" style="margin: 35px 0;">
+        <div><i class="fas fa-frown icon-large"></i> Next year same place, same struggle</div>
+        <div><i class="fas fa-money-bill-wave icon-large"></i> Lose $12,000+ in potential income</div>
+        <div><i class="fas fa-eye-slash icon-large"></i> Watch others succeed with AI while you wait</div>
+      </div>
+      <div class="warning-band" style="background: #0D1B2A; color: white;">
+        🧠 "Will you look back in 6 months and regret ignoring this?"
+      </div>
+      <p style="font-size: 28px; margin-top: 30px; font-weight: 800;">Don't be the person who says "I should have started".</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 18: 100% SATISFACTION (risk reversal) -->
+  <div class="slide">
+    <div class="slide-content text-center">
+      <h2>ZERO RISK. 30 DAYS.</h2>
+      <div class="stat-card" style="border: 3px solid #FCA311;">
+        <i class="fas fa-medal icon-large" style="color:#FCA311;"></i>
+        <p style="font-size: 28px; font-weight: 800;">"If you don't see a clear path to $1k/month, I refund every dime. No questions, no hard feelings."</p>
+        <p style="margin-top: 20px;">– Sean Ali</p>
+      </div>
+      <p class="text-center" style="margin-top: 30px;"><i class="fas fa-lock"></i> Secure checkout • Instant access • Lifetime updates</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 19: FINAL CTA - scarcity bomb -->
+  <div class="slide">
+    <div class="slide-content text-center">
+      <div class="stat-card dark-bg gold-border" style="background: #0D1B2A; margin-bottom: 20px;">
+        <span style="font-size: 28px; letter-spacing: 4px;">ACTIVATE YOUR SYSTEM</span>
+        <div class="price-tag" style="font-size: 86px;">$297</div>
+        <p style="color: #FCA311; font-size: 20px;">Only 10 spots • Price locks after this webinar</p>
+      </div>
+      <a href="#" class="btn-cta" style="margin: 20px auto; display: inline-block;">CLAIM MY SPOT NOW <i class="fas fa-arrow-right"></i></a>
+      <p class="warning-band" style="margin-top: 25px; font-size: 22px;">⚠️ 10 spots. Then we go offline. You'll never see this offer again. ⚠️</p>
+      <p style="margin-top: 15px;"><i class="fas fa-credit-card"></i> One-time payment • No subscriptions</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 20: CLOSING - SEE YOU INSIDE -->
+  <div class="slide">
+    <div class="slide-content text-center">
+      <div class="divider" style="margin-bottom: 20px;"></div>
+      <h2>SEE YOU ON THE INSIDE</h2>
+      <p style="font-size: 36px; margin: 20px 0;">Your future self is waiting.<br>Join the <strong class="gold-accent">10 builders</strong> escaping the matrix today.</p>
+      <div style="margin-top: 40px;">
+        <i class="fas fa-signature" style="font-size: 48px;"></i>
+        <p style="font-size: 28px; font-weight: 800;">Sean Ali — AI Freedom System</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- simple disclaimer footer -->
+<div style="text-align: center; margin-top: 20px; font-size: 14px; color: #6c757d; max-width: 1100px; padding: 20px;">
+  Disclaimer: Earnings and results shown are not typical. Your outcomes depend on effort and application. We guarantee the system framework but individual success varies. This page is for educational purposes.
+</div>
+</body>
+</html>

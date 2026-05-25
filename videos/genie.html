@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta charset=\"UTF-8\">
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '878451855254470');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=878451855254470&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Manifestation App That Actually Makes You Do the Work | Manifestation Genie</title>
+<meta name="description" content="Most manifestation apps give you affirmations and hope for the best. Manifestation Genie gives you a personalized AI coach that bridges intention and execution — every single day.">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --deep: #060814;
+    --violet: #7C5FFF;
+    --lavender: #B09EFF;
+    --pale: #DDD8FF;
+    --gold: #C8A96E;
+    --amber: #E8B84B;
+    --green: #7DD8A0;
+    --cyan: #5ECFCF;
+    --magenta: #E070C8;
+  }
+
+  html, body {
+    font-family: 'Inter', sans-serif;
+    background: var(--deep);
+    color: #E8E3FF;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0; left: 0;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(1px 1px at 8% 14%, rgba(255,255,255,0.55) 0%, transparent 100%),
+      radial-gradient(1px 1px at 21% 5%, rgba(255,255,255,0.35) 0%, transparent 100%),
+      radial-gradient(1px 1px at 37% 19%, rgba(255,255,255,0.45) 0%, transparent 100%),
+      radial-gradient(1px 1px at 52% 8%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 69% 26%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 84% 13%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 94% 38%, rgba(255,255,255,0.55) 0%, transparent 100%),
+      radial-gradient(1px 1px at 3% 49%, rgba(255,255,255,0.35) 0%, transparent 100%),
+      radial-gradient(1px 1px at 16% 63%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 43% 77%, rgba(255,255,255,0.45) 0%, transparent 100%),
+      radial-gradient(1px 1px at 71% 88%, rgba(255,255,255,0.35) 0%, transparent 100%),
+      radial-gradient(1px 1px at 88% 72%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 58% 55%, rgba(200,169,110,0.4) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 29% 41%, rgba(124,95,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 77% 44%, rgba(94,207,207,0.35) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .progress {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--amber), var(--magenta));
+    transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+    z-index: 200;
+    box-shadow: 0 0 14px rgba(200,169,110,0.9);
+  }
+  .counter {
+    position: fixed; top: 16px; right: 24px;
+    font-weight: 500; font-size: 15px;
+    color: rgba(216,208,255,0.35);
+    z-index: 200; letter-spacing: 2px;
+  }
+
+  .sticky-cta {
+    position: fixed; top: 0; left: 0; right: 0;
+    background: linear-gradient(90deg, rgba(6,8,20,0.97), rgba(10,6,24,0.97));
+    border-bottom: 1px solid rgba(200,169,110,0.2);
+    padding: 7px 24px;
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    z-index: 150;
+    backdrop-filter: blur(12px);
+  }
+  .sticky-cta span { font-size: clamp(11px, 1.2vw, 13px); font-weight: 500; color: var(--pale); }
+  .sticky-cta a {
+    font-weight: 700; font-size: clamp(11px, 1.2vw, 13px);
+    color: var(--amber); text-decoration: none;
+    border: 1px solid rgba(232,184,75,0.35); border-radius: 100px;
+    padding: 3px 12px; transition: background 0.2s; white-space: nowrap;
+  }
+  .sticky-cta a:hover { background: rgba(232,184,75,0.1); }
+  .sticky-dot {
+    width: 6px; height: 6px; background: var(--amber); border-radius: 50%;
+    flex-shrink: 0; animation: pulse 2.5s infinite;
+    box-shadow: 0 0 8px var(--amber);
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.7)} }
+
+  .nav {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 14px; z-index: 200;
+  }
+  .nav-btn {
+    width: 44px; height: 44px; border-radius: 50%;
+    border: 1px solid rgba(200,169,110,0.3);
+    background: rgba(200,169,110,0.06);
+    backdrop-filter: blur(12px); font-size: 24px; cursor: pointer;
+    transition: all 0.2s; display: flex; align-items: center; justify-content: center;
+    color: var(--gold);
+  }
+  .nav-btn:hover { background: rgba(200,169,110,0.18); border-color: var(--amber); transform: scale(1.08); }
+
+  .slide-wrap {
+    position: fixed;
+    top: 32px;
+    bottom: 0;
+    left: 0; right: 0;
+    overflow: hidden;
+  }
+
+  .slide {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 12px 56px 60px;
+    box-sizing: border-box;
+    opacity: 0; transform: scale(0.97) translateY(14px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    pointer-events: none; text-align: center;
+    z-index: 1;
+    overflow: hidden;
+  }
+  .slide.active {
+    opacity: 1; transform: scale(1) translateY(0);
+    pointer-events: all; z-index: 2;
+  }
+  .slide.exit {
+    opacity: 0; transform: scale(1.02) translateY(-12px);
+    pointer-events: none; z-index: 1;
+  }
+  .slide.dense {
+    justify-content: center;
+    gap: 0;
+    padding: 10px 50px 56px;
+  }
+
+  .orb {
+    position: absolute; border-radius: 50%;
+    filter: blur(80px); pointer-events: none; z-index: 0;
+  }
+
+  .sci-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(200,169,110,0.07);
+    border: 1px solid rgba(200,169,110,0.28);
+    border-radius: 100px;
+    padding: 5px 14px;
+    font-size: clamp(11px, 1.05vw, 13px);
+    font-weight: 600; color: var(--gold);
+    letter-spacing: 1px; text-transform: uppercase;
+    margin-bottom: 10px;
+    animation: fadeUp 0.5s 0.05s both;
+    position: relative; z-index: 1;
+  }
+  .sci-pill::before { content: '🧞'; font-size: 16px; }
+
+  .glyph {
+    font-size: clamp(42px, 6vw, 78px); line-height: 1; margin-bottom: 8px;
+    animation: fadeUp 0.5s 0.1s both; position: relative; z-index: 1;
+  }
+
+  .headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    font-size: clamp(26px, 4.5vw, 64px);
+    line-height: 1.15; color: #EDE8FF; max-width: 880px;
+    animation: fadeUp 0.5s 0.2s both; position: relative; z-index: 1;
+  }
+  .headline .v  { color: var(--lavender); }
+  .headline .g  { color: var(--green); }
+  .headline .gl { color: var(--gold); }
+  .headline .am { color: var(--amber); }
+  .headline .cy { color: var(--cyan); }
+  .headline .mg { color: var(--magenta); }
+
+  .divider {
+    width: 50px; height: 2px; border-radius: 10px;
+    background: linear-gradient(90deg, var(--gold), var(--amber));
+    margin: 8px auto; animation: fadeUp 0.5s 0.28s both;
+    position: relative; z-index: 1;
+    box-shadow: 0 0 10px rgba(200,169,110,0.5);
+  }
+
+  .sub {
+    font-size: clamp(14px, 1.7vw, 19px); font-weight: 400;
+    color: rgba(216,208,255,0.68); margin-top: 6px; max-width: 700px;
+    line-height: 1.68; animation: fadeUp 0.5s 0.35s both; position: relative; z-index: 1;
+  }
+  .sub strong { color: #EDE8FF; font-weight: 600; }
+
+  .label {
+    font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    font-size: clamp(11px, 1.1vw, 13px); margin-bottom: 8px;
+    animation: fadeUp 0.5s 0.05s both; position: relative; z-index: 1;
+  }
+
+  .feature-card {
+    width: 100%; max-width: 800px;
+    padding: 14px 20px; border-radius: 14px;
+    background: rgba(255,255,255,0.035);
+    border: 1px solid rgba(200,169,110,0.32);
+    display: flex; align-items: center; gap: 18px; text-align: left;
+    backdrop-filter: blur(20px);
+    animation: cardPop 0.55s 0.2s both; position: relative; z-index: 1;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.05);
+    margin-bottom: 8px;
+  }
+  .feature-card .num {
+    font-family: 'Cormorant Garamond', serif; font-weight: 700;
+    font-size: clamp(40px, 5.5vw, 66px); color: rgba(200,169,110,0.15);
+    line-height: 1; flex-shrink: 0; min-width: 44px;
+  }
+  .feature-card .ce { font-size: clamp(26px, 3.2vw, 38px); flex-shrink: 0; }
+  .feature-card .ct {
+    font-weight: 600; font-size: clamp(14px, 1.9vw, 22px);
+    line-height: 1.45; color: #EDE8FF;
+  }
+
+  .insight {
+    margin-top: 6px; padding: 8px 16px; border-radius: 11px;
+    background: rgba(200,169,110,0.05);
+    border: 1px solid rgba(200,169,110,0.22);
+    max-width: 800px; font-size: clamp(12px, 1.5vw, 16px);
+    color: rgba(216,208,255,0.78); line-height: 1.6;
+    animation: fadeUp 0.5s 0.45s both; position: relative; z-index: 1;
+  }
+  .insight strong { color: var(--amber); }
+
+  .sci-block {
+    margin-top: 6px; padding: 8px 15px; border-radius: 11px;
+    background: rgba(124,95,255,0.05);
+    border: 1px solid rgba(124,95,255,0.22);
+    max-width: 800px; font-size: clamp(11px, 1.42vw, 15px);
+    color: rgba(216,208,255,0.78); line-height: 1.65;
+    animation: fadeUp 0.5s 0.52s both; position: relative; z-index: 1;
+  }
+  .sci-block strong { color: var(--lavender); }
+  .sci-block em { color: rgba(176,158,255,0.5); }
+
+  .stat-row {
+    display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; justify-content: center;
+    animation: fadeUp 0.5s 0.5s both; position: relative; z-index: 1;
+  }
+  .stat-chip {
+    padding: 10px 18px; border-radius: 12px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(200,169,110,0.2);
+    font-size: clamp(11px, 1.2vw, 13px); color: rgba(216,208,255,0.65);
+    line-height: 1.5; text-align: center;
+  }
+  .stat-chip span {
+    display: block; font-family: 'Cormorant Garamond', serif;
+    font-weight: 700; font-size: clamp(20px, 2.8vw, 32px);
+    color: var(--amber); line-height: 1.1; margin-bottom: 2px;
+  }
+
+  /* Comparison grid */
+  .compare-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    max-width: 780px; width: 100%; margin-top: 14px;
+    animation: fadeUp 0.5s 0.35s both; position: relative; z-index: 1;
+  }
+  .compare-card {
+    padding: 14px 18px; border-radius: 14px; text-align: left;
+    backdrop-filter: blur(20px);
+  }
+  .compare-card.bad {
+    background: rgba(255,80,80,0.04);
+    border: 1px solid rgba(255,80,80,0.18);
+  }
+  .compare-card.good {
+    background: rgba(200,169,110,0.06);
+    border: 1px solid rgba(200,169,110,0.3);
+  }
+  .compare-title {
+    font-weight: 700; font-size: clamp(12px, 1.4vw, 15px); margin-bottom: 8px;
+    letter-spacing: 0.5px;
+  }
+  .compare-title.bad { color: rgba(255,120,120,0.85); }
+  .compare-title.good { color: var(--amber); }
+  .compare-item {
+    font-size: clamp(11px, 1.3vw, 14px); color: rgba(216,208,255,0.65);
+    line-height: 1.55; margin-bottom: 5px; display: flex; gap: 8px;
+  }
+  .compare-item .ico { flex-shrink: 0; }
+
+  /* Testimonial */
+  .testi-card {
+    max-width: 720px; width: 100%; margin-top: 14px;
+    padding: 18px 22px; border-radius: 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(200,169,110,0.28);
+    backdrop-filter: blur(20px);
+    animation: cardPop 0.55s 0.4s both; position: relative; z-index: 1;
+    text-align: left;
+  }
+  .testi-text {
+    font-size: clamp(13px, 1.65vw, 18px); font-style: italic;
+    color: rgba(237,232,255,0.85); line-height: 1.65; margin-bottom: 10px;
+  }
+  .testi-attr {
+    font-weight: 700; font-size: clamp(11px, 1.2vw, 13px); color: var(--gold);
+    letter-spacing: 0.5px;
+  }
+
+  /* Mini cards recap */
+  .cards-stack {
+    display: flex; flex-direction: column; gap: 8px;
+    width: 100%; max-width: 700px; margin-top: 10px;
+    animation: fadeUp 0.5s 0.3s both; position: relative; z-index: 1;
+  }
+  .mini-card {
+    display: flex; align-items: center; gap: 14px;
+    padding: 10px 16px; border-radius: 12px;
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(200,169,110,0.2);
+    text-align: left;
+  }
+  .mini-card .me { font-size: clamp(22px, 2.8vw, 32px); flex-shrink: 0; }
+  .mini-card-body { display: flex; flex-direction: column; gap: 2px; }
+  .mini-card-title { font-weight: 600; font-size: clamp(12px, 1.5vw, 16px); color: #EDE8FF; }
+  .mini-card-sci { font-size: clamp(11px, 1.2vw, 13px); color: rgba(216,208,255,0.45); }
+
+  /* Offer grid */
+  .offer-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+    max-width: 780px; width: 100%; margin-top: 10px;
+    animation: fadeUp 0.5s 0.3s both; position: relative; z-index: 1;
+  }
+  .offer-card {
+    padding: 18px 20px; border-radius: 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(124,95,255,0.28);
+    backdrop-filter: blur(20px); text-align: left;
+  }
+  .offer-icon { font-size: clamp(24px, 3vw, 38px); margin-bottom: 8px; }
+  .offer-title {
+    font-weight: 700; font-size: clamp(14px, 1.6vw, 18px);
+    color: #EDE8FF; margin-bottom: 6px;
+  }
+  .offer-desc {
+    font-size: clamp(11px, 1.3vw, 14px); color: rgba(216,208,255,0.62);
+    line-height: 1.6; margin-bottom: 10px;
+  }
+  .offer-url {
+    font-size: clamp(11px, 1.2vw, 13px); font-weight: 600;
+    color: var(--lavender); text-decoration: none;
+    border: 1px solid rgba(176,158,255,0.25); border-radius: 100px;
+    padding: 4px 12px; display: inline-block; transition: background 0.2s;
+  }
+  .offer-url:hover { background: rgba(124,95,255,0.15); }
+
+  .cta-box {
+    margin-top: 16px; padding: 16px 28px; border-radius: 16px;
+    background: linear-gradient(135deg, rgba(200,169,110,0.12), rgba(232,184,75,0.08));
+    border: 1px solid rgba(200,169,110,0.35);
+    font-weight: 700; font-size: clamp(16px, 2vw, 24px); color: var(--amber);
+    animation: fadeUp 0.5s 0.5s both; position: relative; z-index: 1;
+    text-align: center; max-width: 600px;
+    box-shadow: 0 0 40px rgba(200,169,110,0.08);
+  }
+
+  /* User count badge */
+  .user-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(125,216,160,0.07);
+    border: 1px solid rgba(125,216,160,0.25);
+    border-radius: 100px; padding: 5px 14px;
+    font-size: clamp(11px, 1.1vw, 13px); font-weight: 600;
+    color: var(--green); margin-bottom: 12px;
+    animation: fadeUp 0.5s 0.05s both; position: relative; z-index: 1;
+  }
+
+  @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes cardPop { from { opacity:0; transform:scale(0.96) translateY(14px); } to { opacity:1; transform:scale(1) translateY(0); } }
+</style>
+</head>
+<body>
+
+<div id="progress" class="progress" style="width:7.69%"></div>
+<div id="counter" class="counter">1 / 13</div>
+
+<div class="sticky-cta">
+  <div class="sticky-dot"></div>
+  <span>127,847+ people stopped wishing and started manifesting</span>
+  <a href="https://manifestationgenie.ai/" target="_blank">Try Genie Free 🧞‍♂️</a>
+</div>
+
+<div class="slide-wrap">
+
+<!-- SLIDE 1 · HOOK -->
+<div class="slide active" id="s0">
+  <div class="orb" style="width:700px;height:700px;background:radial-gradient(circle,rgba(200,169,110,0.13),transparent 65%);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+  <div class="orb" style="width:400px;height:400px;background:radial-gradient(circle,rgba(124,95,255,0.09),transparent 70%);bottom:-100px;right:-100px;"></div>
+  <div class="glyph">🔬🧞‍♂️</div>
+  <h1 class="headline">3 Reasons Your Manifestation<br><span class="am">Isn't Working.</span></h1>
+  <div class="divider"></div>
+  <p class="sub">It's not your mindset. It's not your vibration. It's not how badly you want it.<br><br>There are <strong>three specific, documented psychological gaps</strong> that stop most people from ever closing the loop between intention and result.<br><br>And there's now an AI built to fix all three. 👇</p>
+</div>
+
+<!-- SLIDE 2 · THE PROBLEM -->
+<div class="slide" id="s1">
+  <div class="orb" style="width:550px;height:550px;background:radial-gradient(circle,rgba(255,80,80,0.07),transparent 70%);top:-80px;right:-80px;"></div>
+  <div class="orb" style="width:400px;height:400px;background:radial-gradient(circle,rgba(124,95,255,0.08),transparent 70%);bottom:-60px;left:-60px;"></div>
+  <div class="sci-pill" style="border-color:rgba(255,120,120,0.3);background:rgba(255,80,80,0.05);color:rgba(255,150,150,0.9);">Why most apps fail you 🔴</div>
+  <h1 class="headline">The manifestation market is full of<br><span class="mg">pretty wallpaper. 🖼️</span></h1>
+  <div class="divider"></div>
+  <p class="sub">Vision boards. Generic daily affirmations. Vague instructions to "raise your vibration" with <strong>zero explanation of what that means in practice.</strong><br><br>You feel inspired for 48 hours. Then you're right back where you started — <strong>with a nicer phone background and the same bank account.</strong></p>
+</div>
+
+<!-- SLIDE 3 · THE INSIGHT -->
+<div class="slide" id="s_insight">
+  <div class="orb" style="width:500px;height:500px;background:radial-gradient(circle,rgba(200,169,110,0.1),transparent 70%);top:-80px;right:-80px;"></div>
+  <div class="sci-pill">The premise that changes everything</div>
+  <h1 class="headline">Manifestation without execution<br><span class="am">is just daydreaming.</span></h1>
+  <div class="divider"></div>
+  <p class="sub">That's the line Manifestation Genie is built on. 🎯<br><br>The Genie uses AI to create a <strong>personalized bridge</strong> between what you want and what you need to do today to get closer to it.<br><br>Not "visualize abundance." More like: <strong>"Open your laptop and send three proposals to potential clients in the next 45 minutes."</strong></p>
+  <div class="stat-row">
+    <div class="stat-chip"><span>127K+</span>active manifestors<br>worldwide</div>
+    <div class="stat-chip"><span>Daily</span>specific micro-actions<br>— not vague nudges</div>
+    <div class="stat-chip"><span>Real</span>accountability that<br>actually follows up</div>
+  </div>
+</div>
+
+<!-- SLIDE 4 · FEATURE 1 -->
+<div class="slide dense" id="s2">
+  <div class="orb" style="width:450px;height:450px;background:radial-gradient(circle,rgba(124,95,255,0.13),transparent 70%);top:-80px;right:-80px;"></div>
+  <div class="label" style="color:var(--lavender);">Feature #1 🧠</div>
+  <div class="feature-card" style="border-color:rgba(176,158,255,0.35);">
+    <div class="num" style="color:rgba(124,95,255,0.2);">01</div>
+    <div class="ce">🧬</div>
+    <div class="ct">The Genie identifies your <strong style="color:var(--lavender);">specific mental blocks</strong> and gives you targeted exercises rooted in cognitive science. Not affirmations. <em>Recalibration.</em></div>
+  </div>
+  <div class="insight" style="border-color:rgba(176,158,255,0.25);background:rgba(124,95,255,0.05);">
+    💡 Think of it like going to a therapist who actually <strong>tells you what to do</strong> — not just listens and nods. The Genie doesn't reflect your feelings back at you. It <strong>maps your blocks and hands you the shovel.</strong>
+  </div>
+  <div class="sci-block">
+    <strong>The science behind it:</strong> The Reticular Activating System (RAS) filters what your brain notices. When the Genie recalibrates your focus, you literally start seeing opportunities you were blind to before. This isn't woo — it's <strong>how your brain's attention system actually works.</strong>
+  </div>
+</div>
+
+<!-- SLIDE 5 · FEATURE 2 -->
+<div class="slide dense" id="s3">
+  <div class="orb" style="width:500px;height:500px;background:radial-gradient(circle,rgba(232,184,75,0.1),transparent 70%);bottom:-100px;left:-100px;"></div>
+  <div class="label" style="color:var(--amber);">Feature #2 ⚡️</div>
+  <div class="feature-card" style="border-color:rgba(232,184,75,0.35);">
+    <div class="num" style="color:rgba(232,184,75,0.15);">02</div>
+    <div class="ce">🎯</div>
+    <div class="ct">Every session ends with a <strong style="color:var(--amber);">specific micro-action</strong> — what to do, when to do it, how long it takes. No "take inspired action" vagueness. Ever.</div>
+  </div>
+  <div class="insight" style="border-color:rgba(232,184,75,0.25);background:rgba(200,169,110,0.05);">
+    💡 I used to spend 20 minutes journaling about my dreams then <strong>do absolutely nothing differently.</strong> The Genie flipped the ratio: 5 minutes talking, <strong>45 minutes doing the specific thing it told me to do.</strong>
+  </div>
+  <div class="sci-block">
+    <strong>The psychology:</strong> The Zeigarnik Effect shows your brain has a compulsion to complete unfinished tasks. When the Genie gives you a concrete action with a deadline, your brain <strong>won't let it go until it's done.</strong> It weaponizes your own psychology for you.
+  </div>
+</div>
+
+<!-- SLIDE 6 · FEATURE 3 -->
+<div class="slide dense" id="s4">
+  <div class="orb" style="width:500px;height:500px;background:radial-gradient(circle,rgba(125,216,160,0.1),transparent 70%);top:-80px;right:-80px;"></div>
+  <div class="label" style="color:var(--green);">Feature #3 🔄</div>
+  <div class="feature-card" style="border-color:rgba(125,216,160,0.35);">
+    <div class="num" style="color:rgba(125,216,160,0.15);">03</div>
+    <div class="ce">✅</div>
+    <div class="ct">The Genie asks <strong style="color:var(--green);">"Did you do the thing?"</strong> and adjusts your next steps based on your <em>real</em> progress. Zero guilt. Maximum momentum.</div>
+  </div>
+  <div class="insight" style="border-color:rgba(125,216,160,0.25);background:rgba(125,216,160,0.04);">
+    💡 Every other app I tried had no memory. No follow-through. The Genie <strong>remembers what it asked you to do yesterday</strong> — and calls you on it. Kindly. But firmly. Like a coach who actually wants you to win. 🏆
+  </div>
+  <div class="sci-block">
+    <strong>Identity-behavior alignment:</strong> When you consistently follow through on small actions, you start seeing yourself as someone who does what they say. Your identity shifts. <strong>That shift changes everything downstream</strong> — including what you attract.
+  </div>
+</div>
+
+<!-- SLIDE 7 · VS COMPARISON -->
+<div class="slide" id="s5">
+  <div class="orb" style="width:600px;height:600px;background:radial-gradient(circle,rgba(200,169,110,0.08),transparent 70%);top:-200px;right:-200px;"></div>
+  <div class="sci-pill">Side by side</div>
+  <h1 class="headline" style="font-size:clamp(22px,3.5vw,48px);">Other apps vs <span class="am">The Genie 🧞‍♂️</span></h1>
+  <div class="compare-grid">
+    <div class="compare-card bad">
+      <div class="compare-title bad">❌ Other Manifestation Apps</div>
+      <div class="compare-item"><span class="ico">💭</span><span>Generic affirmations anyone could have written</span></div>
+      <div class="compare-item"><span class="ico">🌫️</span><span>"Raise your vibration" — no idea how</span></div>
+      <div class="compare-item"><span class="ico">📸</span><span>Pretty vision board, same life</span></div>
+      <div class="compare-item"><span class="ico">🤷</span><span>No follow-up, no accountability, no memory</span></div>
+    </div>
+    <div class="compare-card good">
+      <div class="compare-title good">✨ Manifestation Genie</div>
+      <div class="compare-item"><span class="ico">🧠</span><span>Personalized to your specific mental blocks</span></div>
+      <div class="compare-item"><span class="ico">⚡️</span><span>Exact action, exact time, exact duration</span></div>
+      <div class="compare-item"><span class="ico">📈</span><span>Tracks real progress, not just mood</span></div>
+      <div class="compare-item"><span class="ico">🔄</span><span>Follows up, adjusts, never lets you drift</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8 · THE SCIENCE SLIDE -->
+<div class="slide" id="s_sci">
+  <div class="orb" style="width:500px;height:500px;background:radial-gradient(circle,rgba(94,207,207,0.1),transparent 70%);top:-80px;right:-80px;"></div>
+  <div class="sci-pill" style="border-color:rgba(94,207,207,0.28);background:rgba(94,207,207,0.07);color:var(--cyan);">This isn't "woo" ⚗️</div>
+  <h1 class="headline">There's real psychology<br><span class="cy">powering every session.</span></h1>
+  <div class="divider"></div>
+  <p class="sub">The Genie's approach is grounded in studied mechanisms:<br><br>🔬 <strong>Reticular Activating System</strong> — what you focus on, you notice.<br>🧪 <strong>Cognitive Priming</strong> — pre-loading your brain for opportunity recognition.<br>🪞 <strong>Identity-Behavior Alignment</strong> — acting as the person you're becoming.<br>⏳ <strong>Zeigarnik Effect</strong> — your brain's compulsion to complete unfinished tasks.<br><br>These are applied to <em>your</em> specific situation, goals, and mental patterns.</p>
+</div>
+
+<!-- SLIDE 9 · TESTIMONIAL -->
+<div class="slide" id="s6">
+  <div class="orb" style="width:600px;height:600px;background:radial-gradient(circle,rgba(200,169,110,0.1),transparent 70%);bottom:-200px;left:-200px;"></div>
+  <div class="glyph">💬⭐️</div>
+  <h1 class="headline" style="font-size:clamp(22px,3.2vw,44px);">The Genie told her exactly<br><span class="am">what email to send.</span></h1>
+  <div class="divider"></div>
+  <div class="testi-card">
+    <div class="testi-text">"I stopped procrastinating on day 3. By day 17, I landed a $12K raise. The Genie didn't just tell me to visualize — it told me exactly what email to send and when."</div>
+    <div class="testi-attr">— Sarah M. &nbsp;·&nbsp; 🌟 Verified Manifestation Genie user</div>
+  </div>
+  <p class="sub" style="margin-top:14px;">That's not a vibe shift. That's a <strong>specific action that produced a specific result.</strong> 🎯</p>
+</div>
+
+<!-- SLIDE 10 · WHO IT'S FOR -->
+<div class="slide" id="s7">
+  <div class="orb" style="width:500px;height:500px;background:radial-gradient(circle,rgba(124,95,255,0.1),transparent 70%);bottom:-100px;right:-100px;"></div>
+  <div class="sci-pill">Is this you? 🤔</div>
+  <h1 class="headline">You believe in intention.<br><span class="v">But intention alone doesn't pay the bills.</span></h1>
+  <div class="divider"></div>
+  <p class="sub">The Genie is for people who've tried manifestation and felt like something was missing — <strong>the accountability, the specificity, the actual plan.</strong><br><br>You've read the books. You've done the journaling. You know the power is real.<br><br>You just needed someone to say: <strong>"Here's what to do. Right now. Today."</strong> 📋</p>
+</div>
+
+<!-- SLIDE 11 · RECAP -->
+<div class="slide" id="s8">
+  <div class="orb" style="width:600px;height:600px;background:radial-gradient(circle,rgba(200,169,110,0.09),transparent 70%);top:-50%;left:50%;transform:translateX(-50%);"></div>
+  <div class="glyph" style="font-size:clamp(30px,4vw,50px);">🧞‍♂️ What the Genie does</div>
+  <div class="cards-stack">
+    <div class="mini-card">
+      <span class="me">🧬</span>
+      <div class="mini-card-body">
+        <div class="mini-card-title">AI Psychological Recalibration</div>
+        <div class="mini-card-sci">↳ Finds your specific blocks, not generic ones</div>
+      </div>
+    </div>
+    <div class="mini-card">
+      <span class="me">⚡️</span>
+      <div class="mini-card-body">
+        <div class="mini-card-title">Daily Micro-Action Engine</div>
+        <div class="mini-card-sci">↳ Exact action, exact time — zero vagueness</div>
+      </div>
+    </div>
+    <div class="mini-card">
+      <span class="me">🔄</span>
+      <div class="mini-card-body">
+        <div class="mini-card-title">Accountability That Follows Up</div>
+        <div class="mini-card-sci">↳ Asks "did you do it?" and adjusts accordingly</div>
+      </div>
+    </div>
+  </div>
+  <p class="sub" style="animation:fadeUp 0.5s 0.8s both;margin-top:14px;">This is what <strong>127,847 people</strong> are using right now. 👇</p>
+</div>
+
+<!-- SLIDE 12 · TRY FREE -->
+<div class="slide" id="s9">
+  <div class="orb" style="width:600px;height:600px;background:radial-gradient(circle,rgba(200,169,110,0.12),transparent 70%);top:-200px;right:-200px;"></div>
+  <div class="label" style="color:var(--amber);">🎁 Try it — it's free</div>
+  <h2 style="font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(18px, 2.3vw, 30px);color:#EDE8FF;margin-bottom:14px;animation:fadeUp 0.5s 0.2s both;position:relative;z-index:1;">No credit card. No commitment.<br>Just your first wish. 🧞‍♂️</h2>
+  <div class="offer-grid">
+    <div class="offer-card">
+      <div class="offer-icon">🤖🎯</div>
+      <div class="offer-title">AI Manifestation Chat</div>
+      <div class="offer-desc">Your personalized Genie identifies what's really blocking you and gives you a targeted micro-action. <strong>First session is completely free.</strong><br><br><em style="color:rgba(216,208,255,0.45);font-size:12px;">Personalized · Science-backed · Actionable</em></div>
+      <a class="offer-url" href="https://manifestationgenie.ai/" target="_blank">→ ManifestationGenie.ai</a>
+    </div>
+    <div class="offer-card" style="border-color:rgba(200,169,110,0.28);">
+      <div class="offer-icon">📓✨</div>
+      <div class="offer-title">Vibe Check + Daily Journey</div>
+      <div class="offer-desc">Daily check-ins, your accountability journal, and a roadmap that actually tracks real progress — not just how you feel.<br><br><em style="color:rgba(216,208,255,0.45);font-size:12px;">Daily · Accountable · Momentum-building</em></div>
+      <a class="offer-url" href="https://manifestationgenie.ai/" target="_blank" style="color:var(--gold);">→ Start Your Journey</a>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 13 · FINAL CTA -->
+<div class="slide" id="s10">
+  <div class="orb" style="width:700px;height:700px;background:radial-gradient(circle,rgba(200,169,110,0.15),transparent 65%);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+  <div class="orb" style="width:400px;height:400px;background:radial-gradient(circle,rgba(124,95,255,0.1),transparent 70%);bottom:-80px;right:-60px;"></div>
+  <div class="user-badge">✨ 127,847+ manifestors worldwide</div>
+  <h1 class="headline" style="color:#EDE8FF;">Ready to stop wishing<br>and <span class="am">start doing?</span></h1>
+  <div class="cta-box">🧞 Make Your First Wish → ManifestationGenie.ai</div>
+  <p style="font-weight:500;font-size:clamp(11px, 1.2vw, 14px);color:rgba(216,208,255,0.3);margin-top:12px;animation:fadeUp 0.5s 0.9s both;position:relative;z-index:1;letter-spacing:1px;">Your personal AI manifestation wizard. Make a wish, get a ritual, transform your life.</p>
+</div>
+
+</div><!-- end slide-wrap -->
+
+<div class="nav">
+  <button class="nav-btn" onclick="go(-1)">‹</button>
+  <button class="nav-btn" onclick="go(1)">›</button>
+</div>
+
+<script>
+  let cur = 0;
+  const total = 13;
+  const slides = document.querySelectorAll('.slide');
+
+  function updateUI() {
+    document.getElementById('progress').style.width = ((cur + 1) / total * 100) + '%';
+    document.getElementById('counter').textContent = (cur + 1) + ' / ' + total;
+  }
+
+  let transitioning = false;
+
+  function go(dir) {
+    if (transitioning) return;
+    const next = cur + dir;
+    if (next < 0 || next >= total) return;
+    transitioning = true;
+    const leaving = cur;
+    slides[leaving].classList.remove('active');
+    slides[leaving].classList.add('exit');
+    slides.forEach((s, i) => { if (i !== leaving) s.classList.remove('active','exit'); });
+    setTimeout(() => {
+      slides[leaving].classList.remove('exit');
+      cur = next;
+      slides[cur].querySelectorAll('*').forEach(el => {
+        const anim = window.getComputedStyle(el).animationName;
+        if (anim && anim !== 'none') {
+          el.style.animationName = 'none';
+          void el.offsetWidth;
+          el.style.animationName = '';
+        }
+      });
+      slides[cur].classList.add('active');
+      updateUI();
+      transitioning = false;
+    }, 360);
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+  });
+
+  let tx = 0;
+  document.addEventListener('touchstart', e => tx = e.touches[0].clientX);
+  document.addEventListener('touchend', e => {
+    const d = tx - e.changedTouches[0].clientX;
+    if (Math.abs(d) > 50) go(d > 0 ? 1 : -1);
+  });
+
+  document.addEventListener('click', e => {
+    if (e.target.closest('.nav') || e.target.closest('a')) return;
+    const w = window.innerWidth;
+    if (e.clientX > w * 0.2 && e.clientX < w * 0.8) go(1);
+  });
+
+  updateUI();
+</script>
+<footer style="text-align:center;padding:48px 20px 24px;font-size:13px;color:#888;border-top:1px solid rgba(0,0,0,0.08);margin-top:40px;font-family:sans-serif;line-height:2.2;"><div style="display:flex;justify-content:center;flex-wrap:wrap;gap:6px 20px;margin-bottom:14px;"><a href="/" style="color:#888;text-decoration:none;">Home</a><a href="/story.html" style="color:#888;text-decoration:none;">My Story</a><a href="/what-are-money-blocks.html" style="color:#888;text-decoration:none;">Money Blocks</a><a href="/how-to-reprogram-your-subconscious-mind.html" style="color:#888;text-decoration:none;">Reprogram Your Mind</a><a href="/best-ai-manifestation-app.html" style="color:#888;text-decoration:none;">AI Manifestation App</a><a href="/quit-your-9-to-5-with-ai.html" style="color:#888;text-decoration:none;">Quit Your 9–5</a><a href="/reset/" style="color:#888;text-decoration:none;">Free Reset</a><a href="/webinar/" style="color:#888;text-decoration:none;">Free Training</a><a href="/guide.html" style="color:#888;text-decoration:none;">Money Guide</a><a href="/blueprint.html" style="color:#c6a43b;text-decoration:none;">Blueprint</a></div>© Sean Ali · seanali.online<br>Join the movement: 125,000+ people already living their version of freedom</footer>
+</body>
+</html>

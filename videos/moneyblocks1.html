@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta charset=\"UTF-8\">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Subconscious Money Code Most People Never Find Out About | Sean Ali | Money Blocks Day 1 of 30</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,800;0,900;1,800;1,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#C9A84C;--gold-dim:#7a5e1a;--gold-bg:#faf5e8;
+  --black:#0a0a0a;--off:#f8f7f4;--text:#1a1a1a;--muted:#888;--border:#e8e4dc;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:#fff;
+  font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+
+/* ── DECK & SLIDES ── */
+.deck{width:100vw;height:100vh;position:relative;overflow:hidden}
+.slide{
+  position:absolute;inset:0;
+  opacity:0;pointer-events:none;
+  overflow:hidden;
+  transition:opacity 0.38s ease;
+  display:flex;align-items:center;justify-content:center;
+}
+.slide.active{opacity:1;pointer-events:all}
+
+/* ── CENTER COLUMN — fits everything ── */
+.col{
+  width:100%;max-width:760px;
+  padding:28px 36px;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;
+  gap:14px;
+  max-height:100vh;
+  overflow:hidden;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.slide.active .a{animation:up 0.45s ease forwards}
+.slide.active .a1{animation-delay:.04s;opacity:0}
+.slide.active .a2{animation-delay:.13s;opacity:0}
+.slide.active .a3{animation-delay:.22s;opacity:0}
+.slide.active .a4{animation-delay:.31s;opacity:0}
+.slide.active .a5{animation-delay:.40s;opacity:0}
+.slide.active .a6{animation-delay:.49s;opacity:0}
+
+/* ── TYPOGRAPHY — fitted to screen ── */
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--gold-dim)}
+.h1{font-family:'Playfair Display',serif;
+  font-size:clamp(32px,4.8vw,60px);
+  font-weight:900;line-height:1.06;color:var(--black);max-width:92%}
+.h1 .g{color:var(--gold)} .h1 .i{font-style:italic}
+.h2{font-family:'Playfair Display',serif;
+  font-size:clamp(24px,3.5vw,44px);
+  font-weight:900;line-height:1.1;color:var(--black)}
+.h2 .g{color:var(--gold)}
+.h3{font-family:'Playfair Display',serif;
+  font-size:clamp(18px,2.4vw,30px);
+  font-weight:800;line-height:1.2;color:var(--black)}
+.h3 .g{color:var(--gold)}
+.note{font-size:15px;color:#666;max-width:520px;line-height:1.55}
+.disc{font-size:12px;color:var(--muted)}
+.gbar{width:36px;height:3px;background:var(--gold);border-radius:2px}
+
+/* ── ICONS ── */
+.icon-xl{font-size:56px;line-height:1;display:block}
+.icon-lg{font-size:44px;line-height:1;display:block}
+
+/* ── BADGE ── */
+.badge{display:inline-flex;align-items:center;gap:8px;
+  background:var(--gold-bg);border:1px solid #e8d9b0;
+  border-radius:4px;padding:6px 16px}
+.badge-n{background:var(--gold);color:#fff;font-size:11px;
+  font-weight:800;padding:2px 8px;border-radius:2px;letter-spacing:.06em}
+.badge-t{font-size:11px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--gold-dim)}
+
+/* ── AUTHOR ── */
+.author{display:flex;align-items:center;gap:12px}
+.av{width:48px;height:48px;border-radius:50%;
+  object-fit:cover;object-position:top center;border:2px solid var(--gold)}
+.an{font-size:15px;font-weight:700;color:var(--black);text-align:left}
+.as{font-size:12px;color:var(--muted);text-align:left}
+
+/* ── STAT ── */
+.stat-n{font-family:'Playfair Display',serif;
+  font-size:clamp(72px,11vw,130px);font-weight:900;color:var(--gold);line-height:1}
+.stat-c{font-size:14px;font-weight:700;color:var(--muted);
+  letter-spacing:.06em;text-transform:uppercase}
+
+/* ── ICON ROW ── */
+.icon-row{display:flex;gap:0;max-width:660px;width:100%;
+  border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.icon-cell{flex:1;display:flex;flex-direction:column;align-items:center;
+  gap:8px;padding:18px 10px;border-right:1px solid var(--border);background:#fff}
+.icon-cell:last-child{border-right:none}
+.icon-cell.hi{background:var(--gold-bg)}
+.ic-icon{font-size:30px;line-height:1}
+.ic-label{font-size:13px;font-weight:700;color:var(--black);line-height:1.2}
+.ic-sub{font-size:11px;color:var(--muted);line-height:1.3}
+
+/* ── STEPS ── */
+.steps{display:flex;flex-direction:column;gap:9px;max-width:640px;width:100%}
+.step{display:flex;align-items:center;gap:16px;
+  background:var(--off);border:1px solid var(--border);
+  border-radius:10px;padding:14px 18px;text-align:left}
+.step-icon{font-size:28px;flex-shrink:0;width:38px;text-align:center}
+.step-title{font-size:15px;font-weight:700;color:var(--black);margin-bottom:2px}
+.step-body{font-size:12px;color:#777;line-height:1.5}
+
+/* ── DARK BAND ── */
+.band{background:var(--black);border-radius:14px;
+  padding:24px 32px;max-width:660px;width:100%}
+.band-h{font-family:'Playfair Display',serif;
+  font-size:clamp(18px,2.4vw,28px);font-weight:900;
+  color:#fff;line-height:1.2;margin-bottom:8px}
+.band-h .g{color:var(--gold)}
+.band-p{font-size:14px;color:rgba(255,255,255,.55);line-height:1.6}
+
+/* ── QUOTE ── */
+.qwrap{border-left:3px solid var(--gold);padding:14px 20px;
+  background:var(--off);border-radius:0 8px 8px 0;
+  max-width:600px;text-align:left}
+.qt{font-family:'Playfair Display',serif;font-size:17px;
+  font-style:italic;color:var(--black);line-height:1.5;margin-bottom:6px}
+.qa{font-size:12px;font-weight:600;color:var(--muted)}
+
+/* ── PROOF STRIP ── */
+.pstrip{display:flex;border:1px solid var(--border);
+  border-radius:10px;overflow:hidden;max-width:560px;width:100%}
+.pc{flex:1;padding:12px 10px;text-align:center;
+  border-right:1px solid var(--border);background:#fff}
+.pc:last-child{border-right:none}
+.pc-n{font-family:'Playfair Display',serif;
+  font-size:20px;font-weight:900;color:var(--gold)}
+.pc-l{font-size:11px;color:var(--muted);font-weight:600;
+  text-transform:uppercase;letter-spacing:.05em;margin-top:2px;line-height:1.3}
+
+/* ── PILLS ── */
+.pills{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;max-width:640px}
+.pill{background:var(--off);border:1px solid var(--border);
+  border-radius:100px;padding:7px 14px;font-size:12px;font-weight:600;color:var(--text)}
+.pill.hi{background:var(--gold-bg);border-color:#e8d9b0;color:var(--gold-dim)}
+
+/* ── AFFIRM ── */
+.affirm{background:var(--black);border-radius:14px;
+  padding:32px 36px;max-width:620px;width:100%}
+.affirm-l{font-size:11px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.affirm-t{font-family:'Playfair Display',serif;
+  font-size:clamp(22px,3vw,36px);font-weight:900;
+  color:#fff;line-height:1.12;margin-bottom:12px}
+.affirm-s{font-size:13px;color:rgba(255,255,255,.45);line-height:1.6}
+
+/* ── COMMENT BOX ── */
+.cbox{background:var(--off);border:2px solid var(--gold);
+  border-radius:12px;padding:20px 28px;max-width:600px;width:100%}
+.cbox-l{font-size:11px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--gold-dim);margin-bottom:8px}
+.cbox-p{font-family:'Playfair Display',serif;
+  font-size:clamp(17px,2.2vw,24px);font-weight:800;
+  color:var(--black);line-height:1.3}
+
+/* ── CTA BLOCK ── */
+.cta-block{border:1px solid var(--border);border-radius:10px;
+  padding:14px 22px;max-width:580px;width:100%;background:var(--off)}
+.cta-block-label{font-size:11px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.cta-block-title{font-family:'Playfair Display',serif;
+  font-size:clamp(14px,1.8vw,20px);font-weight:800;
+  color:var(--black);line-height:1.3;margin-bottom:10px}
+.cta-link{display:inline-block;font-size:13px;font-weight:700;
+  color:var(--gold-dim);letter-spacing:.04em;
+  text-decoration:none;border-bottom:1px solid var(--gold);
+  padding-bottom:1px;transition:color .2s}
+.cta-link:hover{color:var(--gold)}
+
+/* ── IMAGES ── */
+.img-port{width:100%;max-width:200px;border-radius:12px;
+  object-fit:cover;object-position:center top;
+  box-shadow:0 12px 36px rgba(0,0,0,.12)}
+.img-wide{width:100%;max-width:540px;border-radius:12px;
+  object-fit:cover;box-shadow:0 10px 32px rgba(0,0,0,.1)}
+.img-phone{width:100%;max-width:220px;border-radius:16px;
+  object-fit:cover;box-shadow:0 14px 44px rgba(0,0,0,.14);
+  border:4px solid #e8e4dc}
+.img-sq{width:100%;max-width:280px;border-radius:16px;
+  object-fit:cover;box-shadow:0 14px 44px rgba(0,0,0,.14)}
+
+/* ── WM ── */
+.wm{position:absolute;bottom:12px;right:18px;
+  font-size:9px;font-weight:700;letter-spacing:.1em;
+  color:rgba(0,0,0,.06);text-transform:uppercase;pointer-events:none}
+.wm.l{color:rgba(255,255,255,.07)}
+
+.bg-w{background:#fff}
+.bg-o{background:var(--off)}
+.bg-b{background:var(--black)}
+
+/* ── CONTROLS ── */
+.controls{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:9px;
+  background:rgba(255,255,255,.96);backdrop-filter:blur(14px);
+  border:1px solid rgba(0,0,0,.07);padding:8px 16px;border-radius:40px;
+  box-shadow:0 4px 16px rgba(0,0,0,.09);z-index:1000}
+.cb{width:32px;height:32px;border-radius:50%;
+  border:1px solid rgba(0,0,0,.1);background:#fff;
+  color:#1a1a1a;font-size:13px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .13s}
+.cb:hover{background:var(--black);color:#fff;border-color:var(--black)}
+.sc{font-size:11px;font-weight:700;color:#1a1a1a;min-width:40px;text-align:center}
+.drow{display:flex;gap:4px;align-items:center;max-width:180px;overflow:hidden}
+.dot{width:5px;height:5px;border-radius:50%;background:rgba(0,0,0,.15);
+  cursor:pointer;border:none;padding:0;transition:all .24s;flex-shrink:0}
+.dot.on{width:14px;border-radius:2px;background:var(--gold)}
+.fsb{position:fixed;top:12px;right:12px;z-index:1000;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(8px);
+  border:1px solid rgba(0,0,0,.08);cursor:pointer;
+  padding:6px 12px;border-radius:18px;
+  font-size:10px;font-weight:700;color:#1a1a1a;letter-spacing:.08em;text-transform:uppercase}
+</style>
+<meta name="description" content="Day 1 of 30: The subconscious money code most people never discover — and why it runs your financial life without your permission.">
+<meta name="robots" content="index, follow">
+</head>
+<body>
+<button class="fsb" onclick="toggleFS()">⛶ Fullscreen</button>
+<div class="deck">
+
+<!-- ━━ S1 TITLE ━━ -->
+<div class="slide bg-w active" id="s1">
+<div class="wm">Sean Ali · Day 01 of 30</div>
+<div class="col">
+  <div class="badge a a1"><span class="badge-n">DAY 01</span><span class="badge-t">Money Blocks · 30-Day Series</span></div>
+  <span class="icon-xl a a2">🧠</span>
+  <div class="h1 a a3">The Subconscious Money Code<br><span class="i g">Most People Never Find Out About</span></div>
+  <div class="gbar a a4"></div>
+  <div class="author a a5">
+    <img class="av" src="https://hypnoticmeditations.b-cdn.net/images/proof/sean%20profile.png" alt="Sean Ali" onerror="this.style.background='#C9A84C';this.src=''">
+    <div>
+      <div class="an">Sean Ali</div>
+      <div class="as">15+ years studying mind science · hypnoticmeditations.ai</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ━━ S2 TOPIC ━━ -->
+<div class="slide bg-o" id="s2">
+<div class="wm">Sean Ali · Day 01 of 30</div>
+<div class="col">
+  <div class="eyebrow a a1">This 30-Day Series Covers</div>
+  <div class="h2 a a2">Subconscious Mind<br><span class="g">&amp; Money Reprogramming</span></div>
+  <div class="pills a a3">
+    <div class="pill hi">Subconscious money blocks</div>
+    <div class="pill hi">Reprogram your mind for wealth</div>
+    <div class="pill">Bruce Lipton · mind science</div>
+    <div class="pill hi">Why money doesn't stay with me</div>
+    <div class="pill">Law of attraction &amp; money</div>
+    <div class="pill hi">Manifest money subconscious</div>
+    <div class="pill">Theta brainwaves &amp; wealth</div>
+    <div class="pill hi">How to attract abundance</div>
+  </div>
+  <div class="cta-block a a4">
+    <div class="cta-block-label">Free Resource</div>
+    <div class="cta-block-title">Your Brain Is Still Blocking Money. Fix It Tonight.</div>
+    <a href="https://hypnoticmeditations.ai" class="cta-link" target="_blank">hypnoticmeditations.ai →</a>
+  </div>
+</div>
+</div>
+
+<!-- ━━ S3 WHO IS SEAN ━━ -->
+<div class="slide bg-w" id="s3">
+<div class="wm">Sean Ali · Day 01 of 30</div>
+<div class="col">
+  <div class="eyebrow a a1">Your Guide for This Series</div>
+  <img src="https://hypnoticmeditations.b-cdn.net/images/proof/sean%20work.png" alt="Sean Ali mind science" class="img-port a a2">
+  <div class="h3 a a3">Sean Ali</div>
+  <div class="pstrip a a4">
+    <div class="pc"><div class="pc-n">15+</div><div class="pc-l">Years studying<br>mind science</div></div>
+    <div class="pc"><div class="pc-n">🎧</div><div class="pc-l">Hypnotic<br>Meditations</div></div>
+    <div class="pc"><div class="pc-n">12K+</div><div class="pc-l">People<br>helped</div></div>
+  </div>
+  <p class="note a a5">Founder of hypnoticmeditations.ai — audio that rewires your subconscious while you sleep.</p>
+</div>
+</div>
+
+<!-- ━━ S4 THE BIG STAT ━━ -->
+<div class="slide bg-o" id="s4">
+<div class="wm">Sean Ali · Day 01 of 30</div>
+<div class="col">
+  <div class="eyebrow a a1">The Foundation of Everything</div>
+  <div class="stat-n a a2">95%</div>
+  <div class="stat-c a a2">of your money behavior — autopilot</div>
+  <div class="icon-row a a3">
+    <div class="icon-cell">
+      <span class="ic-icon">💭</span>
+      <div class="ic-label">Conscious</div>
+      <div class="ic-sub">5% · goals<br>affirmations</div>
+    </div>
+    <div class="icon-cell hi">
+      <span class="ic-icon">💾</span>
+      <div class="ic-label">Subconscious</div>
+      <div class="ic-sub">95% · old<br>program</div>
+    </div>
+    <div class="icon-cell">
+      <span class="ic-icon">⚡</span>
+      <div class="ic-label">Power Gap</div>
+      <div class="ic-sub">1,000,000×<br>stronger</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ━━ S5 AGES 0-7 ━━ -->
+<div class="slide bg-w" id="s5">
+<div class="wm">Sean Ali · Day 01 of 30</div>
+<div class="col">
+  <div class="eyebrow a a1">Dr. Bruce Lipton · Neuroscience</div>
+  <span class="icon-xl a a2">👶</span>
+  <div class="h2 a a3">Ages 0–7: <span class="g">Pure Download Mode</span></div>
+  <div class="icon-row a a4">
+    <div class="icon-cell">
+      <span class="ic-icon">🌊</span>
+      <div class="ic-label">Theta Waves</div>
+      <div class="ic-sub">Same as hypnosis</div>
+    </div>
+    <div class="icon-cell">
+      <span class="ic-icon">👀</span>
+      <div class="ic-label">Observe</div>
+      <div class="ic-sub">Watch parents</div>
+    </div>
+    <div class="icon-cell">
+      <span class="ic-icon">📼</span>
+      <div class="ic-label">Record</div>
+      <div class="ic-sub">No filter at all</div>
+    </div>
+    <div class="icon-cell hi">
+      <span class="ic-icon">▶️</span>
+      <div class="ic-label">Replay</div>
+      <div class="ic-sub">For life unless<br>rewired</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ━━ S6 BRAIN IMAGE ━━ -->
+<div class="slide bg-o" id="s6">
+<div class="wm">Sean Ali · Day 01 of 30</div>
+<div class="col">
+  <div class="eyebrow a a1">The Science</div>
+  <img src="https://hypnoticmeditations.b-cdn.net/images/proof/hypnoticblue.png" alt="Theta brainwaves subconscious money programming" class="img-wide a a2" style="max-width:420px">
+  <div class="h3 a a3">Your brain <span class="g">records money beliefs</span><br>before you can question them.</div>
+</div>
+</div>
+
+<!-- ━━ S7 DOWNLOADED PHRASES ━━ -->
+<div class="slide bg-w" id="s7">
+<div class="wm">Sean Ali · Day 01 of 30</div>
+<div class="col">
+  <div class="eyebrow a a1">What Got Recorded</div>
+  <div class="h2 a a2">The Phrases That Became<br><span class="g">Your Money Blueprint</span></div>
+  <div class="steps a a4">
+    <div class="step">
+      <span class="step-icon">🚫</span>
+      <div><div class="step-title">"We can't afford that."</div>
+      <div class="step-body">Installed as: scarcity is normal.</div></div>
+    </div>
+    <div class="step">
+      <span class="step-icon">😰</span>
+      <div><div class="step-title">"Money doesn't grow on trees."</div>
+      <div class="step-body">Installed as: money requires suffering.</div></div>
+    </div>
+    <div class="step">
+      <span class="step-icon">🧱</span>
+      <div><div class="step-title">"Rich people are different from us."</div>
+      <div class="step-body">Installed as: wealth is not for me.</div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ━━ S8 BILL STORY ━━ -->
+<div class="slide bg-o" id="s8">
+<div class="wm">Sean Ali · Day 01 of 30</div>
+<div class="col">
+  <div class="eyebrow a a1">Dr. Bruce Lipton</div>
+  <span class="icon-xl a a2">🪞</span>
+  <div class="qwrap a a3">
+    <p class="qt">"Everyone can see Bill acts like his dad. The only one who can't see it — is Bill."</p>
+    <div class="qa">— Dr. Bruce Lipton, Cell Biologist</div>
+  </div>
+  <div class="band a a4">
+    <div class="band-h">We are <span class="g">all Bill.</span></div>
+    <p class="band-p">95% of the time — running someone else's money program. Calling it personality.</p>
+  </div>
+</div>
+</div>
+
+<!-- ━━ S9 VS SLIDE ━━ -->
+<div class="slide bg-w" id="s9">
+<div class="wm">Sean Ali · Day 01 of 30</div>
+<div class="col">
+  <div class="eyebrow a a1">Why Affirmations Alone Don't Move the Needle</div>
+  <span class="icon-xl a a2">⚔️</span>
+  <div class="h2 a a3">Positive Thoughts vs.<br><span class="g">A Million-to-One Program</span></div>
+  <div class="icon-row a a4">
+    <div class="icon-cell">
+      <span class="ic-icon">💭</span>
+      <div class="ic-label">"I am wealthy"</div>
+      <div class="ic-sub">5% · conscious</div>
+    </div>
+    <div class="icon-cell" style="background:#fff0ee">
+      <span class="ic-icon">🆚</span>
+      <div class="ic-label"></div>
+      <div class="ic-sub"></div>
+    </div>
+    <div class="icon-cell hi">
+      <span class="ic-icon">📼</span>
+      <div class="ic-label">"Not for me"</div>
+      <div class="ic-sub">95% · always wins</div>
+    </div>
+  </div>
+  <p class="note a a5">Change the program — not just think louder than it.</p>
+</div>
+</div>
+
+<!-- ━━ S10 PROOF $156K ━━ -->
+<div class="slide bg-o" id="s10">
+<div class="wm">Sean Ali · Day 01 of 30</div>
+<div class="col">
+  <div class="eyebrow a a1">What a New Program Looks Like</div>
+  <div class="h2 a a2"><span class="g">$156,277</span> In One Day</div>
+  <img src="https://hypnoticmeditations.b-cdn.net/images/proof/100k%20a%20day.jpeg" alt="Sean Ali $100k a day proof subconscious wealth" class="img-phone a a3">
+  <p class="disc a a4">Results of Sean Ali · Not typical</p>
+</div>
+</div>
+
+<!-- ━━ S11 WITH MENTORS ━━ -->
+<div class="slide bg-w" id="s11">
+<div class="wm">Sean Ali · Day 01 of 30</div>
+<div class="col">
+  <div class="eyebrow a a1">Who You Learn From Reprograms You</div>
+  <div style="display:flex;gap:12px;justify-content:center;width:100%;" class="a a2">
+    <img src="https://hypnoticmeditations.b-cdn.net/images/proof/with%20russell%20brunson.jpg" alt="Sean Ali with Russell Brunson" class="img-sq" style="max-width:200px;height:200px">
+    <img src="https://hypnoticmeditations.b-cdn.net/images/proof/with%20les%20brown.jpg" alt="Sean Ali with Les Brown" class="img-sq" style="max-width:200px;height:200px">
+  </div>
+  <div class="h3 a a3"><span class="g">The room you're in</span><br>determines the program you run.</div>
+  <p class="note a a4">Sean with Russell Brunson &amp; Les Brown</p>
+</div>
+</div>
+
+<!-- ━━ S12 HYPNOTIC PRODUCT ━━ -->
+<div class="slide bg-o" id="s12">
+<div class="wm">Sean Ali · Day 01 of 30</div>
+<div class="col">
+  <div class="eyebrow a a1">The Tool Sean Built After 15+ Years of Research</div>
+  <img src="https://hypnoticmeditations.b-cdn.net/images/proof/hypnoticblue.png" alt="Hypnotic Meditations subconscious money audio" class="img-sq a a2" style="max-width:260px;border-radius:20px;box-shadow:0 16px 48px rgba(0,0,0,.16)">
+  <div class="h3 a a3">Hypnotic Meditations</div>
+  <p class="note a a4">Audio that reprograms your subconscious<br>while you sleep. Just press play.</p>
+  <div class="cta-block a a5">
+    <div class="cta-block-label">Free Resource</div>
+    <div class="cta-block-title">Your Brain Is Still Blocking Money. Fix It Tonight.</div>
+    <a href="https://hypnoticmeditations.ai" class="cta-link" target="_blank">hypnoticmeditations.ai →</a>
+  </div>
+</div>
+</div>
+
+<!-- ━━ S13 LIFESTYLE ━━ -->
+<div class="slide bg-w" id="s13">
+<div class="wm">Sean Ali · Day 01 of 30</div>
+<div class="col">
+  <div class="eyebrow a a1">The Program Change in Real Life</div>
+  <img src="https://hypnoticmeditations.b-cdn.net/images/proof/with%20wifey.jpeg" alt="Sean Ali family freedom lifestyle" class="img-port a a2" style="max-width:240px">
+  <div class="h3 a a3">Laptop money.<br><span class="g">Mind money. Program money.</span></div>
+  <p class="note a a4">Family. Freedom. Time. None of it comes from hustle alone.</p>
+</div>
+</div>
+
+<!-- ━━ S14 3 METHODS ━━ -->
+<div class="slide bg-o" id="s14">
+<div class="wm">Sean Ali · Day 01 of 30</div>
+<div class="col">
+  <div class="eyebrow a a1">How to Reprogram Your Subconscious for Money</div>
+  <div class="h2 a a2">3 Methods That <span class="g">Actually Work</span></div>
+  <div class="steps a a3">
+    <div class="step">
+      <span class="step-icon">🎧</span>
+      <div><div class="step-title">Sleep Reprogramming</div>
+      <div class="step-body">Earphones on. New programs looping as you fall asleep. Brain in theta. No effort.</div></div>
+    </div>
+    <div class="step">
+      <span class="step-icon">🔁</span>
+      <div><div class="step-title">Daily Repetition</div>
+      <div class="step-body">Say it out loud until it stops feeling fake. Same as learning to drive.</div></div>
+    </div>
+    <div class="step">
+      <span class="step-icon">⚡</span>
+      <div><div class="step-title">Energy Psychology</div>
+      <div class="step-body">PSYCH-K · EFT. Rewire a belief in 15–20 min. EEG-verified.</div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ━━ S15 AFFIRMATION ━━ -->
+<div class="slide bg-b" id="s15">
+<div class="wm l">Sean Ali · Day 01 of 30</div>
+<div class="col">
+  <span class="icon-xl a a1" style="filter:drop-shadow(0 0 20px rgba(201,168,76,.5))">💛</span>
+  <div class="affirm a a2">
+    <div class="affirm-l">Install This First — Before Any Money Program</div>
+    <div class="affirm-t">"I Love Myself And I Am Worthy Of A Full And Abundant Life."</div>
+    <div class="affirm-s">80–90% test negative for this at the subconscious level. Start here. Everything builds on it.</div>
+  </div>
+</div>
+</div>
+
+<!-- ━━ S16 HOMEWORK ━━ -->
+<div class="slide bg-w" id="s16">
+<div class="wm">Sean Ali · Day 01 of 30</div>
+<div class="col">
+  <div class="eyebrow a a1">Your Action for Tonight</div>
+  <div class="h2 a a2">Do This <span class="g">Before You Sleep</span></div>
+  <div class="steps a a3">
+    <div class="step">
+      <span class="step-icon">✍️</span>
+      <div><div class="step-title">Write the 3 money phrases from childhood</div>
+      <div class="step-body">That is your current program. Plain text.</div></div>
+    </div>
+    <div class="step">
+      <span class="step-icon">🔄</span>
+      <div><div class="step-title">Write the opposite — present tense</div>
+      <div class="step-body">"Money is hard" → "Money flows to me easily." Not will. Is.</div></div>
+    </div>
+    <div class="step">
+      <span class="step-icon">🎧</span>
+      <div><div class="step-title">Record it. Play it as you fall asleep.</div>
+      <div class="step-body">30 nights minimum. Theta window. Direct install.</div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ━━ S17 CTA / COMMENT ━━ -->
+<div class="slide bg-o" id="s17">
+<div class="wm">Sean Ali · Day 01 of 30</div>
+<div class="col">
+  <span class="icon-lg a a1">👇</span>
+  <div class="cbox a a2">
+    <div class="cbox-l">Drop This in the Comments — I Read Every One</div>
+    <div class="cbox-p">"The money phrase I heard most growing up was..."</div>
+  </div>
+  <div class="band a a3">
+    <div class="band-h">Day 2 Tomorrow:<br><span class="g">The 8 Money Blocks — Which One Costs You Most?</span></div>
+    <p class="band-p" style="margin-top:8px;font-size:16px">🔔 Subscribe &nbsp;·&nbsp; 💾 Save &nbsp;·&nbsp; 📤 Share</p>
+  </div>
+  <div class="cta-block a a4">
+    <div class="cta-block-label">Free Resource</div>
+    <div class="cta-block-title">Your Brain Is Still Blocking Money. Fix It Tonight.</div>
+    <a href="https://hypnoticmeditations.ai" class="cta-link" target="_blank">hypnoticmeditations.ai →</a>
+  </div>
+</div>
+</div>
+
+</div><!-- end deck -->
+
+<div class="controls">
+  <button class="cb" onclick="prev()">←</button>
+  <div class="drow" id="drow"></div>
+  <button class="cb" onclick="next()">→</button>
+  <span class="sc" id="sc">1 / 17</span>
+</div>
+
+<script>
+const slides=document.querySelectorAll('.slide');
+const total=slides.length;
+let cur=0;
+const drow=document.getElementById('drow');
+for(let i=0;i<total;i++){
+  const d=document.createElement('button');
+  d.className='dot'+(i===0?' on':'');
+  d.onclick=()=>goTo(i);
+  drow.appendChild(d);
+}
+function goTo(n){
+  slides[cur].classList.remove('active');
+  drow.children[cur].classList.remove('on');
+  cur=(n+total)%total;
+  slides[cur].classList.add('active');
+  drow.children[cur].classList.add('on');
+  document.getElementById('sc').textContent=(cur+1)+' / '+total;
+  drow.children[cur].scrollIntoView({block:'nearest',inline:'center'});
+}
+function next(){goTo(cur+1)}
+function prev(){goTo(cur-1)}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();next();}
+  if(e.key==='ArrowLeft'){e.preventDefault();prev();}
+  if(e.key==='f'||e.key==='F') toggleFS();
+});
+let tx=0;
+document.addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+document.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-tx;
+  if(Math.abs(dx)>50){dx<0?next():prev();}
+});
+function toggleFS(){
+  if(!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
+  else document.exitFullscreen();
+}
+</script>
+<footer style="text-align:center;padding:48px 20px 24px;font-size:13px;color:#888;border-top:1px solid rgba(0,0,0,0.08);margin-top:40px;font-family:sans-serif;line-height:2.2;"><div style="display:flex;justify-content:center;flex-wrap:wrap;gap:6px 20px;margin-bottom:14px;"><a href="/" style="color:#888;text-decoration:none;">Home</a><a href="/story.html" style="color:#888;text-decoration:none;">My Story</a><a href="/what-are-money-blocks.html" style="color:#888;text-decoration:none;">Money Blocks</a><a href="/how-to-reprogram-your-subconscious-mind.html" style="color:#888;text-decoration:none;">Reprogram Your Mind</a><a href="/best-ai-manifestation-app.html" style="color:#888;text-decoration:none;">AI Manifestation App</a><a href="/quit-your-9-to-5-with-ai.html" style="color:#888;text-decoration:none;">Quit Your 9–5</a><a href="/reset/" style="color:#888;text-decoration:none;">Free Reset</a><a href="/webinar/" style="color:#888;text-decoration:none;">Free Training</a><a href="/guide.html" style="color:#888;text-decoration:none;">Money Guide</a><a href="/blueprint.html" style="color:#c6a43b;text-decoration:none;">Blueprint</a></div>© Sean Ali · seanali.online<br>Join the movement: 125,000+ people already living their version of freedom</footer>
+</body>
+</html>
