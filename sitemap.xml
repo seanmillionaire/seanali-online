@@ -51,12 +51,6 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  <url>
-    <loc>https://seanali.online/webinar/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
   <!-- Video Pages -->
   <url>
     <loc>https://seanali.online/videos/moneyblocks1.html</loc>
