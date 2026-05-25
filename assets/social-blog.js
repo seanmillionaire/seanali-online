@@ -14,6 +14,11 @@ const formatCount = (value) => {
   return String(value);
 };
 
+const cleanLikeText = (text) => {
+  const match = String(text || '').match(/([\d.]+\s*[KM]?\s*likes?)/i);
+  return match ? match[1].replace(/\s+/g, ' ') : '';
+};
+
 const countSets = [
   ['2.8K', '143', '81'],
   ['1.9K', '98', '57'],
@@ -37,7 +42,7 @@ document.querySelectorAll('.post-card').forEach((post, index) => {
   }
   const existingLikes = metrics.querySelector('span:first-child')?.textContent || `${likes} likes`;
   const existingSocial = metrics.querySelector('span:last-child')?.textContent || `${comments} comments · ${shares} shares`;
-  const likeText = existingLikes.toLowerCase().includes('like') ? existingLikes : `${likes} likes`;
+  const likeText = cleanLikeText(existingLikes) || `${likes} likes`;
   const commentMatch = existingSocial.match(/([\d.]+K?)\s*comments?/i);
   const shareMatch = existingSocial.match(/([\d.]+K?)\s*shares?/i);
   metrics.innerHTML = `<span class="like-count" data-base-likes="${parseCount(likeText)}">👍 ${likeText}</span><span>💬 ${commentMatch ? commentMatch[1] : comments} comments · ↗️ ${shareMatch ? shareMatch[1] : shares} shares</span>`;
