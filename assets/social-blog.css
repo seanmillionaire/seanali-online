@@ -177,6 +177,8 @@ a{color:inherit}
 .legacy-intro strong{display:block;font-size:18px}
 .legacy-intro span{display:block;color:#667085;font-size:13px;margin-top:3px}
 .legacy-content{background:#fff}
+.legacy-content > .lang-bar{display:none}
+.legacy-content > .hero{margin-top:0}
 .legacy-content > footer:last-child{display:none}
 .mobile-tabbar{display:none}
 body.social-blog .af-form-wrapper input.text,body.social-legacy .af-form-wrapper input.text{width:100%}
