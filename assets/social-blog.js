@@ -122,11 +122,251 @@ document.querySelectorAll('[data-card-href]').forEach((card) => {
   });
 });
 
+const fallbackSearchIndex = [
+  {
+    url: '/',
+    title: 'Sean Ali - Build Freedom With AI, Money Mindset, and Subconscious Reprogramming',
+    description: 'Start here for Claude27 prompts, AI income systems, subconscious reset guides, manifestation tools, and Sean Ali proof pages.',
+    tags: 'home start sean ali ai income money mindset subconscious reprogramming manifestation freedom panama prompts'
+  },
+  {
+    url: '/prompts.html',
+    title: 'Claude27 Prompts',
+    description: 'Get 27 Claude prompts to find your offer, create content, build landing pages, write emails, and get your first buyer online.',
+    tags: 'claude prompts ai income offer content landing page emails buyer start here'
+  },
+  {
+    url: '/prompts-guide.html',
+    title: 'Claude27 Prompt Guide',
+    description: 'Preview the full prompt guide for building an AI income stream from zero with Claude.',
+    tags: 'prompt guide claude27 ai income brainstorming research content generation'
+  },
+  {
+    url: '/quit-your-9-to-5-with-ai.html',
+    title: 'Quit Your 9-to-5 With AI',
+    description: 'A practical AI escape plan for building systems, offers, content, and online income outside the traditional job path.',
+    tags: 'quit 9 to 5 ai success systems freedom income online business'
+  },
+  {
+    url: '/what-are-money-blocks.html',
+    title: 'What Are Money Blocks?',
+    description: 'Learn how money blocks form, why scarcity patterns repeat, and how subconscious reprogramming can interrupt the loop.',
+    tags: 'money blocks scarcity survival nervous system subconscious sleep theta'
+  },
+  {
+    url: '/how-to-reprogram-your-subconscious-mind.html',
+    title: 'How To Reprogram Your Subconscious Mind',
+    description: 'A practical guide to theta states, sleep audio, identity rewrites, neuroplasticity, and changing subconscious patterns.',
+    tags: 'subconscious mind reprogramming theta brainwave sleep audio neuroplasticity identity'
+  },
+  {
+    url: '/best-ai-manifestation-app.html',
+    title: 'Best AI Manifestation App',
+    description: 'How AI can identify self-sabotage patterns, personalize manifestation work, and support subconscious reprogramming.',
+    tags: 'ai manifestation app self sabotage patterns genie reprogramming personalized'
+  },
+  {
+    url: '/guide.html',
+    title: 'The Hidden Mental Brake',
+    description: 'A focused guide on why smart people stay stuck and how to interrupt survival loops before sleep.',
+    tags: 'mental brake stuck subconscious survival loop nighttime reset money stress'
+  },
+  {
+    url: '/blueprint.html',
+    title: 'AI Freedom Blueprint',
+    description: 'A blueprint for building online income systems with AI, offers, content, research, ads, and execution checklists.',
+    tags: 'blueprint ai freedom ad creative research checklist income systems'
+  },
+  {
+    url: '/story.html',
+    title: 'Sean Ali Story',
+    description: 'Sean Ali founder story, online business background, Canada to Panama move, and the path behind the work.',
+    tags: 'story about sean ali canada panama founder online business proof'
+  },
+  {
+    url: '/reset/',
+    title: 'Subconscious Reset',
+    description: 'Nighttime reset signup for weakening old subconscious patterns before sleep.',
+    tags: 'reset nighttime subconscious sleep money stress audio'
+  },
+  {
+    url: '/webinar/',
+    title: 'Sean Ali Webinar',
+    description: 'Webinar registration for AI, subconscious reprogramming, manifestation, and freedom systems.',
+    tags: 'webinar registration ai subconscious freedom manifestation'
+  },
+  {
+    url: '/videos/moneyblocks1.html',
+    title: 'Money Blocks Video',
+    description: 'Video lesson on money blocks, subconscious patterns, and financial survival loops.',
+    tags: 'video money blocks subconscious financial survival'
+  },
+  {
+    url: '/videos/genie.html',
+    title: 'Manifestation Genie Video',
+    description: 'Video page for manifestation, AI support, and reprogramming patterns.',
+    tags: 'video genie manifestation ai reprogramming'
+  },
+  {
+    url: '/videos/theta-waves.html',
+    title: 'Theta Waves Video',
+    description: 'Video page focused on theta waves, sleep states, and subconscious access.',
+    tags: 'video theta waves sleep subconscious brainwaves'
+  }
+];
+
+const normalizeSearchText = (value) => String(value || '').toLowerCase().replace(/\s+/g, ' ').trim();
+
+const decodeHtmlEntities = (value) => {
+  const textarea = document.createElement('textarea');
+  textarea.innerHTML = value || '';
+  return textarea.value;
+};
+
+const getSearchPath = (url) => {
+  try {
+    const parsed = new URL(url, window.location.origin);
+    return parsed.pathname === '/index.html' ? '/' : parsed.pathname;
+  } catch (_) {
+    return url;
+  }
+};
+
+const extractSearchDocument = (html, url) => {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  doc.querySelectorAll('script,style,noscript,svg,iframe,header,footer,.mobile-tabbar').forEach((node) => node.remove());
+  const title = doc.querySelector('meta[property="og:title"]')?.content || doc.querySelector('title')?.textContent || getSearchPath(url);
+  const description = doc.querySelector('meta[name="description"]')?.content || doc.querySelector('meta[property="og:description"]')?.content || '';
+  const headings = Array.from(doc.querySelectorAll('h1,h2,h3')).map((heading) => heading.textContent).join(' ');
+  const body = doc.body?.textContent || '';
+  return {
+    url: getSearchPath(url),
+    title: decodeHtmlEntities(title.replace(/\s*[|-].*Sean Ali.*$/i, '').trim()),
+    description: decodeHtmlEntities(description.trim()),
+    tags: normalizeSearchText(`${headings} ${body}`).slice(0, 5000)
+  };
+};
+
+let siteSearchIndexPromise;
+
+const loadSiteSearchIndex = async () => {
+  if (siteSearchIndexPromise) return siteSearchIndexPromise;
+  siteSearchIndexPromise = (async () => {
+    if (!/^https?:$/.test(window.location.protocol)) return fallbackSearchIndex;
+    try {
+      const sitemapResponse = await fetch('/sitemap.xml', { cache: 'force-cache' });
+      if (!sitemapResponse.ok) throw new Error('Sitemap unavailable');
+      const sitemapText = await sitemapResponse.text();
+      const sitemap = new DOMParser().parseFromString(sitemapText, 'application/xml');
+      const urls = Array.from(sitemap.querySelectorAll('loc'))
+        .map((loc) => loc.textContent.trim())
+        .filter((url) => {
+          const parsed = new URL(url);
+          const pageHost = parsed.hostname.replace(/^www\./, '');
+          const currentHost = window.location.hostname.replace(/^www\./, '');
+          return pageHost === currentHost && !parsed.pathname.endsWith('.pdf');
+        })
+        .slice(0, 30);
+
+      const fetchedPages = await Promise.all(urls.map(async (url) => {
+        try {
+          const response = await fetch(getSearchPath(url), { cache: 'force-cache' });
+          if (!response.ok) return null;
+          return extractSearchDocument(await response.text(), url);
+        } catch (_) {
+          return null;
+        }
+      }));
+
+      const pages = fetchedPages.filter(Boolean);
+      return pages.length ? pages : fallbackSearchIndex;
+    } catch (_) {
+      return fallbackSearchIndex;
+    }
+  })();
+  return siteSearchIndexPromise;
+};
+
+const scoreSearchResult = (page, terms) => {
+  const title = normalizeSearchText(page.title);
+  const description = normalizeSearchText(page.description);
+  const tags = normalizeSearchText(page.tags);
+  return terms.reduce((score, term) => {
+    if (!term) return score;
+    if (title.includes(term)) score += 10;
+    if (description.includes(term)) score += 5;
+    if (tags.includes(term)) score += 2;
+    return score;
+  }, 0);
+};
+
+const renderSearchResults = (panel, results, query) => {
+  panel.hidden = false;
+  if (!query) {
+    panel.innerHTML = fallbackSearchIndex.slice(0, 5).map((page) => `
+      <a class="site-search-result" href="${page.url}">
+        <strong>${page.title}</strong>
+        <span>${page.description}</span>
+      </a>
+    `).join('');
+    return;
+  }
+  if (!results.length) {
+    panel.innerHTML = '<div class="site-search-empty">No matches yet. Try AI income, money blocks, reset, prompts, or Panama.</div>';
+    return;
+  }
+  panel.innerHTML = results.slice(0, 6).map((page) => `
+    <a class="site-search-result" href="${page.url}">
+      <strong>${page.title}</strong>
+      <span>${page.description}</span>
+    </a>
+  `).join('');
+};
+
 document.querySelectorAll('[data-feed-search]').forEach((input) => {
-  input.addEventListener('input', () => {
+  const searchWrap = input.closest('.social-search');
+  const panel = document.createElement('div');
+  panel.className = 'site-search-results';
+  panel.hidden = true;
+  panel.setAttribute('role', 'listbox');
+  searchWrap?.appendChild(panel);
+
+  const runSearch = async () => {
     const query = input.value.trim().toLowerCase();
     document.querySelectorAll('[data-feed-card]').forEach((card) => {
       card.hidden = query && !card.textContent.toLowerCase().includes(query);
     });
+
+    const terms = normalizeSearchText(query).split(' ').filter(Boolean);
+    const index = await loadSiteSearchIndex();
+    const results = terms.length
+      ? index
+        .map((page) => ({ ...page, score: scoreSearchResult(page, terms) }))
+        .filter((page) => page.score > 0)
+        .sort((a, b) => b.score - a.score || a.title.localeCompare(b.title))
+      : [];
+    renderSearchResults(panel, results, query);
+  };
+
+  input.addEventListener('focus', runSearch);
+  input.addEventListener('input', runSearch);
+  input.addEventListener('keydown', async (event) => {
+    if (event.key === 'Escape') {
+      panel.hidden = true;
+      input.blur();
+    }
+    if (event.key === 'Enter') {
+      const firstResult = panel.querySelector('a');
+      if (firstResult) {
+        event.preventDefault();
+        window.location.href = firstResult.href;
+      }
+    }
+  });
+  document.addEventListener('click', (event) => {
+    if (!searchWrap?.contains(event.target)) panel.hidden = true;
+  });
+  panel.addEventListener('mousedown', (event) => {
+    event.stopPropagation();
   });
 });
