@@ -200,6 +200,83 @@ body{
 }
 .bridge-link:hover{opacity:0.7}
 
+/* AI Freedom System offer cards */
+.freedom-offer{
+  background:linear-gradient(135deg,#101820 0%,#17263a 54%,#0f3f37 100%);
+  color:white;
+  border-radius:24px;
+  padding:30px 28px;
+  margin:30px 0;
+  border:1px solid rgba(255,255,255,0.16);
+  box-shadow:0 18px 38px -16px rgba(16,24,32,0.6);
+  position:relative;
+  overflow:hidden;
+}
+.freedom-offer::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,rgba(255,255,255,0.08),transparent 38%,rgba(37,211,102,0.12));
+  pointer-events:none;
+}
+.freedom-offer>*{position:relative}
+.freedom-offer .offer-eyebrow{
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:#72f2b2;
+  margin-bottom:8px;
+}
+.freedom-offer .offer-title{
+  font-family:"Bebas Neue",sans-serif;
+  font-size:clamp(34px,8vw,50px);
+  line-height:0.98;
+  margin-bottom:12px;
+}
+.freedom-offer .offer-copy{
+  color:rgba(255,255,255,0.82);
+  font-size:1.06rem;
+  line-height:1.6;
+  margin-bottom:18px;
+}
+.freedom-offer .offer-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:20px;
+}
+.freedom-offer .offer-pill{
+  background:rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.16);
+  color:#f4fff9;
+  border-radius:999px;
+  padding:7px 12px;
+  font-size:0.82rem;
+  font-weight:800;
+}
+.offer-btn{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  width:100%;
+  background:linear-gradient(105deg,#20c978,#72f2b2);
+  color:#07120d;
+  text-decoration:none;
+  border-radius:16px;
+  padding:16px 20px;
+  font-family:"Bebas Neue",sans-serif;
+  font-size:1.45rem;
+  letter-spacing:0.04em;
+  box-shadow:0 12px 26px -8px rgba(32,201,120,0.58);
+  transition:all 0.2s ease;
+}
+.offer-btn:hover{transform:translateY(-2px);box-shadow:0 18px 32px -8px rgba(32,201,120,0.68)}
+.offer-btn span:last-child{font-size:1.2rem}
+.freedom-offer.compact{margin-top:0;padding:24px}
+.freedom-offer.compact .offer-title{font-size:clamp(30px,7vw,42px)}
+
 /* Sean note */
 .sean-note{
   background:var(--off);
@@ -800,6 +877,24 @@ Write 3 short versions so I can pick the one I like best.</div>
   </div>
 </div>
 
+<!-- OFFER → AI Freedom System -->
+<div class="section">
+  <div class="freedom-offer">
+    <div class="offer-eyebrow">Full offer · AI Freedom System</div>
+    <div class="offer-title">Make your first<br>$1k/month with AI</div>
+    <p class="offer-copy">The prompts are the start. The full system shows you what to build, what to sell, and how to turn AI into a simple monthly income machine.</p>
+    <div class="offer-meta">
+      <span class="offer-pill">$297 today</span>
+      <span class="offer-pill">Beginner friendly</span>
+      <span class="offer-pill">Offer + content system</span>
+    </div>
+    <a href="https://whop.com/checkout/plan_pPbLHf78OD7Hv/?src=v3_0b42e3fb-aade-4129-8066-77b2c64ef5a1_69225bf18dbc00147a254eb0_1095_s-1" target="_blank" class="offer-btn">
+      <span>Get AI Freedom System</span>
+      <span>→</span>
+    </a>
+  </div>
+</div>
+
 <!-- ═══════════════════════════════════════ -->
 <!-- SECTION 2 — BUILD PRODUCTS -->
 <!-- ═══════════════════════════════════════ -->
@@ -1015,6 +1110,24 @@ I want to be able to create this in one afternoon.</div>
   </div>
 </div>
 
+<!-- OFFER → AI Freedom System -->
+<div class="section">
+  <div class="freedom-offer compact">
+    <div class="offer-eyebrow">Ready to build the full offer?</div>
+    <div class="offer-title">Turn these prompts into a $297 system</div>
+    <p class="offer-copy">Use the AI Freedom System when you want the exact path from idea to content to checkout instead of figuring it out alone.</p>
+    <div class="offer-meta">
+      <span class="offer-pill">AI Freedom System</span>
+      <span class="offer-pill">$297</span>
+      <span class="offer-pill">First $1k/month roadmap</span>
+    </div>
+    <a href="https://whop.com/checkout/plan_pPbLHf78OD7Hv/?src=v3_0b42e3fb-aade-4129-8066-77b2c64ef5a1_69225bf18dbc00147a254eb0_1095_s-1" target="_blank" class="offer-btn">
+      <span>Checkout Now</span>
+      <span>→</span>
+    </a>
+  </div>
+</div>
+
 <!-- ═══════════════════════════════════════ -->
 <!-- SECTION 3 — AI FOR MONEY -->
 <!-- ═══════════════════════════════════════ -->
@@ -1220,6 +1333,24 @@ Rules:
       <span class="bridge-btn-arrow">→</span>
     </a>
     <div style="font-size:0.8rem;color:var(--muted);margin-top:12px">hypnoticmeditations.ai · Free · No signup needed</div>
+  </div>
+</div>
+
+<!-- OFFER → AI Freedom System -->
+<div class="section">
+  <div class="freedom-offer">
+    <div class="offer-eyebrow">Stop collecting prompts</div>
+    <div class="offer-title">Build the income stream<br>behind the prompts</div>
+    <p class="offer-copy">AI Freedom System is the paid implementation path: what to create, how to package it, and how to start aiming for your first $1k/month with AI.</p>
+    <div class="offer-meta">
+      <span class="offer-pill">$297 total due today</span>
+      <span class="offer-pill">AI income system</span>
+      <span class="offer-pill">Built for action</span>
+    </div>
+    <a href="https://whop.com/checkout/plan_pPbLHf78OD7Hv/?src=v3_0b42e3fb-aade-4129-8066-77b2c64ef5a1_69225bf18dbc00147a254eb0_1095_s-1" target="_blank" class="offer-btn">
+      <span>Start The Full System</span>
+      <span>→</span>
+    </a>
   </div>
 </div>
 
@@ -1765,11 +1896,11 @@ Never give me theory I can't execute today.</div>
   <p style="text-align:center;font-size:1.2rem;line-height:1.65;margin:0 auto 32px auto;max-width:480px;color:var(--muted);position:relative">Stop consuming. Start building.<br>One prompt. One post. One offer. <strong style="color:var(--ink)">Today.</strong></p>
 
   <div style="display:flex;flex-direction:column;gap:16px;position:relative">
-    <a href="https://www.seanali.online" target="_blank" class="start-link" style="text-decoration:none;border-radius:20px;padding:22px 28px">
-      <div class="cta-icon" style="font-size:34px;width:60px;height:60px;border-radius:18px">👤</div>
+    <a href="https://whop.com/checkout/plan_pPbLHf78OD7Hv/?src=v3_0b42e3fb-aade-4129-8066-77b2c64ef5a1_69225bf18dbc00147a254eb0_1095_s-1" target="_blank" class="start-link" style="text-decoration:none;border-radius:20px;padding:22px 28px;background:linear-gradient(105deg,#20c978,#72f2b2);box-shadow:0 14px 28px -6px rgba(32,201,120,0.55);color:#07120d">
+      <div class="cta-icon" style="font-size:34px;width:60px;height:60px;border-radius:18px;background:rgba(0,0,0,0.13)">💸</div>
       <div class="cta-body">
-        <div class="cta-title" style="font-size:2rem">Learn More About Sean</div>
-        <div class="cta-sub" style="font-size:0.85rem">seanali.online — Full story, tools, and free resources</div>
+        <div class="cta-title" style="font-size:2rem">Get AI Freedom System</div>
+        <div class="cta-sub" style="font-size:0.85rem">How to make your first $1k/month with AI · $297 today</div>
       </div>
       <div class="cta-arrow" style="font-size:34px">→</div>
     </a>
@@ -1816,7 +1947,7 @@ Never give me theory I can't execute today.</div>
 <!-- STICKY BAR -->
 <div class="sticky-bar">
   <p><span id="stickyCount">0</span>/27 prompts done</p>
-  <a href="https://www.seanali.online" target="_blank" class="sticky-cta">Learn More About Sean →</a>
+  <a href="https://whop.com/checkout/plan_pPbLHf78OD7Hv/?src=v3_0b42e3fb-aade-4129-8066-77b2c64ef5a1_69225bf18dbc00147a254eb0_1095_s-1" target="_blank" class="sticky-cta" style="background:linear-gradient(105deg,#20c978,#72f2b2);color:#07120d;box-shadow:0 6px 16px -4px rgba(32,201,120,0.45)">Get AI Freedom System →</a>
 </div>
 
 <script>
@@ -1881,6 +2012,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   <section class="side-card">
     <h3>Start Here</h3>
     <a class="side-link hot" href="/prompts.html"><span>🚀 Start here</span><strong>Steal the 27 Claude prompts</strong></a>
+    <a class="side-link" href="https://whop.com/checkout/plan_pPbLHf78OD7Hv/?src=v3_0b42e3fb-aade-4129-8066-77b2c64ef5a1_69225bf18dbc00147a254eb0_1095_s-1" target="_blank"><span>AI Freedom System</span><strong>Build your first $1k/month</strong></a>
     <a class="side-link" href="https://www.swapyour9to5.com/"><span>Full Story</span><strong>Watch my full story</strong></a>
     <a class="side-link" href="/quit-your-9-to-5-with-ai.html"><span>Blueprint</span><strong>Quit your 9-5 with AI</strong></a>
     <a class="side-link" href="/story.html"><span>Origin</span><strong>Read Sean's story</strong></a>
