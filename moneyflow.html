@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <link rel="icon" type="image/png" href="https://hypnoticmeditations.b-cdn.net/images/fav/headphones.png">
+    <link rel="apple-touch-icon" href="https://hypnoticmeditations.b-cdn.net/images/fav/headphones.png">
     <title>Money Flow | 7-Minute Theta Audio • Sean Ali</title>
     <meta name="description" content="7-minute theta audio that rewires the hesitation pattern. Watch the full video, then get instant access for $27.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,32 +31,6 @@
             font-family: 'Sora', system-ui, sans-serif;
             font-weight: 800;
             letter-spacing: -0.02em;
-        }
-        
-        /* ===== RED URGENCY BAR (exact match from free.html) ===== */
-        .sticky-value-bar {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: #D92D20;
-            background: linear-gradient(95deg, #B91C1C 0%, #E11D2F 100%);
-            color: white;
-            padding: 14px 16px;
-            text-align: center;
-            font-size: 15px;
-            font-weight: 800;
-            letter-spacing: -0.2px;
-            text-transform: uppercase;
-            box-shadow: 0 4px 12px rgba(185, 28, 28, 0.3);
-            border-bottom: 1px solid rgba(255,255,255,0.25);
-            backdrop-filter: blur(2px);
-            font-family: 'Inter', system-ui, sans-serif;
-            animation: urgentPulse 1.2s ease-in-out 2;
-        }
-        @keyframes urgentPulse {
-            0% { opacity: 0.98; background: #B91C1C; }
-            50% { opacity: 1; background: #E11D2F; box-shadow: 0 4px 16px rgba(220,38,38,0.5); }
-            100% { opacity: 0.98; background: #B91C1C; }
         }
         
         /* main container — tighter top padding for "video first" feel, now with headline above video */
@@ -625,91 +601,11 @@
             background: #ffffff;
         }
         
-        /* EXIT POPUP — pure white theme */
-        #exitPopupOverlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(30, 30, 30, 0.85);
-            z-index: 9999;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(6px);
-        }
-        #exitPopupOverlay.show {
-            display: flex;
-        }
-        #exitPopupBox {
-            background: #ffffff;
-            border: 1px solid #f0daba;
-            border-radius: 32px;
-            padding: 40px 32px;
-            max-width: 480px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 30px 50px rgba(0,0,0,0.2);
-            position: relative;
-            animation: popIn 0.3s cubic-bezier(.34,1.56,.64,1);
-        }
-        @keyframes popIn {
-            from { opacity:0; transform:scale(.88) translateY(20px); }
-            to { opacity:1; transform:scale(1) translateY(0); }
-        }
-        #exitPopupBox .ep-icon {
-            font-size: 3rem;
-            margin-bottom: 12px;
-            display: block;
-        }
-        #exitPopupBox h3 {
-            font-family: 'Sora', sans-serif;
-            font-size: 1.55rem;
-            font-weight: 800;
-            color: #25221c;
-            line-height: 1.2;
-            margin-bottom: 14px;
-        }
-        #exitPopupBox h3 span {
-            color: #d49830;
-        }
-        #exitPopupBox p {
-            font-size: 1rem;
-            color: #4f4940;
-            line-height: 1.55;
-            margin-bottom: 24px;
-            font-weight: 500;
-        }
-        #exitPopupBox .ep-cta {
-            display: inline-block;
-            background: linear-gradient(135deg, #e7bd6f, #cf942e);
-            color: #1f1b14;
-            font-family: 'Sora', sans-serif;
-            font-weight: 800;
-            font-size: 1.05rem;
-            padding: 14px 32px;
-            border-radius: 60px;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            box-shadow: 0 8px 20px rgba(190, 120, 30, 0.25);
-            margin-bottom: 12px;
-        }
-        #exitPopupBox .ep-close {
-            display: block;
-            font-size: 0.8rem;
-            color: #a29482;
-            cursor: pointer;
-            margin-top: 8px;
-            font-weight: 600;
-            text-decoration: underline;
-        }
-        #exitPopupBox .ep-close:hover { color: #735f44; }
-        
         @media (max-width: 550px) {
             .cta-button-lite { font-size: 0.9rem; padding: 11px 18px; }
             .cta-button-premium { font-size: 1rem; padding: 13px 20px; }
             .proof-img-card { max-width: 140px; }
             .timer-display { font-size: 1.8rem; padding: 2px 12px; }
-            .sticky-value-bar { font-size: 12px; padding: 12px 12px; }
             .money-block-headline { font-size: 1.45rem; margin: 0 0 0.85rem 0; line-height: 1.25; }
         }
     </style>
@@ -748,17 +644,12 @@ src="https://www.facebook.com/tr?id=878451855254470&ev=PageView&noscript=1"
     hot('account','3a3058a6-7369-3d97-a1a0-ba9baed71541');
 </script>
 
-<!-- RED URGENCY BAR with original personalized message -->
-<div class="sticky-value-bar" id="urgencyTopBar">
-    <span>⚠️ Here's The Quick Video Sean Mentioned</span>
-</div>
-
 <!-- DIRECT VSL PAGE (vturb player - pure white background, headline above video now) -->
 <div id="vslMasterWrapper">
     <div class="vsl-main">
         <!-- HEADLINE above video -->
         <div class="money-block-headline">
-            this is why your brain is blocking money... <span>and how to fix it tonight</span>
+            Want to make more money?<br><span>Remove the money block in your brain 👇</span>
         </div>
         
         <!-- VIDEO directly under headline - NEW vturb player injected here (updated ID) -->
@@ -922,52 +813,8 @@ src="https://www.facebook.com/tr?id=878451855254470&ev=PageView&noscript=1"
     </div>
 </div>
 
-<!-- EXIT INTENT POPUP (pure white) -->
-<div id="exitPopupOverlay">
-    <div id="exitPopupBox">
-        <span class="ep-icon">🎧</span>
-        <h3 id="exitPopupHeading">Wait — you haven't heard the<br><span>#1 Money-Blocking Audio</span> yet.</h3>
-        <p id="exitPopupBody">Watch the video to the end. That's where Sean reveals the exact audio that clears the hesitation pattern most people carry their whole life.</p>
-        <button class="ep-cta" onclick="document.getElementById('exitPopupOverlay').classList.remove('show'); window.scrollTo({top:0,behavior:'smooth'});">
-            🔁 Take Me Back — I'll Watch To The End
-        </button>
-        <span class="ep-close" onclick="document.getElementById('exitPopupOverlay').classList.remove('show');">No thanks, I'll skip the breakthrough</span>
-    </div>
-</div>
-
 <script>
     (function() {
-        // Personalization from URL param 'name'
-        const _urlName = (function() {
-            try {
-                const p = new URLSearchParams(window.location.search);
-                const raw = p.get('name') || '';
-                return raw.trim().split(' ')[0].replace(/[^a-zA-Z'-]/g, '').substring(0, 50);
-            } catch(e) { return ''; }
-        })();
-
-        function _applyName() {
-            if (!_urlName) return;
-            const bar = document.getElementById('urgencyTopBar');
-            if (bar) {
-                bar.innerHTML = `<span>👋 Hey ${_urlName} — Here's The Quick Video Sean Mentioned For You</span>`;
-            }
-            const popHead = document.getElementById('exitPopupHeading');
-            if (popHead) {
-                popHead.innerHTML = _urlName + ', wait — you haven\'t heard the<br><span>#1 Money-Blocking Audio</span> yet.';
-            }
-            const popBody = document.getElementById('exitPopupBody');
-            if (popBody) {
-                popBody.textContent = 'Watch the video to the end, ' + _urlName + '. That\'s where Sean reveals the exact audio that clears the hesitation pattern most people carry their whole life.';
-            }
-        }
-
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', _applyName);
-        } else {
-            _applyName();
-        }
-
         // NEW vturb Player Integration (UPDATED with new player ID and script source)
         function loadVturbPlayer() {
             const placeholder = document.getElementById('videoPlaceholder');
@@ -1080,25 +927,6 @@ src="https://www.facebook.com/tr?id=878451855254470&ev=PageView&noscript=1"
         window.addEventListener('beforeunload', () => { if (timerInterval) clearInterval(timerInterval); });
         if (typeof fbq !== 'undefined') fbq('track', 'PageView', { content_name: 'MoneyFlow_DirectVSL_HighFOMO_NewPlayer' });
         
-        let exitShown = false;
-        document.addEventListener('mouseleave', function(e) {
-            if (e.clientY <= 0 && !exitShown) {
-                exitShown = true;
-                document.getElementById('exitPopupOverlay').classList.add('show');
-            }
-        });
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden && !exitShown) {
-                exitShown = true;
-                document.getElementById('exitPopupOverlay').classList.add('show');
-            }
-        });
-        const exitOverlay = document.getElementById('exitPopupOverlay');
-        if (exitOverlay) {
-            exitOverlay.addEventListener('click', function(e) {
-                if (e.target === this) this.classList.remove('show');
-            });
-        }
     })();
 </script>
 <!-- This site is converting visitors into subscribers and customers with https://respond.io -->
