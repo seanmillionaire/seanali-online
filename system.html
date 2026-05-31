@@ -43,19 +43,11 @@
     padding:42px 18px 56px;
     text-align:center;
   }
-  .top-link{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    min-height:36px;
-    padding:0 12px;
-    border:1px solid var(--line);
-    border-radius:999px;
-    color:var(--muted);
-    text-decoration:none;
-    font-size:13px;
-    font-weight:800;
-    margin-bottom:28px;
+  .top-profile{
+    display:grid;
+    justify-items:center;
+    gap:10px;
+    margin-bottom:18px;
   }
   .avatar{
     width:92px;
@@ -64,7 +56,13 @@
     object-fit:cover;
     border:4px solid #fff;
     box-shadow:0 12px 30px rgba(17,24,39,.14);
-    margin-bottom:16px;
+  }
+  .top-name{
+    margin:0;
+    color:#111827;
+    font-size:18px;
+    font-weight:900;
+    letter-spacing:-.02em;
   }
   .eyebrow{
     color:var(--blue);
@@ -239,8 +237,96 @@
   .final-note p{
     margin:0 0 10px;
   }
+  .site-footer{
+    margin-top:22px;
+    background:#111827;
+    color:#fff;
+    border-top:6px solid var(--orange);
+  }
+  .footer-inner{
+    width:min(1120px,100%);
+    margin:0 auto;
+    padding:52px 20px 28px;
+  }
+  .footer-top{
+    display:grid;
+    grid-template-columns:minmax(240px,1.1fr) minmax(0,2fr);
+    gap:34px;
+    align-items:start;
+    padding-bottom:34px;
+    border-bottom:1px solid rgba(255,255,255,.14);
+  }
+  .footer-brand{
+    display:grid;
+    gap:12px;
+    justify-items:start;
+  }
+  .footer-brand img{
+    width:72px;
+    height:72px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid rgba(255,255,255,.18);
+  }
+  .footer-brand h2{
+    margin:0;
+    font-size:34px;
+    line-height:1;
+    letter-spacing:-.04em;
+  }
+  .footer-brand p{
+    max-width:360px;
+    margin:0;
+    color:#cbd5e1;
+    line-height:1.55;
+    font-size:15px;
+  }
+  .footer-links{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:22px;
+  }
+  .footer-group h3{
+    margin:0 0 11px;
+    color:#f8fafc;
+    font-size:12px;
+    font-weight:900;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+  }
+  .footer-group ul{
+    display:grid;
+    gap:8px;
+    margin:0;
+    padding:0;
+    list-style:none;
+    line-height:1.35;
+  }
+  .footer-group a{
+    color:#dbeafe;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:700;
+  }
+  .footer-group a:hover,
+  .footer-group a:focus{
+    color:#fff;
+    text-decoration:underline;
+    text-underline-offset:4px;
+  }
+  .footer-bottom{
+    display:flex;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+    padding-top:22px;
+    color:#94a3b8;
+    font-size:13px;
+    font-weight:700;
+  }
   @media(max-width:920px){
     .offers{grid-template-columns:1fr}
+    .footer-top{grid-template-columns:1fr}
   }
   @media(max-width:760px){
     .page{padding-top:28px}
@@ -248,14 +334,19 @@
     ul{display:inline-block;text-align:left}
     h1{font-size:43px}
     .lead{font-size:17px}
+    .footer-links{grid-template-columns:1fr}
+    .footer-inner{padding-top:42px}
+    .footer-brand h2{font-size:30px}
   }
 </style>
 </head>
 <body>
   <main class="page">
-    <a class="top-link" href="/">Sean Ali</a>
+    <div class="top-profile" aria-label="Sean Ali">
+      <img class="avatar" src="https://statics.myclickfunnels.com/workspace/vGVGzP/image/20204117/file/904663e23eb23a39d6f2459104b7bccc.png" alt="Sean Ali">
+      <p class="top-name">Sean Ali</p>
+    </div>
 
-    <img class="avatar" src="https://statics.myclickfunnels.com/workspace/vGVGzP/image/20204117/file/904663e23eb23a39d6f2459104b7bccc.png" alt="Sean Ali">
     <p class="eyebrow">AI Freedom System</p>
     <h1>The fastest way to stop feeling behind and start using AI to build more freedom online.</h1>
     <p class="lead">No coding. No complicated tech. No guru nonsense. Just practical systems I actually use inside my real business.</p>
@@ -342,5 +433,57 @@
       <p>That's the game now.</p>
     </section>
   </main>
+
+  <footer class="site-footer" aria-label="Site footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <section class="footer-brand" aria-label="Sean Ali">
+          <img src="https://statics.myclickfunnels.com/workspace/vGVGzP/image/20204117/file/904663e23eb23a39d6f2459104b7bccc.png" alt="Sean Ali">
+          <h2>Sean Ali</h2>
+          <p>AI systems, money mindset, subconscious reprogramming, and practical tools for building more freedom online.</p>
+        </section>
+
+        <nav class="footer-links" aria-label="All site pages">
+          <section class="footer-group">
+            <h3>Main</h3>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="story.html">Sean's Story</a></li>
+              <li><a href="system.html">AI Freedom System</a></li>
+              <li><a href="blueprint.html">Internal Success Infrastructure</a></li>
+              <li><a href="guide.html">The Hidden Mental Brake</a></li>
+            </ul>
+          </section>
+
+          <section class="footer-group">
+            <h3>AI &amp; Prompts</h3>
+            <ul>
+              <li><a href="prompts.html">Claude27 Prompts</a></li>
+              <li><a href="prompts-guide.html">Claude27 Prompt Guide</a></li>
+              <li><a href="prompts-sent.html">Prompt Guide Sent</a></li>
+              <li><a href="quit-your-9-to-5-with-ai.html">Quit Your 9-5 With AI</a></li>
+              <li><a href="best-ai-manifestation-app.html">Best AI Manifestation App</a></li>
+            </ul>
+          </section>
+
+          <section class="footer-group">
+            <h3>Money Mindset</h3>
+            <ul>
+              <li><a href="what-are-money-blocks.html">What Are Money Blocks?</a></li>
+              <li><a href="how-to-reprogram-your-subconscious-mind.html">Reprogram Your Subconscious Mind</a></li>
+              <li><a href="reset/index.html">7-Minute Subconscious Reset</a></li>
+              <li><a href="reset/thankyou.html">Reset Thank You</a></li>
+            </ul>
+          </section>
+
+        </nav>
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; 2026 Sean Ali</span>
+        <span>Built for speed, leverage, and freedom.</span>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
