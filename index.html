@@ -43,19 +43,11 @@
     padding:42px 18px 56px;
     text-align:center;
   }
-  .top-link{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    min-height:36px;
-    padding:0 12px;
-    border:1px solid var(--line);
-    border-radius:999px;
-    color:var(--muted);
-    text-decoration:none;
-    font-size:13px;
-    font-weight:800;
-    margin-bottom:28px;
+  .top-profile{
+    display:grid;
+    justify-items:center;
+    gap:10px;
+    margin-bottom:18px;
   }
   .avatar{
     width:92px;
@@ -64,7 +56,13 @@
     object-fit:cover;
     border:4px solid #fff;
     box-shadow:0 12px 30px rgba(17,24,39,.14);
-    margin-bottom:16px;
+  }
+  .top-name{
+    margin:0;
+    color:#111827;
+    font-size:18px;
+    font-weight:900;
+    letter-spacing:-.02em;
   }
   .eyebrow{
     color:var(--blue);
@@ -344,9 +342,11 @@
 </head>
 <body>
   <main class="page">
-    <a class="top-link" href="/">Sean Ali</a>
+    <div class="top-profile" aria-label="Sean Ali">
+      <img class="avatar" src="https://statics.myclickfunnels.com/workspace/vGVGzP/image/20204117/file/904663e23eb23a39d6f2459104b7bccc.png" alt="Sean Ali">
+      <p class="top-name">Sean Ali</p>
+    </div>
 
-    <img class="avatar" src="https://statics.myclickfunnels.com/workspace/vGVGzP/image/20204117/file/904663e23eb23a39d6f2459104b7bccc.png" alt="Sean Ali">
     <p class="eyebrow">AI Freedom System</p>
     <h1>The fastest way to stop feeling behind and start using AI to build more freedom online.</h1>
     <p class="lead">No coding. No complicated tech. No guru nonsense. Just practical systems I actually use inside my real business.</p>
@@ -476,35 +476,6 @@
             </ul>
           </section>
 
-          <section class="footer-group">
-            <h3>Videos</h3>
-            <ul>
-              <li><a href="videos/3rdeye.html">Why Your 3rd Eye Is Blocked</a></li>
-              <li><a href="videos/genie.html">Manifestation Genie</a></li>
-              <li><a href="videos/theta-waves.html">Theta Waves &amp; Binaural Beats</a></li>
-              <li><a href="videos/7secrets.html">7 Secrets Video</a></li>
-              <li><a href="videos/moneyblocks1.html">Money Blocks Day 1</a></li>
-              <li><a href="videos/wrong.html">Manifesting Money Wrong</a></li>
-            </ul>
-          </section>
-
-          <section class="footer-group">
-            <h3>Webinar</h3>
-            <ul>
-              <li><a href="webinar/index.html">My Full Story Webinar</a></li>
-              <li><a href="webinar/confirmed.html">Webinar Confirmed</a></li>
-            </ul>
-          </section>
-
-          <section class="footer-group">
-            <h3>Presentations</h3>
-            <ul>
-              <li><a href="presentations/webinar_outline_v2.html">Webinar Outline v2</a></li>
-              <li><a href="presentations/new-webby.html">Reprogramming Protocol</a></li>
-              <li><a href="presentations/7secrets.html">7 Secrets Presentation</a></li>
-              <li><a href="presentations/AFS%20presentation.html">AI Freedom Presentation</a></li>
-            </ul>
-          </section>
         </nav>
       </div>
 
