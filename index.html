@@ -187,6 +187,26 @@
   .price.free{
     color:var(--blue);
   }
+  .price-note{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+    margin:-5px 0 14px;
+    color:#475467;
+    font-size:14px;
+    font-weight:900;
+  }
+  .price-note .was{
+    color:#98a2b3;
+    text-decoration:line-through;
+  }
+  .price-note .discount{
+    color:var(--orange);
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    font-size:12px;
+  }
   .offer p{
     margin:0 0 14px;
     color:#475467;
@@ -331,6 +351,7 @@
   @media(max-width:760px){
     .page{padding-top:28px}
     .offer{text-align:center}
+    .price-note{justify-content:center}
     ul{display:inline-block;text-align:left}
     h1{font-size:43px}
     .lead{font-size:17px}
@@ -405,7 +426,8 @@
       <article class="offer featured">
         <p class="offer-label">Most popular top pick</p>
         <h2>AI Freedom System</h2>
-        <div class="price">$297</div>
+        <div class="price">$7/mo</div>
+        <div class="price-note"><span class="was">Original $297</span><span class="discount">Discount applied</span></div>
         <p>The full shortcut if you want the system, not just a few prompts.</p>
         <p>This shows you how I use free AI tools to create content, launch products, simplify work, move faster, and build leverage online.</p>
         <p>Best for creators, entrepreneurs, operators, marketers, and anyone who wants to move like they have a bigger team.</p>
@@ -420,7 +442,7 @@
         </ul>
         <p>This is not theory. This is how I actually operate.</p>
         <p>Less overwhelm. More execution. More leverage. More freedom.</p>
-        <a class="btn" href="https://whop.com/checkout/plan_pPbLHf78OD7Hv/">Get The Full AI Freedom System</a>
+        <a class="btn" href="https://whop.com/checkout/plan_JmL5h9xS27Zbd">Get The Full AI Freedom System</a>
         <span class="trust">The top pick if you want the shortcut instead of spending 2 years figuring it out yourself.</span>
       </article>
     </section>
