@@ -49,7 +49,7 @@
   .eyebrow{color:var(--blue);font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;margin:0 0 10px}
   h1{max-width:760px;margin:0 auto 14px;font-size:clamp(39px,7vw,72px);line-height:.94;letter-spacing:-.045em}
   .lead{max-width:650px;margin:0 auto 46px;color:#344054;font-size:19px;line-height:1.5}
-  .story{max-width:720px;margin:0 auto 76px;text-align:left;color:#344054;font-size:17px;line-height:1.72}
+  .story{max-width:720px;margin:0 auto 24px;text-align:left;color:#344054;font-size:17px;line-height:1.72}
   .story p{margin:0 0 13px}
   .story .plain-list{display:grid;gap:6px;margin:16px 0;padding:0;list-style:none;color:#111827;font-weight:800}
   .proof-row{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:76px auto 28px}
@@ -78,6 +78,8 @@
   .offer h2{margin:0;font-size:25px;line-height:1.08;letter-spacing:-.035em}
   .offer.featured h2{color:#dc2626;font-size:30px}
   .offer-headline{margin:8px 0 12px;color:#111827;font-size:18px;line-height:1.28;font-weight:900;letter-spacing:-.025em}
+  .offer-image{width:100%;aspect-ratio:16/10;margin:12px 0 14px;border-radius:8px;overflow:hidden;background:#f8fafc;border:1px solid var(--line)}
+  .offer-image img{width:100%;height:100%;object-fit:cover;display:block}
   .real-value{display:block;margin:0 0 7px;color:#dc2626;font-size:32px;line-height:1;font-weight:950;letter-spacing:-.045em;text-decoration:line-through;text-decoration-thickness:4px}
   .price{font-size:39px;line-height:1;font-weight:900;letter-spacing:-.05em;margin:12px 0 10px;color:var(--orange)}
   .price-note{display:inline-flex;align-items:center;justify-content:center;margin:0 0 15px;padding:8px 11px;border-radius:8px;background:#fee2e2;color:#991b1b;font-size:13px;font-weight:950;text-transform:uppercase;letter-spacing:.04em}
@@ -115,7 +117,7 @@
   .footer-group a:hover,.footer-group a:focus{color:#fff;text-decoration:underline;text-underline-offset:4px}
   .footer-bottom{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:22px;color:#94a3b8;font-size:13px;font-weight:700}
   @media(max-width:920px){.offers{grid-template-columns:1fr}.photo-proof{grid-template-columns:1fr 1fr}.photo-card.big{grid-column:span 2;grid-row:auto;min-height:360px}.footer-top{grid-template-columns:1fr}}
-  @media(max-width:760px){.page{padding-top:42px;padding-bottom:70px}.lead{margin-bottom:36px;font-size:17px}.story{margin-bottom:58px}.offers{margin-bottom:72px}.intro{margin:72px auto}.proof-row{margin-top:64px}.photo-proof{grid-template-columns:1fr;margin-bottom:72px}.photo-card,.photo-card.big{grid-column:auto;min-height:270px}.offer{text-align:center}.price-note{justify-content:center}ul{display:inline-block;text-align:left}.benefit-list{display:grid;text-align:left}.benefit-list li{align-items:flex-start}.btn{min-height:76px;font-size:20px}h1{font-size:43px}.footer-links{grid-template-columns:1fr}.footer-inner{padding-top:42px}.footer-brand h2{font-size:30px}}
+  @media(max-width:760px){.page{padding-top:42px;padding-bottom:70px}.lead{margin-bottom:36px;font-size:17px}.story{margin-bottom:28px}.offers{margin-bottom:72px}.intro{margin:72px auto}.proof-row{margin-top:64px}.photo-proof{grid-template-columns:1fr;margin-bottom:72px}.photo-card,.photo-card.big{grid-column:auto;min-height:270px}.offer{text-align:center}.price-note{justify-content:center}ul{display:inline-block;text-align:left}.benefit-list{display:grid;text-align:left}.benefit-list li{align-items:flex-start}.btn{min-height:76px;font-size:20px}h1{font-size:43px}.footer-links{grid-template-columns:1fr}.footer-inner{padding-top:42px}.footer-brand h2{font-size:30px}}
 </style>
 </head>
 <body>
@@ -154,6 +156,7 @@
       <article class="offer">
         <p class="offer-label">FREE STARTER PACK</p>
         <h2>Claude 27 Prompt Pack</h2>
+        <div class="offer-image"><img src="https://hypnoticmeditations.b-cdn.net/images/claude27-img.png" alt="Claude 27 Prompt Pack"></div>
         <p class="offer-headline">New to AI? Start with ideas that can turn into income.</p>
         <span class="real-value">$47</span>
         <div class="price">$0 Today</div>
@@ -170,6 +173,7 @@
       <article class="offer featured">
         <p class="offer-label">PERFECT FOR ACTION TAKERS</p>
         <h2>AI Freedom System</h2>
+        <div class="offer-image"><img src="https://img-v2-prod.whop.com/unsafe/rs:fit:3840:0/plain/https%3A%2F%2Fassets-2-prod.whop.com%2Fpublic%2Fuploads%2F2025-11-14%2Fuser_2439839_24693afb-d393-43d3-81d3-696d11a0bb2e.png@avif?w=3840&q=75" alt="AI Freedom System"></div>
         <p class="offer-headline">Build the AI-powered life where you create faster, earn easier, and feel less trapped.</p>
         <span class="real-value">$297</span>
         <div class="price">$7/mo</div>
@@ -204,6 +208,7 @@
       <article class="offer">
         <p class="offer-label">FREE STARTER PACK</p>
         <h2>Claude 27 Prompt Pack</h2>
+        <div class="offer-image"><img src="https://hypnoticmeditations.b-cdn.net/images/claude27-img.png" alt="Claude 27 Prompt Pack"></div>
         <p class="offer-headline">New to AI? Start with ideas that can turn into income.</p>
         <span class="real-value">$47</span>
         <div class="price">$0 Today</div>
@@ -220,6 +225,7 @@
       <article class="offer featured">
         <p class="offer-label">PERFECT FOR ACTION TAKERS</p>
         <h2>AI Freedom System</h2>
+        <div class="offer-image"><img src="https://img-v2-prod.whop.com/unsafe/rs:fit:3840:0/plain/https%3A%2F%2Fassets-2-prod.whop.com%2Fpublic%2Fuploads%2F2025-11-14%2Fuser_2439839_24693afb-d393-43d3-81d3-696d11a0bb2e.png@avif?w=3840&q=75" alt="AI Freedom System"></div>
         <p class="offer-headline">Build the AI-powered life where you create faster, earn easier, and feel less trapped.</p>
         <span class="real-value">$297</span>
         <div class="price">$7/mo</div>
@@ -276,6 +282,7 @@
       <article class="offer">
         <p class="offer-label">FREE STARTER PACK</p>
         <h2>Claude 27 Prompt Pack</h2>
+        <div class="offer-image"><img src="https://hypnoticmeditations.b-cdn.net/images/claude27-img.png" alt="Claude 27 Prompt Pack"></div>
         <p class="offer-headline">New to AI? Start with ideas that can turn into income.</p>
         <span class="real-value">$47</span>
         <div class="price">$0 Today</div>
@@ -292,6 +299,7 @@
       <article class="offer featured">
         <p class="offer-label">PERFECT FOR ACTION TAKERS</p>
         <h2>AI Freedom System</h2>
+        <div class="offer-image"><img src="https://img-v2-prod.whop.com/unsafe/rs:fit:3840:0/plain/https%3A%2F%2Fassets-2-prod.whop.com%2Fpublic%2Fuploads%2F2025-11-14%2Fuser_2439839_24693afb-d393-43d3-81d3-696d11a0bb2e.png@avif?w=3840&q=75" alt="AI Freedom System"></div>
         <p class="offer-headline">Build the AI-powered life where you create faster, earn easier, and feel less trapped.</p>
         <span class="real-value">$297</span>
         <div class="price">$7/mo</div>
