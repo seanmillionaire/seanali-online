@@ -40,325 +40,82 @@
   .page{
     width:min(980px,100%);
     margin:0 auto;
-    padding:42px 18px 56px;
+    padding:70px 18px 86px;
     text-align:center;
   }
-  .top-profile{
-    display:grid;
-    justify-items:center;
-    gap:10px;
-    margin-bottom:18px;
-  }
-  .avatar{
-    width:92px;
-    height:92px;
-    border-radius:50%;
-    object-fit:cover;
-    border:4px solid #fff;
-    box-shadow:0 12px 30px rgba(17,24,39,.14);
-  }
-  .top-name{
-    margin:0;
-    color:#111827;
-    font-size:18px;
-    font-weight:900;
-    letter-spacing:-.02em;
-  }
-  .eyebrow{
-    color:var(--blue);
-    font-size:12px;
-    font-weight:900;
-    letter-spacing:.1em;
-    text-transform:uppercase;
-    margin:0 0 10px;
-  }
-  h1{
-    max-width:760px;
-    margin:0 auto 14px;
-    font-size:clamp(39px,7vw,72px);
-    line-height:.94;
-    letter-spacing:-.045em;
-  }
-  .lead{
-    max-width:650px;
-    margin:0 auto 18px;
-    color:#344054;
-    font-size:19px;
-    line-height:1.5;
-  }
-  .story{
-    max-width:720px;
-    margin:0 auto 30px;
-    text-align:left;
-    color:#344054;
-    font-size:17px;
-    line-height:1.72;
-  }
-  .story p{
-    margin:0 0 13px;
-  }
-  .story .plain-list{
-    display:grid;
-    gap:6px;
-    margin:16px 0;
-    padding:0;
-    list-style:none;
-    color:#111827;
-    font-weight:800;
-  }
-  .proof-row{
-    display:flex;
-    justify-content:center;
-    gap:8px;
-    flex-wrap:wrap;
-    margin:18px auto 32px;
-  }
-  .proof-row span{
-    display:inline-flex;
-    align-items:center;
-    min-height:34px;
-    padding:0 12px;
-    border-radius:999px;
-    background:var(--soft);
-    border:1px solid var(--line);
-    color:#344054;
-    font-size:13px;
-    font-weight:800;
-  }
-  .intro{
-    max-width:720px;
-    margin:0 auto 30px;
-    padding:20px;
-    border:1px solid var(--line);
-    border-radius:8px;
-    background:#fff;
-  }
-  .intro h2{
-    margin:0 0 8px;
-    font-size:24px;
-    letter-spacing:-.03em;
-  }
-  .intro p{
-    margin:0 0 12px;
-    color:#475467;
-    line-height:1.6;
-    font-size:16px;
-  }
+  .top-profile{display:grid;justify-items:center;gap:10px;margin-bottom:26px}
+  .avatar{width:92px;height:92px;border-radius:50%;object-fit:cover;border:4px solid #fff;box-shadow:0 12px 30px rgba(17,24,39,.14)}
+  .top-name{margin:0;color:#111827;font-size:18px;font-weight:900;letter-spacing:-.02em}
+  .eyebrow{color:var(--blue);font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;margin:0 0 10px}
+  h1{max-width:760px;margin:0 auto 14px;font-size:clamp(39px,7vw,72px);line-height:.94;letter-spacing:-.045em}
+  .lead{max-width:650px;margin:0 auto 46px;color:#344054;font-size:19px;line-height:1.5}
+  .story{max-width:720px;margin:0 auto 76px;text-align:left;color:#344054;font-size:17px;line-height:1.72}
+  .story p{margin:0 0 13px}
+  .story .plain-list{display:grid;gap:6px;margin:16px 0;padding:0;list-style:none;color:#111827;font-weight:800}
+  .proof-row{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:76px auto 28px}
+  .proof-row span{display:inline-flex;align-items:center;min-height:34px;padding:0 12px;border-radius:999px;background:var(--soft);border:1px solid var(--line);color:#344054;font-size:13px;font-weight:800}
+  .photo-proof{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:14px;margin:0 auto 86px;max-width:900px;text-align:left}
+  .photo-card{position:relative;min-height:220px;border-radius:10px;overflow:hidden;background:#111827;box-shadow:0 18px 45px rgba(17,24,39,.13)}
+  .photo-card.big{grid-row:span 2;min-height:452px}
+  .photo-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .45s ease}
+  .photo-card:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(17,24,39,0) 35%,rgba(17,24,39,.86) 100%)}
+  .photo-card:hover img{transform:scale(1.04)}
+  .photo-caption{position:absolute;left:14px;right:14px;bottom:14px;z-index:2;color:#fff}
+  .photo-caption b{display:block;font-size:16px;line-height:1.12;font-weight:950;letter-spacing:-.02em}
+  .photo-caption span{display:block;margin-top:4px;color:rgba(255,255,255,.78);font-size:12px;line-height:1.35;font-weight:800}
+  .intro{max-width:720px;margin:86px auto;padding:28px 24px;border:1px solid var(--line);border-radius:8px;background:#fff}
+  .intro h2{margin:0 0 8px;font-size:24px;letter-spacing:-.03em}
+  .intro p{margin:0 0 12px;color:#475467;line-height:1.6;font-size:16px}
   .intro p:last-child{margin-bottom:0}
-  .offers{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:16px;
-    margin:0 auto 18px;
-    text-align:left;
-  }
-  .offer{
-    border:1px solid var(--line);
-    border-radius:8px;
-    padding:22px;
-    background:#fff;
-    box-shadow:0 18px 45px rgba(17,24,39,.06);
-  }
-  .offer.featured{
-    border-color:#ffb088;
-    box-shadow:0 22px 55px rgba(255,77,34,.13);
-  }
-  .offer-label{
-    color:var(--gold);
-    font-size:12px;
-    font-weight:900;
-    text-transform:uppercase;
-    letter-spacing:.09em;
-    margin:0 0 8px;
-  }
-  .offer h2{
-    margin:0;
-    font-size:25px;
-    line-height:1.08;
-    letter-spacing:-.035em;
-  }
-  .price{
-    font-size:39px;
-    line-height:1;
-    font-weight:900;
-    letter-spacing:-.05em;
-    margin:12px 0 14px;
-  }
-  .price.free{
-    color:var(--blue);
-  }
-  .price-note{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    flex-wrap:wrap;
-    margin:-5px 0 14px;
-    color:#475467;
-    font-size:14px;
-    font-weight:900;
-  }
-  .price-note .was{
-    color:#98a2b3;
-    text-decoration:line-through;
-  }
-  .price-note .discount{
-    color:var(--orange);
-    text-transform:uppercase;
-    letter-spacing:.05em;
-    font-size:12px;
-  }
-  .offer p{
-    margin:0 0 14px;
-    color:#475467;
-    line-height:1.55;
-  }
-  ul{
-    margin:0 0 18px;
-    padding-left:20px;
-    color:#344054;
-    line-height:1.8;
-  }
-  .btn{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    min-height:48px;
-    border-radius:8px;
-    background:linear-gradient(135deg,var(--orange),#ff7a1a);
-    color:#fff;
-    text-decoration:none;
-    font-weight:900;
-    text-align:center;
-    padding:0 16px;
-    box-shadow:0 14px 26px rgba(255,77,34,.22);
-  }
-  .trust{
-    display:block;
-    margin-top:10px;
-    color:#667085;
-    font-size:12px;
-    font-weight:800;
-    text-align:center;
-  }
-  .final-note{
-    max-width:640px;
-    margin:28px auto 0;
-    color:#344054;
-    line-height:1.6;
-    font-size:16px;
-  }
-  .final-note h2{
-    margin:0 0 10px;
-    color:#111827;
-    font-size:28px;
-    line-height:1.12;
-    letter-spacing:-.035em;
-  }
-  .final-note p{
-    margin:0 0 10px;
-  }
-  .site-footer{
-    margin-top:22px;
-    background:#111827;
-    color:#fff;
-    border-top:6px solid var(--orange);
-  }
-  .footer-inner{
-    width:min(1120px,100%);
-    margin:0 auto;
-    padding:52px 20px 28px;
-  }
-  .footer-top{
-    display:grid;
-    grid-template-columns:minmax(240px,1.1fr) minmax(0,2fr);
-    gap:34px;
-    align-items:start;
-    padding-bottom:34px;
-    border-bottom:1px solid rgba(255,255,255,.14);
-  }
-  .footer-brand{
-    display:grid;
-    gap:12px;
-    justify-items:start;
-  }
-  .footer-brand img{
-    width:72px;
-    height:72px;
-    border-radius:50%;
-    object-fit:cover;
-    border:3px solid rgba(255,255,255,.18);
-  }
-  .footer-brand h2{
-    margin:0;
-    font-size:34px;
-    line-height:1;
-    letter-spacing:-.04em;
-  }
-  .footer-brand p{
-    max-width:360px;
-    margin:0;
-    color:#cbd5e1;
-    line-height:1.55;
-    font-size:15px;
-  }
-  .footer-links{
-    display:grid;
-    grid-template-columns:repeat(3,minmax(0,1fr));
-    gap:22px;
-  }
-  .footer-group h3{
-    margin:0 0 11px;
-    color:#f8fafc;
-    font-size:12px;
-    font-weight:900;
-    letter-spacing:.1em;
-    text-transform:uppercase;
-  }
-  .footer-group ul{
-    display:grid;
-    gap:8px;
-    margin:0;
-    padding:0;
-    list-style:none;
-    line-height:1.35;
-  }
-  .footer-group a{
-    color:#dbeafe;
-    text-decoration:none;
-    font-size:14px;
-    font-weight:700;
-  }
-  .footer-group a:hover,
-  .footer-group a:focus{
-    color:#fff;
-    text-decoration:underline;
-    text-underline-offset:4px;
-  }
-  .footer-bottom{
-    display:flex;
-    justify-content:space-between;
-    gap:16px;
-    flex-wrap:wrap;
-    padding-top:22px;
-    color:#94a3b8;
-    font-size:13px;
-    font-weight:700;
-  }
-  @media(max-width:920px){
-    .offers{grid-template-columns:1fr}
-    .footer-top{grid-template-columns:1fr}
-  }
-  @media(max-width:760px){
-    .page{padding-top:28px}
-    .offer{text-align:center}
-    .price-note{justify-content:center}
-    ul{display:inline-block;text-align:left}
-    h1{font-size:43px}
-    .lead{font-size:17px}
-    .footer-links{grid-template-columns:1fr}
-    .footer-inner{padding-top:42px}
-    .footer-brand h2{font-size:30px}
-  }
+  .social-proof{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;max-width:720px;margin:0 auto 24px;padding:14px 18px;border:2px solid #16a34a;border-radius:8px;background:#f0fdf4;color:#14532d;font-size:15px;line-height:1.35;font-weight:950}
+  .social-proof b{color:#dc2626}
+  .offers{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin:0 auto 96px;text-align:left}
+  .offer{border:1px solid var(--line);border-radius:8px;padding:22px;background:#fff;box-shadow:0 18px 45px rgba(17,24,39,.06)}
+  .offer.featured{position:relative;border:4px solid var(--orange);padding-top:38px;background:linear-gradient(180deg,#fff7ed 0%,#fff 42%,#f0fdf4 100%);box-shadow:0 28px 70px rgba(255,77,34,.28),0 0 0 6px rgba(250,204,21,.22);overflow:hidden;animation:offerPulse 2.8s ease-in-out infinite}
+  .offer.featured:before{content:"BEST VALUE";position:absolute;top:10px;right:18px;min-height:30px;display:inline-flex;align-items:center;padding:0 14px;border-radius:999px;background:#16a34a;color:#fff;font-size:12px;font-weight:900;letter-spacing:.08em;box-shadow:0 12px 22px rgba(22,163,74,.28);z-index:2;animation:badgePop 1.8s ease-in-out infinite}
+  .offer.featured:after{content:"";position:absolute;inset:-40% auto auto -35%;width:70%;height:180%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent);transform:rotate(18deg);animation:shineSweep 3.4s ease-in-out infinite;pointer-events:none}
+  .offer-label{color:var(--gold);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.09em;margin:0 0 8px}
+  .offer h2{margin:0;font-size:25px;line-height:1.08;letter-spacing:-.035em}
+  .offer.featured h2{color:#dc2626;font-size:30px}
+  .offer-headline{margin:8px 0 12px;color:#111827;font-size:18px;line-height:1.28;font-weight:900;letter-spacing:-.025em}
+  .real-value{display:block;margin:0 0 7px;color:#dc2626;font-size:32px;line-height:1;font-weight:950;letter-spacing:-.045em;text-decoration:line-through;text-decoration-thickness:4px}
+  .price{font-size:39px;line-height:1;font-weight:900;letter-spacing:-.05em;margin:12px 0 10px;color:var(--orange)}
+  .price-note{display:inline-flex;align-items:center;justify-content:center;margin:0 0 15px;padding:8px 11px;border-radius:8px;background:#fee2e2;color:#991b1b;font-size:13px;font-weight:950;text-transform:uppercase;letter-spacing:.04em}
+  .offer p{margin:0 0 14px;color:#475467;line-height:1.55}
+  ul{margin:0 0 18px;padding-left:20px;color:#344054;line-height:1.8}
+  .total-line{display:flex;justify-content:space-between;gap:14px;margin:0 0 16px;padding:13px;border-radius:8px;background:#111827;color:#fff;font-size:15px;font-weight:900}
+  .total-line strong{color:#facc15}
+  .today-line{display:block;margin:-4px 0 16px;padding:12px 14px;border-radius:8px;background:#dcfce7;color:#14532d;font-size:16px;line-height:1.35;font-weight:950;text-align:center}
+  .benefit-list{display:grid;gap:10px;margin:0 0 18px;padding:0;list-style:none;color:#111827;line-height:1.35}
+  .benefit-list li{position:relative;padding:12px 12px 12px 42px;border:2px solid #bbf7d0;background:#f0fdf4;color:#111827;border-radius:8px;font-size:18px;font-weight:950}
+  .benefit-list li:before{content:"✓";position:absolute;left:12px;top:50%;transform:translateY(-50%);width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:#16a34a;color:#fff;font-size:15px;line-height:1;font-weight:950}
+  .btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:72px;border-radius:10px;background:linear-gradient(135deg,var(--orange),#ff7a1a);color:#fff;text-decoration:none;font-size:21px;line-height:1.15;font-weight:950;text-align:center;text-transform:uppercase;padding:14px 18px;box-shadow:0 18px 32px rgba(255,77,34,.3)}
+  .offer.featured .btn{background:linear-gradient(135deg,#16a34a,#22c55e);box-shadow:0 20px 38px rgba(22,163,74,.34);animation:buttonThump 1.8s ease-in-out infinite}
+  @keyframes offerPulse{0%,100%{transform:translateY(0);box-shadow:0 28px 70px rgba(255,77,34,.28),0 0 0 6px rgba(250,204,21,.22)}50%{transform:translateY(-4px);box-shadow:0 34px 82px rgba(255,77,34,.36),0 0 0 9px rgba(250,204,21,.3)}}
+  @keyframes badgePop{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+  @keyframes buttonThump{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
+  @keyframes shineSweep{0%,45%{left:-55%}75%,100%{left:115%}}
+  @media (prefers-reduced-motion:reduce){.offer.featured,.offer.featured:before,.offer.featured:after,.offer.featured .btn{animation:none}}
+  .trust{display:block;margin-top:10px;color:#667085;font-size:12px;font-weight:800;text-align:center}
+  .risk-note{margin:12px 0 0;color:#111827;font-size:13px;line-height:1.45;font-weight:900;text-align:center}
+  .final-note{max-width:640px;margin:96px auto 0;color:#344054;line-height:1.6;font-size:16px}
+  .final-note h2{margin:0 0 10px;color:#111827;font-size:28px;line-height:1.12;letter-spacing:-.035em}
+  .final-note p{margin:0 0 10px}
+  .site-footer{margin-top:22px;background:#111827;color:#fff;border-top:6px solid var(--orange)}
+  .footer-inner{width:min(1120px,100%);margin:0 auto;padding:52px 20px 28px}
+  .footer-top{display:grid;grid-template-columns:minmax(240px,1.1fr) minmax(0,2fr);gap:34px;align-items:start;padding-bottom:34px;border-bottom:1px solid rgba(255,255,255,.14)}
+  .footer-brand{display:grid;gap:12px;justify-items:start}
+  .footer-brand img{width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.18)}
+  .footer-brand h2{margin:0;font-size:34px;line-height:1;letter-spacing:-.04em}
+  .footer-brand p{max-width:360px;margin:0;color:#cbd5e1;line-height:1.55;font-size:15px}
+  .footer-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+  .footer-group h3{margin:0 0 11px;color:#f8fafc;font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+  .footer-group ul{display:grid;gap:8px;margin:0;padding:0;list-style:none;line-height:1.35}
+  .footer-group a{color:#dbeafe;text-decoration:none;font-size:14px;font-weight:700}
+  .footer-group a:hover,.footer-group a:focus{color:#fff;text-decoration:underline;text-underline-offset:4px}
+  .footer-bottom{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:22px;color:#94a3b8;font-size:13px;font-weight:700}
+  @media(max-width:920px){.offers{grid-template-columns:1fr}.photo-proof{grid-template-columns:1fr 1fr}.photo-card.big{grid-column:span 2;grid-row:auto;min-height:360px}.footer-top{grid-template-columns:1fr}}
+  @media(max-width:760px){.page{padding-top:42px;padding-bottom:70px}.lead{margin-bottom:36px;font-size:17px}.story{margin-bottom:58px}.offers{margin-bottom:72px}.intro{margin:72px auto}.proof-row{margin-top:64px}.photo-proof{grid-template-columns:1fr;margin-bottom:72px}.photo-card,.photo-card.big{grid-column:auto;min-height:270px}.offer{text-align:center}.price-note{justify-content:center}ul{display:inline-block;text-align:left}.benefit-list{display:grid;text-align:left}.benefit-list li{align-items:flex-start}.btn{min-height:76px;font-size:20px}h1{font-size:43px}.footer-links{grid-template-columns:1fr}.footer-inner{padding-top:42px}.footer-brand h2{font-size:30px}}
 </style>
 </head>
 <body>
@@ -385,74 +142,171 @@
         <li>Create leverage.</li>
         <li>And build more freedom online.</li>
       </ul>
-      <p>That's what this is.</p>
+      <p>That is what this is. A simple way to stop watching AI pass you by and start using it to build the life you actually want.</p>
     </section>
 
-    <div class="proof-row">
-      <span>125,000+ people reached</span>
-      <span>Media buyer</span>
-      <span>AI systems builder</span>
-      <span>Real operator</span>
+    <p class="eyebrow">Start here</p>
+    <div class="social-proof" aria-label="Buyer testimonial">
+      <b>"OMG Sean, thanks to your AI tools I finally have my own little money machine working!!" - Katie L.</b>
     </div>
 
-    <section class="intro">
-      <h2>Quick Sean intro</h2>
-      <p>I've spent 15+ years online figuring out what actually works.</p>
-      <p>Ads. Content. Offers. Funnels. Digital products. Automation. AI systems.</p>
-      <p>After years of trial and error, one thing became obvious: the people who learn AI now will move faster than everyone else.</p>
-      <p>Not because AI replaces people. Because leverage wins.</p>
-      <p>The person who can think, create, ship, and execute faster wins. That's why I built this.</p>
-    </section>
-
-    <p class="eyebrow">Most popular picks</p>
     <section class="offers" aria-label="AI Freedom offers">
       <article class="offer">
-        <p class="offer-label">Free top pick</p>
+        <p class="offer-label">FREE STARTER PACK</p>
         <h2>Claude 27 Prompt Pack</h2>
-        <div class="price free">FREE</div>
-        <p>The fastest way to stop guessing and start using AI like a serious online operator.</p>
-        <p>Grab my personal prompt pack for content ideas, offer creation, product ideas, faster execution, clearer thinking, marketing, and online business.</p>
-        <ul>
-          <li>27 plug-and-play AI prompts</li>
-          <li>Popular starter pick for beginners</li>
-          <li>Built for content, offers, products, and execution</li>
-          <li>No fluff or fake make-money-in-7-days garbage</li>
-          <li>Instantly get more useful output from AI</li>
+        <p class="offer-headline">New to AI? Start with ideas that can turn into income.</p>
+        <span class="real-value">$47</span>
+        <div class="price">$0 Today</div>
+        <div class="price-note">Limited discount applied</div>
+        <ul class="benefit-list">
+          <li>Find simple product ideas you could sell even as a beginner.</li>
+          <li>Turn "I don't know what to post" into content that attracts buyers.</li>
+          <li>Start seeing a path from AI prompts to extra income and more freedom.</li>
         </ul>
-        <a class="btn" href="https://seanali.online/prompts">Send Me The Free Prompt Pack</a>
-        <span class="trust">Start here if you want quick wins without buying anything yet.</span>
+        <a class="btn" href="https://seanali.online/prompts">Claim For $0</a>
+        <span class="trust">Limited starter discount. Grab it while it is open.</span>
       </article>
 
       <article class="offer featured">
-        <p class="offer-label">Most popular top pick</p>
+        <p class="offer-label">PERFECT FOR ACTION TAKERS</p>
         <h2>AI Freedom System</h2>
+        <p class="offer-headline">Build the AI-powered life where you create faster, earn easier, and feel less trapped.</p>
+        <span class="real-value">$297</span>
         <div class="price">$7/mo</div>
-        <div class="price-note"><span class="was">Original $297</span><span class="discount">Discount applied</span></div>
-        <p>The full shortcut if you want the system, not just a few prompts.</p>
-        <p>This shows you how I use free AI tools to create content, launch products, simplify work, move faster, and build leverage online.</p>
-        <p>Best for creators, entrepreneurs, operators, marketers, and anyone who wants to move like they have a bigger team.</p>
-        <ul>
-          <li>Most popular pick for serious execution</li>
-          <li>My complete AI workflow stack</li>
-          <li>The free tools I actually use every day</li>
-          <li>Content systems designed to save hours</li>
-          <li>Offer and product creation systems</li>
-          <li>Prompt systems for faster output</li>
-          <li>Real-world workflows you can copy immediately</li>
+        <div class="price-note">Launch discount applied</div>
+        <div class="total-line"><span>Real value</span><strong>$297</strong></div>
+        <span class="today-line">Today: $7/mo while this discount is active</span>
+        <ul class="benefit-list">
+          <li>Go from total beginner to having real money-making assets in motion.</li>
+          <li>Create offers and content that can bring buyers to you.</li>
+          <li>Turn your ideas into simple digital products you can sell online.</li>
+          <li>Use AI to buy back time, build freedom, and stop feeling stuck in survival mode.</li>
         </ul>
-        <p>This is not theory. This is how I actually operate.</p>
-        <p>Less overwhelm. More execution. More leverage. More freedom.</p>
-        <a class="btn" href="https://whop.com/checkout/plan_JmL5h9xS27Zbd">Get The Full AI Freedom System</a>
-        <span class="trust">The top pick if you want the shortcut instead of spending 2 years figuring it out yourself.</span>
+        <a class="btn" href="https://whop.com/checkout/plan_JmL5h9xS27Zbd">Get Access</a>
+        <p class="risk-note">Cancel anytime.</p>
       </article>
     </section>
 
-    <section class="final-note">
-      <h2>This is for people who are tired of feeling behind.</h2>
-      <p>You do not need 100 tools.</p>
-      <p>You do not need to become technical.</p>
-      <p>You just need a practical system that helps you move faster than the average person.</p>
-      <p>That's the game now.</p>
+    <section class="intro" aria-label="About Sean Ali">
+      <h2>About Sean</h2>
+      <p>I've spent 15+ years online figuring out what actually works.</p>
+      <p>Ads. Content. Offers. Funnels. Digital products. Automation. AI systems.</p>
+      <p>I am not teaching theory from a blank room. I use these systems to create leverage, travel, build offers, and move faster with a small team.</p>
+      <p>The person who can think, create, ship, and execute faster wins. That is why I built this.</p>
+    </section>
+
+    <p class="eyebrow">Choose your path</p>
+    <div class="social-proof" aria-label="Buyer testimonial">
+      <b>"I was brand new to AI. This made it feel simple enough to actually start." - Marcus R.</b>
+    </div>
+
+    <section class="offers" aria-label="AI Freedom offers">
+      <article class="offer">
+        <p class="offer-label">FREE STARTER PACK</p>
+        <h2>Claude 27 Prompt Pack</h2>
+        <p class="offer-headline">New to AI? Start with ideas that can turn into income.</p>
+        <span class="real-value">$47</span>
+        <div class="price">$0 Today</div>
+        <div class="price-note">Limited discount applied</div>
+        <ul class="benefit-list">
+          <li>Find simple product ideas you could sell even as a beginner.</li>
+          <li>Turn "I don't know what to post" into content that attracts buyers.</li>
+          <li>Start seeing a path from AI prompts to extra income and more freedom.</li>
+        </ul>
+        <a class="btn" href="https://seanali.online/prompts">Claim For $0</a>
+        <span class="trust">Limited starter discount. Grab it while it is open.</span>
+      </article>
+
+      <article class="offer featured">
+        <p class="offer-label">PERFECT FOR ACTION TAKERS</p>
+        <h2>AI Freedom System</h2>
+        <p class="offer-headline">Build the AI-powered life where you create faster, earn easier, and feel less trapped.</p>
+        <span class="real-value">$297</span>
+        <div class="price">$7/mo</div>
+        <div class="price-note">Launch discount applied</div>
+        <div class="total-line"><span>Real value</span><strong>$297</strong></div>
+        <span class="today-line">Today: $7/mo while this discount is active</span>
+        <ul class="benefit-list">
+          <li>Go from total beginner to having real money-making assets in motion.</li>
+          <li>Create offers and content that can bring buyers to you.</li>
+          <li>Turn your ideas into simple digital products you can sell online.</li>
+          <li>Use AI to buy back time, build freedom, and stop feeling stuck in survival mode.</li>
+        </ul>
+        <a class="btn" href="https://whop.com/checkout/plan_JmL5h9xS27Zbd">Get Access</a>
+        <p class="risk-note">Cancel anytime.</p>
+      </article>
+    </section>
+
+    <div class="proof-row">
+      <span>Worldwide traveler</span>
+      <span>Earns $1,000+ a day</span>
+      <span>Helped 125,000+ people</span>
+      <span>AI systems architect</span>
+    </div>
+
+    <section class="photo-proof" aria-label="Sean Ali real-world proof">
+      <article class="photo-card big">
+        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/coconuts%20in%20panama.jpg" alt="Sean Ali in Panama">
+        <div class="photo-caption"><b>Freedom is the point.</b><span>Built online systems from anywhere.</span></div>
+      </article>
+      <article class="photo-card">
+        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/with%20russell%20brunson.jpg" alt="Sean Ali with Russell Brunson">
+        <div class="photo-caption"><b>In rooms where offers win.</b><span>Funnels, attention, and direct response.</span></div>
+      </article>
+      <article class="photo-card">
+        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/team%20celebrate.JPG" alt="Sean Ali team outdoors">
+        <div class="photo-caption"><b>Real people. Real business.</b><span>Not theory from a blank room.</span></div>
+      </article>
+      <article class="photo-card">
+        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/with%20100m%20earners.jpg" alt="Sean Ali with high earning entrepreneurs">
+        <div class="photo-caption"><b>Around bigger players.</b><span>Learning how money moves online.</span></div>
+      </article>
+      <article class="photo-card">
+        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/seanproof.png" alt="Sean Ali business proof screenshot">
+        <div class="photo-caption"><b>Systems create leverage.</b><span>AI, media, offers, and execution.</span></div>
+      </article>
+    </section>
+
+    <p class="eyebrow">Ready to move?</p>
+    <div class="social-proof" aria-label="Buyer testimonial">
+      <b>"I finally stopped collecting tools and started building something I can sell." - Danielle M.</b>
+    </div>
+
+    <section class="offers" aria-label="AI Freedom offers">
+      <article class="offer">
+        <p class="offer-label">FREE STARTER PACK</p>
+        <h2>Claude 27 Prompt Pack</h2>
+        <p class="offer-headline">New to AI? Start with ideas that can turn into income.</p>
+        <span class="real-value">$47</span>
+        <div class="price">$0 Today</div>
+        <div class="price-note">Limited discount applied</div>
+        <ul class="benefit-list">
+          <li>Find simple product ideas you could sell even as a beginner.</li>
+          <li>Turn "I don't know what to post" into content that attracts buyers.</li>
+          <li>Start seeing a path from AI prompts to extra income and more freedom.</li>
+        </ul>
+        <a class="btn" href="https://seanali.online/prompts">Claim For $0</a>
+        <span class="trust">Limited starter discount. Grab it while it is open.</span>
+      </article>
+
+      <article class="offer featured">
+        <p class="offer-label">PERFECT FOR ACTION TAKERS</p>
+        <h2>AI Freedom System</h2>
+        <p class="offer-headline">Build the AI-powered life where you create faster, earn easier, and feel less trapped.</p>
+        <span class="real-value">$297</span>
+        <div class="price">$7/mo</div>
+        <div class="price-note">Launch discount applied</div>
+        <div class="total-line"><span>Real value</span><strong>$297</strong></div>
+        <span class="today-line">Today: $7/mo while this discount is active</span>
+        <ul class="benefit-list">
+          <li>Go from total beginner to having real money-making assets in motion.</li>
+          <li>Create offers and content that can bring buyers to you.</li>
+          <li>Turn your ideas into simple digital products you can sell online.</li>
+          <li>Use AI to buy back time, build freedom, and stop feeling stuck in survival mode.</li>
+        </ul>
+        <a class="btn" href="https://whop.com/checkout/plan_JmL5h9xS27Zbd">Get Access</a>
+        <p class="risk-note">Cancel anytime.</p>
+      </article>
     </section>
   </main>
 
@@ -497,7 +351,6 @@
               <li><a href="reset/thankyou.html">Reset Thank You</a></li>
             </ul>
           </section>
-
         </nav>
       </div>
 
