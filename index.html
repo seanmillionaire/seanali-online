@@ -100,6 +100,40 @@
   @media (prefers-reduced-motion:reduce){.offer.featured,.offer.featured:before,.offer.featured:after,.offer.featured .btn{animation:none}}
   .trust{display:block;margin-top:10px;color:#667085;font-size:12px;font-weight:800;text-align:center}
   .risk-note{margin:12px 0 0;color:#111827;font-size:13px;line-height:1.45;font-weight:900;text-align:center}
+  .mechanism-badge{display:inline-flex;align-items:center;justify-content:center;margin:4px auto 18px;padding:10px 16px;border:2px solid #111827;border-radius:999px;background:#facc15;color:#111827;font-size:13px;font-weight:950;text-transform:uppercase;letter-spacing:.07em}
+  .section-kicker{max-width:720px;margin:0 auto 18px;text-align:center;color:#dc2626;font-size:14px;font-weight:950;text-transform:uppercase;letter-spacing:.08em}
+  .enemy-box,.future-box{max-width:760px;margin:0 auto 70px;padding:26px;border:2px solid #111827;border-radius:14px;background:#fff;box-shadow:0 18px 45px rgba(17,24,39,.08);text-align:left}
+  .enemy-box h2,.future-box h2{margin:0 0 14px;font-size:31px;line-height:1.08;letter-spacing:-.04em}
+  .enemy-box p,.future-box p{margin:0 0 13px;color:#344054;font-size:17px;line-height:1.65;font-weight:700}
+  .future-list{display:grid;gap:10px;margin:18px 0 0;padding:0;list-style:none}
+  .future-list li{position:relative;padding:12px 12px 12px 42px;border-radius:8px;background:#f0fdf4;color:#111827;font-size:17px;font-weight:950}
+  .future-list li:before{content:"✓";position:absolute;left:12px;top:50%;transform:translateY(-50%);width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:#16a34a;color:#fff;font-size:14px;font-weight:950}
+  .proof-screens{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;max-width:1080px;margin:0 auto 88px;text-align:left}
+  .screen-card{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 18px 44px rgba(17,24,39,.08)}
+  .screen-card img{width:100%;height:330px;object-fit:cover;display:block;background:#f8fafc}
+  .screen-card div{padding:14px 16px}
+  .screen-card b{display:block;color:#111827;font-size:15px;font-weight:950}
+  .screen-card span{display:block;margin-top:4px;color:#667085;font-size:12px;font-weight:800;line-height:1.4}
+  .final-cta-box{max-width:800px;margin:86px auto 0;padding:34px 26px;border-radius:18px;background:#111827;color:#fff;text-align:center;box-shadow:0 22px 60px rgba(17,24,39,.18)}
+  .final-cta-box h2{margin:0 0 12px;font-size:38px;line-height:1.05;letter-spacing:-.045em}
+  .final-cta-box p{max-width:620px;margin:0 auto 22px;color:#d1d5db;font-size:17px;line-height:1.58;font-weight:750}
+  .final-buttons{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:680px;margin:0 auto}
+  .final-buttons .btn{min-height:68px}
+  .flow-copy{max-width:760px;margin:0 auto 56px;text-align:left;color:#344054;font-size:18px;line-height:1.75}
+  .flow-copy p{margin:0 0 16px}
+  .flow-copy strong{color:#111827;font-weight:950}
+  .flow-copy .red{color:#dc2626;font-weight:950}
+  .inline-proof{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;max-width:860px;margin:34px auto 58px}
+  .inline-proof span{display:flex;align-items:center;justify-content:center;min-height:46px;padding:8px 12px;border-radius:999px;background:#f8fafc;color:#111827;font-size:13px;font-weight:950;text-align:center}
+  .proof-strip{max-width:900px;margin:0 auto 70px}
+  .proof-strip h2{margin:0 0 18px;text-align:center;font-size:34px;line-height:1.08;letter-spacing:-.04em}
+  .proof-screens{margin-bottom:0}
+  .proof-screens .screen-card{border:0;border-radius:12px;box-shadow:0 16px 38px rgba(17,24,39,.08)}
+  .intro,.enemy-box,.future-box{border:0;box-shadow:none;background:transparent;padding:0;margin:0 auto 52px;text-align:left}
+  .intro h2,.enemy-box h2,.future-box h2{font-size:34px}
+  .offers{margin-bottom:66px}
+  .faq-section{border-top:1px solid var(--line);padding-top:62px}
+  .final-cta-box{margin-top:66px}
   .faq-section{max-width:780px;margin:8px auto 0;padding:76px 0 0;text-align:left}
   .faq-section .eyebrow{text-align:center;display:flex;width:max-content;margin:0 auto 12px}
   .faq-section h2{margin:0 auto 28px;text-align:center;font-size:34px;line-height:1.08;letter-spacing:-.04em}
@@ -123,8 +157,76 @@
   .footer-group a{color:#dbeafe;text-decoration:none;font-size:14px;font-weight:700}
   .footer-group a:hover,.footer-group a:focus{color:#fff;text-decoration:underline;text-underline-offset:4px}
   .footer-bottom{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:22px;color:#94a3b8;font-size:13px;font-weight:700}
-  @media(max-width:920px){.offers{grid-template-columns:1fr}.photo-proof{grid-template-columns:1fr 1fr}.photo-card.big{grid-column:span 2;grid-row:auto;min-height:360px}.footer-top{grid-template-columns:1fr}}
-  @media(max-width:760px){.faq-section{padding-top:58px}.faq-section h2{font-size:29px}.page{padding-top:42px;padding-bottom:70px}.lead{margin-bottom:36px;font-size:17px}.story{margin-bottom:28px}.offers{margin-bottom:72px}.intro{margin:72px auto}.proof-row{margin-top:64px}.photo-proof{grid-template-columns:1fr;margin-bottom:72px}.photo-card,.photo-card.big{grid-column:auto;min-height:270px}.offer{text-align:center}.price-note{justify-content:center}ul{display:inline-block;text-align:left}.benefit-list{display:grid;text-align:left}.benefit-list li{align-items:flex-start}.btn{min-height:76px;font-size:20px}h1{font-size:43px}.footer-links{grid-template-columns:1fr}.footer-inner{padding-top:42px}.footer-brand h2{font-size:30px}}
+  @media(max-width:920px){.offers{grid-template-columns:1fr}.proof-screens{grid-template-columns:1fr}.screen-card img{height:300px}.final-buttons{grid-template-columns:1fr}.photo-proof{grid-template-columns:1fr 1fr}.photo-card.big{grid-column:span 2;grid-row:auto;min-height:360px}.footer-top{grid-template-columns:1fr}}
+  @media(max-width:760px){.enemy-box,.future-box{margin-bottom:56px;padding:22px}.final-cta-box h2{font-size:31px}.faq-section{padding-top:58px}.faq-section h2{font-size:29px}.inline-proof{grid-template-columns:1fr 1fr;margin-bottom:44px}.page{padding-top:42px;padding-bottom:70px}.lead{margin-bottom:36px;font-size:17px}.story{margin-bottom:28px}.offers{margin-bottom:72px}.intro{margin:72px auto}.proof-row{margin-top:64px}.photo-proof{grid-template-columns:1fr;margin-bottom:72px}.photo-card,.photo-card.big{grid-column:auto;min-height:270px}.offer{text-align:center}.price-note{justify-content:center}ul{display:inline-block;text-align:left}.benefit-list{display:grid;text-align:left}.benefit-list li{align-items:flex-start}.btn{min-height:76px;font-size:20px}h1{font-size:43px}.footer-links{grid-template-columns:1fr}.footer-inner{padding-top:42px}.footer-brand h2{font-size:30px}}
+
+  .proof-screens{grid-template-columns:1fr !important;max-width:980px !important;gap:30px !important;margin-bottom:0 !important}
+  .screen-card{border:0 !important;border-radius:14px !important;box-shadow:0 18px 46px rgba(17,24,39,.1) !important}
+  .screen-card img{width:100% !important;height:auto !important;max-height:none !important;object-fit:contain !important;background:#f8fafc !important}
+  .screen-card div{padding:18px 20px !important}
+  .screen-card b{font-size:18px !important}
+  .screen-card span{font-size:13px !important}
+  .photo-proof{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:14px;margin:8px auto 68px;max-width:960px;text-align:left}
+  .photo-card{position:relative;min-height:230px;border-radius:12px;overflow:hidden;background:#111827;box-shadow:0 18px 45px rgba(17,24,39,.13)}
+  .photo-card.big{grid-row:span 2;min-height:474px}
+  .photo-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .45s ease}
+  .photo-card:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(17,24,39,0) 35%,rgba(17,24,39,.86) 100%)}
+  .photo-card:hover img{transform:scale(1.04)}
+  .photo-caption{position:absolute;left:14px;right:14px;bottom:14px;z-index:2;color:#fff}
+  .photo-caption b{display:block;font-size:17px;line-height:1.12;font-weight:950;letter-spacing:-.02em}
+  .photo-caption span{display:block;margin-top:4px;color:rgba(255,255,255,.78);font-size:12px;line-height:1.35;font-weight:800}
+  @media(max-width:920px){.photo-proof{grid-template-columns:1fr 1fr}.photo-card.big{grid-column:span 2;grid-row:auto;min-height:360px}}
+  @media(max-width:760px){.photo-proof{grid-template-columns:1fr;margin-bottom:58px}.photo-card,.photo-card.big{grid-column:auto;min-height:270px}}
+
+
+  .letter-lines{max-width:720px;margin:0 auto 60px;text-align:center;color:#111827}
+  .letter-lines p{margin:0 0 12px;font-size:21px;line-height:1.35;font-weight:850;letter-spacing:-.02em}
+  .letter-lines .hit{color:#dc2626;font-weight:950}
+  .letter-lines .soft{color:#475467;font-size:18px;font-weight:750}
+  .proof-title{max-width:720px;margin:0 auto 22px;text-align:center}
+  .proof-title h2{margin:0 0 8px;font-size:38px;line-height:1.05;letter-spacing:-.045em}
+  .proof-title p{margin:0;color:#475467;font-size:17px;font-weight:800;line-height:1.45}
+  .offer-intro{max-width:720px;margin:0 auto 24px;text-align:center}
+  .offer-intro h2{margin:0 0 10px;font-size:38px;line-height:1.05;letter-spacing:-.045em}
+  .offer-intro p{margin:0;color:#475467;font-size:17px;font-weight:800;line-height:1.45}
+  .hero-note{max-width:700px;margin:22px auto 34px;color:#475467;font-size:19px;line-height:1.45;font-weight:800}
+  .photo-proof{margin-bottom:46px !important}
+  .proof-strip{margin-bottom:72px !important}
+  .offers{margin-bottom:72px !important}
+  @media(max-width:760px){.letter-lines p{font-size:19px}.proof-title h2,.offer-intro h2{font-size:31px}.hero-note{font-size:17px}}
+
+
+  @media(min-width:900px){h1{font-size:56px !important;max-width:850px !important;line-height:.98 !important}}
+  .letter-lines{text-align:left !important;max-width:700px !important}
+  .letter-lines p{text-align:left !important}
+  .inline-proof{grid-template-columns:repeat(4,minmax(0,1fr)) !important;gap:12px !important;max-width:900px !important}
+  .inline-proof span{position:relative;justify-content:flex-start !important;border:0 !important;background:#f0fdf4 !important;color:#111827 !important;border-radius:10px !important;padding:12px 14px 12px 42px !important;font-size:14px !important}
+  .inline-proof span:before{content:"✓";position:absolute;left:13px;top:50%;transform:translateY(-50%);width:21px;height:21px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:#16a34a;color:#fff;font-size:13px;font-weight:950}
+  @media(max-width:760px){.inline-proof{grid-template-columns:1fr !important}.letter-lines{max-width:100% !important}}
+
+
+
+
+  .letter-lines{max-width:680px !important;text-align:left !important;margin-bottom:54px !important}
+  .letter-lines p,.letter-lines .hit,.letter-lines .soft{margin:0 0 10px !important;color:#111827 !important;font-size:18px !important;line-height:1.45 !important;font-weight:800 !important;letter-spacing:-.01em !important;text-align:left !important}
+  .letter-lines .hit{font-weight:950 !important}
+  .letter-lines .soft{color:#344054 !important}
+  @media(max-width:760px){.letter-lines p,.letter-lines .hit,.letter-lines .soft{font-size:17px !important}}
+
+
+  .money-story{max-width:820px;margin:0 auto 50px;padding:22px 24px;border-radius:16px;background:#111827;color:#fff;text-align:left;box-shadow:0 22px 58px rgba(17,24,39,.18)}
+  .money-story p{margin:0 0 8px;font-size:22px;line-height:1.35;font-weight:950;letter-spacing:-.025em}
+  .money-story span{display:block;color:#facc15;font-size:15px;line-height:1.45;font-weight:850}
+  @media(max-width:760px){.money-story p{font-size:19px}.money-story{padding:20px}}
+
+
+  .letter-lines p,.letter-lines .hit,.letter-lines .soft{font-weight:650 !important;color:#344054 !important}
+  .letter-lines .hit{font-weight:850 !important;color:#111827 !important}
+  .story-proof-image{max-width:760px;margin:24px auto 28px;border-radius:14px;overflow:hidden;box-shadow:0 18px 46px rgba(17,24,39,.12);background:#f8fafc;text-align:left}
+  .story-proof-image img{width:100%;height:auto;display:block}
+  .story-proof-image figcaption{padding:14px 16px;color:#475467;font-size:13px;line-height:1.45;font-weight:800;background:#fff}
+  .money-story{display:none !important}
+
 </style>
 </head>
 <body>
@@ -134,130 +236,70 @@
       <p class="top-name">Sean Ali</p>
     </div>
 
-    <p class="eyebrow">AI Freedom System</p>
-    <h1>The fastest way to stop feeling behind and start using AI to build more freedom online.</h1>
-    <p class="lead">No coding. No complicated tech. No guru nonsense. Just practical systems I actually use inside my real business.</p>
+    <div class="mechanism-badge">The One-Person AI Business System</div>
+    <h1>If I Lost Everything Today, This Is Exactly How I'd Use AI To Rebuild My Income From Scratch.</h1>
+    <p class="hero-note">No coding. No complicated tech. No guru nonsense. Just the system I use to create content, products, leads, and income online.</p>
 
-    <section class="story" aria-label="AI Freedom System overview">
-      <p>Most people are overwhelmed.</p>
-      <p>Too many tools. Too much hype. Too many fake gurus pretending AI will magically make them rich.</p>
-      <p>Meanwhile, a small group of people are quietly using free AI tools to:</p>
-      <ul class="plain-list">
-        <li>Build content faster.</li>
-        <li>Launch digital products.</li>
-        <li>Automate boring work.</li>
-        <li>Move faster.</li>
-        <li>Think clearer.</li>
-        <li>Create leverage.</li>
-        <li>And build more freedom online.</li>
-      </ul>
-      <p>That is what this is. A simple way to stop watching AI pass you by and start using it to build the life you actually want.</p>
-    </section>
-
-    <p class="eyebrow">Start here</p>
-    <div class="social-proof" aria-label="Buyer testimonial">
-      <b>"OMG Sean, thanks to your AI tools I finally have my own little money machine working!!" - Katie L.</b>
-    </div>
-
-    <section class="offers" aria-label="AI Freedom offers">
-      <article class="offer">
-        <p class="offer-label">FREE STARTER PACK</p>
-        <h2>Claude 27 Prompt Pack</h2>
-        <div class="offer-image"><img src="https://hypnoticmeditations.b-cdn.net/images/claude27-img.png" alt="Claude 27 Prompt Pack"></div>
-        <p class="offer-headline">New to AI? Start with ideas that can turn into income.</p>
-        <span class="real-value">$47</span>
-        <div class="price">$0 Today</div>
-        <div class="price-note">Limited discount applied</div>
-        <ul class="benefit-list">
-          <li>Find simple product ideas you could sell even as a beginner.</li>
-          <li>Turn "I don't know what to post" into content that attracts buyers.</li>
-          <li>Start seeing a path from AI prompts to extra income and more freedom.</li>
-        </ul>
-        <a class="btn" href="https://seanali.online/prompts">Claim For $0</a>
-        <span class="trust">Limited starter discount. Grab it while it is open.</span>
-      </article>
-
-      <article class="offer featured">
-        <p class="offer-label">PERFECT FOR ACTION TAKERS</p>
-        <h2>AI Freedom System</h2>
-        <div class="offer-image"><img src="https://img-v2-prod.whop.com/unsafe/rs:fit:3840:0/plain/https%3A%2F%2Fassets-2-prod.whop.com%2Fpublic%2Fuploads%2F2025-11-14%2Fuser_2439839_24693afb-d393-43d3-81d3-696d11a0bb2e.png@avif?w=3840&q=75" alt="AI Freedom System"></div>
-        <p class="offer-headline">Build the AI-powered life where you create faster, earn easier, and feel less trapped.</p>
-        <span class="real-value">$297</span>
-        <div class="price">$7/mo</div>
-        <div class="price-note">Launch discount applied</div>
-        <div class="total-line"><span>Real value</span><strong>$297</strong></div>
-        <span class="today-line">Today: $7/mo while this discount is active</span>
-        <ul class="benefit-list">
-          <li>Go from total beginner to having real money-making assets in motion.</li>
-          <li>Create offers and content that can bring buyers to you.</li>
-          <li>Turn your ideas into simple digital products you can sell online.</li>
-          <li>Use AI to buy back time, build freedom, and stop feeling stuck in survival mode.</li>
-        </ul>
-        <a class="btn" href="https://whop.com/checkout/plan_JmL5h9xS27Zbd">Get Access</a>
-        <p class="risk-note">Cancel anytime.</p>
-      </article>
-    </section>
-
-    <section class="intro" aria-label="About Sean Ali">
-      <h2>About Sean</h2>
-      <p>I've spent 15+ years online figuring out what actually works.</p>
-      <p>Ads. Content. Offers. Funnels. Digital products. Automation. AI systems.</p>
-      <p>I am not teaching theory from a blank room. I use these systems to create leverage, travel, build offers, and move faster with a small team.</p>
-      <p>The person who can think, create, ship, and execute faster wins. That is why I built this.</p>
-    </section>
-
-    <p class="eyebrow">Choose your path</p>
-    <div class="social-proof" aria-label="Buyer testimonial">
-      <b>"I was brand new to AI. This made it feel simple enough to actually start." - Marcus R.</b>
-    </div>
-
-    <section class="offers" aria-label="AI Freedom offers">
-      <article class="offer">
-        <p class="offer-label">FREE STARTER PACK</p>
-        <h2>Claude 27 Prompt Pack</h2>
-        <div class="offer-image"><img src="https://hypnoticmeditations.b-cdn.net/images/claude27-img.png" alt="Claude 27 Prompt Pack"></div>
-        <p class="offer-headline">New to AI? Start with ideas that can turn into income.</p>
-        <span class="real-value">$47</span>
-        <div class="price">$0 Today</div>
-        <div class="price-note">Limited discount applied</div>
-        <ul class="benefit-list">
-          <li>Find simple product ideas you could sell even as a beginner.</li>
-          <li>Turn "I don't know what to post" into content that attracts buyers.</li>
-          <li>Start seeing a path from AI prompts to extra income and more freedom.</li>
-        </ul>
-        <a class="btn" href="https://seanali.online/prompts">Claim For $0</a>
-        <span class="trust">Limited starter discount. Grab it while it is open.</span>
-      </article>
-
-      <article class="offer featured">
-        <p class="offer-label">PERFECT FOR ACTION TAKERS</p>
-        <h2>AI Freedom System</h2>
-        <div class="offer-image"><img src="https://img-v2-prod.whop.com/unsafe/rs:fit:3840:0/plain/https%3A%2F%2Fassets-2-prod.whop.com%2Fpublic%2Fuploads%2F2025-11-14%2Fuser_2439839_24693afb-d393-43d3-81d3-696d11a0bb2e.png@avif?w=3840&q=75" alt="AI Freedom System"></div>
-        <p class="offer-headline">Build the AI-powered life where you create faster, earn easier, and feel less trapped.</p>
-        <span class="real-value">$297</span>
-        <div class="price">$7/mo</div>
-        <div class="price-note">Launch discount applied</div>
-        <div class="total-line"><span>Real value</span><strong>$297</strong></div>
-        <span class="today-line">Today: $7/mo while this discount is active</span>
-        <ul class="benefit-list">
-          <li>Go from total beginner to having real money-making assets in motion.</li>
-          <li>Create offers and content that can bring buyers to you.</li>
-          <li>Turn your ideas into simple digital products you can sell online.</li>
-          <li>Use AI to buy back time, build freedom, and stop feeling stuck in survival mode.</li>
-        </ul>
-        <a class="btn" href="https://whop.com/checkout/plan_JmL5h9xS27Zbd">Get Access</a>
-        <p class="risk-note">Cancel anytime.</p>
-      </article>
-    </section>
-
-    <div class="proof-row">
+    <div class="inline-proof" aria-label="Sean Ali proof points">
       <span>Worldwide traveler</span>
       <span>Earns $1,000+ a day</span>
       <span>Helped 125,000+ people</span>
       <span>AI systems architect</span>
     </div>
 
-    <section class="photo-proof" aria-label="Sean Ali real-world proof">
+    <section class="letter-lines" aria-label="AI Freedom sales letter">
+      <p>Last month I spent over $100,000 on ads.</p>
+      <p>Those ads produced over $200,000 in revenue.</p>
+      <p>AI helped me move faster across almost everything.</p>
+      <p>Content.</p>
+      <p>Offers.</p>
+      <p>Funnels.</p>
+      <p>Emails.</p>
+      <p>Ideas.</p>
+      <p>Execution.</p>
+      <p>But here's what most people get wrong.</p>
+      <p>They think AI is the business.</p>
+      <p>It's not.</p>
+      <p>AI is just a tool.</p>
+      <p>The real asset is what you build with it.</p>
+      <p>A lead magnet.</p>
+      <p>An email list.</p>
+      <p>A simple funnel.</p>
+      <p>A digital product.</p>
+      <p>Something that keeps working after you log off.</p>
+      <p>That's where most people get stuck.</p>
+      <p>They spend months playing with AI.</p>
+      <p>Testing tools.</p>
+      <p>Watching videos.</p>
+      <p>Collecting prompts.</p>
+      <p>But they never build the actual machine.</p>
+      <p>The One-Person AI Business System fixes that.</p>
+      <p>You start with an idea.</p>
+      <p>Turn it into content.</p>
+      <p>Turn content into leads.</p>
+      <p>Turn leads into a simple offer.</p>
+      <p>And use AI to speed up the entire process.</p>
+      <p>Not because AI magically makes money.</p>
+      <p>Because it helps you build assets faster.</p>
+      <figure class="story-proof-image">
+        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/sean-money6.png" alt="Sean Ali 100k ad spend 200k revenue proof screenshot">
+        <figcaption>Proof from the story: in May 2026, over $100,000 in ad spend and over $200,000 in revenue.</figcaption>
+      </figure>
+      <p>I've spent over 15 years building online businesses through ads, funnels, digital products, content, automation, and now AI.</p>
+      <p>The same skills that helped me scale campaigns past six figures in ad spend.</p>
+      <p>The same skills behind businesses like Hypnotic Meditations, Manifestation Genie, Panama Untold, and Swap Your 9-5.</p>
+      <p>This isn't theory.</p>
+      <p>This is the exact framework I'd use if I had to start over tomorrow.</p>
+      <p>And honestly...</p>
+      <p>It's probably simpler than you think.</p>
+    </section>
+
+    <section class="proof-title" aria-label="Proof intro">
+      <h2>More proof.</h2>
+      <p>Money. Systems. Freedom.</p>
+    </section>
+
+    <section class="photo-proof" aria-label="Sean Ali real-world story photos">
       <article class="photo-card big">
         <img src="https://hypnoticmeditations.b-cdn.net/images/proof/coconuts%20in%20panama.jpg" alt="Sean Ali in Panama">
         <div class="photo-caption"><b>Freedom is the point.</b><span>Built online systems from anywhere.</span></div>
@@ -275,14 +317,35 @@
         <div class="photo-caption"><b>Around bigger players.</b><span>Learning how money moves online.</span></div>
       </article>
       <article class="photo-card">
-        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/seanproof.png" alt="Sean Ali business proof screenshot">
-        <div class="photo-caption"><b>Systems create leverage.</b><span>AI, media, offers, and execution.</span></div>
+        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/with%20wifey.jpeg" alt="Sean Ali lifestyle proof">
+        <div class="photo-caption"><b>A life outside the laptop.</b><span>More freedom is the end goal.</span></div>
       </article>
     </section>
 
-    <p class="eyebrow">Ready to move?</p>
+    <section class="proof-strip" aria-label="Sean Ali proof screenshots">
+      <section class="proof-screens" aria-label="AI Freedom money proof screenshots">
+        <article class="screen-card">
+          <img src="https://hypnoticmeditations.b-cdn.net/images/proof/sean-money.png" alt="Sean Ali money proof screenshot">
+          <div><b>Real money proof</b><span>Actual business results make the AI system easier to believe.</span></div>
+        </article>
+        <article class="screen-card">
+          <img src="https://hypnoticmeditations.b-cdn.net/images/proof/sean-money2.png" alt="Sean Ali money proof screenshot two">
+          <div><b>Revenue receipts</b><span>Proof that the systems are connected to real money movement.</span></div>
+        </article>
+        <article class="screen-card">
+          <img src="https://hypnoticmeditations.b-cdn.net/images/proof/sean-money3.png" alt="Sean Ali money proof screenshot three">
+          <div><b>Digital income proof</b><span>Online assets, offers, and audience working together.</span></div>
+        </article>
+      </section>
+    </section>
+
+    <section class="offer-intro" aria-label="Offer intro">
+      <h2>Choose your path.</h2>
+      <p>Start free, or unlock the full system for action takers.</p>
+    </section>
+
     <div class="social-proof" aria-label="Buyer testimonial">
-      <b>"I finally stopped collecting tools and started building something I can sell." - Danielle M.</b>
+      <b>"Sean, your AI tools finally gave me a little money machine." - Katie L.</b>
     </div>
 
     <section class="offers" aria-label="AI Freedom offers">
@@ -314,41 +377,25 @@
         <div class="total-line"><span>Real value</span><strong>$297</strong></div>
         <span class="today-line">Today: $7/mo while this discount is active</span>
         <ul class="benefit-list">
-          <li>Go from total beginner to having real money-making assets in motion.</li>
-          <li>Create offers and content that can bring buyers to you.</li>
-          <li>Turn your ideas into simple digital products you can sell online.</li>
-          <li>Use AI to buy back time, build freedom, and stop feeling stuck in survival mode.</li>
+          <li>Launch your first simple digital product.</li>
+          <li>Create a lead magnet in minutes.</li>
+          <li>Build a simple funnel path.</li>
+          <li>Use AI to write content that moves buyers closer.</li>
         </ul>
         <a class="btn" href="https://whop.com/checkout/plan_JmL5h9xS27Zbd">Get Access</a>
         <p class="risk-note">Cancel anytime.</p>
       </article>
     </section>
 
-
     <section class="faq-section" aria-label="AI Freedom FAQ">
       <p class="eyebrow">Quick answers</p>
       <h2>Before you grab it.</h2>
       <div class="faq-list">
-        <article class="faq-item">
-          <h3>Do I need AI experience?</h3>
-          <p>No. This is built for beginners who want clear next steps, not another confusing tech lesson.</p>
-        </article>
-        <article class="faq-item">
-          <h3>Do I need coding?</h3>
-          <p>No coding. No complicated setup. The goal is to help you create useful money-making assets faster.</p>
-        </article>
-        <article class="faq-item">
-          <h3>What if I only have a few hours a week?</h3>
-          <p>That is exactly why this exists. Use AI to move faster when time is limited.</p>
-        </article>
-        <article class="faq-item">
-          <h3>Which offer should I choose?</h3>
-          <p>Grab the free starter pack if you want to test the prompts. Get AI Freedom System if you want the fuller path and the shortcut.</p>
-        </article>
-        <article class="faq-item">
-          <h3>Can I cancel the $7/mo plan?</h3>
-          <p>Yes. You can cancel anytime.</p>
-        </article>
+        <article class="faq-item"><h3>Do I need AI experience?</h3><p>No. This is built for beginners who want clear next steps, not another confusing tech lesson.</p></article>
+        <article class="faq-item"><h3>Do I need coding?</h3><p>No coding. No complicated setup. The goal is to help you create useful money-making assets faster.</p></article>
+        <article class="faq-item"><h3>What if I only have a few hours a week?</h3><p>That is exactly why this exists. Use AI to move faster when time is limited.</p></article>
+        <article class="faq-item"><h3>Which offer should I choose?</h3><p>Grab the free starter pack if you want to test the prompts. Get AI Freedom System if you want the fuller path and the shortcut.</p></article>
+        <article class="faq-item"><h3>Can I cancel the $7/mo plan?</h3><p>Yes. You can cancel anytime.</p></article>
       </div>
     </section>
   </main>
@@ -403,6 +450,7 @@
       </div>
     </div>
   </footer>
+
 <!-- This site is converting visitors into subscribers and customers with https://respond.io --><script id="respondio__growth_tool" src="https://cdn.respond.io/widget/widget.js?wId=7f9488bf-e487-4928-9b01-6edb55b2ad22"></script><!-- https://respond.io -->
 </body>
 </html>
