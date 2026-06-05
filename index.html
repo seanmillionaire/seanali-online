@@ -83,6 +83,7 @@ alt=""></noscript>
 .stack .included{display:flex;flex-direction:column;align-items:flex-end;color:var(--red);font-size:25px;line-height:1;font-weight:900;text-transform:uppercase}
 .stack .included small{margin-top:5px;color:var(--muted);font-size:10px}
 @media(max-width:500px){.value-banner{display:block}.value-banner strong{display:block;margin-top:8px}.stack .included{align-items:flex-start}}
+.sales-pop{position:fixed;left:18px;bottom:18px;z-index:20;width:min(360px,calc(100% - 36px));padding:16px 16px 14px;border:3px solid var(--black);border-radius:8px;background:#fff;box-shadow:8px 8px 0 var(--orange);text-align:left;transition:opacity .25s ease,transform .25s ease}.sales-pop.is-hidden{opacity:0;pointer-events:none;transform:translateY(12px)}.sales-pop-top{display:flex;align-items:center;justify-content:space-between;gap:12px}.sales-pop-badge{display:inline-flex;align-items:center;gap:8px;color:var(--red);font-size:12px;font-weight:900;text-transform:uppercase}.sales-pop-dot{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 0 6px rgba(22,128,59,.12)}.sales-pop-close{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border:0;background:#111;color:#fff;border-radius:50%;font-size:18px;line-height:1;cursor:pointer}.sales-pop-title{margin:10px 0 4px;font-size:19px;line-height:1.15;font-weight:900}.sales-pop-copy{margin:0;color:var(--muted);font-size:14px;line-height:1.4;font-weight:800}.sales-pop-link{display:block;margin-top:12px;padding:12px 14px;border-radius:6px;background:linear-gradient(135deg,var(--orange),var(--orange2));color:#fff;text-align:center;text-decoration:none;text-transform:uppercase;font-size:13px;font-weight:900}@media(max-width:500px){.sales-pop{left:12px;right:12px;bottom:12px;width:auto;box-shadow:5px 5px 0 var(--orange)}}
 </style>
 </head>
 <body>
@@ -101,7 +102,36 @@ alt=""></noscript>
 <section class="band"><div class="wrap"><span class="eyebrow">The complete offer</span><h2 class="section-title">Get The Full <span class="red">AI Freedom System</span></h2><p class="section-copy">Everything you need to stop collecting AI information and start building real assets inside the System.</p><div class="offer"><img class="offer-img" src="https://img-v2-prod.whop.com/unsafe/rs:fit:3840:0/plain/https%3A%2F%2Fassets-2-prod.whop.com%2Fpublic%2Fuploads%2F2025-11-14%2Fuser_2439839_24693afb-d393-43d3-81d3-696d11a0bb2e.png@avif?w=3840&q=75" alt="AI Freedom System"><h2>Use AI To Build The Assets That Create Freedom.</h2><p>AI Freedom System is a training and workflow library for turning AI into content, products, lead magnets, funnels, and online income assets.</p><div class="price-label">Limited-Time Launch Price</div><div class="price">$7/mo</div><ul class="checks"><li>Find profitable digital product ideas</li><li>Create content without staring at a blank screen</li><li>Build simple lead magnets that attract buyers</li><li>Create a basic funnel that makes sense</li><li>Turn AI into a business tool instead of another distraction</li></ul><a class="btn" href="https://whop.com/c/ai-freedom-system-9f/afs">Show Me The Full System</a></div></div></section>
 <section class="band grey"><div class="wrap"><span class="eyebrow">Quick answers</span><h2 class="section-title">Before You <span class="red">Grab It</span></h2><div class="faq"><article><h3>Do I need AI experience?</h3><p>No. This is built for beginners who want clear next steps, not another confusing tech lesson.</p></article><article><h3>Do I need coding?</h3><p>No coding. No complicated setup.</p></article><article><h3>What if I only have a few hours a week?</h3><p>That is why this exists. Use AI to move faster when time is limited.</p></article><article><h3>Which option should I choose?</h3><p>Start with the free pack if you want to test the prompts. Join AI Freedom System if you want the fuller path.</p></article><article><h3>Is the $7/mo price permanent?</h3><p>No. The $7/mo amount is the limited-time launch price. You can cancel anytime after joining.</p></article></div></div></section>
 <section class="final"><span class="eyebrow">Your next move</span><h2 class="section-title">Ready To Start <span class="red">Building?</span></h2><p class="section-copy">Choose the path that matches where you are right now.</p><a class="btn" href="#choose">Choose My Path</a></section>
+<aside class="sales-pop is-hidden" id="salesPop" aria-live="polite">
+  <div class="sales-pop-top"><span class="sales-pop-badge"><span class="sales-pop-dot"></span>Offer update</span><button class="sales-pop-close" type="button" aria-label="Close sales notification">&times;</button></div>
+  <div class="sales-pop-title" id="salesPopTitle">AI Freedom System is open</div>
+  <p class="sales-pop-copy" id="salesPopCopy">The limited-time launch price is live at $7/mo.</p>
+  <a class="sales-pop-link" href="https://whop.com/c/ai-freedom-system-9f/afs">See The System</a>
+</aside>
 <footer class="site-footer"><div class="footer-inner"><div class="footer-brand"><img src="https://statics.myclickfunnels.com/workspace/vGVGzP/image/20204117/file/904663e23eb23a39d6f2459104b7bccc.png" alt="Sean Ali"><div><h2>Sean Ali</h2><p>AI systems and practical tools for building more freedom.</p><p>&copy; 2026 Sean Ali. All rights reserved.</p></div></div><nav class="footer-links"><a href="story.html">Sean’s Story</a><a href="system.html">AI Freedom System</a><a href="prompts.html">Free Prompts</a><a href="guide.html">Guide</a></nav></div></footer>
+<script>
+const salesPop=document.getElementById('salesPop');
+const salesPopTitle=document.getElementById('salesPopTitle');
+const salesPopCopy=document.getElementById('salesPopCopy');
+const salesMessages=[
+  ['AI Freedom System is open','The limited-time launch price is live at $7/mo.'],
+  ['Build with more leverage','Use AI to create offers, content, funnels, and lead assets faster.'],
+  ['Ready to build?','Go straight to the full System and start your first 7 days.']
+];
+let salesIndex=0;
+if(salesPop&&!localStorage.getItem('salesPopClosed')){
+  setTimeout(()=>salesPop.classList.remove('is-hidden'),1600);
+  setInterval(()=>{
+    salesIndex=(salesIndex+1)%salesMessages.length;
+    salesPopTitle.textContent=salesMessages[salesIndex][0];
+    salesPopCopy.textContent=salesMessages[salesIndex][1];
+  },6500);
+  salesPop.querySelector('.sales-pop-close').addEventListener('click',()=>{
+    salesPop.classList.add('is-hidden');
+    localStorage.setItem('salesPopClosed','1');
+  });
+}
+</script>
 <!-- This site is converting visitors into subscribers and customers with https://respond.io --><script id="respondio__growth_tool" src="https://cdn.respond.io/widget/widget.js?wId=7f9488bf-e487-4928-9b01-6edb55b2ad22"></script>
 </body>
 </html>
