@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=yes">
+<title>Neville Goddard: 3 Signs Wealth Is Getting Closer 💰 | Sean Ali</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@800;900&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#FFD966; --gold-dim:#B8860B; --gold-bg:#FFF4E0;
+  --black:#0A0A0A; --off:#FEFCF8; --text:#1A1A1A; --muted:#777; --border:#E5E0D5;
+  --glow:0 0 12px rgba(255,217,102,0.5);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Inter',sans-serif}
+.deck{width:100vw;height:100vh;position:relative;overflow:hidden}
+.slide{
+  position:absolute;inset:0;opacity:0;pointer-events:none;overflow-y:auto;
+  transition:opacity 0.35s ease;display:flex;align-items:center;justify-content:center;
+  background:#fff; scrollbar-width:thin;
+}
+.slide.active{opacity:1;pointer-events:all;z-index:2}
+.col{
+  width:100%;max-width:760px;padding:24px 28px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;gap:14px;
+  max-height:100vh;overflow-y:auto;
+}
+@keyframes popIn{0%{opacity:0;transform:translateY(15px) scale(0.96)}100%{opacity:1;transform:none}}
+.slide.active .a{animation:popIn 0.45s cubic-bezier(0.2,0.9,0.4,1.1) forwards;opacity:0}
+.slide.active .a1{animation-delay:.02s}
+.slide.active .a2{animation-delay:.09s}
+.slide.active .a3{animation-delay:.16s}
+.slide.active .a4{animation-delay:.23s}
+.slide.active .a5{animation-delay:.30s}
+.slide.active .a6{animation-delay:.37s}
+
+.eyebrow{font-size:10px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:#B87D2E;background:#FFF0D0;display:inline-block;padding:3px 10px;border-radius:40px}
+.h1{font-family:'Playfair Display',serif;font-size:clamp(30px,5vw,60px);font-weight:900;line-height:1.05;color:var(--black)}
+.h1 .g{color:#FFB347;text-shadow:2px 2px 0 #FFE0A3}
+.h2{font-family:'Playfair Display',serif;font-size:clamp(24px,4vw,46px);font-weight:900;line-height:1.1}
+.h2 .g{color:#E6A017;text-decoration:underline wavy #FFD966}
+.h3{font-family:'Playfair Display',serif;font-size:clamp(19px,2.8vw,32px);font-weight:800}
+.note{font-size:14px;color:#444;max-width:520px;line-height:1.6}
+.gbar{width:44px;height:4px;background:#FFC107;border-radius:4px;margin:5px 0}
+.icon-xl{font-size:56px;line-height:1;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.1))}
+.icon-lg{font-size:46px}
+.badge{background:#1E1E1E;border-radius:100px;padding:5px 14px;display:inline-flex;gap:8px;align-items:center}
+.badge-n{background:#FFB84D;color:#000;font-size:10px;font-weight:900;border-radius:40px;padding:2px 10px}
+.badge-t{font-size:10px;font-weight:800;color:#FFD966;letter-spacing:.1em}
+.author{display:flex;align-items:center;gap:12px;background:rgba(0,0,0,0.03);padding:6px 16px 6px 6px;border-radius:100px}
+.an{font-size:15px;font-weight:800}
+.as{font-size:11px;color:#666}
+.icon-row{display:flex;gap:0;width:100%;border:1px solid #FFE5B4;border-radius:20px;overflow:hidden;background:#fff}
+.icon-cell{flex:1;padding:14px 6px;text-align:center;border-right:1px solid #FFE5B4}
+.icon-cell:last-child{border-right:none}
+.icon-cell.hi{background:#FFF1E0}
+.ic-icon{font-size:30px}
+.ic-label{font-size:12px;font-weight:800;margin-top:4px}
+.steps{display:flex;flex-direction:column;gap:12px;width:100%}
+.step{display:flex;align-items:center;gap:16px;background:#FEF9F0;border-left:5px solid #FFC107;border-radius:16px;padding:12px 18px;text-align:left}
+.step-icon{font-size:28px;flex-shrink:0}
+.step-title{font-size:15px;font-weight:800}
+.step-body{font-size:12px;color:#5a5a5a;margin-top:2px}
+.band{background:linear-gradient(135deg,#101010,#1D1C1A);border-radius:22px;padding:22px 28px;width:100%}
+.band-h{font-size:clamp(16px,2.6vw,26px);font-weight:800;color:#FFE2A4;line-height:1.3}
+.band-p{font-size:13px;color:#BBBBBB;margin-top:8px}
+.qwrap{border-left:4px solid #FFC107;background:#FEF7EC;padding:14px 20px;border-radius:0 18px 18px 0;text-align:left;width:100%}
+.qt{font-size:17px;font-weight:700;font-style:italic;line-height:1.4}
+.qa{font-size:12px;color:#888;margin-top:6px}
+.affirm{background:#0A0A0A;border-radius:28px;padding:28px 24px;width:100%;border:1px solid #FFC107}
+.affirm-l{font-size:10px;letter-spacing:.2em;color:#FFD966;text-transform:uppercase}
+.affirm-t{font-size:clamp(20px,3.5vw,34px);font-weight:900;color:#fff;margin:10px 0;line-height:1.2}
+.affirm-s{font-size:13px;color:#BBBBBB;line-height:1.6}
+.cbox{background:#FFF7E8;border:2px solid #FFC107;border-radius:22px;padding:20px;width:100%}
+.cbox-l{font-size:10px;font-weight:800;letter-spacing:.15em;color:#B87D2E;margin-bottom:8px}
+.cbox-p{font-size:18px;font-weight:800;color:#1A1A1A;line-height:1.3}
+.cta-block{background:#FFF1DF;border-radius:18px;padding:16px 22px;width:100%;text-align:left}
+.cta-block-label{font-size:9px;font-weight:900;letter-spacing:.15em;color:#B87D2E;margin-bottom:6px}
+.cta-block-title{font-size:14px;font-weight:800;color:#1A1A1A;margin-bottom:10px;line-height:1.4}
+.cta-link{font-weight:900;color:#B45F06;text-decoration:none;border-bottom:2px solid #FFB347;font-size:14px}
+/* section divider slide */
+.divider-slide{background:linear-gradient(135deg,#0A0A0A,#1A1400)!important}
+.divider-slide .col{color:#fff}
+.pack-num{font-size:11px;font-weight:900;letter-spacing:.25em;color:#FFD966;text-transform:uppercase;margin-bottom:4px}
+.controls{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.85);backdrop-filter:blur(16px);border-radius:60px;padding:6px 16px;gap:12px;display:flex;z-index:999;border:1px solid #FFD966}
+.cb{background:#1E1E1E;border:none;color:#FFD966;width:36px;height:36px;border-radius:40px;font-weight:900;cursor:pointer;font-size:18px}
+.dot{width:6px;height:6px;background:#555;border-radius:6px;margin:0 2px;cursor:pointer;border:none;transition:width .2s}
+.dot.on{width:24px;background:#FFC107}
+.fsb{position:fixed;top:12px;right:12px;z-index:1000;background:#111;color:#FFD966;border:1px solid #FFD966;border-radius:30px;padding:5px 14px;font-size:10px;font-weight:800;cursor:pointer}
+.sc{color:#FFD966;font-weight:800;font-size:13px;min-width:44px;text-align:center}
+</style>
+</head>
+<body>
+<button class="fsb" onclick="toggleFS()">⛶ FULLSCREEN 🔥</button>
+<div class="deck">
+
+<!-- ═══════════════════════════════════════ -->
+<!-- PACK 1: WEALTH IS GETTING CLOSER       -->
+<!-- ═══════════════════════════════════════ -->
+
+<!-- SLIDE 1: TITLE -->
+<div class="slide active" id="s1">
+<div class="col">
+  <div class="badge a a1"><span class="badge-n">💰 NEVILLE</span><span class="badge-t">3 signs wealth is getting closer</span></div>
+  <span class="icon-xl a a2">💰🧠</span>
+  <div class="h1 a a3">Neville Goddard: 3 Signs <span class="g">Wealth Is Getting Closer</span> 💰</div>
+  <div class="gbar a a4"></div>
+  <div class="author a a5">
+    <img src="https://statics.myclickfunnels.com/workspace/vGVGzP/image/20204117/file/904663e23eb23a39d6f2459104b7bccc.png" style="width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid #FFC107;flex-shrink:0" alt="Sean Ali">
+    <div><div class="an">Sean Ali 🔥</div><div class="as">Feeling it real before results show up</div></div>
+  </div>
+  <p class="note a a6">#manifestation #nevillegoddard #wealth #abundance</p>
+</div>
+</div>
+
+<!-- SLIDE 2: THE 3 SIGNS -->
+<div class="slide" id="s2">
+<div class="col">
+  <div class="eyebrow a a1">💡 PAY ATTENTION TO THESE</div>
+  <div class="h2 a a2">3 Signs Wealth Is <span class="g">Getting Closer</span></div>
+  <div class="steps a a3">
+    <div class="step"><span class="step-icon">😮‍💨</span><div><div class="step-title">Number one</div><div class="step-body">You stop feeling stressed every time money gets mentioned.</div></div></div>
+    <div class="step"><span class="step-icon">🌱</span><div><div class="step-title">Number two</div><div class="step-body">You're starting to believe things can work out financially.</div></div></div>
+    <div class="step"><span class="step-icon">👀</span><div><div class="step-title">Number three</div><div class="step-body">You notice opportunities instead of only problems.</div></div></div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 3: BILLIONAIRE OBSERVATION -->
+<div class="slide" id="s3">
+<div class="col">
+  <span class="icon-xl a a1">🤔💭</span>
+  <div class="h2 a a2">Not gonna lie...</div>
+  <div class="qwrap a a3">
+    <p class="qt">Billionaires probably aren't panic checking their bank app every hour.</p>
+    <div class="qa">— wealthy people usually expect things to work out</div>
+  </div>
+  <p class="note a a4">That calm expectation isn't something they got after the money came. It's what was already there.</p>
+</div>
+</div>
+
+<!-- SLIDE 4: SLEEP AFFIRMATION -->
+<div class="slide" id="s4">
+<div class="col">
+  <div class="eyebrow a a1">🌙 BEFORE SLEEP TONIGHT</div>
+  <div class="h2 a a2">Say This <span class="g">Once</span></div>
+  <div class="affirm a a3">
+    <div class="affirm-l">Tonight's wealth reset</div>
+    <div class="affirm-t">"Wealth feels normal to me now."</div>
+    <div class="affirm-s">Your brain trusts what feels normal. Neville Goddard talked about feeling it real before results show up. That's basically what this is.</div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 5: CTA PACK 1 -->
+<div class="slide" id="s5">
+<div class="col">
+  <span class="icon-lg a a1">💬👇</span>
+  <div class="cbox a a2">
+    <div class="cbox-l">DROP IN THE COMMENTS</div>
+    <div class="cbox-p">Comment WEALTH if you're ready for abundance</div>
+  </div>
+  <div class="cta-block a a3">
+    <div class="cta-block-label">🤖 OR JUST USE THIS</div>
+    <div class="cta-block-title">Manifestation Genie runs this money loop for you automatically.</div>
+    <a href="https://manifestationgenie.ai/" class="cta-link" target="_blank">manifestationgenie.ai</a>
+  </div>
+  <p class="note a a4" style="font-size:12px">#nevillegoddard #wealth #moneymindset #manifestation #abundance #lawofassumption #777 #888</p>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════ -->
+<!-- DIVIDER: PACK 2                         -->
+<!-- ═══════════════════════════════════════ -->
+
+<div class="slide divider-slide" id="s6">
+<div class="col">
+  <div class="pack-num a a1">Content Pack 2 of 3</div>
+  <span class="icon-xl a a2">🧠💸</span>
+  <div class="h2 a a3" style="color:#FFE2A4">3 Signs Your <span style="color:#FFD966;text-decoration:underline wavy #FFC107">Wealth Mindset</span> Is Changing</div>
+  <p class="note a a4" style="color:#BBBBBB">A different angle. Same Neville energy.</p>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════ -->
+<!-- PACK 2: WEALTH MINDSET IS CHANGING     -->
+<!-- ═══════════════════════════════════════ -->
+
+<!-- SLIDE 7: TITLE PACK 2 -->
+<div class="slide" id="s7">
+<div class="col">
+  <div class="badge a a1"><span class="badge-n">🧠 NEVILLE</span><span class="badge-t">your wealth mindset is changing</span></div>
+  <span class="icon-xl a a2">🔄💰</span>
+  <div class="h1 a a3">Neville Goddard: 3 Signs Your <span class="g">Wealth Mindset Is Changing</span> 💰</div>
+  <div class="gbar a a4"></div>
+  <p class="note a a5">A wealth mindset isn't about pretending. It's about making prosperity feel normal instead of impossible.</p>
+</div>
+</div>
+
+<!-- SLIDE 8: THE 3 SIGNS PACK 2 -->
+<div class="slide" id="s8">
+<div class="col">
+  <div class="eyebrow a a1">👁️ NOTICE ANY OF THESE?</div>
+  <div class="h2 a a2">3 Signs Your Mindset <span class="g">Is Already Shifting</span></div>
+  <div class="steps a a3">
+    <div class="step"><span class="step-icon">🤐</span><div><div class="step-title">Number one</div><div class="step-body">You've stopped saying "I can't afford that" all day.</div></div></div>
+    <div class="step"><span class="step-icon">🔭</span><div><div class="step-title">Number two</div><div class="step-body">You catch yourself thinking bigger.</div></div></div>
+    <div class="step"><span class="step-icon">🧘</span><div><div class="step-title">Number three</div><div class="step-body">You feel less attached to every single dollar.</div></div></div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 9: OBSERVATION PACK 2 -->
+<div class="slide" id="s9">
+<div class="col">
+  <span class="icon-xl a a1">😅💡</span>
+  <div class="h2 a a2">Okay this sounds like <span class="g">billionaire behavior</span> but...</div>
+  <div class="qwrap a a3">
+    <p class="qt">People with money usually don't panic every five minutes. They expect solutions.</p>
+    <div class="qa">— most people accidentally practice lack all day without realizing it</div>
+  </div>
+  <p class="note a a4">They repeat "I can't afford it" and "money is hard" until their brain treats those thoughts like facts.</p>
+</div>
+</div>
+
+<!-- SLIDE 10: AFFIRMATION PACK 2 -->
+<div class="slide" id="s10">
+<div class="col">
+  <div class="eyebrow a a1">⏱️ TRY THIS FOR 7 SECONDS TONIGHT</div>
+  <div class="h2 a a2">Say This <span class="g">Slowly</span></div>
+  <div class="affirm a a3">
+    <div class="affirm-l">The wealth mindset loop</div>
+    <div class="affirm-t">"Money likes showing up in my life."</div>
+    <div class="affirm-s">Your brain listens to repetition. Your mind repeats familiar thoughts. Neville Goddard talked about this kind of inner shift — change the feeling first.</div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 11: CTA PACK 2 -->
+<div class="slide" id="s11">
+<div class="col">
+  <span class="icon-lg a a1">💬👇</span>
+  <div class="cbox a a2">
+    <div class="cbox-l">IF THIS RESONATED</div>
+    <div class="cbox-p">Comment 888 if you're ready for abundance</div>
+  </div>
+  <div class="band a a3">
+    <div class="band-h">Keep It Simple. <span style="color:#FFD966">Consistency beats intensity.</span></div>
+    <p class="band-p">The inner shift comes first. The outer shift follows.</p>
+  </div>
+  <div class="cta-block a a4">
+    <div class="cta-block-label">🤖 WANT HELP KEEPING THAT LOOP GOING?</div>
+    <div class="cta-block-title">Manifestation Genie runs this money loop for you.</div>
+    <a href="https://manifestationgenie.ai/" class="cta-link" target="_blank">manifestationgenie.ai</a>
+  </div>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════ -->
+<!-- DIVIDER: PACK 3                         -->
+<!-- ═══════════════════════════════════════ -->
+
+<div class="slide divider-slide" id="s12">
+<div class="col">
+  <div class="pack-num a a1">Content Pack 3 of 3</div>
+  <span class="icon-xl a a2">🌊✨</span>
+  <div class="h2 a a3" style="color:#FFE2A4">3 Signs Wealth Is <span style="color:#FFD966;text-decoration:underline wavy #FFC107">Becoming Normal</span> For You</div>
+  <p class="note a a4" style="color:#BBBBBB">The calmest version of the series.</p>
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════ -->
+<!-- PACK 3: WEALTH BECOMING NORMAL         -->
+<!-- ═══════════════════════════════════════ -->
+
+<!-- SLIDE 13: TITLE PACK 3 -->
+<div class="slide" id="s13">
+<div class="col">
+  <div class="badge a a1"><span class="badge-n">✨ NEVILLE</span><span class="badge-t">wealth is becoming normal for you</span></div>
+  <span class="icon-xl a a2">🌊💛</span>
+  <div class="h1 a a3">Neville Goddard: 3 Signs Wealth Is <span class="g">Becoming Normal</span> For You 💰</div>
+  <div class="gbar a a4"></div>
+  <p class="note a a5">What if wealth starts by feeling normal? Neville believed the internal shift comes first.</p>
+</div>
+</div>
+
+<!-- SLIDE 14: THE 3 SIGNS PACK 3 -->
+<div class="slide" id="s14">
+<div class="col">
+  <div class="eyebrow a a1">🔍 LOOK FOR THESE</div>
+  <div class="h2 a a2">3 Signs It's <span class="g">Already Happening</span></div>
+  <div class="steps a a3">
+    <div class="step"><span class="step-icon">🧊</span><div><div class="step-title">Number one</div><div class="step-body">You stop assuming the worst about money.</div></div></div>
+    <div class="step"><span class="step-icon">🎯</span><div><div class="step-title">Number two</div><div class="step-body">You expect opportunities to appear.</div></div></div>
+    <div class="step"><span class="step-icon">😌</span><div><div class="step-title">Number three</div><div class="step-body">You feel calmer about your financial future.</div></div></div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 15: OBSERVATION PACK 3 -->
+<div class="slide" id="s15">
+<div class="col">
+  <span class="icon-xl a a1">😂💸</span>
+  <div class="h2 a a2">Rich people would <span class="g">probably laugh</span> at how much we panic about money.</div>
+  <div class="qwrap a a3">
+    <p class="qt">They usually expect things to work out. That's not arrogance. That's just what normal feels like to them.</p>
+    <div class="qa">— when you stop expecting problems, your thinking changes</div>
+  </div>
+  <p class="note a a4">You notice opportunities faster. You stay calmer. You make better decisions. All because of a feeling shift.</p>
+</div>
+</div>
+
+<!-- SLIDE 16: AFFIRMATION PACK 3 -->
+<div class="slide" id="s16">
+<div class="col">
+  <div class="eyebrow a a1">🌙 BEFORE SLEEP — SAY THIS 3 TIMES</div>
+  <div class="h2 a a2">Three Times. <span class="g">That's It.</span></div>
+  <div class="affirm a a3">
+    <div class="affirm-l">The normal wealth feeling</div>
+    <div class="affirm-t">"Wealth is becoming normal for me."</div>
+    <div class="affirm-s">Don't force it. Just repeat it and let it become familiar. Your brain trusts what feels normal. Neville Goddard talked about this constantly — the feeling comes first, then reality starts catching up.</div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 17: NEVILLE EXPLAINED -->
+<div class="slide" id="s17">
+<div class="col">
+  <div class="eyebrow a a1">📖 THE NEVILLE GODDARD IDEA BEHIND ALL THREE</div>
+  <div class="h3 a a2">His Whole Teaching In <span class="g">One Idea</span></div>
+  <div class="icon-row a a3">
+    <div class="icon-cell"><span class="ic-icon">😰</span><div class="ic-label">Feel lack</div><div class="ic-label" style="font-size:9px">attract more lack</div></div>
+    <div class="icon-cell hi"><span class="ic-icon">🔄</span><div class="ic-label">Shift the feeling</div><div class="ic-label" style="font-size:9px">before results show</div></div>
+    <div class="icon-cell"><span class="ic-icon">🌊</span><div class="ic-label">Reality follows</div><div class="ic-label" style="font-size:9px">inner state first</div></div>
+  </div>
+  <div class="band a a4">
+    <div class="band-h">Your inner state shapes <span style="color:#FFD966">your outer experience.</span></div>
+    <p class="band-p">That was Neville's whole point. Not manifesting tricks. A fundamental shift in how normal wealth feels to you.</p>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 18: FINAL CTA -->
+<div class="slide" id="s18">
+<div class="col">
+  <span class="icon-lg a a1">💬👇</span>
+  <div class="cbox a a2">
+    <div class="cbox-l">WHICH ONE HIT HARDEST?</div>
+    <div class="cbox-p">Comment MONEY if you're ready for abundance — I read every one.</div>
+  </div>
+  <div class="band a a3">
+    <div class="band-h">Save this. Share it. Come back to it.</div>
+    <p class="band-p" style="margin-top:8px">🔔 FOLLOW · 🔖 SAVE · 💣 SHARE with someone who needs this today</p>
+  </div>
+  <div class="cta-block a a4">
+    <div class="cta-block-label">🤖 WANT HELP KEEPING THAT WEALTH MINDSET ACTIVE?</div>
+    <div class="cta-block-title">Manifestation Genie runs this money loop for you — automatically.</div>
+    <a href="https://manifestationgenie.ai/" class="cta-link" target="_blank">manifestationgenie.ai</a>
+  </div>
+</div>
+</div>
+
+</div><!-- end .deck -->
+
+<div class="controls">
+  <button class="cb" onclick="prev()">◀</button>
+  <div id="drow" style="display:flex;gap:6px;align-items:center"></div>
+  <button class="cb" onclick="next()">▶</button>
+  <span class="sc" id="sc">1 / 18</span>
+</div>
+
+<script>
+const slides=document.querySelectorAll('.slide');
+const total=slides.length;
+let cur=0;
+const drow=document.getElementById('drow');
+for(let i=0;i<total;i++){
+  const d=document.createElement('button');
+  d.className='dot'+(i===0?' on':'');
+  d.onclick=()=>goTo(i);
+  drow.appendChild(d);
+}
+function goTo(n){
+  slides[cur].classList.remove('active');
+  drow.children[cur].classList.remove('on');
+  cur=(n+total)%total;
+  slides[cur].classList.add('active');
+  drow.children[cur].classList.add('on');
+  document.getElementById('sc').textContent=(cur+1)+' / '+total;
+}
+function next(){goTo(cur+1)}
+function prev(){goTo(cur-1)}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();next();}
+  if(e.key==='ArrowLeft'){e.preventDefault();prev();}
+  if(e.key==='f'||e.key==='F') toggleFS();
+});
+let tx=0;
+document.addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+document.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-tx;
+  if(Math.abs(dx)>50){dx<0?next():prev();}
+});
+function toggleFS(){
+  if(!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
+  else document.exitFullscreen();
+}
+</script>
+</body>
+</html>
