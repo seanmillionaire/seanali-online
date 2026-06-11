@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Neville Goddard's #1 Wealth Secret Most People Miss · Sean Ali</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #ffffff;
+            font-family: 'Inter', system-ui, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+
+        .presentation {
+            max-width: 960px;
+            width: 100%;
+            background: rgba(18, 13, 38, 0.97);
+            border-radius: 2rem;
+            box-shadow: 0 0 0 1px rgba(123,63,228,0.25), 0 40px 80px -20px rgba(0,0,0,0.7), 0 0 60px rgba(123,63,228,0.15);
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Decorative top bar */
+        .presentation::before {
+            content: '';
+            display: block;
+            height: 4px;
+            background: linear-gradient(90deg, #7B3FE4 0%, #F5C842 50%, #7B3FE4 100%);
+        }
+
+        .slide-card {
+            padding: 2.5rem 2.5rem 2rem;
+            min-height: 380px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* ───── HEADLINE STYLES ───── */
+        h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.9rem;
+            font-weight: 900;
+            line-height: 1.12;
+            margin-bottom: 1.5rem;
+            color: #FFFFFF;
+            text-align: center;
+            letter-spacing: -0.02em;
+            text-shadow: 0 0 50px rgba(123,63,228,0.5);
+        }
+
+        h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #FFFFFF;
+            text-align: center;
+            margin: 0 auto 1.5rem;
+            max-width: 680px;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        /* Glowing underline on h2 */
+        h2::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #7B3FE4, #F5C842);
+            border-radius: 2px;
+            margin: 0.75rem auto 0;
+            box-shadow: 0 0 12px rgba(245,200,66,0.5);
+        }
+
+        .big-number {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 3rem;
+            font-weight: 900;
+            color: #F5C842;
+            line-height: 1.2;
+            margin: 0.75rem 0;
+            text-align: center;
+            text-shadow: 0 0 30px rgba(245,200,66,0.35);
+        }
+
+        .icon-big {
+            font-size: 2.8rem;
+            margin-bottom: 0.6rem;
+            display: block;
+            text-align: center;
+        }
+
+        .reveal-box {
+            background: rgba(123,63,228,0.12);
+            border: 1px solid rgba(123,63,228,0.3);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1rem 0;
+            color: #e8e2ff;
+        }
+
+        .bullet-list {
+            list-style: none;
+            margin: 1rem 0;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .bullet-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 0.9rem;
+            font-size: 1.05rem;
+            color: #c4b8e8;
+            line-height: 1.5;
+        }
+        .bullet-list li .bullet-icon {
+            font-size: 1.25rem;
+            min-width: 1.8rem;
+            margin-top: 0.05rem;
+        }
+
+        .quote-block {
+            background: rgba(245,200,66,0.08);
+            border-left: 4px solid #F5C842;
+            padding: 1rem 1.5rem;
+            border-radius: 0 1rem 1rem 0;
+            margin: 1.2rem auto;
+            max-width: 600px;
+            font-size: 1.15rem;
+            font-weight: 500;
+            color: #F5C842;
+            font-style: italic;
+        }
+
+        /* ───── NAV ───── */
+        .nav-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 2.5rem 0.6rem;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            border-top: 1px solid rgba(123,63,228,0.2);
+        }
+
+        button {
+            background: transparent;
+            border: 1.5px solid rgba(123,63,228,0.5);
+            color: #a78bfa;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.55rem 1.4rem;
+            border-radius: 3rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+            letter-spacing: 0.05em;
+        }
+
+        button:hover {
+            background: #7B3FE4;
+            color: #ffffff;
+            border-color: #7B3FE4;
+            box-shadow: 0 4px 20px rgba(123,63,228,0.4);
+        }
+
+        .dots {
+            display: flex;
+            gap: 0.6rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 0.4rem 1rem 0.6rem;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: rgba(123,63,228,0.25);
+            border-radius: 20px;
+            transition: all 0.25s;
+            cursor: pointer;
+        }
+
+        .dot.active {
+            background: #7B3FE4;
+            width: 26px;
+            box-shadow: 0 0 8px rgba(123,63,228,0.6);
+        }
+
+        .slide-counter {
+            background: rgba(123,63,228,0.15);
+            border: 1px solid rgba(123,63,228,0.3);
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            color: #a78bfa;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+        }
+
+        /* ───── FOOTER ───── */
+        .main-footer {
+            background: rgba(13,10,31,0.8);
+            border-top: 1px solid rgba(123,63,228,0.2);
+            padding: 0.9rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 0.7rem;
+            color: #6b5fa8;
+        }
+
+        .footer-theme {
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            font-weight: 600;
+            color: rgba(123,63,228,0.6);
+            text-transform: uppercase;
+        }
+
+        .creator-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(123,63,228,0.1);
+            border: 1px solid rgba(123,63,228,0.2);
+            padding: 5px 14px;
+            border-radius: 40px;
+        }
+
+        .creator-img {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid #7B3FE4;
+        }
+
+        .creator-link {
+            color: #a78bfa;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.75rem;
+            transition: color 0.2s;
+        }
+
+        .creator-link:hover {
+            color: #F5C842;
+        }
+
+        /* ───── GENIE CARD ───── */
+        .genie-card {
+            background: rgba(123,63,228,0.08);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(123,63,228,0.3);
+            padding: 1.5rem;
+            text-align: center;
+            color: #c4b8e8;
+        }
+
+        .genie-prompt {
+            background: rgba(13,10,31,0.6);
+            border-radius: 1.2rem;
+            padding: 1.2rem;
+            margin: 1rem 0;
+            border: 1px solid rgba(123,63,228,0.2);
+            text-align: left;
+        }
+
+        .genie-prompt p {
+            color: #c4b8e8;
+        }
+
+        .genie-input {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(123,63,228,0.4);
+            border-radius: 3rem;
+            padding: 0.8rem 1.2rem;
+            width: 100%;
+            font-family: inherit;
+            font-size: 1rem;
+            margin: 0.8rem 0;
+            color: #e8e2ff;
+            outline: none;
+        }
+
+        .genie-input::placeholder { color: rgba(164,148,232,0.5); }
+        .genie-input:focus { border-color: #7B3FE4; box-shadow: 0 0 0 3px rgba(123,63,228,0.15); }
+
+        .genie-button {
+            background: linear-gradient(135deg, #7B3FE4, #9B59B6);
+            color: white;
+            border: none;
+            padding: 0.85rem 1.8rem;
+            border-radius: 3rem;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 4px 20px rgba(123,63,228,0.35);
+        }
+
+        .genie-button:hover {
+            transform: scale(0.98);
+            box-shadow: 0 6px 30px rgba(123,63,228,0.5);
+        }
+
+        .alignment-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #7B3FE4, #F5C842);
+            color: white;
+            border-radius: 2rem;
+            padding: 0.25rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 0.5rem 0;
+        }
+
+        /* ───── SLIDE FADE ───── */
+        .fade-transition {
+            animation: fadeSlide 0.35s ease-out;
+        }
+
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* slide 1 hero eyebrow */
+        .slide-eyebrow {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            color: #7B3FE4;
+            text-align: center;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        /* ───── RESPONSIVE ───── */
+        @media (max-width: 640px) {
+            .slide-card { padding: 1.8rem 1.5rem; }
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.7rem; }
+            .big-number { font-size: 2.4rem; }
+            .bullet-list li { font-size: 0.95rem; }
+            .nav-area { padding: 0.8rem 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="presentation">
+    <div id="slideContainer" class="slide-card"></div>
+    <div class="nav-area">
+        <button id="prevBtn">◀ PREV</button>
+        <div class="slide-counter" id="counter">Slide 1 / 13</div>
+        <button id="nextBtn">NEXT ▶</button>
+    </div>
+    <div class="dots" id="dotsPanel"></div>
+
+    <div class="main-footer">
+        <div class="footer-theme">
+            <span>⚡ NEVILLE GODDARD · REHEARSE YOUR FUTURE</span>
+        </div>
+        <div class="creator-badge">
+            <img class="creator-img" src="https://statics.myclickfunnels.com/workspace/vGVGzP/image/20204117/file/904663e23eb23a39d6f2459104b7bccc.png" alt="Sean Ali" loading="lazy">
+            <span style="color:#6b5fa8; font-size:0.7rem;">Created by</span>
+            <a href="https://manifestationgenie.ai/" target="_blank" rel="noopener noreferrer" class="creator-link">Sean Ali</a>
+            <span style="color:#6b5fa8;">·</span>
+            <a href="https://manifestationgenie.ai/" target="_blank" rel="noopener noreferrer" class="creator-link">Manifestation Genie AI</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const slides = [
+        // Slide 1
+        `<div class="fade-transition">
+            <div class="slide-eyebrow">Neville Goddard · Sean Ali</div>
+            <h1>🧠 Neville Goddard's #1 Wealth Secret Most People Miss</h1>
+            <ul class="bullet-list">
+                <li><span class="bullet-icon">❌</span> Most people think they have a money problem.</li>
+                <li><span class="bullet-icon">🔄</span> Most people actually have a <strong style="color:#F5C842;">rehearsal problem</strong>.</li>
+                <li><span class="bullet-icon">📉</span> Every day they're practicing stress.</li>
+                <li><span class="bullet-icon">😣</span> Practicing doubt.</li>
+                <li><span class="bullet-icon">⚠️</span> Practicing worst-case scenarios.</li>
+                <li><span class="bullet-icon">😶</span> Without even realizing it.</li>
+            </ul>
+        </div>`,
+        // Slide 2
+        `<div class="fade-transition">
+            <h2>🧠 Your Brain Is Always Rehearsing Something</h2>
+            <ul class="bullet-list">
+                <li><span class="bullet-icon">🧾</span> The bill.</li>
+                <li><span class="bullet-icon">💬</span> The argument.</li>
+                <li><span class="bullet-icon">🚫</span> The rejection.</li>
+                <li><span class="bullet-icon">💥</span> The thing that could go wrong.</li>
+            </ul>
+            <div class="quote-block">Most people spend years mentally practicing the life they don't want.</div>
+        </div>`,
+        // Slide 3
+        `<div class="fade-transition">
+            <h2>⚡ The Wealth Secret</h2>
+            <ul class="bullet-list">
+                <li><span class="bullet-icon">🎯</span> Successful people rehearse differently.</li>
+                <li><span class="bullet-icon">💭</span> More time imagining possibilities than problems.</li>
+                <li><span class="bullet-icon">🛠️</span> More time imagining solutions than obstacles.</li>
+                <li><span class="bullet-icon">🏆</span> More time imagining success than failure.</li>
+            </ul>
+        </div>`,
+        // Slide 4
+        `<div class="fade-transition">
+            <h2>🌱 This Changed My Life</h2>
+            <ul class="bullet-list">
+                <li><span class="bullet-icon">🎧</span> When I was around 20, I found my first money meditation.</li>
+                <li><span class="bullet-icon">✨</span> That simple audio introduced me to an idea I'd never heard before:</li>
+            </ul>
+            <div class="quote-block">"You can train your mind before reality changes."</div>
+        </div>`,
+        // Slide 5
+        `<div class="fade-transition">
+            <h2>🔄 Your Brain Learns Through Repetition</h2>
+            <ul class="bullet-list">
+                <li><span class="bullet-icon">❌</span> Not what's true.</li>
+                <li><span class="bullet-icon">✅</span> What's repeated.</li>
+                <li><span class="bullet-icon">📈</span> That's why stress gets stronger.</li>
+                <li><span class="bullet-icon">💪</span> And that's why confidence gets stronger too.</li>
+            </ul>
+        </div>`,
+        // Slide 6
+        `<div class="fade-transition">
+            <h2>🚧 Most People Have Old Programming</h2>
+            <ul class="bullet-list">
+                <li><span class="bullet-icon">💰</span> Money was stressful.</li>
+                <li><span class="bullet-icon">🎢</span> Success felt risky.</li>
+                <li><span class="bullet-icon">🛡️</span> Playing small felt safe.</li>
+                <li><span class="bullet-icon">🧠</span> The problem isn't intelligence.</li>
+                <li><span class="bullet-icon">💿</span> The problem is the old code still running underneath.</li>
+            </ul>
+        </div>`,
+        // Slide 7
+        `<div class="fade-transition">
+            <h2>💡 The Goal Isn't To Get Rich</h2>
+            <ul class="bullet-list">
+                <li><span class="bullet-icon">👤</span> The goal is to become the person who naturally creates results.</li>
+                <li><span class="bullet-icon">🏷️</span> Money follows identity.</li>
+            </ul>
+            <div class="reveal-box">
+                <span class="icon-big">🔑</span>
+                <p style="font-weight: 700; font-size:1.1rem; color:#F5C842;">Identity shift first. Results second.</p>
+            </div>
+        </div>`,
+        // Slide 8
+        `<div class="fade-transition">
+            <h2>🚀 When Success Feels Normal</h2>
+            <ul class="bullet-list">
+                <li><span class="bullet-icon">⏸️</span> You stop hesitating.</li>
+                <li><span class="bullet-icon">🤔</span> You stop overthinking.</li>
+                <li><span class="bullet-icon">🚪</span> You stop talking yourself out of opportunities.</li>
+            </ul>
+        </div>`,
+        // Slide 9
+        `<div class="fade-transition">
+            <h2>🌴 Look Around Your Life</h2>
+            <ul class="bullet-list">
+                <li><span class="bullet-icon">💡</span> Everything started as a thought.</li>
+                <li><span class="bullet-icon">🔄</span> Then a pattern.</li>
+                <li><span class="bullet-icon">🔁</span> Then repeated behavior.</li>
+                <li><span class="bullet-icon">🌍</span> Then reality.</li>
+            </ul>
+        </div>`,
+        // Slide 10
+        `<div class="fade-transition">
+            <div class="quote-block" style="text-align:center;">📖 Neville called it <strong>"living from the end"</strong>.</div>
+            <div class="reveal-box">
+                <span class="icon-big">🎭</span>
+                <p style="font-size: 1.3rem; font-weight: 700; color:#FFFFFF;">I call it:<br><span style="color:#F5C842;">Rehearsing your future before it arrives.</span></p>
+            </div>
+            <div style="margin-top: 0.75rem; text-align: center; color:#6b5fa8; font-size:0.9rem; font-style:italic;">— Sean Ali</div>
+        </div>`,
+        // Slide 11
+        `<div class="fade-transition">
+            <div class="reveal-box" style="background: linear-gradient(135deg, rgba(123,63,228,0.25), rgba(245,200,66,0.1)); border-color: rgba(245,200,66,0.4);">
+                <span class="icon-big">🌙</span>
+                <div class="big-number">Tonight</div>
+                <ul class="bullet-list" style="color: #c4b8e8; text-align: left; margin-top:0.5rem;">
+                    <li><span class="bullet-icon">⏱️</span> Spend 60 seconds imagining one thing going right.</li>
+                    <li><span class="bullet-icon">✨</span> Not perfectly. Just better.</li>
+                </ul>
+            </div>
+        </div>`,
+        // Slide 12
+        `<div class="fade-transition">
+            <h1 style="font-size: 2.4rem;">✨ The Wealth Secret Most People Miss</h1>
+            <ul class="bullet-list">
+                <li><span class="bullet-icon">🧠</span> Your mind is practicing something all day.</li>
+                <li><span class="bullet-icon">❓</span> The question is:</li>
+            </ul>
+            <div class="big-number">What are you rehearsing?</div>
+            <div class="quote-block" style="text-align:center;">That's the only question that matters.</div>
+        </div>`,
+        // Slide 13 — GENIE CTA
+        `<div class="fade-transition">
+            <div class="genie-card">
+                <div style="display: flex; align-items: center; gap: 8px; justify-content: center; margin-bottom: 1rem;">
+                    <span style="font-weight: 800; font-size: 1.2rem; color:#FFFFFF;">🧞 Manifestation Genie</span>
+                    <span style="background: rgba(123,63,228,0.2); padding: 2px 10px; border-radius: 20px; font-size: 0.7rem; color:#a78bfa; border:1px solid rgba(123,63,228,0.3);">0 days</span>
+                </div>
+                <div class="genie-prompt">
+                    <p style="font-weight: 600; color:#e8e2ff;">Sean, what's stressing you out right now?</p>
+                    <p style="font-size: 0.8rem; margin-top: 0.5rem; color:#8a7dbf;">Manifestation works better when your mind is clear.</p>
+                    <input type="text" class="genie-input" placeholder="e.g., Money feels tight again..." id="stressInput">
+                    <a href="https://manifestationgenie.ai/" target="_blank" class="genie-button">Talk To The Genie →</a>
+                    <p style="font-size: 0.7rem; margin-top: 0.5rem; color:#6b5fa8;">or <a href="#" style="color:#F5C842;">Scan what's stressing me →</a></p>
+                </div>
+                <div class="alignment-badge">✨ Your manifestation is 44% aligned today</div>
+                <div style="margin-top: 1rem; text-align: left; font-size: 0.75rem; color: #6b5fa8;">
+                    <p style="color:#a78bfa; font-weight:600; margin-bottom:0.4rem;">How the Genie helps</p>
+                    <p>1. Clear what's stressing you</p>
+                    <p>2. Find what's getting in the way</p>
+                    <p>3. Focus on what you want next</p>
+                </div>
+                <div style="margin-top: 1rem; text-align: center;">
+                    <a href="https://manifestationgenie.ai/" target="_blank" style="color:#F5C842; font-weight: 600; text-decoration: none;">✨ Tap to get started instantly →</a>
+                </div>
+                <div style="margin-top: 0.8rem; font-size: 0.7rem; color: #7B3FE4; font-weight:600;">4.9/5 · Rated from our community</div>
+            </div>
+        </div>`
+    ];
+
+    let currentIdx = 0;
+    const total = slides.length;
+    const container = document.getElementById('slideContainer');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const counterSpan = document.getElementById('counter');
+    const dotsPanel = document.getElementById('dotsPanel');
+
+    function renderSlide() {
+        container.style.opacity = '0';
+        setTimeout(() => {
+            container.innerHTML = slides[currentIdx];
+            const fadeDiv = container.querySelector('.fade-transition');
+            if (fadeDiv) {
+                fadeDiv.style.animation = 'none';
+                fadeDiv.offsetHeight;
+                fadeDiv.style.animation = 'fadeSlide 0.35s ease-out';
+            }
+            container.style.opacity = '1';
+        }, 20);
+        counterSpan.innerText = `Slide ${currentIdx+1} / ${total}`;
+        updateDots();
+    }
+
+    function updateDots() {
+        const dots = document.querySelectorAll('.dot');
+        dots.forEach((dot, i) => {
+            if (i === currentIdx) dot.classList.add('active');
+            else dot.classList.remove('active');
+        });
+    }
+
+    function buildDots() {
+        dotsPanel.innerHTML = '';
+        for (let i = 0; i < total; i++) {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            if (i === currentIdx) dot.classList.add('active');
+            dot.addEventListener('click', () => {
+                currentIdx = i;
+                renderSlide();
+            });
+            dotsPanel.appendChild(dot);
+        }
+    }
+
+    function next() {
+        if (currentIdx < total - 1) {
+            currentIdx++;
+            renderSlide();
+        } else {
+            nextBtn.style.transform = 'scale(0.95)';
+            setTimeout(() => nextBtn.style.transform = '', 150);
+        }
+    }
+
+    function prev() {
+        if (currentIdx > 0) {
+            currentIdx--;
+            renderSlide();
+        } else {
+            prevBtn.style.transform = 'scale(0.95)';
+            setTimeout(() => prevBtn.style.transform = '', 150);
+        }
+    }
+
+    function keyHandler(e) {
+        if (e.key === 'ArrowRight') { next(); e.preventDefault(); }
+        else if (e.key === 'ArrowLeft') { prev(); e.preventDefault(); }
+    }
+
+    buildDots();
+    renderSlide();
+
+    prevBtn.addEventListener('click', prev);
+    nextBtn.addEventListener('click', next);
+    window.addEventListener('keydown', keyHandler);
+
+    let touchStart = 0;
+    container.addEventListener('touchstart', (e) => {
+        touchStart = e.changedTouches[0].screenX;
+    });
+    container.addEventListener('touchend', (e) => {
+        const touchEnd = e.changedTouches[0].screenX;
+        const diff = touchEnd - touchStart;
+        if (Math.abs(diff) > 55) {
+            if (diff > 0) prev();
+            else next();
+        }
+    });
+</script>
+</body>
+</html>
