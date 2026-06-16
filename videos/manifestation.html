@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>The Manifestation Truth · Slideshow by Sean Ali</title>
+  <!-- Fonts: Syne (regular, bold) + DM Sans (clean) - removed extra bold 800 -->
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-light: #FEFCF7;
+      --ink: #161513;
+      --ink-soft: #3A3631;
+      --accent: #E34D2B;
+      --accent-hover: #C13E1F;
+      --gray-line: #E9E3D9;
+      --slide-max-width: 1200px;
+    }
+
+    body {
+      background: #1a1816;
+      font-family: 'DM Sans', sans-serif;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* slideshow container */
+    .presentation {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-light);
+      overflow: hidden;
+    }
+
+    .slides-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.45s cubic-bezier(0.2, 0.9, 0.4, 1.1), visibility 0s linear 0.45s;
+      background: var(--bg-light);
+      overflow-y: auto;
+      padding: 2rem;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.45s cubic-bezier(0.2, 0.9, 0.4, 1.1), visibility 0s linear 0s;
+      z-index: 10;
+    }
+
+    /* custom scroll (discrete) */
+    .slide::-webkit-scrollbar {
+      width: 5px;
+    }
+    .slide::-webkit-scrollbar-track {
+      background: #E2DCD1;
+    }
+    .slide::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 6px;
+    }
+
+    /* slide inner content – centered, big & bold */
+    .slide-content {
+      max-width: var(--slide-max-width);
+      width: 100%;
+      margin: 0 auto;
+      text-align: center;
+      padding: 1rem 0.5rem;
+    }
+
+    /* typography: Syne now uses only 400 (regular) and 700 (bold) */
+    .eyebrow {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700; /* bold */
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+      display: inline-block;
+    }
+
+    h1, .big-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700; /* bold (replaced 800) */
+      font-size: clamp(2.8rem, 8vw, 5.2rem);
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 1rem;
+    }
+
+    .big-title em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .subhead {
+      font-size: clamp(1rem, 3vw, 1.4rem);
+      color: var(--ink-soft);
+      max-width: 700px;
+      margin: 0 auto 1.8rem auto;
+      font-weight: 450;
+    }
+
+    .accent-rule {
+      width: 70px;
+      height: 3px;
+      background: var(--accent);
+      margin: 1rem auto 1.8rem auto;
+      border: 0;
+      border-radius: 6px;
+    }
+
+    /* icon list grid (icons over text lines) */
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2rem;
+      margin: 2rem 0 1rem;
+    }
+
+    .icon-card {
+      background: white;
+      border-radius: 2rem;
+      padding: 1.8rem 1rem;
+      text-align: center;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.02), 0 2px 4px rgba(0,0,0,0.02);
+      border: 1px solid var(--gray-line);
+      transition: transform 0.2s;
+    }
+    .icon-card:hover { transform: translateY(-4px);}
+    .icon-card i, .icon-card .big-icon {
+      font-size: 2.8rem;
+      color: var(--accent);
+      margin-bottom: 0.8rem;
+      display: inline-block;
+    }
+    .icon-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700; /* bold */
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+    }
+    .icon-card p {
+      font-size: 0.95rem;
+      line-height: 1.4;
+      color: var(--ink-soft);
+    }
+
+    /* two-column layouts inside slide (still centered overall) */
+    .split-2col {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.8rem;
+      margin-top: 2rem;
+      text-align: left;
+    }
+    .col {
+      flex: 1;
+      background: #FFFFFF;
+      border-radius: 1.8rem;
+      padding: 1.8rem;
+      border: 1px solid var(--gray-line);
+    }
+    .col h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.7rem;
+      font-weight: 700; /* bold */
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .list-icon-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .list-item-icon {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: #FCF9F2;
+      padding: 0.8rem 1rem;
+      border-radius: 1.2rem;
+    }
+    .list-item-icon i {
+      font-size: 1.8rem;
+      width: 2.2rem;
+      color: var(--accent);
+    }
+    .list-item-icon span {
+      font-weight: 500;
+      font-size: 1.05rem;
+    }
+
+    /* truth cards with big numbers + icon */
+    .truth-deck {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    .truth-item {
+      background: white;
+      border-radius: 1.6rem;
+      padding: 1.4rem 0.8rem;
+      text-align: center;
+      border: 1px solid var(--gray-line);
+    }
+    .truth-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 700; /* bold */
+      color: var(--accent);
+      opacity: 0.65;
+    }
+    .truth-icon {
+      font-size: 2.3rem;
+      margin: 0.6rem 0;
+      display: block;
+    }
+    .truth-item h4 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700; /* bold */
+      margin-bottom: 0.5rem;
+    }
+    .truth-item p {
+      font-size: 0.9rem;
+      color: #49453F;
+    }
+
+    /* dark slide variant */
+    .slide-dark {
+      background: #181714;
+    }
+    .slide-dark .big-title, .slide-dark h1, .slide-dark h3, .slide-dark .eyebrow, .slide-dark .subhead {
+      color: #FEFCF7;
+    }
+    .slide-dark .subhead { color: #CBC6BE; }
+    .slide-dark .icon-card { background: #2A2723; border-color: #45403A; color: white; }
+    .slide-dark .icon-card p { color: #D6D1C8; }
+    .slide-dark .col { background: #23201D; border-color: #3E3A35; }
+    .slide-dark .list-item-icon { background: #322E29; }
+    .slide-dark .truth-item { background: #23201D; border-color: #45403A; color: #F0EDE5; }
+
+    /* final slide accent */
+    .slide-accent {
+      background: var(--accent);
+    }
+    .slide-accent .big-title, .slide-accent h1, .slide-accent .eyebrow, .slide-accent .subhead {
+      color: white;
+    }
+    .slide-accent .subhead { color: rgba(255,255,240,0.9);}
+    .slide-accent .accent-rule { background: rgba(255,255,255,0.5);}
+
+    /* controls & progress */
+    .nav-controls {
+      position: fixed;
+      bottom: 1.8rem;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      z-index: 30;
+      background: rgba(22,21,19,0.7);
+      backdrop-filter: blur(12px);
+      width: fit-content;
+      margin: 0 auto;
+      padding: 0.6rem 1.4rem;
+      border-radius: 60px;
+      border: 1px solid rgba(255,255,220,0.15);
+    }
+    .nav-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.6rem;
+      cursor: pointer;
+      color: #F5EFE5;
+      width: 44px;
+      height: 44px;
+      border-radius: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      background: rgba(0,0,0,0.5);
+    }
+    .nav-btn:hover {
+      background: var(--accent);
+      color: white;
+    }
+    .counter {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700; /* bold */
+      letter-spacing: 0.05em;
+      background: rgba(0,0,0,0.6);
+      padding: 0 1rem;
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      color: #F0EADE;
+    }
+    .progress-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: #332E29;
+      z-index: 40;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      transition: width 0.3s ease;
+    }
+    @media (max-width: 640px) {
+      .slide { padding: 1.2rem; }
+      .icon-card h3 { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="presentation">
+  <div class="slides-container" id="slidesContainer">
+    <!-- SLIDE 0 - TITLE -->
+    <div class="slide active" data-index="0">
+      <div class="slide-content">
+        <div class="eyebrow">SEAN ALI · NEW PARADIGM</div>
+        <h1 class="big-title">The Problem With <em>Manifestation</em><br>Nobody Talks About 🤔</h1>
+        <div class="subhead">Same technique. Different result. Why?</div>
+        <div class="accent-rule"></div>
+        <div class="icon-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px,1fr));">
+          <div class="icon-card"><i class="fas fa-question-circle"></i><h3>Inconsistent</h3><p>Sometimes works, sometimes not</p></div>
+          <div class="icon-card"><i class="fas fa-brain"></i><h3>Misunderstood</h3><p>It's not magic — it's mechanics</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 1: The confusion -->
+    <div class="slide" data-index="1">
+      <div class="slide-content">
+        <div class="eyebrow">🚨 EVER NOTICE?</div>
+        <h1 class="big-title">Same vision.<br>Same belief.<br><em>Different result.</em></h1>
+        <div class="subhead">Sometimes you visualize a goal — ✅ it happens. Other times — ❌ nothing.<br>Why the gap?</div>
+        <div class="accent-rule"></div>
+        <div class="icon-grid">
+          <div class="icon-card"><i class="fas fa-chart-line"></i><h3>Sales goal</h3><p>You imagine the number and it shows up — then stalls.</p></div>
+          <div class="icon-card"><i class="fas fa-chart-simple"></i><h3>Business growth</h3><p>Same energy, same belief — results vary.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: Laws vs Probabilities big concept -->
+    <div class="slide" data-index="2">
+      <div class="slide-content">
+        <div class="eyebrow">⚖️ THE DISTINCTION</div>
+        <h1 class="big-title">There are <em>Laws</em><br>and <em>Probabilities.</em></h1>
+        <div class="subhead">Not the same thing. One is reliable, the other is uncertain.</div>
+        <div class="split-2col">
+          <div class="col"><h3><i class="fas fa-gavel"></i> Laws (reliable)</h3>
+            <div class="list-icon-stack">
+              <div class="list-item-icon"><i class="fas fa-running"></i><span>Sprint 1 min → heavy breathing</span></div>
+              <div class="list-item-icon"><i class="fas fa-dumbbell"></i><span>Lift consistently → strength gain</span></div>
+            </div>
+          </div>
+          <div class="col"><h3><i class="fas fa-dice"></i> Probabilities (increased chance)</h3>
+            <div class="list-icon-stack">
+              <div class="list-item-icon"><i class="fas fa-chart-simple"></i><span>Run Facebook Ads → more reach, no guarantee</span></div>
+              <div class="list-item-icon"><i class="fab fa-youtube"></i><span>Start YouTube → more opportunities, unpredictable</span></div>
+              <div class="list-item-icon"><i class="fas fa-hand-holding-usd"></i><span>Make an offer → volume increases odds</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: What visualization actually does (icon list over text) -->
+    <div class="slide" data-index="3">
+      <div class="slide-content">
+        <div class="eyebrow">🧠 VISUALIZATION DOESN'T GUARANTEE</div>
+        <h1 class="big-title">It <em>influences</em> behavior</h1>
+        <div class="subhead">Not instant millions — but something far more powerful.</div>
+        <div class="icon-grid">
+          <div class="icon-card"><i class="fas fa-bullseye"></i><h3>Directs attention</h3><p>Your brain filters what truly matters.</p></div>
+          <div class="icon-card"><i class="fas fa-lightbulb"></i><h3>Notices opportunities</h3><p>You spot patterns, leads, solutions.</p></div>
+          <div class="icon-card"><i class="fas fa-fire"></i><h3>Fuels motivation</h3><p>Emotional stamina beyond willpower.</p></div>
+          <div class="icon-card"><i class="fas fa-shield-alt"></i><h3>Handles setbacks</h3><p>Mental rehearsal builds resilience.</p></div>
+          <div class="icon-card"><i class="fas fa-sync-alt"></i><h3>Commits longer</h3><p>Vision prevents quitting too early.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: Big quote + what you think changes what you do -->
+    <div class="slide slide-dark" data-index="4">
+      <div class="slide-content">
+        <div class="eyebrow">🔁 THE CHAIN REACTION</div>
+        <h1 class="big-title">What you think →<br>changes what you <em>do</em>.</h1>
+        <div class="subhead" style="margin-bottom: 1rem;">What you do → changes your results.</div>
+        <div class="accent-rule"></div>
+        <div class="icon-grid" style="margin-top: 1rem;">
+          <div class="icon-card"><i class="fas fa-eye"></i><h3>Attention shapes action</h3><p>Where focus flows, behavior follows.</p></div>
+          <div class="icon-card"><i class="fas fa-chart-line"></i><h3>Behavior compounds</h3><p>Small consistent actions, big outcomes.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: 5 hard truths (icon list / big centered) -->
+    <div class="slide" data-index="5">
+      <div class="slide-content">
+        <div class="eyebrow">📚 5 HARD TRUTHS</div>
+        <h1 class="big-title">Reality doesn't bend<br>to <em>wishes</em> alone</h1>
+        <div class="truth-deck">
+          <div class="truth-item"><div class="truth-num">01</div><i class="fas fa-eye truth-icon"></i><h4>Attention directs behavior</h4><p>Focus = filter for opportunities</p></div>
+          <div class="truth-item"><div class="truth-num">02</div><i class="fas fa-redo-alt truth-icon"></i><h4>Repetition changes identity</h4><p>Rehearse it → become it</p></div>
+          <div class="truth-item"><div class="truth-num">03</div><i class="fas fa-chart-simple truth-icon"></i><h4>Behavior compounds</h4><p>Daily micro‑actions add up</p></div>
+          <div class="truth-item"><div class="truth-num">04</div><i class="fas fa-dice-d6 truth-icon"></i><h4>More attempts = more luck</h4><p>Volume increases probability</p></div>
+          <div class="truth-item"><div class="truth-num">05</div><i class="fas fa-scale-balanced truth-icon"></i><h4>Reality audits belief</h4><p>Market always tells the truth</p></div>
+        </div>
+        <div class="subhead" style="margin-top: 1rem;">Visualization primes the pump — action fills the glass.</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: I don't believe vs I do believe (icon lists) -->
+    <div class="slide" data-index="6">
+      <div class="slide-content">
+        <div class="eyebrow">💡 RETHINKING THE FRAMEWORK</div>
+        <h1 class="big-title">Clarity over <em>magic</em></h1>
+        <div class="split-2col">
+          <div class="col"><i class="fas fa-ban" style="font-size: 2.4rem; color: var(--accent); display: block; text-align: center;"></i><h3>❌ Don't believe</h3>
+            <div class="list-icon-stack"><div class="list-item-icon"><i class="fas fa-cloud-moon"></i><span>“Visualize and get rich” — too simple</span></div><div class="list-item-icon"><i class="fas fa-hourglass-half"></i><span>Magical thinking without action</span></div></div>
+          </div>
+          <div class="col"><i class="fas fa-check-circle" style="font-size: 2.4rem; color: var(--accent); display: block; text-align: center;"></i><h3>✅ I do believe</h3>
+            <div class="list-icon-stack"><div class="list-item-icon"><i class="fas fa-brain"></i><span>What you rehearse changes how you act & pursue</span></div><div class="list-item-icon"><i class="fas fa-chart-simple"></i><span>Visualization raises probability, not guarantees</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: The real secret + question -->
+    <div class="slide slide-dark" data-index="7">
+      <div class="slide-content">
+        <div class="eyebrow">🔥 THE REAL SECRET</div>
+        <h1 class="big-title">Stop asking:<br>“Will this <em>guarantee</em> success?”</h1>
+        <div class="accent-rule"></div>
+        <h2 style="font-family: 'Syne', sans-serif; font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 700; margin: 1rem 0;">Start asking:</h2>
+        <div class="big-title" style="font-size: clamp(2rem,5vw,3rem); color: var(--accent);">“What does this consistently do to me?”</div>
+        <div class="subhead" style="margin-top: 1.5rem;">Behavior is controllable — outcomes are not. That's your real leverage.</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: Summary mastery + final call -->
+    <div class="slide slide-accent" data-index="8">
+      <div class="slide-content">
+        <div class="eyebrow" style="color: rgba(255,255,245,0.9);">🧠 MASTER YOUR INNER GAME</div>
+        <h1 class="big-title">Outcomes uncertain.<br>Behavior <em>controllable.</em></h1>
+        <div class="icon-grid" style="margin: 1.8rem 0;">
+          <div class="icon-card" style="background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.2); color: white;"><i class="fas fa-eye"></i><h3>Master attention</h3><p>Direct focus daily</p></div>
+          <div class="icon-card" style="background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.2); color: white;"><i class="fas fa-dumbbell"></i><h3>Master behavior</h3><p>Consistent reps</p></div>
+          <div class="icon-card" style="background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.2); color: white;"><i class="fas fa-chart-line"></i><h3>Results follow</h3><p>Probability in your favor</p></div>
+        </div>
+        <div class="subhead" style="color: #FFF6EA;">👇 Follow <strong>Sean Ali</strong> for mindset, wealth & success lessons</div>
+        <div class="accent-rule" style="background: rgba(255,255,200,0.5);"></div>
+        <div style="font-family: 'Syne'; margin-top: 1rem; font-size: 0.8rem; letter-spacing: 1px; font-weight: 400;">seanali.online · reality-driven manifestation</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="nav-controls">
+    <button class="nav-btn" id="prevSlideBtn" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
+    <div class="counter" id="slideCounter">1 / 9</div>
+    <button class="nav-btn" id="nextSlideBtn" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
+  </div>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const prevBtn = document.getElementById('prevSlideBtn');
+  const nextBtn = document.getElementById('nextSlideBtn');
+  const counter = document.getElementById('slideCounter');
+  const progressFill = document.getElementById('progressFill');
+  let currentIdx = 0;
+  const totalSlides = slides.length;
+
+  function updateSlides() {
+    slides.forEach((slide, idx) => {
+      if (idx === currentIdx) {
+        slide.classList.add('active');
+      } else {
+        slide.classList.remove('active');
+      }
+    });
+    counter.innerText = `${currentIdx+1} / ${totalSlides}`;
+    const progressPercent = ((currentIdx+1) / totalSlides) * 100;
+    progressFill.style.width = `${progressPercent}%`;
+  }
+
+  function goToSlide(index) {
+    if (index < 0) index = totalSlides - 1;
+    if (index >= totalSlides) index = 0;
+    currentIdx = index;
+    updateSlides();
+  }
+
+  prevBtn.addEventListener('click', () => goToSlide(currentIdx - 1));
+  nextBtn.addEventListener('click', () => goToSlide(currentIdx + 1));
+
+  // keyboard navigation
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      goToSlide(currentIdx - 1);
+    } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+      e.preventDefault();
+      goToSlide(currentIdx + 1);
+    }
+  });
+
+  // touch swipe handling
+  let touchStartX = 0;
+  const container = document.querySelector('.presentation');
+  container.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+  container.addEventListener('touchend', (e) => {
+    if (!touchStartX) return;
+    const diff = e.changedTouches[0].screenX - touchStartX;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) goToSlide(currentIdx - 1);
+      else goToSlide(currentIdx + 1);
+    }
+    touchStartX = 0;
+  }, { passive: true });
+
+  updateSlides();
+</script>
+</body>
+</html>
