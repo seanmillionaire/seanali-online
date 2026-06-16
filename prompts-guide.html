@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta charset=\"UTF-8\">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Claude27 — 27 Prompts To Build Your First AI Income Stream</title>
 <meta name="description" content="27 real, copy-paste prompts to create content, build products, write emails, and launch an AI income stream. No coding. No fluff.">
@@ -207,10 +206,6 @@ body{
   object-position:center;
   border-radius:22px;
   box-shadow:0 18px 34px -18px rgba(0,0,0,0.42);
-}
-.sean-hero-photo{
-  aspect-ratio:4/3;
-  margin:28px 0;
 }
 .sean-inline-photo{
   aspect-ratio:4/3;
@@ -522,36 +517,37 @@ body{
   .sticky-bar p{display:none}
   body{font-size:19px}
 }
+
+/* Guided book experience */
+body{background:#f4f0e8;color:#181818}
+.guide-shell{max-width:860px;margin:0 auto;padding:0 18px 72px}
+.shell{max-width:760px;padding-bottom:40px}
+.progress-wrap{top:0;max-width:760px;margin:0 auto;background:rgba(255,255,255,.96);border:1px solid var(--rule);border-top:0;border-radius:0 0 18px 18px;box-shadow:0 10px 28px rgba(0,0,0,.06)}
+.section{background:#fff;margin:22px 0;padding:46px 42px;border:1px solid #e2ded6;border-radius:22px;box-shadow:0 14px 38px rgba(30,25,18,.06);animation:none}
+.section:first-of-type{margin-top:28px;padding-top:48px}
+.section-divider{background:#111;color:#fff;border-color:#111;padding:42px}.section-divider .body-text{color:#dedede}.section-divider .orange{color:#ff7a42}
+.display{font-size:clamp(44px,8vw,68px)}
+.body-text{font-size:1.08rem;color:#2f2f2f}.kicker{color:#d93a13}.orange{color:#f04a22}
+.prompt-card{background:#fbfaf7;border:1px solid #e8e2d8;border-left:6px solid var(--accent);box-shadow:none}.prompt-box{background:#fffdf9;border-color:#ded6ca}
+.prompt-title{font-size:clamp(30px,6vw,40px)}
+.path-tile,.fast-path-item,.tool-row,.prompt-next,.sean-note{background:#fbfaf7;border:1px solid #e8e2d8}
+.footer{border-top:0;margin-top:24px;padding:34px 20px 18px;color:#777}
+.footer a{display:none}
+.footer div{display:none}
+.footer:before{content:"End of guide";display:block;margin-bottom:8px;color:#111;font-weight:800}
+.footer:after{content:"Come back, check off the prompts, and build one useful thing at a time.";display:block;max-width:520px;margin:auto;line-height:1.5}
+@media(max-width:620px){.guide-shell{padding:0 10px 48px}.section{padding:34px 20px;border-radius:18px;margin:16px 0}.progress-wrap{border-radius:0 0 14px 14px}.display{font-size:42px}.path-grid{grid-template-columns:1fr}.prompt-card{padding:22px 18px}.check-wrap{top:16px;right:16px}}
+
 </style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/social-blog.css?v=20260525-5">
 </head>
 
-<body class="social-legacy">
-
-<header class="social-topbar">
-  <a class="social-logo" href="/" aria-label="Sean Ali home">
-    <span class="social-logo-mark">SA</span>
-    <span>Sean Ali</span>
-  </a>
-  <label class="social-search" aria-label="Search the blog">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.75 4a6.75 6.75 0 0 1 5.33 10.89l3.52 3.51-1.2 1.2-3.51-3.52A6.75 6.75 0 1 1 10.75 4Zm0 1.7a5.05 5.05 0 1 0 0 10.1 5.05 5.05 0 0 0 0-10.1Z"/></svg>
-    <input data-feed-search type="search" placeholder="Search AI income, money blocks, reset...">
-  </label>
-  <nav class="social-nav"><a class="social-nav-link" href="/">🏠 Home</a><a class="social-nav-link active" href="/prompts.html">🚀 Start Here</a><a class="social-nav-link" href="/quit-your-9-to-5-with-ai.html">⚙️ Success Systems</a><a class="social-nav-link" href="/story.html">👤 Story</a><a class="social-nav-link" href="https://panamauntold.com">🌴 Panama</a></nav>
-  <a class="social-primary" href="/prompts.html">🤖 Claude27 prompts</a>
-</header>
-
-<main class="social-legacy-wrap">
-  <article class="legacy-card">
-    <header class="legacy-intro">
-      <img src="assets/sean-salute.jpeg" alt="Sean Ali saluting from an ocean-view workspace">
-      <div><strong>Claude27 Prompts Guide</strong><span>The full 27-prompt operating manual for building your first AI income stream.</span></div>
-    </header>
-    <div class="legacy-content"><!-- PROGRESS BAR -->
+<body>
+<div class="guide-shell">
+<!-- PROGRESS BAR -->
 <div class="progress-wrap">
   <div class="progress-bar-outer">
     <div class="progress-bar-inner" id="progressBar" style="width:0%"></div>
@@ -566,17 +562,6 @@ body{
   <div class="kicker">Claude27 · Free Guide</div>
   <div class="display">Most people will never<br>make money with AI.<br><span class="orange">You will.</span></div>
   <p class="body-text">27 real copy-paste prompts for complete beginners. No experience needed. Just open ChatGPT or Claude, paste, and follow the steps.</p>
-  <div class="video-wrapper">
-    <iframe
-      src="https://www.youtube.com/embed/PFMNhetseZE?rel=0&modestbranding=1"
-      title="Claude27 Insight - Build Your Digital Freedom"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      referrerpolicy="strict-origin-when-cross-origin"
-      allowfullscreen
-      loading="lazy">
-    </iframe>
-  </div>
-  <img src="assets/sean-salute.jpeg" alt="Sean Ali saluting from an ocean-view workspace" class="sean-photo sean-hero-photo" loading="lazy">
   <ul class="simple-list" style="margin-bottom:28px">
     <li>No coding</li>
     <li>No prior experience</li>
@@ -898,43 +883,7 @@ Write 3 short versions so I can pick the one I like best.</div>
       </ul>
     </div>
   </div>
-</div>
-
-<!-- BRIDGE → SwapYour9to5 -->
-<div class="section">
-  <div class="bridge-box">
-    <div class="bridge-eyebrow">🎬 My Full Story</div>
-    <div class="bridge-title">Want my full AI content system?</div>
-    <p>I break down exactly how I use AI to create, distribute, and monetize content — without burning out. Free. No pitch. Just the system.</p>
-    <a href="https://www.swapyour9to5.com/" target="_blank" class="bridge-btn">
-      <span class="bridge-btn-icon">🚀</span>
-      Watch My Full Story
-      <span class="bridge-btn-arrow">→</span>
-    </a>
-    <div style="font-size:0.8rem;color:var(--muted);margin-top:12px">SwapYour9to5.com · Free access</div>
-  </div>
-</div>
-
-<!-- OFFER → AI Freedom System -->
-<div class="section">
-  <div class="freedom-offer">
-    <img src="assets/sean-salute.jpeg" alt="Sean Ali saluting from an ocean-view workspace" class="sean-photo sean-inline-photo" loading="lazy">
-    <div class="offer-eyebrow">Full offer · AI Freedom System</div>
-    <div class="offer-title">Make your first<br>$1k/month with AI</div>
-    <p class="offer-copy">The prompts are the start. The full system shows you what to build, what to sell, and how to turn AI into a simple monthly income machine.</p>
-    <div class="offer-meta">
-      <span class="offer-pill">$297 today</span>
-      <span class="offer-pill">Beginner friendly</span>
-      <span class="offer-pill">Offer + content system</span>
-    </div>
-    <a href="https://whop.com/checkout/plan_pPbLHf78OD7Hv/?src=v3_0b42e3fb-aade-4129-8066-77b2c64ef5a1_69225bf18dbc00147a254eb0_1095_s-1" target="_blank" class="offer-btn">
-      <span>Get AI Freedom System</span>
-      <span>→</span>
-    </a>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════ -->
+</div><!-- ═══════════════════════════════════════ -->
 <!-- SECTION 2 — BUILD PRODUCTS -->
 <!-- ═══════════════════════════════════════ -->
 <div class="section section-divider" id="section-products">
@@ -1132,42 +1081,7 @@ I want to be able to create this in one afternoon.</div>
       </ul>
     </div>
   </div>
-</div>
-
-<!-- BRIDGE → products -->
-<div class="section">
-  <div class="bridge-box">
-    <div class="bridge-eyebrow">💡 My Full Story</div>
-    <div class="bridge-title">Want to see how I structure real offers?</div>
-    <p>I show exactly how I set up digital product funnels — from idea to checkout page to email sequence. My Full Story, no fluff.</p>
-    <a href="https://www.swapyour9to5.com/" target="_blank" class="bridge-btn">
-      <span class="bridge-btn-icon">📦</span>
-      Watch My Full Story
-      <span class="bridge-btn-arrow">→</span>
-    </a>
-    <div style="font-size:0.8rem;color:var(--muted);margin-top:12px">TryTheScript.com · Full story</div>
-  </div>
-</div>
-
-<!-- OFFER → AI Freedom System -->
-<div class="section">
-  <div class="freedom-offer compact">
-    <div class="offer-eyebrow">Ready to build the full offer?</div>
-    <div class="offer-title">Turn these prompts into a $297 system</div>
-    <p class="offer-copy">Use the AI Freedom System when you want the exact path from idea to content to checkout instead of figuring it out alone.</p>
-    <div class="offer-meta">
-      <span class="offer-pill">AI Freedom System</span>
-      <span class="offer-pill">$297</span>
-      <span class="offer-pill">First $1k/month roadmap</span>
-    </div>
-    <a href="https://whop.com/checkout/plan_pPbLHf78OD7Hv/?src=v3_0b42e3fb-aade-4129-8066-77b2c64ef5a1_69225bf18dbc00147a254eb0_1095_s-1" target="_blank" class="offer-btn">
-      <span>Checkout Now</span>
-      <span>→</span>
-    </a>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════ -->
+</div><!-- ═══════════════════════════════════════ -->
 <!-- SECTION 3 — AI FOR MONEY -->
 <!-- ═══════════════════════════════════════ -->
 <div class="section section-divider" id="section-money">
@@ -1357,42 +1271,6 @@ Rules:
 </div>
 
 <!-- Mindset Bridge → Money Wave / HM -->
-<div class="section">
-  <div class="sean-note" style="border-left-color:#ff3c00">
-    <strong>⚡ Why most people still don't execute</strong>
-    "Most people don't fail because AI is hard. They fail because their brain is trained to consume instead of build. That's why they watch tutorials, save videos, buy courses — and never move."
-  </div>
-  <div class="bridge-box" style="margin-top:0">
-    <div class="bridge-eyebrow">🎧 Free Tonight</div>
-    <div class="bridge-title">If your brain feels stuck or overloaded</div>
-    <p>That's not laziness. It's subconscious programming. I built a free 7-minute audio to interrupt that pattern — play it before bed, no effort required. Used by 125,000+ people.</p>
-    <a href="https://hypnoticmeditations.ai/pages/moneyflow" target="_blank" class="bridge-btn" style="background:linear-gradient(105deg,#2c2c2c,#1a1a1a);box-shadow:0 8px 20px -4px rgba(0,0,0,0.3)">
-      <span class="bridge-btn-icon">🌙</span>
-      Try The Free Money Wave Audio
-      <span class="bridge-btn-arrow">→</span>
-    </a>
-    <div style="font-size:0.8rem;color:var(--muted);margin-top:12px">hypnoticmeditations.ai · Free · No signup needed</div>
-  </div>
-</div>
-
-<!-- OFFER → AI Freedom System -->
-<div class="section">
-  <div class="freedom-offer">
-    <div class="offer-eyebrow">Stop collecting prompts</div>
-    <div class="offer-title">Build the income stream<br>behind the prompts</div>
-    <p class="offer-copy">AI Freedom System is the paid implementation path: what to create, how to package it, and how to start aiming for your first $1k/month with AI.</p>
-    <div class="offer-meta">
-      <span class="offer-pill">$297 total due today</span>
-      <span class="offer-pill">AI income system</span>
-      <span class="offer-pill">Built for action</span>
-    </div>
-    <a href="https://whop.com/checkout/plan_pPbLHf78OD7Hv/?src=v3_0b42e3fb-aade-4129-8066-77b2c64ef5a1_69225bf18dbc00147a254eb0_1095_s-1" target="_blank" class="offer-btn">
-      <span>Start The Full System</span>
-      <span>→</span>
-    </a>
-  </div>
-</div>
-
 <!-- ═══════════════════════════════════════ -->
 <!-- SECTION 4 — BUILD A BRAND -->
 <!-- ═══════════════════════════════════════ -->
@@ -1547,28 +1425,6 @@ Make it raw. Not inspirational poster quotes. Real.</div>
     </div>
   </div>
 </div>
-
-<!-- Brand bridge → Sean Ali socials -->
-<div class="section">
-  <div class="bridge-box">
-    <div class="bridge-eyebrow">📲 Free Daily Content</div>
-    <div class="bridge-title">Follow Sean for daily AI + brand breakdowns</div>
-    <p>YouTube, TikTok, Instagram — I share exactly what's working in real time. No fluff, no theory. Just what I'm actually doing.</p>
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <a href="https://www.youtube.com/@RealSeanAli" target="_blank" class="bridge-btn">
-        <span class="bridge-btn-icon">▶️</span>
-        Subscribe On YouTube
-        <span class="bridge-btn-arrow">→</span>
-      </a>
-      <a href="https://www.instagram.com/seanaliofficial" target="_blank" class="bridge-btn" style="background:linear-gradient(105deg,#833ab4,#e1306c);">
-        <span class="bridge-btn-icon">📸</span>
-        Follow On Instagram
-        <span class="bridge-btn-arrow">→</span>
-      </a>
-    </div>
-  </div>
-</div>
-
 <!-- ═══════════════════════════════════════ -->
 <!-- SECTION 5 — AI OPERATOR STACK -->
 <!-- ═══════════════════════════════════════ -->
@@ -1841,19 +1697,6 @@ Never give me theory I can't execute today.</div>
 </div>
 
 <!-- Operator bridge → Manifestation Genie -->
-<div class="section">
-  <div class="bridge-box">
-    <div class="bridge-eyebrow">🧠 AI + The Human Mind</div>
-    <div class="bridge-title">The closest thing to an AI subconscious coach</div>
-    <p>I use AI across sales, emails, customer support, funnels, content, and product creation. Manifestation Genie is what I built at the intersection of AI and the human mind.</p>
-    <a href="https://manifestationgenie.ai" target="_blank" class="bridge-btn" style="background:linear-gradient(105deg,#6c3fc7,#9b5de5);">
-      <span class="bridge-btn-icon">✨</span>
-      Explore Manifestation Genie
-      <span class="bridge-btn-arrow">→</span>
-    </a>
-    <div style="font-size:0.8rem;color:var(--muted);margin-top:12px">manifestationgenie.ai</div>
-  </div>
-</div>
 
 <!-- TOOLS I USE -->
 <div class="section">
@@ -1920,79 +1763,13 @@ Never give me theory I can't execute today.</div>
   </div>
 </div>
 
-<!-- FINAL CTA -->
-<div class="section" style="background:linear-gradient(150deg,#fff3ef 0%,#fff8f5 50%,#ffffff 100%);border-radius:32px;margin:24px 20px 0 20px;border:2px solid #ffb89a;padding:44px 32px;position:relative;overflow:hidden;">
-  <!-- decorative glow -->
-  <div style="position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(255,60,0,0.1) 0%,transparent 70%);pointer-events:none;"></div>
-  <div style="position:absolute;bottom:-40px;left:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(255,140,66,0.08) 0%,transparent 70%);pointer-events:none;"></div>
-
-  <div class="final-photo-wrap">
-    <img src="assets/sean-salute.jpeg" alt="Sean Ali saluting from an ocean-view workspace" class="sean-photo" loading="lazy">
-    <div class="final-photo-badge">Built from the freedom desk</div>
-  </div>
-
-  <div style="text-align:center;margin-bottom:20px;position:relative">
-    <span style="display:inline-block;background:var(--accent);color:white;font-size:12px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:6px 18px;border-radius:40px;">🎉 You finished all 27 prompts</span>
-  </div>
-
-  <div class="display" style="font-size:clamp(42px,10vw,62px);text-align:center;position:relative">Now build your<br><span class="orange">first income stream</span></div>
-
-  <p style="text-align:center;font-size:1.2rem;line-height:1.65;margin:0 auto 32px auto;max-width:480px;color:var(--muted);position:relative">Stop consuming. Start building.<br>One prompt. One post. One offer. <strong style="color:var(--ink)">Today.</strong></p>
-
-  <div style="display:flex;flex-direction:column;gap:16px;position:relative">
-    <a href="https://whop.com/checkout/plan_pPbLHf78OD7Hv/?src=v3_0b42e3fb-aade-4129-8066-77b2c64ef5a1_69225bf18dbc00147a254eb0_1095_s-1" target="_blank" class="start-link" style="text-decoration:none;border-radius:20px;padding:22px 28px;background:linear-gradient(105deg,#20c978,#72f2b2);box-shadow:0 14px 28px -6px rgba(32,201,120,0.55);color:#07120d">
-      <div class="cta-icon" style="font-size:34px;width:60px;height:60px;border-radius:18px;background:rgba(0,0,0,0.13)">💸</div>
-      <div class="cta-body">
-        <div class="cta-title" style="font-size:2rem">Get AI Freedom System</div>
-        <div class="cta-sub" style="font-size:0.85rem">How to make your first $1k/month with AI · $297 today</div>
-      </div>
-      <div class="cta-arrow" style="font-size:34px">→</div>
-    </a>
-
-    <a href="https://hypnoticmeditations.ai/pages/moneyflow" target="_blank" class="cta-block" style="background:linear-gradient(105deg,#1a1a1a,#2c2c2c);box-shadow:0 10px 28px -6px rgba(0,0,0,0.3);text-decoration:none;border-radius:20px;padding:22px 28px">
-      <div class="cta-icon" style="font-size:34px;width:60px;height:60px;border-radius:18px">🎧</div>
-      <div class="cta-body">
-        <div class="cta-title" style="font-size:2rem">Free 7-Min Money Reset Audio</div>
-        <div class="cta-sub" style="font-size:0.85rem">Play before bed tonight · No signup · 125,000+ people</div>
-      </div>
-      <div class="cta-arrow" style="font-size:28px">🌙</div>
-    </a>
-
-    <a href="https://www.swapyour9to5.com/" target="_blank" class="cta-block" style="background:linear-gradient(105deg,#1e3a5f,#2d5a8e);box-shadow:0 10px 28px -6px rgba(30,58,95,0.4);text-decoration:none;border-radius:20px;padding:22px 28px">
-      <div class="cta-icon" style="font-size:34px;width:60px;height:60px;border-radius:18px">🚀</div>
-      <div class="cta-body">
-        <div class="cta-title" style="font-size:2rem">Watch My Full Story</div>
-        <div class="cta-sub" style="font-size:0.85rem">TryTheScript.com — Sean's full story</div>
-      </div>
-      <div class="cta-arrow" style="font-size:28px">▶</div>
-    </a>
-  </div>
-
-  <div style="font-size:0.82rem;text-align:center;color:var(--muted);margin-top:24px;position:relative">
-    ✓ Built by Sean Ali &nbsp;·&nbsp; Panama &nbsp;·&nbsp; 125,000+ people and counting
-  </div>
-</div>
-
 <!-- FOOTER -->
 <div class="footer">
-  <div style="margin-bottom:12px;display:flex;justify-content:center;flex-wrap:wrap;gap:6px 20px">
-    <a href="https://seanali.online">seanali.online</a>
-    <a href="https://www.swapyour9to5.com" target="_blank">SwapYour9to5</a>
-    <a href="https://hypnoticmeditations.ai" target="_blank">Hypnotic Meditations</a>
-    <a href="https://www.youtube.com/@RealSeanAli" target="_blank">YouTube</a>
-    <a href="https://www.instagram.com/seanaliofficial" target="_blank">Instagram</a>
-  </div>
   © Sean Ali · Claude27 Guide<br>
   27 prompts. No fluff. Build something real.
 </div>
 
 </div><!-- end shell -->
-
-<!-- STICKY BAR -->
-<div class="sticky-bar">
-  <p><span id="stickyCount">0</span>/27 prompts done</p>
-  <a href="https://whop.com/checkout/plan_pPbLHf78OD7Hv/?src=v3_0b42e3fb-aade-4129-8066-77b2c64ef5a1_69225bf18dbc00147a254eb0_1095_s-1" target="_blank" class="sticky-cta" style="background:linear-gradient(105deg,#20c978,#72f2b2);color:#07120d;box-shadow:0 6px 16px -4px rgba(32,201,120,0.45)">Get AI Freedom System →</a>
-</div>
 
 <script>
 // Check/done system with localStorage
@@ -2006,7 +1783,8 @@ function updateProgress(){
   const pct = Math.round((done/TOTAL)*100);
   document.getElementById('progressBar').style.width = pct+'%';
   document.getElementById('doneCount').textContent = done;
-  document.getElementById('stickyCount').textContent = done;
+  const stickyCount = document.getElementById('stickyCount');
+  if(stickyCount) stickyCount.textContent = done;
 }
 
 function toggleCheck(btn, num){
@@ -2042,47 +1820,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   }
   updateProgress();
 });
-</script></div>
-  </article>
-  
-<aside class="social-sidebar">
-  <section class="side-card profile-mini">
-    <img src="assets/sean-salute.jpeg" alt="Sean Ali">
-    <div>
-      <strong>Sean Ali</strong>
-      <span>AI income, subconscious reprogramming, and location freedom.</span>
-    </div>
-  </section>
-  <section class="side-card">
-    <h3>Start Here</h3>
-    <a class="side-link hot" href="/prompts.html"><span>🚀 Start here</span><strong>Steal the 27 Claude prompts</strong></a>
-    <a class="side-link" href="https://whop.com/checkout/plan_pPbLHf78OD7Hv/?src=v3_0b42e3fb-aade-4129-8066-77b2c64ef5a1_69225bf18dbc00147a254eb0_1095_s-1" target="_blank"><span>AI Freedom System</span><strong>Build your first $1k/month</strong></a>
-    <a class="side-link" href="https://www.swapyour9to5.com/"><span>Full Story</span><strong>Watch my full story</strong></a>
-    <a class="side-link" href="/quit-your-9-to-5-with-ai.html"><span>Blueprint</span><strong>Quit your 9-5 with AI</strong></a>
-    <a class="side-link" href="/story.html"><span>Origin</span><strong>Read Sean's story</strong></a>
-  </section>
-  <section class="side-card">
-    <h3>Brands & Tools</h3>
-    <a class="brand-row" href="https://hypnoticmeditations.ai/pages/moneyflow" target="_blank"><span>Money Flow</span><em>Mindset audio</em></a>
-    <a class="brand-row" href="https://www.manifestationgenie.ai" target="_blank"><span>Manifestation Genie</span><em>AI coach</em></a>
-    <a class="brand-row" href="https://www.swapyour9to5.com/" target="_blank"><span>My Full Story</span><em>Watch the full story</em></a>
-    <a class="brand-row" href="https://panamauntold.com" target="_blank"><span>Panama Untold</span><em>Location freedom</em></a>
-  </section>
-</aside>
-
-</main>
-<nav class="mobile-tabbar"><a class="" href="/"><span>Home</span></a><a class="" href="/quit-your-9-to-5-with-ai.html"><span>AI</span></a><a class="active" href="/prompts.html"><span>Prompts</span></a><a class="" href="/reset/"><span>Reset</span></a></nav>
-
-<footer class="social-footer">
-  <div>© 2026 Sean Ali · seanali.online</div>
-  <div class="social-footer-links">
-    <a href="/story.html">Story</a>
-    <a href="/prompts-guide.html">Prompts Guide</a>
-    <a href="/blueprint.html">Blueprint</a>
-  </div>
-</footer>
-<script src="assets/social-blog.js?v=20260525-5"></script>
-
-<!-- This site is converting visitors into subscribers and customers with https://respond.io --><script id="respondio__growth_tool" src="https://cdn.respond.io/widget/widget.js?wId=7f9488bf-e487-4928-9b01-6edb55b2ad22"></script><!-- https://respond.io -->
+</script>
+</div>
 </body>
 </html>
