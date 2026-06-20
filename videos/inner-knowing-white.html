@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inner Knowing — White Slideshow</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --white:   #FFFFFF;
+  --ink:     #0A0A0A;
+  --purple:  #6C35DE;
+  --purple-lt: #EDE8FF;
+  --gray:    #F2F2F4;
+  --mid:     #6B6B7B;
+  --W: 1080px;
+  --H: 1080px;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  background: #DDDDE8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  overflow: hidden;
+}
+
+#slideshow {
+  position: relative;
+  width: min(var(--W), 100vw);
+  height: min(var(--H), 100vw);
+  overflow: hidden;
+  background: var(--white);
+}
+
+/* ─── Base slide ─── */
+.slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: clamp(44px, 7%, 76px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+  background: var(--white);
+  overflow: hidden;
+}
+.slide.active { opacity: 1; pointer-events: all; }
+
+/* ─── Ambient glow blobs (background atmosphere) ─── */
+.glow-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.glow-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.55;
+  animation: pulseGlow 5s ease-in-out infinite;
+}
+.glow-blob.b1 {
+  width: clamp(280px, 40vw, 460px);
+  height: clamp(280px, 40vw, 460px);
+  top: -10%;
+  right: -8%;
+  background: radial-gradient(circle, rgba(108,53,222,0.35) 0%, rgba(108,53,222,0) 70%);
+  animation-delay: 0s;
+}
+.glow-blob.b2 {
+  width: clamp(220px, 32vw, 380px);
+  height: clamp(220px, 32vw, 380px);
+  bottom: -12%;
+  left: -6%;
+  background: radial-gradient(circle, rgba(108,53,222,0.22) 0%, rgba(108,53,222,0) 70%);
+  animation-delay: 1.8s;
+}
+@keyframes pulseGlow {
+  0%, 100% { transform: scale(1); opacity: 0.45; }
+  50%      { transform: scale(1.18); opacity: 0.75; }
+}
+
+/* All direct slide content sits above the glow */
+.slide > *:not(.glow-bg) { position: relative; z-index: 1; }
+
+/* Purple slide: bright white-violet glow on dark bg */
+.slide--purple .glow-blob.b1 { background: radial-gradient(circle, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0) 70%); }
+.slide--purple .glow-blob.b2 { background: radial-gradient(circle, rgba(237,232,255,0.3) 0%, rgba(237,232,255,0) 70%); }
+
+/* Dark (title/final) slide: vivid purple glow on near-black */
+.slide--title .glow-blob.b1, .slide--final .glow-blob.b1 { background: radial-gradient(circle, rgba(108,53,222,0.55) 0%, rgba(108,53,222,0) 70%); opacity: 0.8; }
+.slide--title .glow-blob.b2, .slide--final .glow-blob.b2 { background: radial-gradient(circle, rgba(180,140,255,0.35) 0%, rgba(180,140,255,0) 70%); }
+
+/* Tint slide: deeper violet glow on lavender bg */
+.slide--tint .glow-blob.b1 { background: radial-gradient(circle, rgba(108,53,222,0.3) 0%, rgba(108,53,222,0) 70%); }
+.slide--tint .glow-blob.b2 { background: radial-gradient(circle, rgba(108,53,222,0.2) 0%, rgba(108,53,222,0) 70%); }
+
+/* ─── Slide counter badge ─── */
+.badge {
+  position: absolute;
+  top: clamp(20px, 3.5%, 32px);
+  right: clamp(20px, 3.5%, 32px);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(11px, 1.3vw, 14px);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--mid);
+  background: var(--gray);
+  padding: 6px 14px;
+  border-radius: 99px;
+  box-shadow: 0 0 0 1px rgba(108,53,222,0.08), 0 0 18px rgba(108,53,222,0.15);
+}
+
+/* ─── Brand ─── */
+/* ─── HERO ICON ─── */
+.hero-icon-wrap {
+  position: relative;
+  display: inline-block;
+  margin-bottom: clamp(16px, 2.5vw, 28px);
+}
+.hero-icon-wrap.center { display: block; text-align: center; margin-left: auto; margin-right: auto; }
+.icon-glow {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(140px, 22vw, 260px);
+  height: clamp(140px, 22vw, 260px);
+  background: radial-gradient(circle, rgba(108,53,222,0.45) 0%, rgba(108,53,222,0.15) 45%, rgba(108,53,222,0) 72%);
+  filter: blur(18px);
+  border-radius: 50%;
+  z-index: 0;
+  animation: iconPulse 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes iconPulse {
+  0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(0.92); }
+  50%      { opacity: 1;   transform: translate(-50%, -50%) scale(1.08); }
+}
+.hero-icon {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(90px, 17vw, 190px);
+  line-height: 1;
+  display: block;
+  filter: drop-shadow(0 0 24px rgba(108,53,222,0.35));
+}
+.slide--purple .icon-glow { background: radial-gradient(circle, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.15) 45%, rgba(255,255,255,0) 72%); }
+.slide--purple .hero-icon { filter: drop-shadow(0 0 26px rgba(255,255,255,0.5)); }
+.slide--title .hero-icon, .slide--final .hero-icon { filter: drop-shadow(0 0 34px rgba(108,53,222,0.7)); }
+
+/* ─── Eyebrow ─── */
+.eyebrow {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(11px, 1.4vw, 15px);
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--purple);
+  margin-bottom: clamp(10px, 1.6vw, 16px);
+}
+
+/* ─── Big headline ─── */
+.headline {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(30px, 5.6vw, 62px);
+  font-weight: 900;
+  line-height: 1.1;
+  color: var(--ink);
+  max-width: 860px;
+}
+.headline .hl { color: var(--purple); }
+
+/* ─── Sub text ─── */
+.subtext {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(16px, 2.4vw, 26px);
+  font-weight: 500;
+  line-height: 1.55;
+  color: var(--mid);
+  margin-top: clamp(12px, 2vw, 22px);
+  max-width: 800px;
+}
+.subtext strong { color: var(--ink); font-weight: 800; }
+
+/* ─── Big emoji list ─── */
+.elist {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.6vw, 18px);
+  margin-top: clamp(14px, 2.2vw, 24px);
+  width: 100%;
+  max-width: 860px;
+}
+.erow {
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 2.2vw, 24px);
+  background: var(--gray);
+  border-radius: clamp(12px, 1.6vw, 18px);
+  padding: clamp(14px, 2vw, 22px) clamp(18px, 2.8vw, 30px);
+  transition: box-shadow 0.2s;
+}
+.erow-icon {
+  font-size: clamp(32px, 5vw, 54px);
+  line-height: 1;
+  flex-shrink: 0;
+  width: clamp(44px, 7vw, 72px);
+  text-align: center;
+}
+.erow-text {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(17px, 2.6vw, 28px);
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.3;
+}
+.erow-text span {
+  display: block;
+  font-size: clamp(12px, 1.6vw, 17px);
+  font-weight: 500;
+  color: var(--mid);
+  margin-top: 2px;
+}
+
+/* ─── Contrast pill rows (VS) ─── */
+.vs-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.5vw, 16px);
+  margin-top: clamp(14px, 2.2vw, 22px);
+  width: 100%;
+  max-width: 860px;
+}
+.vs-row {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 1.5vw, 16px);
+}
+.vs-pill {
+  flex: 1;
+  border-radius: clamp(10px, 1.4vw, 16px);
+  padding: clamp(14px, 2vw, 22px) clamp(18px, 2.6vw, 28px);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(16px, 2.4vw, 26px);
+  font-weight: 800;
+  line-height: 1.25;
+}
+.vs-pill.dim  { background: var(--gray); color: var(--mid); }
+.vs-pill.bold { background: var(--purple); color: #fff; box-shadow: 0 0 0 1px rgba(108,53,222,0.3), 0 8px 30px rgba(108,53,222,0.45), 0 0 40px rgba(108,53,222,0.25); }
+.vs-sep {
+  font-size: clamp(18px,3vw,32px);
+  font-weight: 900;
+  color: var(--mid);
+  flex-shrink: 0;
+}
+
+/* ─── Quote-style big text ─── */
+.bigquote {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(22px, 4.2vw, 50px);
+  font-weight: 900;
+  line-height: 1.2;
+  color: var(--ink);
+  max-width: 860px;
+  margin-top: clamp(10px, 1.6vw, 18px);
+}
+.bigquote .hl { color: var(--purple); }
+.bigquote.faded { color: #C8C8D8; }
+
+/* ─── Tradition rows ─── */
+.tradition {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 1.2vw, 14px);
+  margin-top: clamp(12px, 1.8vw, 20px);
+  max-width: 860px;
+  width: 100%;
+}
+.t-row {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 1.8vw, 20px);
+  padding: clamp(12px, 1.8vw, 20px) clamp(16px, 2.4vw, 26px);
+  border-radius: clamp(10px, 1.4vw, 16px);
+  background: var(--gray);
+}
+.t-icon { font-size: clamp(28px, 4.2vw, 48px); flex-shrink: 0; }
+.t-who {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(10px, 1.3vw, 14px);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--purple);
+  min-width: clamp(56px, 9vw, 100px);
+  flex-shrink: 0;
+}
+.t-word {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(18px, 2.8vw, 32px);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* ─── Hermetic big center ─── */
+.hermetic {
+  width: 100%;
+  max-width: 860px;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 1vw, 12px);
+  margin-top: clamp(10px, 1.6vw, 18px);
+}
+.h-line {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(34px, 6.4vw, 74px);
+  font-weight: 900;
+  line-height: 1.1;
+  color: var(--ink);
+}
+.h-line.hl { color: var(--purple); }
+.h-sub {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(15px, 2.2vw, 24px);
+  font-weight: 500;
+  color: var(--mid);
+  margin-top: clamp(10px, 1.4vw, 16px);
+}
+
+/* ─── TITLE slide ─── */
+.slide--title {
+  background: var(--ink);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.slide--title .headline { color: var(--white); text-align: center; }
+.slide--title .subtext { color: #7070A0; text-align: center; margin: 0 auto; }
+.title-eyebrow {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(11px, 1.4vw, 15px);
+  font-weight: 800;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--purple);
+  margin-bottom: clamp(14px, 2vw, 22px);
+}
+
+/* ─── Purple accent slide ─── */
+.slide--purple {
+  background: var(--purple);
+}
+.slide--purple .headline { color: #fff; }
+.slide--purple .hl { color: var(--purple-lt); }
+.slide--purple .subtext { color: rgba(255,255,255,0.7); }
+.slide--purple .eyebrow { color: var(--purple-lt); }
+.slide--purple .badge { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); }
+.slide--purple .erow { background: rgba(255,255,255,0.12); }
+.slide--purple .erow-text { color: #fff; }
+.slide--purple .erow-text span { color: rgba(255,255,255,0.6); }
+
+/* ─── Light purple tint slide ─── */
+.slide--tint {
+  background: var(--purple-lt);
+}
+.slide--tint .headline { color: var(--ink); }
+.slide--tint .eyebrow { color: var(--purple); }
+.slide--tint .subtext { color: #5050A0; }
+.slide--tint .bigquote { color: var(--ink); }
+.slide--tint .erow { background: rgba(108,53,222,0.1); }
+
+/* ─── FINAL slide ─── */
+.slide--final {
+  background: var(--ink);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.slide--final .hero-icon { display: block; text-align: center; }
+.slide--final .headline { color: var(--white); text-align: center; }
+.slide--final .subtext { color: #7070A0; text-align: center; margin: 0 auto; }
+.slide--final .badge { background: rgba(255,255,255,0.1); color: #7070A0; }
+.erow-purple {
+  background: var(--purple) !important;
+  box-shadow: 0 0 0 1px rgba(108,53,222,0.35), 0 10px 34px rgba(108,53,222,0.4), 0 0 48px rgba(108,53,222,0.22);
+}
+
+.final-cta {
+  margin-top: clamp(20px, 3vw, 32px);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--purple);
+  color: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(13px, 1.8vw, 19px);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: clamp(12px,1.8vw,18px) clamp(22px,3.5vw,36px);
+  border-radius: 99px;
+  box-shadow: 0 0 0 1px rgba(108,53,222,0.4), 0 10px 40px rgba(108,53,222,0.55), 0 0 60px rgba(108,53,222,0.35);
+  animation: ctaGlow 2.6s ease-in-out infinite;
+}
+@keyframes ctaGlow {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(108,53,222,0.4), 0 10px 40px rgba(108,53,222,0.55), 0 0 60px rgba(108,53,222,0.35); }
+  50%      { box-shadow: 0 0 0 1px rgba(108,53,222,0.5), 0 10px 50px rgba(108,53,222,0.7), 0 0 80px rgba(108,53,222,0.5); }
+}
+
+/* ─── Controls ─── */
+#controls {
+  display: flex; align-items: center; gap: 16px; margin-top: 18px;
+}
+.btn {
+  width: 46px; height: 46px; border-radius: 50%;
+  border: 2px solid #B0B0C4;
+  background: transparent; color: #888899; font-size: 18px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: border-color .2s, color .2s; outline: none;
+}
+.btn:hover { border-color: var(--purple); color: var(--purple); }
+#slide-counter {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px; font-weight: 700; letter-spacing: .15em;
+  color: #8888A8; min-width: 60px; text-align: center;
+}
+#progress { width: min(var(--W),100vw); height: 4px; background: #D0D0DC; margin-top: 2px; }
+#progress-fill { height: 100%; background: var(--purple); transition: width .3s ease; }
+
+@media (prefers-reduced-motion: reduce) { .slide { transition: none; } }
+</style>
+</head>
+<body>
+
+<div id="slideshow">
+
+  <!-- TITLE -->
+  <div class="slide slide--title active" data-index="0">
+    <div class="glow-bg"><div class="glow-blob b1"></div><div class="glow-blob b2"></div></div>
+    <div class="badge">Intro</div>
+    <span class="hero-icon-wrap center"><span class="icon-glow"></span><span class="hero-icon">🧠</span></span>
+    <div class="title-eyebrow">Sean Ali · Ancient Wisdom</div>
+    <h1 class="headline">The Ancient Secret<br>Of <span class="hl">Inner Knowing</span></h1>
+    <p class="subtext">Why manifestation feels like magic — and what the mystics actually knew</p>
+  </div>
+
+  <!-- SLIDE 1 -->
+  <div class="slide" data-index="1">
+    <div class="glow-bg"><div class="glow-blob b1"></div><div class="glow-blob b2"></div></div>
+    <div class="badge">01 / 15</div>
+    <span class="hero-icon-wrap"><span class="icon-glow"></span><span class="hero-icon">👁️</span></span>
+    <div class="eyebrow">The Distinction</div>
+    <div class="headline">Most people<br><span class="hl">try</span> to manifest.</div>
+    <div class="elist" style="margin-top:clamp(16px,2.4vw,26px);">
+      <div class="erow">
+        <span class="erow-icon">❌</span>
+        <div class="erow-text">Most people<span>Force it. Chase it. Hope for it.</span></div>
+      </div>
+      <div class="erow">
+        <span class="erow-icon">✅</span>
+        <div class="erow-text">Ancient teachers<span>Didn't try. They remembered.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2 -->
+  <div class="slide slide--tint" data-index="2">
+    <div class="glow-bg"><div class="glow-blob b1"></div><div class="glow-blob b2"></div></div>
+    <div class="badge">02 / 15</div>
+    <span class="hero-icon-wrap"><span class="icon-glow"></span><span class="hero-icon">⚡</span></span>
+    <div class="eyebrow">Mind vs Soul</div>
+    <div class="vs-wrap">
+      <div class="vs-row">
+        <div class="vs-pill dim">🔍 The mind<br><strong style="font-size:1.3em;">seeks.</strong></div>
+        <div class="vs-sep">→</div>
+        <div class="vs-pill bold">✨ The soul<br>knows.</div>
+      </div>
+    </div>
+    <div class="subtext" style="margin-top:clamp(16px,2.4vw,26px);">Manifestation begins <strong>when seeking ends.</strong></div>
+  </div>
+
+  <!-- SLIDE 3 -->
+    <!-- SLIDE 4 -->
+  <div class="slide" data-index="3">
+    <div class="glow-bg"><div class="glow-blob b1"></div><div class="glow-blob b2"></div></div>
+    <div class="badge">03 / 15</div>
+    <span class="hero-icon-wrap"><span class="icon-glow"></span><span class="hero-icon">🎯</span></span>
+    <div class="eyebrow">Hope vs Inner Knowing</div>
+    <div class="elist">
+      <div class="erow">
+        <span class="erow-icon">🤞</span>
+        <div class="erow-text">Hope says:<span>"Maybe... I hope so... we'll see..."</span></div>
+      </div>
+      <div class="erow erow-purple">
+        <span class="erow-icon">💎</span>
+        <div class="erow-text" style="color:#fff;">Inner knowing says:<span style="color:rgba(255,255,255,0.7);">"Of course. It's already done."</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5 -->
+  <div class="slide" data-index="4">
+    <div class="glow-bg"><div class="glow-blob b1"></div><div class="glow-blob b2"></div></div>
+    <div class="badge">04 / 15</div>
+    <span class="hero-icon-wrap"><span class="icon-glow"></span><span class="hero-icon">📜</span></span>
+    <div class="eyebrow">Many Words. One Truth.</div>
+    <div class="tradition">
+      <div class="t-row"><span class="t-icon">📖</span><span class="t-who">Neville</span><span class="t-word">Assumption</span></div>
+      <div class="t-row"><span class="t-icon">🔺</span><span class="t-who">Hermetic</span><span class="t-word">Gnosis</span></div>
+      <div class="t-row"><span class="t-icon">🕊️</span><span class="t-who">Mystics</span><span class="t-word">Faith</span></div>
+    </div>
+    <div class="subtext">Different words. <strong>Same phenomenon.</strong></div>
+  </div>
+
+  <!-- SLIDE 6 -->
+    <!-- SLIDE 7 -->
+  <div class="slide" data-index="5">
+    <div class="glow-bg"><div class="glow-blob b1"></div><div class="glow-blob b2"></div></div>
+    <div class="badge">05 / 15</div>
+    <span class="hero-icon-wrap"><span class="icon-glow"></span><span class="hero-icon">🧬</span></span>
+    <div class="eyebrow">Neuroscience + Mysticism Agree</div>
+    <div class="headline">The subconscious can't tell<br><span class="hl">memory</span> from <span class="hl">imagination.</span></div>
+    <div class="subtext">That's why <strong>repetition changes your world.</strong></div>
+  </div>
+
+  <!-- SLIDE 8 -->
+  <div class="slide slide--tint" data-index="6">
+    <div class="glow-bg"><div class="glow-blob b1"></div><div class="glow-blob b2"></div></div>
+    <div class="badge">06 / 15</div>
+    <span class="hero-icon-wrap"><span class="icon-glow"></span><span class="hero-icon">⚙️</span></span>
+    <div class="eyebrow">The Ancient Approach</div>
+    <div class="vs-wrap">
+      <div class="vs-row">
+        <div class="vs-pill dim">👤 Most people<br><strong>Try to get things.</strong></div>
+        <div class="vs-sep">vs</div>
+        <div class="vs-pill bold">🏛️ The ancients<br>Installed experiences.</div>
+      </div>
+    </div>
+    <div class="subtext" style="margin-top:clamp(14px,2vw,22px);">They weren't chasing — they were <strong>programming.</strong></div>
+  </div>
+
+  <!-- SLIDE 9 -->
+  <div class="slide" data-index="7">
+    <div class="glow-bg"><div class="glow-blob b1"></div><div class="glow-blob b2"></div></div>
+    <div class="badge">07 / 15</div>
+    <span class="hero-icon-wrap"><span class="icon-glow"></span><span class="hero-icon">😰</span></span>
+    <div class="eyebrow">Self-Hypnosis of Lack</div>
+    <div class="headline">Most people rehearse <span class="hl">problems.</span></div>
+    <div class="elist" style="margin-top:clamp(12px,1.8vw,20px);">
+      <div class="erow"><span class="erow-icon">💭</span><div class="erow-text" style="color:var(--mid);">"What if I fail?"</div></div>
+      <div class="erow"><span class="erow-icon">💭</span><div class="erow-text" style="color:var(--mid);">"What if it doesn't happen?"</div></div>
+      <div class="erow"><span class="erow-icon">💭</span><div class="erow-text" style="color:var(--mid);">"What if I lose?"</div></div>
+    </div>
+    <div class="subtext">They hypnotize themselves into <strong>lack.</strong></div>
+  </div>
+
+  <!-- SLIDE 10 -->
+  <div class="slide slide--purple" data-index="8">
+    <div class="glow-bg"><div class="glow-blob b1"></div><div class="glow-blob b2"></div></div>
+    <div class="badge">08 / 15</div>
+    <span class="hero-icon-wrap"><span class="icon-glow"></span><span class="hero-icon">🔑</span></span>
+    <div class="eyebrow">The Real Secret</div>
+    <div class="headline">It's not <span class="hl">positive thinking.</span></div>
+    <div class="elist" style="margin-top:clamp(14px,2vw,22px);">
+      <div class="erow">
+        <span class="erow-icon">🧠</span>
+        <div class="erow-text">It's inner familiarity<span>The wealthy future must feel psychologically ordinary</span></div>
+      </div>
+      <div class="erow">
+        <span class="erow-icon">📐</span>
+        <div class="erow-text">Normal = possible<span>What feels normal to you gets created</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 11 -->
+    <!-- SLIDE 12 -->
+  <div class="slide slide--tint" data-index="9">
+    <div class="glow-bg"><div class="glow-blob b1"></div><div class="glow-blob b2"></div></div>
+    <div class="badge">09 / 15</div>
+    <span class="hero-icon-wrap"><span class="icon-glow"></span><span class="hero-icon">🔺</span></span>
+    <div class="eyebrow">Hermetic Principle</div>
+    <div class="hermetic">
+      <div class="h-line hl">As within,</div>
+      <div class="h-line">so without.</div>
+      <div class="h-sub">The outer world is an echo of the inner state.</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 13 -->
+  <div class="slide" data-index="10">
+    <div class="glow-bg"><div class="glow-blob b1"></div><div class="glow-blob b2"></div></div>
+    <div class="badge">10 / 15</div>
+    <span class="hero-icon-wrap"><span class="icon-glow"></span><span class="hero-icon">🔗</span></span>
+    <div class="eyebrow">Why Synchronicities Appear</div>
+    <div class="elist">
+      <div class="erow">
+        <span class="erow-icon">❌</span>
+        <div class="erow-text">Not because reality changed<span>The world isn't rearranging for you</span></div>
+      </div>
+      <div class="erow erow-purple">
+        <span class="erow-icon">✅</span>
+        <div class="erow-text" style="color:#fff;">Because consciousness changed<span style="color:rgba(255,255,255,0.7);">Now you notice different opportunities</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 14 -->
+    <!-- SLIDE 15 -->
+  <div class="slide slide--purple" data-index="11">
+    <div class="glow-bg"><div class="glow-blob b1"></div><div class="glow-blob b2"></div></div>
+    <div class="badge">11 / 15</div>
+    <span class="hero-icon-wrap"><span class="icon-glow"></span><span class="hero-icon">⏳</span></span>
+    <div class="eyebrow">Order of Operations</div>
+    <div class="elist">
+      <div class="erow">
+        <span class="erow-icon">❌</span>
+        <div class="erow-text">Most people wait for proof<span>Then they'll believe</span></div>
+      </div>
+      <div class="erow">
+        <span class="erow-icon">1️⃣</span>
+        <div class="erow-text">First: the knowing<span>Certainty comes before evidence</span></div>
+      </div>
+      <div class="erow">
+        <span class="erow-icon">2️⃣</span>
+        <div class="erow-text">Then: the evidence<span>Proof follows — never leads</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 16 -->
+    <!-- SLIDE 17 -->
+  <div class="slide slide--tint" data-index="12">
+    <div class="glow-bg"><div class="glow-blob b1"></div><div class="glow-blob b2"></div></div>
+    <div class="badge">12 / 15</div>
+    <span class="hero-icon-wrap"><span class="icon-glow"></span><span class="hero-icon">🏠</span></span>
+    <div class="eyebrow">The Tipping Point</div>
+    <div class="vs-wrap">
+      <div class="vs-row">
+        <div class="vs-pill dim">😰 Doubt<br><strong>Becomes strange</strong></div>
+        <div class="vs-sep">→</div>
+        <div class="vs-pill bold">💎 Certainty<br>Becomes home</div>
+      </div>
+    </div>
+    <div class="subtext" style="margin-top:clamp(14px,2vw,22px);"><strong>That's</strong> when reality begins rearranging.</div>
+  </div>
+
+  <!-- SLIDE 18 -->
+  <div class="slide slide--purple" data-index="13">
+    <div class="glow-bg"><div class="glow-blob b1"></div><div class="glow-blob b2"></div></div>
+    <div class="badge">13 / 15</div>
+    <span class="hero-icon-wrap"><span class="icon-glow"></span><span class="hero-icon">💣</span></span>
+    <div class="eyebrow">The Biggest Secret</div>
+    <div class="elist">
+      <div class="erow">
+        <span class="erow-icon">❌</span>
+        <div class="erow-text">You don't manifest what you want<span>Wanting signals lack</span></div>
+      </div>
+      <div class="erow">
+        <span class="erow-icon">✅</span>
+        <div class="erow-text">You manifest what feels true<span>Truth creates reality</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 19 -->
+  <div class="slide" data-index="14">
+    <div class="glow-bg"><div class="glow-blob b1"></div><div class="glow-blob b2"></div></div>
+    <div class="badge">14 / 15</div>
+    <span class="hero-icon-wrap"><span class="icon-glow"></span><span class="hero-icon">🪞</span></span>
+    <div class="eyebrow">Honest Inventory</div>
+    <div class="headline">What have you made<br><span class="hl">familiar?</span></div>
+    <div class="elist" style="margin-top:clamp(12px,1.8vw,20px);">
+      <div class="erow"><span class="erow-icon">😓</span><div class="erow-text" style="color:var(--mid);">Scarcity &amp; fear?</div></div>
+      <div class="erow"><span class="erow-icon">😰</span><div class="erow-text" style="color:var(--mid);">Stress &amp; worst-cases?</div></div>
+      <div class="erow erow-purple"><span class="erow-icon">🌟</span><div class="erow-text" style="color:#fff;">Or abundance &amp; flow?</div></div>
+    </div>
+  </div>
+
+  <!-- SLIDE 20 -->
+    <!-- SLIDE 21 / FINAL -->
+  <div class="slide slide--final" data-index="15">
+    <div class="glow-bg"><div class="glow-blob b1"></div><div class="glow-blob b2"></div></div>
+    <div class="badge">15 / 15</div>
+    <span class="hero-icon-wrap center"><span class="icon-glow"></span><span class="hero-icon">🌌</span></span>
+    <div class="headline" style="text-align:center;">Reality follows<br><span class="hl" style="color:var(--purple);">inner knowing.</span></div>
+    <div class="subtext" style="text-align:center;margin:0 auto;">Not wishful thinking. Not effort. Not force.<br>What you <strong style="color:#fff;">repeatedly know</strong> becomes the world you experience.</div>
+    <div class="final-cta">↓ Subscribe for more wisdom</div>
+  </div>
+
+</div><!-- /slideshow -->
+
+<div id="progress"><div id="progress-fill"></div></div>
+<div id="controls">
+  <button class="btn" id="prevBtn" aria-label="Previous">&#8592;</button>
+  <div id="slide-counter">1 / 16</div>
+  <button class="btn" id="nextBtn" aria-label="Next">&#8594;</button>
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const counter = document.getElementById('slide-counter');
+const fill = document.getElementById('progress-fill');
+let cur = 0;
+const total = slides.length;
+
+function goTo(n) {
+  slides[cur].classList.remove('active');
+  cur = (n + total) % total;
+  slides[cur].classList.add('active');
+  counter.textContent = `${cur + 1} / ${total}`;
+  fill.style.width = `${((cur + 1) / total) * 100}%`;
+}
+
+document.getElementById('nextBtn').addEventListener('click', () => goTo(cur + 1));
+document.getElementById('prevBtn').addEventListener('click', () => goTo(cur - 1));
+document.addEventListener('keydown', e => {
+  if (['ArrowRight','ArrowDown',' '].includes(e.key)) { e.preventDefault(); goTo(cur + 1); }
+  if (['ArrowLeft','ArrowUp'].includes(e.key)) { e.preventDefault(); goTo(cur - 1); }
+});
+let sx = null;
+const ss = document.getElementById('slideshow');
+ss.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, { passive: true });
+ss.addEventListener('touchend', e => {
+  if (sx === null) return;
+  const d = sx - e.changedTouches[0].clientX;
+  if (Math.abs(d) > 40) d > 0 ? goTo(cur + 1) : goTo(cur - 1);
+  sx = null;
+}, { passive: true });
+goTo(0);
+</script>
+</body>
+</html>
