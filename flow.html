@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Money Flow | 7-Minute Theta Audio • Sean Ali</title>
+    <meta name="description" content="7-minute theta audio that rewires the hesitation pattern. Watch the full video, then get instant access for $27.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #ffffff;
+            font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+            color: #1a1e2c;
+            line-height: 1.5;
+        }
+        
+        #vslMasterWrapper {
+            position: relative;
+            z-index: 1;
+        }
+        h1, h2, h3, .heading-font {
+            font-family: 'Sora', system-ui, sans-serif;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+        
+        /* ===== RED URGENCY BAR (exact match from free.html) ===== */
+        .sticky-value-bar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: #D92D20;
+            background: linear-gradient(95deg, #B91C1C 0%, #E11D2F 100%);
+            color: white;
+            padding: 14px 16px;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: -0.2px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 12px rgba(185, 28, 28, 0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.25);
+            backdrop-filter: blur(2px);
+            font-family: 'Inter', system-ui, sans-serif;
+            animation: urgentPulse 1.2s ease-in-out 2;
+        }
+        @keyframes urgentPulse {
+            0% { opacity: 0.98; background: #B91C1C; }
+            50% { opacity: 1; background: #E11D2F; box-shadow: 0 4px 16px rgba(220,38,38,0.5); }
+            100% { opacity: 0.98; background: #B91C1C; }
+        }
+        
+        /* main container — tighter top padding for "video first" feel, now with headline above video */
+        .vsl-main {
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 8px 20px 64px;
+            background: #ffffff;
+        }
+
+        /* NEW HEADLINE above video — impactful & minimal */
+        .money-block-headline {
+            font-family: 'Sora', sans-serif;
+            font-weight: 800;
+            font-size: 1.8rem;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            text-align: center;
+            color: #1f1b14;
+            margin: 0.25rem 0 1rem 0;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            background: #ffffff;
+            padding: 0 8px;
+        }
+        .money-block-headline span {
+            background: linear-gradient(120deg, #c2821a, #e0a045);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+        
+        /* VIDEO WRAPPER: minimized top margin so video sits under headline */
+        .video-wrapper {
+            background: transparent;
+            border-radius: 28px;
+            overflow: hidden;
+            margin: 0 0 12px 0;
+            min-height: 240px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .video-placeholder {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: center;
+            background: #ffffff;
+            border: 1px solid #ece2d4;
+            padding: 3rem 1rem;
+            border-radius: 28px;
+            font-weight: 500;
+            color: #5a626e;
+        }
+        
+        .timer-container {
+            text-align: center;
+            margin: 8px 0 20px;
+        }
+        .timer-box {
+            background: #ffffff;
+            border: 2px solid #eeddb2;
+            display: inline-block;
+            padding: 10px 24px;
+            border-radius: 60px;
+            box-shadow: 0 8px 18px -6px rgba(0,0,0,0.05);
+        }
+        .timer-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #5f5b54;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+        .timer-display {
+            font-family: 'Sora', monospace;
+            font-size: 2.3rem;
+            font-weight: 800;
+            color: #c2821a;
+            background: #ffffff;
+            padding: 4px 20px;
+            border-radius: 50px;
+            letter-spacing: 3px;
+            border: 1px solid #f3e2c2;
+        }
+        .urgency-note {
+            font-size: 0.75rem;
+            color: #cb5a3f;
+            font-weight: 800;
+            margin-top: 8px;
+            background: #ffffff;
+            border: 1px solid #fadbcb;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 60px;
+        }
+        
+        /* Hidden wrapper for content below timer (CTA, proofs, FAQ, footer) */
+        .post-timer-content {
+            display: none;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        .post-timer-content.visible {
+            display: block;
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* ===== CHOOSE YOUR RESET — TWO-TIER PRICING ===== */
+        .cta-section {
+            text-align: center;
+            margin: 32px 0 32px;
+        }
+        .reset-headline {
+            font-family: 'Sora', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1f1b14;
+            letter-spacing: -0.03em;
+            margin-bottom: 8px;
+        }
+        .reset-subhead {
+            font-size: 0.95rem;
+            color: #5d5548;
+            font-weight: 500;
+            margin-bottom: 28px;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .reset-cards {
+            display: flex;
+            gap: 16px;
+            align-items: stretch;
+            justify-content: center;
+        }
+        .reset-micro {
+            font-size: 0.75rem;
+            color: #7a6f63;
+            font-weight: 500;
+            text-align: center;
+            margin-top: 14px;
+            font-style: italic;
+        }
+        .guarantee {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            font-size: 0.8rem;
+            color: #4b463d;
+            background: #ffffff;
+            border: 1px solid #ede3d1;
+            padding: 8px 18px;
+            border-radius: 60px;
+            width: fit-content;
+            margin: 0 auto;
+        }
+        .secure-badge {
+            font-size: 0.75rem;
+            color: #2f6b47;
+            margin-top: 12px;
+            font-weight: 600;
+        }
+        .guarantee {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            font-size: 0.8rem;
+            color: #4b463d;
+            background: #ffffff;
+            border: 1px solid #ede3d1;
+            padding: 8px 18px;
+            border-radius: 60px;
+            width: fit-content;
+            margin: 0 auto;
+        }
+        .secure-badge {
+            font-size: 0.75rem;
+            color: #2f6b47;
+            margin-top: 12px;
+            font-weight: 600;
+        }
+        
+        /* Proof Images Section — pure white cards */
+        .proof-images-section {
+            background: #ffffff;
+            border-radius: 32px;
+            padding: 32px 24px;
+            margin: 40px 0 40px;
+            border: 1px solid #f0e2cd;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.02);
+            text-align: center;
+        }
+        .proof-images-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #2a241c;
+        }
+        .image-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 28px;
+            margin-top: 20px;
+        }
+        .proof-img-card {
+            flex: 1 1 180px;
+            max-width: 200px;
+            text-align: center;
+        }
+        .proof-img-card img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            border-radius: 28px;
+            box-shadow: 0 8px 15px -5px rgba(0,0,0,0.1);
+            border: 2px solid #f3e1c0;
+            transition: transform 0.2s;
+            background: #ffffff;
+        }
+        .proof-img-card img:hover {
+            transform: scale(1.02);
+        }
+        .proof-img-card p {
+            margin-top: 12px;
+            font-weight: 700;
+            color: #5d5548;
+            font-size: 0.85rem;
+        }
+        
+        .proof-row-label {
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            color: #bb882e;
+            margin: 20px 0 10px;
+            border-left: 3px solid #d7a449;
+            padding-left: 10px;
+            text-align: left;
+        }
+        .screenshot-card {
+            flex: 1 1 220px;
+            max-width: 280px;
+        }
+        .screenshot-card img {
+            aspect-ratio: unset !important;
+            border-radius: 16px !important;
+        }
+
+        /* FAQ Section — pure white background */
+        .faq-section {
+            background: #ffffff;
+            border-radius: 32px;
+            padding: 32px 28px;
+            margin: 32px 0 24px;
+            border: 1px solid #f0e2cd;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.02);
+        }
+        .faq-section h2 {
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 28px;
+            color: #2a241c;
+        }
+        .faq-item {
+            border-bottom: 1px solid #ece1d2;
+            padding: 1.2rem 0;
+        }
+        .faq-question {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: #b57c1f;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .faq-question span:first-child {
+            flex: 1;
+        }
+        .faq-toggle {
+            font-size: 1.6rem;
+            font-weight: 500;
+            transition: transform 0.2s;
+            color: #b67b28;
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            color: #4c463e;
+            line-height: 1.5;
+            margin-top: 0;
+            font-weight: 500;
+        }
+        .faq-item.active .faq-answer {
+            max-height: 300px;
+            margin-top: 12px;
+        }
+        .faq-item.active .faq-toggle {
+            transform: rotate(45deg);
+        }
+        .simple-footer {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #a09788;
+            margin-top: 48px;
+            border-top: 1px solid #e9decf;
+            padding-top: 24px;
+            background: #ffffff;
+        }
+        
+        /* EXIT POPUP — pure white theme */
+        #exitPopupOverlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(30, 30, 30, 0.85);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(6px);
+        }
+        #exitPopupOverlay.show {
+            display: flex;
+        }
+        #exitPopupBox {
+            background: #ffffff;
+            border: 1px solid #f0daba;
+            border-radius: 32px;
+            padding: 40px 32px;
+            max-width: 480px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 30px 50px rgba(0,0,0,0.2);
+            position: relative;
+            animation: popIn 0.3s cubic-bezier(.34,1.56,.64,1);
+        }
+        @keyframes popIn {
+            from { opacity:0; transform:scale(.88) translateY(20px); }
+            to { opacity:1; transform:scale(1) translateY(0); }
+        }
+        #exitPopupBox .ep-icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+        #exitPopupBox h3 {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.55rem;
+            font-weight: 800;
+            color: #25221c;
+            line-height: 1.2;
+            margin-bottom: 14px;
+        }
+        #exitPopupBox h3 span {
+            color: #d49830;
+        }
+        #exitPopupBox p {
+            font-size: 1rem;
+            color: #4f4940;
+            line-height: 1.55;
+            margin-bottom: 24px;
+            font-weight: 500;
+        }
+        #exitPopupBox .ep-cta {
+            display: inline-block;
+            background: linear-gradient(135deg, #e7bd6f, #cf942e);
+            color: #1f1b14;
+            font-family: 'Sora', sans-serif;
+            font-weight: 800;
+            font-size: 1.05rem;
+            padding: 14px 32px;
+            border-radius: 60px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 8px 20px rgba(190, 120, 30, 0.25);
+            margin-bottom: 12px;
+        }
+        #exitPopupBox .ep-close {
+            display: block;
+            font-size: 0.8rem;
+            color: #a29482;
+            cursor: pointer;
+            margin-top: 8px;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+        #exitPopupBox .ep-close:hover { color: #735f44; }
+        
+        @media (max-width: 550px) {
+            .cta-button-lite { font-size: 0.9rem; padding: 11px 18px; }
+            .cta-button-premium { font-size: 1rem; padding: 13px 20px; }
+            .proof-img-card { max-width: 140px; }
+            .timer-display { font-size: 1.8rem; padding: 2px 12px; }
+            .sticky-value-bar { font-size: 12px; padding: 12px 12px; }
+            .money-block-headline { font-size: 1.45rem; margin: 0 0 0.85rem 0; line-height: 1.25; }
+        }
+
+        /* CREATOR BIO SECTION */
+        .creator-bio {
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+            background: #fffaf2;
+            border: 1px solid #f0e2c8;
+            border-radius: 28px;
+            padding: 28px 24px;
+            margin: 0 0 28px;
+            text-align: left;
+        }
+        .creator-bio-photo {
+            flex-shrink: 0;
+            width: 110px;
+        }
+        .creator-bio-photo img {
+            width: 110px;
+            height: 110px;
+            border-radius: 20px;
+            object-fit: cover;
+            border: 2px solid #f0daba;
+            box-shadow: 0 8px 20px -6px rgba(0,0,0,0.12);
+        }
+        .creator-bio-text {
+            flex: 1;
+        }
+        .creator-byline {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #b87c2a;
+            margin-bottom: 5px;
+        }
+        .creator-bio-text h3 {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #1f1b14;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+        .creator-bio-text p {
+            font-size: 0.88rem;
+            color: #5d5548;
+            font-weight: 500;
+            line-height: 1.6;
+        }
+        .creator-stats {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+        .creator-stat {
+            background: #ffffff;
+            border: 1px solid #e9d6b5;
+            border-radius: 10px;
+            padding: 6px 12px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #4a3e2e;
+        }
+        .creator-stat span {
+            display: block;
+            font-size: 1rem;
+            font-weight: 900;
+            color: #c2821a;
+        }
+        @media (max-width: 550px) {
+            .creator-bio { flex-direction: column; gap: 16px; }
+            .creator-bio-photo { width: 80px; }
+            .creator-bio-photo img { width: 80px; height: 80px; }
+            .creator-stats { gap: 10px; }
+        }
+
+        /* ===== OFFER STACK (transplanted from moneyflow-full) ===== */
+        .offer-stack {
+            background: #fffaf0;
+            border: 2px solid #f3e1bd;
+            border-radius: 32px;
+            padding: 40px 28px;
+            margin: 0 0 32px;
+            text-align: center;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.08);
+        }
+        .product-image-inline {
+            max-width: 260px;
+            margin: 0 auto 20px;
+        }
+        .product-image-inline img {
+            width: 100%;
+            border-radius: 24px;
+            box-shadow: 0 12px 24px -10px rgba(0,0,0,0.15);
+            border: 1px solid #f0daba;
+        }
+        .stack-title {
+            font-size: 13px;
+            letter-spacing: 2px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #b87c2a;
+            margin-bottom: 16px;
+        }
+        .stack-items {
+            list-style: none;
+            margin: 16px 0;
+            text-align: left;
+        }
+        .stack-items li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed #e9d6b5;
+            padding: 13px 8px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+            gap: 12px;
+        }
+        .stack-items li .item-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+        .stack-check {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
+            background: #16a34a;
+            border-radius: 50%;
+            color: white;
+            font-size: 13px;
+            font-weight: 900;
+        }
+        .stack-items li .item-val {
+            font-family: monospace;
+            font-size: 16px;
+            color: #9ca3af;
+            font-weight: 700;
+            text-decoration: line-through;
+            white-space: nowrap;
+        }
+        /* Discount pricing block */
+        .pricing-block {
+            margin: 24px 0 18px;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 2px solid #d1fae5;
+        }
+        .value-row {
+            background: #f9fafb;
+            padding: 12px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .value-row-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .value-row-amount {
+            font-size: 18px;
+            font-weight: 800;
+            color: #374151;
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+        .discount-row {
+            background: #ecfdf5;
+            padding: 12px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #d1fae5;
+        }
+        .discount-code-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #16a34a;
+            color: white;
+            font-size: 12px;
+            font-weight: 800;
+            padding: 4px 11px;
+            border-radius: 6px;
+            letter-spacing: 1px;
+            font-family: monospace;
+        }
+        .discount-code-badge::before { content: "🏷️"; }
+        .discount-savings {
+            font-size: 15px;
+            font-weight: 800;
+            color: #16a34a;
+        }
+        .final-price-row {
+            background: #1a2b1c;
+            padding: 18px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .final-price-label {
+            font-size: 14px;
+            font-weight: 800;
+            color: rgba(255,255,255,0.75);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: left;
+        }
+        .final-price-label span {
+            display: block;
+            font-size: 10px;
+            font-weight: 600;
+            color: #f59e0b;
+            letter-spacing: 0.5px;
+            margin-top: 3px;
+        }
+        .final-price-amount {
+            font-family: 'Sora', sans-serif;
+            font-size: 42px;
+            font-weight: 900;
+            color: white;
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+        .final-price-amount sup {
+            font-size: 22px;
+            vertical-align: super;
+            font-weight: 700;
+        }
+        /* Main buy button */
+        .btn-buy {
+            display: inline-block;
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white;
+            font-family: 'Sora', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            padding: 15px 44px;
+            border-radius: 60px;
+            text-decoration: none;
+            margin: 14px 0 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 8px 20px rgba(234, 88, 12, 0.3);
+            letter-spacing: -0.2px;
+        }
+        .btn-buy:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 28px rgba(234, 88, 12, 0.45);
+        }
+        .price-note {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 10px;
+        }
+        /* Mid-page CTA strip (compact repeat) */
+        .cta-strip {
+            background: #111827;
+            border-radius: 28px;
+            padding: 32px 24px;
+            text-align: center;
+            margin: 32px 0;
+        }
+        .cta-strip h3 {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 10px;
+            letter-spacing: -0.02em;
+        }
+        .cta-strip p {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 18px;
+            font-weight: 500;
+        }
+        .cta-strip .btn-buy { font-size: 18px; padding: 14px 38px; }
+        .cta-strip .strip-note {
+            font-size: 12px;
+            color: rgba(255,255,255,0.45);
+            margin-top: 12px;
+        }
+        @media (max-width: 550px) {
+            .stack-items li { font-size: 14px; }
+            .stack-items li .item-val { font-size: 14px; }
+            .final-price-amount { font-size: 34px; }
+            .btn-buy { font-size: 17px; padding: 13px 28px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Meta Pixel & Hotmart (keep pixels) -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '878451855254470');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=878451855254470&ev=PageView&noscript=1"
+/></noscript>
+<script id="hotmart_launcher_script">
+    (function(l,a,u,n,c,h,e,r){
+        l['HotmartLauncherObject']=c;
+        l[c]=l[c]||function(){
+            (l[c].q=l[c].q||[]).push(arguments)
+        };
+        l[c].l=1*new Date();
+        h=a.createElement(u);
+        e=a.getElementsByTagName(u)[0];
+        h.async=1;
+        h.src=n;
+        e.parentNode.insertBefore(h,e)
+    })(window,document,'script','//launcher.hotmart.com/launcher.js','hot');
+    hot('account','3a3058a6-7369-3d97-a1a0-ba9baed71541');
+</script>
+
+<!-- RED URGENCY BAR with original personalized message -->
+<div class="sticky-value-bar" id="urgencyTopBar">
+    <span>⚠️ Here's The Quick Video Sean Mentioned</span>
+</div>
+
+<!-- DIRECT VSL PAGE (vturb player - pure white background, headline above video now) -->
+<div id="vslMasterWrapper">
+    <div class="vsl-main">
+        <!-- HEADLINE above video -->
+        <div class="money-block-headline">
+            this is why your brain is blocking money... <span>and how to fix it tonight</span>
+        </div>
+        
+        <!-- VIDEO directly under headline - NEW vturb player injected here (updated ID) -->
+        <div class="video-wrapper" id="videoWrapper">
+            <div id="videoPlaceholder" class="video-placeholder">🎧 Loading theta brainwave activation...</div>
+        </div>
+        
+        <!-- timer always visible -->
+        <div class="timer-container" id="timerContainer">
+            <div class="timer-box">
+                <div class="timer-label">🎬 VIDEO ENDS IN →</div>
+                <div class="timer-display" id="countdownDisplay">14:00</div>
+                <div class="urgency-note">⏱️ Full watch = subconscious breakthrough + special access</div>
+            </div>
+        </div>
+        
+        <!-- ALL CONTENT BELOW TIMER hidden initially, revealed after timer ends -->
+        <div id="postTimerContent" class="post-timer-content">
+            <!-- ===== CTA #1 — MAIN OFFER STACK ===== -->
+            <div id="ctaWrapper">
+                <div class="offer-stack">
+                    <div class="product-image-inline">
+                        <img src="https://hypnoticmeditations.b-cdn.net/images/moneyflowbundle.png" alt="Money Block Breakthrough Bundle">
+                    </div>
+                    <div class="stack-title">🔥 The Money Block Breakthrough Bundle 🔥</div>
+                    <ul class="stack-items">
+                        <li>
+                            <div class="item-left"><span class="stack-check">✓</span><span>🎧 7-Minute Money Block Audio (core)</span></div>
+                            <span class="item-val">$197</span>
+                        </li>
+                        <li>
+                            <div class="item-left"><span class="stack-check">✓</span><span>📘 Money Block Detection Blueprint</span></div>
+                            <span class="item-val">$97</span>
+                        </li>
+                        <li>
+                            <div class="item-left"><span class="stack-check">✓</span><span>⚡ Stop-Freezing Action Guide (send, post, price)</span></div>
+                            <span class="item-val">$67</span>
+                        </li>
+                        <li>
+                            <div class="item-left"><span class="stack-check">✓</span><span>🎧 Binaural Beats + Subconscious Frequency Bundle</span></div>
+                            <span class="item-val">$89</span>
+                        </li>
+                        <li>
+                            <div class="item-left"><span class="stack-check">✓</span><span>📈 Lifetime Updates &amp; Private Telegram Access</span></div>
+                            <span class="item-val">$49</span>
+                        </li>
+                    </ul>
+                    <div class="pricing-block">
+                        <div class="value-row">
+                            <span class="value-row-label">Total Retail Value</span>
+                            <span class="value-row-amount">$499.00</span>
+                        </div>
+                        <div class="discount-row">
+                            <span class="discount-code-badge">LIMITEDACCESS</span>
+                            <span class="discount-savings">− $472.00 off</span>
+                        </div>
+                        <div class="final-price-row">
+                            <div class="final-price-label">
+                                Your Price Today
+                                <span>⏰ Limited-time discount applied</span>
+                            </div>
+                            <div class="final-price-amount"><sup>$</sup>27</div>
+                        </div>
+                    </div>
+                    <a href="https://pay.hotmart.com/R105336047Y?checkoutMode=10" class="btn-buy" id="mainBuyBtn">🧠 Clear My Money Blocks → $27</a>
+                    <p class="price-note">✅ One-time payment · Lifetime access · 7-day refund guarantee</p>
+                    <div style="display:flex;justify-content:center;gap:20px;font-size:12px;color:#9ca3af;margin-top:10px;">
+                        <span>🔒 Secure checkout</span>
+                        <span>⚡ Instant download</span>
+                        <span>💳 No subscription</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CREATOR BIO — Sean Ali intro above proof images -->
+            <div class="creator-bio">
+                <div class="creator-bio-photo">
+                    <img src="https://hypnoticmeditations.b-cdn.net/images/proof/sean%20profile.png" alt="Sean Ali">
+                </div>
+                <div class="creator-bio-text">
+                    <div class="creator-byline">Created by Sean Ali</div>
+                    <h3>From empty fridge to 125,000+ students worldwide</h3>
+                    <p>Sean built the 7-minute Money Flow audio because he needed it first. He went from financial panic to teaching mindset systems to six-figure earners, sharing stages with Les Brown, and living across Panama, Europe &amp; North America — all by rewiring the stress pattern, not just the strategy.</p>
+                    <div class="creator-stats">
+                        <div class="creator-stat"><span>125K+</span>Students</div>
+                        <div class="creator-stat"><span>62+</span>Countries</div>
+                        <div class="creator-stat"><span>$100M</span>Masterminds</div>
+                        <div class="creator-stat"><span>4.9★</span>Avg Rating</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEAN ALI PROOF IMAGES (social proof) -->
+            <div class="proof-images-section">
+                <h2>🌎 Undeniable Proof — Sean Ali’s Real Life</h2>
+                <p style="color:#5d5548;font-size:.95rem;margin-bottom:8px;">Not a rented Lambo. Not stock photos. This is what happens when the internal code changes.</p>
+
+                <div class="proof-row-label">📍 The Life</div>
+                <div class="image-grid">
+                    <div class="proof-img-card">
+                        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/coconuts%20in%20panama.jpg" alt="Sean in Panama" loading="lazy">
+                        <p>🏝️ Panama reset</p>
+                    </div>
+                    <div class="proof-img-card">
+                        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/team%20celebrate.JPG" alt="Sean team outdoors" loading="lazy">
+                        <p>🏔️ Midweek. Mountains. No clock.</p>
+                    </div>
+                    <div class="proof-img-card">
+                        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/teaching%20around%20the%20world.jpg" alt="Sean teaching worldwide" loading="lazy">
+                        <p>🌍 Teaching around the world</p>
+                    </div>
+                    <div class="proof-img-card">
+                        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/with%20wifey.jpeg" alt="Sean with partner" loading="lazy">
+                        <p>❤️ Everything upgrades</p>
+                    </div>
+                </div>
+
+                <div class="proof-row-label" style="margin-top:28px;">🤝 The Rooms</div>
+                <div class="image-grid">
+                    <div class="proof-img-card">
+                        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/with%20100m%20earners.jpg" alt="Sean with 100M earners" loading="lazy">
+                        <p>💰 $100M mastermind</p>
+                    </div>
+                    <div class="proof-img-card">
+                        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/with%20jubril%20agoro.jpg" alt="Sean with Jubril Agoro" loading="lazy">
+                        <p>📲 With Jubril Agoro</p>
+                    </div>
+                    <div class="proof-img-card">
+                        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/with%20les%20brown.jpg" alt="Sean with Les Brown" loading="lazy">
+                        <p>🎤 With Les Brown</p>
+                    </div>
+                    <div class="proof-img-card">
+                        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/with%20russell%20brunson.jpg" alt="Sean with Russell Brunson" loading="lazy">
+                        <p>📈 With Russell Brunson</p>
+                    </div>
+                </div>
+
+                <div class="proof-row-label" style="margin-top:28px;">📊 Real Dashboards. Real Platform. Real Numbers.</div>
+                <div class="image-grid">
+                    <div class="proof-img-card screenshot-card">
+                        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/seanproof.png" alt="Sean Ali business proof" loading="lazy" style="aspect-ratio:unset;border-radius:16px;">
+                        <p>💳 Business proof</p>
+                    </div>
+                    <div class="proof-img-card screenshot-card">
+                        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/users1.png" alt="Users dashboard" loading="lazy" style="aspect-ratio:unset;border-radius:16px;">
+                        <p>👥 125,000+ users</p>
+                    </div>
+                    <div class="proof-img-card screenshot-card">
+                        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/users2.png" alt="Users dashboard 2" loading="lazy" style="aspect-ratio:unset;border-radius:16px;">
+                        <p>📦 Orders rolling in</p>
+                    </div>
+                </div>
+
+
+                <div class="proof-row-label" style="margin-top:28px;">📣 Real User Results — Unfiltered Screenshots</div>
+                <div class="image-grid" style="gap:20px;">
+                    <div class="proof-img-card screenshot-card">
+                        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/UserProof/b.png" alt="User proof 1" loading="lazy" style="aspect-ratio:unset;border-radius:16px;">
+                        <p>✅ Verified buyer</p>
+                    </div>
+                    <div class="proof-img-card screenshot-card">
+                        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/UserProof/proof-new1.png" alt="User proof 2" loading="lazy" style="aspect-ratio:unset;border-radius:16px;">
+                        <p>✅ Verified buyer</p>
+                    </div>
+                    <div class="proof-img-card screenshot-card">
+                        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/UserProof/proof-new2.png" alt="User proof 3" loading="lazy" style="aspect-ratio:unset;border-radius:16px;">
+                        <p>✅ Verified buyer</p>
+                    </div>
+                    <div class="proof-img-card screenshot-card">
+                        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/UserProof/user3.png" alt="User proof 4" loading="lazy" style="aspect-ratio:unset;border-radius:16px;">
+                        <p>✅ Verified buyer</p>
+                    </div>
+                    <div class="proof-img-card screenshot-card">
+                        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/UserProof/users1.png" alt="User proof 5" loading="lazy" style="aspect-ratio:unset;border-radius:16px;">
+                        <p>✅ Verified buyer</p>
+                    </div>
+                    <div class="proof-img-card screenshot-card">
+                        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/UserProof/users2.png" alt="User proof 6" loading="lazy" style="aspect-ratio:unset;border-radius:16px;">
+                        <p>✅ Verified buyer</p>
+                    </div>
+                    <div class="proof-img-card screenshot-card">
+                        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/UserProof/users5.png" alt="User proof 7" loading="lazy" style="aspect-ratio:unset;border-radius:16px;">
+                        <p>✅ Verified buyer</p>
+                    </div>
+                    <div class="proof-img-card screenshot-card">
+                        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/UserProof/users7.png" alt="User proof 8" loading="lazy" style="aspect-ratio:unset;border-radius:16px;">
+                        <p>✅ Verified buyer</p>
+                    </div>
+                    <div class="proof-img-card screenshot-card">
+                        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/UserProof/users8.png" alt="User proof 9" loading="lazy" style="aspect-ratio:unset;border-radius:16px;">
+                        <p>✅ Verified buyer</p>
+                    </div>
+                </div>
+
+                <p style="margin-top: 28px; font-weight: 700; color: #c2821a; font-size:1rem;">🔥 125,000+ people already rewired their money blocks. You’re next. 🔥</p>
+            </div>
+
+
+            <!-- ===== CTA #2 — after proof images ===== -->
+            <div class="cta-strip">
+                <h3>Ready to rewire your money mindset?</h3>
+                <p>7 minutes tonight. Instant access. 7-day money-back guarantee.</p>
+                <a href="https://pay.hotmart.com/R105336047Y?checkoutMode=10" class="btn-buy" id="midBuyBtn">🧠 Get Instant Access → $27</a>
+                <div class="strip-note">⏰ Limited-time price · No subscription · One-time payment</div>
+            </div>
+
+            <!-- FAQ SECTION -->
+            <div class="faq-section">
+                <h2>❓ Frequently Asked Questions</h2>
+                <div class="faq-item">
+                    <div class="faq-question"><span>How does the 7-minute theta audio work?</span><span class="faq-toggle">+</span></div>
+                    <div class="faq-answer">The audio targets theta brainwaves (4–7 Hz) — the state right before sleep. This bypasses conscious resistance and rewires subconscious hesitation patterns related to money in just 7 minutes daily.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question"><span>Do I need headphones?</span><span class="faq-toggle">+</span></div>
+                    <div class="faq-answer">Headphones are recommended for optimal theta entrainment, but you can also listen on speakers in a quiet environment.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question"><span>How often should I listen?</span><span class="faq-toggle">+</span></div>
+                    <div class="faq-answer">Once daily, ideally before sleep or during a quiet moment. Consistency rewires the money block faster.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question"><span>Is there a guarantee?</span><span class="faq-toggle">+</span></div>
+                    <div class="faq-answer">Yes — 60-day money-back guarantee. If you don’t feel a shift in your money mindset, we’ll refund every cent.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question"><span>Can I access it on mobile?</span><span class="faq-toggle">+</span></div>
+                    <div class="faq-answer">Absolutely. Lifetime access via any device — phone, tablet, or computer.</div>
+                </div>
+            </div>
+
+            <!-- ===== CTA #3 — final close ===== -->
+            <div class="cta-strip" style="margin-bottom:0;">
+                <h3>Your money hesitation ends tonight.</h3>
+                <p>Press play. 7 minutes. Then send it, post it, price it — without overthinking or freezing.</p>
+                <a href="https://pay.hotmart.com/R105336047Y?checkoutMode=10" class="btn-buy" id="finalBuyBtn">🧠 Clear Money Blocks Now → $27</a>
+                <div class="strip-note">⏱️ 7-day money-back guarantee · Instant access · No subscription</div>
+            </div>
+
+            <div class="simple-footer">
+                <p>© MoneyFlow • 7-Minute Theta Audio • Results vary. For mindset & educational purposes.</p>
+            </div>
+        </div> <!-- end postTimerContent -->
+    </div>
+</div>
+
+<!-- EXIT INTENT POPUP (pure white) -->
+<div id="exitPopupOverlay">
+    <div id="exitPopupBox">
+        <span class="ep-icon">🎧</span>
+        <h3 id="exitPopupHeading">Wait — you haven't heard the<br><span>#1 Money-Blocking Audio</span> yet.</h3>
+        <p id="exitPopupBody">Watch the video to the end. That's where Sean reveals the exact audio that clears the hesitation pattern most people carry their whole life.</p>
+        <button class="ep-cta" onclick="document.getElementById('exitPopupOverlay').classList.remove('show'); window.scrollTo({top:0,behavior:'smooth'});">
+            🔁 Take Me Back — I'll Watch To The End
+        </button>
+        <span class="ep-close" onclick="document.getElementById('exitPopupOverlay').classList.remove('show');">No thanks, I'll skip the breakthrough</span>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // Personalization from URL param 'name'
+        const _urlName = (function() {
+            try {
+                const p = new URLSearchParams(window.location.search);
+                const raw = p.get('name') || '';
+                return raw.trim().split(' ')[0].replace(/[^a-zA-Z'-]/g, '').substring(0, 50);
+            } catch(e) { return ''; }
+        })();
+
+        function _applyName() {
+            if (!_urlName) return;
+            const bar = document.getElementById('urgencyTopBar');
+            if (bar) {
+                bar.innerHTML = `<span>👋 Hey ${_urlName} — Here's The Quick Video Sean Mentioned For You</span>`;
+            }
+            const popHead = document.getElementById('exitPopupHeading');
+            if (popHead) {
+                popHead.innerHTML = _urlName + ', wait — you haven\'t heard the<br><span>#1 Money-Blocking Audio</span> yet.';
+            }
+            const popBody = document.getElementById('exitPopupBody');
+            if (popBody) {
+                popBody.textContent = 'Watch the video to the end, ' + _urlName + '. That\'s where Sean reveals the exact audio that clears the hesitation pattern most people carry their whole life.';
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', _applyName);
+        } else {
+            _applyName();
+        }
+
+        // NEW vturb Player Integration (UPDATED with new player ID and script source)
+        function loadVturbPlayer() {
+            const placeholder = document.getElementById('videoPlaceholder');
+            if (!placeholder) return;
+            
+            // Create new vturb-smartplayer element with UPDATED ID (replacement)
+            const vturbDiv = document.createElement('vturb-smartplayer');
+            vturbDiv.setAttribute('id', 'vid-69f51fa252f93c09b7d0d149');   // NEW PLAYER ID
+            vturbDiv.style.display = 'block';
+            vturbDiv.style.margin = '0 auto';
+            vturbDiv.style.width = '100%';
+            vturbDiv.style.maxWidth = '400px';
+            
+            // Replace placeholder with the new player element
+            const parent = placeholder.parentNode;
+            if (parent) parent.replaceChild(vturbDiv, placeholder);
+            
+            // Load the corresponding player script (UPDATED script URL)
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = "https://scripts.converteai.net/06805447-0fe0-4045-89f5-ea45443a5071/players/69f51fa252f93c09b7d0d149/v4/player.js";
+            script.async = true;
+            document.head.appendChild(script);
+        }
+        
+        // Timer: 14 minutes (840 seconds) then reveal content
+        let timerInterval = null;
+        let timeLeft = 840;
+        const timerDisplay = document.getElementById('countdownDisplay');
+        const timerContainer = document.getElementById('timerContainer');
+        const postTimerWrapper = document.getElementById('postTimerContent');
+        
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        function updateTimerUI() {
+            if (timerDisplay) timerDisplay.innerText = formatTime(timeLeft);
+        }
+        
+        function finishTimerAndShowCTA() {
+            if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+            
+            if (timerContainer) {
+                timerContainer.style.transition = 'opacity 0.3s ease';
+                timerContainer.style.opacity = '0';
+                setTimeout(() => { if (timerContainer) timerContainer.style.display = 'none'; }, 300);
+            }
+            
+            if (postTimerWrapper) {
+                postTimerWrapper.classList.add('visible');
+                postTimerWrapper.style.display = 'block';
+                setTimeout(() => {
+                    const ctaBtn = document.querySelector('.cta-button-premium');
+                    if (ctaBtn) {
+                        ctaBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    } else if (postTimerWrapper) {
+                        postTimerWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 200);
+            }
+            
+            if (typeof fbq !== 'undefined') fbq('track', 'ViewContent', { content_name: 'MoneyFlow_Video_Complete_CTA_Unlocked_NewPlayer' });
+            if (typeof hot !== 'undefined') hot('event', 'video_completed');
+        }
+        
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            timeLeft = 840;
+            updateTimerUI();
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 1) {
+                    timeLeft = 0;
+                    updateTimerUI();
+                    finishTimerAndShowCTA();
+                    if (timerInterval) clearInterval(timerInterval);
+                } else {
+                    timeLeft--;
+                    updateTimerUI();
+                }
+            }, 1000);
+        }
+        
+        function initFaqAccordion() {
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                const questionDiv = item.querySelector('.faq-question');
+                if (questionDiv && !questionDiv.hasAttribute('data-faq-bound')) {
+                    questionDiv.setAttribute('data-faq-bound', 'true');
+                    questionDiv.addEventListener('click', () => { item.classList.toggle('active'); });
+                }
+            });
+        }
+        
+        function onPageReady() {
+            loadVturbPlayer();    // NEW vturb player loads (updated ID/script)
+            startTimer();
+            initFaqAccordion();
+            if (postTimerWrapper) {
+                postTimerWrapper.style.display = 'none';
+                postTimerWrapper.classList.remove('visible');
+            }
+        }
+        
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', onPageReady);
+        else onPageReady();
+        
+        window.addEventListener('beforeunload', () => { if (timerInterval) clearInterval(timerInterval); });
+        if (typeof fbq !== 'undefined') fbq('track', 'PageView', { content_name: 'MoneyFlow_DirectVSL_HighFOMO_NewPlayer' });
+        
+        let exitShown = false;
+        document.addEventListener('mouseleave', function(e) {
+            if (e.clientY <= 0 && !exitShown) {
+                exitShown = true;
+                document.getElementById('exitPopupOverlay').classList.add('show');
+            }
+        });
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden && !exitShown) {
+                exitShown = true;
+                document.getElementById('exitPopupOverlay').classList.add('show');
+            }
+        });
+        const exitOverlay = document.getElementById('exitPopupOverlay');
+        if (exitOverlay) {
+            exitOverlay.addEventListener('click', function(e) {
+                if (e.target === this) this.classList.remove('show');
+            });
+        }
+    })();
+</script>
+<!-- This site is converting visitors into subscribers and customers with https://respond.io -->
+<script id="respondio__growth_tool" src="https://cdn.respond.io/widget/widget.js?wId=7f9488bf-e487-4928-9b01-6edb55b2ad22"></script>
+</body>
+</html>
