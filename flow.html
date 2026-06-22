@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Money Flow | 7-Minute Theta Audio • Sean Ali</title>
-    <meta name="description" content="7-minute theta audio that rewires the hesitation pattern. Watch the full video, then get instant access for $27.">
+    <title>This Is Why Your Brain Is Blocking Money... And How To Fix It Tonight | Sean Ali</title>
+    <meta name="description" content="Discover the hidden pattern keeping your brain in money-block mode — and the 7-minute theta audio that clears it tonight. One-time $27. Instant access.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
@@ -113,56 +113,44 @@
             color: #5a626e;
         }
         
-        .timer-container {
-            text-align: center;
-            margin: 8px 0 20px;
-        }
-        .timer-box {
-            background: #ffffff;
-            border: 2px solid #eeddb2;
-            display: inline-block;
-            padding: 10px 24px;
-            border-radius: 60px;
-            box-shadow: 0 8px 18px -6px rgba(0,0,0,0.05);
-        }
-        .timer-label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            font-weight: 700;
-            color: #5f5b54;
-            letter-spacing: 1px;
-            margin-bottom: 6px;
-        }
-        .timer-display {
-            font-family: 'Sora', monospace;
-            font-size: 2.3rem;
-            font-weight: 800;
-            color: #c2821a;
-            background: #ffffff;
-            padding: 4px 20px;
-            border-radius: 50px;
-            letter-spacing: 3px;
-            border: 1px solid #f3e2c2;
-        }
-        .urgency-note {
-            font-size: 0.75rem;
-            color: #cb5a3f;
-            font-weight: 800;
-            margin-top: 8px;
-            background: #ffffff;
-            border: 1px solid #fadbcb;
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 60px;
-        }
         
-        /* Hidden wrapper for content below timer (CTA, proofs, FAQ, footer) */
+        /* CTA content hidden until 1-min timer fires */
         .post-timer-content {
             display: none;
             animation: fadeInUp 0.6s ease-out;
         }
         .post-timer-content.visible {
             display: block;
+        }
+
+        /* 1-min countdown bar below video */
+        .mini-timer-bar {
+            text-align: center;
+            margin: 12px 0 20px;
+        }
+        .mini-timer-inner {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #fff8ee;
+            border: 1.5px solid #eeddb2;
+            padding: 9px 22px;
+            border-radius: 60px;
+            font-family: 'Sora', sans-serif;
+        }
+        .mini-timer-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #7a6a54;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+        .mini-timer-digits {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #c2821a;
+            letter-spacing: 2px;
+            min-width: 42px;
         }
         
         @keyframes fadeInUp {
@@ -462,7 +450,6 @@
             .cta-button-lite { font-size: 0.9rem; padding: 11px 18px; }
             .cta-button-premium { font-size: 1rem; padding: 13px 20px; }
             .proof-img-card { max-width: 140px; }
-            .timer-display { font-size: 1.8rem; padding: 2px 12px; }
             .sticky-value-bar { font-size: 12px; padding: 12px 12px; }
             .money-block-headline { font-size: 1.45rem; margin: 0 0 0.85rem 0; line-height: 1.25; }
         }
@@ -806,32 +793,27 @@ src="https://www.facebook.com/tr?id=878451855254470&ev=PageView&noscript=1"
 
 <!-- RED URGENCY BAR with original personalized message -->
 <div class="sticky-value-bar" id="urgencyTopBar">
-    <span>⚠️ Here's The Quick Video Sean Mentioned</span>
+    <span>Feel Like Something Is Blocking You? Watch This 👇</span>
 </div>
 
 <!-- DIRECT VSL PAGE (vturb player - pure white background, headline above video now) -->
 <div id="vslMasterWrapper">
     <div class="vsl-main">
-        <!-- HEADLINE above video -->
-        <div class="money-block-headline">
-            this is why your brain is blocking money... <span>and how to fix it tonight</span>
-        </div>
-        
-        <!-- VIDEO directly under headline - NEW vturb player injected here (updated ID) -->
+        <!-- VIDEO - NEW vturb player injected here (updated ID) -->
         <div class="video-wrapper" id="videoWrapper">
             <div id="videoPlaceholder" class="video-placeholder">🎧 Loading theta brainwave activation...</div>
         </div>
         
-        <!-- timer always visible -->
-        <div class="timer-container" id="timerContainer">
-            <div class="timer-box">
-                <div class="timer-label">🎬 VIDEO ENDS IN →</div>
-                <div class="timer-display" id="countdownDisplay">14:00</div>
-                <div class="urgency-note">⏱️ Full watch = subconscious breakthrough + special access</div>
+        
+        <!-- 1-MIN COUNTDOWN -->
+        <div class="mini-timer-bar" id="miniTimerBar">
+            <div class="mini-timer-inner">
+                <span class="mini-timer-label">⏱️ Offer unlocks in</span>
+                <span class="mini-timer-digits" id="miniTimerDigits">1:00</span>
             </div>
         </div>
-        
-        <!-- ALL CONTENT BELOW TIMER hidden initially, revealed after timer ends -->
+
+        <!-- CONTENT below video — revealed after 60 seconds -->
         <div id="postTimerContent" class="post-timer-content">
             <!-- ===== CTA #1 — MAIN OFFER STACK ===== -->
             <div id="ctaWrapper">
@@ -1038,7 +1020,7 @@ src="https://www.facebook.com/tr?id=878451855254470&ev=PageView&noscript=1"
                 </div>
                 <div class="faq-item">
                     <div class="faq-question"><span>Is there a guarantee?</span><span class="faq-toggle">+</span></div>
-                    <div class="faq-answer">Yes — 60-day money-back guarantee. If you don’t feel a shift in your money mindset, we’ll refund every cent.</div>
+                    <div class="faq-answer">Yes — 7-day money-back guarantee. If you don’t feel a shift in your money mindset within 7 days, we’ll refund every cent. No questions asked.</div>
                 </div>
                 <div class="faq-item">
                     <div class="faq-question"><span>Can I access it on mobile?</span><span class="faq-toggle">+</span></div>
@@ -1107,91 +1089,25 @@ src="https://www.facebook.com/tr?id=878451855254470&ev=PageView&noscript=1"
             _applyName();
         }
 
-        // NEW vturb Player Integration (UPDATED with new player ID and script source)
+        // vturb Player
         function loadVturbPlayer() {
             const placeholder = document.getElementById('videoPlaceholder');
             if (!placeholder) return;
-            
-            // Create new vturb-smartplayer element with UPDATED ID (replacement)
             const vturbDiv = document.createElement('vturb-smartplayer');
-            vturbDiv.setAttribute('id', 'vid-69f51fa252f93c09b7d0d149');   // NEW PLAYER ID
+            vturbDiv.setAttribute('id', 'vid-69f51fa252f93c09b7d0d149');
             vturbDiv.style.display = 'block';
             vturbDiv.style.margin = '0 auto';
             vturbDiv.style.width = '100%';
             vturbDiv.style.maxWidth = '400px';
-            
-            // Replace placeholder with the new player element
             const parent = placeholder.parentNode;
             if (parent) parent.replaceChild(vturbDiv, placeholder);
-            
-            // Load the corresponding player script (UPDATED script URL)
             const script = document.createElement('script');
             script.type = 'text/javascript';
             script.src = "https://scripts.converteai.net/06805447-0fe0-4045-89f5-ea45443a5071/players/69f51fa252f93c09b7d0d149/v4/player.js";
             script.async = true;
             document.head.appendChild(script);
         }
-        
-        // Timer: 14 minutes (840 seconds) then reveal content
-        let timerInterval = null;
-        let timeLeft = 840;
-        const timerDisplay = document.getElementById('countdownDisplay');
-        const timerContainer = document.getElementById('timerContainer');
-        const postTimerWrapper = document.getElementById('postTimerContent');
-        
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        }
-        
-        function updateTimerUI() {
-            if (timerDisplay) timerDisplay.innerText = formatTime(timeLeft);
-        }
-        
-        function finishTimerAndShowCTA() {
-            if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-            
-            if (timerContainer) {
-                timerContainer.style.transition = 'opacity 0.3s ease';
-                timerContainer.style.opacity = '0';
-                setTimeout(() => { if (timerContainer) timerContainer.style.display = 'none'; }, 300);
-            }
-            
-            if (postTimerWrapper) {
-                postTimerWrapper.classList.add('visible');
-                postTimerWrapper.style.display = 'block';
-                setTimeout(() => {
-                    const ctaBtn = document.querySelector('.cta-button-premium');
-                    if (ctaBtn) {
-                        ctaBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    } else if (postTimerWrapper) {
-                        postTimerWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                }, 200);
-            }
-            
-            if (typeof fbq !== 'undefined') fbq('track', 'ViewContent', { content_name: 'MoneyFlow_Video_Complete_CTA_Unlocked_NewPlayer' });
-            if (typeof hot !== 'undefined') hot('event', 'video_completed');
-        }
-        
-        function startTimer() {
-            if (timerInterval) clearInterval(timerInterval);
-            timeLeft = 840;
-            updateTimerUI();
-            timerInterval = setInterval(() => {
-                if (timeLeft <= 1) {
-                    timeLeft = 0;
-                    updateTimerUI();
-                    finishTimerAndShowCTA();
-                    if (timerInterval) clearInterval(timerInterval);
-                } else {
-                    timeLeft--;
-                    updateTimerUI();
-                }
-            }, 1000);
-        }
-        
+
         function initFaqAccordion() {
             const faqItems = document.querySelectorAll('.faq-item');
             faqItems.forEach(item => {
@@ -1202,23 +1118,43 @@ src="https://www.facebook.com/tr?id=878451855254470&ev=PageView&noscript=1"
                 }
             });
         }
-        
-        function onPageReady() {
-            loadVturbPlayer();    // NEW vturb player loads (updated ID/script)
-            startTimer();
-            initFaqAccordion();
-            if (postTimerWrapper) {
-                postTimerWrapper.style.display = 'none';
-                postTimerWrapper.classList.remove('visible');
+
+        function startMiniTimer() {
+            let timeLeft = 60;
+            const digits = document.getElementById('miniTimerDigits');
+            const bar = document.getElementById('miniTimerBar');
+            const content = document.getElementById('postTimerContent');
+
+            function tick() {
+                if (!digits) return;
+                const m = Math.floor(timeLeft / 60);
+                const s = timeLeft % 60;
+                digits.textContent = m + ':' + s.toString().padStart(2, '0');
+
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    if (bar) { bar.style.transition = 'opacity 0.3s'; bar.style.opacity = '0'; setTimeout(() => { bar.style.display = 'none'; }, 300); }
+                    if (content) { content.classList.add('visible'); content.style.display = 'block'; }
+                    if (typeof fbq !== 'undefined') fbq('track', 'ViewContent', { content_name: 'MoneyFlow_Timer_Unlocked' });
+                } else {
+                    timeLeft--;
+                }
             }
+            tick();
+            const interval = setInterval(tick, 1000);
         }
-        
+
+        function onPageReady() {
+            loadVturbPlayer();
+            initFaqAccordion();
+            startMiniTimer();
+        }
+
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', onPageReady);
         else onPageReady();
-        
-        window.addEventListener('beforeunload', () => { if (timerInterval) clearInterval(timerInterval); });
-        if (typeof fbq !== 'undefined') fbq('track', 'PageView', { content_name: 'MoneyFlow_DirectVSL_HighFOMO_NewPlayer' });
-        
+
+        if (typeof fbq !== 'undefined') fbq('track', 'PageView', { content_name: 'MoneyFlow_DirectVSL_Social' });
+
         let exitShown = false;
         document.addEventListener('mouseleave', function(e) {
             if (e.clientY <= 0 && !exitShown) {
