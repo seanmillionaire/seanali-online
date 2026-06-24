@@ -384,6 +384,8 @@
   const redirectHidden = document.getElementById('redirectHidden');
   const countdownEl = document.getElementById('freeCountdown');
   const countdownKey = 'moneywaveFreeCountdownEndsAt';
+  const moneyFlowBuyUrl = 'https://buy.hypnoticmeditations.ai/l/hzxybu?wanted=true';
+  let countdownRedirected = false;
 
   function getCountdownEndTime() {
     const now = Date.now();
@@ -410,6 +412,10 @@
     countdownEl.textContent = remaining > 0
       ? String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0')
       : '00:00';
+    if (remaining <= 0 && !countdownRedirected) {
+      countdownRedirected = true;
+      window.location.href = moneyFlowBuyUrl;
+    }
   }
 
   updateCountdown();
