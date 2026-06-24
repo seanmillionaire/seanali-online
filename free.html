@@ -92,6 +92,11 @@
       background: #7C3AED;
       opacity: 0.5;
     }
+    .countdown-time {
+      color: #E11D48;
+      font-weight: 900;
+      white-space: nowrap;
+    }
 
     /* HEADLINE - bold, large, distinct */
     h1 {
@@ -301,7 +306,7 @@
 <div class="container">
   
   <!-- PRE-HEADLINE (remains above main head) -->
-  <div class="pre-headline">Free MoneyWave Audio</div>
+  <div class="pre-headline">Regular $27 · Free Until Timer Hits 0 · <span class="countdown-time" id="freeCountdown">54:00</span></div>
 
   <!-- MAIN HEADING (MAIN HEAD) -->
   <h1>Remove Money Blocks And <em>Manifest Real Freedom</em></h1>
@@ -377,6 +382,38 @@
   const emailErr = document.querySelector('[data-err="email"]');
   const submitBtn = document.getElementById('submitBtn');
   const redirectHidden = document.getElementById('redirectHidden');
+  const countdownEl = document.getElementById('freeCountdown');
+  const countdownKey = 'moneywaveFreeCountdownEndsAt';
+
+  function getCountdownEndTime() {
+    const now = Date.now();
+    let savedEnd = 0;
+    try {
+      savedEnd = Number(localStorage.getItem(countdownKey));
+    } catch (error) {
+      savedEnd = 0;
+    }
+    if (savedEnd) return savedEnd;
+    const endTime = now + (54 * 60 * 1000);
+    try {
+      localStorage.setItem(countdownKey, String(endTime));
+    } catch (error) {}
+    return endTime;
+  }
+
+  function updateCountdown() {
+    if (!countdownEl) return;
+    const endTime = getCountdownEndTime();
+    const remaining = Math.max(0, endTime - Date.now());
+    const minutes = Math.floor(remaining / 60000);
+    const seconds = Math.floor((remaining % 60000) / 1000);
+    countdownEl.textContent = remaining > 0
+      ? String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0')
+      : '00:00';
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
 
   function setErr(input, errEl, msg) {
     if (msg) {
