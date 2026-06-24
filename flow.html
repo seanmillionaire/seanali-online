@@ -31,32 +31,6 @@
             letter-spacing: -0.02em;
         }
         
-        /* ===== RED URGENCY BAR (exact match from free.html) ===== */
-        .sticky-value-bar {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: #D92D20;
-            background: linear-gradient(95deg, #B91C1C 0%, #E11D2F 100%);
-            color: white;
-            padding: 14px 16px;
-            text-align: center;
-            font-size: 15px;
-            font-weight: 800;
-            letter-spacing: -0.2px;
-            text-transform: uppercase;
-            box-shadow: 0 4px 12px rgba(185, 28, 28, 0.3);
-            border-bottom: 1px solid rgba(255,255,255,0.25);
-            backdrop-filter: blur(2px);
-            font-family: 'Inter', system-ui, sans-serif;
-            animation: urgentPulse 1.2s ease-in-out 2;
-        }
-        @keyframes urgentPulse {
-            0% { opacity: 0.98; background: #B91C1C; }
-            50% { opacity: 1; background: #E11D2F; box-shadow: 0 4px 16px rgba(220,38,38,0.5); }
-            100% { opacity: 0.98; background: #B91C1C; }
-        }
-        
         /* main container — tighter top padding for "video first" feel, now with headline above video */
         .vsl-main {
             max-width: 880px;
@@ -450,7 +424,6 @@
             .cta-button-lite { font-size: 0.9rem; padding: 11px 18px; }
             .cta-button-premium { font-size: 1rem; padding: 13px 20px; }
             .proof-img-card { max-width: 140px; }
-            .sticky-value-bar { font-size: 12px; padding: 12px 12px; }
             .money-block-headline { font-size: 1.45rem; margin: 0 0 0.85rem 0; line-height: 1.25; }
         }
 
@@ -791,11 +764,6 @@ src="https://www.facebook.com/tr?id=878451855254470&ev=PageView&noscript=1"
     hot('account','3a3058a6-7369-3d97-a1a0-ba9baed71541');
 </script>
 
-<!-- RED URGENCY BAR with original personalized message -->
-<div class="sticky-value-bar" id="urgencyTopBar">
-    <span>Want To Manifest More Money? Remove Your Blocks 👇</span>
-</div>
-
 <!-- DIRECT VSL PAGE (vturb player - pure white background, headline above video now) -->
 <div id="vslMasterWrapper">
     <div class="vsl-main">
@@ -1069,10 +1037,6 @@ src="https://www.facebook.com/tr?id=878451855254470&ev=PageView&noscript=1"
 
         function _applyName() {
             if (!_urlName) return;
-            const bar = document.getElementById('urgencyTopBar');
-            if (bar) {
-                bar.innerHTML = `<span>👋 Hey ${_urlName} — Want To Manifest More Money? Remove Your Blocks 👇</span>`;
-            }
             const popHead = document.getElementById('exitPopupHeading');
             if (popHead) {
                 popHead.innerHTML = _urlName + ', wait — you haven\'t heard the<br><span>#1 Money-Blocking Audio</span> yet.';
