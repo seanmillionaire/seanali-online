@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>MoneyWave | Remove Money Blocks And Manifest More Freedom</title>
+  <title>MoneyWave | 7-Minute Audio To Remove Money Blocks</title>
   <meta name="description" content="Remove money blocks, calm money stress, and start rehearsing freedom with the free 7-minute MoneyWave audio. Instant access." />
   <link rel="icon" type="image/png" href="https://hypnoticmeditations.b-cdn.net/images/fav/headphones.png" />
   <link rel="apple-touch-icon" href="https://hypnoticmeditations.b-cdn.net/images/fav/headphones.png" />
@@ -309,7 +309,7 @@
   <div class="pre-headline">Regular $27 · Free Until Timer Hits 0 · <span class="countdown-time" id="freeCountdown">54:00</span></div>
 
   <!-- MAIN HEADING (MAIN HEAD) -->
-  <h1>Remove Money Blocks And <em>Manifest Real Freedom</em></h1>
+  <h1>Remove Money Blocks With A <em>7-Minute Audio Reset</em></h1>
 
   <!-- IMAGE DIRECTLY UNDER MAIN HEAD (no element in between) -->
   <div class="hero-image">
@@ -384,8 +384,6 @@
   const redirectHidden = document.getElementById('redirectHidden');
   const countdownEl = document.getElementById('freeCountdown');
   const countdownKey = 'moneywaveFreeCountdownEndsAt';
-  const moneyFlowBuyUrl = 'https://hypnoticmeditations.ai/pages/moneyflow-full';
-  let countdownRedirected = false;
 
   function getCountdownEndTime() {
     const now = Date.now();
@@ -412,10 +410,6 @@
     countdownEl.textContent = remaining > 0
       ? String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0')
       : '00:00';
-    if (remaining <= 0 && !countdownRedirected) {
-      countdownRedirected = true;
-      window.location.href = moneyFlowBuyUrl;
-    }
   }
 
   updateCountdown();
