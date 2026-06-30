@@ -2,7 +2,7 @@ function renderHyperDeck(data){
   if(!document.querySelector('link[href*="hyper-deck-master-overrides.css"]')){
     const link=document.createElement('link');
     link.rel='stylesheet';
-    link.href='/slideshows/manifestation/hyper-deck-master-overrides.css?v=1';
+    link.href='/slideshows/manifestation/hyper-deck-master-overrides.css?v=2';
     document.head.appendChild(link);
   }
 
@@ -43,10 +43,10 @@ function renderHyperDeck(data){
     if(typeof text!=='string')return text;
     return text
       .replace(/\bNeville\b(?!\s+Goddard)/g,'Neville Goddard')
-      .replace(/\bMurphy\b(?!\s+explains|\s+taught|\s+card|\s+method|\s+quote|\s+subconscious|\s+mind|\s+book|\s+framework|\s+Goddard)/g,'Joseph Murphy')
-      .replace(/\bHill\b(?!\s+explains|\s+taught|\s+card|\s+method|\s+quote|\s+Goddard)/g,'Napoleon Hill')
-      .replace(/\bWattles\b(?!\s+explains|\s+taught|\s+card|\s+method|\s+quote|\s+Goddard)/g,'Wallace Wattles')
-      .replace(/\bDispenza\b(?!\s+explains|\s+taught|\s+card|\s+method|\s+quote|\s+Goddard)/g,'Joe Dispenza');
+      .replace(/\bMurphy\b/g,'Joseph Murphy')
+      .replace(/\bHill\b/g,'Napoleon Hill')
+      .replace(/\bWattles\b/g,'Wallace Wattles')
+      .replace(/\bDispenza\b/g,'Joe Dispenza');
   }
 
   function initials(name){return name.split(' ').filter(Boolean).map(p=>p[0]).join('').slice(0,2).toUpperCase()}
@@ -56,19 +56,28 @@ function renderHyperDeck(data){
     return `<div class='avatar-fallback'>${initials(name)}</div>`;
   }
 
+  function bodyClass(s){
+    const copyCount=(s.copy||[]).length;
+    const extras=(s.grid?2:0)+(s.steps?2:0)+(s.teacher?1:0)+(s.callout?1:0)+(s.pill?1:0)+(s.cta?1:0);
+    const weight=copyCount+extras;
+    if(weight<=3)return 'short';
+    if(weight<=5)return 'medium';
+    return 'dense';
+  }
+
   function badge(i){return `<div class='topbar'><div class='badge'><span>${String(i+1).padStart(2,'0')}</span> / <span class='total'>${slides.length}</span></div><div class='mini-icon'>${slides[i].icon||'🔥'}</div></div>`}
 
   function renderSlide(s,i){
-    let html=badge(i);
-    html+=s.hero?`<h1>${fullNames(s.headline)}</h1>`:`<h2>${fullNames(s.headline)}</h2>`;
-    if(s.copy)html+=`<div class='copy'>${s.copy.map(x=>`<p>${fullNames(x)}</p>`).join('')}</div>`;
-    if(s.grid)html+=`<div class='grid'>${s.grid.map(x=>`<div class='tile ${x[0]}'>${fullNames(x[1])}</div>`).join('')}</div>`;
-    if(s.teacher)html+=`<div class='teacher-card'>${authorVisual(s.teacher.name)}<div><div class='teacher-label'>${s.teacher.name} ✦</div><div class='teacher-quote'>${fullNames(s.teacher.quote)}</div></div></div>`;
-    if(s.callout)html+=`<div class='callout'><p>${fullNames(s.callout)}</p></div>`;
-    if(s.steps)html+=`<div class='steps'>${s.steps.map((x,idx)=>`<div class='step'><div class='num'>${idx+1}</div><div>${fullNames(x)}</div></div>`).join('')}</div>`;
-    if(s.pill)html+=`<div class='icon-lines'><div class='icon-line'><div class='icon-bubble'>✦</div><span>${fullNames(s.pill)}</span></div></div>`;
-    if(s.cta)html+=`<div class='cta'>${fullNames(s.cta)}</div>`;
-    return `<section class='slide'>${html}</section>`;
+    let body='';
+    body+=s.hero?`<h1>${fullNames(s.headline)}</h1>`:`<h2>${fullNames(s.headline)}</h2>`;
+    if(s.copy)body+=`<div class='copy'>${s.copy.map(x=>`<p>${fullNames(x)}</p>`).join('')}</div>`;
+    if(s.grid)body+=`<div class='grid'>${s.grid.map(x=>`<div class='tile ${x[0]}'>${fullNames(x[1])}</div>`).join('')}</div>`;
+    if(s.teacher)body+=`<div class='teacher-card'>${authorVisual(s.teacher.name)}<div><div class='teacher-label'>${s.teacher.name} ✦</div><div class='teacher-quote'>${fullNames(s.teacher.quote)}</div></div></div>`;
+    if(s.callout)body+=`<div class='callout'><p>${fullNames(s.callout)}</p></div>`;
+    if(s.steps)body+=`<div class='steps'>${s.steps.map((x,idx)=>`<div class='step'><div class='num'>${idx+1}</div><div>${fullNames(x)}</div></div>`).join('')}</div>`;
+    if(s.pill)body+=`<div class='icon-lines'><div class='icon-line'><div class='icon-bubble'>✦</div><span>${fullNames(s.pill)}</span></div></div>`;
+    if(s.cta)body+=`<div class='cta'>${fullNames(s.cta)}</div>`;
+    return `<section class='slide'>${badge(i)}<div class='slide-body ${bodyClass(s)}'>${body}</div></section>`;
   }
 
   function showSlide(i){
