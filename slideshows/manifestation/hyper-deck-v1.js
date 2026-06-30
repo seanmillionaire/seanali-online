@@ -1,1 +1,86 @@
-function renderHyperDeck(data){const slides=data.slides||[];const root=document.getElementById('slides');const progress=document.getElementById('progress');let current=0;function badge(i){return `<div class="topbar"><div class="badge"><span>${String(i+1).padStart(2,'0')}</span> / <span class="total">${slides.length}</span></div><div class="heart">♡</div></div>`}function renderSlide(s,i){let html=badge(i);html+=s.hero?`<h1>${s.headline}</h1>`:`<h2>${s.headline}</h2>`;if(s.copy)html+=`<div class="copy">${s.copy.map(x=>`<p>${x}</p>`).join('')}</div>`;if(s.grid)html+=`<div class="grid">${s.grid.map(x=>`<div class="tile ${x[0]}">${x[1]}</div>`).join('')}</div>`;if(s.teacher)html+=`<div class="teacher-card"><div class="avatar"></div><div><div class="teacher-label">${s.teacher.name} ✦</div><div class="teacher-quote">${s.teacher.quote}</div></div><div class="quote-mark">”</div></div>`;if(s.callout)html+=`<div class="callout"><p>${s.callout}</p></div>`;if(s.steps)html+=`<div class="steps">${s.steps.map((x,idx)=>`<div class="step"><div class="num">${idx+1}</div><div>${x}</div></div>`).join('')}</div>`;if(s.pill)html+=`<div class="insight-pill"><div class="spark">✦</div><span>${s.pill}</span></div>`;if(s.cta)html+=`<div class="cta">${s.cta}</div>`;return `<section class="slide">${html}</section>`}function showSlide(i){current=(i+slides.length)%slides.length;document.querySelectorAll('.slide').forEach((s,idx)=>{const on=idx===current;s.classList.toggle('active',on);s.style.display=on?'flex':'none';s.style.visibility=on?'visible':'hidden';s.style.opacity=on?'1':'0'});document.querySelectorAll('.dot').forEach((d,idx)=>d.classList.toggle('on',idx<=current))}root.innerHTML=slides.map(renderSlide).join('');progress.innerHTML=slides.map(()=>`<div class="dot"></div>`).join('');window.nextSlide=()=>showSlide(current+1);window.prevSlide=()=>showSlide(current-1);document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')window.nextSlide();if(e.key==='ArrowLeft')window.prevSlide()});showSlide(0)}
+function renderHyperDeck(data){
+  if(!document.querySelector('link[href*="hyper-deck-master-overrides.css"]')){
+    const link=document.createElement('link');
+    link.rel='stylesheet';
+    link.href='/slideshows/manifestation/hyper-deck-master-overrides.css?v=1';
+    document.head.appendChild(link);
+  }
+
+  const AUTHOR_PHOTOS={
+    'Neville Goddard':'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Neville_Goddard.jpg/250px-Neville_Goddard.jpg',
+    'Napoleon Hill':'https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Napoleon_Hill_headshot.jpg/250px-Napoleon_Hill_headshot.jpg',
+    'Wallace Wattles':'https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/The_Science_of_Getting_Rich_-_Frontispiece.jpg/250px-The_Science_of_Getting_Rich_-_Frontispiece.jpg'
+  };
+
+  const inputSlides=data.slides||[];
+  const offerSlide={
+    icon:'🔥',
+    headline:`Subscribe for huge<br>real-world value.`,
+    copy:[
+      `📘 Real teachers. Real mechanisms.`,
+      `🧠 Simple breakdowns you can actually use.`,
+      `⚡ Every video gives you a sharper way to think, move, and create results.`
+    ],
+    callout:`No fluff. No fantasy. Real-world manifestation lessons for money, confidence, business, and life.`,
+    cta:`Subscribe now — get real value every video.`
+  };
+
+  const slides=inputSlides.map((s,i)=>i===inputSlides.length-1?offerSlide:s);
+  const root=document.getElementById('slides');
+  const progress=document.getElementById('progress');
+  let current=0;
+
+  const deck=document.querySelector('.deck');
+  if(deck&&!deck.querySelector('.creator-footer')){
+    const footer=document.createElement('div');
+    footer.className='creator-footer';
+    footer.innerHTML=`<span>Created by <strong>Sean Ali</strong></span><a href='https://seanali.online' target='_blank' rel='noopener'>SeanAli.online</a><span>•</span><a href='https://hypnoticmeditations.ai' target='_blank' rel='noopener'>Hypnotic Meditations</a><span>•</span><a href='https://manifestationgenie.app' target='_blank' rel='noopener'>Manifestation Genie</a>`;
+    const controls=deck.querySelector('.controls');
+    deck.insertBefore(footer,controls||null);
+  }
+
+  function fullNames(text){
+    if(typeof text!=='string')return text;
+    return text
+      .replace(/\bNeville\b(?!\s+Goddard)/g,'Neville Goddard')
+      .replace(/\bMurphy\b(?!\s+explains|\s+taught|\s+card|\s+method|\s+quote|\s+subconscious|\s+mind|\s+book|\s+framework|\s+Goddard)/g,'Joseph Murphy')
+      .replace(/\bHill\b(?!\s+explains|\s+taught|\s+card|\s+method|\s+quote|\s+Goddard)/g,'Napoleon Hill')
+      .replace(/\bWattles\b(?!\s+explains|\s+taught|\s+card|\s+method|\s+quote|\s+Goddard)/g,'Wallace Wattles')
+      .replace(/\bDispenza\b(?!\s+explains|\s+taught|\s+card|\s+method|\s+quote|\s+Goddard)/g,'Joe Dispenza');
+  }
+
+  function initials(name){return name.split(' ').filter(Boolean).map(p=>p[0]).join('').slice(0,2).toUpperCase()}
+  function authorVisual(name){
+    const src=AUTHOR_PHOTOS[name];
+    if(src)return `<div class='author-photo-wrap'><img class='author-photo' src='${src}' alt='${name} portrait' loading='lazy' referrerpolicy='no-referrer' onerror='this.parentElement.outerHTML="<div class=\'avatar-fallback\'>${initials(name)}</div>"'></div>`;
+    return `<div class='avatar-fallback'>${initials(name)}</div>`;
+  }
+
+  function badge(i){return `<div class='topbar'><div class='badge'><span>${String(i+1).padStart(2,'0')}</span> / <span class='total'>${slides.length}</span></div><div class='mini-icon'>${slides[i].icon||'🔥'}</div></div>`}
+
+  function renderSlide(s,i){
+    let html=badge(i);
+    html+=s.hero?`<h1>${fullNames(s.headline)}</h1>`:`<h2>${fullNames(s.headline)}</h2>`;
+    if(s.copy)html+=`<div class='copy'>${s.copy.map(x=>`<p>${fullNames(x)}</p>`).join('')}</div>`;
+    if(s.grid)html+=`<div class='grid'>${s.grid.map(x=>`<div class='tile ${x[0]}'>${fullNames(x[1])}</div>`).join('')}</div>`;
+    if(s.teacher)html+=`<div class='teacher-card'>${authorVisual(s.teacher.name)}<div><div class='teacher-label'>${s.teacher.name} ✦</div><div class='teacher-quote'>${fullNames(s.teacher.quote)}</div></div></div>`;
+    if(s.callout)html+=`<div class='callout'><p>${fullNames(s.callout)}</p></div>`;
+    if(s.steps)html+=`<div class='steps'>${s.steps.map((x,idx)=>`<div class='step'><div class='num'>${idx+1}</div><div>${fullNames(x)}</div></div>`).join('')}</div>`;
+    if(s.pill)html+=`<div class='icon-lines'><div class='icon-line'><div class='icon-bubble'>✦</div><span>${fullNames(s.pill)}</span></div></div>`;
+    if(s.cta)html+=`<div class='cta'>${fullNames(s.cta)}</div>`;
+    return `<section class='slide'>${html}</section>`;
+  }
+
+  function showSlide(i){
+    current=(i+slides.length)%slides.length;
+    document.querySelectorAll('.slide').forEach((s,idx)=>{const on=idx===current;s.classList.toggle('active',on);s.style.display=on?'flex':'none';s.style.visibility=on?'visible':'hidden';s.style.opacity=on?'1':'0'});
+    document.querySelectorAll('.dot').forEach((d,idx)=>d.classList.toggle('on',idx<=current));
+  }
+
+  root.innerHTML=slides.map(renderSlide).join('');
+  progress.innerHTML=slides.map(()=>`<div class='dot'></div>`).join('');
+  window.nextSlide=()=>showSlide(current+1);
+  window.prevSlide=()=>showSlide(current-1);
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')window.nextSlide();if(e.key==='ArrowLeft')window.prevSlide()});
+  showSlide(0);
+}
