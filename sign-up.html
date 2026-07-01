@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Free Wealth Identity Reset Workshop | Sean Ali</title>
-<meta name="description" content="Join Sean Ali's free Wealth Identity Reset workshop and learn why online creators keep hitting the same $3K, $5K, or $10K/month income ceiling.">
+<title>Free Wealth Identity Workshop | Sean Ali</title>
+<meta name="description" content="Join Sean Ali's free Wealth Identity workshop and learn why online creators keep hitting the same $2K, $5K, or $10K/month income ceiling.">
 <link rel="icon" type="image/png" href="https://hypnoticmeditations.b-cdn.net/images/fav/headphones.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -221,59 +221,6 @@ h1 em{
   border-radius:0;
   box-shadow:none;
 }
-.signup-band{
-  padding:62px 20px;
-  background:#fff;
-}
-.signup-wrap{
-  width:min(980px,100%);
-  margin:0 auto;
-  display:grid;
-  grid-template-columns:1fr 390px;
-  gap:34px;
-  align-items:start;
-}
-.proof-copy h2{
-  margin:0 0 14px;
-  color:#1f1f1f;
-  font-family:"Libre Baskerville",Georgia,serif;
-  font-size:38px;
-  line-height:1.15;
-}
-.proof-copy p{
-  margin:0 0 18px;
-  color:#555;
-  font-size:18px;
-  line-height:1.6;
-  font-weight:700;
-}
-.mini-stats{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-  margin-top:26px;
-}
-.mini-stat{
-  padding:18px 14px;
-  border:1px solid var(--line);
-  border-radius:14px;
-  background:var(--soft);
-  text-align:center;
-}
-.mini-stat strong{
-  display:block;
-  color:var(--navy);
-  font-size:25px;
-  font-weight:900;
-}
-.mini-stat span{
-  display:block;
-  margin-top:5px;
-  color:#766f63;
-  font-size:11px;
-  font-weight:900;
-  text-transform:uppercase;
-}
 .form-card{
   padding:26px;
   border:1px solid var(--line);
@@ -318,6 +265,32 @@ h1 em{
   font-size:12px;
   text-align:center;
   font-weight:800;
+}
+.trust-row{
+  width:min(980px,100%);
+  margin:22px auto 0;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+.trust-chip{
+  min-height:54px;
+  padding:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  border:1px solid #bfe8ce;
+  border-radius:999px;
+  background:var(--greenbg);
+  color:#174b28;
+  font-size:13px;
+  font-weight:900;
+  text-align:center;
+}
+.trust-chip span{
+  color:var(--green);
+  font-size:18px;
 }
 .mindset-section{
   padding:72px 20px;
@@ -401,29 +374,45 @@ h1 em{
   width:100%;
   font-size:17px;
 }
-.walkaway-section{
+.outcome-section{
   padding:72px 20px;
   background:#fff;
 }
-.walkaway-wrap{
-  width:min(980px,100%);
+.outcome-wrap{
+  width:min(1040px,100%);
   margin:0 auto;
   display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:44px;
+  gap:18px;
   align-items:start;
 }
-.walkaway-card h2{
-  margin:0 0 22px;
+.outcome-section h2{
+  margin:0 auto 28px;
   font-family:"Libre Baskerville",Georgia,serif;
-  font-size:36px;
+  font-size:38px;
+  line-height:1.15;
+  text-align:center;
+}
+.outcome-card{
+  padding:22px 24px;
+  display:grid;
+  grid-template-columns:48px 1fr;
+  gap:16px;
+  align-items:start;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:#fff;
+  box-shadow:0 12px 28px rgba(0,0,0,.06);
+}
+.outcome-card h3{
+  margin:0 0 22px;
+  font-size:22px;
   line-height:1.15;
 }
-.walkaway-card p{
-  margin:0 0 15px;
+.outcome-card p{
+  margin:0;
   color:#3c3731;
-  font-size:20px;
-  line-height:1.5;
+  font-size:18px;
+  line-height:1.45;
   font-weight:750;
 }
 .proof-stats-section{
@@ -492,6 +481,36 @@ footer a{
   text-decoration:none;
   font-weight:800;
 }
+.modal{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:22px;
+  background:rgba(17,17,17,.62);
+}
+.modal.is-open{display:flex}
+.modal-card{
+  position:relative;
+  width:min(430px,100%);
+}
+.modal-close{
+  position:absolute;
+  top:-14px;
+  right:-14px;
+  width:38px;
+  height:38px;
+  border:0;
+  border-radius:999px;
+  background:#111;
+  color:#fff;
+  font-size:24px;
+  line-height:1;
+  font-weight:900;
+  cursor:pointer;
+}
 .footer-note{
   max-width:920px;
   margin:0 auto 18px;
@@ -506,11 +525,11 @@ footer a{
   .timer-inner{display:block;text-align:center}
   .timer-grid{width:max-content;max-width:100%;margin:18px auto 0;grid-template-columns:repeat(4,72px)}
   .timer-number{font-size:26px}
-  .hero-grid,.signup-wrap,.details-wrap,.walkaway-wrap{grid-template-columns:1fr}
+  .hero-grid,.details-wrap{grid-template-columns:1fr}
   .learn-card{text-align:left;max-width:650px;margin:0 auto}
   .cta{display:flex;width:min(430px,100%)}
   .media-side{padding-top:10px}
-  .mini-stats{grid-template-columns:1fr 1fr 1fr}
+  .trust-row{grid-template-columns:1fr 1fr}
   .proof-stats{grid-template-columns:1fr 1fr}
 }
 @media(max-width:620px){
@@ -523,11 +542,11 @@ footer a{
   h1{font-size:32px}
   .subhead{font-size:19px;margin-bottom:32px}
   .learn-list li{font-size:16px}
-  .signup-band,.mindset-section,.details-section,.walkaway-section,.proof-stats-section{padding:48px 16px}
-  .proof-copy h2,.mindset-wrap h2,.proof-stats-section h2{font-size:30px}
-  .walkaway-card h2{font-size:30px}
+  .mindset-section,.details-section,.outcome-section,.proof-stats-section{padding:48px 16px}
+  .mindset-wrap h2,.proof-stats-section h2,.outcome-section h2{font-size:30px}
   .mindset-copy{font-size:18px}
-  .mini-stats,.proof-stats{grid-template-columns:1fr}
+  .trust-row,.proof-stats{grid-template-columns:1fr}
+  .outcome-card{grid-template-columns:1fr}
   .cta{font-size:18px}
 }
 </style>
@@ -535,7 +554,7 @@ footer a{
 <body>
 <section class="timer-strip" aria-label="Masterclass countdown">
   <div class="timer-inner">
-    <div class="timer-title">FREE Wealth Identity Reset Workshop...</div>
+    <div class="timer-title">FREE Wealth Identity Workshop...</div>
     <div class="timer-grid" id="countdown">
       <div><span class="timer-number" data-unit="days">0</span><span class="timer-label">Days</span></div>
       <div><span class="timer-number" data-unit="hours">07</span><span class="timer-label">Hours</span></div>
@@ -549,23 +568,29 @@ footer a{
   <section class="hero">
     <div class="hero-wrap">
       <span class="eyebrow">Sean Ali reveals...</span>
-      <h1>Free Training for Online Creators: How To Break The 5 Money Patterns Keeping You Stuck At The Same $3K-$10K/mo Ceiling</h1>
+      <h1>Free Training for Online Creators: How To Break The 5 Money Patterns Keeping You Stuck At The Same $2K-$10K/mo Ceiling</h1>
       <p class="subhead">See the <span class="highlight">simple 5-step 'turnkey' system</span> Sean uses to help online creators stop hesitating, stop undercharging, and stop falling back to the same income level.</p>
 
       <div class="hero-grid">
         <div class="learn-card">
           <h2>On this workshop, you're going to learn:</h2>
           <ul class="learn-list">
-            <li><span class="check">✓</span><span>The <strong>5 money patterns</strong> that keep you stuck at the same $3K, $5K, or $10K/month level.</span></li>
-            <li><span class="check">✓</span><span>Why smart people still hesitate when it is time to grow.</span></li>
-            <li><span class="check">✓</span><span>Why you keep overthinking instead of taking the next step.</span></li>
-            <li><span class="check">✓</span><span>How old money stress makes you undercharge when it is time to ask for $500, $1,000, or $2,500+.</span></li>
-            <li><span class="check">✓</span><span>Why more tools, AI, and tactics do not fix the real problem.</span></li>
-            <li><span class="check">✓</span><span>How to start acting like the person who already belongs at the next $2K-$5K/month level.</span></li>
-            <li><span class="check">✓</span><span>PLUS a simple reset you can use right away.</span></li>
+            <li><span class="check">✓</span><span>The <strong>5 money patterns</strong> that keep creators stuck at the same <strong>$2K, $5K, or $10K/month ceiling</strong>.</span></li>
+            <li><span class="check">✓</span><span>Why you can have content, offers, skills, and an audience... but still freeze before the <strong>$1,000+ ask</strong>.</span></li>
+            <li><span class="check">✓</span><span>How to stop overthinking the post, price, DM, launch, or sales page that could unlock your next <strong>$2K-$5K/month</strong>.</span></li>
+            <li><span class="check">✓</span><span>How old money stress makes you charge <strong>$500</strong> for work that should be <strong>$1,500-$2,500+</strong>.</span></li>
+            <li><span class="check">✓</span><span>Why more AI tools, prompts, funnels, and tactics still fail when the old income identity is running them.</span></li>
+            <li><span class="check">✓</span><span>The identity shift that helps you move like someone who can hold <strong>$10K/month</strong> without panic, guilt, or self-sabotage.</span></li>
+            <li><span class="check">✓</span><span>PLUS the <strong>5-step turnkey reset</strong> you can use before your next offer, launch, or price increase.</span></li>
           </ul>
-          <a class="cta" href="#reserve">Sign Up For The Free Class!</a>
+          <a class="cta" href="#signup" data-open-modal>Sign Up For The Free Class!</a>
           <div class="secure">100% Secure - Privacy Guaranteed</div>
+          <div class="trust-row">
+            <div class="trust-chip"><span>✓</span>No credit card</div>
+            <div class="trust-chip"><span>✓</span>90-minute training</div>
+            <div class="trust-chip"><span>✓</span>500 seats</div>
+            <div class="trust-chip"><span>✓</span>Private access</div>
+          </div>
         </div>
 
         <div class="media-side">
@@ -579,10 +604,10 @@ footer a{
 
   <section class="mindset-section">
     <div class="mindset-wrap">
-      <h2>Sean Ali - Wealth Identity Reset Workshop</h2>
+      <h2>The Real Reason Creators Stay Underpaid</h2>
       <div class="mindset-copy">
         <p>Helping online creators break the money patterns holding them back.</p>
-        <p>Join the free workshop for people who know they are meant for more... but keep ending up at the same $3K, $5K, or $10K/month income level.</p>
+        <p>Join the free workshop for people who know they are meant for more... but keep ending up at the same $2K, $5K, or $10K/month income level.</p>
         <p class="quiet">This is not generic mindset.</p>
         <p>This is not "think positive."</p>
         <p>This is not another business tactic.</p>
@@ -599,7 +624,7 @@ footer a{
         <div class="detail-icon">⚙</div>
         <h2>WHAT</h2>
         <p>The "Wealth Identity Reset" System:</p>
-        <p>Break the 5 hidden money patterns keeping online creators stuck at the same $3K, $5K, or $10K/month ceiling.</p>
+        <p>Break the 5 hidden money patterns keeping online creators stuck at the same $2K, $5K, or $10K/month ceiling.</p>
       </div>
       <div class="detail-card">
         <div class="detail-icon">◷</div>
@@ -611,7 +636,7 @@ footer a{
         <div class="detail-icon">$</div>
         <h2>WHY</h2>
         <p>Stop charging $500 when the work is worth $1,500. Stop backing away from your first $10K/month stretch.</p>
-        <a class="cta" href="#reserve">Sign Up For The Free Class!</a>
+        <a class="cta" href="#signup" data-open-modal>Sign Up For The Free Class!</a>
         <div class="secure">100% Secure - Privacy Guaranteed</div>
       </div>
     </div>
@@ -629,55 +654,45 @@ footer a{
     </div>
   </section>
 
-  <section class="walkaway-section">
-    <div class="walkaway-wrap">
-      <div class="walkaway-card">
-        <h2>What You'll Walk Away With</h2>
-        <ul class="learn-list">
-          <li><span class="check">✓</span><span>Why your income keeps going back to the same $3K, $5K, or $10K/month range.</span></li>
-          <li><span class="check">✓</span><span>Why more skill does not always mean more money.</span></li>
-          <li><span class="check">✓</span><span>Why you still question your price before asking for $500, $1,000, or $2,500+.</span></li>
-          <li><span class="check">✓</span><span>Why you pull back when things start getting bigger.</span></li>
-          <li><span class="check">✓</span><span>Why AI and business tools only work when the right identity is using them.</span></li>
-          <li><span class="check">✓</span><span>How to make decisions from the version of you who can hold the next $2K-$5K/month move.</span></li>
-        </ul>
-      </div>
-      <div class="walkaway-card">
-        <h2>This Is For You If...</h2>
-        <p>You create online, but still feel underpaid.</p>
-        <p>You know what to do, but keep waiting.</p>
-        <p>You have experience, but still undercharge.</p>
-        <p>You keep circling the same $3K, $5K, or $10K/month ceiling.</p>
-        <p>You start strong, then fall back.</p>
-        <p>You want more freedom, but money stress keeps taking over.</p>
-        <p>You are tired of rebuilding from the same level.</p>
-      </div>
+  <section class="outcome-section">
+    <h2>What You'll Walk Away With</h2>
+    <div class="outcome-wrap">
+      <div class="outcome-card"><div class="proof-icon">$</div><div><h3>See Your Income Ceiling</h3><p>Understand why you keep snapping back to the same <strong>$2K, $5K, or $10K/month</strong> range even when your work improves.</p></div></div>
+      <div class="outcome-card"><div class="proof-icon">↗</div><div><h3>Stop Underpricing The Real Value</h3><p>Find the pattern that makes you question your price before asking for <strong>$500, $1,000, or $2,500+</strong>.</p></div></div>
+      <div class="outcome-card"><div class="proof-icon">✓</div><div><h3>Move Before You Overthink</h3><p>Know why you delay the post, DM, launch, page, or offer that could create the next <strong>$2K-$5K/month</strong>.</p></div></div>
+      <div class="outcome-card"><div class="proof-icon">⚙</div><div><h3>Use AI From The Right Identity</h3><p>See why AI tools, funnels, prompts, and strategies only work when the person using them can actually hold the next level.</p></div></div>
+      <div class="outcome-card"><div class="proof-icon">◷</div><div><h3>Install A Faster Decision Loop</h3><p>Learn how to make decisions from the version of you who treats the next offer, price, and launch as normal.</p></div></div>
+      <div class="outcome-card"><div class="proof-icon">0</div><div><h3>Leave With A Usable Reset</h3><p>Walk away with a simple process you can run before your next sales call, price increase, product drop, or campaign.</p></div></div>
     </div>
+    <a class="cta" href="#signup" data-open-modal>Sign Up For The Free Class!</a>
   </section>
 
-  <section class="signup-band" id="reserve">
-    <div class="signup-wrap">
-      <div class="proof-copy">
-        <h2>Reserve Your Free Seat</h2>
-        <p>Only 500 spots available. Enter your details and the workshop access page will open immediately.</p>
-        <div class="mini-stats">
-          <div class="mini-stat"><strong>15+ Yr</strong><span>Marketing Experience</span></div>
-          <div class="mini-stat"><strong>90 Min</strong><span>Free Workshop</span></div>
-          <div class="mini-stat"><strong>0</strong><span>Credit Card Required</span></div>
-        </div>
-      </div>
-
-      <form class="form-card" id="signupForm">
-        <h3>Reserve Your Free Seat</h3>
-        <p>Enter your details and the workshop access page will open immediately.</p>
-        <input id="firstName" name="firstName" type="text" placeholder="First Name" autocomplete="given-name" required>
-        <input id="email" name="email" type="email" placeholder="Email Address" autocomplete="email" required>
-        <button class="cta" type="submit">Get Free Access ▸</button>
-        <div class="privacy">No spam. Training link + reminders only.</div>
-      </form>
+  <section class="outcome-section">
+    <h2>This Is For You If...</h2>
+    <div class="outcome-wrap">
+      <div class="outcome-card"><div class="proof-icon">✓</div><div><h3>You Create Online But Still Feel Underpaid</h3><p>You have skills, content, ideas, or offers, but the money does not match the value you know you can create.</p></div></div>
+      <div class="outcome-card"><div class="proof-icon">$</div><div><h3>You Keep Hitting The Same Ceiling</h3><p>You keep circling the same <strong>$2K, $5K, or $10K/month</strong> range and cannot figure out why it feels so hard to normalize more.</p></div></div>
+      <div class="outcome-card"><div class="proof-icon">↗</div><div><h3>You Know What To Do But Keep Waiting</h3><p>The plan is not the problem. The old money identity keeps turning action into hesitation.</p></div></div>
+      <div class="outcome-card"><div class="proof-icon">⚙</div><div><h3>You Have Experience But Still Undercharge</h3><p>You can help people, but when it is time to ask for <strong>$1,000+</strong>, your body starts negotiating against you.</p></div></div>
+      <div class="outcome-card"><div class="proof-icon">◷</div><div><h3>You Start Strong Then Fall Back</h3><p>You get momentum, attention, or sales... then the old pattern quietly pulls you back into familiar income.</p></div></div>
+      <div class="outcome-card"><div class="proof-icon">0</div><div><h3>You Want Freedom Without Rebuilding Again</h3><p>You are tired of starting over from the same level and want the next version of you to finally feel normal.</p></div></div>
     </div>
   </section>
 </main>
+
+<div class="modal" id="signupModal" aria-hidden="true">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button class="modal-close" type="button" data-close-modal aria-label="Close signup">×</button>
+    <form class="form-card" id="signupForm">
+      <h3 id="modalTitle">Reserve Your Free Seat</h3>
+      <p>Only 500 spots available. Enter your details and the workshop access page will open immediately.</p>
+      <input id="firstName" name="firstName" type="text" placeholder="First Name" autocomplete="given-name" required>
+      <input id="email" name="email" type="email" placeholder="Email Address" autocomplete="email" required>
+      <button class="cta" type="submit">Get Free Access ▸</button>
+      <div class="privacy">No spam. Training link + reminders only.</div>
+    </form>
+  </div>
+</div>
 
 <footer>
   <p class="footer-note">This page is for educational purposes only. Results vary based on effort, market conditions, execution, and other factors. No income results are promised or guaranteed.</p>
@@ -715,6 +730,28 @@ footer a{
   }
   tick();
   setInterval(tick,1000);
+
+  const modal = document.getElementById('signupModal');
+  const openButtons = document.querySelectorAll('[data-open-modal]');
+  const closeButtons = document.querySelectorAll('[data-close-modal]');
+  function openModal(event){
+    if (event) event.preventDefault();
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden','false');
+    setTimeout(function(){ document.getElementById('firstName').focus(); }, 50);
+  }
+  function closeModal(){
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden','true');
+  }
+  openButtons.forEach(function(button){ button.addEventListener('click', openModal); });
+  closeButtons.forEach(function(button){ button.addEventListener('click', closeModal); });
+  modal.addEventListener('click', function(event){
+    if (event.target === modal) closeModal();
+  });
+  document.addEventListener('keydown', function(event){
+    if (event.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
+  });
 
   const form = document.getElementById('signupForm');
   form.addEventListener('submit', function(event){
