@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Free Wealth Identity Reset Workshop | Sean Ali</title>
-<meta name="description" content="Join Sean Ali's free workshop and learn how to break the subconscious money patterns that keep you hesitating, overthinking, undercharging, and stuck below your next level.">
+<meta name="description" content="Join Sean Ali's free Wealth Identity Reset workshop and learn why skilled people keep hitting the same income ceiling.">
 <link rel="icon" type="image/png" href="https://hypnoticmeditations.b-cdn.net/images/fav/headphones.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -124,6 +124,30 @@ h1 em{
   padding:0 7px 2px;
   border-radius:8px;
   background:linear-gradient(180deg,transparent 43%,rgba(214,164,13,.55) 43%);
+}
+.hero-proof{
+  max-width:850px;
+  margin:0 auto 38px;
+  color:#38332d;
+  text-align:center;
+}
+.hero-proof p{
+  margin:0 auto 18px;
+  font-size:21px;
+  line-height:1.6;
+  font-weight:800;
+}
+.hero-proof strong{
+  color:var(--navy);
+}
+.hero-proof .plain{
+  max-width:760px;
+  font-size:19px;
+  color:#554f46;
+  font-weight:700;
+}
+.hero-proof .cta{
+  margin-top:10px;
 }
 .hero-grid{
   display:grid;
@@ -368,11 +392,40 @@ h1 em{
   text-align:center;
   font-weight:800;
 }
-.below{
+.mindset-section{
+  padding:72px 20px;
+  background:#fff;
+}
+.mindset-wrap{
+  width:min(880px,100%);
+  margin:0 auto;
+}
+.mindset-wrap h2{
+  margin:0 0 24px;
+  font-family:"Libre Baskerville",Georgia,serif;
+  font-size:42px;
+  line-height:1.14;
+  text-align:center;
+}
+.mindset-copy{
+  display:grid;
+  gap:16px;
+  color:#3c3731;
+  font-size:21px;
+  line-height:1.58;
+  font-weight:750;
+}
+.mindset-copy p{
+  margin:0;
+}
+.mindset-copy .quiet{
+  color:#6b6256;
+}
+.proof-stats-section{
   padding:70px 20px;
   background:var(--cream);
 }
-.below h2{
+.proof-stats-section h2{
   max-width:820px;
   margin:0 auto 32px;
   font-family:"Libre Baskerville",Georgia,serif;
@@ -380,19 +433,41 @@ h1 em{
   line-height:1.18;
   text-align:center;
 }
-.proof-grid{
-  width:min(1060px,100%);
+.proof-stats{
+  width:min(1040px,100%);
   margin:0 auto;
   display:grid;
-  grid-template-columns:repeat(4,1fr);
+  grid-template-columns:repeat(3,1fr);
   gap:16px;
 }
-.proof-grid img{
-  width:100%;
-  aspect-ratio:3/4;
-  object-fit:cover;
+.proof-stat{
+  min-height:138px;
+  padding:24px 18px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  border:1px solid var(--line);
   border-radius:14px;
-  box-shadow:0 10px 24px rgba(0,0,0,.12);
+  background:#fff;
+  text-align:center;
+  box-shadow:0 10px 24px rgba(0,0,0,.06);
+}
+.proof-stat strong{
+  display:block;
+  color:var(--navy);
+  font-size:34px;
+  line-height:1.04;
+  font-weight:900;
+}
+.proof-stat span{
+  display:block;
+  margin-top:8px;
+  color:#6d6559;
+  font-size:13px;
+  font-weight:900;
+  letter-spacing:.04em;
+  text-transform:uppercase;
 }
 footer{
   padding:34px 20px;
@@ -415,6 +490,7 @@ footer a{
   .cta{display:flex;width:min(430px,100%)}
   .media-side{padding-top:10px}
   .mini-stats{grid-template-columns:1fr 1fr 1fr}
+  .proof-stats{grid-template-columns:1fr 1fr}
 }
 @media(max-width:620px){
   .timer-inner{min-height:auto;padding:16px}
@@ -425,12 +501,15 @@ footer a{
   .eyebrow{font-size:14px;text-align:center}
   h1{font-size:34px}
   .subhead{font-size:19px;margin-bottom:32px}
+  .hero-proof p{font-size:18px}
+  .hero-proof .plain{font-size:17px}
   .learn-list li{font-size:16px}
   .screen-copy{left:15px;bottom:15px;font-size:24px}
   .expert-card{align-items:flex-start}
-  .signup-band,.below{padding:48px 16px}
-  .proof-copy h2,.below h2{font-size:30px}
-  .mini-stats,.proof-grid{grid-template-columns:1fr 1fr}
+  .signup-band,.mindset-section,.proof-stats-section{padding:48px 16px}
+  .proof-copy h2,.mindset-wrap h2,.proof-stats-section h2{font-size:30px}
+  .mindset-copy{font-size:18px}
+  .mini-stats,.proof-stats{grid-template-columns:1fr}
   .cta{font-size:18px}
 }
 </style>
@@ -452,21 +531,27 @@ footer a{
   <section class="hero">
     <div class="hero-wrap">
       <span class="eyebrow">Sean Ali reveals...</span>
-      <h1><em>Free Training for Skilled People:</em> Why Your Income Keeps Hitting The Same Invisible Ceiling</h1>
-      <p class="subhead">Break the <span class="highlight">subconscious money pattern</span> that keeps you hesitating, overthinking, undercharging, and starting over.</p>
+      <h1>Why Skilled People Keep Hitting The Same Income Ceiling</h1>
+      <p class="subhead">In this free 90-minute workshop, you'll discover the <span class="highlight">subconscious money ceiling</span> that causes hesitation, undercharging, overthinking, inconsistency, and self-sabotage.</p>
+
+      <div class="hero-proof">
+        <p>After <strong>15+ years in marketing</strong>, <strong>$25M+ in sales generated</strong>, <strong>100,000+ subconscious audios sold</strong>, and <strong>8-figure monthly Meta ad experience</strong>...</p>
+        <p class="plain">Sean found the same hidden pattern showing up again and again: skilled people do not stay stuck because they lack information. They stay stuck because their identity keeps pulling them back to the same income level.</p>
+        <a class="cta" href="#reserve">Save My Free Seat ▸</a>
+        <div class="secure">100% Secure - Privacy Guaranteed</div>
+      </div>
 
       <div class="hero-grid">
         <div class="learn-card">
-          <h2>On this workshop, you're going to learn:</h2>
+          <h2>In This Free Workshop, You'll Learn:</h2>
           <ul class="learn-list">
-            <li><span class="check">✓</span><span><strong>The hidden money ceiling</strong> that can keep skilled people stuck below the level they know they are capable of.</span></li>
-            <li><span class="check">✓</span><span>Why you can know what to do and still keep <strong>hesitating, delaying, or pulling back</strong>.</span></li>
-            <li><span class="check">✓</span><span>How old money patterns show up as <strong>undercharging, overthinking, inconsistency, and self-sabotage</strong>.</span></li>
-            <li><span class="check">✓</span><span>How Sean connects <strong>subconscious reprogramming, business, AI, and execution</strong> without turning it into hype.</span></li>
-            <li><span class="check">✓</span><span>PLUS the simple reset process for acting from the identity of the person you are becoming.</span></li>
+            <li><span class="check">✓</span><span>The <strong>3 hidden money patterns</strong> that keep skilled people stuck below their real earning level.</span></li>
+            <li><span class="check">✓</span><span>Why someone can have <strong>10+ years of experience</strong> and still hesitate before charging more.</span></li>
+            <li><span class="check">✓</span><span>The 4 ways old money programming shows up in business: <strong>undercharging, delaying, overthinking, and inconsistent execution</strong>.</span></li>
+            <li><span class="check">✓</span><span>Why more tactics, AI tools, offers, and strategies do not work when <strong>the wrong identity is running them</strong>.</span></li>
+            <li><span class="check">✓</span><span>How Sean connects <strong>15+ years of marketing, subconscious reprogramming, business, AI, and execution</strong> into one simple reset.</span></li>
+            <li><span class="check">✓</span><span>The <strong>5-step Wealth Identity Reset</strong> process for acting from the next version of yourself now.</span></li>
           </ul>
-          <a class="cta" href="#reserve">Save My Free Seat ▸</a>
-          <div class="secure">100% Secure - Privacy Guaranteed</div>
         </div>
 
         <div class="media-side">
@@ -489,16 +574,50 @@ footer a{
     </div>
   </section>
 
+  <section class="mindset-section">
+    <div class="mindset-wrap">
+      <h2>This Is Not Generic Mindset</h2>
+      <div class="mindset-copy">
+        <p>This is not about thinking positive.</p>
+        <p>This is not about repeating affirmations all day.</p>
+        <p>This is not about pretending everything is fine.</p>
+        <p class="quiet">This is about finding the exact identity pattern that keeps you returning to the same income range.</p>
+        <p>Because when your subconscious still sees more money as unsafe... you hesitate.</p>
+        <p>When your nervous system connects success with pressure... you pull back.</p>
+        <p>When your identity is still attached to the old level... you keep rebuilding from the same place.</p>
+        <p>That is the ceiling.</p>
+        <p>And until that ceiling is reset, every strategy gets filtered through the old version of you.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="proof-stats-section">
+    <h2>The Real-World Proof Behind The Reset</h2>
+    <div class="proof-stats">
+      <div class="proof-stat"><strong>15+ Years</strong><span>Marketing Experience</span></div>
+      <div class="proof-stat"><strong>$25M+</strong><span>Sales Generated</span></div>
+      <div class="proof-stat"><strong>100,000+</strong><span>Subconscious Audios Sold</span></div>
+      <div class="proof-stat"><strong>8-Figure/Month</strong><span>Meta Ad Experience</span></div>
+      <div class="proof-stat"><strong>90 Min</strong><span>Free Workshop</span></div>
+      <div class="proof-stat"><strong>0</strong><span>Credit Card Required</span></div>
+    </div>
+  </section>
+
   <section class="signup-band" id="reserve">
     <div class="signup-wrap">
       <div class="proof-copy">
-        <h2>Join the free workshop for people who already know they are meant for more.</h2>
-        <p>This is not generic mindset. Sean breaks down the pattern behind hesitation, money stress, undercharging, procrastination, and the feeling that you keep returning to the same level.</p>
-        <p>You will see why the real bottleneck is not more information. It is the identity running the tools, offers, habits, and decisions.</p>
+        <h2>FREE Wealth Identity Reset</h2>
+        <p><strong>Sean Ali</strong><br>Subconscious Patterns · Business · AI · Freedom</p>
+        <p>Join the free workshop for skilled people who already know they are capable of more.</p>
+        <p>Sean breaks down the real pattern behind hesitation, money stress, undercharging, procrastination, overthinking, starting over, inconsistent execution, and the feeling that you keep returning to the same level.</p>
+        <p>The real bottleneck is not more information.</p>
+        <p>It is the identity running your tools, offers, habits, money decisions, and execution.</p>
+        <p>Because the next level does not just require better strategy.</p>
+        <p>It requires a version of you who can actually hold it.</p>
         <div class="mini-stats">
-          <div class="mini-stat"><strong>10+ Yr</strong><span>Marketing Experience</span></div>
+          <div class="mini-stat"><strong>15+ Yr</strong><span>Marketing Experience</span></div>
           <div class="mini-stat"><strong>90 Min</strong><span>Free Workshop</span></div>
-          <div class="mini-stat"><strong>0</strong><span>Credit Card</span></div>
+          <div class="mini-stat"><strong>0</strong><span>Credit Card Required</span></div>
         </div>
       </div>
 
@@ -510,16 +629,6 @@ footer a{
         <button class="cta" type="submit">Get Free Access ▸</button>
         <div class="privacy">No spam. Training link + reminders only.</div>
       </form>
-    </div>
-  </section>
-
-  <section class="below">
-    <h2>The Real-World Proof Behind The Reset</h2>
-    <div class="proof-grid">
-      <img src="https://hypnoticmeditations.b-cdn.net/images/proof/with%20les%20brown.jpg" alt="Sean Ali with Les Brown">
-      <img src="https://hypnoticmeditations.b-cdn.net/images/proof/with%20russell%20brunson.jpg" alt="Sean Ali with Russell Brunson">
-      <img src="https://hypnoticmeditations.b-cdn.net/images/proof/with%20jubril%20agoro.jpg" alt="Sean Ali with Jubril Agoro">
-      <img src="https://hypnoticmeditations.b-cdn.net/images/proof/teaching%20around%20the%20world.jpg" alt="Sean Ali teaching around the world">
     </div>
   </section>
 </main>
