@@ -201,8 +201,8 @@ const fallbackSearchIndex = [
   },
   {
     url: '/sign-up',
-    title: 'Sean Ali Wealth Identity Masterclass',
-    description: 'Free Masterclass for online creators who want to break the 5 hidden money patterns keeping them stuck at $2K-$10K/month.',
+    title: 'Sean Ali Free Money Masterclass',
+    description: 'Free Money Masterclass for online creators who want to break the 5 hidden money patterns keeping them stuck at $2K-$10K/month.',
     tags: 'masterclass online creators hidden money patterns wealth identity income ceiling'
   },
   {

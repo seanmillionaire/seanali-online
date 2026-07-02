@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Free Wealth Identity Masterclass | Sean Ali</title>
-<meta name="description" content="Join Sean Ali's free Wealth Identity Masterclass and learn how online creators can break the 5 hidden money patterns keeping them stuck at $2K-$10K/month.">
+<title>Free Money Masterclass | Sean Ali</title>
+<meta name="description" content="Join Sean Ali's Free Money Masterclass and learn how online creators can break the 5 hidden money patterns keeping them stuck at $2K-$10K/month.">
 <link rel="icon" type="image/png" href="https://hypnoticmeditations.b-cdn.net/images/fav/headphones.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -137,6 +137,7 @@ h1 em{
 }
 .learn-card{
   padding:8px 0 0;
+  text-align:center;
 }
 .learn-card h2{
   margin:0 0 22px;
@@ -158,6 +159,7 @@ h1 em{
   color:#1d1d1d;
   font-size:16px;
   line-height:1.45;
+  text-align:left;
 }
 .check{
   display:flex;
@@ -174,29 +176,57 @@ h1 em{
   font-weight:900;
 }
 .cta{
-  display:inline-flex;
+  display:flex;
   align-items:center;
   justify-content:center;
-  min-height:62px;
+  width:min(560px,100%);
+  min-height:82px;
   margin:24px auto 0;
-  padding:18px 34px;
+  padding:22px 36px;
   border:0;
-  border-radius:12px;
+  border-radius:16px;
   background:linear-gradient(135deg,var(--orange),var(--orange2));
   color:#fff;
-  font-size:23px;
+  font-size:27px;
   line-height:1;
   font-weight:900;
   text-decoration:none;
   text-transform:uppercase;
-  box-shadow:0 18px 36px rgba(255,90,31,.26);
+  box-shadow:0 22px 48px rgba(255,90,31,.34);
   cursor:pointer;
   animation:pulseCta 1.8s ease-in-out infinite;
 }
 .cta:hover{transform:translateY(-2px)}
 @keyframes pulseCta{
-  0%,100%{box-shadow:0 18px 36px rgba(255,90,31,.26),0 0 0 0 rgba(255,90,31,.28)}
-  50%{box-shadow:0 20px 42px rgba(255,90,31,.34),0 0 0 12px rgba(255,90,31,0)}
+  0%,100%{box-shadow:0 22px 48px rgba(255,90,31,.34),0 0 0 0 rgba(255,90,31,.34)}
+  50%{box-shadow:0 26px 58px rgba(255,90,31,.42),0 0 0 16px rgba(255,90,31,0)}
+}
+.cta-wrap{
+  position:relative;
+  width:min(620px,100%);
+  margin:0 auto;
+}
+.cta-arrow{
+  position:absolute;
+  width:116px;
+  height:92px;
+  right:-76px;
+  top:-28px;
+  transform:rotate(-10deg);
+  pointer-events:none;
+  filter:drop-shadow(0 9px 10px rgba(255,90,31,.18));
+}
+.cta-arrow path{
+  fill:none;
+  stroke:var(--orange);
+  stroke-width:12;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.cta-arrow text{
+  fill:#111;
+  font:900 13px Inter,Arial,sans-serif;
+  letter-spacing:.02em;
 }
 .secure{
   margin:14px 0 0;
@@ -305,6 +335,61 @@ h1 em{
 .mindset-section{
   padding:72px 20px;
   background:#fff;
+}
+.authority-section{
+  padding:46px 20px;
+  background:#fff;
+  border-top:1px solid #f0e8dc;
+  border-bottom:1px solid #f0e8dc;
+}
+.authority-wrap{
+  width:min(1040px,100%);
+  margin:0 auto;
+  text-align:center;
+}
+.authority-kicker{
+  display:block;
+  margin-bottom:20px;
+  color:#6b6256;
+  font-size:13px;
+  font-weight:900;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+.brand-logos{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:13px;
+}
+.brand-logo{
+  min-height:86px;
+  padding:16px 12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:var(--soft);
+  box-shadow:0 10px 24px rgba(0,0,0,.05);
+}
+.brand-logo strong{
+  display:block;
+  color:#111;
+  font-size:18px;
+  line-height:1;
+  font-weight:900;
+  letter-spacing:-.02em;
+}
+.brand-logo span{
+  display:block;
+  margin-top:8px;
+  color:#766e64;
+  font-size:11px;
+  line-height:1.2;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
 }
 .mindset-wrap{
   width:min(880px,100%);
@@ -627,6 +712,8 @@ footer a{
   .cta{display:flex;width:min(430px,100%)}
   .media-side{padding-top:10px}
   .proof-stats{grid-template-columns:1fr 1fr}
+  .brand-logos{grid-template-columns:1fr 1fr}
+  .cta-arrow{right:-22px;top:-58px;transform:rotate(14deg) scale(.82)}
 }
 @media(max-width:620px){
   .timer-inner{min-height:auto;padding:16px}
@@ -638,7 +725,7 @@ footer a{
   h1{font-size:30px}
   .subhead{font-size:19px;margin-bottom:32px}
   .learn-list li{font-size:16px}
-  .mindset-section,.details-section,.outcome-section,.proof-stats-section,.closing-section{padding:48px 16px}
+  .mindset-section,.details-section,.outcome-section,.proof-stats-section,.closing-section,.authority-section{padding:48px 16px}
   .mindset-wrap h2,.proof-stats-section h2,.outcome-section h2,.closing-wrap h2{font-size:30px}
   .mindset-copy{font-size:18px}
   .proof-stats,.mini-faq{grid-template-columns:1fr}
@@ -646,14 +733,16 @@ footer a{
   .bio-card{grid-template-columns:1fr;text-align:center}
   .bio-card img{margin:0 auto}
   .expert-card{margin-top:-18px}
-  .cta{font-size:18px}
+  .brand-logos{grid-template-columns:1fr}
+  .cta{min-height:74px;font-size:21px;padding:18px 20px}
+  .cta-arrow{display:none}
 }
 </style>
 </head>
 <body>
 <section class="timer-strip" aria-label="Masterclass countdown">
   <div class="timer-inner">
-    <div class="timer-title">FREE Wealth Identity Masterclass...</div>
+    <div class="timer-title">FREE Money Masterclass...</div>
     <div class="timer-grid" id="countdown">
       <div><span class="timer-number" data-unit="days">0</span><span class="timer-label">Days</span></div>
       <div><span class="timer-number" data-unit="hours">07</span><span class="timer-label">Hours</span></div>
@@ -679,7 +768,14 @@ footer a{
             <li><span class="check">✓</span><span>How old money patterns keep you stuck at the same ceiling, charging less than you should.</span></li>
             <li><span class="check">✓</span><span>And so much more.</span></li>
           </ul>
-          <a class="cta" href="#signup" data-open-modal>Save My Spot</a>
+          <div class="cta-wrap">
+            <svg class="cta-arrow" viewBox="0 0 140 110" aria-hidden="true">
+              <path d="M12 16 C42 38 58 52 82 61 C96 66 107 67 122 64"></path>
+              <path d="M103 43 L126 65 L99 82"></path>
+              <text x="5" y="30">start here</text>
+            </svg>
+            <a class="cta" href="#signup" data-open-modal>Yes! Save My Spot Now</a>
+          </div>
           <div class="secure">100% Secure - Privacy Guaranteed</div>
         </div>
 
@@ -695,6 +791,19 @@ footer a{
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="authority-section" aria-label="Sean Ali authority and brands">
+    <div class="authority-wrap">
+      <span class="authority-kicker">Built from real brands Sean has created and grown</span>
+      <div class="brand-logos">
+        <div class="brand-logo"><strong>Hypnotic Meditations</strong><span>Subconscious audio</span></div>
+        <div class="brand-logo"><strong>Manifestation Genie</strong><span>AI guidance</span></div>
+        <div class="brand-logo"><strong>Panama Untold</strong><span>Location freedom</span></div>
+        <div class="brand-logo"><strong>AI Freedom System</strong><span>Creator systems</span></div>
+        <div class="brand-logo"><strong>Digital ATM System</strong><span>Online income</span></div>
       </div>
     </div>
   </section>
@@ -754,7 +863,14 @@ footer a{
     <div class="closing-wrap">
       <h2>Ready To See What Has Been Keeping You At The Same Level?</h2>
       <p>Save your seat for the free masterclass and see the 5 hidden patterns that keep creators stuck at the same $2K, $5K, or $10K/month ceiling.</p>
-      <a class="cta" href="#signup" data-open-modal>Save My Spot</a>
+      <div class="cta-wrap">
+        <svg class="cta-arrow" viewBox="0 0 140 110" aria-hidden="true">
+          <path d="M12 16 C42 38 58 52 82 61 C96 66 107 67 122 64"></path>
+          <path d="M103 43 L126 65 L99 82"></path>
+          <text x="5" y="30">start here</text>
+        </svg>
+        <a class="cta" href="#signup" data-open-modal>Yes! Save My Spot Now</a>
+      </div>
       <div class="secure">100% Secure - Privacy Guaranteed</div>
       <div class="bio-card">
         <img src="https://hypnoticmeditations.b-cdn.net/images/proof/sean%20profile.png" alt="Sean Ali">
@@ -781,7 +897,7 @@ footer a{
       <p>Only 500 spots available. Enter your details and the masterclass access page will open immediately.</p>
       <input id="firstName" name="firstName" type="text" placeholder="First Name" autocomplete="given-name" required>
       <input id="email" name="email" type="email" placeholder="Email Address" autocomplete="email" required>
-      <button class="cta" type="submit">Save My Spot ▸</button>
+      <button class="cta" type="submit">Yes! Save My Spot Now ▸</button>
       <div class="privacy">No spam. Training link + reminders only.</div>
     </form>
   </div>
