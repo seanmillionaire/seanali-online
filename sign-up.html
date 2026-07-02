@@ -221,6 +221,42 @@ h1 em{
   border-radius:0;
   box-shadow:none;
 }
+.expert-card{
+  width:min(380px,calc(100% - 24px));
+  margin:-26px auto 0;
+  position:relative;
+  z-index:2;
+  display:grid;
+  grid-template-columns:62px 1fr;
+  gap:14px;
+  align-items:center;
+  padding:15px 18px;
+  border:1px solid rgba(234,223,206,.86);
+  border-radius:15px;
+  background:#fff;
+  box-shadow:0 18px 42px rgba(0,0,0,.16);
+}
+.expert-card img{
+  width:62px;
+  height:62px;
+  border-radius:14px;
+  object-fit:cover;
+}
+.expert-card strong{
+  display:block;
+  color:#171717;
+  font-size:18px;
+  line-height:1.1;
+  font-weight:900;
+}
+.expert-card span{
+  display:block;
+  margin-top:5px;
+  color:#625b52;
+  font-size:13px;
+  line-height:1.25;
+  font-weight:800;
+}
 .form-card{
   padding:26px;
   border:1px solid var(--line);
@@ -265,32 +301,6 @@ h1 em{
   font-size:12px;
   text-align:center;
   font-weight:800;
-}
-.trust-row{
-  width:min(980px,100%);
-  margin:22px auto 0;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
-}
-.trust-chip{
-  min-height:54px;
-  padding:12px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  border:1px solid #bfe8ce;
-  border-radius:999px;
-  background:var(--greenbg);
-  color:#174b28;
-  font-size:13px;
-  font-weight:900;
-  text-align:center;
-}
-.trust-chip span{
-  color:var(--green);
-  font-size:18px;
 }
 .mindset-section{
   padding:72px 20px;
@@ -415,6 +425,58 @@ h1 em{
   line-height:1.45;
   font-weight:750;
 }
+.closing-section{
+  padding:70px 20px 78px;
+  background:linear-gradient(180deg,#fff 0%,var(--cream) 100%);
+}
+.closing-wrap{
+  width:min(920px,100%);
+  margin:0 auto;
+  text-align:center;
+}
+.closing-wrap h2{
+  margin:0 auto 12px;
+  max-width:760px;
+  font-family:"Libre Baskerville",Georgia,serif;
+  font-size:38px;
+  line-height:1.16;
+}
+.closing-wrap p{
+  max-width:660px;
+  margin:0 auto;
+  color:#4b453d;
+  font-size:19px;
+  line-height:1.5;
+  font-weight:750;
+}
+.mini-faq{
+  margin:34px auto 4px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  text-align:left;
+}
+.faq-card{
+  padding:20px;
+  border:1px solid var(--line);
+  border-radius:15px;
+  background:#fff;
+  box-shadow:0 12px 28px rgba(0,0,0,.06);
+}
+.faq-card strong{
+  display:block;
+  margin-bottom:7px;
+  color:#111;
+  font-size:17px;
+  font-weight:900;
+}
+.faq-card span{
+  display:block;
+  color:#5f574e;
+  font-size:15px;
+  line-height:1.45;
+  font-weight:750;
+}
 .proof-stats-section{
   padding:70px 20px;
   background:var(--cream);
@@ -529,7 +591,6 @@ footer a{
   .learn-card{text-align:left;max-width:650px;margin:0 auto}
   .cta{display:flex;width:min(430px,100%)}
   .media-side{padding-top:10px}
-  .trust-row{grid-template-columns:1fr 1fr}
   .proof-stats{grid-template-columns:1fr 1fr}
 }
 @media(max-width:620px){
@@ -542,11 +603,12 @@ footer a{
   h1{font-size:30px}
   .subhead{font-size:19px;margin-bottom:32px}
   .learn-list li{font-size:16px}
-  .mindset-section,.details-section,.outcome-section,.proof-stats-section{padding:48px 16px}
-  .mindset-wrap h2,.proof-stats-section h2,.outcome-section h2{font-size:30px}
+  .mindset-section,.details-section,.outcome-section,.proof-stats-section,.closing-section{padding:48px 16px}
+  .mindset-wrap h2,.proof-stats-section h2,.outcome-section h2,.closing-wrap h2{font-size:30px}
   .mindset-copy{font-size:18px}
-  .trust-row,.proof-stats{grid-template-columns:1fr}
+  .proof-stats,.mini-faq{grid-template-columns:1fr}
   .outcome-card{grid-template-columns:1fr}
+  .expert-card{margin-top:-18px}
   .cta{font-size:18px}
 }
 </style>
@@ -568,7 +630,7 @@ footer a{
   <section class="hero">
     <div class="hero-wrap">
       <span class="eyebrow">Sean Ali reveals...</span>
-      <h1>Free Training for Online Creators: How To Break The 5 Money Patterns Keeping You Stuck At The Same $2K-$10K/mo Ceiling</h1>
+      <h1>Free Training for Online Creators: How To Break The 5 Money Patterns Keeping You Stuck At $2K-$10K/mo</h1>
       <p class="subhead">See the <span class="highlight">simple 5-step 'turnkey' system</span> Sean uses to help online creators stop hesitating, stop undercharging, and stop falling back to the same income level.</p>
 
       <div class="hero-grid">
@@ -582,17 +644,18 @@ footer a{
           </ul>
           <a class="cta" href="#signup" data-open-modal>Sign Up For The Free Class!</a>
           <div class="secure">100% Secure - Privacy Guaranteed</div>
-          <div class="trust-row">
-            <div class="trust-chip"><span>✓</span>No credit card</div>
-            <div class="trust-chip"><span>✓</span>90-minute training</div>
-            <div class="trust-chip"><span>✓</span>500 seats</div>
-            <div class="trust-chip"><span>✓</span>Private access</div>
-          </div>
         </div>
 
         <div class="media-side">
           <div class="hero-image" aria-label="Free wealth identity reset workshop preview">
             <img src="https://i.postimg.cc/9XDpVnxX/Chat-GPT-Image-Jul-1-2026-03-45-13-PM.png" alt="Sean Ali wealth identity reset workshop preview">
+          </div>
+          <div class="expert-card">
+            <img src="https://hypnoticmeditations.b-cdn.net/images/proof/sean%20profile.png" alt="Sean Ali">
+            <div>
+              <strong>Sean Ali</strong>
+              <span>Helping online creators break the money patterns holding them back.</span>
+            </div>
           </div>
         </div>
       </div>
@@ -650,6 +713,21 @@ footer a{
       <div class="outcome-card"><div class="proof-icon">⚙</div><div><h3>You Have Experience But Still Undercharge</h3><p>You can help people, but when it is time to ask for <strong>$1,000+</strong>, your body starts negotiating against you.</p></div></div>
       <div class="outcome-card"><div class="proof-icon">◷</div><div><h3>You Start Strong Then Fall Back</h3><p>You get momentum, attention, or sales... then the old pattern quietly pulls you back into familiar income.</p></div></div>
       <div class="outcome-card"><div class="proof-icon">0</div><div><h3>You Want Freedom Without Rebuilding Again</h3><p>You are tired of starting over from the same level and want the next version of you to finally feel normal.</p></div></div>
+    </div>
+  </section>
+
+  <section class="closing-section">
+    <div class="closing-wrap">
+      <h2>Ready To See What Has Been Keeping You At The Same Level?</h2>
+      <p>Save your seat for the free workshop and see the 5 patterns that keep creators stuck at the same $2K, $5K, or $10K/month ceiling.</p>
+      <a class="cta" href="#signup" data-open-modal>Sign Up For The Free Class!</a>
+      <div class="secure">100% Secure - Privacy Guaranteed</div>
+      <div class="mini-faq" aria-label="Mini FAQ">
+        <div class="faq-card"><strong>Is this free?</strong><span>Yes. The workshop is free and there is no credit card required.</span></div>
+        <div class="faq-card"><strong>Who is this for?</strong><span>Online creators who know they can earn more, but keep circling the same income ceiling.</span></div>
+        <div class="faq-card"><strong>How long is it?</strong><span>It is a 90-minute workshop built to show the full 5-step reset system.</span></div>
+        <div class="faq-card"><strong>What happens after I sign up?</strong><span>The access page opens immediately, and you will get the training link and reminders.</span></div>
+      </div>
     </div>
   </section>
 </main>
