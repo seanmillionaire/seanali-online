@@ -200,10 +200,10 @@ const fallbackSearchIndex = [
     tags: 'reset nighttime subconscious sleep money stress audio'
   },
   {
-    url: '/webinar/',
-    title: 'Sean Ali Webinar',
-    description: 'Webinar registration for AI, subconscious reprogramming, manifestation, and freedom systems.',
-    tags: 'webinar registration ai subconscious freedom manifestation'
+    url: '/sign-up',
+    title: 'Sean Ali Wealth Identity Masterclass',
+    description: 'Free Masterclass for online creators who keep hitting the same $2K, $5K, or $10K/month income ceiling.',
+    tags: 'masterclass online creators money patterns wealth identity income ceiling'
   },
   {
     url: '/videos/moneyblocks1.html',
