@@ -202,8 +202,8 @@ const fallbackSearchIndex = [
   {
     url: '/sign-up',
     title: 'Sean Ali Wealth Identity Masterclass',
-    description: 'Free Masterclass for online creators who keep hitting the same $2K, $5K, or $10K/month income ceiling.',
-    tags: 'masterclass online creators money patterns wealth identity income ceiling'
+    description: 'Free Masterclass for online creators who want to break the 5 hidden money patterns keeping them stuck at $2K-$10K/month.',
+    tags: 'masterclass online creators hidden money patterns wealth identity income ceiling'
   },
   {
     url: '/videos/moneyblocks1.html',
