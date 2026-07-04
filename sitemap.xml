@@ -23,6 +23,18 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- Review Hubs -->
+  <url>
+    <loc>https://seanali.online/slideshows/manifestation/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://seanali.online/slideshows/manifestation/2026-07-04-joe-dispenza-becoming-supernatural-review.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- SEO Content Pages -->
   <url>
     <loc>https://seanali.online/what-are-money-blocks.html</loc>
@@ -51,6 +63,7 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+
   <!-- Video Pages -->
   <url>
     <loc>https://seanali.online/videos/moneyblocks1.html</loc>
