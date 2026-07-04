@@ -34,6 +34,7 @@
       color: white;
       padding: 18px 14px;
       text-align: center;
+      position: relative;
     }
     h1 {
       margin: 0;
@@ -45,6 +46,21 @@
       font-size: 20px;
       font-weight: bold;
     }
+    .sound-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      justify-content: center;
+    }
+    .sound-btn {
+      width: auto;
+      min-height: 48px;
+      padding: 10px 15px;
+      border-radius: 999px;
+      font-size: 18px;
+      box-shadow: 0 5px 0 #0f4e22;
+      background: #b8ff6a;
+    }
     .scene {
       padding: 22px 16px 18px;
       text-align: center;
@@ -55,6 +71,11 @@
       line-height: 1;
       margin-bottom: 10px;
       animation: wiggle 1.7s infinite ease-in-out;
+      cursor: pointer;
+      user-select: none;
+    }
+    .emoji.bounce {
+      animation: bounce .45s ease;
     }
     .question {
       font-size: 30px;
@@ -129,9 +150,7 @@
       pointer-events: none;
       text-align: center;
     }
-    .popup.show {
-      animation: pop .85s ease forwards;
-    }
+    .popup.show { animation: pop .85s ease forwards; }
     .confetti {
       position: fixed;
       top: -30px;
@@ -140,18 +159,39 @@
       z-index: 9;
       pointer-events: none;
     }
+    .animal-pop {
+      position: fixed;
+      font-size: 46px;
+      z-index: 8;
+      pointer-events: none;
+      animation: floatUp 1s ease forwards;
+    }
+    .screen-flash {
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,.45);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 7;
+    }
+    .screen-flash.show { animation: flash .35s ease; }
     @keyframes pop {
       0% { opacity: 0; transform: translate(-50%, -50%) scale(.65) rotate(-4deg); }
       18% { opacity: 1; transform: translate(-50%, -50%) scale(1.1) rotate(3deg); }
       75% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0); }
       100% { opacity: 0; transform: translate(-50%, -70%) scale(.92); }
     }
-    @keyframes fall {
-      to { transform: translateY(105vh) rotate(250deg); opacity: 0; }
-    }
+    @keyframes fall { to { transform: translateY(105vh) rotate(250deg); opacity: 0; } }
+    @keyframes floatUp { to { transform: translateY(-90px) scale(1.5) rotate(20deg); opacity: 0; } }
+    @keyframes flash { 0% { opacity: 0; } 40% { opacity: 1; } 100% { opacity: 0; } }
     @keyframes wiggle {
       0%, 100% { transform: rotate(-2deg) scale(1); }
       50% { transform: rotate(2deg) scale(1.04); }
+    }
+    @keyframes bounce {
+      0% { transform: scale(1); }
+      35% { transform: scale(1.25) rotate(8deg); }
+      100% { transform: scale(1); }
     }
     @media (max-width: 390px) {
       h1 { font-size: 31px; }
@@ -165,10 +205,15 @@
   </style>
 </head>
 <body>
+  <div class="screen-flash" id="flash"></div>
   <div class="game">
     <div class="top">
       <h1>🌿 Selva Divertida</h1>
       <div class="badge">Toca. Juega. Ríe.</div>
+      <div class="sound-row">
+        <button id="soundBtn" class="sound-btn">🔊 Sonido</button>
+        <button id="musicBtn" class="sound-btn">🎵 Música</button>
+      </div>
     </div>
 
     <div class="scene">
@@ -189,75 +234,112 @@
   <script>
     let stars = 0;
     let index = 0;
+    let audioCtx = null;
+    let soundOn = false;
+    let musicOn = false;
+    let musicTimer = null;
+    let beat = 0;
 
     const goodPops = ["¡Bien! ⭐", "¡Súper! 🌈", "¡Wuju! 🎉", "¡Qué cool! 🐒", "¡Bravo! 👏", "¡Boom! ✨"];
     const sillyPops = ["¡Ay ay ay! 😄", "¡Ups! 🙈", "¡Jajaja! 😂", "¡Otra vez! 🔁"];
+    const popAnimals = ["🦋", "🐒", "🐸", "🌸", "⭐", "🍃", "🌈"];
 
     const scenes = [
-      {
-        emoji: "🦋",
-        question: "Un bichito dice: hola.",
-        story: "¿Qué haces?",
-        choices: [
-          ["Digo hola 👋", 1],
-          ["Me voy 😮", 0]
-        ]
-      },
-      {
-        emoji: "🐜",
-        question: "Una hormiga deja caer una hoja.",
-        story: "¡Oh no!",
-        choices: [
-          ["La ayudo 🍃", 1],
-          ["La agarro 😆", 0]
-        ]
-      },
-      {
-        emoji: "🦥",
-        question: "Un perezoso duerme.",
-        story: "Shhh...",
-        choices: [
-          ["Hago silencio 🤫", 1],
-          ["Grito 📣", 0]
-        ]
-      },
-      {
-        emoji: "🐒",
-        question: "Un mono tiene tu gorra.",
-        story: "¡Je je!",
-        choices: [
-          ["Le doy banana 🍌", 1],
-          ["Lloro 😭", 0]
-        ]
-      },
-      {
-        emoji: "🐸",
-        question: "Una rana salta.",
-        story: "¡Brinco! ¡Brinco!",
-        choices: [
-          ["La miro 👀", 1],
-          ["La agarro ✋", 0]
-        ]
-      },
-      {
-        emoji: "🌧️",
-        question: "Cae lluvia.",
-        story: "¡Splash! ¡Splash!",
-        choices: [
-          ["Voy al árbol 🌳", 1],
-          ["Salto en lodo 😄", 1]
-        ]
-      },
-      {
-        emoji: "🌈",
-        question: "Ves un arcoíris.",
-        story: "¡Yay!",
-        choices: [
-          ["Bailo 💃", 1],
-          ["Aplaudo 👏", 1]
-        ]
-      }
+      { emoji: "🦋", question: "Un bichito dice: hola.", story: "¿Qué haces?", sound: "butterfly", choices: [["Digo hola 👋", 1], ["Me voy 😮", 0]] },
+      { emoji: "🐜", question: "Una hormiga deja caer una hoja.", story: "¡Oh no!", sound: "ant", choices: [["La ayudo 🍃", 1], ["La agarro 😆", 0]] },
+      { emoji: "🦥", question: "Un perezoso duerme.", story: "Shhh...", sound: "sloth", choices: [["Hago silencio 🤫", 1], ["Grito 📣", 0]] },
+      { emoji: "🐒", question: "Un mono tiene tu gorra.", story: "¡Je je!", sound: "monkey", choices: [["Le doy banana 🍌", 1], ["Lloro 😭", 0]] },
+      { emoji: "🐸", question: "Una rana salta.", story: "¡Brinco! ¡Brinco!", sound: "frog", choices: [["La miro 👀", 1], ["La agarro ✋", 0]] },
+      { emoji: "🌧️", question: "Cae lluvia.", story: "¡Splash! ¡Splash!", sound: "rain", choices: [["Voy al árbol 🌳", 1], ["Salto en lodo 😄", 1]] },
+      { emoji: "🌈", question: "Ves un arcoíris.", story: "¡Yay!", sound: "rainbow", choices: [["Bailo 💃", 1], ["Aplaudo 👏", 1]] }
     ];
+
+    function initAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === "suspended") audioCtx.resume();
+    }
+
+    function tone(freq, dur, type = "sine", vol = .08, start = 0) {
+      if (!soundOn || !audioCtx) return;
+      const t = audioCtx.currentTime + start;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, t);
+      gain.gain.setValueAtTime(0.001, t);
+      gain.gain.exponentialRampToValueAtTime(vol, t + .02);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(t);
+      osc.stop(t + dur + .04);
+    }
+
+    function noise(dur = .08, vol = .05, start = 0) {
+      if (!soundOn || !audioCtx) return;
+      const t = audioCtx.currentTime + start;
+      const bufferSize = audioCtx.sampleRate * dur;
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+      const src = audioCtx.createBufferSource();
+      const gain = audioCtx.createGain();
+      gain.gain.setValueAtTime(vol, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      src.buffer = buffer;
+      src.connect(gain);
+      gain.connect(audioCtx.destination);
+      src.start(t);
+      src.stop(t + dur);
+    }
+
+    function playGood() {
+      tone(523, .09, "triangle", .09, 0);
+      tone(659, .11, "triangle", .09, .08);
+      tone(784, .15, "triangle", .1, .17);
+    }
+    function playOops() {
+      tone(220, .12, "sawtooth", .06, 0);
+      tone(165, .18, "sawtooth", .05, .1);
+    }
+    function playWin() {
+      [523, 659, 784, 1046].forEach((f, i) => tone(f, .16, "triangle", .1, i * .1));
+      setTimeout(() => confetti(28), 120);
+    }
+    function playAnimal(kind) {
+      if (kind === "monkey") { tone(720, .06, "square", .07); tone(520, .07, "square", .06, .08); tone(760, .06, "square", .06, .17); }
+      if (kind === "frog") { tone(150, .12, "sawtooth", .08); tone(95, .16, "sawtooth", .07, .13); }
+      if (kind === "rain") { noise(.16, .045); noise(.16, .035, .12); }
+      if (kind === "butterfly") { tone(900, .08, "sine", .05); tone(1200, .08, "sine", .04, .08); }
+      if (kind === "ant") { tone(420, .04, "square", .04); tone(460, .04, "square", .04, .05); }
+      if (kind === "sloth") { tone(180, .22, "sine", .05); }
+      if (kind === "rainbow") { playGood(); }
+    }
+
+    function musicTick() {
+      if (!musicOn || !audioCtx) return;
+      const notes = [262, 330, 392, 330, 294, 349, 440, 349];
+      tone(notes[beat % notes.length], .12, "triangle", .035);
+      if (beat % 2 === 0) tone(110, .08, "sine", .025);
+      if (beat % 4 === 2) noise(.04, .02);
+      beat++;
+    }
+
+    function startMusic() {
+      initAudio();
+      soundOn = true;
+      musicOn = true;
+      document.getElementById("soundBtn").textContent = "🔊 Sonido";
+      document.getElementById("musicBtn").textContent = "🎵 Música";
+      clearInterval(musicTimer);
+      musicTimer = setInterval(musicTick, 360);
+      playGood();
+    }
+    function stopMusic() {
+      musicOn = false;
+      clearInterval(musicTimer);
+      document.getElementById("musicBtn").textContent = "🔇 Música";
+    }
 
     function render() {
       const s = scenes[index];
@@ -266,10 +348,10 @@
       document.getElementById("story").textContent = s.story;
       document.getElementById("stars").textContent = stars;
       document.getElementById("step").textContent = Math.min(index + 1, scenes.length);
+      playAnimal(s.sound);
 
       const choices = document.getElementById("choices");
       choices.innerHTML = "";
-
       s.choices.forEach(choice => {
         const btn = document.createElement("button");
         btn.textContent = choice[0];
@@ -286,36 +368,56 @@
       popup.classList.add("show");
     }
 
-    function confetti() {
-      const pieces = ["⭐", "🌿", "🌸", "✨", "🍃"];
-      for (let i = 0; i < 12; i++) {
+    function flash() {
+      const f = document.getElementById("flash");
+      f.classList.remove("show");
+      void f.offsetWidth;
+      f.classList.add("show");
+    }
+
+    function confetti(count = 14) {
+      const pieces = ["⭐", "🌿", "🌸", "✨", "🍃", "🦋", "🌈"];
+      for (let i = 0; i < count; i++) {
         const el = document.createElement("div");
         el.className = "confetti";
         el.textContent = pieces[Math.floor(Math.random() * pieces.length)];
         el.style.left = Math.random() * 100 + "vw";
-        el.style.animationDelay = Math.random() * .2 + "s";
+        el.style.animationDelay = Math.random() * .22 + "s";
         document.body.appendChild(el);
-        setTimeout(() => el.remove(), 1500);
+        setTimeout(() => el.remove(), 1600);
       }
     }
 
+    function animalPop() {
+      const el = document.createElement("div");
+      el.className = "animal-pop";
+      el.textContent = popAnimals[Math.floor(Math.random() * popAnimals.length)];
+      el.style.left = (20 + Math.random() * 60) + "vw";
+      el.style.top = (35 + Math.random() * 35) + "vh";
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1100);
+    }
+
     function choose(points) {
+      initAudio();
+      if (!soundOn) soundOn = true;
       stars += points;
+      animalPop();
+      flash();
+
       if (points > 0) {
         showPopup(goodPops[Math.floor(Math.random() * goodPops.length)]);
+        playGood();
         confetti();
       } else {
         showPopup(sillyPops[Math.floor(Math.random() * sillyPops.length)]);
+        playOops();
       }
 
       setTimeout(() => {
         index++;
-        if (index >= scenes.length) {
-          endGame();
-        } else {
-          render();
-        }
-      }, 650);
+        if (index >= scenes.length) endGame(); else render();
+      }, 700);
     }
 
     function endGame() {
@@ -325,29 +427,50 @@
       document.getElementById("step").textContent = "7";
       document.getElementById("stars").textContent = stars;
       showPopup("¡Fiesta! 🎉");
-      confetti();
+      playWin();
+      flash();
 
       const choices = document.getElementById("choices");
       choices.innerHTML = "";
 
       const restart = document.createElement("button");
       restart.textContent = "Jugar otra vez 🔁";
-      restart.onclick = () => {
-        stars = 0;
-        index = 0;
-        render();
-      };
+      restart.onclick = () => { stars = 0; index = 0; render(); };
       choices.appendChild(restart);
 
       const talk = document.createElement("button");
       talk.textContent = "Hablar 💬";
       talk.className = "small";
       talk.onclick = () => {
+        playGood();
         document.getElementById("question").textContent = "¿Quién fue chistoso?";
         document.getElementById("story").textContent = "¿Mono, rana, hormiga o perezoso?";
+        animalPop();
       };
       choices.appendChild(talk);
     }
+
+    document.getElementById("soundBtn").onclick = () => {
+      initAudio();
+      soundOn = !soundOn;
+      document.getElementById("soundBtn").textContent = soundOn ? "🔊 Sonido" : "🔈 Sonido";
+      if (soundOn) playGood();
+    };
+
+    document.getElementById("musicBtn").onclick = () => {
+      if (musicOn) stopMusic(); else startMusic();
+    };
+
+    document.getElementById("emoji").onclick = () => {
+      initAudio();
+      if (!soundOn) soundOn = true;
+      const e = document.getElementById("emoji");
+      e.classList.remove("bounce");
+      void e.offsetWidth;
+      e.classList.add("bounce");
+      animalPop();
+      playAnimal(scenes[index]?.sound || "rainbow");
+    };
 
     render();
   </script>
