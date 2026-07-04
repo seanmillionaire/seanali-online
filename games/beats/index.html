@@ -10,7 +10,7 @@
     body {
       min-height: 100vh;
       font-family: Arial, sans-serif;
-      background: radial-gradient(circle at top, #3b1d63, #101018 65%);
+      background: radial-gradient(circle at top, #401d67, #101018 65%);
       color: white;
       display: flex;
       align-items: center;
@@ -21,7 +21,7 @@
     }
     .mpc {
       width: 100%;
-      max-width: 540px;
+      max-width: 560px;
       background: linear-gradient(180deg, #242434, #15151f);
       border: 5px solid #3f3f55;
       border-radius: 32px;
@@ -64,7 +64,7 @@
       gap: 14px;
     }
     .pad {
-      min-height: 135px;
+      min-height: 130px;
       border: 0;
       border-radius: 24px;
       color: white;
@@ -92,9 +92,9 @@
     .snare { background: linear-gradient(160deg, #3b8cff, #113c9b); }
     .hat { background: linear-gradient(160deg, #ffd43b, #b87900); color: #221700; }
     .clap { background: linear-gradient(160deg, #ff5ee7, #8f1680); }
-    .tom { background: linear-gradient(160deg, #41e38b, #0e7a43); }
+    .rim { background: linear-gradient(160deg, #41e38b, #0e7a43); }
     .bass { background: linear-gradient(160deg, #9c5cff, #3a167e); }
-    .voice { background: linear-gradient(160deg, #ffffff, #ff7a18); color: #171018; grid-column: 1 / -1; min-height: 112px; }
+    .fx { background: linear-gradient(160deg, #ffffff, #ff7a18); color: #171018; grid-column: 1 / -1; min-height: 105px; }
     .controls {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -107,11 +107,12 @@
       border-radius: 18px;
       background: #f1f1f1;
       color: #17171f;
-      font-size: 22px;
+      font-size: 21px;
       font-weight: 900;
       box-shadow: 0 6px 0 #8a8a8a;
       cursor: pointer;
     }
+    .control.hot { background: #ffd84d; box-shadow: 0 6px 0 #bd8610; }
     .control:active {
       transform: translateY(5px);
       box-shadow: 0 1px 0 #8a8a8a;
@@ -137,15 +138,16 @@
     }
     @media (min-width: 650px) {
       .pads { grid-template-columns: repeat(3, 1fr); }
-      .voice { grid-column: 1 / -1; }
+      .fx { grid-column: 1 / -1; }
+      .controls { grid-template-columns: repeat(3, 1fr); }
     }
     @media (max-width: 390px) {
       .mpc { padding: 14px; border-radius: 26px; }
       h1 { font-size: 34px; }
       .screen { font-size: 16px; min-width: 124px; }
-      .pad { min-height: 122px; font-size: 24px; }
-      .voice { min-height: 98px; }
-      .control { font-size: 20px; }
+      .pad { min-height: 118px; font-size: 24px; }
+      .fx { min-height: 94px; }
+      .control { font-size: 18px; }
     }
   </style>
 </head>
@@ -162,23 +164,25 @@
       <button class="pad snare" data-sound="snare">SNARE <span>PAH</span></button>
       <button class="pad hat" data-sound="hat">HAT <span>TSS</span></button>
       <button class="pad clap" data-sound="clap">CLAP <span>CLAP</span></button>
-      <button class="pad tom" data-sound="tom">TOM <span>DOOM</span></button>
+      <button class="pad rim" data-sound="rim">RIM <span>TAK</span></button>
       <button class="pad bass" data-sound="bass">BASS <span>WUB</span></button>
-      <button class="pad voice" data-sound="voice">VOICE <span>PUNK ASS</span></button>
+      <button class="pad fx" data-sound="fx">FX <span>HYPE STAB</span></button>
     </section>
 
     <section class="controls">
-      <button class="control" id="demoBtn">▶ Demo</button>
+      <button class="control hot" id="reggaetonBtn">▶ Reggaeton</button>
+      <button class="control hot" id="dancehallBtn">▶ Dancehall</button>
       <button class="control" id="stopBtn">■ Stop</button>
     </section>
 
-    <div class="hint">Tip: use keys A S D / Z X C. Space = voice.</div>
+    <div class="hint">Keys: A S D / Z X C. Space = FX.</div>
   </main>
 
   <script>
     let ctx;
     let demoTimer = null;
     let step = 0;
+    let activePattern = null;
 
     const screen = document.getElementById('screen');
     const pads = Array.from(document.querySelectorAll('.pad'));
@@ -190,28 +194,28 @@
 
     function env(gain, t, peak, dur) {
       gain.gain.setValueAtTime(0.001, t);
-      gain.gain.exponentialRampToValueAtTime(peak, t + 0.01);
+      gain.gain.exponentialRampToValueAtTime(peak, t + 0.008);
       gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
     }
 
-    function osc(freq, dur, type, vol, slideTo) {
+    function osc(freq, dur, type, vol, slideTo, when = 0) {
       initAudio();
-      const t = ctx.currentTime;
+      const t = ctx.currentTime + when;
       const o = ctx.createOscillator();
       const g = ctx.createGain();
       o.type = type;
       o.frequency.setValueAtTime(freq, t);
-      if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t + dur);
+      if (slideTo) o.frequency.exponentialRampToValueAtTime(Math.max(slideTo, 1), t + dur);
       env(g, t, vol, dur);
       o.connect(g);
       g.connect(ctx.destination);
       o.start(t);
-      o.stop(t + dur + .03);
+      o.stop(t + dur + .04);
     }
 
-    function noise(dur, vol, filterFreq = 9000) {
+    function noise(dur, vol, filterFreq = 9000, when = 0) {
       initAudio();
-      const t = ctx.currentTime;
+      const t = ctx.currentTime + when;
       const buffer = ctx.createBuffer(1, ctx.sampleRate * dur, ctx.sampleRate);
       const data = buffer.getChannelData(0);
       for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
@@ -226,63 +230,41 @@
       filter.connect(g);
       g.connect(ctx.destination);
       src.start(t);
-      src.stop(t + dur + .03);
+      src.stop(t + dur + .04);
     }
 
-    function sayPunkAss() {
-      initAudio();
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance('punk ass');
-        u.rate = 0.82;
-        u.pitch = 0.72;
-        u.volume = 1;
-        window.speechSynthesis.speak(u);
-      }
-      osc(95, .18, 'sawtooth', .25, 55);
-      setTimeout(() => noise(.08, .2, 900), 90);
+    function hypeStab() {
+      // Replaces the bad voice effect. This is a sharp DJ-style synth stab.
+      osc(220, .09, 'square', .18, 180, 0);
+      osc(330, .11, 'sawtooth', .14, 260, .02);
+      osc(440, .13, 'triangle', .12, 330, .04);
+      noise(.08, .12, 2500, .02);
+      setTimeout(() => osc(880, .06, 'square', .10, 660), 95);
     }
 
-    function play(sound) {
+    function play(sound, visual = true) {
       initAudio();
-      if (sound === 'kick') {
-        osc(135, .22, 'sine', .75, 45);
-      }
-      if (sound === 'snare') {
-        noise(.13, .35, 1200);
-        osc(190, .08, 'triangle', .18, 120);
-      }
-      if (sound === 'hat') {
-        noise(.06, .23, 6500);
-      }
-      if (sound === 'clap') {
-        noise(.045, .25, 1500);
-        setTimeout(() => noise(.045, .23, 1500), 45);
-        setTimeout(() => noise(.07, .20, 1500), 90);
-      }
-      if (sound === 'tom') {
-        osc(230, .22, 'sine', .45, 95);
-      }
-      if (sound === 'bass') {
-        osc(80, .28, 'sawtooth', .34, 55);
-      }
-      if (sound === 'voice') {
-        sayPunkAss();
-      }
-      hitPad(sound);
+      if (sound === 'kick') osc(135, .22, 'sine', .75, 42);
+      if (sound === 'snare') { noise(.13, .35, 1200); osc(190, .08, 'triangle', .18, 120); }
+      if (sound === 'hat') noise(.05, .20, 6800);
+      if (sound === 'clap') { noise(.045, .25, 1500); setTimeout(() => noise(.045, .23, 1500), 45); setTimeout(() => noise(.07, .20, 1500), 90); }
+      if (sound === 'rim') { osc(760, .045, 'square', .18, 640); noise(.035, .08, 4200); }
+      if (sound === 'bass') osc(82, .28, 'sawtooth', .33, 54);
+      if (sound === 'fx') hypeStab();
+      if (visual) hitPad(sound);
     }
 
     function hitPad(sound) {
       const pad = document.querySelector(`[data-sound="${sound}"]`);
       if (!pad) return;
       pad.classList.add('hit');
-      setTimeout(() => pad.classList.remove('hit'), 160);
-      screen.textContent = sound === 'voice' ? 'PUNK ASS' : sound.toUpperCase();
+      setTimeout(() => pad.classList.remove('hit'), 135);
+      screen.textContent = sound === 'fx' ? 'HYPE' : sound.toUpperCase();
       pop(sound);
     }
 
     function pop(sound) {
-      const icons = { kick: '💥', snare: '⚡', hat: '✨', clap: '👏', tom: '🟢', bass: '🔊', voice: '🗣️' };
+      const icons = { kick: '💥', snare: '⚡', hat: '✨', clap: '👏', rim: '🔸', bass: '🔊', fx: '🚨' };
       const el = document.createElement('div');
       el.className = 'flash';
       el.textContent = icons[sound] || '🎵';
@@ -299,26 +281,52 @@
       });
     });
 
-    const demo = ['kick', 'hat', 'snare', 'hat', 'kick', 'hat', 'voice', 'hat', 'kick', 'tom', 'snare', 'bass'];
-
-    document.getElementById('demoBtn').onclick = () => {
-      initAudio();
-      clearInterval(demoTimer);
-      step = 0;
-      screen.textContent = 'DEMO';
-      demoTimer = setInterval(() => {
-        play(demo[step % demo.length]);
-        step++;
-      }, 230);
+    // 16-step patterns. Multiple sounds can hit on the same step.
+    const patterns = {
+      reggaeton: {
+        name: 'REGGAETON',
+        speed: 150,
+        steps: [
+          ['kick','bass'], ['hat'], ['rim'], ['hat'],
+          ['snare','clap'], ['hat'], ['kick'], ['hat'],
+          ['kick','bass'], ['hat'], ['rim'], ['hat'],
+          ['snare','clap'], ['hat'], ['kick','fx'], ['hat']
+        ]
+      },
+      dancehall: {
+        name: 'DANCEHALL',
+        speed: 165,
+        steps: [
+          ['kick','bass'], [], ['hat'], ['rim'],
+          ['snare'], ['hat'], [], ['kick'],
+          ['clap'], [], ['hat'], ['rim'],
+          ['snare','bass'], ['hat'], ['fx'], ['kick']
+        ]
+      }
     };
 
+    function startPattern(type) {
+      initAudio();
+      clearInterval(demoTimer);
+      activePattern = patterns[type];
+      step = 0;
+      screen.textContent = activePattern.name;
+      demoTimer = setInterval(() => {
+        const sounds = activePattern.steps[step % activePattern.steps.length];
+        sounds.forEach((s, i) => setTimeout(() => play(s), i * 18));
+        step++;
+      }, activePattern.speed);
+    }
+
+    document.getElementById('reggaetonBtn').onclick = () => startPattern('reggaeton');
+    document.getElementById('dancehallBtn').onclick = () => startPattern('dancehall');
     document.getElementById('stopBtn').onclick = () => {
       clearInterval(demoTimer);
-      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      activePattern = null;
       screen.textContent = 'Stopped';
     };
 
-    const keyMap = { a: 'kick', s: 'snare', d: 'hat', z: 'clap', x: 'tom', c: 'bass', ' ': 'voice' };
+    const keyMap = { a: 'kick', s: 'snare', d: 'hat', z: 'clap', x: 'rim', c: 'bass', ' ': 'fx' };
     window.addEventListener('keydown', e => {
       const sound = keyMap[e.key.toLowerCase()];
       if (sound) {
