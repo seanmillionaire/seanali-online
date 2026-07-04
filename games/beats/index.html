@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beats</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top, #3b1d63, #101018 65%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .mpc {
+      width: 100%;
+      max-width: 540px;
+      background: linear-gradient(180deg, #242434, #15151f);
+      border: 5px solid #3f3f55;
+      border-radius: 32px;
+      padding: 18px;
+      box-shadow: 0 22px 50px rgba(0,0,0,.45);
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 40px;
+      line-height: 1;
+      letter-spacing: -1px;
+    }
+    .screen {
+      background: #b8ff6a;
+      color: #12210b;
+      border-radius: 16px;
+      padding: 12px 14px;
+      font-size: 18px;
+      font-weight: 900;
+      text-align: right;
+      min-width: 150px;
+      box-shadow: inset 0 0 0 4px rgba(0,0,0,.12);
+    }
+    .sub {
+      font-size: 19px;
+      font-weight: 800;
+      margin: 0 0 16px;
+      color: #d7d7ff;
+    }
+    .pads {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+    .pad {
+      min-height: 135px;
+      border: 0;
+      border-radius: 24px;
+      color: white;
+      font-size: 27px;
+      font-weight: 900;
+      box-shadow: 0 9px 0 rgba(0,0,0,.45), inset 0 0 0 4px rgba(255,255,255,.08);
+      cursor: pointer;
+      touch-action: manipulation;
+      position: relative;
+      overflow: hidden;
+    }
+    .pad span {
+      display: block;
+      font-size: 16px;
+      opacity: .86;
+      margin-top: 7px;
+      letter-spacing: 1px;
+    }
+    .pad:active, .pad.hit {
+      transform: translateY(7px) scale(.98);
+      box-shadow: 0 2px 0 rgba(0,0,0,.45), inset 0 0 0 4px rgba(255,255,255,.2);
+      filter: brightness(1.25);
+    }
+    .kick { background: linear-gradient(160deg, #ff3b3b, #9b1212); }
+    .snare { background: linear-gradient(160deg, #3b8cff, #113c9b); }
+    .hat { background: linear-gradient(160deg, #ffd43b, #b87900); color: #221700; }
+    .clap { background: linear-gradient(160deg, #ff5ee7, #8f1680); }
+    .tom { background: linear-gradient(160deg, #41e38b, #0e7a43); }
+    .bass { background: linear-gradient(160deg, #9c5cff, #3a167e); }
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .control {
+      min-height: 66px;
+      border: 0;
+      border-radius: 18px;
+      background: #f1f1f1;
+      color: #17171f;
+      font-size: 22px;
+      font-weight: 900;
+      box-shadow: 0 6px 0 #8a8a8a;
+      cursor: pointer;
+    }
+    .control:active {
+      transform: translateY(5px);
+      box-shadow: 0 1px 0 #8a8a8a;
+    }
+    .hint {
+      text-align: center;
+      color: #bfc0ff;
+      font-weight: 800;
+      margin-top: 14px;
+      font-size: 16px;
+    }
+    .flash {
+      position: fixed;
+      pointer-events: none;
+      font-size: 48px;
+      animation: pop .55s ease forwards;
+      z-index: 20;
+    }
+    @keyframes pop {
+      0% { transform: translate(-50%, -50%) scale(.4); opacity: 0; }
+      30% { transform: translate(-50%, -80%) scale(1.25); opacity: 1; }
+      100% { transform: translate(-50%, -140%) scale(.85); opacity: 0; }
+    }
+    @media (min-width: 650px) {
+      .pads { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 390px) {
+      .mpc { padding: 14px; border-radius: 26px; }
+      h1 { font-size: 34px; }
+      .screen { font-size: 16px; min-width: 124px; }
+      .pad { min-height: 122px; font-size: 24px; }
+      .control { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="mpc">
+    <div class="top">
+      <h1>BEATS</h1>
+      <div class="screen" id="screen">Tap a pad</div>
+    </div>
+    <p class="sub">Mini MPC. Big buttons. Make noise.</p>
+
+    <section class="pads">
+      <button class="pad kick" data-sound="kick">KICK <span>BOOM</span></button>
+      <button class="pad snare" data-sound="snare">SNARE <span>PAH</span></button>
+      <button class="pad hat" data-sound="hat">HAT <span>TSS</span></button>
+      <button class="pad clap" data-sound="clap">CLAP <span>CLAP</span></button>
+      <button class="pad tom" data-sound="tom">TOM <span>DOOM</span></button>
+      <button class="pad bass" data-sound="bass">BASS <span>WUB</span></button>
+    </section>
+
+    <section class="controls">
+      <button class="control" id="demoBtn">▶ Demo</button>
+      <button class="control" id="stopBtn">■ Stop</button>
+    </section>
+
+    <div class="hint">Tip: use keys A S D / Z X C on computer.</div>
+  </main>
+
+  <script>
+    let ctx;
+    let demoTimer = null;
+    let step = 0;
+
+    const screen = document.getElementById('screen');
+    const pads = Array.from(document.querySelectorAll('.pad'));
+
+    function initAudio() {
+      if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if (ctx.state === 'suspended') ctx.resume();
+    }
+
+    function env(gain, t, peak, dur) {
+      gain.gain.setValueAtTime(0.001, t);
+      gain.gain.exponentialRampToValueAtTime(peak, t + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    }
+
+    function osc(freq, dur, type, vol, slideTo) {
+      initAudio();
+      const t = ctx.currentTime;
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = type;
+      o.frequency.setValueAtTime(freq, t);
+      if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t + dur);
+      env(g, t, vol, dur);
+      o.connect(g);
+      g.connect(ctx.destination);
+      o.start(t);
+      o.stop(t + dur + .03);
+    }
+
+    function noise(dur, vol, filterFreq = 9000) {
+      initAudio();
+      const t = ctx.currentTime;
+      const buffer = ctx.createBuffer(1, ctx.sampleRate * dur, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+      const src = ctx.createBufferSource();
+      const filter = ctx.createBiquadFilter();
+      const g = ctx.createGain();
+      filter.type = 'highpass';
+      filter.frequency.value = filterFreq;
+      env(g, t, vol, dur);
+      src.buffer = buffer;
+      src.connect(filter);
+      filter.connect(g);
+      g.connect(ctx.destination);
+      src.start(t);
+      src.stop(t + dur + .03);
+    }
+
+    function play(sound) {
+      initAudio();
+      if (sound === 'kick') {
+        osc(135, .22, 'sine', .75, 45);
+      }
+      if (sound === 'snare') {
+        noise(.13, .35, 1200);
+        osc(190, .08, 'triangle', .18, 120);
+      }
+      if (sound === 'hat') {
+        noise(.06, .23, 6500);
+      }
+      if (sound === 'clap') {
+        noise(.045, .25, 1500);
+        setTimeout(() => noise(.045, .23, 1500), 45);
+        setTimeout(() => noise(.07, .20, 1500), 90);
+      }
+      if (sound === 'tom') {
+        osc(230, .22, 'sine', .45, 95);
+      }
+      if (sound === 'bass') {
+        osc(80, .28, 'sawtooth', .34, 55);
+      }
+      hitPad(sound);
+    }
+
+    function hitPad(sound) {
+      const pad = document.querySelector(`[data-sound="${sound}"]`);
+      if (!pad) return;
+      pad.classList.add('hit');
+      setTimeout(() => pad.classList.remove('hit'), 120);
+      screen.textContent = sound.toUpperCase();
+      pop(sound);
+    }
+
+    function pop(sound) {
+      const icons = { kick: '💥', snare: '⚡', hat: '✨', clap: '👏', tom: '🟢', bass: '🔊' };
+      const el = document.createElement('div');
+      el.className = 'flash';
+      el.textContent = icons[sound] || '🎵';
+      el.style.left = (25 + Math.random() * 50) + 'vw';
+      el.style.top = (45 + Math.random() * 25) + 'vh';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 650);
+    }
+
+    pads.forEach(pad => {
+      pad.addEventListener('pointerdown', e => {
+        e.preventDefault();
+        play(pad.dataset.sound);
+      });
+    });
+
+    const demo = ['kick', 'hat', 'snare', 'hat', 'kick', 'hat', 'clap', 'hat', 'kick', 'tom', 'snare', 'bass'];
+
+    document.getElementById('demoBtn').onclick = () => {
+      initAudio();
+      clearInterval(demoTimer);
+      step = 0;
+      screen.textContent = 'DEMO';
+      demoTimer = setInterval(() => {
+        play(demo[step % demo.length]);
+        step++;
+      }, 210);
+    };
+
+    document.getElementById('stopBtn').onclick = () => {
+      clearInterval(demoTimer);
+      screen.textContent = 'Stopped';
+    };
+
+    const keyMap = { a: 'kick', s: 'snare', d: 'hat', z: 'clap', x: 'tom', c: 'bass' };
+    window.addEventListener('keydown', e => {
+      const sound = keyMap[e.key.toLowerCase()];
+      if (sound) play(sound);
+    });
+  </script>
+</body>
+</html>
