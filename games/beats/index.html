@@ -94,6 +94,7 @@
     .clap { background: linear-gradient(160deg, #ff5ee7, #8f1680); }
     .tom { background: linear-gradient(160deg, #41e38b, #0e7a43); }
     .bass { background: linear-gradient(160deg, #9c5cff, #3a167e); }
+    .voice { background: linear-gradient(160deg, #ffffff, #ff7a18); color: #171018; grid-column: 1 / -1; min-height: 112px; }
     .controls {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -136,12 +137,14 @@
     }
     @media (min-width: 650px) {
       .pads { grid-template-columns: repeat(3, 1fr); }
+      .voice { grid-column: 1 / -1; }
     }
     @media (max-width: 390px) {
       .mpc { padding: 14px; border-radius: 26px; }
       h1 { font-size: 34px; }
       .screen { font-size: 16px; min-width: 124px; }
       .pad { min-height: 122px; font-size: 24px; }
+      .voice { min-height: 98px; }
       .control { font-size: 20px; }
     }
   </style>
@@ -161,6 +164,7 @@
       <button class="pad clap" data-sound="clap">CLAP <span>CLAP</span></button>
       <button class="pad tom" data-sound="tom">TOM <span>DOOM</span></button>
       <button class="pad bass" data-sound="bass">BASS <span>WUB</span></button>
+      <button class="pad voice" data-sound="voice">VOICE <span>PUNK ASS</span></button>
     </section>
 
     <section class="controls">
@@ -168,7 +172,7 @@
       <button class="control" id="stopBtn">■ Stop</button>
     </section>
 
-    <div class="hint">Tip: use keys A S D / Z X C on computer.</div>
+    <div class="hint">Tip: use keys A S D / Z X C. Space = voice.</div>
   </main>
 
   <script>
@@ -225,6 +229,20 @@
       src.stop(t + dur + .03);
     }
 
+    function sayPunkAss() {
+      initAudio();
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance('punk ass');
+        u.rate = 0.82;
+        u.pitch = 0.72;
+        u.volume = 1;
+        window.speechSynthesis.speak(u);
+      }
+      osc(95, .18, 'sawtooth', .25, 55);
+      setTimeout(() => noise(.08, .2, 900), 90);
+    }
+
     function play(sound) {
       initAudio();
       if (sound === 'kick') {
@@ -248,6 +266,9 @@
       if (sound === 'bass') {
         osc(80, .28, 'sawtooth', .34, 55);
       }
+      if (sound === 'voice') {
+        sayPunkAss();
+      }
       hitPad(sound);
     }
 
@@ -255,13 +276,13 @@
       const pad = document.querySelector(`[data-sound="${sound}"]`);
       if (!pad) return;
       pad.classList.add('hit');
-      setTimeout(() => pad.classList.remove('hit'), 120);
-      screen.textContent = sound.toUpperCase();
+      setTimeout(() => pad.classList.remove('hit'), 160);
+      screen.textContent = sound === 'voice' ? 'PUNK ASS' : sound.toUpperCase();
       pop(sound);
     }
 
     function pop(sound) {
-      const icons = { kick: '💥', snare: '⚡', hat: '✨', clap: '👏', tom: '🟢', bass: '🔊' };
+      const icons = { kick: '💥', snare: '⚡', hat: '✨', clap: '👏', tom: '🟢', bass: '🔊', voice: '🗣️' };
       const el = document.createElement('div');
       el.className = 'flash';
       el.textContent = icons[sound] || '🎵';
@@ -278,7 +299,7 @@
       });
     });
 
-    const demo = ['kick', 'hat', 'snare', 'hat', 'kick', 'hat', 'clap', 'hat', 'kick', 'tom', 'snare', 'bass'];
+    const demo = ['kick', 'hat', 'snare', 'hat', 'kick', 'hat', 'voice', 'hat', 'kick', 'tom', 'snare', 'bass'];
 
     document.getElementById('demoBtn').onclick = () => {
       initAudio();
@@ -288,18 +309,22 @@
       demoTimer = setInterval(() => {
         play(demo[step % demo.length]);
         step++;
-      }, 210);
+      }, 230);
     };
 
     document.getElementById('stopBtn').onclick = () => {
       clearInterval(demoTimer);
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       screen.textContent = 'Stopped';
     };
 
-    const keyMap = { a: 'kick', s: 'snare', d: 'hat', z: 'clap', x: 'tom', c: 'bass' };
+    const keyMap = { a: 'kick', s: 'snare', d: 'hat', z: 'clap', x: 'tom', c: 'bass', ' ': 'voice' };
     window.addEventListener('keydown', e => {
       const sound = keyMap[e.key.toLowerCase()];
-      if (sound) play(sound);
+      if (sound) {
+        e.preventDefault();
+        play(sound);
+      }
     });
   </script>
 </body>
