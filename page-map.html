@@ -3,74 +3,106 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SeanAli.online Full Page Map</title>
-<meta name="description" content="Full visual map of SeanAli.online pages categorized by folders, funnel role, and business purpose.">
+<title>SeanAli.online Page Map</title>
+<meta name="description" content="Clean visual list of SeanAli.online repo pages categorized by folder and purpose.">
 <meta name="robots" content="noindex, follow">
 <link rel="icon" type="image/png" href="https://hypnoticmeditations.b-cdn.net/images/fav/headphones.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f6f7fb;--ink:#111827;--muted:#667085;--line:#e5e7eb;--orange:#ff4d22;--orange2:#ff8a00;--blue:#2563eb;--green:#16a34a;--purple:#7c3aed;--dark:#0f172a}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top left,rgba(255,77,34,.13),transparent 34%),radial-gradient(circle at bottom right,rgba(37,99,235,.11),transparent 32%),var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.wrap{width:min(1220px,100%);margin:auto;padding:28px 18px 70px}.top{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:30px}.brand{display:flex;align-items:center;gap:12px;color:var(--ink);text-decoration:none;font-weight:900}.brand-mark{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--orange),var(--orange2));color:#fff;box-shadow:0 12px 26px rgba(255,77,34,.24)}.home{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 15px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--ink);text-decoration:none;font-size:13px;font-weight:900}.hero{padding:42px 28px;border:1px solid var(--line);border-radius:28px;background:rgba(255,255,255,.9);box-shadow:0 24px 70px rgba(15,23,42,.08);text-align:center}.eyebrow{display:inline-flex;margin-bottom:14px;padding:8px 11px;border-radius:999px;background:#fff2e8;color:#c2410c;font-size:12px;font-weight:950;text-transform:uppercase;letter-spacing:.08em}h1{max-width:900px;margin:0 auto 14px;font-size:clamp(38px,6vw,72px);line-height:.93;letter-spacing:-.06em;font-weight:950}h1 span{color:var(--orange)}.sub{max-width:780px;margin:0 auto;color:var(--muted);font-size:19px;line-height:1.5;font-weight:700}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px auto 0;max-width:900px}.stat{padding:16px;border:1px solid var(--line);border-radius:18px;background:#fff}.stat b{display:block;font-size:28px;letter-spacing:-.04em}.stat span{display:block;margin-top:4px;color:var(--muted);font-size:12px;font-weight:900;text-transform:uppercase}.section{margin-top:28px}.section-head{margin:0 0 14px}.section-head h2{margin:0;font-size:28px;letter-spacing:-.04em}.section-head p{margin:5px 0 0;color:var(--muted);font-size:14px;font-weight:700}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{position:relative;display:flex;flex-direction:column;min-height:178px;padding:22px;border:1px solid var(--line);border-radius:24px;background:rgba(255,255,255,.95);box-shadow:0 16px 40px rgba(15,23,42,.06);text-decoration:none;color:var(--ink);transition:.18s transform,.18s box-shadow}.card:hover{transform:translateY(-4px);box-shadow:0 24px 55px rgba(15,23,42,.11)}.tag{width:max-content;margin-bottom:13px;padding:7px 10px;border-radius:999px;background:#f3f4f6;color:#344054;font-size:11px;font-weight:950;text-transform:uppercase;letter-spacing:.05em}.money .tag{background:#fff0e6;color:#c2410c}.seo .tag{background:#eff6ff;color:#1d4ed8}.trust .tag{background:#f0fdf4;color:#15803d}.video .tag{background:#fef2f2;color:#b91c1c}.slide .tag{background:#f5f3ff;color:#6d28d9}.asset .tag{background:#f8fafc;color:#475569}.card h3{margin:0 0 8px;font-size:22px;line-height:1.08;letter-spacing:-.035em}.card p{margin:0 0 18px;color:var(--muted);line-height:1.42;font-size:14px;font-weight:700}.path{margin-top:auto;padding-top:14px;border-top:1px solid var(--line);font-size:13px;font-weight:950;color:#334155;word-break:break-word}.folder{margin-top:32px;padding:24px;border:1px solid var(--line);border-radius:26px;background:#111827;color:#fff}.folder h2{margin:0 0 16px;font-size:26px;letter-spacing:-.04em}.tree{margin:0;padding:0;list-style:none;display:grid;gap:8px}.tree li{padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.08);font-size:14px;font-weight:850}.warning{margin-top:20px;padding:18px;border:2px solid #fed7aa;border-radius:20px;background:#fff7ed;color:#7c2d12;font-weight:850;line-height:1.45}.footer{margin-top:34px;text-align:center;color:var(--muted);font-size:13px;font-weight:800}@media(max-width:900px){.stats,.grid{grid-template-columns:1fr 1fr}.top{align-items:flex-start}.hero{padding:34px 20px}}@media(max-width:620px){.wrap{padding:18px 14px 50px}.top{display:block}.home{margin-top:12px}.hero{border-radius:22px}.stats,.grid{grid-template-columns:1fr}h1{font-size:42px}.card{min-height:0}}
+*{box-sizing:border-box}body{margin:0;background:#f7f7f5;color:#111;font-family:Inter,Arial,sans-serif;line-height:1.45}.wrap{width:min(920px,100%);margin:0 auto;padding:32px 18px 70px}.top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:28px;padding-bottom:18px;border-bottom:1px solid #ddd}.brand{font-weight:900;font-size:20px}.home{color:#111;font-weight:800;text-decoration:none;border:1px solid #ccc;border-radius:999px;padding:8px 12px;background:#fff}h1{margin:0 0 8px;font-size:42px;line-height:1;font-weight:900;letter-spacing:-.04em}p{margin:0;color:#555;font-weight:600}.summary{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 34px}.pill{border:1px solid #ddd;background:#fff;border-radius:999px;padding:8px 11px;font-size:13px;font-weight:800}.cat{margin:34px 0 0}.cat h2{margin:0 0 12px;font-size:22px;letter-spacing:-.03em}.list{display:grid;gap:8px;margin:0;padding:0;list-style:none}.item{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:13px 14px;background:#fff;border:1px solid #ddd;border-radius:10px}.item a{color:#111;font-weight:900;text-decoration:none}.item a:hover{text-decoration:underline}.item span{color:#666;font-size:13px;font-weight:700;text-align:right}.note{margin-top:34px;padding:16px;border-left:4px solid #111;background:#fff;color:#333;font-weight:700}.folder{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:13px;color:#444}@media(max-width:640px){.top{display:block}.home{display:inline-block;margin-top:12px}h1{font-size:34px}.item{grid-template-columns:1fr}.item span{text-align:left}.wrap{padding:24px 14px 56px}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header class="top"><a class="brand" href="/"><span class="brand-mark">SA</span><span>SeanAli.online</span></a><a class="home" href="/">Back Home</a></header>
-  <section class="hero"><span class="eyebrow">Full Live Site Map</span><h1>SeanAli.online <span>Page Map</span></h1><p class="sub">Updated from the repo sitemap plus verified files. This shows the main pages, conversion pages, reset pages, video pages, slideshow pages, and support assets.</p><div class="stats"><div class="stat"><b>15</b><span>Main / Money Pages</span></div><div class="stat"><b>5</b><span>Video Pages</span></div><div class="stat"><b>1</b><span>Slideshow</span></div><div class="stat"><b>3</b><span>Support Assets</span></div></div></section>
+<main class="wrap">
+  <header class="top">
+    <div class="brand">SeanAli.online Page Map</div>
+    <a class="home" href="/">Back Home</a>
+  </header>
 
-  <section class="section"><div class="section-head"><h2>Money + Conversion Pages</h2><p>Pages that should turn attention into leads, buyers, or next-step intent.</p></div><div class="grid">
-    <a class="card money" href="/prompts.html"><span class="tag">Lead Magnet</span><h3>Claude27 Prompts</h3><p>Free prompt pack opt-in page for AI income leads.</p><div class="path">/prompts.html</div></a>
-    <a class="card money" href="/prompts-guide.html"><span class="tag">Preview</span><h3>Claude27 Guide</h3><p>Guide preview page that warms people up before opt-in or offer.</p><div class="path">/prompts-guide.html</div></a>
-    <a class="card money" href="/ai-freedom-system.html"><span class="tag">Offer Selector</span><h3>AI Freedom System</h3><p>Path selector for free starter pack or full Whop offer.</p><div class="path">/ai-freedom-system.html</div></a>
-    <a class="card money" href="/system.html"><span class="tag">Sales Page</span><h3>AI Freedom System Sales</h3><p>Longer direct-response sales page for the AI Freedom System.</p><div class="path">/system.html</div></a>
-    <a class="card money" href="/flow.html"><span class="tag">VSL</span><h3>Money Block Video</h3><p>VSL page for money blocks and the 7-minute theta audio offer.</p><div class="path">/flow.html</div></a>
-    <a class="card money" href="/reset/"><span class="tag">Reset Funnel</span><h3>7-Minute Subconscious Reset</h3><p>Simple conversion page for the 7-minute subconscious reset.</p><div class="path">/reset/index.html</div></a>
-    <a class="card money" href="/guide.html"><span class="tag">Guide</span><h3>The Hidden Mental Brake</h3><p>Internal loop / before-sleep interruption guide page.</p><div class="path">/guide.html</div></a>
-    <a class="card money" href="/blueprint.html"><span class="tag">Blueprint</span><h3>Internal Success Infrastructure</h3><p>Money blocks / identity / execution blueprint page.</p><div class="path">/blueprint.html</div></a>
-  </div></section>
+  <h1>Repo Pages</h1>
+  <p>Clean list of live pages grouped by purpose and folder.</p>
 
-  <section class="section"><div class="section-head"><h2>SEO + Content Pages</h2><p>Searchable articles that should push into the right offer.</p></div><div class="grid">
-    <a class="card seo" href="/quit-your-9-to-5-with-ai.html"><span class="tag">AI Income</span><h3>Quit Your 9-5 With AI</h3><p>AI income blueprint article. Best CTA: Claude27 or AI Freedom System.</p><div class="path">/quit-your-9-to-5-with-ai.html</div></a>
-    <a class="card seo" href="/what-are-money-blocks.html"><span class="tag">Money Mindset</span><h3>What Are Money Blocks?</h3><p>Money block SEO article. Best CTA: MoneyFlow / 7-minute reset.</p><div class="path">/what-are-money-blocks.html</div></a>
-    <a class="card seo" href="/how-to-reprogram-your-subconscious-mind.html"><span class="tag">Subconscious</span><h3>Reprogram Your Subconscious</h3><p>Subconscious reprogramming article. Best CTA: Hypnotic Meditations.</p><div class="path">/how-to-reprogram-your-subconscious-mind.html</div></a>
-    <a class="card seo" href="/best-ai-manifestation-app.html"><span class="tag">Manifestation</span><h3>Best AI Manifestation App</h3><p>Manifestation Genie SEO article. Best CTA: ManifestationGenie.ai.</p><div class="path">/best-ai-manifestation-app.html</div></a>
-  </div></section>
+  <div class="summary">
+    <div class="pill">15 main / money pages</div>
+    <div class="pill">5 video pages</div>
+    <div class="pill">1 slideshow page</div>
+    <div class="pill">3 support assets</div>
+  </div>
 
-  <section class="section"><div class="section-head"><h2>Trust + Hub Pages</h2><p>Pages that give people context, proof, navigation, and reason to believe.</p></div><div class="grid">
-    <a class="card trust" href="/"><span class="tag">Homepage</span><h3>Main Homepage</h3><p>Main Sean Ali authority page and central traffic router.</p><div class="path">/index.html</div></a>
-    <a class="card trust" href="/feed.html"><span class="tag">Hub</span><h3>Social Feed</h3><p>Social-style content feed linking to articles, offers, and brands.</p><div class="path">/feed.html</div></a>
-    <a class="card trust" href="/story.html"><span class="tag">Authority</span><h3>Sean Ali Story</h3><p>Origin story, credibility, proof, and personal brand trust page.</p><div class="path">/story.html</div></a>
-  </div></section>
+  <section class="cat">
+    <h2>Money + Conversion Pages</h2>
+    <ul class="list">
+      <li class="item"><a href="/prompts.html">Claude27 Prompts</a><span>/prompts.html</span></li>
+      <li class="item"><a href="/prompts-guide.html">Claude27 Guide Preview</a><span>/prompts-guide.html</span></li>
+      <li class="item"><a href="/ai-freedom-system.html">AI Freedom System</a><span>/ai-freedom-system.html</span></li>
+      <li class="item"><a href="/system.html">AI Freedom System Sales Page</a><span>/system.html</span></li>
+      <li class="item"><a href="/flow.html">Money Block VSL</a><span>/flow.html</span></li>
+      <li class="item"><a href="/reset/">7-Minute Subconscious Reset</a><span>/reset/index.html</span></li>
+      <li class="item"><a href="/guide.html">The Hidden Mental Brake</a><span>/guide.html</span></li>
+      <li class="item"><a href="/blueprint.html">Internal Success Infrastructure</a><span>/blueprint.html</span></li>
+    </ul>
+  </section>
 
-  <section class="section"><div class="section-head"><h2>Video / Interactive Pages</h2><p>Deck-style or video pages sitting under the /videos folder.</p></div><div class="grid">
-    <a class="card video" href="/videos/moneyblocks1.html"><span class="tag">Money Blocks</span><h3>Money Blocks Day 1</h3><p>The subconscious money code most people never find out about.</p><div class="path">/videos/moneyblocks1.html</div></a>
-    <a class="card video" href="/videos/genie.html"><span class="tag">Genie</span><h3>Manifestation Genie Video</h3><p>Manifestation app page focused on doing the work, not just affirmations.</p><div class="path">/videos/genie.html</div></a>
-    <a class="card video" href="/videos/wrong.html"><span class="tag">Neville</span><h3>Manifesting Money Wrong</h3><p>3 signs you are manifesting money wrong.</p><div class="path">/videos/wrong.html</div></a>
-    <a class="card video" href="/videos/3rdeye.html"><span class="tag">Neville</span><h3>3rd Eye Blocked</h3><p>Why your 3rd eye is blocked.</p><div class="path">/videos/3rdeye.html</div></a>
-    <a class="card video" href="/videos/7secrets.html"><span class="tag">Think & Grow Rich</span><h3>7 Secrets They Hid</h3><p>Think & Grow Rich / wealth secrets style deck page.</p><div class="path">/videos/7secrets.html</div></a>
-  </div></section>
+  <section class="cat">
+    <h2>SEO + Content Pages</h2>
+    <ul class="list">
+      <li class="item"><a href="/quit-your-9-to-5-with-ai.html">How To Quit Your 9-5 With AI</a><span>/quit-your-9-to-5-with-ai.html</span></li>
+      <li class="item"><a href="/what-are-money-blocks.html">What Are Money Blocks?</a><span>/what-are-money-blocks.html</span></li>
+      <li class="item"><a href="/how-to-reprogram-your-subconscious-mind.html">How To Reprogram Your Subconscious Mind</a><span>/how-to-reprogram-your-subconscious-mind.html</span></li>
+      <li class="item"><a href="/best-ai-manifestation-app.html">Best AI Manifestation App</a><span>/best-ai-manifestation-app.html</span></li>
+    </ul>
+  </section>
 
-  <section class="section"><div class="section-head"><h2>Slideshows</h2><p>Interactive content experiences for search, sharing, and warm traffic.</p></div><div class="grid">
-    <a class="card slide" href="/slideshows/manifestation/2026-07-04-joe-dispenza-becoming-supernatural-review.html"><span class="tag">Manifestation</span><h3>Becoming Supernatural Review</h3><p>Joe Dispenza / Becoming Supernatural slideshow review.</p><div class="path">/slideshows/manifestation/2026-07-04-joe-dispenza-becoming-supernatural-review.html</div></a>
-  </div></section>
+  <section class="cat">
+    <h2>Trust + Hub Pages</h2>
+    <ul class="list">
+      <li class="item"><a href="/">Homepage</a><span>/index.html</span></li>
+      <li class="item"><a href="/feed.html">Social Feed / Hub</a><span>/feed.html</span></li>
+      <li class="item"><a href="/story.html">Sean Ali Story</a><span>/story.html</span></li>
+    </ul>
+  </section>
 
-  <section class="section"><div class="section-head"><h2>Support Assets</h2><p>Files that power pages but are not core landing pages.</p></div><div class="grid">
-    <a class="card asset" href="/assets/social-blog.css"><span class="tag">CSS</span><h3>Social Blog Styles</h3><p>Stylesheet for the feed / social blog layout.</p><div class="path">/assets/social-blog.css</div></a>
-    <a class="card asset" href="/assets/social-blog.js"><span class="tag">JS</span><h3>Social Blog Script</h3><p>JavaScript for interactive feed behavior.</p><div class="path">/assets/social-blog.js</div></a>
-    <a class="card asset" href="/resume.pdf"><span class="tag">PDF</span><h3>Resume PDF</h3><p>PDF linked from the footer.</p><div class="path">/resume.pdf</div></a>
-  </div></section>
+  <section class="cat">
+    <h2>Video Pages</h2>
+    <ul class="list">
+      <li class="item"><a href="/videos/moneyblocks1.html">Money Blocks Day 1</a><span>/videos/moneyblocks1.html</span></li>
+      <li class="item"><a href="/videos/genie.html">Manifestation Genie Video</a><span>/videos/genie.html</span></li>
+      <li class="item"><a href="/videos/wrong.html">Manifesting Money Wrong</a><span>/videos/wrong.html</span></li>
+      <li class="item"><a href="/videos/3rdeye.html">3rd Eye Blocked</a><span>/videos/3rdeye.html</span></li>
+      <li class="item"><a href="/videos/7secrets.html">7 Secrets They Hid</a><span>/videos/7secrets.html</span></li>
+    </ul>
+  </section>
 
-  <section class="folder"><h2>Folder View</h2><ul class="tree">
-    <li>/ — index, feed, story, guide, blueprint, system, ai-freedom-system, prompts, prompts-guide, flow, SEO articles, page-map</li>
-    <li>/reset/ — reset/index.html</li>
-    <li>/videos/ — moneyblocks1, genie, wrong, 3rdeye, 7secrets</li>
-    <li>/slideshows/manifestation/ — Becoming Supernatural review</li>
-    <li>/assets/ — social-blog.css, social-blog.js</li>
-  </ul></section>
+  <section class="cat">
+    <h2>Slideshows</h2>
+    <ul class="list">
+      <li class="item"><a href="/slideshows/manifestation/2026-07-04-joe-dispenza-becoming-supernatural-review.html">Becoming Supernatural Review</a><span>/slideshows/manifestation/...</span></li>
+    </ul>
+  </section>
 
-  <div class="warning">Truth: I missed pages because the first version was based on known links, not the sitemap. This version includes the sitemap-listed pages and verified files.</div>
-  <footer class="footer">© 2026 Sean Ali · Full visual page map</footer>
-</div>
+  <section class="cat">
+    <h2>Support Assets</h2>
+    <ul class="list">
+      <li class="item"><a href="/assets/social-blog.css">Social Blog CSS</a><span>/assets/social-blog.css</span></li>
+      <li class="item"><a href="/assets/social-blog.js">Social Blog JS</a><span>/assets/social-blog.js</span></li>
+      <li class="item"><a href="/resume.pdf">Resume PDF</a><span>/resume.pdf</span></li>
+    </ul>
+  </section>
+
+  <section class="cat">
+    <h2>Folder View</h2>
+    <ul class="list folder">
+      <li class="item"><a href="/">/</a><span>main pages + articles</span></li>
+      <li class="item"><a href="/reset/">/reset/</a><span>reset funnel</span></li>
+      <li class="item"><a href="/videos/moneyblocks1.html">/videos/</a><span>5 video/deck pages</span></li>
+      <li class="item"><a href="/slideshows/manifestation/2026-07-04-joe-dispenza-becoming-supernatural-review.html">/slideshows/manifestation/</a><span>manifestation slideshows</span></li>
+      <li class="item"><a href="/assets/social-blog.css">/assets/</a><span>CSS + JS</span></li>
+    </ul>
+  </section>
+
+  <div class="note">Operator note: this is now a simple internal map. No heavy design. Just categories, links, and paths.</div>
+</main>
 </body>
 </html>
