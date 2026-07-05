@@ -1,14 +1,13 @@
 (() => {
   function loadSharedGameScripts() {
     const scripts = [
-      { flag: 'SeanGameAppViewLoaded', src: '/games/app-view.js' },
-      { flag: 'SeanGameBreadcrumbsLoaded', src: '/games/breadcrumbs.js' },
-      { flag: 'SeanGameLangLoaded', src: '/games/lang.js' }
+      { global: 'SeanGameAppViewReady', src: '/games/app-view.js' },
+      { global: 'SeanGameBreadcrumbsReady', src: '/games/breadcrumbs.js' },
+      { global: 'SeanGameLangReady', src: '/games/lang.js' }
     ];
 
     scripts.forEach(item => {
-      if (window[item.flag]) return;
-      window[item.flag] = true;
+      if (window[item.global] || document.querySelector(`script[src="${item.src}"]`)) return;
       const script = document.createElement('script');
       script.src = item.src;
       script.defer = true;
