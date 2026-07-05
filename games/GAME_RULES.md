@@ -57,7 +57,18 @@ Use simple kid reward loops:
 Avoid complicated accounts or logins for now. Use localStorage when useful.
 
 ### 4. Voice guidance
-Every game should include voice help when possible using browser speech synthesis.
+Every game should include voice help.
+
+Voice priority:
+1. Use the shared ElevenLabs helper when possible: `/games/voice.js`.
+2. The helper calls the secure server route: `/api/tts`.
+3. If ElevenLabs is not configured or fails, fall back to browser speech synthesis.
+
+The API key must never be placed in browser JavaScript.
+Use Vercel environment variables:
+- `ELEVENLABS_API_KEY`
+- `ELEVENLABS_VOICE_ID`
+- Optional: `ELEVENLABS_MODEL_ID`
 
 Voice should:
 - Explain the game at the start
