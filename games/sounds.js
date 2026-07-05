@@ -13,6 +13,7 @@
     }
     if (gamePath === '/games/elements/') scripts.push({ global: 'ElementsClueBarLoaded', src: '/games/elements/clue-bar.js?v=1' });
     if (gamePath === '/games/family-gems/') scripts.push({ global: 'FamilyGemsClueRiddlesLoaded', src: '/games/family-gems/clue-riddles.js?v=1' });
+    if (gamePath === '/games/piano/') scripts.push({ global: 'PianoFreestyleLoaded', src: '/games/piano/freestyle.js?v=1' });
 
     scripts.forEach(item => {
       if (window[item.global] || document.querySelector(`script[src^="${item.src.split('?')[0]}"]`)) return;
@@ -104,7 +105,7 @@ window.SeanGameSounds = (() => {
   function water() { tone(440, 0.10, 'sine', 0.06, 0); tone(620, 0.12, 'sine', 0.05, 0.10); tone(510, 0.12, 'sine', 0.04, 0.22); }
   function wind() { tone(260, 0.20, 'sine', 0.04, 0); tone(370, 0.25, 'triangle', 0.03, 0.12); }
   function earth() { tone(90, 0.18, 'sine', 0.09, 0); tone(145, 0.12, 'triangle', 0.05, 0.08); }
-  function piano(note = 'C') { const map = { C:261.63, D:293.66, E:329.63, F:349.23, G:392, A:440, B:493.88, C2:523.25 }; const f = map[note] || map.C; tone(f, 0.28, 'triangle', 0.12, 0); tone(f * 2, 0.16, 'sine', 0.05, 0.01); }
+  function piano(note = 'C') { const map = { C:261.63, D:293.66, E:329.63, F:349.23, G:392, A:440, B:493.88, C2:523.25 }; const f = map[note] || map.C; tone(f, 0.28, 'triangle', 0.12, 0); tone(f * 1.25, 0.24, 'sine', 0.07, 0.01); tone(f * 1.5, 0.25, 'sine', 0.07, 0.02); tone(f * 2, 0.16, 'sine', 0.05, 0.03); }
   function food() { pop(); tone(760, 0.06, 'triangle', 0.07, 0.05); }
   function toggle() { enabled = !enabled; return enabled; }
   function setEnabled(value) { enabled = Boolean(value); return enabled; }
