@@ -2,17 +2,19 @@
   if (document.querySelector('[data-game-breadcrumbs]')) return;
 
   const games = [
-    { href: '/games/tongue-twister/', label: '🌀 Tongue Twister' },
+    { href: '/games/math-race/', label: '🚗 Math Race' },
+    { href: '/games/elements/', label: '🌎 Elements' },
     { href: '/games/family/', label: '👨‍👩‍👧 Family' },
     { href: '/games/money/', label: '💰 Money' },
+    { href: '/games/tongue-twister/', label: '🌀 Tongue Twister' },
     { href: '/games/food-groups/', label: '🥑 Food' },
-    { href: '/games/math-race/', label: '🚗 Math Race' },
     { href: '/games/selva/', label: '🌿 Selva' },
     { href: '/games/beats/', label: '🥁 Beats' }
   ];
 
   const names = {
     '/games/': 'Games',
+    '/games/elements/': 'The Elements',
     '/games/tongue-twister/': 'Tongue Twister',
     '/games/family/': 'Family',
     '/games/money/': 'Money',
