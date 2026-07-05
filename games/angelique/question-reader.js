@@ -3,6 +3,12 @@
   if (!isAngeliqueGame || window.AngeliqueQuestionReaderLoaded) return;
   window.AngeliqueQuestionReaderLoaded = true;
 
+  if (!document.querySelector('script[src^="/games/angelique/wrong-effect.js"]')) {
+    const wrong = document.createElement('script');
+    wrong.src = '/games/angelique/wrong-effect.js?v=1';
+    document.head.appendChild(wrong);
+  }
+
   const style = document.createElement('style');
   style.textContent = `
     .angelique-listen{position:fixed;left:14px;bottom:14px;z-index:9999;border:3px solid #8b2d7b;border-radius:999px;background:linear-gradient(180deg,#d5fff0,#34d17a);color:#28123f;font:900 16px/1 Arial,sans-serif;padding:13px 15px;box-shadow:0 7px 0 rgba(0,0,0,.26);cursor:pointer}
