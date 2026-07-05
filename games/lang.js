@@ -7,7 +7,7 @@
   const esToEn = {
     'Juegos móviles educativos':'Mobile learning games',
     'Sean Ali Juegos Educativos Gratis':'Sean Ali Free Education Games',
-    'Para niños: trabalenguas, familia, dinero, matemáticas, español, comida, música, memoria y diversión — toca y juega.':'For kids: tongue twisters, family, money, math, Spanish, food, music, memory and fun — tap and play.',
+    'Enfoca la mente. Practica la escuela. Aprende lecciones de vida en minutos.':'Build focus. Practice school skills. Learn life lessons in minutes.',
     'Trabalenguas':'Tongue Twister',
     'Elige una letra y desbloquea una frase que dobla la mente con emojis visuales.':'Choose a letter and unlock a mind-bending phrase with emoji visuals.',
     'Lenguaje':'Language',
