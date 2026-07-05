@@ -5,6 +5,13 @@
   window.SeanGameAppViewLoaded = true;
   window.SeanGameAppViewReady = true;
 
+  if (!document.querySelector('link[href="/games/arcade-skin.css"]')) {
+    const skin = document.createElement('link');
+    skin.rel = 'stylesheet';
+    skin.href = '/games/arcade-skin.css';
+    document.head.appendChild(skin);
+  }
+
   const style = document.createElement('style');
   style.textContent = `
     html{scroll-behavior:auto!important;scroll-padding-top:0!important}
