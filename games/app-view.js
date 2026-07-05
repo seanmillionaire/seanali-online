@@ -1,4 +1,6 @@
 (() => {
+  const path = window.location.pathname.replace(/\/+$/, '/') || '/';
+  if (path === '/games/') return;
   if (window.SeanGameAppViewLoaded) return;
   window.SeanGameAppViewLoaded = true;
   window.SeanGameAppViewReady = true;
