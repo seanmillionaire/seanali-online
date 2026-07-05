@@ -2,6 +2,7 @@
   if (document.querySelector('[data-game-breadcrumbs]')) return;
 
   const games = [
+    { href: '/games/tongue-twister/', label: '🌀 Tongue Twister' },
     { href: '/games/family/', label: '👨‍👩‍👧 Family' },
     { href: '/games/money/', label: '💰 Money' },
     { href: '/games/food-groups/', label: '🥑 Food' },
@@ -12,6 +13,7 @@
 
   const names = {
     '/games/': 'Games',
+    '/games/tongue-twister/': 'Tongue Twister',
     '/games/family/': 'Family',
     '/games/money/': 'Money',
     '/games/food-groups/': 'Comida Natural',
