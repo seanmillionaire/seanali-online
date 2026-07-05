@@ -151,7 +151,7 @@
   }
 
   function area() { return document.querySelector('.stage') || document.querySelector('.scene') || document.querySelector('.road') || document.querySelector('.pads') || document.querySelector('.game') || document.querySelector('.mpc') || document.querySelector('.wrap') || document.body; }
-  function centerAction() { try { if (path !== '/games/' && path !== '/games/angelique/') area().scrollIntoView({ block: 'center', inline: 'nearest' }); } catch (e) {} }
+  function centerAction() { try { if (path !== '/games/' && !path.startsWith('/games/angelique/')) area().scrollIntoView({ block: 'center', inline: 'nearest' }); } catch (e) {} }
   function later() { setTimeout(centerAction, 60); }
 
   window.addEventListener('load', later);
