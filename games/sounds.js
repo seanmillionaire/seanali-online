@@ -6,7 +6,10 @@
       { global: 'SeanGameBreadcrumbsReady', src: '/games/breadcrumbs.js' },
       { global: 'SeanGameLangReady', src: '/games/lang.js' }
     ];
-    if (isGamePage) scripts.push({ global: 'GameWrongEffectLoaded', src: '/games/wrong-effect.js?v=1' });
+    if (isGamePage) {
+      scripts.push({ global: 'GameWrongEffectLoaded', src: '/games/wrong-effect.js?v=1' });
+      scripts.push({ global: 'GameMistakeReaderLoaded', src: '/games/mistake-reader.js?v=1' });
+    }
 
     scripts.forEach(item => {
       if (window[item.global] || document.querySelector(`script[src^="${item.src.split('?')[0]}"]`)) return;
