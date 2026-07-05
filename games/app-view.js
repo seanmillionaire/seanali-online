@@ -3,10 +3,10 @@
   if (window.SeanGameAppViewLoaded) return;
   window.SeanGameAppViewLoaded = true;
 
-  if (path.startsWith('/games/angelique/') && path !== '/games/angelique/' && !document.querySelector('script[src="/games/angelique/voice-listener.js"]')) {
-    const voice = document.createElement('script');
-    voice.src = '/games/angelique/voice-listener.js?v=1';
-    document.head.appendChild(voice);
+  if (path.startsWith('/games/angelique/') && path !== '/games/angelique/' && !document.querySelector('script[src^="/games/angelique/question-reader.js"]')) {
+    const reader = document.createElement('script');
+    reader.src = '/games/angelique/question-reader.js?v=1';
+    document.head.appendChild(reader);
   }
 
   if (path !== '/games/' && !document.querySelector('link[href="/games/arcade-skin.css"]')) {
@@ -59,8 +59,8 @@
     },
     '/games/angelique/reproduccion/': {
       title: ['Reproduction Assignment', 'Tarea de Reproducción'],
-      intro: ['Voice is active here. Tap 🎙️ Responder and say the answer out loud in Spanish.', 'La voz está activa aquí. Toca 🎙️ Responder y di la respuesta en voz alta.'],
-      step: ['Read the question, sing the rhyme, then speak the answer.', 'Lee la pregunta, canta la rima y luego di la respuesta.'],
+      intro: ['Audio is active here. Tap 🔊 Leer pregunta to hear the question, rhyme and answer choices.', 'El audio está activo aquí. Toca 🔊 Leer pregunta para escuchar la pregunta, la rima y las opciones.'],
+      step: ['Listen first, then answer. Replay until she can say the final song without looking.', 'Escucha primero, luego responde. Repite hasta que pueda decir la canción final sin mirar.'],
       link: ['/games/angelique/', 'Back to Angelique folder', 'Volver a la carpeta']
     },
     '/games/math-race/': {
