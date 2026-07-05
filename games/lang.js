@@ -9,6 +9,7 @@
     'Sean Ali Juegos Educativos Gratis':'Sean Ali Free Education Games',
     'Enfoca la mente. Practica la escuela. Aprende lecciones de vida en minutos.':'Build focus. Practice school skills. Learn life lessons in minutes.',
     '¿Qué quieres practicar hoy?':'What do you want to practice today?',
+    'Patrones de Piano':'Piano Patterns','Jugar Piano →':'Play Piano →','Mira loops simples de piano, repite las notas y aprende por qué funcionan.':'Watch simple piano loops, repeat the notes, and learn why they work.','Piano':'Piano','Memoria':'Memory',
     'Naturaleza':'Nature','Ciencia':'Science','Planeta':'Planet','Los Elementos':'The Elements','Jugar Elementos →':'Play Elements →','Aprende Tierra, Agua, Aire, Fuego, tormentas, olas y equilibrio natural.':'Learn Earth, Water, Air, Fire, storms, waves and nature balance.',
     'Trabalenguas':'Tongue Twister','Elige una letra y desbloquea una frase que dobla la mente con emojis visuales.':'Choose a letter and unlock a mind-bending phrase with emoji visuals.','Lenguaje':'Language','Pensamiento creativo':'Creative Thinking','Giro mental':'Mind Bender','Jugar Trabalenguas →':'Play Tongue Twister →',
     'Familia':'Family','Aprende cómo una familia trabaja junta como un equipo fuerte.':'Learn how a family works together like a strong team.','Equipo':'Teamwork','Habilidades de vida':'Life Skills','Jugar Familia →':'Play Family →',
