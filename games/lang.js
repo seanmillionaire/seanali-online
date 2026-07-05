@@ -7,7 +7,13 @@
   const esToEn = {
     'Juegos móviles educativos':'Mobile learning games',
     'Sean Ali Juegos Educativos Gratis':'Sean Ali Free Education Games',
-    'Para niños: familia, dinero, matemáticas, español, comida, música, memoria y diversión — toca y juega.':'For kids: family, money, math, Spanish, food, music, memory and fun — tap and play.',
+    'Para niños: trabalenguas, familia, dinero, matemáticas, español, comida, música, memoria y diversión — toca y juega.':'For kids: tongue twisters, family, money, math, Spanish, food, music, memory and fun — tap and play.',
+    'Trabalenguas':'Tongue Twister',
+    'Elige una letra y desbloquea una frase que dobla la mente con emojis visuales.':'Choose a letter and unlock a mind-bending phrase with emoji visuals.',
+    'Lenguaje':'Language',
+    'Pensamiento creativo':'Creative Thinking',
+    'Giro mental':'Mind Bender',
+    'Jugar Trabalenguas →':'Play Tongue Twister →',
     'Familia':'Family',
     'Aprende cómo una familia trabaja junta como un equipo fuerte.':'Learn how a family works together like a strong team.',
     'Equipo':'Teamwork',
@@ -21,13 +27,8 @@
     'Selva':'Jungle',
     'Quiz divertido de verdadero o falso de la selva.':'Funny true or false jungle quiz in Spanish.',
     'Mini beat pad con tambores, voces y efectos.':'Mini MPC beat pad with drums, voice cuts and FX.',
-    'Jugar Money →':'Play Money →',
-    'Jugar Comida →':'Play Food Game →',
-    'Jugar Carrera →':'Play Math Race →',
-    'Jugar Selva →':'Play Selva →',
-    'Jugar Beats →':'Play Beats →',
-    'Hecho para atención, sentidos y aprendizaje:':'Built for attention, senses and learning:',
-    'botones grandes, premios rápidos, lenguaje simple, práctica escolar y juegos divertidos.':'big buttons, quick rewards, simple Spanish, school practice and playful loops.',
+    'Jugar Money →':'Play Money →','Jugar Comida →':'Play Food Game →','Jugar Carrera →':'Play Math Race →','Jugar Selva →':'Play Selva →','Jugar Beats →':'Play Beats →',
+    'Hecho para atención, sentidos y aprendizaje:':'Built for attention, senses and learning:','botones grandes, premios rápidos, lenguaje simple, práctica escolar y juegos divertidos.':'big buttons, quick rewards, simple Spanish, school practice and playful loops.',
     'Inicio':'Home','Juegos':'Games','Más juegos':'More games','Money':'Money','Food':'Food','Math Race':'Math Race','Beats':'Beats','Spanish':'Spanish','Quiz':'Quiz','Animals':'Animals','Music':'Music','Rhythm':'Rhythm','Sound':'Sound','Mindset':'Mindset','Health':'Health','Cars':'Cars','Math':'Math',
     'Principios de dinero + afirmaciones':'Money principles + affirmations','Lee la idea de dinero.':'Read the money idea.','Toca la mejor respuesta.':'Tap the best answer.','Gana monedas y llena tu bóveda.':'Earn coins and fill your vault.','Desbloquea afirmaciones positivas.':'Unlock positive affirmations.','Al final gana tu badge de Money Wisdom.':'At the end, win your Money Wisdom badge.','Cómo jugar':'How to Play','Cómo':'How','¡Vamos!':'Let’s go!','Pregunta':'Question','Principio':'Principle','Valor':'Value','Ahorro':'Saving','Metas':'Goals','Dar':'Giving','Pensamiento':'Thinking','Construir':'Build','Actitud':'Attitude','Sueño':'Dream','Guardar un poco':'Save a little','Gastar todo rápido':'Spend it all fast','Creando valor':'Creating value','Puedo aprender':'I can learn','Buen intento.':'Good try.','Afirmaciones desbloqueadas:':'Unlocked affirmations:',
     'Aprende qué tiene cada alimento':'Learn what each food has','Mira el alimento natural.':'Look at the natural food.','Toca qué tiene más.':'Tap what it has most.','Gana estrellas.':'Earn stars.','Al final desbloqueas comidas simples.':'At the end, unlock simple meals.','Proteína':'Protein','Vitamina C':'Vitamin C','Grasa saludable':'Healthy fat','Carbohidrato':'Carbohydrate','Vitamina A':'Vitamin A','Calcio':'Calcium','Fibra':'Fiber','Potasio':'Potassium','Hierro':'Iron','Pasaste':'You passed','Sigue practicando':'Keep practicing','Comidas simples desbloqueadas:':'Simple meals unlocked:',
@@ -80,9 +81,7 @@
     translateAttributes(root);
   }
 
-  function setActive() {
-    document.querySelectorAll('.lang-toggle button').forEach(button => button.classList.toggle('active', button.dataset.lang === lang));
-  }
+  function setActive() { document.querySelectorAll('.lang-toggle button').forEach(button => button.classList.toggle('active', button.dataset.lang === lang)); }
 
   function addToggle() {
     if (document.querySelector('.lang-toggle')) return;
