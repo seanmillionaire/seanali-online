@@ -2,7 +2,12 @@
   const path = window.location.pathname.replace(/\/+$/, '/') || '/';
   if (window.SeanGameAppViewLoaded) return;
   window.SeanGameAppViewLoaded = true;
-  window.SeanGameAppViewReady = true;
+
+  if (path.startsWith('/games/angelique/') && path !== '/games/angelique/' && !document.querySelector('script[src="/games/angelique/voice-listener.js"]')) {
+    const voice = document.createElement('script');
+    voice.src = '/games/angelique/voice-listener.js?v=1';
+    document.head.appendChild(voice);
+  }
 
   if (path !== '/games/' && !document.querySelector('link[href="/games/arcade-skin.css"]')) {
     const skin = document.createElement('link');
@@ -54,8 +59,8 @@
     },
     '/games/angelique/reproduccion/': {
       title: ['Reproduction Assignment', 'Tarea de Reproducción'],
-      intro: ['This is not just a quiz. Read the school question, use the rhyme, then choose the answer that sounds like the worksheet.', 'Esto no es solo un quiz. Lee la pregunta, usa la rima y escoge la respuesta que suena como la hoja.'],
-      step: ['Replay until she can say the final song without looking.', 'Repite hasta que pueda decir la canción final sin mirar.'],
+      intro: ['Voice is active here. Tap 🎙️ Responder and say the answer out loud in Spanish.', 'La voz está activa aquí. Toca 🎙️ Responder y di la respuesta en voz alta.'],
+      step: ['Read the question, sing the rhyme, then speak the answer.', 'Lee la pregunta, canta la rima y luego di la respuesta.'],
       link: ['/games/angelique/', 'Back to Angelique folder', 'Volver a la carpeta']
     },
     '/games/math-race/': {
@@ -113,10 +118,6 @@
     document.body.appendChild(btn);
   }
 
-  function currentLang() {
-    return localStorage.getItem('seanGameLang') === 'es' ? 'es' : 'en';
-  }
-
   function installTongueTwisterNudge() {
     if (path !== '/games/tongue-twister/') return;
     const twister = document.querySelector('#twister');
@@ -125,7 +126,7 @@
     const defaultText = 'Your tongue twister will appear here.';
     const defaultTextEs = 'Tu trabalenguas aparecerá aquí.';
     function nudgeText() {
-      return currentLang() === 'es'
+      return lang() === 'es'
         ? '👉 <b>Sigue así:</b> 1) Léelo en voz alta 3 veces. 2) Mira los emojis. 3) Toca otra letra para abrir el siguiente portal.'
         : '👉 <b>Keep going:</b> 1) Say it out loud 3 times. 2) Look at the emojis. 3) Tap another letter to open the next portal.';
     }
