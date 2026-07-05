@@ -79,7 +79,17 @@ Voice should:
 
 Every game needs a voice/sound toggle.
 
-### 5. Instruction manual
+### 5. Payoff sounds
+Every educational game should use shared reward sounds from `/games/sounds.js`.
+
+Required sound behavior:
+- Correct answer: bright `ding` sound.
+- Wrong answer / false answer: soft wrong sound, not scary.
+- Final pass, prize, badge, chest, unlock, or level-up: money/coin payoff sound.
+
+Do not overuse the money sound on every tap. Save it for the bigger payoff moments.
+
+### 6. Instruction manual
 Every game needs a simple `How to Play` button or panel.
 
 Manual must be kid-simple:
@@ -88,7 +98,7 @@ Manual must be kid-simple:
 3. Gana estrellas.
 4. Mira tu premio al final.
 
-### 6. Mobile-first
+### 7. Mobile-first
 Games are made for phone first.
 
 Must include:
@@ -100,7 +110,7 @@ Must include:
 - No required keyboard
 - Works on 375px mobile screens
 
-### 7. Sensory feedback
+### 8. Sensory feedback
 Every game should use:
 - Motion
 - Sound
@@ -110,7 +120,7 @@ Every game should use:
 - Button press animation
 - Victory animation
 
-### 8. Educational target
+### 9. Educational target
 Every game should teach or reinforce one clear skill.
 
 Good categories:
@@ -126,7 +136,7 @@ Good categories:
 - Animals/nature
 - Simple science
 
-### 9. Keep it age 7 simple
+### 10. Keep it age 7 simple
 Language must be short and easy.
 
 Prefer Spanish first.
@@ -138,7 +148,7 @@ Use phrases like:
 - `Gana estrellas.`
 - `Mira tu premio.`
 
-### 10. SEO rules
+### 11. SEO rules
 Each game page needs:
 - Title tag
 - Meta description
@@ -150,14 +160,14 @@ Each game page needs:
 
 Do not put private child details in public metadata.
 
-### 11. Email rule
+### 12. Email rule
 After each new game is uploaded, send a short Spanish email to Angelique with:
 - New game name
 - Link
 - 3–5 simple instructions
 - The prize/unlock she can earn
 
-### 12. Collection wall rule
+### 13. Collection wall rule
 After every new game, update `/games/` with:
 - New game card
 - Short benefit line
