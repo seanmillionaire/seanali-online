@@ -1,6 +1,7 @@
 (() => {
   function loadSharedGameScripts() {
     const scripts = [
+      { flag: 'SeanGameAppViewLoaded', src: '/games/app-view.js' },
       { flag: 'SeanGameBreadcrumbsLoaded', src: '/games/breadcrumbs.js' },
       { flag: 'SeanGameLangLoaded', src: '/games/lang.js' }
     ];
