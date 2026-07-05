@@ -18,9 +18,9 @@
     body{align-items:center!important;justify-content:flex-start!important;flex-direction:column!important;width:100%!important;overflow-x:hidden!important;padding-top:calc(48px + env(safe-area-inset-top,0px))!important}
     .game,.mpc,.wrap{width:100%!important;flex:0 0 auto!important;scroll-margin-top:24px}
     .game-breadcrumbs{width:100%!important;flex:0 0 auto!important}
-    .game-nudge{margin:10px 0 12px;padding:12px 14px;border-radius:18px;border:3px solid #ffc83d;background:linear-gradient(180deg,#fffdf4,#fff1bd);color:#101436;font-size:18px;line-height:1.18;font-weight:900;box-shadow:0 6px 0 rgba(0,0,0,.16);text-align:left;text-shadow:none!important}
-    .game-nudge b{color:#1d144b}
-    @media(max-width:390px){.game-nudge{font-size:16px;padding:10px 12px}}
+    .game-nudge,.mind.is-nudge{margin:10px 0 12px!important;padding:12px 14px!important;border-radius:18px!important;border:3px solid #ffc83d!important;background:linear-gradient(180deg,#fffdf4,#fff1bd)!important;color:#101436!important;font-size:18px!important;line-height:1.18!important;font-weight:900!important;box-shadow:0 6px 0 rgba(0,0,0,.16)!important;text-align:left!important;text-shadow:none!important;min-height:auto!important}
+    .game-nudge b,.mind.is-nudge b{color:#1d144b!important}
+    @media(max-width:390px){.game-nudge,.mind.is-nudge{font-size:16px!important;padding:10px 12px!important}}
   `;
   document.head.appendChild(style);
 
@@ -44,18 +44,31 @@
   function installTongueTwisterNudge() {
     if (path !== '/games/tongue-twister/') return;
     const twister = document.querySelector('#twister');
-    if (!twister) return;
+    const mind = document.querySelector('#mind');
+    if (!twister || !mind) return;
 
     const defaultText = 'Your tongue twister will appear here.';
     const defaultTextEs = 'Tu trabalenguas aparecerá aquí.';
+    const defaultMind = 'A mind-bender will unlock after each letter.';
+    const defaultMindEs = 'Un giro mental se desbloquea con cada letra.';
+
+    function nudgeText() {
+      return currentLang() === 'es'
+        ? '👉 <b>Sigue así:</b> 1) Léelo en voz alta 3 veces. 2) Mira los emojis. 3) Toca otra letra para abrir el siguiente portal.'
+        : '👉 <b>Keep going:</b> 1) Say it out loud 3 times. 2) Look at the emojis. 3) Tap another letter to open the next portal.';
+    }
 
     function check() {
       const value = (twister.textContent || '').trim();
-      if (!value || value === defaultText || value === defaultTextEs) return;
-      const text = currentLang() === 'es'
-        ? '👉 <b>Ahora:</b> léelo en voz alta 3 veces. Mira los emojis. Pregúntate: ¿qué idea nueva me enseña? Luego toca otra letra.'
-        : '👉 <b>Now:</b> say it out loud 3 times. Look at the emojis. Ask: what new idea does this show me? Then tap another letter.';
-      addOrUpdateNudge(text);
+      if (!value || value === defaultText || value === defaultTextEs) {
+        mind.classList.remove('is-nudge');
+        if (mind.innerHTML.includes('<b>')) mind.textContent = currentLang() === 'es' ? defaultMindEs : defaultMind;
+        return;
+      }
+      const oldBox = document.querySelector('.game-nudge');
+      if (oldBox) oldBox.remove();
+      mind.classList.add('is-nudge');
+      mind.innerHTML = nudgeText();
     }
 
     check();
