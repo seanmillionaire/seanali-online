@@ -1,6 +1,7 @@
 (() => {
   function loadSharedGameScripts() {
-    const isGamePage = window.location.pathname.replace(/\/+$/, '/') !== '/games/';
+    const gamePath = window.location.pathname.replace(/\/+$/, '/');
+    const isGamePage = gamePath !== '/games/';
     const scripts = [
       { global: 'SeanGameAppViewReady', src: '/games/app-view.js' },
       { global: 'SeanGameBreadcrumbsReady', src: '/games/breadcrumbs.js' },
@@ -10,6 +11,7 @@
       scripts.push({ global: 'GameWrongEffectLoaded', src: '/games/wrong-effect.js?v=1' });
       scripts.push({ global: 'GameMistakeReaderLoaded', src: '/games/mistake-reader.js?v=1' });
     }
+    if (gamePath === '/games/elements/') scripts.push({ global: 'ElementsClueBarLoaded', src: '/games/elements/clue-bar.js?v=1' });
 
     scripts.forEach(item => {
       if (window[item.global] || document.querySelector(`script[src^="${item.src.split('?')[0]}"]`)) return;
