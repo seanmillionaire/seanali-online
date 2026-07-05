@@ -48,14 +48,19 @@
       .trim();
   }
 
-  function pickSpanishVoice() {
+  function pickVoice(langHint) {
     const voices = window.speechSynthesis ? speechSynthesis.getVoices() : [];
+    if (langHint === 'en') {
+      return voices.find(v => /^en/i.test(v.lang) && /female|samantha|victoria|karen|zira|ava/i.test(v.name))
+        || voices.find(v => /^en/i.test(v.lang))
+        || voices[0];
+    }
     return voices.find(v => /^es/i.test(v.lang) && /female|mujer|paulina|monica|maria|luciana|sabina/i.test(v.name))
       || voices.find(v => /^es/i.test(v.lang))
       || voices[0];
   }
 
-  function speak(text) {
+  function speak(text, langHint = 'es') {
     if (!window.speechSynthesis) {
       box.innerHTML = '🔊 Este navegador no puede leer en voz alta.<small>Prueba Chrome, Safari o Edge.</small>';
       box.classList.add('show');
@@ -63,10 +68,10 @@
     }
     speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
-    const voice = pickSpanishVoice();
+    const voice = pickVoice(langHint);
     if (voice) u.voice = voice;
-    u.lang = voice && voice.lang ? voice.lang : 'es-ES';
-    u.rate = 0.9;
+    u.lang = voice && voice.lang ? voice.lang : (langHint === 'en' ? 'en-US' : 'es-ES');
+    u.rate = langHint === 'en' ? 0.95 : 0.9;
     u.pitch = 1.05;
     u.volume = 1;
     u.onstart = () => {
@@ -84,6 +89,26 @@
     speechSynthesis.speak(u);
   }
 
+  window.AngeliquePraise = {
+    say() {
+      setTimeout(() => speak('Great job, Angelique.', 'en'), 180);
+    }
+  };
+
+  let lastPraiseAt = 0;
+  const praiseObserver = new MutationObserver(() => {
+    const now = Date.now();
+    if (now - lastPraiseAt < 1400) return;
+    const good = document.querySelector('.answer.good');
+    const popup = document.querySelector('.popup.show');
+    const popupText = popup ? (popup.textContent || '').toLowerCase() : '';
+    if (good || popupText.includes('correct') || popupText.includes('correcto')) {
+      lastPraiseAt = now;
+      window.AngeliquePraise.say();
+    }
+  });
+  praiseObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+
   btn.onclick = () => {
     const text = currentQuestionText();
     if (!text) {
@@ -93,10 +118,10 @@
     }
     box.innerHTML = '🔊 Leyendo la pregunta en voz alta.<small>No necesita micrófono. Solo escucha y luego toca la respuesta.</small>';
     box.classList.add('show');
-    speak(text);
+    speak(text, 'es');
   };
 
   if (window.speechSynthesis) {
-    speechSynthesis.onvoiceschanged = pickSpanishVoice;
+    speechSynthesis.onvoiceschanged = () => pickVoice('es');
   }
 })();
