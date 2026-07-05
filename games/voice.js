@@ -1,3 +1,20 @@
+(() => {
+  function loadBreadcrumbs() {
+    if (window.SeanGameBreadcrumbsLoaded) return;
+    window.SeanGameBreadcrumbsLoaded = true;
+    const script = document.createElement('script');
+    script.src = '/games/breadcrumbs.js';
+    script.defer = true;
+    document.body.appendChild(script);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadBreadcrumbs);
+  } else {
+    loadBreadcrumbs();
+  }
+})();
+
 window.SeanGameVoice = (() => {
   let enabled = true;
   let currentAudio = null;
