@@ -38,11 +38,6 @@ Every game ending must show:
 - Prize, badge, trophy, or unlock
 - Simple reason to replay
 
-Example ending:
-- `You earned: Jungle Genius Badge`
-- `Next unlock: Rainbow Car at 8 stars`
-- `Play again to unlock the Golden Toucan`
-
 ### 3. Duolingo-style motivation
 Use simple kid reward loops:
 - Daily streak
@@ -56,7 +51,27 @@ Use simple kid reward loops:
 
 Avoid complicated accounts or logins for now. Use localStorage when useful.
 
-### 4. Voice guidance
+### 4. ES / EN language option
+Every game must include an ES / EN option.
+
+Current shared helper:
+- `/games/lang.js`
+
+Every current game should load it through:
+- `/games/voice.js`
+- `/games/sounds.js`
+
+Future games should be bilingual natively, not only translated after render.
+
+Required:
+- Visible ES / EN toggle.
+- Save choice in localStorage.
+- Spanish first by default.
+- English option for all main text, instructions, choices, feedback, reward screens, and footer navigation.
+- Voice should use the selected language when possible.
+- SEO can stay English-first unless there is a strong reason for Spanish-first.
+
+### 5. Voice guidance
 Every game should include voice help.
 
 Voice priority:
@@ -75,11 +90,11 @@ Voice should:
 - Read questions or prompts
 - Celebrate correct answers
 - Gently explain wrong answers
-- Speak in simple Spanish
+- Use the selected ES / EN language when possible
 
 Every game needs a voice/sound toggle.
 
-### 5. Payoff sounds
+### 6. Payoff sounds
 Every educational game should use shared reward sounds from `/games/sounds.js`.
 
 Required sound behavior:
@@ -89,16 +104,24 @@ Required sound behavior:
 
 Do not overuse the money sound on every tap. Save it for the bigger payoff moments.
 
-### 6. Instruction manual
+### 7. Instruction manual
 Every game needs a simple `How to Play` button or panel.
 
-Manual must be kid-simple:
+Manual must be kid-simple and bilingual.
+
+Example ES:
 1. Mira la pregunta.
 2. Toca la respuesta correcta.
 3. Gana estrellas.
 4. Mira tu premio al final.
 
-### 7. Mobile-first
+Example EN:
+1. Look at the question.
+2. Tap the correct answer.
+3. Earn stars.
+4. See your prize at the end.
+
+### 8. Mobile-first
 Games are made for phone first.
 
 Must include:
@@ -110,7 +133,7 @@ Must include:
 - No required keyboard
 - Works on 375px mobile screens
 
-### 8. Sensory feedback
+### 9. Sensory feedback
 Every game should use:
 - Motion
 - Sound
@@ -120,7 +143,7 @@ Every game should use:
 - Button press animation
 - Victory animation
 
-### 9. Educational target
+### 10. Educational target
 Every game should teach or reinforce one clear skill.
 
 Good categories:
@@ -135,8 +158,10 @@ Good categories:
 - Music/rhythm
 - Animals/nature
 - Simple science
+- Natural food education
+- Money principles
 
-### 10. Keep it age 7 simple
+### 11. Keep it age 7 simple
 Language must be short and easy.
 
 Prefer Spanish first.
@@ -148,26 +173,39 @@ Use phrases like:
 - `Gana estrellas.`
 - `Mira tu premio.`
 
-### 11. SEO rules
+### 12. SEO rules
 Each game page needs:
 - Title tag
 - Meta description
 - Canonical URL
 - Open Graph title/description
+- Social sharing image when available
 - Theme color
 - Robots index/follow
 - JSON-LD Game schema when possible
 
 Do not put private child details in public metadata.
 
-### 12. Email rule
+### 13. Footer / breadcrumbs rule
+Every game needs footer breadcrumbs and discovery links.
+
+Use:
+- `/games/breadcrumbs.js`
+
+Footer should help users move:
+- Home
+- Games
+- Current Game
+- More games
+
+### 14. Email rule
 After each new game is uploaded, send a short Spanish email to Angelique with:
 - New game name
 - Link
 - 3–5 simple instructions
 - The prize/unlock she can earn
 
-### 13. Collection wall rule
+### 15. Collection wall rule
 After every new game, update `/games/` with:
 - New game card
 - Short benefit line
