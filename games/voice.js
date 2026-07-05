@@ -105,7 +105,8 @@ window.SeanGameVoice = (() => {
     } catch (error) {
       if (error && error.name === 'AbortError') return false;
       if (myId !== speakId || !enabled) return false;
-      return browserSpeak(cleanText, myId, options.lang);
+      console.warn('SeanGameVoice: premium voice unavailable. Browser fallback disabled.');
+      return options.allowBrowserFallback === true ? browserSpeak(cleanText, myId, options.lang) : false;
     } finally {
       if (myId === speakId) currentController = null;
     }
