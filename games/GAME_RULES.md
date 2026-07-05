@@ -38,7 +38,20 @@ Every game ending must show:
 - Prize, badge, trophy, or unlock
 - Simple reason to replay
 
-### 3. Duolingo-style motivation
+### 3. App view must stay at top
+Every game must maintain the app view at the top, especially on mobile and in-app browsers.
+
+Use:
+- `/games/app-view.js`
+
+Required behavior:
+- Game starts at the top of the viewport.
+- Game container is not vertically centered off-screen.
+- After taps, answer feedback, language changes, resize, orientation changes, or replay, the view returns to the top of the active game.
+- Use `align-items:flex-start` and `justify-content:flex-start` for mobile game bodies.
+- Respect safe-area top padding for iPhone/in-app browsers.
+
+### 4. Duolingo-style motivation
 Use simple kid reward loops:
 - Daily streak
 - Hearts/lives
@@ -51,7 +64,7 @@ Use simple kid reward loops:
 
 Avoid complicated accounts or logins for now. Use localStorage when useful.
 
-### 4. ES / EN language option
+### 5. ES / EN language option
 Every game must include an ES / EN option.
 
 Current shared helper:
@@ -71,7 +84,7 @@ Required:
 - Voice should use the selected language when possible.
 - SEO can stay English-first unless there is a strong reason for Spanish-first.
 
-### 5. Voice guidance
+### 6. Voice guidance
 Every game should include voice help.
 
 Voice priority:
@@ -94,7 +107,7 @@ Voice should:
 
 Every game needs a voice/sound toggle.
 
-### 6. Payoff sounds
+### 7. Payoff sounds
 Every educational game should use shared reward sounds from `/games/sounds.js`.
 
 Required sound behavior:
@@ -104,7 +117,7 @@ Required sound behavior:
 
 Do not overuse the money sound on every tap. Save it for the bigger payoff moments.
 
-### 7. Instruction manual
+### 8. Instruction manual
 Every game needs a simple `How to Play` button or panel.
 
 Manual must be kid-simple and bilingual.
@@ -121,7 +134,7 @@ Example EN:
 3. Earn stars.
 4. See your prize at the end.
 
-### 8. Mobile-first
+### 9. Mobile-first
 Games are made for phone first.
 
 Must include:
@@ -133,7 +146,7 @@ Must include:
 - No required keyboard
 - Works on 375px mobile screens
 
-### 9. Sensory feedback
+### 10. Sensory feedback
 Every game should use:
 - Motion
 - Sound
@@ -143,7 +156,7 @@ Every game should use:
 - Button press animation
 - Victory animation
 
-### 10. Educational target
+### 11. Educational target
 Every game should teach or reinforce one clear skill.
 
 Good categories:
@@ -161,7 +174,7 @@ Good categories:
 - Natural food education
 - Money principles
 
-### 11. Keep it age 7 simple
+### 12. Keep it age 7 simple
 Language must be short and easy.
 
 Prefer Spanish first.
@@ -173,7 +186,7 @@ Use phrases like:
 - `Gana estrellas.`
 - `Mira tu premio.`
 
-### 12. SEO rules
+### 13. SEO rules
 Each game page needs:
 - Title tag
 - Meta description
@@ -186,7 +199,7 @@ Each game page needs:
 
 Do not put private child details in public metadata.
 
-### 13. Footer / breadcrumbs rule
+### 14. Footer / breadcrumbs rule
 Every game needs footer breadcrumbs and discovery links.
 
 Use:
@@ -198,14 +211,14 @@ Footer should help users move:
 - Current Game
 - More games
 
-### 14. Email rule
+### 15. Email rule
 After each new game is uploaded, send a short Spanish email to Angelique with:
 - New game name
 - Link
 - 3–5 simple instructions
 - The prize/unlock she can earn
 
-### 15. Collection wall rule
+### 16. Collection wall rule
 After every new game, update `/games/` with:
 - New game card
 - Short benefit line
