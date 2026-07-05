@@ -26,10 +26,9 @@
     .game-guide-btn{position:fixed!important;right:10px!important;bottom:10px!important;z-index:9999!important;border:2px solid #1d144b!important;border-radius:999px!important;background:linear-gradient(180deg,#fff26f,#ffc83d)!important;color:#1d144b!important;font:900 13px/1 Arial,sans-serif!important;padding:9px 10px!important;min-width:auto!important;min-height:auto!important;width:auto!important;height:auto!important;box-shadow:0 4px 0 rgba(0,0,0,.25),0 0 14px rgba(255,200,61,.28)!important;cursor:pointer!important;transform:none!important}
     .game-guide-panel{position:fixed;right:10px;bottom:58px;z-index:9998;width:min(330px,calc(100vw - 20px));background:#fff6e6;color:#101436;border:3px solid #1d144b;border-radius:20px;padding:13px;box-shadow:0 18px 40px rgba(0,0,0,.35);font-family:Arial,sans-serif;display:none;text-shadow:none!important}
     .game-guide-panel.open{display:block}
-    .game-guide-panel h3{margin:0 0 8px;font-size:20px;line-height:1.05;color:#1d144b!important}
-    .game-guide-panel p{margin:7px 0;font-size:15px;line-height:1.22;font-weight:800;color:#101436!important}
-    .game-guide-panel .guide-step{background:#fff;border:2px solid #ffc83d;border-radius:14px;padding:9px;margin:8px 0;font-weight:900;color:#101436!important;font-size:15px}
-    .game-guide-panel a{display:block;text-align:center;margin-top:9px;background:linear-gradient(180deg,#b9ffe1,#34d17a);border:2px solid #1d144b;border-radius:14px;padding:10px;color:#101436!important;text-decoration:none;font-weight:900;box-shadow:0 4px 0 rgba(0,0,0,.18);font-size:15px}
+    .game-guide-panel h3{margin:0 0 10px;font-size:20px;line-height:1.05;color:#1d144b!important}
+    .game-guide-panel p{margin:0;font-size:15px;line-height:1.22;font-weight:800;color:#101436!important}
+    .game-guide-panel .guide-step{background:#fff;border:2px solid #ffc83d;border-radius:14px;padding:9px;margin:8px 0;font-weight:900;color:#101436!important;font-size:15px;line-height:1.2}
     .game-nudge,.mind.is-nudge{margin:10px 0 12px!important;padding:12px 14px!important;border-radius:18px!important;border:3px solid #ffc83d!important;background:linear-gradient(180deg,#fffdf4,#fff1bd)!important;color:#101436!important;font-size:18px!important;line-height:1.18!important;font-weight:900!important;box-shadow:0 6px 0 rgba(0,0,0,.16)!important;text-align:left!important;text-shadow:none!important;min-height:auto!important}
     .game-nudge b,.mind.is-nudge b{color:#1d144b!important}
     @media(max-width:390px){.game-guide-btn{right:8px!important;bottom:8px!important;font-size:12px!important;padding:8px 9px!important}.game-guide-panel{right:8px;bottom:52px;width:calc(100vw - 16px)}.game-nudge,.mind.is-nudge{font-size:16px!important;padding:10px 12px!important}}
@@ -45,18 +44,81 @@
   }
 
   const guides = {
-    '/games/': { title: ['Game Console', 'Consola de Juegos'], intro: ['This is the main game wall. Pick one world, finish one round, then come back and choose the next challenge.', 'Esta es la pared principal. Elige un mundo, termina una ronda y vuelve para escoger el siguiente reto.'], step: ['Start with Math, Piano, Elements, or Angelique’s folder if this is for school.', 'Empieza con Matemática, Piano, Elementos o la carpeta de Angelique si es para la escuela.'], link: ['/games/angelique/', 'Go to Angelique’s folder', 'Ir a la carpeta de Angelique'] },
-    '/games/angelique/': { title: ['Angelique Folder', 'Carpeta de Angelique'], intro: ['This is her private school game folder. Start with Today’s Assignment, then use the subject cards for practice.', 'Esta es su carpeta privada. Empieza con la tarea de hoy y luego usa las categorías para practicar.'], step: ['Do one assignment game first. Then replay it faster to lock it into memory.', 'Haz primero un juego de tarea. Luego repítelo más rápido para memorizar.'], link: ['/games/angelique/reproduccion/', 'Start today’s assignment', 'Empezar la tarea de hoy'] },
-    '/games/angelique/reproduccion/': { title: ['Reproduction Assignment', 'Tarea de Reproducción'], intro: ['Audio is active here. Tap 🔊 Leer pregunta to hear the question, rhyme and answer choices.', 'El audio está activo aquí. Toca 🔊 Leer pregunta para escuchar la pregunta, la rima y las opciones.'], step: ['Listen first, then answer. Replay until she can say the final song without looking.', 'Escucha primero, luego responde. Repite hasta que pueda decir la canción final sin mirar.'], link: ['/games/angelique/', 'Back to Angelique folder', 'Volver a la carpeta'] },
-    '/games/math-race/': { title: ['Math Race Guide', 'Guía de Matemática'], intro: ['This game is for speed and pattern memory. Do not only get it right. Try to get faster.', 'Este juego es para velocidad y memoria de patrones. No solo aciertes. Intenta hacerlo más rápido.'], step: ['Finish Level 1, then replay and beat your score.', 'Termina Nivel 1, luego repite y supera tu resultado.'], link: ['/games/', 'Back to game wall', 'Volver a juegos'] },
-    '/games/tongue-twister/': { title: ['Tongue Twister Guide', 'Guía de Trabalenguas'], intro: ['Pick a letter, say the phrase out loud three times, then tap another letter.', 'Elige una letra, dilo en voz alta tres veces y toca otra letra.'], step: ['The goal is speaking practice, not just tapping buttons.', 'La meta es practicar hablar, no solo tocar botones.'], link: ['/games/angelique/', 'Back to Angelique folder', 'Volver a Angelique'] },
-    '/games/elements/': { title: ['Elements Guide', 'Guía de Elementos'], intro: ['This teaches nature patterns. Choose the answer, then say the lesson back in your own words.', 'Esto enseña patrones de la naturaleza. Escoge la respuesta y luego explica la idea con tus palabras.'], step: ['Replay for a better score and try to explain each answer.', 'Repite para mejorar el resultado y explicar cada respuesta.'], link: ['/games/', 'Back to game wall', 'Volver a juegos'] },
-    '/games/piano/': { title: ['Piano Guide', 'Guía de Piano'], intro: ['Listen first. Then repeat the pattern. This trains memory, timing, and focus.', 'Escucha primero. Luego repite el patrón. Esto entrena memoria, ritmo y enfoque.'], step: ['Replay the same pattern until it feels easy, then move on.', 'Repite el mismo patrón hasta que sea fácil, luego sigue.'], link: ['/games/', 'Back to game wall', 'Volver a juegos'] },
-    '/games/beats/': { title: ['Beats Guide', 'Guía de Beats'], intro: ['Tap pads, listen to the rhythm, then try making your own loop.', 'Toca los pads, escucha el ritmo y luego crea tu propio loop.'], step: ['This is a creative break. Use it between school games.', 'Esto es un descanso creativo. Úsalo entre juegos de escuela.'], link: ['/games/', 'Back to game wall', 'Volver a juegos'] }
+    '/games/': {
+      title: ['Game Console', 'Consola de Juegos'],
+      steps: [
+        ['This is the main game wall.', 'Esta es la pared principal de juegos.'],
+        ['Pick one game world and finish one round.', 'Escoge un mundo y termina una ronda.'],
+        ['Replay the best one to make the lesson stick.', 'Repite el mejor para que la lección se quede.']
+      ]
+    },
+    '/games/angelique/': {
+      title: ['Angelique Folder', 'Carpeta de Angelique'],
+      steps: [
+        ['This is Angelique’s private school folder.', 'Esta es la carpeta privada de Angelique.'],
+        ['Start with Today’s Assignment first.', 'Empieza con la tarea de hoy primero.'],
+        ['Replay the assignment faster after she finishes.', 'Repite la tarea más rápido cuando termine.']
+      ]
+    },
+    '/games/angelique/reproduccion/': {
+      title: ['Reproduction Assignment', 'Tarea de Reproducción'],
+      steps: [
+        ['This game helps memorize the school worksheet.', 'Este juego ayuda a memorizar la hoja de la escuela.'],
+        ['Tap Leer pregunta, listen, follow the highlighted words, then answer.', 'Toca Leer pregunta, escucha, sigue las palabras iluminadas y responde.'],
+        ['Finish once, then replay until she can say the final song without looking.', 'Termina una vez y repite hasta decir la canción final sin mirar.']
+      ]
+    },
+    '/games/math-race/': {
+      title: ['Math Race Guide', 'Guía de Matemática'],
+      steps: [
+        ['This game trains multiplication speed.', 'Este juego entrena velocidad de multiplicación.'],
+        ['Read the problem and tap the answer.', 'Lee el problema y toca la respuesta.'],
+        ['Replay to beat your score, not just to finish.', 'Repite para superar tu resultado, no solo terminar.']
+      ]
+    },
+    '/games/tongue-twister/': {
+      title: ['Tongue Twister Guide', 'Guía de Trabalenguas'],
+      steps: [
+        ['This game trains speaking and mouth control.', 'Este juego entrena hablar y controlar la boca.'],
+        ['Pick a letter and say the phrase out loud three times.', 'Escoge una letra y di la frase en voz alta tres veces.'],
+        ['Try the next letter without rushing.', 'Prueba la siguiente letra sin apurarte.']
+      ]
+    },
+    '/games/elements/': {
+      title: ['Elements Guide', 'Guía de Elementos'],
+      steps: [
+        ['This game teaches nature patterns.', 'Este juego enseña patrones de la naturaleza.'],
+        ['Choose the answer and read the lesson.', 'Escoge la respuesta y lee la lección.'],
+        ['Explain the answer in your own words after each round.', 'Explica la respuesta con tus palabras después de cada ronda.']
+      ]
+    },
+    '/games/piano/': {
+      title: ['Piano Guide', 'Guía de Piano'],
+      steps: [
+        ['This game trains listening and memory.', 'Este juego entrena escuchar y recordar.'],
+        ['Listen first, then repeat the pattern.', 'Escucha primero y luego repite el patrón.'],
+        ['Replay until the pattern feels easy.', 'Repite hasta que el patrón se sienta fácil.']
+      ]
+    },
+    '/games/beats/': {
+      title: ['Beats Guide', 'Guía de Beats'],
+      steps: [
+        ['This is a creative rhythm break.', 'Esto es un descanso creativo de ritmo.'],
+        ['Tap pads and listen to what each sound does.', 'Toca los botones y escucha lo que hace cada sonido.'],
+        ['Make one simple loop before leaving.', 'Haz un loop simple antes de salir.']
+      ]
+    }
   };
 
   function guideForPath() {
-    return guides[path] || { title: ['Game Guide', 'Guía del Juego'], intro: ['Play one round. If you feel lost, read the question, tap slowly, and follow the feedback.', 'Juega una ronda. Si estás perdido, lee la pregunta, toca despacio y sigue la guía.'], step: ['When you finish, replay once to make it stick.', 'Cuando termines, repite una vez para memorizar.'], link: ['/games/', 'Back to game wall', 'Volver a juegos'] };
+    return guides[path] || {
+      title: ['Game Guide', 'Guía del Juego'],
+      steps: [
+        ['This is a quick mini game.', 'Este es un mini juego rápido.'],
+        ['Read slowly, tap carefully, and follow the feedback.', 'Lee despacio, toca con cuidado y sigue la guía.'],
+        ['Replay once to make the lesson stick.', 'Repite una vez para que la lección se quede.']
+      ]
+    };
   }
 
   function installGuide() {
@@ -67,7 +129,8 @@
     btn.textContent = text('🧭 Guide', '🧭 Guía');
     const panel = document.createElement('div');
     panel.className = 'game-guide-panel';
-    panel.innerHTML = '<h3>' + text(g.title[0], g.title[1]) + '</h3><p>' + text(g.intro[0], g.intro[1]) + '</p><div class="guide-step">👉 ' + text(g.step[0], g.step[1]) + '</div><a href="' + g.link[0] + '">' + text(g.link[1], g.link[2]) + '</a>';
+    const steps = g.steps.map((s, i) => '<div class="guide-step"><b>' + (i + 1) + '.</b> ' + text(s[0], s[1]) + '</div>').join('');
+    panel.innerHTML = '<h3>' + text(g.title[0], g.title[1]) + '</h3>' + steps;
     btn.onclick = () => panel.classList.toggle('open');
     document.body.appendChild(panel);
     document.body.appendChild(btn);
