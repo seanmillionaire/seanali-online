@@ -41,6 +41,33 @@ window.SeanGameVoice = (() => {
     return voices.find(v => v.lang === langCode) || voices.find(v => v.lang && v.lang.toLowerCase().startsWith(base)) || null;
   }
 
+  function isGuidanceText(text) {
+    const t = String(text || '').toLowerCase();
+    return [
+      'try again',
+      'listen again',
+      'almost',
+      'answer:',
+      'the answer was',
+      'wrong',
+      'missed',
+      'intenta',
+      'escucha otra vez',
+      'casi',
+      'respuesta:',
+      'la respuesta era',
+      'incorrecto',
+      'buen intento'
+    ].some(phrase => t.includes(phrase));
+  }
+
+  function shouldSpeak(text, options = {}) {
+    if (options.force === true || options.guidance === true) return true;
+    if (options.mode === 'guidance') return true;
+    if (options.mode === 'silent') return false;
+    return isGuidanceText(text);
+  }
+
   function hardStop() {
     speakId++;
 
@@ -68,6 +95,7 @@ window.SeanGameVoice = (() => {
   async function elevenSpeak(text, options = {}) {
     const cleanText = String(text || '').trim();
     if (!enabled || !cleanText) return false;
+    if (!shouldSpeak(cleanText, options)) return false;
 
     hardStop();
     const myId = speakId;
@@ -133,6 +161,14 @@ window.SeanGameVoice = (() => {
     return elevenSpeak(text, options);
   }
 
+  function guidance(text, options = {}) {
+    return elevenSpeak(text, { ...options, guidance: true });
+  }
+
+  function force(text, options = {}) {
+    return elevenSpeak(text, { ...options, force: true });
+  }
+
   function stop() {
     hardStop();
   }
@@ -151,5 +187,5 @@ window.SeanGameVoice = (() => {
     return enabled;
   }
 
-  return { speak, stop, toggle, setEnabled, isEnabled };
+  return { speak, guidance, force, stop, toggle, setEnabled, isEnabled };
 })();
