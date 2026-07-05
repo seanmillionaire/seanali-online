@@ -3,6 +3,12 @@
   if (!isAngeliqueGame || window.AngeliqueQuestionReaderLoaded) return;
   window.AngeliqueQuestionReaderLoaded = true;
 
+  if (!document.querySelector('script[src^="/games/angelique/nav.js"]')) {
+    const nav = document.createElement('script');
+    nav.src = '/games/angelique/nav.js?v=1';
+    document.head.appendChild(nav);
+  }
+
   if (!document.querySelector('script[src^="/games/angelique/wrong-effect.js"]')) {
     const wrong = document.createElement('script');
     wrong.src = '/games/angelique/wrong-effect.js?v=1';
@@ -50,13 +56,12 @@
     const answers = Array.from(document.querySelectorAll('.answer'))
       .filter(btn => btn.offsetParent !== null)
       .slice(0, 3)
-      .map((btn, i) => 'Opción ' + (i + 1) + ': ' + (btn.textContent || '').trim())
-      .filter(Boolean)
-      .join('. ');
+      .map((btn, i) => 'Opción ' + (i + 1) + '. ' + (btn.textContent || '').trim())
+      .filter(Boolean);
 
-    return [question, chant, answers, helper]
+    return [question, chant, ...answers, helper]
       .filter(Boolean)
-      .join('. ')
+      .join('. ... ')
       .replace(/👉/g, '')
       .replace(/🔁|🎵|📘|🏆/g, '')
       .replace(/\s+/g, ' ')
@@ -80,7 +85,7 @@
 
   function buildReadAlong(text) {
     const words = text.split(/\s+/).filter(Boolean);
-    box.innerHTML = '<div class="read-title">🔊 Lee con la voz</div><div class="read-words">' + words.map((word, i) => '<span class="read-word" data-i="' + i + '">' + escapeHtml(word) + '</span>').join(' ') + '</div><small>Las palabras se iluminan para que Angelique pueda seguir la lectura.</small>';
+    box.innerHTML = '<div class="read-title">🔊 Lee con la voz</div><div class="read-words">' + words.map((word, i) => '<span class="read-word" data-i="' + i + '">' + escapeHtml(word) + '</span>').join(' ') + '</div><small>Ahora hay pausas para que Angelique pueda seguir la lectura.</small>';
     box.classList.add('show');
     return words.length;
   }
@@ -89,8 +94,8 @@
     stopHighlight();
     const words = Array.from(box.querySelectorAll('.read-word'));
     if (!words.length) return;
-    const totalMs = Math.max(3200, (durationSeconds || 0) * 1000 || wordCount * 430);
-    const stepMs = Math.max(120, totalMs / words.length);
+    const totalMs = Math.max(4200, ((durationSeconds || 0) * 1000 || wordCount * 560) + 1200);
+    const stepMs = Math.max(170, totalMs / words.length);
     let index = -1;
     highlightTimer = setInterval(() => {
       if (index >= 0 && words[index]) {
@@ -126,10 +131,10 @@
     const voice = pickSpanishVoice();
     if (voice) u.voice = voice;
     u.lang = voice && voice.lang ? voice.lang : 'es-ES';
-    u.rate = 0.9;
+    u.rate = 0.78;
     u.pitch = 1.05;
     u.volume = 1;
-    const estimated = Math.max(3.2, wordCount * 0.45);
+    const estimated = Math.max(4.2, wordCount * 0.62);
     u.onstart = () => startHighlight(estimated, wordCount);
     u.onend = () => { stopHighlight(); setReading(false); };
     u.onerror = () => { stopHighlight(); setReading(false); };
@@ -156,9 +161,9 @@
       const blob = await res.blob();
       activeUrl = URL.createObjectURL(blob);
       activeAudio = new Audio(activeUrl);
-      activeAudio.onloadedmetadata = () => startHighlight(activeAudio.duration, wordCount);
+      activeAudio.onloadedmetadata = () => startHighlight(activeAudio.duration + 1.2, wordCount);
       activeAudio.onplay = () => {
-        if (!highlightTimer) startHighlight(activeAudio.duration, wordCount);
+        if (!highlightTimer) startHighlight((activeAudio.duration || 0) + 1.2, wordCount);
       };
       activeAudio.onended = () => { stopHighlight(); setReading(false); };
       activeAudio.onerror = () => { stopHighlight(); setReading(false); };
