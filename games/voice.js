@@ -1,17 +1,24 @@
 (() => {
-  function loadBreadcrumbs() {
-    if (window.SeanGameBreadcrumbsLoaded) return;
-    window.SeanGameBreadcrumbsLoaded = true;
-    const script = document.createElement('script');
-    script.src = '/games/breadcrumbs.js';
-    script.defer = true;
-    document.body.appendChild(script);
+  function loadSharedGameScripts() {
+    const scripts = [
+      { flag: 'SeanGameBreadcrumbsLoaded', src: '/games/breadcrumbs.js' },
+      { flag: 'SeanGameLangLoaded', src: '/games/lang.js' }
+    ];
+
+    scripts.forEach(item => {
+      if (window[item.flag]) return;
+      window[item.flag] = true;
+      const script = document.createElement('script');
+      script.src = item.src;
+      script.defer = true;
+      document.body.appendChild(script);
+    });
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadBreadcrumbs);
+    document.addEventListener('DOMContentLoaded', loadSharedGameScripts);
   } else {
-    loadBreadcrumbs();
+    loadSharedGameScripts();
   }
 })();
 
