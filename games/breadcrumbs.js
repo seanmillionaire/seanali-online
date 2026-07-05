@@ -2,6 +2,7 @@
   if (document.querySelector('[data-game-breadcrumbs]')) return;
 
   const games = [
+    { href: '/games/money/', label: '💰 Money' },
     { href: '/games/food-groups/', label: '🥑 Food' },
     { href: '/games/math-race/', label: '🚗 Math Race' },
     { href: '/games/selva/', label: '🌿 Selva' },
@@ -10,6 +11,7 @@
 
   const names = {
     '/games/': 'Games',
+    '/games/money/': 'Money',
     '/games/food-groups/': 'Comida Natural',
     '/games/math-race/': 'Carrera de Multiplicación',
     '/games/selva/': 'Selva',
