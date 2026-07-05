@@ -3,6 +3,7 @@
 
   const games = [
     { href: '/games/math-race/', label: '🚗 Math Race' },
+    { href: '/games/piano/', label: '🎹 Piano' },
     { href: '/games/elements/', label: '🌎 Elements' },
     { href: '/games/family/', label: '👨‍👩‍👧 Family' },
     { href: '/games/money/', label: '💰 Money' },
@@ -14,6 +15,7 @@
 
   const names = {
     '/games/': 'Games',
+    '/games/piano/': 'Piano Patterns',
     '/games/elements/': 'The Elements',
     '/games/tongue-twister/': 'Tongue Twister',
     '/games/family/': 'Family',
