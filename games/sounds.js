@@ -1,13 +1,15 @@
 (() => {
   function loadSharedGameScripts() {
+    const isGamePage = window.location.pathname.replace(/\/+$/, '/') !== '/games/';
     const scripts = [
       { global: 'SeanGameAppViewReady', src: '/games/app-view.js' },
       { global: 'SeanGameBreadcrumbsReady', src: '/games/breadcrumbs.js' },
       { global: 'SeanGameLangReady', src: '/games/lang.js' }
     ];
+    if (isGamePage) scripts.push({ global: 'GameWrongEffectLoaded', src: '/games/wrong-effect.js?v=1' });
 
     scripts.forEach(item => {
-      if (window[item.global] || document.querySelector(`script[src="${item.src}"]`)) return;
+      if (window[item.global] || document.querySelector(`script[src^="${item.src.split('?')[0]}"]`)) return;
       const script = document.createElement('script');
       script.src = item.src;
       script.defer = true;
