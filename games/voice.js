@@ -1,20 +1,46 @@
 window.SeanGameVoice = (() => {
   let enabled = true;
   let currentAudio = null;
+  let currentUrl = null;
+  let currentController = null;
+  let speakId = 0;
+
+  function hardStop() {
+    speakId++;
+
+    if (currentController) {
+      currentController.abort();
+      currentController = null;
+    }
+
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio.src = '';
+      currentAudio = null;
+    }
+
+    if (currentUrl) {
+      URL.revokeObjectURL(currentUrl);
+      currentUrl = null;
+    }
+
+    if ('speechSynthesis' in window) {
+      speechSynthesis.cancel();
+    }
+  }
 
   async function elevenSpeak(text, options = {}) {
-    if (!enabled) return false;
     const cleanText = String(text || '').trim();
-    if (!cleanText) return false;
+    if (!enabled || !cleanText) return false;
+
+    hardStop();
+    const myId = speakId;
+    currentController = new AbortController();
 
     try {
-      if (currentAudio) {
-        currentAudio.pause();
-        currentAudio = null;
-      }
-
       const res = await fetch('/api/tts', {
         method: 'POST',
+        signal: currentController.signal,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           text: cleanText,
@@ -23,26 +49,42 @@ window.SeanGameVoice = (() => {
         })
       });
 
+      if (myId !== speakId || !enabled) return false;
       if (!res.ok) throw new Error('ElevenLabs voice unavailable');
 
       const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      currentAudio = new Audio(url);
-      currentAudio.onended = () => URL.revokeObjectURL(url);
+      if (myId !== speakId || !enabled) return false;
+
+      currentUrl = URL.createObjectURL(blob);
+      currentAudio = new Audio(currentUrl);
+      currentAudio.onended = () => {
+        if (currentUrl) URL.revokeObjectURL(currentUrl);
+        currentUrl = null;
+        currentAudio = null;
+      };
+
+      if ('speechSynthesis' in window) speechSynthesis.cancel();
       await currentAudio.play();
       return true;
     } catch (error) {
-      return browserSpeak(cleanText);
+      if (error && error.name === 'AbortError') return false;
+      if (myId !== speakId || !enabled) return false;
+      return browserSpeak(cleanText, myId);
+    } finally {
+      if (myId === speakId) currentController = null;
     }
   }
 
-  function browserSpeak(text) {
-    if (!enabled || !('speechSynthesis' in window)) return false;
+  function browserSpeak(text, myId = speakId) {
+    if (!enabled || myId !== speakId || !('speechSynthesis' in window)) return false;
     speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'es-ES';
     utterance.rate = 0.92;
     utterance.pitch = 1.12;
+    utterance.onend = () => {
+      if (myId === speakId) speechSynthesis.cancel();
+    };
     speechSynthesis.speak(utterance);
     return true;
   }
@@ -52,22 +94,22 @@ window.SeanGameVoice = (() => {
   }
 
   function stop() {
-    if (currentAudio) {
-      currentAudio.pause();
-      currentAudio = null;
-    }
-    if ('speechSynthesis' in window) speechSynthesis.cancel();
+    hardStop();
+  }
+
+  function setEnabled(value) {
+    enabled = Boolean(value);
+    if (!enabled) hardStop();
+    return enabled;
   }
 
   function toggle() {
-    enabled = !enabled;
-    if (!enabled) stop();
-    return enabled;
+    return setEnabled(!enabled);
   }
 
   function isEnabled() {
     return enabled;
   }
 
-  return { speak, stop, toggle, isEnabled };
+  return { speak, stop, toggle, setEnabled, isEnabled };
 })();
