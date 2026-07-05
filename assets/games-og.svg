@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Free Learning Games for Kids</title>
+  <desc id="desc">A bright social sharing card for SeanAli.online free learning games for kids.</desc>
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="0%" r="95%">
+      <stop offset="0%" stop-color="#effff4"/>
+      <stop offset="52%" stop-color="#9be3a9"/>
+      <stop offset="100%" stop-color="#4faf68"/>
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="16" stdDeviation="0" flood-color="#000" flood-opacity=".18"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="64" y="54" width="1072" height="522" rx="42" fill="#fffbe8" stroke="#1f7a39" stroke-width="8" filter="url(#shadow)"/>
+  <text x="96" y="116" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="900" fill="#1f7a39">SEANALI.ONLINE GAMES</text>
+  <text x="96" y="228" font-family="Arial, Helvetica, sans-serif" font-size="76" font-weight="900" fill="#12351d">Free Learning</text>
+  <text x="96" y="312" font-family="Arial, Helvetica, sans-serif" font-size="76" font-weight="900" fill="#12351d">Games for Kids</text>
+  <text x="100" y="370" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="800" fill="#2d5b39">Math • Spanish • Music • Memory • Tap and play</text>
+  <g transform="translate(90 430)">
+    <rect width="250" height="72" rx="24" fill="#ffd84d" stroke="#bd8610" stroke-width="4"/>
+    <text x="125" y="48" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="900" fill="#12351d">🚗 Math</text>
+  </g>
+  <g transform="translate(372 430)">
+    <rect width="250" height="72" rx="24" fill="#e9fbff" stroke="#53b6d3" stroke-width="4"/>
+    <text x="125" y="48" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="900" fill="#12351d">🌿 Spanish</text>
+  </g>
+  <g transform="translate(654 430)">
+    <rect width="250" height="72" rx="24" fill="#eeeaff" stroke="#4b37b9" stroke-width="4"/>
+    <text x="125" y="48" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="29" font-weight="900" fill="#12351d">🥁 Beats</text>
+  </g>
+  <circle cx="990" cy="188" r="74" fill="#80d8ff" stroke="#252525" stroke-width="7"/>
+  <text x="990" y="216" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="76">🎮</text>
+  <circle cx="1026" cy="356" r="60" fill="#b8ff6a" stroke="#3f9b35" stroke-width="7"/>
+  <text x="1026" y="379" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="56">⭐</text>
+</svg>
