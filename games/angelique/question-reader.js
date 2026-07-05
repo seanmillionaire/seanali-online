@@ -19,9 +19,12 @@
   btn.textContent = '🔊 Leer pregunta';
   const box = document.createElement('div');
   box.className = 'angelique-audio-box';
-  box.innerHTML = '🔊 Toca para escuchar la pregunta, la rima y las opciones.<small>Esto lee la tarea en voz alta. No usa micrófono.</small>';
+  box.innerHTML = '🔊 Toca para escuchar la pregunta, la rima y las opciones.<small>Esto lee la tarea en voz alta.</small>';
   document.body.appendChild(box);
   document.body.appendChild(btn);
+
+  let praiseAudio = null;
+  let praiseBusy = false;
 
   function visibleText(selector) {
     const el = document.querySelector(selector);
@@ -60,7 +63,7 @@
       || voices[0];
   }
 
-  function speak(text, langHint = 'es') {
+  function browserSpeak(text, langHint = 'es') {
     if (!window.speechSynthesis) {
       box.innerHTML = '🔊 Este navegador no puede leer en voz alta.<small>Prueba Chrome, Safari o Edge.</small>';
       box.classList.add('show');
@@ -89,16 +92,38 @@
     speechSynthesis.speak(u);
   }
 
-  window.AngeliquePraise = {
-    say() {
-      setTimeout(() => speak('Great job, Angelique.', 'en'), 180);
+  async function elevenPraise() {
+    if (praiseBusy) return;
+    praiseBusy = true;
+    try {
+      if (window.speechSynthesis) speechSynthesis.cancel();
+      if (praiseAudio) {
+        try { praiseAudio.pause(); praiseAudio.currentTime = 0; } catch (e) {}
+      }
+      const res = await fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: 'Great job, Angelique.' })
+      });
+      if (!res.ok) throw new Error('tts failed');
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      praiseAudio = new Audio(url);
+      praiseAudio.onended = () => URL.revokeObjectURL(url);
+      await praiseAudio.play();
+    } catch (e) {
+      browserSpeak('Great job, Angelique.', 'en');
+    } finally {
+      setTimeout(() => { praiseBusy = false; }, 900);
     }
-  };
+  }
+
+  window.AngeliquePraise = { say: elevenPraise };
 
   let lastPraiseAt = 0;
   const praiseObserver = new MutationObserver(() => {
     const now = Date.now();
-    if (now - lastPraiseAt < 1400) return;
+    if (now - lastPraiseAt < 1600) return;
     const good = document.querySelector('.answer.good');
     const popup = document.querySelector('.popup.show');
     const popupText = popup ? (popup.textContent || '').toLowerCase() : '';
@@ -116,9 +141,9 @@
       box.classList.add('show');
       return;
     }
-    box.innerHTML = '🔊 Leyendo la pregunta en voz alta.<small>No necesita micrófono. Solo escucha y luego toca la respuesta.</small>';
+    box.innerHTML = '🔊 Leyendo la pregunta en voz alta.<small>Escucha y luego toca la respuesta.</small>';
     box.classList.add('show');
-    speak(text, 'es');
+    browserSpeak(text, 'es');
   };
 
   if (window.speechSynthesis) {
