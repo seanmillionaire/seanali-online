@@ -29,6 +29,18 @@ window.SeanGameVoice = (() => {
   let currentController = null;
   let speakId = 0;
 
+  function currentLang() {
+    return localStorage.getItem('seanGameLang') === 'es' ? 'es-ES' : 'en-US';
+  }
+
+  function pickBrowserVoice(langCode) {
+    if (!('speechSynthesis' in window)) return null;
+    const voices = speechSynthesis.getVoices ? speechSynthesis.getVoices() : [];
+    if (!voices.length) return null;
+    const base = langCode.slice(0, 2).toLowerCase();
+    return voices.find(v => v.lang === langCode) || voices.find(v => v.lang && v.lang.toLowerCase().startsWith(base)) || null;
+  }
+
   function hardStop() {
     speakId++;
 
@@ -93,19 +105,22 @@ window.SeanGameVoice = (() => {
     } catch (error) {
       if (error && error.name === 'AbortError') return false;
       if (myId !== speakId || !enabled) return false;
-      return browserSpeak(cleanText, myId);
+      return browserSpeak(cleanText, myId, options.lang);
     } finally {
       if (myId === speakId) currentController = null;
     }
   }
 
-  function browserSpeak(text, myId = speakId) {
+  function browserSpeak(text, myId = speakId, forcedLang) {
     if (!enabled || myId !== speakId || !('speechSynthesis' in window)) return false;
     speechSynthesis.cancel();
+    const langCode = forcedLang || currentLang();
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'es-ES';
-    utterance.rate = 0.92;
-    utterance.pitch = 1.12;
+    utterance.lang = langCode;
+    const voice = pickBrowserVoice(langCode);
+    if (voice) utterance.voice = voice;
+    utterance.rate = langCode.startsWith('es') ? 0.92 : 0.96;
+    utterance.pitch = 1.08;
     utterance.onend = () => {
       if (myId === speakId) speechSynthesis.cancel();
     };
