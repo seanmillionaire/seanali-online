@@ -7,9 +7,14 @@
   style.textContent = `
     .angelique-listen{position:fixed;left:14px;bottom:14px;z-index:9999;border:3px solid #8b2d7b;border-radius:999px;background:linear-gradient(180deg,#d5fff0,#34d17a);color:#28123f;font:900 16px/1 Arial,sans-serif;padding:13px 15px;box-shadow:0 7px 0 rgba(0,0,0,.26);cursor:pointer}
     .angelique-listen.reading{background:linear-gradient(180deg,#ffe5f5,#ff62b7);animation:readPulse .8s infinite alternate}
-    .angelique-audio-box{position:fixed;left:14px;bottom:74px;z-index:9998;width:min(360px,calc(100vw - 28px));background:#fff6e6;color:#28123f;border:4px solid #8b2d7b;border-radius:24px;padding:14px;box-shadow:0 18px 40px rgba(0,0,0,.35);font-family:Arial,sans-serif;font-weight:900;line-height:1.22;display:none}
+    .angelique-audio-box{position:fixed;left:14px;bottom:74px;z-index:9998;width:min(390px,calc(100vw - 28px));max-height:52vh;overflow:auto;background:#fff6e6;color:#28123f;border:4px solid #8b2d7b;border-radius:24px;padding:14px;box-shadow:0 18px 40px rgba(0,0,0,.35);font-family:Arial,sans-serif;font-weight:900;line-height:1.28;display:none}
     .angelique-audio-box.show{display:block}
     .angelique-audio-box small{display:block;margin-top:8px;font-size:13px;opacity:.8}
+    .read-title{font-size:15px;margin-bottom:8px;color:#8b2d7b}
+    .read-words{font-size:20px;line-height:1.55;text-align:left;background:#fff;border:3px solid #ffcf3d;border-radius:18px;padding:11px;color:#28123f}
+    .read-word{display:inline-block;margin:2px 1px;padding:1px 3px;border-radius:7px;transition:.08s ease;background:transparent}
+    .read-word.active{background:#ffcf3d;color:#101436;transform:scale(1.08);box-shadow:0 2px 0 rgba(0,0,0,.16)}
+    .read-word.done{background:#d5fff0;color:#101436}
     @keyframes readPulse{from{transform:scale(1)}to{transform:scale(1.06)}}
   `;
   document.head.appendChild(style);
@@ -24,6 +29,8 @@
   document.body.appendChild(btn);
 
   let activeAudio = null;
+  let highlightTimer = null;
+  let activeUrl = null;
 
   function visibleText(selector) {
     const el = document.querySelector(selector);
@@ -55,6 +62,45 @@
     btn.textContent = on ? '🔊 Leyendo...' : '🔊 Leer pregunta';
   }
 
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+  }
+
+  function stopHighlight() {
+    if (highlightTimer) clearInterval(highlightTimer);
+    highlightTimer = null;
+    box.querySelectorAll('.read-word.active').forEach(w => w.classList.remove('active'));
+  }
+
+  function buildReadAlong(text) {
+    const words = text.split(/\s+/).filter(Boolean);
+    box.innerHTML = '<div class="read-title">🔊 Lee con la voz</div><div class="read-words">' + words.map((word, i) => '<span class="read-word" data-i="' + i + '">' + escapeHtml(word) + '</span>').join(' ') + '</div><small>Las palabras se iluminan para que Angelique pueda seguir la lectura.</small>';
+    box.classList.add('show');
+    return words.length;
+  }
+
+  function startHighlight(durationSeconds, wordCount) {
+    stopHighlight();
+    const words = Array.from(box.querySelectorAll('.read-word'));
+    if (!words.length) return;
+    const totalMs = Math.max(3200, (durationSeconds || 0) * 1000 || wordCount * 430);
+    const stepMs = Math.max(120, totalMs / words.length);
+    let index = -1;
+    highlightTimer = setInterval(() => {
+      if (index >= 0 && words[index]) {
+        words[index].classList.remove('active');
+        words[index].classList.add('done');
+      }
+      index++;
+      if (index >= words.length) {
+        stopHighlight();
+        return;
+      }
+      words[index].classList.add('active');
+      words[index].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    }, stepMs);
+  }
+
   function pickSpanishVoice() {
     const voices = window.speechSynthesis ? speechSynthesis.getVoices() : [];
     return voices.find(v => /^es/i.test(v.lang) && /female|mujer|paulina|monica|maria|luciana|sabina/i.test(v.name))
@@ -62,7 +108,7 @@
       || voices[0];
   }
 
-  function browserFallback(text) {
+  function browserFallback(text, wordCount) {
     if (!window.speechSynthesis) {
       box.innerHTML = '🔊 No pude usar ElevenLabs ni el lector del navegador.<small>Prueba de nuevo en Chrome, Safari o Edge.</small>';
       box.classList.add('show');
@@ -77,17 +123,23 @@
     u.rate = 0.9;
     u.pitch = 1.05;
     u.volume = 1;
-    u.onend = () => setReading(false);
-    u.onerror = () => setReading(false);
+    const estimated = Math.max(3.2, wordCount * 0.45);
+    u.onstart = () => startHighlight(estimated, wordCount);
+    u.onend = () => { stopHighlight(); setReading(false); };
+    u.onerror = () => { stopHighlight(); setReading(false); };
     speechSynthesis.speak(u);
   }
 
-  async function elevenSpeak(text) {
+  async function elevenSpeak(text, wordCount) {
     setReading(true);
     try {
       if (window.speechSynthesis) speechSynthesis.cancel();
       if (activeAudio) {
         try { activeAudio.pause(); activeAudio.currentTime = 0; } catch (e) {}
+      }
+      if (activeUrl) {
+        try { URL.revokeObjectURL(activeUrl); } catch (e) {}
+        activeUrl = null;
       }
       const res = await fetch('/api/tts', {
         method: 'POST',
@@ -96,13 +148,17 @@
       });
       if (!res.ok) throw new Error('tts failed');
       const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      activeAudio = new Audio(url);
-      activeAudio.onended = () => { setReading(false); URL.revokeObjectURL(url); };
-      activeAudio.onerror = () => { setReading(false); URL.revokeObjectURL(url); };
+      activeUrl = URL.createObjectURL(blob);
+      activeAudio = new Audio(activeUrl);
+      activeAudio.onloadedmetadata = () => startHighlight(activeAudio.duration, wordCount);
+      activeAudio.onplay = () => {
+        if (!highlightTimer) startHighlight(activeAudio.duration, wordCount);
+      };
+      activeAudio.onended = () => { stopHighlight(); setReading(false); };
+      activeAudio.onerror = () => { stopHighlight(); setReading(false); };
       await activeAudio.play();
     } catch (e) {
-      browserFallback(text);
+      browserFallback(text, wordCount);
     }
   }
 
@@ -113,9 +169,8 @@
       box.classList.add('show');
       return;
     }
-    box.innerHTML = '🔊 Leyendo con ElevenLabs.<small>Escucha y luego toca la respuesta.</small>';
-    box.classList.add('show');
-    elevenSpeak(text);
+    const wordCount = buildReadAlong(text);
+    elevenSpeak(text, wordCount);
   };
 
   if (window.speechSynthesis) {
