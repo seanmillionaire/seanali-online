@@ -19,9 +19,11 @@
   btn.textContent = '🔊 Leer pregunta';
   const box = document.createElement('div');
   box.className = 'angelique-audio-box';
-  box.innerHTML = '🔊 Toca para escuchar la pregunta, la rima y las opciones.<small>Esto lee la tarea en voz alta.</small>';
+  box.innerHTML = '🔊 Toca para escuchar la pregunta, la rima y las opciones.<small>Usa la misma voz ElevenLabs de los otros juegos.</small>';
   document.body.appendChild(box);
   document.body.appendChild(btn);
+
+  let activeAudio = null;
 
   function visibleText(selector) {
     const el = document.querySelector(selector);
@@ -48,6 +50,11 @@
       .trim();
   }
 
+  function setReading(on) {
+    btn.classList.toggle('reading', !!on);
+    btn.textContent = on ? '🔊 Leyendo...' : '🔊 Leer pregunta';
+  }
+
   function pickSpanishVoice() {
     const voices = window.speechSynthesis ? speechSynthesis.getVoices() : [];
     return voices.find(v => /^es/i.test(v.lang) && /female|mujer|paulina|monica|maria|luciana|sabina/i.test(v.name))
@@ -55,10 +62,11 @@
       || voices[0];
   }
 
-  function speak(text) {
+  function browserFallback(text) {
     if (!window.speechSynthesis) {
-      box.innerHTML = '🔊 Este navegador no puede leer en voz alta.<small>Prueba Chrome, Safari o Edge.</small>';
+      box.innerHTML = '🔊 No pude usar ElevenLabs ni el lector del navegador.<small>Prueba de nuevo en Chrome, Safari o Edge.</small>';
       box.classList.add('show');
+      setReading(false);
       return;
     }
     speechSynthesis.cancel();
@@ -69,19 +77,33 @@
     u.rate = 0.9;
     u.pitch = 1.05;
     u.volume = 1;
-    u.onstart = () => {
-      btn.classList.add('reading');
-      btn.textContent = '🔊 Leyendo...';
-    };
-    u.onend = () => {
-      btn.classList.remove('reading');
-      btn.textContent = '🔊 Leer pregunta';
-    };
-    u.onerror = () => {
-      btn.classList.remove('reading');
-      btn.textContent = '🔊 Leer pregunta';
-    };
+    u.onend = () => setReading(false);
+    u.onerror = () => setReading(false);
     speechSynthesis.speak(u);
+  }
+
+  async function elevenSpeak(text) {
+    setReading(true);
+    try {
+      if (window.speechSynthesis) speechSynthesis.cancel();
+      if (activeAudio) {
+        try { activeAudio.pause(); activeAudio.currentTime = 0; } catch (e) {}
+      }
+      const res = await fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
+      });
+      if (!res.ok) throw new Error('tts failed');
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      activeAudio = new Audio(url);
+      activeAudio.onended = () => { setReading(false); URL.revokeObjectURL(url); };
+      activeAudio.onerror = () => { setReading(false); URL.revokeObjectURL(url); };
+      await activeAudio.play();
+    } catch (e) {
+      browserFallback(text);
+    }
   }
 
   btn.onclick = () => {
@@ -91,9 +113,9 @@
       box.classList.add('show');
       return;
     }
-    box.innerHTML = '🔊 Leyendo la pregunta en voz alta.<small>Escucha y luego toca la respuesta.</small>';
+    box.innerHTML = '🔊 Leyendo con ElevenLabs.<small>Escucha y luego toca la respuesta.</small>';
     box.classList.add('show');
-    speak(text);
+    elevenSpeak(text);
   };
 
   if (window.speechSynthesis) {
