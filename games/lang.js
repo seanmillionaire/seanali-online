@@ -10,7 +10,6 @@
     'Para niños: familia, dinero, matemáticas, español, comida, música, memoria y diversión — toca y juega.':'For kids: family, money, math, Spanish, food, music, memory and fun — tap and play.',
     'Familia':'Family',
     'Aprende cómo una familia trabaja junta como un equipo fuerte.':'Learn how a family works together like a strong team.',
-    'Familia':'Family',
     'Equipo':'Teamwork',
     'Habilidades de vida':'Life Skills',
     'Jugar Familia →':'Play Family →',
@@ -30,20 +29,15 @@
     'Hecho para atención, sentidos y aprendizaje:':'Built for attention, senses and learning:',
     'botones grandes, premios rápidos, lenguaje simple, práctica escolar y juegos divertidos.':'big buttons, quick rewards, simple Spanish, school practice and playful loops.',
     'Inicio':'Home','Juegos':'Games','Más juegos':'More games','Money':'Money','Food':'Food','Math Race':'Math Race','Beats':'Beats','Spanish':'Spanish','Quiz':'Quiz','Animals':'Animals','Music':'Music','Rhythm':'Rhythm','Sound':'Sound','Mindset':'Mindset','Health':'Health','Cars':'Cars','Math':'Math',
-
     'Principios de dinero + afirmaciones':'Money principles + affirmations','Lee la idea de dinero.':'Read the money idea.','Toca la mejor respuesta.':'Tap the best answer.','Gana monedas y llena tu bóveda.':'Earn coins and fill your vault.','Desbloquea afirmaciones positivas.':'Unlock positive affirmations.','Al final gana tu badge de Money Wisdom.':'At the end, win your Money Wisdom badge.','Cómo jugar':'How to Play','Cómo':'How','¡Vamos!':'Let’s go!','Pregunta':'Question','Principio':'Principle','Valor':'Value','Ahorro':'Saving','Metas':'Goals','Dar':'Giving','Pensamiento':'Thinking','Construir':'Build','Actitud':'Attitude','Sueño':'Dream','Guardar un poco':'Save a little','Gastar todo rápido':'Spend it all fast','Creando valor':'Creating value','Puedo aprender':'I can learn','Buen intento.':'Good try.','Afirmaciones desbloqueadas:':'Unlocked affirmations:',
-
     'Aprende qué tiene cada alimento':'Learn what each food has','Mira el alimento natural.':'Look at the natural food.','Toca qué tiene más.':'Tap what it has most.','Gana estrellas.':'Earn stars.','Al final desbloqueas comidas simples.':'At the end, unlock simple meals.','Proteína':'Protein','Vitamina C':'Vitamin C','Grasa saludable':'Healthy fat','Carbohidrato':'Carbohydrate','Vitamina A':'Vitamin A','Calcio':'Calcium','Fibra':'Fiber','Potasio':'Potassium','Hierro':'Iron','Pasaste':'You passed','Sigue practicando':'Keep practicing','Comidas simples desbloqueadas:':'Simple meals unlocked:',
-
     'Selva: ¿Verdad o Falso?':'Jungle: True or False?','Gana estrellas y abre el cofre':'Earn stars and open the chest','Escucha o lee la pregunta.':'Listen or read the question.','Toca Verdadero o Falso.':'Tap True or False.','Abre el cofre al final.':'Open the chest at the end.','¿Listo?':'Ready?','Toca Cómo jugar o empieza.':'Tap How to Play or start.','¿Verdadero o falso?':'True or false?','Verdadero ✅':'True ✅','Falso ❌':'False ❌','Cofre abierto:':'Chest opened:','Jugar otra vez 🔁':'Play again 🔁','Ver errores 💬':'See mistakes 💬','Colección:':'Collection:',
-
     'Gana XP y desbloquea carros':'Earn XP and unlock cars','Lee la multiplicación.':'Read the multiplication.','Toca el número correcto.':'Tap the correct number.','Cuida tus corazones.':'Protect your hearts.','Llena la barra de XP.':'Fill the XP bar.','Abre el garaje al final.':'Open the garage at the end.','Maneja al resultado correcto.':'Drive to the correct answer.','Garaje:':'Garage:','Premio nuevo:':'New prize:','Tu garaje:':'Your garage:',
-
     'Toca un botón':'Tap a pad','Mini MPC. Botones grandes. Haz música.':'Mini MPC. Big buttons. Make noise.','BOMBO':'KICK','CAJA':'SNARE','PALMA':'CLAP','BAJO':'BASS','GOLPE':'HYPE HIT','VOZ':'VOICE CUT','■ Parar':'■ Stop','Parado':'Stopped'
   };
 
   const enToEs = Object.fromEntries(Object.entries(esToEn).map(([es,en]) => [en, es]));
-  let lang = localStorage.getItem(KEY) || 'es';
+  let lang = localStorage.getItem(KEY) || 'en';
   document.documentElement.lang = lang;
 
   function normalizeToEs(value) {
