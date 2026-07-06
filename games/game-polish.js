@@ -6,9 +6,9 @@
 
   const css = document.createElement('style');
   css.textContent = `
-    .choice,.answer{position:relative!important;text-align:left!important;padding-left:88px!important;padding-right:18px!important}
-    .choice[data-choice-label]::before,.answer[data-choice-label]::before{content:attr(data-choice-label);position:absolute;left:12px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:3px solid #101436;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#ffc83d;color:#101436;font-size:18px;font-weight:900;box-shadow:0 3px 0 rgba(0,0,0,.2)}
-    .choice::after,.answer::after{content:'👉';position:absolute;left:51px;right:auto;top:50%;transform:translateY(-50%);font-size:22px;opacity:.95;pointer-events:none}
+    .choice,.answer{position:relative!important;text-align:left!important;padding:13px 16px 13px 56px!important;min-height:0!important;line-height:1.14!important;font-size:clamp(16px,4.4vw,20px)!important;overflow-wrap:anywhere!important}
+    .choice[data-choice-label]::before,.answer[data-choice-label]::before{content:attr(data-choice-label);position:absolute;left:12px;top:50%;transform:translateY(-50%);width:30px;height:30px;border:3px solid #101436;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#ffc83d;color:#101436;font-size:16px;font-weight:900;box-shadow:0 3px 0 rgba(0,0,0,.2)}
+    .choice::after,.answer::after{content:none!important;display:none!important}
     .game-progress-meter ~ .xp,.game-progress-meter ~ .barBox,.game-progress-meter ~ .progress,.game-progress-meter ~ .progressBox{display:none!important}
     .xp,.barBox,.progress,.progressBox,.meter,.xpbar{display:none!important}
     .game-progress-meter{display:block!important}
@@ -23,13 +23,13 @@
     body[data-game-polish="tongue-twister"] .helper,body[data-game-polish="tongue-twister"] #helper,body[data-game-polish="tongue-twister"] .prompt{font-size:18px!important;line-height:1.12!important}
     body[data-game-polish="food"] .food-followup{background:#fff;border:4px solid #34d17a;border-radius:20px;margin:12px 0;padding:12px;font-size:19px;font-weight:900;line-height:1.12;text-align:left;box-shadow:0 6px 0 rgba(0,0,0,.16)}
     body[data-game-polish="food"] .food-followup b{display:block;margin-bottom:6px;color:#101436}
-    @media(max-width:430px){.choice,.answer{padding-left:80px!important;padding-right:14px!important}.choice[data-choice-label]::before,.answer[data-choice-label]::before{width:30px;height:30px;font-size:16px}.choice::after,.answer::after{left:46px;font-size:19px}}
+    @media(max-width:430px){.choice,.answer{padding:11px 13px 11px 50px!important;font-size:16px!important}.choice[data-choice-label]::before,.answer[data-choice-label]::before{width:28px;height:28px;font-size:15px;left:10px}}
   `;
   document.head.appendChild(css);
 
   const labels = ['A','B','C','D','E','F'];
   function labelOptions(root = document) {
-    root.querySelectorAll('.choices,.answers').forEach(group => {
+    root.querySelectorAll('.choices,.answers,#choices,#answers').forEach(group => {
       [...group.querySelectorAll('.choice,.answer,button')].forEach((btn, i) => {
         if (!btn.matches('.choice,.answer')) return;
         if (!btn.dataset.choiceLabel) btn.dataset.choiceLabel = labels[i] || String(i + 1);
