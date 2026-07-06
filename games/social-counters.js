@@ -3,6 +3,7 @@
   window.GameSocialCountersLoaded = true;
 
   const seeds = {
+    '/games/mirror/': { likes: 251, shares: 62 },
     '/games/math-race/': { likes: 128, shares: 34 },
     '/games/math-dissector/': { likes: 96, shares: 21 },
     '/games/piano/': { likes: 214, shares: 48 },
