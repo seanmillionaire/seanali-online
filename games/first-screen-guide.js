@@ -6,16 +6,16 @@
   if (path === '/games/' || path.startsWith('/games/piano/') || path.startsWith('/games/beats/')) return;
 
   const guide = {
-    '/games/mirror/': { title: '👀 Step 1: Read this', esTitle: '👀 Paso 1: Lee esto', steps: ['🪞 Life moment', '👉 Pick a thought', '✨ Clear the mirror'], esSteps: ['🪞 Momento de vida', '👉 Elige un pensamiento', '✨ Aclara el espejo'], focus: '#situation,.situation' },
-    '/games/math-race/': { title: '👀 Step 1: Read this', esTitle: '👀 Paso 1: Lee esto', steps: ['🚗 Math problem', '👉 Count groups', '🏁 Tap answer'], esSteps: ['🚗 Problema', '👉 Cuenta grupos', '🏁 Toca respuesta'], focus: '#question,.question' },
-    '/games/math-dissector/': { title: '👀 Step 1: Read this', esTitle: '👀 Paso 1: Lee esto', steps: ['🧠 Look at problem', '✏️ Use paper', '👉 Tap answer'], esSteps: ['🧠 Mira el problema', '✏️ Usa papel', '👉 Toca respuesta'], focus: '#question,.question,.problem,.board,.whiteboard' },
-    '/games/elements/': { title: '👀 Step 1: Read this', esTitle: '👀 Paso 1: Lee esto', steps: ['🌎 Read clue', '👀 Look at icons', '👉 Pick element'], esSteps: ['🌎 Lee la pista', '👀 Mira iconos', '👉 Elige elemento'], focus: '#question,.question,.clue,.prompt' },
-    '/games/family-gems/': { title: '👀 Step 1: Read this', esTitle: '👀 Paso 1: Lee esto', steps: ['💎 Read clue', '👀 Look at picture', '👉 Pick country'], esSteps: ['💎 Lee pista', '👀 Mira imagen', '👉 Elige país'], focus: '#question,.question,.clue,.prompt' },
-    '/games/tongue-twister/': { title: '👀 Step 1: Tap one', esTitle: '👀 Paso 1: Toca una', steps: ['🔤 Pick letter', '🗣️ Say it', '🔁 Try smoother'], esSteps: ['🔤 Elige letra', '🗣️ Dilo', '🔁 Más suave'], focus: '#twister,.twister,.prompt,.question,.letters' },
-    '/games/food-groups/': { title: '👀 Step 1: Read this', esTitle: '👀 Paso 1: Lee esto', steps: ['🥑 Look food', '👀 Read question', '👉 Pick answer'], esSteps: ['🥑 Mira comida', '👀 Lee pregunta', '👉 Toca respuesta'], focus: '#question,.question,.food,.prompt' },
-    '/games/family/': { title: '👀 Step 1: Read this', esTitle: '👀 Paso 1: Lee esto', steps: ['💛 Family moment', '🧠 Think help', '👉 Pick kind choice'], esSteps: ['💛 Momento familia', '🧠 Piensa ayuda', '👉 Elige bondad'], focus: '#question,.question,.prompt,.situation' },
-    '/games/money/': { title: '👀 Step 1: Read this', esTitle: '👀 Paso 1: Lee esto', steps: ['💰 Money choice', '🧠 Need or want?', '👉 Tap smart answer'], esSteps: ['💰 Opción dinero', '🧠 ¿Necesidad o deseo?', '👉 Toca respuesta'], focus: '#question,.question,.prompt,.principle' },
-    '/games/selva/': { title: '👀 Step 1: Read this', esTitle: '👀 Paso 1: Lee esto', steps: ['🌿 Read fact', '🧠 True or false?', '👉 Tap answer'], esSteps: ['🌿 Lee dato', '🧠 ¿Verdad o falso?', '👉 Toca respuesta'], focus: '#question,.question,.prompt' }
+    '/games/mirror/': { title: '👀 STEP 1: READ THIS FIRST', esTitle: '👀 PASO 1: LEE ESTO PRIMERO', steps: ['🪞 Read life moment', '👉 Pick a thought', '✨ Clear mirror'], esSteps: ['🪞 Lee momento', '👉 Elige pensamiento', '✨ Aclara espejo'], focus: '#situation,.situation' },
+    '/games/math-race/': { title: '👀 STEP 1: READ THIS FIRST', esTitle: '👀 PASO 1: LEE ESTO PRIMERO', steps: ['🚗 Read problem', '👉 Count groups', '🏁 Tap answer'], esSteps: ['🚗 Lee problema', '👉 Cuenta grupos', '🏁 Toca respuesta'], focus: '#question,.question' },
+    '/games/math-dissector/': { title: '👀 STEP 1: READ THIS FIRST', esTitle: '👀 PASO 1: LEE ESTO PRIMERO', steps: ['🧠 Look here', '✏️ Use paper', '👉 Tap answer'], esSteps: ['🧠 Mira aquí', '✏️ Usa papel', '👉 Toca respuesta'], focus: '#question,.question,.problem,.board,.whiteboard' },
+    '/games/elements/': { title: '👀 STEP 1: READ THIS FIRST', esTitle: '👀 PASO 1: LEE ESTO PRIMERO', steps: ['🌎 Read clue', '👀 Look icons', '👉 Pick element'], esSteps: ['🌎 Lee pista', '👀 Mira iconos', '👉 Elige elemento'], focus: '#question,.question,.clue,.prompt' },
+    '/games/family-gems/': { title: '👀 STEP 1: READ THIS FIRST', esTitle: '👀 PASO 1: LEE ESTO PRIMERO', steps: ['💎 Read clue', '👀 Look picture', '👉 Pick country'], esSteps: ['💎 Lee pista', '👀 Mira imagen', '👉 Elige país'], focus: '#question,.question,.clue,.prompt' },
+    '/games/tongue-twister/': { title: '👀 STEP 1: TAP ONE', esTitle: '👀 PASO 1: TOCA UNA', steps: ['🔤 Pick letter', '🗣️ Say it', '🔁 Try smoother'], esSteps: ['🔤 Elige letra', '🗣️ Dilo', '🔁 Más suave'], focus: '#twister,.twister,.prompt,.question,.letters' },
+    '/games/food-groups/': { title: '👀 STEP 1: READ THIS FIRST', esTitle: '👀 PASO 1: LEE ESTO PRIMERO', steps: ['🥑 Look food', '👀 Read question', '👉 Pick answer'], esSteps: ['🥑 Mira comida', '👀 Lee pregunta', '👉 Toca respuesta'], focus: '#question,.question,.food,.prompt' },
+    '/games/family/': { title: '👀 STEP 1: READ THIS FIRST', esTitle: '👀 PASO 1: LEE ESTO PRIMERO', steps: ['💛 Read moment', '🧠 Think help', '👉 Pick kind'], esSteps: ['💛 Lee momento', '🧠 Piensa ayuda', '👉 Elige bondad'], focus: '#question,.question,.prompt,.situation' },
+    '/games/money/': { title: '👀 STEP 1: READ THIS FIRST', esTitle: '👀 PASO 1: LEE ESTO PRIMERO', steps: ['💰 Read choice', '🧠 Need/want?', '👉 Tap smart'], esSteps: ['💰 Lee opción', '🧠 ¿Necesidad/deseo?', '👉 Toca inteligente'], focus: '#question,.question,.prompt,.principle' },
+    '/games/selva/': { title: '👀 STEP 1: READ THIS FIRST', esTitle: '👀 PASO 1: LEE ESTO PRIMERO', steps: ['🌿 Read fact', '🧠 True/false?', '👉 Tap answer'], esSteps: ['🌿 Lee dato', '🧠 ¿Verdad/falso?', '👉 Toca respuesta'], focus: '#question,.question,.prompt' }
   };
 
   const data = guide[path];
@@ -24,9 +24,10 @@
 
   const style = document.createElement('style');
   style.textContent = `
-    @keyframes gameTargetPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,200,61,1),0 8px 0 rgba(0,0,0,.22);transform:scale(1)}50%{box-shadow:0 0 0 14px rgba(255,200,61,0),0 8px 0 rgba(0,0,0,.22);transform:scale(1.045)}}
-    @keyframes gameActionBob{50%{transform:translateY(7px) scale(1.02)}}
-    .game-start-guide{margin:12px auto 0;max-width:540px;background:#fff;border:5px solid #ffc83d;border-radius:24px;padding:12px;box-shadow:0 8px 0 rgba(0,0,0,.24),0 0 24px rgba(255,200,61,.35);text-align:left;color:#101436;font-family:Arial,sans-serif}.game-start-title{display:flex;align-items:center;justify-content:center;gap:7px;text-align:center;font-size:23px;font-weight:900;margin-bottom:9px;background:#ffc83d;border:3px solid #101436;border-radius:18px;padding:9px;animation:gameActionBob 1.15s ease-in-out infinite}.game-start-list{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.game-start-step{background:#f1fff3;border:3px solid #34d17a;border-radius:16px;padding:9px 8px;font-size:16px;font-weight:900;line-height:1.08;text-align:center}.game-focus-target{outline:7px solid #ffc83d!important;outline-offset:5px!important;animation:gameTargetPulse 1.05s ease-in-out infinite!important;position:relative;z-index:20}.game-focus-arrow{position:fixed;left:50%;top:122px;transform:translateX(-50%);z-index:9998;background:#ff3b30;color:white;border:5px solid #101436;border-radius:999px;padding:10px 15px;font-size:20px;font-weight:900;box-shadow:0 7px 0 rgba(0,0,0,.28);pointer-events:none;animation:bobArrow 1s ease-in-out infinite}.game-focus-arrow::after{content:' ↓';font-size:24px}@keyframes bobArrow{50%{transform:translateX(-50%) translateY(9px)}}@media(max-width:430px){.game-start-list{grid-template-columns:1fr}.game-start-step{font-size:15px}.game-start-title{font-size:19px}.game-focus-arrow{top:104px;font-size:16px}}
+    @keyframes gameTargetPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,200,61,1),0 10px 0 rgba(0,0,0,.28);transform:scale(1)}50%{box-shadow:0 0 0 18px rgba(255,200,61,0),0 10px 0 rgba(0,0,0,.28);transform:scale(1.055)}}
+    @keyframes gameActionBob{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(7px) scale(1.025)}}
+    @keyframes gameGlow{0%,100%{filter:brightness(1)}50%{filter:brightness(1.18)}}
+    .game-start-guide{margin:12px auto 0;max-width:560px;background:#fff;border:6px solid #ff3b30;border-radius:26px;padding:12px;box-shadow:0 9px 0 rgba(0,0,0,.28),0 0 34px rgba(255,59,48,.42);text-align:left;color:#101436;font-family:Arial,sans-serif;animation:gameGlow 1.4s ease-in-out infinite}.game-start-title{display:flex;align-items:center;justify-content:center;gap:8px;text-align:center;font-size:25px;font-weight:900;margin-bottom:9px;background:#ffc83d;border:4px solid #101436;border-radius:18px;padding:11px;animation:gameActionBob 1.05s ease-in-out infinite}.game-start-list{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.game-start-step{background:#f1fff3;border:3px solid #34d17a;border-radius:16px;padding:10px 8px;font-size:17px;font-weight:900;line-height:1.06;text-align:center}.game-focus-target{outline:8px solid #ff3b30!important;outline-offset:6px!important;animation:gameTargetPulse .95s ease-in-out infinite!important;position:relative;z-index:20}.game-focus-target::before{content:'👀 READ HERE';position:absolute;left:50%;top:-45px;transform:translateX(-50%);background:#ff3b30;color:#fff;border:4px solid #101436;border-radius:999px;padding:7px 12px;font-size:17px;font-weight:900;white-space:nowrap;z-index:30;box-shadow:0 6px 0 rgba(0,0,0,.25)}.game-focus-arrow{position:fixed;left:50%;top:122px;transform:translateX(-50%);z-index:9998;background:#ff3b30;color:white;border:5px solid #101436;border-radius:999px;padding:11px 16px;font-size:21px;font-weight:900;box-shadow:0 7px 0 rgba(0,0,0,.28);pointer-events:none;animation:bobArrow 1s ease-in-out infinite}.game-focus-arrow::after{content:' ↓';font-size:25px}@keyframes bobArrow{50%{transform:translateX(-50%) translateY(9px)}}@media(max-width:430px){.game-start-list{grid-template-columns:1fr}.game-start-step{font-size:16px}.game-start-title{font-size:19px}.game-focus-arrow{top:104px;font-size:16px}.game-focus-target::before{font-size:14px;top:-38px}}
   `;
   document.head.appendChild(style);
 
@@ -55,11 +56,10 @@
     if (!document.querySelector('.game-focus-arrow')) {
       const arrow = document.createElement('div');
       arrow.className = 'game-focus-arrow';
-      arrow.textContent = isEs() ? 'Lee esto primero' : 'Read this first';
+      arrow.textContent = isEs() ? 'Mira aquí primero' : 'Look here first';
       document.body.appendChild(arrow);
-      setTimeout(() => arrow.remove(), 7600);
+      setTimeout(() => arrow.remove(), 10500);
     }
-    setTimeout(() => target.classList.remove('game-focus-target'), 11000);
   }
 
   function introJingle() {
