@@ -20,9 +20,27 @@
   `;
   document.head.appendChild(style);
 
+  function roundDoneByMeter(){
+    const count = document.querySelector('.game-progress-count')?.textContent || '';
+    const m = count.match(/(?:Step|Paso)\s+(\d+)\s+(?:of|de)\s+(\d+)/i);
+    if (!m) return false;
+    const current = parseInt(m[1],10);
+    const total = parseInt(m[2],10);
+    return Number.isFinite(current) && Number.isFinite(total) && current >= total;
+  }
+
+  function explicitEndVisible(){
+    const reward = document.querySelector('#reward.show,.reward.show,.game-end,.end-screen,.win-screen,.complete-screen');
+    if (reward && /complete|badge|winner|you win|level 1 done|level 2 complete|completo|ganaste|terminado/i.test(reward.textContent || '')) return true;
+    const choices = document.querySelector('#choices,.choices,.answers');
+    if (choices && /start level 2|play again|start over|main menu|jugar otra vez|siguiente nivel/i.test(choices.textContent || '')) return true;
+    const feedback = document.querySelector('#feedback,.feedback,.helper,.lesson');
+    if (feedback && /level 1 done|level 2 complete|complete!|completed|you finished|completo|terminado/i.test(feedback.textContent || '')) return true;
+    return false;
+  }
+
   function looksDone(){
-    const text = document.body.innerText || '';
-    return /complete|completed|finished|finish|badge|play again|start over|level 1 done|level 2 complete|Genie Mode|Reality Level|winner|you win|done\.|completo|terminado|ganaste|jugar otra vez/i.test(text);
+    return explicitEndVisible() || roundDoneByMeter();
   }
 
   function unlockMapPortal(){
