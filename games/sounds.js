@@ -5,7 +5,8 @@
     const scripts = [
       { global: 'SeanGameAppViewReady', src: '/games/app-view.js' },
       { global: 'SeanGameBreadcrumbsReady', src: '/games/breadcrumbs.js' },
-      { global: 'SeanGameLangReady', src: '/games/lang.js' }
+      { global: 'SeanGameLangReady', src: '/games/lang.js' },
+      { global: 'BuddyGuideHelpLoaded', src: '/games/buddy-guide-help.js?v=1' }
     ];
     if (isGamePage) {
       scripts.push({ global: 'GameWrongEffectLoaded', src: '/games/wrong-effect.js?v=1' });
