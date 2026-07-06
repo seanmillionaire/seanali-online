@@ -2,7 +2,10 @@
   if (window.BuddyGuideHelpLoaded) return;
   window.BuddyGuideHelpLoaded = true;
 
+  const NAME_KEY = 'seanGameUserName';
   const path = location.pathname.replace(/\/+$/, '/') || '/';
+  let userName = localStorage.getItem(NAME_KEY) || '';
+
   const help = {
     '/games/': ['Pick one game card.', 'Tap the yellow Play button.', 'Finish one round, then try another game.'],
     '/games/math-race/': ['Read the math problem.', 'Think of the multiplication fact.', 'Tap the answer fast.'],
@@ -39,7 +42,7 @@
 
   const style = document.createElement('style');
   style.textContent = `
-    .buddy-smart-modal{position:fixed;inset:0;background:rgba(16,20,54,.58);display:none;align-items:center;justify-content:center;padding:14px;z-index:10000;font-family:Arial,sans-serif}.buddy-smart-modal.show{display:flex}.buddy-smart-box{width:min(440px,100%);background:linear-gradient(180deg,#fff6e6,#e8fbff);border:5px solid #101436;border-radius:30px;padding:18px;color:#101436;box-shadow:0 18px 0 rgba(0,0,0,.25),0 0 40px rgba(255,200,61,.45)}.buddy-smart-head{display:flex;align-items:center;gap:10px;background:linear-gradient(90deg,#ff62b7,#ffc83d,#34d17a,#00d4ff);border:4px solid #101436;border-radius:22px;padding:10px;font-size:25px;font-weight:900}.buddy-smart-list{background:#fff;border:4px solid #ffc83d;border-radius:22px;margin:12px 0;padding:14px 14px 14px 38px;display:grid;gap:10px;box-shadow:0 7px 0 rgba(0,0,0,.14)}.buddy-smart-list li{font-size:20px;line-height:1.15;font-weight:900}.buddy-smart-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.buddy-smart-actions button{border:4px solid #101436;border-radius:20px;padding:14px 10px;font-size:19px;font-weight:900;box-shadow:0 7px 0 rgba(0,0,0,.25)}.buddy-smart-close{background:linear-gradient(180deg,#fff26f,#ffc83d);color:#101436}.buddy-smart-tip{background:linear-gradient(180deg,#d9ffe9,#34d17a);color:#101436}.buddy-smart-note{font-size:17px;font-weight:900;text-align:center;background:#f4ecff;border:3px solid #7d4cff;border-radius:16px;padding:9px}@media(max-width:430px){.buddy-smart-list li{font-size:18px}.buddy-smart-actions{grid-template-columns:1fr}.buddy-smart-head{font-size:21px}}
+    .buddy-smart-modal{position:fixed;inset:0;background:rgba(16,20,54,.58);display:none;align-items:center;justify-content:center;padding:14px;z-index:10000;font-family:Arial,sans-serif}.buddy-smart-modal.show{display:flex}.buddy-smart-box{width:min(440px,100%);background:linear-gradient(180deg,#fff6e6,#e8fbff);border:5px solid #101436;border-radius:30px;padding:18px;color:#101436;box-shadow:0 18px 0 rgba(0,0,0,.25),0 0 40px rgba(255,200,61,.45)}.buddy-smart-head{display:flex;align-items:center;gap:10px;background:linear-gradient(90deg,#ff62b7,#ffc83d,#34d17a,#00d4ff);border:4px solid #101436;border-radius:22px;padding:10px;font-size:25px;font-weight:900}.buddy-smart-list{background:#fff;border:4px solid #ffc83d;border-radius:22px;margin:12px 0;padding:14px 14px 14px 38px;display:grid;gap:10px;box-shadow:0 7px 0 rgba(0,0,0,.14)}.buddy-smart-list li{font-size:20px;line-height:1.15;font-weight:900}.buddy-smart-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.buddy-smart-actions button{border:4px solid #101436;border-radius:20px;padding:14px 10px;font-size:19px;font-weight:900;box-shadow:0 7px 0 rgba(0,0,0,.25)}.buddy-smart-close{background:linear-gradient(180deg,#fff26f,#ffc83d);color:#101436}.buddy-smart-tip{background:linear-gradient(180deg,#d9ffe9,#34d17a);color:#101436}.buddy-smart-note{font-size:17px;font-weight:900;text-align:center;background:#f4ecff;border:3px solid #7d4cff;border-radius:16px;padding:9px}.buddy-name-label{font-size:24px;font-weight:900;line-height:1.1;text-align:center;margin:4px 0 10px}.buddy-name-input{width:100%;border:4px solid #101436;border-radius:20px;padding:16px;font-size:22px;font-weight:900;text-align:center;background:#fff;color:#101436;box-sizing:border-box}.buddy-name-icons{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}.buddy-name-icons span{background:#fff;border:3px solid #101436;border-radius:16px;padding:9px 4px;font-size:24px;text-align:center;box-shadow:0 4px 0 rgba(0,0,0,.18)}@media(max-width:430px){.buddy-smart-list li{font-size:18px}.buddy-smart-actions{grid-template-columns:1fr}.buddy-smart-head{font-size:21px}}
   `;
   document.head.appendChild(style);
 
@@ -47,16 +50,40 @@
   modal.className = 'buddy-smart-modal';
   document.body.appendChild(modal);
 
-  function render(extra) {
+  function safeName() {
+    return (userName || localStorage.getItem(NAME_KEY) || '').trim();
+  }
+
+  function renderNameAsk() {
+    modal.innerHTML = '<div class="buddy-smart-box"><div class="buddy-smart-head"><span>🤖</span><span>Buddy Guide</span></div><div class="buddy-smart-note"><div class="buddy-name-label">What is your name? 🌈</div><input class="buddy-name-input" maxlength="24" placeholder="Type name here ✨" value=""><div class="buddy-name-icons"><span>🎮</span><span>⭐</span><span>🚀</span><span>🏆</span></div></div><div class="buddy-smart-actions"><button class="buddy-smart-close">🎮 Skip</button><button class="buddy-smart-tip">🚀 Save</button></div></div>';
+    const input = modal.querySelector('.buddy-name-input');
+    const save = () => {
+      const name = input.value.trim();
+      if (name) {
+        userName = name;
+        localStorage.setItem(NAME_KEY, name);
+      }
+      renderHelp();
+    };
+    modal.querySelector('.buddy-smart-tip').onclick = save;
+    modal.querySelector('.buddy-smart-close').onclick = renderHelp;
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') save(); });
+    setTimeout(() => input.focus(), 50);
+  }
+
+  function renderHelp(extra) {
     const steps = help[path] || ['Read the question or clue.', 'Tap the best answer or button.', 'Learn from mistakes, then try again.'];
     const title = titles[path] || 'Game Help 🎮';
-    modal.innerHTML = '<div class="buddy-smart-box"><div class="buddy-smart-head"><span>🤖</span><span>' + title + '</span></div><ol class="buddy-smart-list">' + steps.map(s => '<li>' + s + '</li>').join('') + '</ol><div class="buddy-smart-note">' + (extra || 'One step at a time. You got this. ⭐') + '</div><div class="buddy-smart-actions"><button class="buddy-smart-close">✅ Got it</button><button class="buddy-smart-tip">💡 Tip</button></div></div>';
+    const name = safeName();
+    const greeting = name ? 'You got this, ' + name + '. ⭐' : 'One step at a time. You got this. ⭐';
+    modal.innerHTML = '<div class="buddy-smart-box"><div class="buddy-smart-head"><span>🤖</span><span>' + title + '</span></div><ol class="buddy-smart-list">' + steps.map(s => '<li>' + s + '</li>').join('') + '</ol><div class="buddy-smart-note">' + (extra || greeting) + '</div><div class="buddy-smart-actions"><button class="buddy-smart-close">✅ Got it</button><button class="buddy-smart-tip">💡 Tip</button></div></div>';
     modal.querySelector('.buddy-smart-close').onclick = () => modal.classList.remove('show');
-    modal.querySelector('.buddy-smart-tip').onclick = () => render('Slow down, look for the clue, then tap. 🧠');
+    modal.querySelector('.buddy-smart-tip').onclick = () => renderHelp(name ? 'Slow down, ' + name + '. Look for the clue, then tap. 🧠' : 'Slow down, look for the clue, then tap. 🧠');
   }
 
   function openSmartGuide() {
-    render();
+    if (!safeName()) renderNameAsk();
+    else renderHelp();
     modal.classList.add('show');
   }
 
@@ -73,5 +100,5 @@
     if (event.target === modal) modal.classList.remove('show');
   });
 
-  window.BuddyGuideHelp = { open: openSmartGuide };
+  window.BuddyGuideHelp = { open: openSmartGuide, getName: safeName };
 })();
