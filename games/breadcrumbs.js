@@ -38,9 +38,9 @@
     .game-breadcrumbs .current{background:#ffd84d;border:2px solid #bd8610;border-radius:999px;padding:8px 11px;box-shadow:0 4px 0 rgba(0,0,0,.12)}
     .game-breadcrumbs .quick{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:8px}
     .game-breadcrumbs .label{font-size:14px;font-weight:900;margin:8px 0;color:#2d5b39}
-    .game-pro-footer{margin:18px auto 0;padding:16px 14px 18px;background:rgba(255,255,255,.92);border:3px solid rgba(16,20,54,.18);border-radius:24px;box-shadow:0 8px 0 rgba(0,0,0,.10);color:#101436}
-    .game-pro-footer .brand{font-size:17px;font-weight:900;margin-bottom:6px}.game-pro-footer .copy{font-size:14px;font-weight:800;line-height:1.35;color:#334}.game-pro-footer .links{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}.game-pro-footer .links a{box-shadow:none;border-color:#d7dff0;background:#f8fbff;font-size:13px;padding:7px 10px}.game-pro-footer .home-text{display:inline-block;margin-top:9px;font-size:13px;font-weight:900;color:#101436;text-decoration:underline;background:transparent;border:0;box-shadow:none;padding:0;border-radius:0}
-    @media(max-width:390px){.game-breadcrumbs{padding:10px 8px}.game-breadcrumbs a,.game-breadcrumbs .current{font-size:13px;padding:7px 9px}.game-pro-footer{border-radius:20px;padding:14px 10px}.game-pro-footer .links a{font-size:12px}}
+    .game-pro-footer{margin:18px auto 0;padding:14px 10px;color:#dfefff;text-align:center;font-size:13px;font-weight:700;line-height:1.45;opacity:.92}
+    .game-pro-footer a{color:#fff!important;background:transparent!important;border:0!important;box-shadow:none!important;text-decoration:underline!important;padding:0!important;border-radius:0!important;font-weight:900}
+    @media(max-width:390px){.game-breadcrumbs{padding:10px 8px}.game-breadcrumbs a,.game-breadcrumbs .current{font-size:13px;padding:7px 9px}.game-pro-footer{font-size:12px}}
   `;
   document.head.appendChild(style);
 
@@ -59,15 +59,8 @@
       ${games.filter(g => g.href !== path).map(g => `<a href="${g.href}">${g.label}</a>`).join('')}
     </nav>
     <section class="game-pro-footer" aria-label="Site footer">
-      <div class="brand">Sean Ali Education Games</div>
-      <div class="copy">© ${year} Sean Ali. All rights reserved.</div>
-      <div class="copy">Educational mini games for kids and families.</div>
-      <a class="home-text" href="/">Return to the Sean Ali home page</a>
-      <nav class="links" aria-label="Footer links">
-        <a href="/">Home</a>
-        <a href="/games/">Games</a>
-        <a href="https://seanali.online/" rel="home">SeanAli.online</a>
-      </nav>
+      © ${year} Sean Ali. All rights reserved.<br>
+      <a href="/">Return to home page</a>
     </section>
   `;
 
