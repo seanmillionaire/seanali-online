@@ -9,8 +9,9 @@
       { global: 'BuddyGuideHelpLoaded', src: '/games/buddy-guide-help.js?v=1' }
     ];
     if (isGamePage) {
+      scripts.push({ global: 'GameFirstScreenGuideLoaded', src: '/games/first-screen-guide.js?v=1' });
       scripts.push({ global: 'GameWrongEffectLoaded', src: '/games/wrong-effect.js?v=1' });
-      scripts.push({ global: 'GameMistakeReaderLoaded', src: '/games/mistake-reader.js?v=1' });
+      scripts.push({ global: 'GameMistakeReaderLoaded', src: '/games/mistake-reader.js?v=2' });
     }
     if (gamePath === '/games/math-race/') scripts.push({ global: 'MathRaceNoGreyLinesLoaded', src: '/games/math-race/no-grey-lines.js?v=1' });
     if (gamePath === '/games/elements/') scripts.push({ global: 'ElementsClueBarLoaded', src: '/games/elements/clue-bar.js?v=1' });
@@ -101,6 +102,14 @@ window.SeanGameSounds = (() => {
     tone(1046, 0.18, 'sine', 0.11, 0.38);
   }
 
+  function jingle() {
+    tone(523, 0.08, 'triangle', 0.16, 0);
+    tone(659, 0.08, 'triangle', 0.15, 0.08);
+    tone(784, 0.10, 'triangle', 0.14, 0.16);
+    tone(1046, 0.16, 'sine', 0.11, 0.28);
+    sparkle(0.40);
+  }
+
   function coin() { tone(1180, 0.05, 'square', 0.16, 0); tone(1760, 0.08, 'triangle', 0.12, 0.05); }
   function sparkle(delay = 0) { tone(1540, 0.05, 'sine', 0.07, delay); tone(1980, 0.05, 'sine', 0.06, delay + 0.05); tone(2380, 0.06, 'sine', 0.05, delay + 0.10); }
   function unlockSound() { money(); sparkle(0.42); }
@@ -116,5 +125,5 @@ window.SeanGameSounds = (() => {
   function setEnabled(value) { enabled = Boolean(value); return enabled; }
   function isEnabled() { return enabled; }
 
-  return { tap, pop, ding, correct, wrong, softWrong, money, coin, sparkle, unlock: unlockSound, levelUp, portal, whoosh, water, wind, earth, piano, food, toggle, setEnabled, isEnabled };
+  return { tap, pop, ding, correct, wrong, softWrong, money, coin, sparkle, unlock: unlockSound, levelUp, portal, whoosh, water, wind, earth, piano, food, jingle, toggle, setEnabled, isEnabled };
 })();
