@@ -8,6 +8,7 @@
 
   const help = {
     '/games/': ['Pick one game card.', 'Tap the yellow Play button.', 'Finish one round, then try another game.'],
+    '/games/mirror/': ['Read the life moment.', 'Pick the kind strong thought.', 'Clear the mirror and level up.'],
     '/games/math-race/': ['Read the math problem.', 'Think of the multiplication fact.', 'Tap the answer fast.'],
     '/games/math-dissector/': ['Get paper and pen first.', 'Copy the stacked problem.', 'Do the work on paper, then choose the matching answer.'],
     '/games/piano/': ['Start a pattern and listen.', 'Tap the keys in the same order.', 'Use Freestyle to just play chords.'],
@@ -25,6 +26,7 @@
 
   const titles = {
     '/games/': 'Game Wall 🎮',
+    '/games/mirror/': 'The Mirror 🪞',
     '/games/math-race/': 'Math Race 🚗',
     '/games/math-dissector/': 'Math Dissector 🧠',
     '/games/piano/': 'Piano Patterns 🎹',
