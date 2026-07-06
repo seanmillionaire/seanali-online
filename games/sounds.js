@@ -6,6 +6,7 @@
       { global: 'SeanGameAppViewReady', src: '/games/app-view.js' },
       { global: 'SeanGameBreadcrumbsReady', src: '/games/breadcrumbs.js' },
       { global: 'SeanGameLangReady', src: '/games/lang.js' },
+      { global: 'GameAutoEsLoaded', src: '/games/auto-es.js?v=1' },
       { global: 'BuddyGuideHelpLoaded', src: '/games/buddy-guide-help.js?v=1' }
     ];
     if (isGamePage) {
