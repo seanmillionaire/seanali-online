@@ -6,10 +6,9 @@
 
   const css = document.createElement('style');
   css.textContent = `
-    .choice,.answer{position:relative!important;text-align:left!important;padding-left:58px!important}
+    .choice,.answer{position:relative!important;text-align:left!important;padding-left:88px!important;padding-right:18px!important}
     .choice[data-choice-label]::before,.answer[data-choice-label]::before{content:attr(data-choice-label);position:absolute;left:12px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:3px solid #101436;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#ffc83d;color:#101436;font-size:18px;font-weight:900;box-shadow:0 3px 0 rgba(0,0,0,.2)}
-    .choice::after,.answer::after{content:'👉';position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:22px;opacity:.9}
-    .choice,.answer{padding-right:46px!important}
+    .choice::after,.answer::after{content:'👉';position:absolute;left:51px;right:auto;top:50%;transform:translateY(-50%);font-size:22px;opacity:.95;pointer-events:none}
     body[data-game-polish="elements"] .lesson{color:#fff!important;background:#101436!important;text-shadow:0 1px 0 rgba(0,0,0,.25)!important}
     body[data-game-polish="elements"] .topic,body[data-game-polish="elements"] .lesson{font-weight:900!important}
     body[data-game-polish="family-gems"] .helper{display:none!important}
@@ -21,7 +20,7 @@
     body[data-game-polish="tongue-twister"] .helper,body[data-game-polish="tongue-twister"] #helper,body[data-game-polish="tongue-twister"] .prompt{font-size:18px!important;line-height:1.12!important}
     body[data-game-polish="food"] .food-followup{background:#fff;border:4px solid #34d17a;border-radius:20px;margin:12px 0;padding:12px;font-size:19px;font-weight:900;line-height:1.12;text-align:left;box-shadow:0 6px 0 rgba(0,0,0,.16)}
     body[data-game-polish="food"] .food-followup b{display:block;margin-bottom:6px;color:#101436}
-    @media(max-width:430px){.choice,.answer{padding-left:52px!important}.choice[data-choice-label]::before,.answer[data-choice-label]::before{width:30px;height:30px;font-size:16px}.choice::after,.answer::after{right:9px;font-size:19px}}
+    @media(max-width:430px){.choice,.answer{padding-left:80px!important;padding-right:14px!important}.choice[data-choice-label]::before,.answer[data-choice-label]::before{width:30px;height:30px;font-size:16px}.choice::after,.answer::after{left:46px;font-size:19px}}
   `;
   document.head.appendChild(css);
 
