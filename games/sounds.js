@@ -12,7 +12,10 @@
       scripts.push({ global: 'GameMistakeReaderLoaded', src: '/games/mistake-reader.js?v=1' });
     }
     if (gamePath === '/games/elements/') scripts.push({ global: 'ElementsClueBarLoaded', src: '/games/elements/clue-bar.js?v=1' });
-    if (gamePath === '/games/family-gems/') scripts.push({ global: 'FamilyGemsClueRiddlesLoaded', src: '/games/family-gems/clue-riddles.js?v=1' });
+    if (gamePath === '/games/family-gems/') {
+      scripts.push({ global: 'FamilyGemsClueRiddlesLoaded', src: '/games/family-gems/clue-riddles.js?v=1' });
+      scripts.push({ global: 'CountryGemsNameLoaded', src: '/games/family-gems/country-name.js?v=1' });
+    }
     if (gamePath === '/games/piano/') scripts.push({ global: 'PianoFreestyleLoaded', src: '/games/piano/freestyle.js?v=1' });
 
     scripts.forEach(item => {
