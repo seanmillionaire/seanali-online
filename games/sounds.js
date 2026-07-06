@@ -17,6 +17,7 @@
       scripts.push({ global: 'CountryGemsNameLoaded', src: '/games/family-gems/country-name.js?v=1' });
     }
     if (gamePath === '/games/piano/') scripts.push({ global: 'PianoFreestyleLoaded', src: '/games/piano/freestyle.js?v=1' });
+    if (gamePath === '/games/math-dissector/') scripts.push({ global: 'MathDissectorElementaryLoaded', src: '/games/math-dissector/elementary.js?v=1' });
 
     scripts.forEach(item => {
       if (window[item.global] || document.querySelector(`script[src^="${item.src.split('?')[0]}"]`)) return;
