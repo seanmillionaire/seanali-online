@@ -3,15 +3,15 @@
     const gamePath = window.location.pathname.replace(/\/+$/, '/');
     const isGamePage = gamePath !== '/games/';
     const scripts = [
-      { global: 'SeanGameAppViewReady', src: '/games/app-view.js' },
-      { global: 'SeanGameBreadcrumbsReady', src: '/games/breadcrumbs.js' },
-      { global: 'SeanGameLangReady', src: '/games/lang.js' },
+      { global: 'SeanGameAppViewReady', src: '/games/app-view.js?v=1' },
+      { global: 'SeanGameBreadcrumbsReady', src: '/games/breadcrumbs.js?v=4' },
+      { global: 'SeanGameLangReady', src: '/games/lang.js?v=1' },
       { global: 'GameAutoEsLoaded', src: '/games/auto-es.js?v=1' },
-      { global: 'BuddyGuideHelpLoaded', src: '/games/buddy-guide-help.js?v=1' }
+      { global: 'BuddyGuideHelpLoaded', src: '/games/buddy-guide-help.js?v=3' }
     ];
     if (isGamePage) {
-      scripts.push({ global: 'GameProgressMeterLoaded', src: '/games/game-progress.js?v=2' });
-      scripts.push({ global: 'GameFirstScreenGuideLoaded', src: '/games/first-screen-guide.js?v=3' });
+      scripts.push({ global: 'GameProgressMeterLoaded', src: '/games/game-progress.js?v=3' });
+      scripts.push({ global: 'GameFirstScreenGuideLoaded', src: '/games/first-screen-guide.js?v=4' });
       scripts.push({ global: 'GamePolishLoaded', src: '/games/game-polish.js?v=2' });
       scripts.push({ global: 'GameEndActionsLoaded', src: '/games/end-actions.js?v=1' });
       scripts.push({ global: 'GameWrongEffectLoaded', src: '/games/wrong-effect.js?v=1' });
@@ -27,7 +27,7 @@
       scripts.push({ global: 'MathDissectorEsFixLoaded', src: '/games/math-dissector/es-fix.js?v=2' });
       scripts.push({ global: 'MathDissectorFocusLoaded', src: '/games/math-dissector/focus-numbers.js?v=1' });
     }
-    if (gamePath === '/games/elements/') scripts.push({ global: 'ElementsClueBarLoaded', src: '/games/elements/clue-bar.js?v=1' });
+    if (gamePath === '/games/elements/') scripts.push({ global: 'ElementsClueBarLoaded', src: '/games/elements/clue-bar.js?v=3' });
     if (gamePath === '/games/family-gems/') {
       scripts.push({ global: 'FamilyGemsClueRiddlesLoaded', src: '/games/family-gems/clue-riddles.js?v=2' });
       scripts.push({ global: 'CountryGemsNameLoaded', src: '/games/family-gems/country-name.js?v=1' });
