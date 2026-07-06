@@ -2,28 +2,36 @@
   if (document.querySelector('[data-game-breadcrumbs]')) return;
 
   const games = [
+    { href: '/games/isla-aventura/', label: '🏝️ Isla Aventura' },
+    { href: '/games/mirror/', label: '🪞 The Mirror' },
+    { href: '/games/math-dissector/', label: '🧠 Math Dissector' },
     { href: '/games/math-race/', label: '🚗 Math Race' },
-    { href: '/games/piano/', label: '🎹 Piano' },
-    { href: '/games/elements/', label: '🌎 Elements' },
-    { href: '/games/family/', label: '👨‍👩‍👧 Family' },
-    { href: '/games/money/', label: '💰 Money' },
+    { href: '/games/elements/', label: '🌎 Nature Elements' },
+    { href: '/games/family-gems/', label: '💎 Family Gems' },
+    { href: '/games/piano/', label: '🎹 Piano Patterns' },
     { href: '/games/tongue-twister/', label: '🌀 Tongue Twister' },
-    { href: '/games/food-groups/', label: '🥑 Food' },
-    { href: '/games/selva/', label: '🌿 Selva' },
-    { href: '/games/beats/', label: '🥁 Beats' }
+    { href: '/games/food-groups/', label: '🥑 Natural Food' },
+    { href: '/games/beats/', label: '🥁 Beat Maker' },
+    { href: '/games/family/', label: '👨‍👩‍👧 Family Habits' },
+    { href: '/games/money/', label: '💰 Money Tips' },
+    { href: '/games/selva/', label: '🌿 Selva Quiz' }
   ];
 
   const names = {
     '/games/': 'Games',
+    '/games/isla-aventura/': 'Isla Aventura',
+    '/games/mirror/': 'The Mirror',
+    '/games/math-dissector/': 'Math Dissector',
+    '/games/math-race/': 'Math Race',
+    '/games/elements/': 'Nature Elements',
+    '/games/family-gems/': 'Family Gems',
     '/games/piano/': 'Piano Patterns',
-    '/games/elements/': 'The Elements',
     '/games/tongue-twister/': 'Tongue Twister',
-    '/games/family/': 'Family',
-    '/games/money/': 'Money',
-    '/games/food-groups/': 'Comida Natural',
-    '/games/math-race/': 'Carrera de Multiplicación',
-    '/games/selva/': 'Selva',
-    '/games/beats/': 'Beats'
+    '/games/food-groups/': 'Natural Food',
+    '/games/beats/': 'Beat Maker',
+    '/games/family/': 'Family Habits',
+    '/games/money/': 'Money Tips',
+    '/games/selva/': 'Selva Quiz'
   };
 
   const path = window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/';
@@ -32,7 +40,7 @@
 
   const style = document.createElement('style');
   style.textContent = `
-    .game-breadcrumbs{max-width:760px;margin:18px auto 18px;padding:14px 12px;text-align:center;font-family:Arial,sans-serif;color:#12351d}
+    .game-breadcrumbs{max-width:820px;margin:18px auto 18px;padding:14px 12px;text-align:center;font-family:Arial,sans-serif;color:#12351d}
     .game-breadcrumbs .crumbs{display:flex;justify-content:center;align-items:center;gap:7px;flex-wrap:wrap;font-size:15px;font-weight:900;margin-bottom:10px}
     .game-breadcrumbs a{color:#12351d;text-decoration:none;background:#fff;border:2px solid rgba(31,122,57,.45);border-radius:999px;padding:8px 11px;box-shadow:0 4px 0 rgba(0,0,0,.12)}
     .game-breadcrumbs .current{background:#ffd84d;border:2px solid #bd8610;border-radius:999px;padding:8px 11px;box-shadow:0 4px 0 rgba(0,0,0,.12)}
