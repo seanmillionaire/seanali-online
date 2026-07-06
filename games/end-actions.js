@@ -4,9 +4,11 @@
 
   const path = location.pathname.replace(/\/+$/, '/') || '/';
   const hasLevelTwo = new Set(['/games/mirror/','/games/money/']);
+  const progressKey = 'seanGameMapProgress:v1';
+  const completedKey = 'seanGameMapCompleted:v1';
   const labels = {
-    en: { play:'🔁 Play Again', next:'🚀 Next Level', menu:'🏠 Main Menu', title:'What next?' },
-    es: { play:'🔁 Jugar otra vez', next:'🚀 Siguiente nivel', menu:'🏠 Menú principal', title:'¿Qué sigue?' }
+    en: { play:'🔁 Play Again', next:'🚀 Next Level', menu:'🏠 Main Menu', title:'What next?', unlocked:'🗺️ New map portal unlocked!' },
+    es: { play:'🔁 Jugar otra vez', next:'🚀 Siguiente nivel', menu:'🏠 Menú principal', title:'¿Qué sigue?', unlocked:'🗺️ ¡Nuevo portal desbloqueado!' }
   };
 
   function isEs(){ return localStorage.getItem('seanGameLang') === 'es'; }
@@ -14,13 +16,24 @@
 
   const style = document.createElement('style');
   style.textContent = `
-    .game-end-actions{background:#fff;border:5px solid #101436;border-radius:26px;padding:14px;margin:14px auto;max-width:560px;box-shadow:0 9px 0 rgba(0,0,0,.22),0 0 28px rgba(255,200,61,.35);font-family:Arial,sans-serif;color:#101436;text-align:center}.game-end-title{font-size:24px;font-weight:900;margin-bottom:10px;background:#ffc83d;border:3px solid #101436;border-radius:18px;padding:8px}.game-end-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.game-end-btn{border:4px solid #101436;border-radius:18px;padding:14px 8px;font-size:17px;font-weight:900;color:#101436;background:linear-gradient(180deg,#fff26f,#ffc83d);box-shadow:0 6px 0 rgba(0,0,0,.24);cursor:pointer;line-height:1.05}.game-end-btn:active{transform:translateY(5px);box-shadow:0 1px 0 rgba(0,0,0,.24)}.game-end-next{background:linear-gradient(180deg,#d9ffe9,#34d17a)}.game-end-menu{background:linear-gradient(180deg,#e8fbff,#80d8ff)}@media(max-width:460px){.game-end-grid{grid-template-columns:1fr}.game-end-btn{font-size:18px}.game-end-title{font-size:21px}}
+    .game-end-actions{background:#fff;border:5px solid #101436;border-radius:26px;padding:14px;margin:14px auto;max-width:560px;box-shadow:0 9px 0 rgba(0,0,0,.22),0 0 28px rgba(255,200,61,.35);font-family:Arial,sans-serif;color:#101436;text-align:center}.game-end-title{font-size:24px;font-weight:900;margin-bottom:10px;background:#ffc83d;border:3px solid #101436;border-radius:18px;padding:8px}.game-map-unlocked{font-size:16px;font-weight:900;margin:-2px 0 10px;background:#f1fff3;border:3px solid #34d17a;border-radius:16px;padding:8px}.game-end-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.game-end-btn{border:4px solid #101436;border-radius:18px;padding:14px 8px;font-size:17px;font-weight:900;color:#101436;background:linear-gradient(180deg,#fff26f,#ffc83d);box-shadow:0 6px 0 rgba(0,0,0,.24);cursor:pointer;line-height:1.05}.game-end-btn:active{transform:translateY(5px);box-shadow:0 1px 0 rgba(0,0,0,.24)}.game-end-next{background:linear-gradient(180deg,#d9ffe9,#34d17a)}.game-end-menu{background:linear-gradient(180deg,#e8fbff,#80d8ff)}@media(max-width:460px){.game-end-grid{grid-template-columns:1fr}.game-end-btn{font-size:18px}.game-end-title{font-size:21px}}
   `;
   document.head.appendChild(style);
 
   function looksDone(){
     const text = document.body.innerText || '';
     return /complete|completed|finished|finish|badge|play again|start over|level 1 done|level 2 complete|Genie Mode|Reality Level|winner|you win|done\.|completo|terminado|ganaste|jugar otra vez/i.test(text);
+  }
+
+  function unlockMapPortal(){
+    let completed = [];
+    try { completed = JSON.parse(localStorage.getItem(completedKey) || '[]'); } catch(e) {}
+    if (completed.includes(path)) return false;
+    completed.push(path);
+    localStorage.setItem(completedKey, JSON.stringify(completed));
+    const current = parseInt(localStorage.getItem(progressKey) || '3', 10) || 3;
+    localStorage.setItem(progressKey, String(Math.min(99, current + 1)));
+    return true;
   }
 
   function findMount(){
@@ -42,10 +55,11 @@
     if (!looksDone()) return;
     const mount = findMount();
     if (!mount) return;
+    const unlocked = unlockMapPortal();
 
     const box = document.createElement('div');
     box.className = 'game-end-actions';
-    box.innerHTML = '<div class="game-end-title">' + t('title') + '</div><div class="game-end-grid"><button class="game-end-btn game-end-play" type="button">' + t('play') + '</button><button class="game-end-btn game-end-next" type="button">' + t('next') + '</button><button class="game-end-btn game-end-menu" type="button">' + t('menu') + '</button></div>';
+    box.innerHTML = '<div class="game-end-title">' + t('title') + '</div>' + (unlocked ? '<div class="game-map-unlocked">' + t('unlocked') + '</div>' : '') + '<div class="game-end-grid"><button class="game-end-btn game-end-play" type="button">' + t('play') + '</button><button class="game-end-btn game-end-next" type="button">' + t('next') + '</button><button class="game-end-btn game-end-menu" type="button">' + t('menu') + '</button></div>';
 
     box.querySelector('.game-end-play').onclick = () => location.reload();
     box.querySelector('.game-end-next').onclick = startNextLevel;
@@ -59,6 +73,8 @@
     const box = document.querySelector('.game-end-actions');
     if (!box) return;
     box.querySelector('.game-end-title').textContent = t('title');
+    const unlocked = box.querySelector('.game-map-unlocked');
+    if (unlocked) unlocked.textContent = t('unlocked');
     box.querySelector('.game-end-play').textContent = t('play');
     box.querySelector('.game-end-next').textContent = t('next');
     box.querySelector('.game-end-menu').textContent = t('menu');
