@@ -39,12 +39,24 @@
     return clue;
   }
 
+  function forceVisible() {
+    document.querySelectorAll('div').forEach(el => {
+      const text = clean(el.textContent);
+      if (!/choose the best answer/i.test(text)) return;
+      el.style.color = '#ffffff';
+      el.style.background = '#101436';
+      el.style.opacity = '1';
+      el.style.textShadow = '0 2px 0 rgba(0,0,0,.55)';
+    });
+  }
+
   function update() {
     const clue = ensureBar();
-    if (!clue) return;
-    clue.innerHTML = '<b>Quick clue:</b> ' + buildClue();
+    if (clue) clue.innerHTML = '<b>Quick clue:</b> ' + buildClue();
+    forceVisible();
   }
 
   update();
+  setInterval(update, 300);
   new MutationObserver(update).observe(document.body, { childList: true, subtree: true, characterData: true });
 })();
