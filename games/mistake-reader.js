@@ -8,28 +8,6 @@
   let stopTimer = null;
   const spoken = new WeakSet();
 
-  function clean(value) {
-    return String(value || '').replace(/👉|🔁|🎵|📘|🏆|⭐|🔥|🧠|✅|❌|🇵🇦|🇨🇦|🇹🇹/g, '').replace(/\s+/g, ' ').trim();
-  }
-
-  function read(selector) {
-    const el = document.querySelector(selector);
-    return el ? clean(el.textContent) : '';
-  }
-
-  function firstSentence(value) {
-    const text = clean(value);
-    const parts = text.split(/(?<=[.!?])\s+/).filter(Boolean);
-    return parts[0] || text;
-  }
-
-  function buildLine(button) {
-    const helper = firstSentence(read('#helper,.helper,#mind,.mind,.feedback,.lesson,.hint'));
-    const question = firstSentence(read('#question,.question,#twister,.prompt'));
-    const lesson = helper || question || 'Look again.';
-    return clean('Try again. ' + lesson).slice(0, 105);
-  }
-
   function stopAudio() {
     if (stopTimer) clearTimeout(stopTimer);
     stopTimer = null;
@@ -57,29 +35,37 @@
       audio = new Audio(url);
       audio.onended = stopAudio;
       await audio.play();
-      stopTimer = setTimeout(stopAudio, 2600);
+      stopTimer = setTimeout(stopAudio, 1400);
     } catch (e) {}
   }
 
-  function handle(button) {
+  function feedbackLine(type) {
+    const isEs = localStorage.getItem('seanGameLang') === 'es';
+    if (type === 'correct') return isEs ? '¡Correcto, lo tienes!' : 'Correct, you got it!';
+    return isEs ? 'Incorrecto.' : 'Incorrect.';
+  }
+
+  function handle(button, type) {
     if (!button || spoken.has(button)) return;
     const now = Date.now();
-    if (now - last < 900) return;
+    if (now - last < 700) return;
     spoken.add(button);
     last = now;
-    setTimeout(() => speak(buildLine(button)), 200);
+    setTimeout(() => speak(feedbackLine(type)), 120);
   }
 
   document.addEventListener('click', event => {
-    const button = event.target.closest('.answer,button');
+    const button = event.target.closest('.answer,button,.choice');
     if (!button) return;
     if (!button.classList.contains('bad') && !button.classList.contains('wrong')) stopAudio();
     setTimeout(() => {
-      if (button.classList.contains('bad') || button.classList.contains('wrong')) handle(button);
-    }, 60);
+      if (button.classList.contains('bad') || button.classList.contains('wrong')) handle(button, 'wrong');
+      if (button.classList.contains('good') || button.classList.contains('correct')) handle(button, 'correct');
+    }, 80);
   }, true);
 
   new MutationObserver(() => {
-    document.querySelectorAll('.answer.bad,.bad,.wrong').forEach(handle);
-  }).observe(document.body, { childList: true, subtree: true });
+    document.querySelectorAll('.answer.bad,.bad,.wrong').forEach(button => handle(button, 'wrong'));
+    document.querySelectorAll('.answer.good,.good,.correct').forEach(button => handle(button, 'correct'));
+  }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
 })();
