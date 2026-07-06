@@ -26,6 +26,11 @@
     ['Get paper and pen first.', 'Primero busca papel y lápiz.'],
     ['Copy the stacked problem.', 'Copia el problema apilado.'],
     ['Do the work on paper, then choose the matching answer.', 'Haz el trabajo en papel y luego elige la respuesta igual.'],
+    ['Press Next Line', 'Toca Siguiente paso'],
+    ['Next Line →', 'Siguiente paso →'],
+    ['Next Line', 'Next Step'],
+    ['Siguiente línea →', 'Siguiente paso →'],
+    ['Siguiente línea', 'Siguiente paso'],
     ['Correct, you got it!', '¡Correcto, lo tienes!'],
     ['Incorrect.', 'Incorrecto.'],
     ['Correct!', '¡Correcto!'],
@@ -65,14 +70,27 @@
     [/number/gi, 'número'],
     [/first/gi, 'primero'],
     [/then/gi, 'luego'],
-    [/next/gi, 'siguiente'],
+    [/next line/gi, 'next step'],
     [/line/gi, 'línea'],
     [/small/g, 'pequeño'],
     [/big/g, 'grande']
   ];
 
-  function isEs() {
-    return localStorage.getItem('seanGameLang') === 'es';
+  function isEs() { return localStorage.getItem('seanGameLang') === 'es'; }
+
+  function forceNextStepText() {
+    const next = document.querySelector('#next');
+    if (next) next.textContent = isEs() ? 'Siguiente paso →' : 'Next Step →';
+    document.querySelectorAll('[data-i="intro3"]').forEach(el => {
+      el.textContent = isEs() ? '3️⃣ Toca Siguiente paso' : '3️⃣ Press Next Step';
+    });
+    document.querySelectorAll('#helper,#teacher,.talk,.helper').forEach(el => {
+      if (!el || !el.textContent) return;
+      el.textContent = el.textContent
+        .replace(/Next Line/g, 'Next Step')
+        .replace(/Siguiente línea/g, 'Siguiente paso')
+        .replace(/línea siguiente/g, 'siguiente paso');
+    });
   }
 
   function translateText(value) {
@@ -93,6 +111,7 @@
   }
 
   function translate() {
+    forceNextStepText();
     if (!isEs()) return;
     document.documentElement.lang = 'es';
     document.title = 'Disector Matemático | Juego de Matemática';
@@ -107,6 +126,7 @@
 
     const guideTitle = document.querySelector('.game-start-title,.game-action-title');
     if (guideTitle) guideTitle.textContent = '👀 PASO 1: LEE ESTO PRIMERO';
+    forceNextStepText();
   }
 
   window.addEventListener('seanGameLangChange', () => setTimeout(translate, 60));
@@ -115,11 +135,10 @@
   }, true);
 
   new MutationObserver(() => {
-    if (!isEs()) return;
     clearTimeout(window.__mathDissectorEsTimer);
     window.__mathDissectorEsTimer = setTimeout(translate, 80);
   }).observe(document.documentElement, { childList: true, subtree: true, characterData: true });
 
-  setInterval(translate, 900);
+  setInterval(translate, 700);
   translate();
 })();
