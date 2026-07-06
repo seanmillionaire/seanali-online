@@ -2,102 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Wealth Identity Reset Webinar Slideshow</title>
-  <meta name="description" content="Russell-style HTML webinar slideshow for Sean Ali Wealth Identity Reset." />
-  <style>
-    :root{--red:#d71920;--black:#090909;--muted:#555;--soft:#f7f7f7;--green:#16a34a;--gold:#f6b900;}
-    *{box-sizing:border-box}html,body{margin:0;height:100%;font-family:Arial,Helvetica,sans-serif;background:#fff;color:var(--black);overflow:hidden}body{touch-action:manipulation}.deck{height:100vh;height:100dvh;width:100vw;position:relative;background:#fff}.slide{position:absolute;inset:0;display:none;place-items:center;padding:5.2vw;text-align:center;background:#fff;overflow:hidden}.slide.active{display:grid}.inner{max-width:1140px;width:100%;position:relative;z-index:2}.icon-badge{width:clamp(82px,10vw,132px);height:clamp(82px,10vw,132px);margin:0 auto 24px;display:grid;place-items:center;border:5px solid #111;border-radius:28px;background:#fff;box-shadow:10px 10px 0 #111;font-size:clamp(46px,6.3vw,82px)}h1{color:var(--red);font-size:clamp(40px,6.8vw,92px);line-height:.9;margin:0 0 24px;font-weight:900;letter-spacing:-.07em;text-transform:uppercase}p{font-size:clamp(24px,3vw,46px);line-height:1.08;margin:0 auto;font-weight:900;max-width:1060px}.tiny{margin-top:22px;font-size:clamp(17px,1.8vw,28px);color:var(--muted);font-weight:800}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:18px;margin-top:34px}.card{border:4px solid var(--black);border-radius:20px;padding:24px;font-size:clamp(24px,2.6vw,42px);font-weight:900;background:#fff;box-shadow:8px 8px 0 #111}.card span{display:block;font-size:clamp(42px,5vw,72px);margin-bottom:10px}.photo{position:absolute;right:4vw;bottom:4vw;width:min(27vw,320px);height:min(27vw,320px);object-fit:cover;border-radius:26px;box-shadow:0 22px 60px rgba(0,0,0,.16);border:4px solid #111;z-index:1}.has-photo .inner{max-width:760px;margin-right:30vw;text-align:left}.has-photo .icon-badge{margin-left:0}.has-photo h1,.has-photo p{text-align:left;margin-left:0}.price{font-size:clamp(76px,12vw,180px);color:var(--red);letter-spacing:-.09em;font-weight:900}.nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:10px;align-items:center;z-index:20;background:rgba(255,255,255,.94);padding:10px 14px;border:2px solid #111;border-radius:999px;box-shadow:0 12px 30px rgba(0,0,0,.12)}button{border:0;background:var(--red);color:#fff;font-size:17px;font-weight:900;padding:10px 18px;border-radius:999px;cursor:pointer}#count{font-weight:900;font-size:15px;min-width:94px}.notes{position:fixed;top:14px;left:14px;right:14px;background:#111;color:#fff;padding:12px 16px;border-radius:12px;z-index:30;display:none;font-size:16px;line-height:1.35;text-align:left;box-shadow:0 18px 40px rgba(0,0,0,.25)}.notes.show{display:block}.progress{position:fixed;top:0;left:0;right:0;height:7px;background:#eee;z-index:25}.bar{height:100%;width:0%;background:var(--red);transition:.2s}.brand{position:fixed;top:18px;left:22px;z-index:10;font-size:14px;font-weight:900;text-transform:uppercase;letter-spacing:.04em}.hint{position:fixed;top:18px;right:22px;z-index:10;font-size:12px;color:#777;font-weight:800}.emoji-strip{position:absolute;left:50%;bottom:92px;transform:translateX(-50%);display:flex;gap:12px;z-index:3}.emoji-strip span{width:42px;height:42px;display:grid;place-items:center;border:3px solid #111;border-radius:12px;background:#fff;font-size:25px;box-shadow:4px 4px 0 #111}@media(max-width:800px){.slide{padding:10vw 5vw 22vw}h1{font-size:clamp(36px,11vw,68px)}p{font-size:clamp(21px,6.6vw,36px)}.has-photo .inner{margin-right:0;text-align:center}.has-photo .icon-badge{margin-left:auto}.has-photo h1,.has-photo p{text-align:center}.photo{opacity:.12;right:-18vw;bottom:14vh;width:84vw;height:84vw}.nav{bottom:10px;padding:8px 10px}button{font-size:14px;padding:9px 12px}#count{font-size:13px;min-width:78px}.hint{display:none}.brand{font-size:11px;left:12px;top:12px}.emoji-strip{bottom:76px}.emoji-strip span{width:32px;height:32px;font-size:20px;border-width:2px}}
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>7 Minute Rich Reset</title>
+  <meta http-equiv="refresh" content="0; url=/slideshows/webinars/7-minute-rich-reset.html" />
+  <link rel="canonical" href="https://seanali.online/slideshows/webinars/7-minute-rich-reset.html" />
+  <script>window.location.replace('/slideshows/webinars/7-minute-rich-reset.html');</script>
 </head>
 <body>
-  <div class="progress"><div class="bar" id="bar"></div></div>
-  <div class="brand">Sean Ali · Wealth Identity Reset</div>
-  <div class="hint">Arrows / Space · N = notes</div>
-  <div class="deck" id="deck"></div>
-  <div class="notes" id="notes"></div>
-  <div class="nav"><button id="prev">Prev</button><span id="count"></span><button id="next">Next</button><button id="noteBtn">Notes</button></div>
-
-  <script>
-    const IMG_SEAN='https://hypnoticmeditations.b-cdn.net/images/proof/sean-money.png';
-    const IMG_BUNDLE='https://hypnoticmeditations.b-cdn.net/images/bundle.png';
-    const IMG_PROOF='https://statics.myclickfunnels.com/workspace/vGVGzP/image/20204117/file/904663e23eb23a39d6f2459104b7bccc.png';
-    const slides=[
-      {i:'💰',t:'FREE Money Masterclass',b:'How To Break The 5 Money Patterns Keeping Skilled People Stuck At $2K-$10K/mo',n:'Open with money range and exact buyer.'},
-      {i:'👀',t:'Sean Ali Reveals...',b:'Why skilled people stay underpaid even when they know what to do.',n:'Create curiosity fast.'},
-      {i:'🎯',t:'This Is For You If...',b:'You have skill. You make moves. But income keeps snapping back.',n:'Make the right buyer feel seen.'},
-      {i:'🚫',t:'This Is Not For',b:'Lazy people. Magic-chasers. People who refuse to act.',n:'Protect the frame.'},
-      {i:'⏳',t:'Stay Until The End',b:'I’ll give you the before-bed reset and 2 simple ways to start.',n:'Future pace payoff.'},
-      {i:'⚠️',t:'Do Not Half-Watch This',b:'Close the tabs. Put the phone down. Find the pattern.',n:'Take control of attention.'},
-      {i:'🗺️',t:'What You Will Learn',b:'5 patterns. 5 steps. 1 reset. 2 paths.',n:'Set a clean map.',type:'four',cards:['🧩 5 Patterns','🪜 5 Steps','🌙 1 Reset','🚪 2 Paths']},
-      {i:'🏆',t:'Why Listen To Me?',b:'15+ years online. $25M+ generated. 100,000+ audios sold.',n:'Prove this is not theory.',img:IMG_SEAN,type:'three',cards:['📆 15+ Years','💵 $25M+','🎧 100K+ Audios']},
-      {i:'🛠️',t:'Built From The Real Game',b:'Funnels. Offers. Ads. Emails. Products. Brands. AI systems.',n:'Show operator credibility.'},
-      {i:'🌐',t:'The Brands Behind This',b:'Hypnotic Meditations. Manifestation Genie. AI Freedom System.',n:'Connect ecosystem.',img:IMG_PROOF},
-      {i:'🤑',t:'My First Online Money Moment',b:'I was 19. Sold a beat online. Woke up to $19.99.',n:'Tell story.'},
-      {i:'💡',t:'That Sale Changed Something',b:'Money could come from creation. Money could move online. Money could come while I slept.',n:'Make meaning clear.'},
-      {i:'🧠',t:'But Money Still Felt Weird',b:'I learned marketing. I made money. But the old survival identity stayed.',n:'Bridge to pain.'},
-      {i:'❌',t:'Skill Was Not The Problem',b:'The old money identity kept pulling people back.',n:'Shift belief.'},
-      {i:'🛟',t:'You Return To What Feels Safe',b:'Not always what you say you want.',n:'Install core belief.'},
-      {i:'🔁',t:'Why Tactics Alone Fail',b:'New funnel. Same identity. New offer. Same identity. New AI tool. Same ceiling.',n:'Break tactic chasing.'},
-      {i:'📉',t:'The $2K-$10K/mo Trap',b:'Momentum comes. Then the old level pulls you back.',n:'Name the range.'},
-      {i:'🚗',t:'The Real Mistake',b:'You try to fix the tool. But the identity is driving the tool.',n:'Make old solution incomplete.'},
-      {i:'🌙',t:'The Mechanism',b:'The 7-Minute Rich Identity Reset',n:'Introduce mechanism.'},
-      {i:'✅',t:'What The Reset Is For',b:'Make more money feel normal. Make charging more feel safe. Make selling feel cleaner.',n:'Plain outcomes.',type:'three',cards:['💸 More Normal','🧾 Charge Safer','📣 Sell Cleaner']},
-      {i:'1️⃣',t:'Pattern #1: Same Level',b:'You keep returning to the same income range.',n:'Teach pattern 1.'},
-      {i:'🎢',t:'What It Looks Like',b:'Sales come in. Then things slow down. Momentum hits. Then chaos shows up.',n:'Mirror them.'},
-      {i:'🧲',t:'The Real Reason',b:'More money feels unfamiliar, so your system pulls you back.',n:'Root reframe.'},
-      {i:'2️⃣',t:'Pattern #2: Undercharging',b:'You know your work has value. Then price fear talks.',n:'Teach pattern 2.'},
-      {i:'💬',t:'What It Sounds Like',b:'Maybe that is too much. Maybe they will not pay. Maybe I should add more.',n:'Inner dialogue.'},
-      {i:'😬',t:'The Real Reason',b:'You price from fear. The market did not reject you first.',n:'Gut punch.'},
-      {i:'3️⃣',t:'Pattern #3: Delayed Post',b:'You know what to post. Then you wait.',n:'Teach pattern 3.'},
-      {i:'📝',t:'What It Looks Like',b:'200 drafts. No offer. No CTA. No clear ask.',n:'Show cost.',type:'three',cards:['📝 200 Drafts','🚫 No Offer','📭 No Sales']},
-      {i:'🙈',t:'The Real Reason',b:'You are not editing. You are avoiding the market response.',n:'Visibility reframe.'},
-      {i:'4️⃣',t:'Pattern #4: Shrinking Ask',b:'You weaken the offer right before you send it.',n:'Teach pattern 4.'},
-      {i:'🤏',t:'What It Looks Like',b:'Soft CTA. Removed strong line. Let me know.',n:'Weak language.'},
-      {i:'📉',t:'The Real Reason',b:'Direct asking feels dangerous. Weak ask. Weak response.',n:'Hard reframe.'},
-      {i:'5️⃣',t:'Pattern #5: Fall Back',b:'You start strong, then rebuild from the same place.',n:'Teach pattern 5.'},
-      {i:'🔄',t:'What It Looks Like',b:'New logo. Same ceiling. New funnel. Same ceiling. New offer. Same ceiling.',n:'Blunt mirror.'},
-      {i:'🏠',t:'The Real Reason',b:'The new level feels unfamiliar, so the old identity pulls you back.',n:'Root cause.'},
-      {i:'🔍',t:'Which One Hit You?',b:'Same level. Undercharging. Delayed post. Shrinking ask. Fall back.',n:'Self-diagnosis.',type:'five',cards:['🔁 Same Level','💸 Undercharge','⏱️ Delay','🤏 Shrink','🔄 Fall Back']},
-      {i:'🧩',t:'You Have Now Seen The Pattern',b:'This is not random. This is repeat behavior from the old identity.',n:'Close diagnosis.'},
-      {i:'🪜',t:'Now The Fix',b:'The 5-Step Turnkey System',n:'Shift to solution.'},
-      {i:'1️⃣',t:'Step 1: Spot The Ceiling',b:'Name the range you keep returning to.',n:'Make measurable.'},
-      {i:'2️⃣',t:'Step 2: Find The Pattern',b:'Which one is running you?',n:'Self-diagnose.'},
-      {i:'3️⃣',t:'Step 3: Name The Old Identity',b:'I get close, then pull back. That is programming.',n:'Make emotional.'},
-      {i:'4️⃣',t:'Step 4: Rehearse The Rich Version',b:'The rich version posts, prices, sells, receives, keeps moving.',n:'Desired behavior.',type:'five',cards:['📣 Posts','🏷️ Prices','💬 Sells','💰 Receives','➡️ Moves']},
-      {i:'5️⃣',t:'Step 5: Install It Before Bed',b:'Before sleep, the mind is quieter and more open.',n:'Explain simply.'},
-      {i:'😵‍💫',t:'Most People Rehearse Stress',b:'Bills. Fear. Regret. Pressure. Then they wake up the same.',n:'Old nightly pattern.',type:'four',cards:['🧾 Bills','😨 Fear','😔 Regret','🔥 Pressure']},
-      {i:'🌙',t:'The Reset Rehearses The New You',b:'Receiving more. Charging more. Selling clearly. Feeling safe with more money.',n:'Replacement rehearsal.',type:'four',cards:['💰 Receive','🏷️ Charge','📣 Sell','🛟 Safe']},
-      {i:'🧠',t:'Rich Starts Feeling Normal',b:'That is what changes the moves you make.',n:'Sticky mechanism.'},
-      {i:'✅',t:'You Got The Full Map',b:'You saw the 5 patterns. You saw the 5 steps. Now you need the tool to run it.',n:'Offer earned.'},
-      {i:'⭐',t:'This Has Helped A Lot Of People',b:'1,200+ verified 5-star reviews. 125,000+ listeners.',n:'Proof before price.',img:IMG_PROOF,type:'three',cards:['⭐ 1,200+ Reviews','🎧 125K+ Listeners','🔒 Secure']},
-      {i:'💬',t:'The Pattern Clicked',b:'Undercharging. Money ceiling. Tactics vs pattern. Simple and clear.',n:'Safe proof.'},
-      {i:'🧰',t:'What The System Must Do',b:'Find the pattern. Rehearse the new identity. Make it easy to repeat.',n:'Buying criteria.',type:'three',cards:['🔍 Find','🎭 Rehearse','🔁 Repeat']},
-      {i:'❓',t:'Let Me Ask You A Question',b:'Would it be okay if I show you the system I built for this?',n:'Soft pivot.'},
-      {i:'🚪',t:'Two Ways To Start',b:'$197 Core Library. $497 Everything Bundle.',n:'Simple offer.',type:'choice'},
-      {i:'🧭',t:'Why Two Offers?',b:'Some people want the library. Some people want the full system.',n:'Prevent confusion.'},
-      {i:'📚',t:'Core Offer',b:'$197 Complete Library',n:'Floor offer.',type:'price197'},
-      {i:'🎧',t:'What You Get',b:'Money. Sleep. Stress. Focus. Health. Rituals. Manifestation. Lifetime access.',n:'Stack.',img:IMG_BUNDLE,type:'seven',cards:['💰 Money','😴 Sleep','🧘 Stress','🎯 Focus','💪 Health','🕯️ Rituals','✨ Manifestation']},
-      {i:'📚',t:'Who The $197 Is For',b:'You want the full audio library. You want to start tonight.',n:'Clarify buyer.'},
-      {i:'👑',t:'Best Offer',b:'$497 Everything Bundle',n:'Main close.',type:'price497'},
-      {i:'🎁',t:'What You Get',b:'Complete Library. Money Flow Reset System. Manifestation Genie. Future Recall Package. Listening Map.',n:'Stack value.',img:IMG_BUNDLE,type:'five',cards:['📚 Library','💸 Money Flow','🧞 Genie','🔮 Future Recall','🗺️ Map']},
-      {i:'🧠',t:'Why The $497 Is Better',b:'The library gives you tools. The bundle gives you the system.',n:'Prevent cannibalization.'},
-      {i:'⚖️',t:'Library vs System',b:'$197 = tools. $497 = everything guided.',n:'Simple choice.',type:'choice'},
-      {i:'👉',t:'Pick Your Path',b:'Start simple or get everything.',n:'Low pressure.'},
-      {i:'🌙',t:'How To Use It Tonight',b:'Pick your path. Press play before bed. Repeat for 7 nights.',n:'Activation plan.',type:'three',cards:['1️⃣ Pick','▶️ Play','7️⃣ Repeat']},
-      {i:'🧘',t:'What If I Cannot Meditate?',b:'You do not have to meditate perfectly. Just press play.',n:'Objection.'},
-      {i:'🔁',t:'What If I Tried Audios Before?',b:'Good. Now use the right pattern at the right time.',n:'Skeptic objection.'},
-      {i:'🤔',t:'Which One Should I Pick?',b:'If you want tools, get $197. If you want the full map, get $497.',n:'Decision.',type:'choice'},
-      {i:'🛡️',t:'No Magic Claims',b:'Education. Conditioning. Reset system. Results depend on use and action.',n:'Compliance.'},
-      {i:'⚔️',t:'Old Identity Or Rich Identity?',b:'Keep rehearsing the old pattern, or start rehearsing the rich one tonight.',n:'Close loop.'},
-      {i:'👇',t:'Click Below',b:'Choose $197 Core Library or $497 Everything Bundle. Get access tonight.',n:'CTA.'},
-      {i:'📌',t:'Educational Disclaimer',b:'No income is promised. No result is guaranteed. Use the tools. Take action.',n:'Protect claims.'}
-    ];
-    const deck=document.getElementById('deck'),count=document.getElementById('count'),notes=document.getElementById('notes'),bar=document.getElementById('bar');let current=0;
-    function cards(s){if(!s.cards)return'';return`<div class="grid">${s.cards.map(c=>`<div class="card"><span>${c.split(' ')[0]}</span>${c.substring(c.indexOf(' ')+1)}</div>`).join('')}</div>`}
-    for(const s of slides){const sec=document.createElement('section');sec.className='slide'+(s.img?' has-photo':'');const image=s.img?`<img class="photo" src="${s.img}" alt="Sean Ali webinar visual" loading="lazy">`:'';let body=`<p>${s.b}</p>${cards(s)}`;if(s.type==='choice')body='<div class="grid"><div class="card"><span>📚</span>$197<br>Tools</div><div class="card"><span>👑</span>$497<br>Guided System</div></div><p class="tiny">'+s.b+'</p>';if(s.type==='price197')body='<div class="price">$197</div><p>📚 Complete Library</p>';if(s.type==='price497')body='<div class="price">$497</div><p>👑 Everything Bundle</p>';sec.innerHTML=`<div class="inner"><div class="icon-badge">${s.i}</div><h1>${s.t}</h1>${body}</div>${image}<div class="emoji-strip"><span>${s.i}</span><span>💰</span><span>➡️</span></div>`;deck.appendChild(sec)}
-    const els=[...document.querySelectorAll('.slide')];function show(i){current=(i+slides.length)%slides.length;els.forEach((e,n)=>e.classList.toggle('active',n===current));count.textContent=`${current+1} / ${slides.length}`;notes.textContent=`Speaker note: ${slides[current].n}`;bar.style.width=`${((current+1)/slides.length)*100}%`}
-    document.getElementById('next').onclick=()=>show(current+1);document.getElementById('prev').onclick=()=>show(current-1);document.getElementById('noteBtn').onclick=()=>notes.classList.toggle('show');window.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')show(current+1);if(e.key==='ArrowLeft')show(current-1);if(e.key.toLowerCase()==='n')notes.classList.toggle('show')});show(0);
-  </script>
+  <p>Redirecting to <a href="/slideshows/webinars/7-minute-rich-reset.html">7 Minute Rich Reset</a>...</p>
 </body>
 </html>
