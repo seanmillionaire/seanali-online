@@ -11,6 +11,22 @@
   `;
   document.head.appendChild(style);
 
+  const fixes = new Map([
+    ['Thunofr', 'Thunder'],
+    ['Thunor', 'Thunder'],
+    ['Thundr', 'Thunder'],
+    ['Watre', 'Water'],
+    ['Wtaer', 'Water'],
+    ['Erath', 'Earth'],
+    ['Eath', 'Earth'],
+    ['Fiire', 'Fire'],
+    ['Fier', 'Fire'],
+    ['Ari', 'Air'],
+    ['Tsunammi', 'Tsunami'],
+    ['Volano', 'Volcano'],
+    ['Volcanco', 'Volcano']
+  ]);
+
   function clean(value) {
     return String(value || '').replace(/\s+/g, ' ').trim();
   }
@@ -50,10 +66,21 @@
     });
   }
 
+  function fixSpelling() {
+    document.querySelectorAll('#choices button,.choice').forEach(btn => {
+      const raw = clean(btn.textContent);
+      const label = btn.dataset.choiceLabel ? btn.dataset.choiceLabel + ' ' : '';
+      const noLabel = raw.replace(/^[A-Z]\s+/, '');
+      const fixed = fixes.get(noLabel);
+      if (fixed) btn.textContent = label + fixed;
+    });
+  }
+
   function update() {
     const clue = ensureBar();
     if (clue) clue.innerHTML = '<b>Quick clue:</b> ' + buildClue();
     forceVisible();
+    fixSpelling();
   }
 
   update();
