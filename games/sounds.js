@@ -7,7 +7,7 @@
       { global: 'SeanGameBreadcrumbsReady', src: '/games/breadcrumbs.js?v=4' },
       { global: 'SeanGameLangReady', src: '/games/lang.js?v=1' },
       { global: 'GameAutoEsLoaded', src: '/games/auto-es.js?v=1' },
-      { global: 'BuddyGuideHelpLoaded', src: '/games/buddy-guide-help.js?v=3' }
+      { global: 'BuddyGuideHelpLoaded', src: '/games/buddy-guide-help.js?v=4' }
     ];
     if (isGamePage) {
       scripts.push({ global: 'GameProgressMeterLoaded', src: '/games/game-progress.js?v=3' });
