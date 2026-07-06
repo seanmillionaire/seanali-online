@@ -4,32 +4,31 @@
   const STORAGE_KEY = 'seanGameUserName';
   const GUIDE_SHOWN_KEY = 'seanGameGuideShown';
 
-  // Guide messages for different contexts
   const messages = {
     welcome: (name) => [
-      `Hey ${name}! 👋 I'm your game guide!`,
-      `I'm here to help you navigate and have fun!`,
-      `Tap me anytime for tips, or just explore!`
+      `Hi ${name}! 👋✨`,
+      `I’m your game buddy 🤖🎮`,
+      `Tap buttons. Try answers. Have fun! 🚀⭐`
     ],
     gameStart: (name, gameName) => [
-      `Ready to play, ${name}? 🎮`,
-      `Let's explore ${gameName} together!`,
-      `Tap me if you need help!`
+      `Ready, ${name}? 🎮`,
+      `${gameName} time! 🌈`,
+      `Read. Tap. Win! 🏆`
     ],
     tip: (name) => [
-      `Pro tip, ${name}! 💡`,
-      `Pay attention to the hints.`,
-      `You're doing great!`
+      `Tiny tip, ${name}! 💡`,
+      `Look for clues 👀`,
+      `Then tap your best answer ⭐`
     ],
     stuck: (name) => [
-      `Stuck, ${name}? 🤔`,
-      `Try reading the question again.`,
-      `You've got this!`
+      `Oops moment? 🫣`,
+      `Read it one more time 📖`,
+      `You can do it! 💪✨`
     ],
     celebrate: (name) => [
-      `Amazing, ${name}! 🎉`,
-      `You crushed it!`,
-      `Keep going!`
+      `YES ${name}! 🎉`,
+      `Big brain move! 🧠⚡`,
+      `Keep going! 🏁⭐`
     ]
   };
 
@@ -37,258 +36,44 @@
   let currentMessageIndex = 0;
   let isOpen = false;
 
-  // Create styles
   const style = document.createElement('style');
   style.textContent = `
-    [data-guide-robot] {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 999;
-      font-family: Arial, sans-serif;
-    }
-
-    .guide-robot-button {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border: 4px solid #fff;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 40px;
-      transition: all 0.3s ease;
-      animation: guidePulse 2.5s ease-in-out infinite;
-    }
-
-    .guide-robot-button:hover {
-      transform: scale(1.1);
-      box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
-    }
-
-    .guide-robot-button:active {
-      transform: scale(0.95);
-    }
-
-    @keyframes guidePulse {
-      0%, 100% {
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-      }
-      50% {
-        box-shadow: 0 8px 32px rgba(102, 126, 234, 0.5);
-      }
-    }
-
-    .guide-robot-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.5);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      z-index: 1000;
-    }
-
-    .guide-robot-modal.show {
-      display: flex;
-    }
-
-    .guide-robot-panel {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border-radius: 24px;
-      padding: 28px;
-      max-width: 420px;
-      width: 100%;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      animation: slideUp 0.4s ease;
-      color: white;
-    }
-
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .guide-robot-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
-      font-size: 24px;
-    }
-
-    .guide-robot-title {
-      font-size: 22px;
-      font-weight: 900;
-      margin: 0;
-    }
-
-    .guide-robot-message {
-      font-size: 18px;
-      line-height: 1.4;
-      margin: 16px 0;
-      min-height: 54px;
-      display: flex;
-      align-items: center;
-    }
-
-    .guide-robot-buttons {
-      display: grid;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .guide-robot-btn {
-      border: 0;
-      border-radius: 12px;
-      padding: 14px 16px;
-      font-size: 16px;
-      font-weight: 900;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      color: #764ba2;
-    }
-
-    .guide-robot-btn-primary {
-      background: #fff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    .guide-robot-btn-primary:hover {
-      background: #f5f5f5;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-    }
-
-    .guide-robot-btn-secondary {
-      background: rgba(255, 255, 255, 0.2);
-      color: white;
-      border: 2px solid rgba(255, 255, 255, 0.4);
-    }
-
-    .guide-robot-btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.3);
-      border-color: rgba(255, 255, 255, 0.6);
-    }
-
-    .guide-robot-close {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      background: rgba(255, 255, 255, 0.2);
-      border: 0;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      cursor: pointer;
-      font-size: 24px;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
-    }
-
-    .guide-robot-close:hover {
-      background: rgba(255, 255, 255, 0.3);
-    }
-
-    .guide-robot-name-input {
-      width: 100%;
-      border: 0;
-      border-radius: 12px;
-      padding: 14px;
-      font-size: 16px;
-      font-weight: 900;
-      margin: 12px 0;
-      box-sizing: border-box;
-    }
-
-    .guide-robot-name-input::placeholder {
-      color: #ccc;
-    }
-
-    .guide-robot-dots {
-      display: flex;
-      gap: 6px;
-      justify-content: center;
-      margin-top: 12px;
-    }
-
-    .guide-robot-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.4);
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .guide-robot-dot.active {
-      background: white;
-      transform: scale(1.3);
-    }
-
-    @media (max-width: 480px) {
-      [data-guide-robot] {
-        bottom: 16px;
-        right: 16px;
-      }
-
-      .guide-robot-button {
-        width: 60px;
-        height: 60px;
-        font-size: 32px;
-      }
-
-      .guide-robot-panel {
-        padding: 20px;
-        max-width: 100%;
-      }
-
-      .guide-robot-title {
-        font-size: 18px;
-      }
-
-      .guide-robot-message {
-        font-size: 16px;
-        min-height: 48px;
-      }
-    }
+    [data-guide-robot]{position:fixed;bottom:16px;right:14px;z-index:999;font-family:Arial,sans-serif}
+    .guide-robot-button{width:76px;height:76px;border-radius:50%;background:radial-gradient(circle at 30% 20%,#fff,#fff26f 24%,#ff62b7 58%,#7d4cff);border:5px solid #101436;box-shadow:0 8px 0 rgba(0,0,0,.28),0 0 22px rgba(255,98,183,.45);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:42px;animation:guideBounce 1.35s ease-in-out infinite;touch-action:manipulation}
+    .guide-robot-button:active{transform:translateY(6px) scale(.96);box-shadow:0 2px 0 rgba(0,0,0,.28),0 0 18px rgba(255,98,183,.55)}
+    @keyframes guideBounce{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-6px) rotate(2deg)}}
+    .guide-robot-modal{position:fixed;inset:0;background:rgba(16,20,54,.55);display:none;align-items:center;justify-content:center;padding:14px;z-index:1000}.guide-robot-modal.show{display:flex}
+    .guide-robot-panel{position:relative;width:min(430px,100%);background:linear-gradient(180deg,#fff6e6,#e8fbff);border:5px solid #101436;border-radius:30px;padding:18px;box-shadow:0 18px 0 rgba(0,0,0,.25),0 0 40px rgba(255,200,61,.45);color:#101436;animation:guidePop .28s ease}
+    @keyframes guidePop{from{opacity:0;transform:scale(.9) translateY(18px)}to{opacity:1;transform:scale(1) translateY(0)}}
+    .guide-robot-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;background:linear-gradient(90deg,#ff62b7,#ffc83d,#34d17a,#00d4ff);border:4px solid #101436;border-radius:22px;padding:10px;color:#101436}.guide-robot-header span{font-size:38px}.guide-robot-title{font-size:25px;line-height:1;margin:0;font-weight:900}
+    .guide-robot-message{font-size:24px;line-height:1.12;margin:12px 0;min-height:78px;display:flex;align-items:center;justify-content:center;text-align:center;background:#fff;border:4px solid #ffc83d;border-radius:22px;padding:14px;font-weight:900;color:#101436;box-shadow:0 7px 0 rgba(0,0,0,.14)}
+    .guide-robot-buttons{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}.guide-robot-btn{border:4px solid #101436;border-radius:20px;padding:15px 14px;font-size:20px;font-weight:900;cursor:pointer;color:#101436;box-shadow:0 7px 0 rgba(0,0,0,.25);touch-action:manipulation}.guide-robot-btn:active{transform:translateY(6px);box-shadow:0 1px 0 rgba(0,0,0,.25)}
+    .guide-robot-btn-primary{background:linear-gradient(180deg,#fff26f,#ffc83d)}.guide-robot-btn-secondary{background:linear-gradient(180deg,#d7b9ff,#9b7cff);color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.18)}
+    .guide-robot-close{position:absolute;top:10px;right:10px;background:#ff3d3d;border:4px solid #101436;border-radius:50%;width:46px;height:46px;cursor:pointer;font-size:24px;color:white;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:0 5px 0 rgba(0,0,0,.25)}
+    .guide-robot-name-input{width:100%;border:4px solid #101436;border-radius:20px;padding:16px;font-size:22px;font-weight:900;margin:12px 0;box-sizing:border-box;text-align:center;background:#fff;color:#101436}.guide-robot-name-input::placeholder{color:#777}
+    .guide-robot-dots{display:flex;gap:8px;justify-content:center;margin-top:12px}.guide-robot-dot{width:15px;height:15px;border-radius:50%;border:2px solid #101436;background:#fff;cursor:pointer}.guide-robot-dot.active{background:#ff62b7;transform:scale(1.25)}
+    .guide-robot-icons{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}.guide-robot-icon{background:#fff;border:3px solid #101436;border-radius:16px;padding:9px 4px;font-size:24px;box-shadow:0 4px 0 rgba(0,0,0,.18);text-align:center}
+    @media(max-width:480px){[data-guide-robot]{bottom:12px;right:10px}.guide-robot-button{width:66px;height:66px;font-size:36px}.guide-robot-panel{padding:14px}.guide-robot-title{font-size:21px}.guide-robot-message{font-size:21px;min-height:70px}.guide-robot-btn{font-size:18px;padding:14px 12px}}
   `;
   document.head.appendChild(style);
 
-  // Create robot container
   const container = document.createElement('div');
   container.setAttribute('data-guide-robot', 'true');
 
-  // Create button
   const button = document.createElement('button');
   button.className = 'guide-robot-button';
   button.textContent = '🤖';
-  button.setAttribute('aria-label', 'Open guide');
+  button.setAttribute('aria-label', 'Open game buddy');
 
-  // Create modal
   const modal = document.createElement('div');
   modal.className = 'guide-robot-modal';
 
   const panel = document.createElement('div');
   panel.className = 'guide-robot-panel';
-  panel.style.position = 'relative';
 
   const closeBtn = document.createElement('button');
   closeBtn.className = 'guide-robot-close';
-  closeBtn.textContent = '✕';
+  closeBtn.textContent = '×';
   closeBtn.setAttribute('aria-label', 'Close guide');
 
   const header = document.createElement('div');
@@ -297,7 +82,7 @@
 
   const title = document.createElement('h2');
   title.className = 'guide-robot-title';
-  title.textContent = 'Guide';
+  title.textContent = 'Buddy Guide';
 
   const messageDiv = document.createElement('div');
   messageDiv.className = 'guide-robot-message';
@@ -315,10 +100,21 @@
   container.appendChild(modal);
   document.body.appendChild(container);
 
-  // Helper functions
   function saveName(name) {
     localStorage.setItem(STORAGE_KEY, name.trim());
     userName = name.trim();
+  }
+
+  function iconRow() {
+    const row = document.createElement('div');
+    row.className = 'guide-robot-icons';
+    ['🎮','⭐','🚀','🏆'].forEach(icon => {
+      const item = document.createElement('div');
+      item.className = 'guide-robot-icon';
+      item.textContent = icon;
+      row.appendChild(item);
+    });
+    return row;
   }
 
   function showNamePrompt() {
@@ -326,29 +122,29 @@
     messageDiv.innerHTML = '';
     buttonsDiv.innerHTML = '';
 
-    const label = document.createElement('label');
-    label.style.display = 'block';
-    label.style.fontSize = '14px';
+    const label = document.createElement('div');
+    label.style.fontSize = '24px';
     label.style.fontWeight = '900';
-    label.style.marginBottom = '8px';
-    label.textContent = 'What\'s your name?';
+    label.style.lineHeight = '1.1';
+    label.textContent = 'What is your name? 🌈';
 
     const input = document.createElement('input');
     input.className = 'guide-robot-name-input';
     input.type = 'text';
-    input.placeholder = 'Enter your name';
+    input.placeholder = 'Type name here ✨';
     input.value = userName || '';
 
     messageDiv.appendChild(label);
     messageDiv.appendChild(input);
+    messageDiv.appendChild(iconRow());
 
     const submitBtn = document.createElement('button');
     submitBtn.className = 'guide-robot-btn guide-robot-btn-primary';
-    submitBtn.textContent = 'Let\'s Go! 🚀';
+    submitBtn.textContent = '🚀 Start Playing';
 
     const skipBtn = document.createElement('button');
     skipBtn.className = 'guide-robot-btn guide-robot-btn-secondary';
-    skipBtn.textContent = 'Skip';
+    skipBtn.textContent = '🎮 Play Now';
 
     buttonsDiv.appendChild(submitBtn);
     buttonsDiv.appendChild(skipBtn);
@@ -366,11 +162,9 @@
       closeModal();
     });
 
-    input.focus();
+    setTimeout(() => input.focus(), 50);
     input.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter' && input.value.trim()) {
-        submitBtn.click();
-      }
+      if (e.key === 'Enter' && input.value.trim()) submitBtn.click();
     });
   }
 
@@ -386,15 +180,12 @@
 
     const msgText = document.createElement('p');
     msgText.style.margin = '0';
-    msgText.style.fontSize = '18px';
-    msgText.style.lineHeight = '1.4';
     msgText.textContent = msgs[currentMessageIndex];
     messageDiv.appendChild(msgText);
 
     if (msgs.length > 1) {
       const dotsDiv = document.createElement('div');
       dotsDiv.className = 'guide-robot-dots';
-
       msgs.forEach((_, idx) => {
         const dot = document.createElement('button');
         dot.className = 'guide-robot-dot' + (idx === currentMessageIndex ? ' active' : '');
@@ -405,17 +196,16 @@
         });
         dotsDiv.appendChild(dot);
       });
-
       messageDiv.appendChild(dotsDiv);
     }
 
     const nextBtn = document.createElement('button');
     nextBtn.className = 'guide-robot-btn guide-robot-btn-primary';
-    nextBtn.textContent = currentMessageIndex < msgs.length - 1 ? 'Next →' : 'Got it! 👍';
+    nextBtn.textContent = currentMessageIndex < msgs.length - 1 ? '👉 Next' : '✅ Got It';
 
     const closeBtn2 = document.createElement('button');
     closeBtn2.className = 'guide-robot-btn guide-robot-btn-secondary';
-    closeBtn2.textContent = 'Close';
+    closeBtn2.textContent = '🎮 Play';
 
     buttonsDiv.appendChild(nextBtn);
     buttonsDiv.appendChild(closeBtn2);
@@ -428,18 +218,14 @@
         closeModal();
       }
     });
-
     closeBtn2.addEventListener('click', closeModal);
   }
 
   function openModal() {
     isOpen = true;
     modal.classList.add('show');
-    if (!userName) {
-      showNamePrompt();
-    } else {
-      showWelcome();
-    }
+    if (!userName) showNamePrompt();
+    else showWelcome();
   }
 
   function closeModal() {
@@ -447,42 +233,20 @@
     modal.classList.remove('show');
   }
 
-  // Event listeners
   button.addEventListener('click', openModal);
   closeBtn.addEventListener('click', closeModal);
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal();
-  });
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-  // Show welcome on first visit
   if (!localStorage.getItem(GUIDE_SHOWN_KEY)) {
-    setTimeout(() => {
-      openModal();
-    }, 800);
+    setTimeout(openModal, 800);
   }
 
-  // Expose API for games to interact with guide
   window.GameGuide = {
     setName: saveName,
     getName: () => userName,
-    showTip: () => {
-      if (userName) {
-        showMessageCarousel(messages.tip(userName));
-        openModal();
-      }
-    },
-    showStuck: () => {
-      if (userName) {
-        showMessageCarousel(messages.stuck(userName));
-        openModal();
-      }
-    },
-    celebrate: () => {
-      if (userName) {
-        showMessageCarousel(messages.celebrate(userName));
-        openModal();
-      }
-    },
+    showTip: () => { showMessageCarousel(messages.tip(userName || 'Friend')); modal.classList.add('show'); },
+    showStuck: () => { showMessageCarousel(messages.stuck(userName || 'Friend')); modal.classList.add('show'); },
+    celebrate: () => { showMessageCarousel(messages.celebrate(userName || 'Friend')); modal.classList.add('show'); },
     open: openModal,
     close: closeModal
   };
