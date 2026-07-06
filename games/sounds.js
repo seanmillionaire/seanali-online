@@ -23,7 +23,10 @@
     }
     if (gamePath === '/games/money/') scripts.push({ global: 'MoneyLevelTwoLoaded', src: '/games/money/level-two.js?v=1' });
     if (gamePath === '/games/math-race/') scripts.push({ global: 'MathRaceNoGreyLinesLoaded', src: '/games/math-race/no-grey-lines.js?v=1' });
-    if (gamePath === '/games/math-dissector/') scripts.push({ global: 'MathDissectorEsFixLoaded', src: '/games/math-dissector/es-fix.js?v=2' });
+    if (gamePath === '/games/math-dissector/') {
+      scripts.push({ global: 'MathDissectorEsFixLoaded', src: '/games/math-dissector/es-fix.js?v=2' });
+      scripts.push({ global: 'MathDissectorFocusLoaded', src: '/games/math-dissector/focus-numbers.js?v=1' });
+    }
     if (gamePath === '/games/elements/') scripts.push({ global: 'ElementsClueBarLoaded', src: '/games/elements/clue-bar.js?v=1' });
     if (gamePath === '/games/family-gems/') {
       scripts.push({ global: 'FamilyGemsClueRiddlesLoaded', src: '/games/family-gems/clue-riddles.js?v=2' });
