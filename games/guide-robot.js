@@ -3,6 +3,7 @@
 
   const STORAGE_KEY = 'seanGameUserName';
   const GUIDE_SHOWN_KEY = 'seanGameGuideShown';
+  const MAP_PROGRESS_KEY = 'seanGameMapProgress:v1';
 
   const messages = {
     welcome: (name) => [
@@ -50,10 +51,11 @@
     .guide-robot-buttons{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}.guide-robot-btn{border:4px solid #101436;border-radius:20px;padding:15px 14px;font-size:20px;font-weight:900;cursor:pointer;color:#101436;box-shadow:0 7px 0 rgba(0,0,0,.25);touch-action:manipulation}.guide-robot-btn:active{transform:translateY(6px);box-shadow:0 1px 0 rgba(0,0,0,.25)}
     .guide-robot-btn-primary{background:linear-gradient(180deg,#fff26f,#ffc83d)}.guide-robot-btn-secondary{background:linear-gradient(180deg,#d7b9ff,#9b7cff);color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.18)}
     .guide-robot-close{position:absolute;top:10px;right:10px;background:#ff3d3d;border:4px solid #101436;border-radius:50%;width:46px;height:46px;cursor:pointer;font-size:24px;color:white;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:0 5px 0 rgba(0,0,0,.25)}
-    .guide-robot-name-input{width:100%;border:4px solid #101436;border-radius:20px;padding:16px;font-size:22px;font-weight:900;margin:12px 0;box-sizing:border-box;text-align:center;background:#fff;color:#101436}.guide-robot-name-input::placeholder{color:#777}
+    .guide-robot-name-input{width:100%;border:5px solid #101436;border-radius:24px;padding:22px 16px;font-size:30px;font-weight:900;margin:14px 0 4px;box-sizing:border-box;text-align:center;background:#fff;color:#101436;min-height:78px;box-shadow:0 7px 0 rgba(0,0,0,.18)}.guide-robot-name-input::placeholder{color:#777;font-size:22px}
+    .guide-robot-name-label{font-size:26px;font-weight:900;line-height:1.08;margin-bottom:4px}.guide-robot-name-wrap{width:100%}.guide-robot-name-hint{font-size:15px;font-weight:900;color:#334;text-align:center;margin-top:6px}
     .guide-robot-dots{display:flex;gap:8px;justify-content:center;margin-top:12px}.guide-robot-dot{width:15px;height:15px;border-radius:50%;border:2px solid #101436;background:#fff;cursor:pointer}.guide-robot-dot.active{background:#ff62b7;transform:scale(1.25)}
-    .guide-robot-icons{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}.guide-robot-icon{background:#fff;border:3px solid #101436;border-radius:16px;padding:9px 4px;font-size:24px;box-shadow:0 4px 0 rgba(0,0,0,.18);text-align:center}
-    @media(max-width:480px){[data-guide-robot]{bottom:12px;right:10px}.guide-robot-button{width:66px;height:66px;font-size:36px}.guide-robot-panel{padding:14px}.guide-robot-title{font-size:21px}.guide-robot-message{font-size:21px;min-height:70px}.guide-robot-btn{font-size:18px;padding:14px 12px}}
+    .guide-robot-secret{margin-top:6px;background:transparent!important;border:0!important;box-shadow:none!important;color:#101436!important;opacity:.26;font-size:13px!important;padding:5px!important}.guide-robot-secret:active,.guide-robot-secret:hover{opacity:1}.guide-robot-unlocked{background:#f1fff3;border:4px solid #34d17a;border-radius:18px;padding:10px;margin-top:10px;font-size:18px;font-weight:900;text-align:center}
+    @media(max-width:480px){[data-guide-robot]{bottom:12px;right:10px}.guide-robot-button{width:66px;height:66px;font-size:36px}.guide-robot-panel{padding:14px}.guide-robot-title{font-size:21px}.guide-robot-message{font-size:21px;min-height:70px}.guide-robot-btn{font-size:18px;padding:14px 12px}.guide-robot-name-input{font-size:28px;min-height:82px;padding:22px 12px}.guide-robot-name-label{font-size:24px}}
   `;
   document.head.appendChild(style);
 
@@ -105,16 +107,14 @@
     userName = name.trim();
   }
 
-  function iconRow() {
-    const row = document.createElement('div');
-    row.className = 'guide-robot-icons';
-    ['🎮','⭐','🚀','🏆'].forEach(icon => {
-      const item = document.createElement('div');
-      item.className = 'guide-robot-icon';
-      item.textContent = icon;
-      row.appendChild(item);
-    });
-    return row;
+  function unlockAllGames() {
+    localStorage.setItem(MAP_PROGRESS_KEY, '99');
+    localStorage.setItem('seanGameMapUnlockedAll:v1', 'true');
+    const box = document.createElement('div');
+    box.className = 'guide-robot-unlocked';
+    box.textContent = '🔓 All games unlocked!';
+    buttonsDiv.prepend(box);
+    setTimeout(() => { if (location.pathname.replace(/\/+$/, '/') === '/games/') location.reload(); }, 650);
   }
 
   function showNamePrompt() {
@@ -122,21 +122,27 @@
     messageDiv.innerHTML = '';
     buttonsDiv.innerHTML = '';
 
+    const wrap = document.createElement('div');
+    wrap.className = 'guide-robot-name-wrap';
+
     const label = document.createElement('div');
-    label.style.fontSize = '24px';
-    label.style.fontWeight = '900';
-    label.style.lineHeight = '1.1';
-    label.textContent = 'What is your name? 🌈';
+    label.className = 'guide-robot-name-label';
+    label.textContent = 'What is your name?';
 
     const input = document.createElement('input');
     input.className = 'guide-robot-name-input';
     input.type = 'text';
-    input.placeholder = 'Type name here ✨';
+    input.placeholder = 'Type name here';
     input.value = userName || '';
 
-    messageDiv.appendChild(label);
-    messageDiv.appendChild(input);
-    messageDiv.appendChild(iconRow());
+    const hint = document.createElement('div');
+    hint.className = 'guide-robot-name-hint';
+    hint.textContent = 'Big letters are easier to tap.';
+
+    wrap.appendChild(label);
+    wrap.appendChild(input);
+    wrap.appendChild(hint);
+    messageDiv.appendChild(wrap);
 
     const submitBtn = document.createElement('button');
     submitBtn.className = 'guide-robot-btn guide-robot-btn-primary';
@@ -148,6 +154,7 @@
 
     buttonsDiv.appendChild(submitBtn);
     buttonsDiv.appendChild(skipBtn);
+    addSecretButton();
 
     submitBtn.addEventListener('click', () => {
       if (input.value.trim()) {
@@ -166,6 +173,17 @@
     input.addEventListener('keypress', (e) => {
       if (e.key === 'Enter' && input.value.trim()) submitBtn.click();
     });
+  }
+
+  function addSecretButton() {
+    if (buttonsDiv.querySelector('.guide-robot-secret')) return;
+    const secret = document.createElement('button');
+    secret.className = 'guide-robot-btn guide-robot-secret';
+    secret.type = 'button';
+    secret.textContent = 'secret unlock';
+    secret.title = 'Unlock all games';
+    secret.addEventListener('click', unlockAllGames);
+    buttonsDiv.appendChild(secret);
   }
 
   function showWelcome() {
@@ -209,6 +227,7 @@
 
     buttonsDiv.appendChild(nextBtn);
     buttonsDiv.appendChild(closeBtn2);
+    addSecretButton();
 
     nextBtn.addEventListener('click', () => {
       if (currentMessageIndex < msgs.length - 1) {
@@ -247,6 +266,7 @@
     showTip: () => { showMessageCarousel(messages.tip(userName || 'Friend')); modal.classList.add('show'); },
     showStuck: () => { showMessageCarousel(messages.stuck(userName || 'Friend')); modal.classList.add('show'); },
     celebrate: () => { showMessageCarousel(messages.celebrate(userName || 'Friend')); modal.classList.add('show'); },
+    unlockAllGames,
     open: openModal,
     close: closeModal
   };
