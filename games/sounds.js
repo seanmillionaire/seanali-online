@@ -9,6 +9,7 @@
       { global: 'BuddyGuideHelpLoaded', src: '/games/buddy-guide-help.js?v=1' }
     ];
     if (isGamePage) {
+      scripts.push({ global: 'GameProgressMeterLoaded', src: '/games/game-progress.js?v=1' });
       scripts.push({ global: 'GameFirstScreenGuideLoaded', src: '/games/first-screen-guide.js?v=1' });
       scripts.push({ global: 'GameWrongEffectLoaded', src: '/games/wrong-effect.js?v=1' });
       scripts.push({ global: 'GameMistakeReaderLoaded', src: '/games/mistake-reader.js?v=2' });
