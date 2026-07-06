@@ -10,12 +10,13 @@
     ];
     if (isGamePage) {
       scripts.push({ global: 'GameProgressMeterLoaded', src: '/games/game-progress.js?v=1' });
-      scripts.push({ global: 'GameFirstScreenGuideLoaded', src: '/games/first-screen-guide.js?v=1' });
-      scripts.push({ global: 'GamePolishLoaded', src: '/games/game-polish.js?v=1' });
+      scripts.push({ global: 'GameFirstScreenGuideLoaded', src: '/games/first-screen-guide.js?v=2' });
+      scripts.push({ global: 'GamePolishLoaded', src: '/games/game-polish.js?v=2' });
       scripts.push({ global: 'GameWrongEffectLoaded', src: '/games/wrong-effect.js?v=1' });
       scripts.push({ global: 'GameMistakeReaderLoaded', src: '/games/mistake-reader.js?v=2' });
     }
     if (gamePath === '/games/math-race/') scripts.push({ global: 'MathRaceNoGreyLinesLoaded', src: '/games/math-race/no-grey-lines.js?v=1' });
+    if (gamePath === '/games/math-dissector/') scripts.push({ global: 'MathDissectorEsFixLoaded', src: '/games/math-dissector/es-fix.js?v=1' });
     if (gamePath === '/games/elements/') scripts.push({ global: 'ElementsClueBarLoaded', src: '/games/elements/clue-bar.js?v=1' });
     if (gamePath === '/games/family-gems/') {
       scripts.push({ global: 'FamilyGemsClueRiddlesLoaded', src: '/games/family-gems/clue-riddles.js?v=1' });
