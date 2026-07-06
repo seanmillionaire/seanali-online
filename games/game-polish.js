@@ -9,6 +9,9 @@
     .choice,.answer{position:relative!important;text-align:left!important;padding-left:88px!important;padding-right:18px!important}
     .choice[data-choice-label]::before,.answer[data-choice-label]::before{content:attr(data-choice-label);position:absolute;left:12px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:3px solid #101436;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#ffc83d;color:#101436;font-size:18px;font-weight:900;box-shadow:0 3px 0 rgba(0,0,0,.2)}
     .choice::after,.answer::after{content:'👉';position:absolute;left:51px;right:auto;top:50%;transform:translateY(-50%);font-size:22px;opacity:.95;pointer-events:none}
+    .game-progress-meter ~ .xp,.game-progress-meter ~ .barBox,.game-progress-meter ~ .progress,.game-progress-meter ~ .progressBox{display:none!important}
+    .xp,.barBox,.progress,.progressBox,.meter,.xpbar{display:none!important}
+    .game-progress-meter{display:block!important}
     body[data-game-polish="elements"] .lesson{color:#fff!important;background:#101436!important;text-shadow:0 1px 0 rgba(0,0,0,.25)!important}
     body[data-game-polish="elements"] .topic,body[data-game-polish="elements"] .lesson{font-weight:900!important}
     body[data-game-polish="family-gems"] .helper{display:none!important}
@@ -40,6 +43,12 @@
     if (path.includes('/mirror/')) document.body.dataset.gamePolish = 'mirror';
     if (path.includes('/tongue-twister/')) document.body.dataset.gamePolish = 'tongue-twister';
     if (path.includes('/food-groups/')) document.body.dataset.gamePolish = 'food';
+  }
+
+  function hideOldProgressBars() {
+    document.querySelectorAll('.xp,.barBox,.progress,.progressBox,.meter,.xpbar').forEach(el => {
+      if (!el.classList.contains('game-progress-meter')) el.style.display = 'none';
+    });
   }
 
   const vagueGems = [
@@ -92,6 +101,7 @@
 
   function run() {
     setGameBody();
+    hideOldProgressBars();
     labelOptions();
     if (path.includes('/family-gems/')) polishFamilyGems();
     if (path.includes('/tongue-twister/')) polishTongueTwister();
@@ -104,5 +114,5 @@
   new MutationObserver(() => {
     clearTimeout(window.__gamePolishTimer);
     window.__gamePolishTimer = setTimeout(run, 60);
-  }).observe(document.documentElement, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['class'] });
+  }).observe(document.documentElement, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['class','style'] });
 })();
