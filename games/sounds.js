@@ -4,7 +4,7 @@
     const isGamePage = gamePath !== '/games/';
     const scripts = [
       { global: 'SeanGameAppViewReady', src: '/games/app-view.js?v=1' },
-      { global: 'SeanGameBreadcrumbsReady', src: '/games/breadcrumbs.js?v=4' },
+      { global: 'SeanGameBreadcrumbsReady', src: '/games/breadcrumbs.js?v=5' },
       { global: 'SeanGameLangReady', src: '/games/lang.js?v=1' },
       { global: 'GameAutoEsLoaded', src: '/games/auto-es.js?v=1' },
       { global: 'BuddyGuideHelpLoaded', src: '/games/buddy-guide-help.js?v=4' }
@@ -18,6 +18,7 @@
       scripts.push({ global: 'GameWrongEffectLoaded', src: '/games/wrong-effect.js?v=1' });
       scripts.push({ global: 'GameMistakeReaderLoaded', src: '/games/mistake-reader.js?v=2' });
     }
+    if (gamePath === '/games/traffic-town/') scripts.push({ global: 'TrafficTownLevelTwoLoaded', src: '/games/traffic-town/level-two.js?v=1' });
     if (gamePath === '/games/mirror/') {
       scripts.push({ global: 'MirrorFairChoicesLoaded', src: '/games/mirror/fair-choices.js?v=1' });
       scripts.push({ global: 'MirrorLevelTwoLoaded', src: '/games/mirror/level-two.js?v=1' });
