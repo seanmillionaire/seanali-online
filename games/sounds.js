@@ -31,6 +31,7 @@
     if (gamePath === '/games/family-gems/') {
       scripts.push({ global: 'FamilyGemsClueRiddlesLoaded', src: '/games/family-gems/clue-riddles.js?v=2' });
       scripts.push({ global: 'CountryGemsNameLoaded', src: '/games/family-gems/country-name.js?v=1' });
+      scripts.push({ global: 'FamilyGemsAnswerSafetyLoaded', src: '/games/family-gems/answer-safety.js?v=1' });
     }
     if (gamePath === '/games/piano/') scripts.push({ global: 'PianoFreestyleLoaded', src: '/games/piano/freestyle.js?v=1' });
 
