@@ -2,6 +2,7 @@
   if (document.querySelector('[data-game-breadcrumbs]')) return;
 
   const games = [
+    { href: '/games/traffic-town/', label: '🚗 Traffic Town' },
     { href: '/games/isla-aventura/', label: '🏝️ Isla Aventura' },
     { href: '/games/mirror/', label: '🪞 The Mirror' },
     { href: '/games/math-dissector/', label: '🧠 Math Dissector' },
@@ -19,6 +20,7 @@
 
   const names = {
     '/games/': 'Games',
+    '/games/traffic-town/': 'Traffic Town',
     '/games/isla-aventura/': 'Isla Aventura',
     '/games/mirror/': 'The Mirror',
     '/games/math-dissector/': 'Math Dissector',
