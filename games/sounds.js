@@ -18,7 +18,10 @@
       scripts.push({ global: 'GameWrongEffectLoaded', src: '/games/wrong-effect.js?v=1' });
       scripts.push({ global: 'GameMistakeReaderLoaded', src: '/games/mistake-reader.js?v=2' });
     }
-    if (gamePath === '/games/traffic-town/') scripts.push({ global: 'TrafficTownLevelTwoLoaded', src: '/games/traffic-town/level-two.js?v=1' });
+    if (gamePath === '/games/traffic-town/') {
+      scripts.push({ global: 'TrafficTownLevelTwoLoaded', src: '/games/traffic-town/level-two.js?v=1' });
+      scripts.push({ global: 'TrafficTownDriveGuideLoaded', src: '/games/traffic-town/drive-guide.js?v=1' });
+    }
     if (gamePath === '/games/mirror/') {
       scripts.push({ global: 'MirrorFairChoicesLoaded', src: '/games/mirror/fair-choices.js?v=1' });
       scripts.push({ global: 'MirrorLevelTwoLoaded', src: '/games/mirror/level-two.js?v=1' });
