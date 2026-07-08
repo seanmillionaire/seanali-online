@@ -11,7 +11,7 @@
     },
     {
       "source": "/games/:path*",
-      "destination": "https://games.seanali.online/:path*",
+      "destination": "https://games.seanali.online",
       "permanent": true
     },
     {
