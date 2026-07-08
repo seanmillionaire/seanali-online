@@ -5,6 +5,16 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/games",
+      "destination": "https://games.seanali.online",
+      "permanent": true
+    },
+    {
+      "source": "/games/:path*",
+      "destination": "https://games.seanali.online/:path*",
+      "permanent": true
+    },
+    {
       "source": "/(.*)",
       "has": [
         {
