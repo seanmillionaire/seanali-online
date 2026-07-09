@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Money Block Breakthrough | 7-Minute Audio • Sean Ali</title>
-    <meta name="description" content="7-minute audio designed to calm the stress reaction behind money hesitation. Remove money blocks, stop freezing & self-sabotage. Instant access for $27.">
-    <!-- Meta Pixel & Hotmart -->
+    <title>Money Flow | Sean Ali</title>
+    <meta name="description" content="A 7-minute Money Flow audio designed to help uninstall broke thinking and rehearse the rich identity version of you.">
+
     <script>
         !function(f,b,e,v,n,t,s)
         {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -19,6 +19,7 @@
         fbq('track', 'PageView');
     </script>
     <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=878451855254470&ev=PageView&noscript=1"/></noscript>
+
     <script id="hotmart_launcher_script">
         (function(l,a,u,n,c,h,e,r){
             l['HotmartLauncherObject']=c;
@@ -32,9 +33,11 @@
         })(window,document,'script','//launcher.hotmart.com/launcher.js','hot');
         hot('account','3a3058a6-7369-3d97-a1a0-ba9baed71541');
     </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -42,74 +45,60 @@
             background: #ffffff;
             color: #111827;
             line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
         }
         h1, h2, h3, .heading-font {
             font-family: 'Sora', sans-serif;
             font-weight: 800;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.03em;
         }
-        /* TOP BAR as clickable CTA link */
         .top-bar-link {
             display: block;
             position: sticky;
             top: 0;
             z-index: 100;
-            background: linear-gradient(95deg, #B91C1C 0%, #E11D2F 100%);
+            background: linear-gradient(95deg, #991b1b 0%, #dc2626 45%, #ef4444 100%);
             color: white;
-            padding: 14px 16px;
+            padding: 15px 16px;
             text-align: center;
-            font-size: 16px;
-            font-weight: 800;
-            letter-spacing: -0.2px;
+            font-size: clamp(15px, 2.8vw, 22px);
+            font-weight: 900;
+            letter-spacing: -0.03em;
             text-transform: uppercase;
-            box-shadow: 0 4px 12px rgba(185, 28, 28, 0.3);
+            box-shadow: 0 8px 26px rgba(185, 28, 28, 0.35);
             border-bottom: 1px solid rgba(255,255,255,0.25);
             text-decoration: none;
-            transition: opacity 0.2s;
+            animation: warningPulse 1.25s ease-in-out infinite;
         }
-        .top-bar-link:hover {
-            opacity: 0.92;
-            text-decoration: underline;
+        .top-bar-link:hover { opacity: 0.94; }
+        @keyframes warningPulse {
+            0%, 100% { filter: brightness(1); box-shadow: 0 8px 26px rgba(185, 28, 28, 0.35); }
+            50% { filter: brightness(1.12); box-shadow: 0 10px 34px rgba(220, 38, 38, 0.56); }
         }
-        /* MAIN CONTAINER */
         .vsl-main {
             max-width: 880px;
             margin: 0 auto;
-            padding: 8px 20px 64px;
+            padding: 18px 20px 64px;
             text-align: center;
-        }
-        /* headline modified: new money block positioning */
-        .money-block-headline {
-            font-family: 'Sora', sans-serif;
-            font-weight: 800;
-            font-size: 1.9rem;
-            line-height: 1.25;
-            text-align: center;
-            color: #1f1b14;
-            margin: 0.5rem auto 0.75rem;
-            max-width: 800px;
         }
         .money-block-subhead {
-            font-size: 1.2rem;
-            font-weight: 500;
-            color: #4b5563;
-            margin-bottom: 1.5rem;
-            max-width: 650px;
-            margin-left: auto;
-            margin-right: auto;
+            font-family: 'Sora', sans-serif;
+            font-size: clamp(25px, 5vw, 44px);
+            font-weight: 900;
+            color: #111827;
+            line-height: 1.06;
+            max-width: 780px;
+            margin: 8px auto 18px;
+            letter-spacing: -0.055em;
         }
-        .money-block-headline span {
-            background: linear-gradient(120deg, #c2821a, #e0a045);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
+        .money-block-subhead span {
+            color: #dc2626;
         }
-        /* video wrapper */
         .video-wrapper {
             background: transparent;
             border-radius: 28px;
             overflow: hidden;
-            margin: 0 auto 24px;
+            margin: 0 auto 0;
             display: flex;
             justify-content: center;
         }
@@ -122,7 +111,7 @@
             border: 1px solid #e5e7eb;
             padding: 3rem 1rem;
             border-radius: 28px;
-            font-weight: 500;
+            font-weight: 700;
             color: #4b5563;
         }
         vturb-smartplayer {
@@ -130,7 +119,61 @@
             max-width: 100%;
             border-radius: 24px;
         }
-        /* OFFER STACK WITH PRODUCT IMAGE (updated bundle) */
+        #delayedContent {
+            display: none;
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity .55s ease, transform .55s ease;
+        }
+        #delayedContent.visible {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .hm-proof {
+            max-width: 880px;
+            margin: 28px auto 24px;
+            padding: 24px;
+            border: 1px solid #e5e7eb;
+            border-radius: 18px;
+            background: #ffffff;
+            box-shadow: 0 12px 32px rgba(15,23,42,.06);
+        }
+        .hm-proof > p {
+            font-size: 13px;
+            font-weight: 800;
+            color: #b87c2a;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 14px;
+            text-align: center;
+        }
+        .testimonial-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: space-between;
+        }
+        .testimonial {
+            flex: 1 1 250px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            background: #f9fafb;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            text-align: left;
+        }
+        .testimonial img {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .testimonial .name { margin: 0; font-weight: 800; color: #111827; }
+        .verified { color: #059669; font-weight: 800; font-size: 12px; }
+        .quote { margin: 4px 0 0; font-size: 14px; color: #374151; line-height: 1.45; }
         .offer-stack {
             background: #fffaf0;
             border: 2px solid #f3e1bd;
@@ -140,10 +183,7 @@
             text-align: center;
             box-shadow: 0 20px 35px -12px rgba(0,0,0,0.08);
         }
-        .product-image-inline {
-            max-width: 280px;
-            margin: 0 auto 24px;
-        }
+        .product-image-inline { max-width: 280px; margin: 0 auto 24px; }
         .product-image-inline img {
             width: 100%;
             border-radius: 24px;
@@ -153,17 +193,12 @@
         .stack-title {
             font-size: 14px;
             letter-spacing: 2px;
-            font-weight: 800;
+            font-weight: 900;
             text-transform: uppercase;
             color: #b87c2a;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
-        /* GREEN CHECKMARK LIST */
-        .stack-items {
-            list-style: none;
-            margin: 20px 0;
-            text-align: left;
-        }
+        .stack-items { list-style: none; margin: 20px 0; text-align: left; }
         .stack-items li {
             display: flex;
             justify-content: space-between;
@@ -171,16 +206,11 @@
             border-bottom: 1px dashed #e9d6b5;
             padding: 14px 8px;
             font-size: 17px;
-            font-weight: 600;
+            font-weight: 700;
             color: #1f2937;
             gap: 12px;
         }
-        .stack-items li .item-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex: 1;
-        }
+        .item-left { display: flex; align-items: center; gap: 12px; flex: 1; }
         .stack-check {
             display: inline-flex;
             align-items: center;
@@ -193,9 +223,8 @@
             color: white;
             font-size: 14px;
             font-weight: 900;
-            line-height: 1;
         }
-        .stack-items li .item-val {
+        .item-val {
             font-family: monospace;
             font-size: 18px;
             color: #6b7280;
@@ -203,102 +232,62 @@
             text-decoration: line-through;
             white-space: nowrap;
         }
-
-        /* DISCOUNT CODE + PRICING SECTION */
         .pricing-block {
             margin: 28px 0 20px;
             border-radius: 20px;
             overflow: hidden;
             border: 2px solid #d1fae5;
         }
-        .value-row {
-            background: #f9fafb;
+        .value-row, .discount-row, .final-price-row {
             padding: 14px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #e5e7eb;
+            gap: 12px;
         }
-        .value-row-label {
+        .value-row { background: #f9fafb; border-bottom: 1px solid #e5e7eb; }
+        .discount-row { background: #ecfdf5; border-bottom: 1px solid #d1fae5; }
+        .final-price-row { background: #1a2b1c; padding: 20px 24px; }
+        .value-row-label, .final-price-label {
             font-size: 15px;
-            font-weight: 700;
-            color: #6b7280;
+            font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        .value-row-amount {
-            font-size: 20px;
-            font-weight: 800;
-            color: #374151;
-            text-decoration: line-through;
-            opacity: 0.7;
-        }
-        .discount-row {
-            background: #ecfdf5;
-            padding: 14px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #d1fae5;
-        }
+        .value-row-label { color: #6b7280; }
+        .value-row-amount { font-size: 20px; font-weight: 800; color: #374151; text-decoration: line-through; opacity: .7; }
         .discount-code-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
             background: #16a34a;
             color: white;
             font-size: 13px;
-            font-weight: 800;
-            padding: 5px 12px;
-            border-radius: 6px;
+            font-weight: 900;
+            padding: 6px 12px;
+            border-radius: 8px;
             letter-spacing: 1px;
             font-family: monospace;
         }
-        .discount-code-badge::before {
-            content: "🏷️";
-        }
-        .discount-savings {
-            font-size: 16px;
-            font-weight: 800;
-            color: #16a34a;
-        }
-        .final-price-row {
-            background: #1a2b1c;
-            padding: 20px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .final-price-label {
-            font-size: 16px;
-            font-weight: 800;
-            color: rgba(255,255,255,0.75);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .final-price-label span {
-            display: block;
-            font-size: 11px;
-            font-weight: 600;
-            color: #f59e0b;
-            letter-spacing: 0.5px;
-            margin-top: 3px;
-        }
-        .final-price-amount {
-            font-family: 'Sora', sans-serif;
-            font-size: 46px;
-            font-weight: 900;
+        .discount-savings { font-size: 16px; font-weight: 900; color: #16a34a; }
+        .final-price-label { color: rgba(255,255,255,.75); }
+        .final-price-label span { display: block; font-size: 11px; color: #f59e0b; margin-top: 3px; }
+        .final-price-amount { font-family: 'Sora', sans-serif; font-size: 46px; font-weight: 900; color: white; line-height: 1; }
+        .btn-buy, .bump-btn {
+            display: inline-block;
+            width: auto;
+            max-width: 100%;
+            background: linear-gradient(135deg, #f97316, #ea580c);
             color: white;
-            letter-spacing: -1px;
-            line-height: 1;
+            font-size: 21px;
+            font-weight: 900;
+            padding: 16px 42px;
+            border-radius: 60px;
+            text-decoration: none;
+            margin: 12px 0;
+            transition: transform .2s, box-shadow .2s;
+            border: none;
+            box-shadow: 0 8px 20px rgba(234, 88, 12, 0.3);
         }
-        .final-price-amount sup {
-            font-size: 24px;
-            vertical-align: super;
-            font-weight: 700;
-        }
-
-        /* UPSELL BUMP CARD */
+        .btn-buy:hover, .bump-btn:hover { transform: scale(1.02); box-shadow: 0 12px 24px rgba(234,88,12,.4); }
+        .price-note { font-size: 13px; color: #6b7280; margin-top: 12px; }
         .bump-card {
             background: #fff;
             border: 2.5px dashed #e0a530;
@@ -306,7 +295,6 @@
             padding: 28px 24px;
             margin: 20px 0 32px;
             text-align: left;
-            position: relative;
         }
         .bump-card-badge {
             display: inline-block;
@@ -320,134 +308,13 @@
             border-radius: 60px;
             margin-bottom: 12px;
         }
-        .bump-card-star {
-            font-size: 12px;
-            font-weight: 800;
-            color: #92400e;
-            letter-spacing: 0.5px;
-            margin-bottom: 6px;
-        }
-        .bump-card h4 {
-            font-family: 'Sora', sans-serif;
-            font-size: 22px;
-            font-weight: 800;
-            color: #1f2937;
-            margin-bottom: 4px;
-            line-height: 1.25;
-        }
-        .bump-card-subtitle {
-            font-size: 13px;
-            font-weight: 700;
-            color: #6b7280;
-            margin-bottom: 10px;
-        }
-        .bump-card-price {
-            font-size: 20px;
-            font-weight: 900;
-            color: #1f2937;
-            margin-bottom: 4px;
-        }
-        .bump-card-price s {
-            color: #9ca3af;
-            font-weight: 600;
-            font-size: 16px;
-        }
-        .bump-card-save {
-            font-size: 13px;
-            color: #16a34a;
-            font-weight: 700;
-            margin-bottom: 14px;
-        }
-        .bump-card-hook {
-            font-size: 14px;
-            font-style: italic;
-            color: #4b5563;
-            margin-bottom: 16px;
-            padding: 10px 14px;
-            background: #fef9f0;
-            border-left: 3px solid #f59e0b;
-            border-radius: 4px;
-            line-height: 1.5;
-        }
-        .bump-checklist {
-            list-style: none;
-            margin: 0 0 18px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-        .bump-checklist li {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #374151;
-        }
-        .bump-checklist li::before {
-            content: "✅";
-            font-size: 13px;
-            min-width: 18px;
-        }
-        .bump-btn {
-            display: block;
-            width: 100%;
-            background: linear-gradient(135deg, #b87c2a, #e0a045);
-            color: white;
-            font-size: 17px;
-            font-weight: 800;
-            padding: 16px 24px;
-            border-radius: 60px;
-            text-decoration: none;
-            text-align: center;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 6px 20px rgba(184, 124, 42, 0.3);
-        }
-        .bump-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 10px 28px rgba(184, 124, 42, 0.4);
-        }
-        @media (max-width: 640px) {
-            .bump-checklist { grid-template-columns: 1fr; }
-            .final-price-amount { font-size: 38px; }
-        }
-
-        .today-price {
-            background: #e11d2f;
-            color: white;
-            padding: 18px;
-            border-radius: 60px;
-            font-size: 28px;
-            font-weight: 800;
-            margin: 16px 0;
-        }
-        /* BRIGHT ORANGE GRADIENT BUTTONS */
-        .btn-buy {
-            display: inline-block;
-            background: linear-gradient(135deg, #f97316, #ea580c);
-            color: white;
-            font-size: 22px;
-            font-weight: 800;
-            padding: 16px 48px;
-            border-radius: 60px;
-            text-decoration: none;
-            margin: 12px 0;
-            transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
-            cursor: pointer;
-            border: none;
-            box-shadow: 0 8px 20px rgba(234, 88, 12, 0.3);
-        }
-        .btn-buy:hover {
-            background: linear-gradient(135deg, #f59e0b, #c2410c);
-            transform: scale(1.02);
-            box-shadow: 0 12px 24px rgba(234, 88, 12, 0.4);
-        }
-        .price-note {
-            font-size: 13px;
-            color: #6b7280;
-            margin-top: 12px;
-        }
-        /* SIGNS SECTION (Money Blocks Checklist) */
+        .bump-card h4 { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 900; color: #1f2937; margin-bottom: 4px; line-height: 1.25; }
+        .bump-card-subtitle, .bump-card-hook { color: #4b5563; font-weight: 700; margin-bottom: 12px; }
+        .bump-card-price { font-size: 20px; font-weight: 900; color: #1f2937; margin-bottom: 4px; }
+        .bump-card-price s { color: #9ca3af; font-weight: 600; font-size: 16px; }
+        .bump-checklist { list-style: none; margin: 0 0 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .bump-checklist li { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #374151; }
+        .bump-checklist li::before { content: "✅"; font-size: 13px; min-width: 18px; }
         .signs-section {
             background: #fefaf5;
             border-radius: 28px;
@@ -456,23 +323,9 @@
             text-align: left;
             border: 1px solid #f1e5cf;
         }
-        .signs-section h3 {
-            font-size: 1.8rem;
-            margin-bottom: 12px;
-            text-align: center;
-        }
-        .signs-section .sub {
-            text-align: center;
-            margin-bottom: 28px;
-            color: #6b4e2e;
-            font-weight: 500;
-        }
-        .signs-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 18px;
-            margin-top: 10px;
-        }
+        .signs-section h3 { font-size: 1.8rem; margin-bottom: 12px; text-align: center; }
+        .signs-section .sub { text-align: center; margin-bottom: 28px; color: #6b4e2e; font-weight: 600; }
+        .signs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 18px; margin-top: 10px; }
         .sign-item {
             display: flex;
             align-items: center;
@@ -481,123 +334,15 @@
             padding: 12px 18px;
             border-radius: 60px;
             border: 1px solid #f0e2cf;
-            font-weight: 600;
+            font-weight: 700;
             color: #2d3a4b;
-            font-size: 0.95rem;
+            font-size: .95rem;
         }
-        .sign-item::before {
-            content: "⚠️";
-            font-size: 18px;
-        }
-        /* social proof bar */
-        .proof-bar {
-            background: #1f2937;
-            padding: 24px 24px;
-            border-radius: 28px;
-            margin: 24px 0;
-        }
-        .proof-bar-inner {
-            display: flex;
-            justify-content: center;
-            gap: 48px;
-            flex-wrap: wrap;
-        }
-        .proof-stat { text-align: center; }
+        .sign-item::before { content: "⚠️"; font-size: 18px; }
+        .proof-bar { background: #1f2937; padding: 24px; border-radius: 28px; margin: 24px 0; }
+        .proof-bar-inner { display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; }
         .proof-stat-num { font-size: 28px; font-weight: 900; color: #fff; }
-        .proof-stat-lbl { font-size: 12px; color: rgba(255,255,255,0.6); font-weight: 600; }
-
-        /* Unified testimonial widget styling */
-        .hm-proof {
-            max-width: 880px;
-            margin: 0 auto 36px;
-            padding: 30px;
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
-            background: #ffffff;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        }
-        .hm-proof h2 {
-            font-size: 24px;
-            font-weight: 900;
-            color: #0f172a;
-            margin: 0 0 8px;
-            text-align: center;
-        }
-        .hm-proof p {
-            font-size: 16px;
-            font-weight: 600;
-            color: #374151;
-            margin: 0 0 22px;
-            text-align: center;
-            line-height: 1.5;
-        }
-        .testimonial-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-        .testimonial {
-            flex: 1 1 260px;
-            display: flex;
-            gap: 12px;
-            align-items: flex-start;
-            background: #f9fafb;
-            padding: 14px 16px;
-            border-radius: 10px;
-            border: 1px solid #e5e7eb;
-        }
-        .testimonial img {
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        .testimonial p {
-            margin: 0;
-            text-align: left;
-        }
-        .testimonial .name {
-            margin: 0;
-            font-weight: 700;
-            color: #111827;
-        }
-        .verified {
-            color: #059669;
-            font-weight: 700;
-            font-size: 12px;
-        }
-        .quote {
-            margin: 4px 0 0;
-            font-size: 14px;
-            color: #374151;
-            line-height: 1.5;
-        }
-        .micro-proof {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 18px;
-            justify-content: center;
-            text-align: center;
-            font-size: 14px;
-            color: #374151;
-            font-weight: 600;
-            margin-top: 16px;
-        }
-        .video-row {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-            margin: 30px 0 20px;
-        }
-        .video-row iframe {
-            max-width: 100%;
-            border-radius: 16px;
-            border: 1px solid #e5e7eb;
-        }
-        /* about section */
+        .proof-stat-lbl { font-size: 12px; color: rgba(255,255,255,.6); font-weight: 700; }
         .about-mini {
             background: #fefaf5;
             border-radius: 28px;
@@ -609,60 +354,7 @@
             flex-wrap: wrap;
             align-items: center;
         }
-        .about-mini img {
-            width: 140px;
-            border-radius: 20px;
-            border: 2px solid #f3e1bd;
-        }
-        /* NEW STYLES: testimonial images section - full width single column */
-        .testimonial-images-section {
-            margin: 56px 0 48px;
-        }
-        .testimonial-images-section h2 {
-            font-family: 'Sora', sans-serif;
-            font-weight: 800;
-            font-size: 1.9rem;
-            line-height: 1.2;
-            background: linear-gradient(135deg, #B45309, #E07A2C);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            margin-bottom: 12px;
-        }
-        .proof-sub {
-            font-size: 1.1rem;
-            color: #6b4e2e;
-            font-weight: 500;
-            margin-bottom: 32px;
-            text-align: center;
-        }
-        .image-stack {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 28px;
-        }
-        .image-stack-item {
-            width: 100%;
-            max-width: 780px;
-            text-align: center;
-            background: #ffffff;
-            border-radius: 28px;
-            transition: transform 0.2s ease;
-        }
-        .image-stack-item img {
-            width: 100%;
-            height: auto;
-            border-radius: 28px;
-            box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.15);
-            border: 1px solid #f2e0c5;
-            background: #fff;
-            transition: box-shadow 0.2s;
-        }
-        .image-stack-item img:hover {
-            box-shadow: 0 24px 36px -12px rgba(0, 0, 0, 0.2);
-        }
-        /* simple copyright footer */
+        .about-mini img { width: 140px; border-radius: 20px; border: 2px solid #f3e1bd; }
         .copyright {
             text-align: center;
             padding: 32px 20px 24px;
@@ -672,310 +364,137 @@
             margin-top: 40px;
         }
         @media (max-width: 640px) {
-            .money-block-headline { font-size: 1.5rem; }
-            .money-block-subhead { font-size: 1rem; }
+            .vsl-main { padding: 12px 16px 48px; }
+            .money-block-subhead { font-size: 28px; }
             .stack-items li { font-size: 15px; flex-direction: column; align-items: flex-start; gap: 6px; }
-            .total-value p { font-size: 20px; }
-            .today-price { font-size: 22px; }
-            .btn-buy { font-size: 18px; padding: 14px 32px; }
+            .value-row, .discount-row, .final-price-row { flex-direction: column; text-align: center; }
+            .btn-buy, .bump-btn { width: 100%; font-size: 17px; padding: 14px 20px; text-align: center; }
+            .bump-checklist { grid-template-columns: 1fr; }
             .testimonial { flex: 1 1 100%; }
             .signs-grid { grid-template-columns: 1fr; }
-            .testimonial-images-section h2 { font-size: 1.6rem; }
-            .image-stack-item { max-width: 100%; }
         }
     </style>
-<style id="hm-gradient-button-system">
-:root{--hm-paypal-yellow:#ffc439;--hm-paypal-orange:#f59e0b;--hm-paypal-deep:#d97706;--hm-paypal-ink:#15110a;}
-a[class*="btn"]:not(.secondary):not(.btn-secondary):not(.hm-footer-btn-secondary):not(.nav-btn-secondary):not(.hero-btn-secondary):not(.btn-outline),a[class*="cta"]:not(.secondary):not(.btn-secondary):not(.hm-footer-btn-secondary):not(.nav-btn-secondary):not(.hero-btn-secondary):not(.btn-outline),button[class*="btn"]:not(.secondary):not(.btn-secondary):not(.btn-outline),button[class*="cta"]:not(.secondary):not(.btn-secondary):not(.btn-outline),input[type="submit"],.hm-nav-cta,.hm-mobile-cta,.hm-buybox-btn,.hm-mf-btn:not(.secondary),.sales-btn:not(.secondary),.btn-library,.btn-bundle,.btn-single,.product-btn,.btn-primary,.nav-cta,.nav-btn-primary,.btn-anchor,.btn-sticky,.hm-footer-btn-primary,.hm-footer-wrap .hm-footer-btn-primary{background:linear-gradient(135deg,var(--hm-paypal-yellow) 0%,#ffb321 45%,var(--hm-paypal-orange) 100%)!important;color:var(--hm-paypal-ink)!important;border:1px solid rgba(217,119,6,.45)!important;box-shadow:0 12px 28px rgba(245,158,11,.24)!important;text-shadow:none!important;}
-a[class*="btn"]:not(.secondary):not(.btn-secondary):not(.hm-footer-btn-secondary):not(.nav-btn-secondary):not(.hero-btn-secondary):not(.btn-outline):hover,a[class*="cta"]:not(.secondary):not(.btn-secondary):not(.hm-footer-btn-secondary):not(.nav-btn-secondary):not(.hero-btn-secondary):not(.btn-outline):hover,button[class*="btn"]:not(.secondary):not(.btn-secondary):not(.btn-outline):hover,button[class*="cta"]:not(.secondary):not(.btn-secondary):not(.btn-outline):hover,input[type="submit"]:hover,.hm-nav-cta:hover,.hm-mobile-cta:hover,.hm-buybox-btn:hover,.hm-mf-btn:not(.secondary):hover,.sales-btn:not(.secondary):hover,.btn-library:hover,.btn-bundle:hover,.btn-single:hover,.product-btn:hover,.btn-primary:hover,.nav-cta:hover,.nav-btn-primary:hover,.btn-anchor:hover,.btn-sticky:hover,.hm-footer-btn-primary:hover,.hm-footer-wrap .hm-footer-btn-primary:hover{background:linear-gradient(135deg,#ffd76a 0%,var(--hm-paypal-yellow) 42%,var(--hm-paypal-deep) 100%)!important;color:var(--hm-paypal-ink)!important;transform:translateY(-1px);}
-.hm-mf-btn.secondary,.sales-btn.secondary,.hm-footer-btn-secondary,.btn-secondary,.nav-btn-secondary,.hero-btn-secondary,.btn-outline{background:#fff!important;color:#15110a!important;border:1px solid rgba(21,17,10,.22)!important;box-shadow:none!important;}
-</style>
-
 </head>
 <body>
 
-<!-- TOP BAR: updated messaging: remove money blocks -->
 <a href="https://pay.hotmart.com/R105336047Y?checkoutMode=10" class="top-bar-link" id="topBarLink">
-    🚀 Remove Your Money Blocks → Get The Bundle for $27 Only 🚀
+    ⚠️ Your Brain Is Blocking Your Money
 </a>
 
 <main class="vsl-main">
-    <!-- NEW HEADLINE + SUBHEAD (money block positioning) -->
-    <div class="money-block-headline">
-        Your Brain Is Blocking Your Money
-    </div>
     <div class="money-block-subhead">
-        This 7-minute audio helps quiet the stress pattern behind overthinking, hesitation, and self-sabotage.
+        Uninstall the broke thinking. <span>Install the rich version of you.</span>
     </div>
 
-    <!-- VTURB PLAYER (updated placeholder text) -->
     <div class="video-wrapper" id="videoWrapper">
-        <div id="videoPlaceholder" class="video-placeholder">🎧 Loading Money Block Audio ...</div>
+        <div id="videoPlaceholder" class="video-placeholder">🎧 Loading Money Flow Audio...</div>
     </div>
 
-    <!-- TESTIMONIAL TEASER: 1 row above offer stack -->
-    <div class="hm-proof" style="margin-bottom: 24px; padding: 20px;">
-        <p style="font-size:14px; font-weight:700; color:#b87c2a; text-transform:uppercase; letter-spacing:1px; margin-bottom:14px;">⭐ What People Are Saying</p>
-        <div class="testimonial-row">
-            <div class="testimonial">
-                <img src="https://payhip.com/cdn-cgi/image/format=auto/https://pe56d.s3.amazonaws.com/o_1iovstktvh4j1tvu1ld14p41o3kf.png" alt="Nova M.">
-                <div>
-                    <p class="name">Nova M. <span class="verified">✓ Verified</span></p>
-                    <p class="quote">"It's not a magic wand, but something inside me clicked. I asked for a raise the same week I started listening."</p>
+    <div id="delayedContent">
+        <div class="hm-proof">
+            <p>⭐ What People Are Saying</p>
+            <div class="testimonial-row">
+                <div class="testimonial">
+                    <img src="https://payhip.com/cdn-cgi/image/format=auto/https://pe56d.s3.amazonaws.com/o_1iovstktvh4j1tvu1ld14p41o3kf.png" alt="Nova M.">
+                    <div><p class="name">Nova M. <span class="verified">✓ Verified</span></p><p class="quote">"Something inside me clicked. I asked for a raise the same week I started listening."</p></div>
                 </div>
-            </div>
-            <div class="testimonial">
-                <img src="https://payhip.com/cdn-cgi/image/format=auto/https://pe56d.s3.amazonaws.com/o_1iseu176c1h7l1tsdnu91iat1uupc.png" alt="Jerome S.">
-                <div>
-                    <p class="name">Jerome S. <span class="verified">✓ Verified</span></p>
-                    <p class="quote">"I thought it was all woo-woo. Then I got two new clients within days. I'm a believer now."</p>
+                <div class="testimonial">
+                    <img src="https://payhip.com/cdn-cgi/image/format=auto/https://pe56d.s3.amazonaws.com/o_1iseu176c1h7l1tsdnu91iat1uupc.png" alt="Jerome S.">
+                    <div><p class="name">Jerome S. <span class="verified">✓ Verified</span></p><p class="quote">"I got two new clients within days. I'm a believer now."</p></div>
                 </div>
-            </div>
-            <div class="testimonial">
-                <img src="https://payhip.com/cdn-cgi/image/format=auto/https://pe56d.s3.amazonaws.com/o_1isetdo3r1m451mndd9s1ehv2801c.png" alt="Nina T.">
-                <div>
-                    <p class="name">Nina T. <span class="verified">✓ Verified</span></p>
-                    <p class="quote">"It wasn't just about money. It was how I felt. Confident. Deserving. Like the world finally saw me."</p>
+                <div class="testimonial">
+                    <img src="https://payhip.com/cdn-cgi/image/format=auto/https://pe56d.s3.amazonaws.com/o_1isetdo3r1m451mndd9s1ehv2801c.png" alt="Nina T.">
+                    <div><p class="name">Nina T. <span class="verified">✓ Verified</span></p><p class="quote">"It was how I felt. Confident. Deserving. Like the world finally saw me."</p></div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- OFFER STACK WITH PRODUCT IMAGE + new bundle naming -->
-    <div class="offer-stack">
-        <div class="product-image-inline">
-            <img src="https://hypnoticmeditations.b-cdn.net/images/moneyflowbundle.png" alt="Money Block Breakthrough Bundle">
-        </div>
-        <div class="stack-title">🔥 THE MONEY BLOCK BREAKTHROUGH BUNDLE 🔥</div>
-        <ul class="stack-items">
-            <li>
-                <div class="item-left"><span class="stack-check">✓</span><span>🎧 7-Minute Money Block Audio (core)</span></div>
-                <span class="item-val">$197</span>
-            </li>
-            <li>
-                <div class="item-left"><span class="stack-check">✓</span><span>📘 Money Block Detection Blueprint</span></div>
-                <span class="item-val">$97</span>
-            </li>
-            <li>
-                <div class="item-left"><span class="stack-check">✓</span><span>⚡ Stop-Freezing Action Guide (send, post, price)</span></div>
-                <span class="item-val">$67</span>
-            </li>
-            <li>
-                <div class="item-left"><span class="stack-check">✓</span><span>🎧 Binaural Beats + Subconscious Frequency Bundle</span></div>
-                <span class="item-val">$89</span>
-            </li>
-            <li>
-                <div class="item-left"><span class="stack-check">✓</span><span>📈 Lifetime Updates &amp; Private Telegram Access</span></div>
-                <span class="item-val">$49</span>
-            </li>
-        </ul>
+        <div class="offer-stack">
+            <div class="product-image-inline">
+                <img src="https://hypnoticmeditations.b-cdn.net/images/moneyflowbundle.png" alt="Money Flow Bundle">
+            </div>
+            <div class="stack-title">🔥 The Money Flow Breakthrough Bundle 🔥</div>
+            <ul class="stack-items">
+                <li><div class="item-left"><span class="stack-check">✓</span><span>🎧 7-Minute Money Flow Audio</span></div><span class="item-val">$197</span></li>
+                <li><div class="item-left"><span class="stack-check">✓</span><span>📘 Money Block Detection Blueprint</span></div><span class="item-val">$97</span></li>
+                <li><div class="item-left"><span class="stack-check">✓</span><span>⚡ Stop-Freezing Action Guide</span></div><span class="item-val">$67</span></li>
+                <li><div class="item-left"><span class="stack-check">✓</span><span>🎧 Binaural Beats + Subconscious Frequency Bundle</span></div><span class="item-val">$89</span></li>
+                <li><div class="item-left"><span class="stack-check">✓</span><span>📈 Lifetime Updates & Private Telegram Access</span></div><span class="item-val">$49</span></li>
+            </ul>
 
-        <!-- REDESIGNED DISCOUNT PRICING BLOCK -->
-        <div class="pricing-block">
-            <div class="value-row">
-                <span class="value-row-label">Total Retail Value</span>
-                <span class="value-row-amount">$499.00</span>
+            <div class="pricing-block">
+                <div class="value-row"><span class="value-row-label">Total Retail Value</span><span class="value-row-amount">$499.00</span></div>
+                <div class="discount-row"><span class="discount-code-badge">LIMITEDACCESS</span><span class="discount-savings">$472.00 off</span></div>
+                <div class="final-price-row"><div class="final-price-label">Your Price Today<span>Limited-time discount applied</span></div><div class="final-price-amount"><sup>$</sup>27</div></div>
             </div>
-            <div class="discount-row">
-                <span class="discount-code-badge">LIMITEDACCESS</span>
-                <span class="discount-savings">− $472.00 off</span>
-            </div>
-            <div class="final-price-row">
-                <div class="final-price-label">
-                    Your Price Today
-                    <span>⏰ Limited-time discount applied</span>
-                </div>
-                <div class="final-price-amount"><sup>$</sup>27</div>
-            </div>
+
+            <a href="https://pay.hotmart.com/R105336047Y?checkoutMode=10" class="btn-buy" id="mainBuyBtn">🧠 Clear Money Blocks Now → $27</a>
+            <p class="price-note">✅ One-time payment · Lifetime access · 7-day refund guarantee</p>
         </div>
 
-        <a href="https://pay.hotmart.com/R105336047Y?checkoutMode=10" class="btn-buy" id="mainBuyBtn">🧠 Clear Money Blocks → $27</a>
-        <p class="price-note">✅ One-time payment · Lifetime access · 7-day refund guarantee</p>
-        <div style="display: flex; justify-content: center; gap: 20px; font-size: 13px; margin-top: 12px;">
-            <span>🔒 Secure checkout</span>
-            <span>⚡ Instant download</span>
-            <span>💳 No subscription</span>
+        <div class="bump-card">
+            <div class="bump-card-badge">Add-On Available</div>
+            <h4>Money Mind Stack<br>Full Reset System</h4>
+            <div class="bump-card-subtitle">The complete overnight reprogramming bundle</div>
+            <div class="bump-card-price">$67 &nbsp;<s>$135+</s></div>
+            <div class="bump-card-hook">Stop the cycle of feeling better, then slipping right back.</div>
+            <ul class="bump-checklist">
+                <li>Money Flow audio included</li>
+                <li>Deep sleep money reset</li>
+                <li>Wealth confidence audio</li>
+                <li>Self-sabotage interruption</li>
+                <li>Worthiness + abundance reset</li>
+                <li>Overnight subconscious scripting</li>
+            </ul>
+            <a href="https://buy.hypnoticmeditations.ai/l/bundle-money?wanted=true&src=v3_d770d1a2-712d-40af-b881-1f1348134431_69f51fa252f93c09b7d0d149_875_t-11" class="bump-btn">🎧 Get The Full Reset → $67</a>
         </div>
-    </div>
 
-    <!-- UPSELL BUMP CARD -->
-    <div class="bump-card">
-        <div class="bump-card-badge">Add-On Available</div>
-        <div class="bump-card-star">⭐ Most People Choose This</div>
-        <h4>Money Mind Stack<br>Full Reset System</h4>
-        <div class="bump-card-subtitle">The complete overnight reprogramming bundle</div>
-        <div class="bump-card-price">$67 &nbsp;<s>$135+</s></div>
-        <div class="bump-card-save">Save $68 today when you add this now</div>
-        <div class="bump-card-hook">"Stop the cycle of feeling better… then slipping right back."</div>
-        <ul class="bump-checklist">
-            <li>Money Flow audio included</li>
-            <li>Deep sleep money reset</li>
-            <li>Wealth confidence audio</li>
-            <li>Self-sabotage interruption</li>
-            <li>Worthiness + abundance reset</li>
-            <li>Overnight subconscious scripting</li>
-        </ul>
-        <a href="https://buy.hypnoticmeditations.ai/l/bundle-money?wanted=true&src=v3_d770d1a2-712d-40af-b881-1f1348134431_69f51fa252f93c09b7d0d149_875_t-11" class="bump-btn">🎧 Get The Full Reset → $67</a>
-    </div>
-
-    <!-- NEW SECTION: SIGNS YOU MAY HAVE MONEY BLOCKS (self-identification power) -->
-    <div class="signs-section">
-        <h3>SIGNS YOU MAY HAVE MONEY BLOCKS</h3>
-        <div class="sub">If any of these feel familiar, you're not broken — just stuck in a stress pattern.</div>
-        <div class="signs-grid">
-            <div class="sign-item">You avoid checking your bank account</div>
-            <div class="sign-item">You delay sending invoices or proposals</div>
-            <div class="sign-item">You panic after making money</div>
-            <div class="sign-item">You overthink simple money decisions</div>
-            <div class="sign-item">You undercharge even when people say yes</div>
-            <div class="sign-item">You start strong with a project… then disappear</div>
-            <div class="sign-item">You feel guilt or shame when raising your prices</div>
-            <div class="sign-item">You freeze when it's time to ask for what you're worth</div>
-        </div>
-        <p style="text-align:center; margin-top:28px; font-weight:500;">Most people don’t have a motivation problem — they have a money stress problem.</p>
-    </div>
-
-    <!-- TESTIMONIALS: Row 2 — after signs section -->
-    <div class="hm-proof" style="padding:24px;">
-        <p style="font-size:13px; font-weight:700; color:#b87c2a; text-transform:uppercase; letter-spacing:1px; margin-bottom:14px;">💬 More Real Results</p>
-        <div class="testimonial-row">
-            <div class="testimonial">
-                <img src="https://payhip.com/cdn-cgi/image/format=auto/https://pe56d.s3.amazonaws.com/o_1iovb9ido22urlupia176d1165l.png" alt="Sean A.">
-                <div>
-                    <p class="name">Sean A. <span class="verified">✓ Verified</span></p>
-                    <p class="quote">"These short hypnotic meditations are better than anything else I've tried out there!"</p>
-                </div>
-            </div>
-            <div class="testimonial">
-                <img src="https://payhip.com/cdn-cgi/image/format=auto/https://pe56d.s3.amazonaws.com/o_1j36h3qov1aui4sn1n5f1e2fesk17.png" alt="Priya J.">
-                <div>
-                    <p class="name">Priya J. <span class="verified">✓ Verified</span></p>
-                    <p class="quote">"You gotta try these meditations for yourself. Just one listen is all it takes. Manifestation made easy."</p>
-                </div>
-            </div>
-            <div class="testimonial">
-                <img src="https://payhip.com/cdn-cgi/image/format=auto/https://pe56d.s3.amazonaws.com/o_1j36h0e6g11e11unftad7j01tqmu.png" alt="Melinda A.">
-                <div>
-                    <p class="name">Melinda A. <span class="verified">✓ Verified</span></p>
-                    <p class="quote">"In just a few minutes a day I can now relax my mind and feel better, on demand. Thanks guys."</p>
-                </div>
+        <div class="signs-section">
+            <h3>Signs Your Brain Is Blocking Your Money</h3>
+            <div class="sub">If any of these feel familiar, you are not broken. You are running an old money pattern.</div>
+            <div class="signs-grid">
+                <div class="sign-item">You avoid checking your bank account</div>
+                <div class="sign-item">You delay sending invoices or proposals</div>
+                <div class="sign-item">You panic after making money</div>
+                <div class="sign-item">You overthink simple money decisions</div>
+                <div class="sign-item">You undercharge even when people say yes</div>
+                <div class="sign-item">You freeze when it's time to ask for what you're worth</div>
             </div>
         </div>
-    </div>
 
-    <!-- SOCIAL PROOF BAR (unchanged) -->
-    <div class="proof-bar">
-        <div class="proof-bar-inner">
-            <div class="proof-stat"><div class="proof-stat-num">125,000+</div><div class="proof-stat-lbl">Buyers</div></div>
-            <div class="proof-stat"><div class="proof-stat-num">62+</div><div class="proof-stat-lbl">Countries</div></div>
-            <div class="proof-stat"><div class="proof-stat-num">4.9 / 5</div><div class="proof-stat-lbl">Avg Rating</div></div>
-            <div class="proof-stat"><div class="proof-stat-num">3,847</div><div class="proof-stat-lbl">Verified Reviews</div></div>
-        </div>
-    </div>
-
-    <!-- TESTIMONIALS: Row 3 — after social proof bar -->
-    <div class="hm-proof" style="padding:24px;">
-        <p style="font-size:13px; font-weight:700; color:#b87c2a; text-transform:uppercase; letter-spacing:1px; margin-bottom:14px;">🔥 From Our Community</p>
-        <div class="testimonial-row">
-            <div class="testimonial">
-                <img src="https://i.pravatar.cc/100?u=lydia" alt="Lucas R.">
-                <div>
-                    <p class="name">Lucas R. <span class="verified">✓ Verified</span></p>
-                    <p class="quote">"One session melted the knot in my chest. For the first time, bills didn't trigger panic."</p>
-                </div>
-            </div>
-            <div class="testimonial">
-                <img src="https://i.pravatar.cc/100?u=brian" alt="Brian K.">
-                <div>
-                    <p class="name">Brian K. <span class="verified">✓ Verified</span></p>
-                    <p class="quote">"Day one, my energy shifted. My husband noticed the calm instantly."</p>
-                </div>
-            </div>
-            <div class="testimonial">
-                <img src="https://i.pravatar.cc/100?u=sofia" alt="Sofia M.">
-                <div>
-                    <p class="name">Sofia M. <span class="verified">✓ Verified</span></p>
-                    <p class="quote">"It felt like the handbrake released. Closed two new clients in 72 hours."</p>
-                </div>
+        <div class="proof-bar">
+            <div class="proof-bar-inner">
+                <div class="proof-stat"><div class="proof-stat-num">125,000+</div><div class="proof-stat-lbl">Buyers</div></div>
+                <div class="proof-stat"><div class="proof-stat-num">62+</div><div class="proof-stat-lbl">Countries</div></div>
+                <div class="proof-stat"><div class="proof-stat-num">4.9 / 5</div><div class="proof-stat-lbl">Avg Rating</div></div>
+                <div class="proof-stat"><div class="proof-stat-num">3,847</div><div class="proof-stat-lbl">Verified Reviews</div></div>
             </div>
         </div>
-        <!-- Micro-proof strip -->
-        <div class="micro-proof">
-            <div>🌍 Trusted in 62+ countries.</div>
-            <div>⭐️ 125,000+ orders.</div>
-            <div>⏱️ Results in minutes a day.</div>
-            <div>🧠 Relief from money resistance</div>
+
+        <div class="about-mini">
+            <img src="https://hypnoticmeditations.b-cdn.net/images/proof/sean%20profile.png" alt="Sean Ali">
+            <div>
+                <p style="font-weight:900; color:#b87c2a;">CREATED BY SEAN ALI</p>
+                <p style="font-weight:800; font-size:20px;">From empty fridge to 125,000+ students</p>
+                <p style="color:#4b5563; margin-top:6px;">Sean built this audio because he needed it first. No fluff. Just a short reset designed to help your brain stop reacting to money tasks like danger.</p>
+            </div>
         </div>
-    </div>
 
-    <!-- YouTube Video Testimonials -->
-    <div class="video-row">
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/xys9r2nGh0g" title="Testimonial 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/SNHZjcMys9A" title="Testimonial 2" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-    </div>
-
-    <!-- ============================================== -->
-    <!-- NEW: TESTIMONIAL IMAGES SECTION - FULL WIDTH, SINGLE COLUMN, CENTERED -->
-    <!-- ============================================== -->
-    <div class="testimonial-images-section">
-        <h2>⚡ Real Results, Real Screenshots</h2>
-        <div class="proof-sub">Unfiltered proof from people who removed their money blocks</div>
-        <div class="image-stack">
-            <!-- All 10 full-width proof images from the list (single column centered) -->
-            <div class="image-stack-item"><img src="https://hypnoticmeditations.b-cdn.net/images/proof/UserProof/b.png" alt="Money block breakthrough review screenshot 1" loading="lazy"></div>
-            <div class="image-stack-item"><img src="https://hypnoticmeditations.b-cdn.net/images/proof/UserProof/proof-new1.png" alt="Money block breakthrough review screenshot 2" loading="lazy"></div>
-            <div class="image-stack-item"><img src="https://hypnoticmeditations.b-cdn.net/images/proof/UserProof/proof-new2.png" alt="Money block breakthrough review screenshot 3" loading="lazy"></div>
-            <div class="image-stack-item"><img src="https://hypnoticmeditations.b-cdn.net/images/proof/UserProof/user3.png" alt="Money block breakthrough review screenshot 4" loading="lazy"></div>
-            <div class="image-stack-item"><img src="https://hypnoticmeditations.b-cdn.net/images/proof/UserProof/users1.png" alt="Money block breakthrough review screenshot 5" loading="lazy"></div>
-            <div class="image-stack-item"><img src="https://hypnoticmeditations.b-cdn.net/images/proof/UserProof/users2.png" alt="Money block breakthrough review screenshot 6" loading="lazy"></div>
-            <div class="image-stack-item"><img src="https://hypnoticmeditations.b-cdn.net/images/proof/UserProof/users5.png" alt="Money block breakthrough review screenshot 7" loading="lazy"></div>
-            <div class="image-stack-item"><img src="https://hypnoticmeditations.b-cdn.net/images/proof/UserProof/users7.png" alt="Money block breakthrough review screenshot 9" loading="lazy"></div>
-            <div class="image-stack-item"><img src="https://hypnoticmeditations.b-cdn.net/images/proof/UserProof/users8.png" alt="Money block breakthrough review screenshot 10" loading="lazy"></div>
+        <div style="background:#111827; color:white; padding:36px 24px; border-radius:32px; margin:32px 0;">
+            <h3 style="font-size:28px;">Your old money pattern does not get to drive anymore.</h3>
+            <p style="margin:14px 0;">Press play. 7 minutes. Then send it, post it, price it, and move from the new rich version of you.</p>
+            <a href="https://pay.hotmart.com/R105336047Y?checkoutMode=10" class="btn-buy" id="finalBuyBtn">🧠 Clear Money Blocks Now → $27</a>
+            <div style="margin-top:20px; font-size:13px;">7-day money-back guarantee · Instant access</div>
         </div>
-        <p style="margin-top: 28px; font-size: 0.9rem; color: #6B7280; text-align: center; border-top: 1px solid #ffe6c7; padding-top: 24px;">⭐ Verified buyers from 62+ countries · Real stories, real breakthroughs</p>
-    </div>
-    <!-- END OF TESTIMONIAL IMAGES SECTION -->
 
-    <!-- MINI ABOUT SEAN + TRUST (updated narrative for money blocks) -->
-    <div class="about-mini">
-        <img src="https://hypnoticmeditations.b-cdn.net/images/proof/sean%20profile.png" alt="Sean Ali">
-        <div>
-            <p style="font-weight:800; color:#b87c2a;">CREATED BY SEAN ALI</p>
-            <p style="font-weight:700; font-size:20px;">From empty fridge to 125,000+ students</p>
-            <p style="color:#4b5563; margin-top:6px;">He built the 7-minute Money Block Audio because he needed it first. No fluff — just the brain-state reset that stops the hesitation at the moment of the invoice, the post, or the pitch. This audio is designed to help your brain stop reacting to money tasks like danger.</p>
+        <div class="copyright">
+            © Money Flow • 7-Minute Money Audio • Results vary. For mindset & educational purposes.
         </div>
-    </div>
-
-    <!-- FINAL CTA with bright orange gradient + updated emotions -->
-    <div style="background:#111827; color:white; padding:36px 24px; border-radius:32px; margin:32px 0;">
-        <h3 style="font-size:28px;">Your money hesitation ends tonight.</h3>
-        <p style="margin:14px 0;">Press play. 7 minutes. Then send it, post it, price it — without overthinking or freezing.</p>
-        <a href="https://pay.hotmart.com/R105336047Y?checkoutMode=10" class="btn-buy" id="finalBuyBtn">🧠 Clear Money Blocks Now → $27</a>
-        <div style="margin-top:20px; font-size:13px;">⏱️ 7-day money-back guarantee · Instant access</div>
-    </div>
-
-    <!-- SIMPLE COPYRIGHT FOOTER -->
-    <div class="copyright">
-        © Money Block Breakthrough • 7-Minute Money Block Audio • Results vary. For mindset & educational purposes.
     </div>
 </main>
 
 <script>
     (function(){
-        // Personalization from URL param 'name'
-        const urlName = (() => {
-            try {
-                const p = new URLSearchParams(window.location.search);
-                const raw = p.get('name') || '';
-                return raw.trim().split(' ')[0].replace(/[^a-zA-Z'-]/g, '').substring(0, 50);
-            } catch(e) { return ''; }
-        })();
-        if (urlName) {
-            const topBar = document.getElementById('topBarLink');
-            if (topBar) topBar.innerHTML = `👋 Hey ${urlName} — Remove Your Money Blocks → $27 Only 🚀`;
-        }
-
-        // Load vturb player (centered, replace placeholder)
         function loadVturbPlayer() {
             const placeholder = document.getElementById('videoPlaceholder');
             if (!placeholder) return;
@@ -989,24 +508,30 @@ a[class*="btn"]:not(.secondary):not(.btn-secondary):not(.hm-footer-btn-secondary
             if (parent) parent.replaceChild(vturbDiv, placeholder);
             const script = document.createElement('script');
             script.type = 'text/javascript';
-            script.src = "https://scripts.converteai.net/06805447-0fe0-4045-89f5-ea45443a5071/players/69f51fa252f93c09b7d0d149/v4/player.js";
+            script.src = 'https://scripts.converteai.net/06805447-0fe0-4045-89f5-ea45443a5071/players/69f51fa252f93c09b7d0d149/v4/player.js';
             script.async = true;
             document.head.appendChild(script);
         }
+        function showDelayedContent() {
+            const delayed = document.getElementById('delayedContent');
+            if (!delayed) return;
+            delayed.style.display = 'block';
+            requestAnimationFrame(function(){ delayed.classList.add('visible'); });
+        }
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', loadVturbPlayer);
         else loadVturbPlayer();
+        setTimeout(showDelayedContent, 180000);
 
-        // Track add to cart on both buy buttons (value $27, updated product name)
         const btns = ['mainBuyBtn', 'finalBuyBtn'];
         btns.forEach(id => {
             const btn = document.getElementById(id);
             if (btn) btn.addEventListener('click', () => {
-                if (typeof fbq === 'function') fbq('track', 'AddToCart', { value: 27, currency: 'USD', content_name: 'Money Block Breakthrough Bundle $27' });
+                if (typeof fbq === 'function') fbq('track', 'AddToCart', { value: 27, currency: 'USD', content_name: 'Money Flow Breakthrough Bundle $27' });
                 if (typeof hot !== 'undefined') hot('event', 'add_to_cart');
             });
         });
     })();
 </script>
-<!-- This site is converting visitors into subscribers and customers with https://respond.io --><script id="respondio__growth_tool" src="https://cdn.respond.io/widget/widget.js?wId=7f9488bf-e487-4928-9b01-6edb55b2ad22"></script><!-- https://respond.io -->
+<script id="respondio__growth_tool" src="https://cdn.respond.io/widget/widget.js?wId=7f9488bf-e487-4928-9b01-6edb55b2ad22"></script>
 </body>
 </html>
