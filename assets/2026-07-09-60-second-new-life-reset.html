@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>60-Second New Life Reset</title>
+  <meta name="description" content="A short personal reflection that helps you notice the older identity pattern around the life you want, then gives you a clear script to practice today.">
+  <style>
+    :root {
+      --ink: #142033;
+      --muted: #5f6f86;
+      --paper: #fffdf8;
+      --soft: #f2f7ff;
+      --card: #ffffff;
+      --line: #e2e8f0;
+      --blue: #2563eb;
+      --green: #16a34a;
+      --purple: #7c3aed;
+      --orange: #f97316;
+      --rose: #e11d48;
+      --shadow: 0 24px 70px rgba(20, 32, 51, .13);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(140deg, rgba(37, 99, 235, .12), transparent 38%),
+        linear-gradient(24deg, rgba(249, 115, 22, .13), transparent 36%),
+        linear-gradient(180deg, #fffdf8 0%, #eef6ff 100%);
+      overflow-x: hidden;
+    }
+
+    .page {
+      width: min(100%, 940px);
+      margin: 0 auto;
+      padding: 14px 12px 34px;
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      align-items: center;
+      position: relative;
+    }
+
+    .shell {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, .82);
+      background: rgba(255, 255, 255, .84);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 15px 17px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, .72);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #344054;
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      font-weight: 950;
+    }
+
+    .progress-wrap {
+      display: grid;
+      gap: 7px;
+      min-width: 150px;
+    }
+
+    .progress-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+      text-align: right;
+    }
+
+    .progress-track {
+      height: 10px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e7edf7;
+    }
+
+    .progress {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--green), var(--blue), var(--purple));
+      transition: width .28s ease;
+    }
+
+    .content {
+      padding: clamp(24px, 6vw, 58px);
+      position: relative;
+    }
+
+    .screen { display: none; animation: rise .26s ease both; }
+    .screen.active { display: block; }
+
+    @keyframes rise {
+      from { transform: translateY(10px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 12px;
+      border: 1px solid #cfe0ff;
+      border-radius: 999px;
+      color: #174ea6;
+      background: #f0f6ff;
+      font-size: 13px;
+      font-weight: 900;
+      margin-bottom: 18px;
+    }
+
+    .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--green);
+      box-shadow: 0 0 0 6px rgba(22, 163, 74, .13);
+    }
+
+    h1, h2 {
+      margin: 0;
+      letter-spacing: 0;
+      line-height: 1.02;
+    }
+
+    h1 {
+      max-width: 760px;
+      font-size: clamp(42px, 10vw, 76px);
+    }
+
+    h2 {
+      max-width: 740px;
+      font-size: clamp(30px, 7vw, 50px);
+    }
+
+    p {
+      max-width: 690px;
+      margin: 17px 0 0;
+      color: #39485d;
+      font-size: clamp(17px, 3.5vw, 20px);
+      line-height: 1.55;
+    }
+
+    .sub {
+      color: #2f3d52;
+      font-size: clamp(19px, 4vw, 24px);
+    }
+
+    .chips, .trait-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .chip, .trait {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: #344054;
+      background: rgba(255,255,255,.86);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .form {
+      display: grid;
+      gap: 12px;
+      max-width: 520px;
+      margin-top: 28px;
+    }
+
+    label {
+      color: #344054;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid #cdd7e3;
+      border-radius: 18px;
+      padding: 18px;
+      color: var(--ink);
+      background: white;
+      font: inherit;
+      font-size: 18px;
+      outline: none;
+      box-shadow: 0 1px 0 rgba(15, 23, 42, .03);
+    }
+
+    input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 5px rgba(37, 99, 235, .12);
+    }
+
+    .error {
+      min-height: 21px;
+      color: #b42318;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    button, .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border: 0;
+      border-radius: 999px;
+      padding: 17px 24px;
+      color: white;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      box-shadow: 0 16px 32px rgba(37, 99, 235, .22);
+      cursor: pointer;
+      font: inherit;
+      font-size: 17px;
+      font-weight: 950;
+      text-decoration: none;
+      transition: transform .16s ease, box-shadow .16s ease;
+    }
+
+    button:hover, .button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 19px 38px rgba(37, 99, 235, .27);
+    }
+
+    button:disabled {
+      cursor: default;
+      opacity: .76;
+      transform: none;
+    }
+
+    .button.secondary {
+      color: #1d2939;
+      background: white;
+      border: 1px solid #cfd8e6;
+      box-shadow: none;
+    }
+
+    .question-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .choices {
+      display: grid;
+      gap: 14px;
+      margin-top: 28px;
+    }
+
+    .choice {
+      width: 100%;
+      display: grid;
+      gap: 8px;
+      padding: 18px;
+      border: 1px solid #d7e0ec;
+      border-radius: 22px;
+      color: var(--ink);
+      background: white;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, .07);
+      text-align: left;
+    }
+
+    .choice strong {
+      color: var(--ink);
+      font-size: 19px;
+    }
+
+    .choice span {
+      color: #566579;
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .feedback {
+      min-height: 52px;
+      margin-top: 18px;
+      padding: 14px 16px;
+      border: 1px solid #bbf7d0;
+      border-radius: 18px;
+      color: #166534;
+      background: #f0fdf4;
+      font-weight: 850;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: all .18s ease;
+    }
+
+    .feedback.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .moment-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+      min-height: 38px;
+    }
+
+    .moment {
+      padding: 8px 11px;
+      border-radius: 999px;
+      color: #31567c;
+      background: #edf6ff;
+      border: 1px solid #cfe7ff;
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    .scan {
+      display: grid;
+      gap: 14px;
+      margin-top: 28px;
+    }
+
+    .scan-row {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: white;
+    }
+
+    .scan-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+      color: #344054;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .scan-bar {
+      height: 12px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #edf2f8;
+    }
+
+    .scan-fill {
+      width: 8%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--orange), var(--green), var(--blue));
+      transition: width .72s ease;
+    }
+
+    .panel {
+      margin-top: 26px;
+      padding: clamp(20px, 5vw, 34px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: white;
+      box-shadow: 0 16px 44px rgba(15, 23, 42, .08);
+    }
+
+    .result-name {
+      margin: 0;
+      color: #101828;
+      font-size: clamp(28px, 7vw, 45px);
+      line-height: 1.05;
+      font-weight: 900;
+    }
+
+    .script-text {
+      margin-top: 20px;
+      padding: 22px;
+      border: 1px solid #fed7aa;
+      border-radius: 22px;
+      color: #101828;
+      background: #fff8ed;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(22px, 5vw, 30px);
+      line-height: 1.36;
+    }
+
+    .steps {
+      display: grid;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 12px;
+      align-items: start;
+      padding: 15px;
+      border: 1px solid #e5eaf2;
+      border-radius: 18px;
+      background: #f8fbff;
+    }
+
+    .num {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      color: #174ea6;
+      background: #e4efff;
+      font-weight: 950;
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #1d2939;
+    }
+
+    .step span {
+      color: #526377;
+      line-height: 1.45;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .float {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255,255,255,.86);
+      border-radius: 18px;
+      color: var(--blue);
+      background: rgba(255,255,255,.74);
+      box-shadow: 0 18px 44px rgba(20, 32, 51, .12);
+      font-weight: 950;
+      pointer-events: none;
+      animation: drift 7s ease-in-out infinite;
+    }
+
+    .float.one { top: 16%; right: -8px; }
+    .float.two { bottom: 14%; left: -8px; color: var(--green); animation-delay: -2s; }
+    .float.three { top: 47%; right: 18px; color: var(--orange); animation-delay: -4s; }
+
+    @keyframes drift {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    @media (max-width: 640px) {
+      .page { padding: 10px; }
+      .topbar { padding: 14px; }
+      .brand span { display: none; }
+      .progress-wrap { min-width: 118px; }
+      .content { padding: 24px 18px 30px; }
+      .question-meta { align-items: flex-start; flex-direction: column; }
+      .float { width: 42px; height: 42px; border-radius: 15px; opacity: .78; }
+      .float.one { right: 3px; top: 8%; }
+      .float.two { left: 3px; bottom: 6%; }
+      .float.three { display: none; }
+      button, .button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="float one">01</div>
+      <div class="float two">02</div>
+      <div class="float three">03</div>
+
+      <div class="shell">
+        <div class="topbar">
+          <div class="brand"><div class="mark">SA</div><span>Identity Reset</span></div>
+          <div class="progress-wrap" aria-label="progress">
+            <div class="progress-label" id="progressLabel">0%</div>
+            <div class="progress-track"><div class="progress" id="progress"></div></div>
+          </div>
+        </div>
+
+        <div class="content">
+          <section class="screen active" id="start-screen">
+            <div class="eyebrow"><span class="pulse"></span> Free 3-minute personal insight</div>
+            <h1>60-Second New Life Reset</h1>
+            <p class="sub">See the older identity pattern that still makes the life you want feel unfamiliar. Then use a clear script that helps the new version of you feel more natural today.</p>
+            <div class="chips">
+              <span class="chip">First-name reflection</span>
+              <span class="chip">Seven two-choice prompts</span>
+              <span class="chip">Personal script at the end</span>
+            </div>
+            <div class="form">
+              <label for="firstName">First name</label>
+              <input id="firstName" type="text" autocomplete="given-name" placeholder="Enter your first name">
+              <div class="error" id="nameError"></div>
+              <button id="startBtn">Begin The Reset</button>
+            </div>
+          </section>
+
+          <section class="screen" id="quiz-screen">
+            <div class="question-meta">
+              <span id="questionCount">Question 1 of 7</span>
+              <span id="reflectionLabel">Building your reflection</span>
+            </div>
+            <h2 id="questionTitle"></h2>
+            <p id="questionPrompt"></p>
+            <div class="choices" id="choices"></div>
+            <div class="feedback" id="feedback"></div>
+            <div class="moment-strip" id="moments"></div>
+          </section>
+
+          <section class="screen" id="scan-screen">
+            <div class="eyebrow"><span class="pulse"></span> Scan-style reflection</div>
+            <h2 id="scanTitle"></h2>
+            <p id="scanCopy"></p>
+            <div class="scan" id="scanRows"></div>
+          </section>
+
+          <section class="screen" id="prediction-screen">
+            <div class="eyebrow"><span class="pulse"></span> Your next signal</div>
+            <h2 id="predictionTitle"></h2>
+            <p id="predictionCopy"></p>
+            <div class="panel">
+              <div class="trait-grid" id="predictionChips"></div>
+            </div>
+            <div class="actions">
+              <button id="showResultsBtn">Show My Results</button>
+            </div>
+          </section>
+
+          <section class="screen" id="result-screen">
+            <div class="eyebrow"><span class="pulse"></span> Good job</div>
+            <h2 id="resultHeading"></h2>
+            <div class="panel">
+              <p class="result-name" id="resultName"></p>
+              <p id="resultDescription"></p>
+              <div class="trait-grid" id="traitChips"></div>
+            </div>
+            <div class="actions">
+              <button id="scriptBtn">Give Me The Script</button>
+            </div>
+          </section>
+
+          <section class="screen" id="script-screen">
+            <div class="eyebrow"><span class="pulse"></span> Your imprint script</div>
+            <h2 id="scriptTitle"></h2>
+            <p id="scriptIntro"></p>
+            <div class="panel">
+              <div class="script-text" id="scriptBody"></div>
+              <p id="scriptNote"></p>
+            </div>
+            <div class="actions">
+              <button id="nextStepBtn">Show Me The Next Step</button>
+            </div>
+          </section>
+
+          <section class="screen" id="offer-screen">
+            <div class="eyebrow"><span class="pulse"></span> Three-step ending</div>
+            <h2 id="offerTitle"></h2>
+            <p id="offerLead"></p>
+            <div class="panel">
+              <div class="steps">
+                <div class="step">
+                  <div class="num">1</div>
+                  <div><strong>Repeat your script today.</strong><span id="stepOne"></span></div>
+                </div>
+                <div class="step">
+                  <div class="num">2</div>
+                  <div><strong>Notice the old response without fighting it.</strong><span id="stepTwo"></span></div>
+                </div>
+                <div class="step">
+                  <div class="num">3</div>
+                  <div><strong>Use the tool that matches your result.</strong><span id="stepThree"></span></div>
+                </div>
+              </div>
+              <div class="actions">
+                <a class="button" id="offerCta" href="#" target="_blank" rel="noopener"></a>
+                <button class="button secondary" id="restartBtn">Begin Again</button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const pick = (items) => items[Math.floor(Math.random() * items.length)];
+    const shuffle = (items) => items.slice().sort(() => Math.random() - 0.5);
+    const titleCase = (value) => value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+
+    let firstName = "";
+    let current = 0;
+    let scores = { identity: 0, money: 0, calm: 0, action: 0 };
+    let selectedResult = null;
+    let moments = [];
+
+    const questions = [
+      {
+        title: "When you picture a new life, what feels most true first?",
+        prompt: "Choose what feels familiar. Not what sounds impressive.",
+        a: ["I can see it, but it still feels slightly out of reach", "That usually means the future is clear, but the identity has not caught up yet.", "identity", "future image"],
+        b: ["I want it, but my body still prepares for problems", "That is an old safety response asking to be retrained with steadiness.", "calm", "old bracing"]
+      },
+      {
+        title: "What tends to interrupt your next step?",
+        prompt: "The interruption is often the clue.",
+        a: ["I start thinking through every possible mistake", "That is the older self trying to protect you from being wrong.", "action", "overthinking"],
+        b: ["I wait until I feel completely ready", "Readiness can become a hiding place when the old identity wants control.", "identity", "waiting"]
+      },
+      {
+        title: "Which desire feels strongest today?",
+        prompt: "Your answer helps match the paid next step later.",
+        a: ["More money, space, and breathing room", "Your next identity may need to feel safer receiving more.", "money", "receiving"],
+        b: ["More peace, sleep, and emotional quiet", "Your next identity may need calm before it can trust momentum.", "calm", "quiet"]
+      },
+      {
+        title: "When something better starts to happen, what do you notice?",
+        prompt: "A better life can feel strange if stress was your old normal.",
+        a: ["I wonder if I can really keep it", "The new life needs rehearsal before it feels normal enough to stay.", "identity", "new normal"],
+        b: ["I immediately look for the next issue", "That scanning habit may be familiar, but it does not have to lead.", "calm", "problem scan"]
+      },
+      {
+        title: "Which sentence feels more accurate?",
+        prompt: "Do not force the answer. Pick the one your body recognizes.",
+        a: ["I know what would help, but I still delay", "That is a follow-through identity issue, not a lack of information.", "action", "delay"],
+        b: ["I want abundance, but part of me still expects pressure", "That is the old relationship with money asking for a new practice.", "money", "money pressure"]
+      },
+      {
+        title: "What would help the new life feel more natural?",
+        prompt: "This shapes the script you get at the end.",
+        a: ["A short daily phrase I can repeat", "Good. The mind trusts what it practices often.", "identity", "daily phrase"],
+        b: ["A calmer state before I make decisions", "Good. A steadier state changes the quality of your choices.", "calm", "steady state"]
+      },
+      {
+        title: "What is the next version of you asking for?",
+        prompt: "Choose the answer that feels useful right now.",
+        a: ["Less hesitation and more clean action", "That points to practicing the identity that moves before the old story grows.", "action", "clean action"],
+        b: ["A better feeling around receiving more", "That points to making expansion feel safe and familiar.", "money", "expansion"]
+      }
+    ];
+
+    const results = {
+      identity: {
+        labels: ["The New Life Rehearsal", "The Better Life Identity Reset", "The Future Self Familiarity Pattern"],
+        descriptions: [
+          "{name}, your reflection points to identity. The life you want is not the strange part. The strange part is letting that life feel normal before everything around you changes.",
+          "{name}, you are not missing a dream. You are building familiarity with the version of you who can receive it, choose it, and keep living from it.",
+          "{name}, your new life already has emotional shape. The next move is simple repetition until the better identity feels less unusual."
+        ],
+        predictions: [
+          "{name}, watch for one small moment today where the old self wants you to ask for permission from fear.",
+          "{name}, you may notice that the future feels closer when you stop forcing belief and start practicing familiarity.",
+          "{name}, one choice may feel cleaner when you remember that the old normal is only old practice."
+        ],
+        traits: ["new life", "identity practice", "future self", "clear reflection", "daily repetition", "better normal"],
+        scriptTitles: ["The 60-Second New Life Script", "The Better Life Identity Script", "The Future Self Familiarity Script"],
+        scripts: [
+          "I am so thankful and grateful now that my new life feels familiar to me. I move through today as the person who can receive better opportunities, make cleaner choices, and stay steady while life expands. I do not need to shrink back into the old normal to feel safe. My mind, body, and behavior are learning that better can feel natural now.",
+          "I am so thankful and grateful now that the life I used to imagine feels more real in my body. I think, choose, and act from the identity of someone who follows through, receives support, and lets good things stay. I do not chase the old version of myself. I practice the new one until it feels like home.",
+          "I am so thankful and grateful now that I can feel myself becoming the person my future requires. I handle more with calm. I receive more without bracing. I choose from trust instead of old fear. My new life is not far away. It is becoming familiar through what I practice today."
+        ],
+        offer: {
+          name: "Complete Library",
+          url: "https://buy.hypnoticmeditations.ai/l/bundle-library?wanted=true",
+          cta: "Get The Complete Library",
+          lead: "{name}, your result is broad. It touches identity, calm, money, confidence, and follow-through. The next step is not one tiny file. It is a complete set of guided sessions that helps your mind practice the new life from different angles.",
+          stepThree: "Start with the Complete Library so the new identity gets repeated across the main areas of your life."
+        }
+      },
+      money: {
+        labels: ["The Abundant Life Receiving Reset", "The Rich Life Safety Pattern", "The Money Calm Identity"],
+        descriptions: [
+          "{name}, your answers point to receiving. You may want more, but part of you still expects money, ease, or support to arrive with pressure.",
+          "{name}, this looks like an abundant life pattern. The desire is there. The old response around receiving is what needs a new practice.",
+          "{name}, you are not blocked from more. You are practicing an older relationship with money, safety, and choice."
+        ],
+        predictions: [
+          "{name}, watch for the moment you almost make receiving harder than it needs to be.",
+          "{name}, a money decision may feel clearer when you stop treating calm as a warning sign.",
+          "{name}, you may notice one place where you still brace before good news."
+        ],
+        traits: ["receiving", "money calm", "abundant life", "rich life", "choice", "self-trust"],
+        scriptTitles: ["The 60-Second Abundant Life Script", "The Rich Life Receiving Script", "The Money Calm Reset Script"],
+        scripts: [
+          "I am so thankful and grateful now that money can feel calm, clean, and natural in my life. I am becoming the person who receives without bracing, chooses without panic, and allows better options to stay. I do not need pressure to prove I care. I can build, receive, save, spend, and grow from a steady identity.",
+          "I am so thankful and grateful now that an abundant life feels more familiar to my mind and body. I notice opportunities with a clear head. I take the next simple step without turning money into fear. I let receiving feel safe, normal, and deserved as I become the person who handles more with calm confidence.",
+          "I am so thankful and grateful now that my relationship with money is changing at the identity level. I no longer rehearse panic before I act. I practice calm, choice, and receiving. I allow my rich life to feel natural before it fully appears, and my daily behavior follows that new expectation."
+        ],
+        offer: {
+          name: "Money Mind Stack",
+          url: "https://buy.hypnoticmeditations.ai/l/bundle-money?wanted=true",
+          cta: "Get The Money Mind Stack",
+          lead: "{name}, your result is money-adjacent. The next step is to stop practicing pressure around money and start repeating a calmer receiving identity.",
+          stepThree: "Use the Money Mind Stack when money is the clearest place where the old identity still takes over."
+        }
+      },
+      calm: {
+        labels: ["The Better Life Calm Reset", "The Soft New Life Pattern", "The Sleep And Space Signal"],
+        descriptions: [
+          "{name}, your answers point to calm. You do not need to push harder. You need a steadier inner state to become familiar before your next move.",
+          "{name}, this looks like a reset pattern. Your better life may not need more force. It may need more safety, rest, and simple repetition.",
+          "{name}, the old identity may be trained to scan for problems. Your new identity needs practice noticing what is actually okay."
+        ],
+        predictions: [
+          "{name}, your best decision may come after your body finally gets a little quieter.",
+          "{name}, one familiar worry may lose power when you stop feeding it with constant attention.",
+          "{name}, you may feel the next step become obvious after you stop arguing with the old feeling."
+        ],
+        traits: ["calm identity", "better life", "sleep reset", "emotional space", "clear reflection", "gentle practice"],
+        scriptTitles: ["The 60-Second Better Life Calm Script", "The Soft Reset Script", "The New Life Breathing Room Script"],
+        scripts: [
+          "I am so thankful and grateful now that calm is becoming familiar to me. I do not need stress to stay prepared. I can breathe, choose, and move from a steady place. My better life is allowed to feel peaceful. I let my mind stop searching for problems and start practicing trust, clarity, and simple next steps.",
+          "I am so thankful and grateful now that my new life feels safe in my body. I can pause without quitting. I can rest without falling behind. I can make progress without panic. The old stress response is no longer in charge of my future. I am practicing a calmer identity every day.",
+          "I am so thankful and grateful now that I can begin again without carrying the old pressure. My mind is learning a better rhythm. I notice what supports me. I choose the next step with less noise. I let peace become the place I act from, not the reward I wait for."
+        ],
+        offer: {
+          name: "Sleep Stack",
+          url: "https://buy.hypnoticmeditations.ai/l/bundle-sleep?wanted=true",
+          cta: "Get The Sleep Stack",
+          lead: "{name}, your result points to rest, calm, and emotional space. When your system is always bracing, the next life can feel far away. The Sleep Stack is the clearer next step for practicing safety at night.",
+          stepThree: "Use the Sleep Stack when rest, quiet, and nighttime reset are the first places your new identity needs support."
+        }
+      },
+      action: {
+        labels: ["The Better Life Action Reset", "The Follow-Through Identity", "The Next Step Practice"],
+        descriptions: [
+          "{name}, your answers point to follow-through. You likely know more than enough. The gap is the identity that takes action before old hesitation takes over.",
+          "{name}, this result says your next life needs motion. Not pressure. Not perfection. A practiced identity that takes the next clean step.",
+          "{name}, the old pattern may pause at the exact moment life asks you to move. That pause can change when the new self becomes familiar."
+        ],
+        predictions: [
+          "{name}, the next useful move may be simple enough that the old self tries to dismiss it.",
+          "{name}, one small task may feel easier after you stop making it mean everything.",
+          "{name}, your next step may not need more confidence. It may need less negotiation."
+        ],
+        traits: ["follow-through", "next step", "less hesitation", "identity action", "self-trust", "practice"],
+        scriptTitles: ["The 60-Second Better Life Action Script", "The Follow-Through Script", "The New Life Next Step Script"],
+        scripts: [
+          "I am so thankful and grateful now that I am the person who takes the next clear step. I do not wait for old fear to approve my future. I move with calm certainty, simple focus, and honest effort. My new life becomes more familiar each time I act before hesitation turns into a story.",
+          "I am so thankful and grateful now that follow-through feels natural to me. I choose the next right action without needing the whole path to be perfect. I trust myself to begin, adjust, and continue. I am becoming the person whose behavior matches the life I say I want.",
+          "I am so thankful and grateful now that action feels safer in my body. I can be seen, make decisions, finish what matters, and let progress be simple. The older identity can speak, but it no longer leads. I practice the version of me who moves."
+        ],
+        offer: {
+          name: "Manifestation Genie",
+          url: "https://www.manifestationgenie.ai/",
+          cta: "Talk To The Genie",
+          lead: "{name}, your result is about what you keep rehearsing before you act. Manifestation Genie helps you see the identity pattern underneath the day, then gives you a simple ritual to practice next.",
+          stepThree: "Use Manifestation Genie when you want daily guidance on what your subconscious is rehearsing and what to practice next."
+        }
+      }
+    };
+
+    function setProgress(value) {
+      const percent = Math.max(0, Math.min(100, value));
+      $("progress").style.width = percent + "%";
+      $("progressLabel").textContent = percent + "%";
+    }
+
+    function show(id) {
+      document.querySelectorAll(".screen").forEach((screen) => screen.classList.remove("active"));
+      $(id).classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function personalize(text) {
+      return text.replaceAll("{name}", firstName);
+    }
+
+    function cleanFirstName(raw) {
+      const cleaned = raw.trim().split(/\s+/)[0].replace(/[^a-zA-Z'-]/g, "");
+      return cleaned ? titleCase(cleaned) : "";
+    }
+
+    function startQuiz() {
+      firstName = cleanFirstName($("firstName").value);
+      if (!firstName) {
+        $("nameError").textContent = "Enter your first name to begin.";
+        $("firstName").focus();
+        return;
+      }
+      $("nameError").textContent = "";
+      current = 0;
+      scores = { identity: 0, money: 0, calm: 0, action: 0 };
+      selectedResult = null;
+      moments = [];
+      $("moments").innerHTML = "";
+      renderQuestion();
+      show("quiz-screen");
+    }
+
+    function renderQuestion() {
+      const q = questions[current];
+      $("questionCount").textContent = "Question " + (current + 1) + " of " + questions.length;
+      $("reflectionLabel").textContent = firstName + "'s reset";
+      $("questionTitle").textContent = q.title;
+      $("questionPrompt").textContent = q.prompt;
+      $("feedback").classList.remove("show");
+      $("feedback").textContent = "";
+      $("choices").innerHTML = "";
+      [q.a, q.b].forEach((choice) => {
+        const button = document.createElement("button");
+        button.className = "choice";
+        const strong = document.createElement("strong");
+        const span = document.createElement("span");
+        strong.textContent = choice[0];
+        span.textContent = choice[1];
+        button.append(strong, span);
+        button.addEventListener("click", () => answer(choice[2], choice[1], choice[3]));
+        $("choices").appendChild(button);
+      });
+      setProgress(Math.round((current / questions.length) * 55) + 8);
+    }
+
+    function answer(type, message, chip) {
+      scores[type] += 1;
+      moments.push(chip);
+      $("feedback").textContent = firstName + ", noted: " + message;
+      $("feedback").classList.add("show");
+      $("moments").innerHTML = moments.slice(-4).map((item) => '<span class="moment">' + item + '</span>').join("");
+      document.querySelectorAll(".choice").forEach((btn) => btn.disabled = true);
+      setTimeout(() => {
+        current += 1;
+        if (current < questions.length) {
+          renderQuestion();
+        } else {
+          renderScan();
+        }
+      }, 560);
+    }
+
+    function topType() {
+      return Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+    }
+
+    function renderScan() {
+      const type = topType();
+      selectedResult = results[type];
+      $("scanTitle").textContent = firstName + ", your reflection is coming together.";
+      $("scanCopy").textContent = "This is not a diagnosis. It is a personal insight based on your answers and the identity pattern that feels most familiar right now.";
+      const rows = [
+        ["Old identity familiarity", Math.min(91, 56 + scores.identity * 9 + scores.action * 4), "Where the previous version of you may still feel easiest to repeat."],
+        ["New life readiness", Math.min(93, 52 + scores.identity * 10 + scores.action * 7), "How close the next identity may already feel."],
+        ["Receiving comfort", Math.min(92, 48 + scores.money * 13), "How natural it feels to let better things stay."],
+        ["Calm before action", Math.min(94, 50 + scores.calm * 12), "How much steadiness supports your next step."]
+      ];
+      $("scanRows").innerHTML = rows.map((row) => `
+        <div class="scan-row">
+          <div class="scan-head"><span>${row[0]}</span><span>${row[1]}%</span></div>
+          <div class="scan-bar"><div class="scan-fill" data-width="${row[1]}"></div></div>
+          <p style="font-size:15px;margin-top:10px;">${row[2]}</p>
+        </div>
+      `).join("");
+      setProgress(72);
+      show("scan-screen");
+      setTimeout(() => {
+        document.querySelectorAll(".scan-fill").forEach((bar) => bar.style.width = bar.dataset.width + "%");
+      }, 140);
+      setTimeout(renderPrediction, 2200);
+    }
+
+    function renderPrediction() {
+      $("predictionTitle").textContent = firstName + ", here is the pattern I would watch next.";
+      $("predictionCopy").textContent = personalize(pick(selectedResult.predictions));
+      $("predictionChips").innerHTML = shuffle(selectedResult.traits)
+        .slice(0, 4)
+        .map((trait) => '<span class="trait">' + trait + '</span>')
+        .join("");
+      setProgress(82);
+      show("prediction-screen");
+    }
+
+    function renderResult() {
+      $("resultHeading").textContent = "Good job, " + firstName + " - here are your results";
+      $("resultName").textContent = pick(selectedResult.labels);
+      $("resultDescription").textContent = personalize(pick(selectedResult.descriptions));
+      $("traitChips").innerHTML = shuffle(selectedResult.traits)
+        .map((trait) => '<span class="trait">' + trait + '</span>')
+        .join("");
+      setProgress(90);
+      show("result-screen");
+    }
+
+    function renderScript() {
+      $("scriptTitle").textContent = pick(selectedResult.scriptTitles);
+      $("scriptIntro").textContent = firstName + ", read this slowly once. Then repeat the line that creates the strongest shift in your body.";
+      $("scriptBody").textContent = pick(selectedResult.scripts);
+      $("scriptNote").textContent = "Use this today: breathe, repeat the strongest line for 60 seconds, then take one small next step from that identity.";
+      setProgress(96);
+      show("script-screen");
+    }
+
+    function renderOffer() {
+      const offer = selectedResult.offer;
+      $("offerTitle").textContent = firstName + ", make the new identity easier to repeat.";
+      $("offerLead").textContent = personalize(offer.lead);
+      $("stepOne").textContent = "Let the words feel true for a few seconds before you move on.";
+      $("stepTwo").textContent = "The old response is familiar. That does not make it final.";
+      $("stepThree").textContent = offer.stepThree;
+      $("offerCta").textContent = offer.cta;
+      $("offerCta").href = offer.url;
+      setProgress(100);
+      show("offer-screen");
+    }
+
+    $("startBtn").addEventListener("click", startQuiz);
+    $("firstName").addEventListener("keydown", (event) => {
+      if (event.key === "Enter") startQuiz();
+    });
+    $("showResultsBtn").addEventListener("click", renderResult);
+    $("scriptBtn").addEventListener("click", renderScript);
+    $("nextStepBtn").addEventListener("click", renderOffer);
+    $("restartBtn").addEventListener("click", () => {
+      setProgress(0);
+      $("firstName").value = firstName;
+      show("start-screen");
+    });
+  </script>
+</body>
+</html>
