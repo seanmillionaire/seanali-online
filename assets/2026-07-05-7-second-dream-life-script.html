@@ -138,6 +138,45 @@
       color: #2f3a4f;
     }
 
+    .social-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      padding: 9px 13px;
+      border: 1px solid #bfdbfe;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #eff6ff, #fff7ed);
+      color: #174ea6;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .hook-list {
+      display: grid;
+      gap: 10px;
+      max-width: 620px;
+      margin-top: 22px;
+    }
+
+    .hook-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1px solid #dbeafe;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, .78);
+      color: #26364f;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .hook-item span {
+      flex: 0 0 auto;
+    }
+
     .chip, .result-chip {
       display: inline-flex;
       align-items: center;
@@ -418,13 +457,19 @@
 
         <div class="content">
           <section class="screen active" id="start-screen">
-            <h1>7-Second Dream Life Script</h1>
-            <p class="sub">Notice the older identity pattern around the life you want. Then use a clear script that helps your new life feel more familiar and natural.</p>
+            <div class="social-badge">✨ Tiny reset. Big mirror.</div>
+            <h1>Your dream life may feel weird for one simple reason.</h1>
+            <p class="sub">Take the 7-second reflection. See the older identity pattern that still makes the life you want feel a little too far away.</p>
+            <div class="hook-list" aria-label="What this reveals">
+              <div class="hook-item"><span>✅</span><div>Find the old response that makes better feel unfamiliar.</div></div>
+              <div class="hook-item"><span>🧠</span><div>Get a personal reflection based on your answers.</div></div>
+              <div class="hook-item"><span>✨</span><div>Leave with a script that helps the new life feel natural.</div></div>
+            </div>
             <div class="form">
               <label for="firstName">First name</label>
               <input id="firstName" type="text" autocomplete="given-name" placeholder="Enter your first name">
               <div class="error" id="nameError"></div>
-              <button id="startBtn">Begin The Reflection</button>
+              <button id="startBtn">Reveal My Script ✨</button>
             </div>
           </section>
 

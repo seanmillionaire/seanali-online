@@ -161,6 +161,45 @@
       font-size: clamp(19px, 4vw, 24px);
     }
 
+    .social-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      padding: 9px 13px;
+      border: 1px solid #bfdbfe;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #eff6ff, #fff7ed);
+      color: #174ea6;
+      font-size: 14px;
+      font-weight: 950;
+    }
+
+    .hook-list {
+      display: grid;
+      gap: 10px;
+      max-width: 640px;
+      margin-top: 22px;
+    }
+
+    .hook-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1px solid #dbeafe;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, .8);
+      color: #26364f;
+      font-size: 16px;
+      font-weight: 850;
+      line-height: 1.35;
+    }
+
+    .hook-item span {
+      flex: 0 0 auto;
+    }
+
     .trait-grid {
       display: flex;
       flex-wrap: wrap;
@@ -471,13 +510,19 @@
 
         <div class="content">
           <section class="screen active" id="start-screen">
-            <h1>60-Second New Life Reset</h1>
-            <p class="sub">See the older identity pattern that still makes the life you want feel unfamiliar. Then use a clear script that helps the new version of you feel more natural today.</p>
+            <div class="social-badge">⚡ 60-second identity mirror</div>
+            <h1>The life you want may already be close. Your old self just does not trust it yet.</h1>
+            <p class="sub">Answer seven quick choices and get the new-life script your mind needs to practice today.</p>
+            <div class="hook-list" aria-label="What this reveals">
+              <div class="hook-item"><span>✅</span><div>Spot the old pattern making better feel unfamiliar.</div></div>
+              <div class="hook-item"><span>🧠</span><div>Get a personal result for identity, money, calm, or action.</div></div>
+              <div class="hook-item"><span>✨</span><div>Finish with a high-value script you can repeat today.</div></div>
+            </div>
             <div class="form">
               <label for="firstName">First name</label>
               <input id="firstName" type="text" autocomplete="given-name" placeholder="Enter your first name">
               <div class="error" id="nameError"></div>
-              <button id="startBtn">Begin The Reset</button>
+              <button id="startBtn">Reveal My Reset ✨</button>
             </div>
           </section>
 
