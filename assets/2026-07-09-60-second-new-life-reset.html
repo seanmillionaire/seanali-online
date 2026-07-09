@@ -69,27 +69,6 @@
       background: rgba(255, 255, 255, .72);
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #344054;
-      font-size: 13px;
-      font-weight: 900;
-      text-transform: uppercase;
-    }
-
-    .mark {
-      width: 36px;
-      height: 36px;
-      border-radius: 13px;
-      display: grid;
-      place-items: center;
-      color: white;
-      background: linear-gradient(135deg, var(--blue), var(--purple));
-      font-weight: 950;
-    }
-
     .progress-wrap {
       display: grid;
       gap: 7px;
@@ -182,7 +161,7 @@
       font-size: clamp(19px, 4vw, 24px);
     }
 
-    .chips, .trait-grid {
+    .trait-grid {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
@@ -468,42 +447,12 @@
       margin-top: 26px;
     }
 
-    .float {
-      position: absolute;
-      width: 50px;
-      height: 50px;
-      display: grid;
-      place-items: center;
-      border: 1px solid rgba(255,255,255,.86);
-      border-radius: 18px;
-      color: var(--blue);
-      background: rgba(255,255,255,.74);
-      box-shadow: 0 18px 44px rgba(20, 32, 51, .12);
-      font-weight: 950;
-      pointer-events: none;
-      animation: drift 7s ease-in-out infinite;
-    }
-
-    .float.one { top: 16%; right: -8px; }
-    .float.two { bottom: 14%; left: -8px; color: var(--green); animation-delay: -2s; }
-    .float.three { top: 47%; right: 18px; color: var(--orange); animation-delay: -4s; }
-
-    @keyframes drift {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
-    }
-
     @media (max-width: 640px) {
       .page { padding: 10px; }
       .topbar { padding: 14px; }
-      .brand span { display: none; }
       .progress-wrap { min-width: 118px; }
       .content { padding: 24px 18px 30px; }
       .question-meta { align-items: flex-start; flex-direction: column; }
-      .float { width: 42px; height: 42px; border-radius: 15px; opacity: .78; }
-      .float.one { right: 3px; top: 8%; }
-      .float.two { left: 3px; bottom: 6%; }
-      .float.three { display: none; }
       button, .button { width: 100%; }
     }
   </style>
@@ -511,13 +460,9 @@
 <body>
   <main class="page">
     <section class="hero">
-      <div class="float one">01</div>
-      <div class="float two">02</div>
-      <div class="float three">03</div>
-
       <div class="shell">
         <div class="topbar">
-          <div class="brand"><div class="mark">SA</div><span>Identity Reset</span></div>
+          <div></div>
           <div class="progress-wrap" aria-label="progress">
             <div class="progress-label" id="progressLabel">0%</div>
             <div class="progress-track"><div class="progress" id="progress"></div></div>
@@ -526,14 +471,8 @@
 
         <div class="content">
           <section class="screen active" id="start-screen">
-            <div class="eyebrow"><span class="pulse"></span> Free 3-minute personal insight</div>
             <h1>60-Second New Life Reset</h1>
             <p class="sub">See the older identity pattern that still makes the life you want feel unfamiliar. Then use a clear script that helps the new version of you feel more natural today.</p>
-            <div class="chips">
-              <span class="chip">First-name reflection</span>
-              <span class="chip">Seven two-choice prompts</span>
-              <span class="chip">Personal script at the end</span>
-            </div>
             <div class="form">
               <label for="firstName">First name</label>
               <input id="firstName" type="text" autocomplete="given-name" placeholder="Enter your first name">

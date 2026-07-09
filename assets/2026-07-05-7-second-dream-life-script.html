@@ -66,28 +66,6 @@
       background: rgba(255,255,255,.72);
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: .02em;
-      text-transform: uppercase;
-      color: #344054;
-    }
-
-    .mark {
-      width: 34px;
-      height: 34px;
-      border-radius: 12px;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(135deg, var(--blue), var(--purple));
-      color: white;
-      font-weight: 900;
-    }
-
     .progress-wrap {
       width: 124px;
       height: 10px;
@@ -158,13 +136,6 @@
     .sub {
       font-size: clamp(19px, 4vw, 24px);
       color: #2f3a4f;
-    }
-
-    .proof {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 24px 0 0;
     }
 
     .chip, .result-chip {
@@ -427,41 +398,11 @@
       margin-top: 26px;
     }
 
-    .float {
-      position: absolute;
-      width: 52px;
-      height: 52px;
-      border-radius: 18px;
-      background: rgba(255,255,255,.74);
-      border: 1px solid rgba(255,255,255,.85);
-      box-shadow: 0 18px 42px rgba(23, 32, 51, .11);
-      display: grid;
-      place-items: center;
-      color: var(--blue);
-      font-weight: 950;
-      animation: drift 7s ease-in-out infinite;
-      pointer-events: none;
-    }
-
-    .float.one { top: 18%; right: -8px; }
-    .float.two { bottom: 14%; left: -8px; color: var(--green); animation-delay: -2s; }
-    .float.three { top: 48%; right: 16px; color: var(--orange); animation-delay: -4s; }
-
-    @keyframes drift {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
-    }
-
     @media (max-width: 640px) {
       .page { padding: 10px; }
       .topbar { padding: 14px; }
-      .brand span { display: none; }
       .progress-wrap { width: 110px; }
       .content { padding: 24px 18px 30px; }
-      .float { width: 42px; height: 42px; border-radius: 15px; opacity: .8; }
-      .float.one { right: 4px; top: 8%; }
-      .float.two { left: 4px; bottom: 7%; }
-      .float.three { display: none; }
       button, .button { width: 100%; }
     }
   </style>
@@ -469,25 +410,16 @@
 <body>
   <main class="page">
     <section class="hero">
-      <div class="float one">01</div>
-      <div class="float two">02</div>
-      <div class="float three">03</div>
       <div class="shell">
         <div class="topbar">
-          <div class="brand"><div class="mark">SA</div><span>Identity Reset</span></div>
+          <div></div>
           <div class="progress-wrap" aria-label="progress"><div class="progress" id="progress"></div></div>
         </div>
 
         <div class="content">
           <section class="screen active" id="start-screen">
-            <div class="eyebrow"><span class="dot"></span> Free 3-minute personal reflection</div>
             <h1>7-Second Dream Life Script</h1>
             <p class="sub">Notice the older identity pattern around the life you want. Then use a clear script that helps your new life feel more familiar and natural.</p>
-            <div class="proof">
-              <span class="chip">Required first-name start</span>
-              <span class="chip">Two-choice reflection</span>
-              <span class="chip">Personal script at the end</span>
-            </div>
             <div class="form">
               <label for="firstName">First name</label>
               <input id="firstName" type="text" autocomplete="given-name" placeholder="Enter your first name">
