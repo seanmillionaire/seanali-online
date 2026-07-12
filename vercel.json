@@ -18,6 +18,30 @@
   ],
   "rewrites": [
     {
+      "source": "/links",
+      "destination": "/page-map.html"
+    },
+    {
+      "source": "/links.html",
+      "destination": "/page-map.html"
+    },
+    {
+      "source": "/my-links",
+      "destination": "/page-map.html"
+    },
+    {
+      "source": "/my-links.html",
+      "destination": "/page-map.html"
+    },
+    {
+      "source": "/linktree",
+      "destination": "/page-map.html"
+    },
+    {
+      "source": "/linktree.html",
+      "destination": "/page-map.html"
+    },
+    {
       "source": "/",
       "has": [
         {
