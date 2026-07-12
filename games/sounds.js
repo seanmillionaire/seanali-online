@@ -12,6 +12,7 @@
     if (isGamePage) {
       scripts.push({ global: 'GameProgressMeterLoaded', src: '/games/game-progress.js?v=3' });
       scripts.push({ global: 'GameFirstScreenGuideLoaded', src: '/games/first-screen-guide.js?v=4' });
+      scripts.push({ global: 'GameAnswerSafetyLoaded', src: '/games/game-answer-safety.js?v=1' });
       scripts.push({ global: 'GamePolishLoaded', src: '/games/game-polish.js?v=2' });
       scripts.push({ global: 'GameEndActionsLoaded', src: '/games/end-actions.js?v=1' });
       scripts.push({ global: 'SharedLevelTwoLoaded', src: '/games/level-two-shared.js?v=1' });
