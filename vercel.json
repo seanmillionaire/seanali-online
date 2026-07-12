@@ -34,14 +34,6 @@
       "destination": "/page-map"
     },
     {
-      "source": "/linktree",
-      "destination": "/page-map"
-    },
-    {
-      "source": "/linktree.html",
-      "destination": "/page-map"
-    },
-    {
       "source": "/",
       "has": [
         {
