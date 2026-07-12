@@ -27,6 +27,7 @@
   --line:#d7d7d7;
   --muted:#595959;
   --white:#fff;
+  --verified:#1689f4;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -42,10 +43,47 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 a{color:inherit}
+.announcement{
+  position:sticky;
+  top:0;
+  z-index:50;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:46px;
+  padding:11px 18px;
+  background:linear-gradient(90deg,#b90f18,var(--red),#b90f18);
+  color:#fff;
+  text-align:center;
+  box-shadow:0 8px 24px rgba(92,0,5,.24);
+}
+.announcement-inner{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  font-size:13px;
+  line-height:1.25;
+  font-weight:900;
+  letter-spacing:.055em;
+  text-transform:uppercase;
+}
+.down-arrows{
+  display:inline-flex;
+  gap:1px;
+  font-size:16px;
+  line-height:1;
+  animation:nudge 1.35s ease-in-out infinite;
+}
+@keyframes nudge{
+  0%,100%{transform:translateY(-1px)}
+  50%{transform:translateY(3px)}
+}
+@media(prefers-reduced-motion:reduce){.down-arrows{animation:none}}
 .page{
   width:min(620px,100%);
   margin:0 auto;
-  padding:42px 18px 56px;
+  padding:38px 18px 56px;
 }
 .profile{
   text-align:center;
@@ -70,6 +108,12 @@ a{color:inherit}
   object-position:center top;
   background:#ddd;
 }
+.name-row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
 h1{
   margin:0;
   font-size:36px;
@@ -78,6 +122,14 @@ h1{
   font-weight:900;
 }
 h1 span{color:var(--red)}
+.verified{
+  display:inline-flex;
+  width:25px;
+  height:25px;
+  flex:0 0 25px;
+  filter:drop-shadow(0 4px 8px rgba(22,137,244,.24));
+}
+.verified svg{display:block;width:100%;height:100%}
 .bio{
   max-width:500px;
   margin:12px auto 0;
@@ -205,9 +257,12 @@ h1 span{color:var(--red)}
   font-weight:700;
 }
 @media(max-width:520px){
-  .page{padding:30px 14px 44px}
+  .announcement{min-height:48px;padding:10px 12px}
+  .announcement-inner{gap:7px;font-size:11px;letter-spacing:.035em}
+  .page{padding:28px 14px 44px}
   .avatar-wrap{width:96px;height:96px}
   h1{font-size:32px}
+  .verified{width:23px;height:23px;flex-basis:23px}
   .bio{font-size:15px}
   .link-card{grid-template-columns:46px 1fr 18px;gap:12px;min-height:82px;padding:14px}
   .icon{width:46px;height:46px;font-size:22px}
@@ -217,12 +272,26 @@ h1 span{color:var(--red)}
 </style>
 </head>
 <body>
+<div class="announcement" role="note" aria-label="Sean Ali community social proof">
+  <div class="announcement-inner">
+    <span>Join 100,000+ people who’ve used Sean’s tools — start today</span>
+    <span class="down-arrows" aria-hidden="true">↓↓</span>
+  </div>
+</div>
 <main class="page">
   <header class="profile">
     <div class="avatar-wrap">
       <img class="avatar" src="https://hypnoticmeditations.b-cdn.net/images/proof/sean_hypnotic.png" alt="Sean Ali">
     </div>
-    <h1>SEAN <span>ALI</span></h1>
+    <div class="name-row">
+      <h1>SEAN <span>ALI</span></h1>
+      <span class="verified" title="Verified Sean Ali profile" aria-label="Verified Sean Ali profile">
+        <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+          <circle cx="12" cy="12" r="11" fill="#1689f4"/>
+          <path d="M7.3 12.1 10.4 15l6.4-7" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    </div>
     <p class="bio">Marketer, media buyer, founder, and AI systems builder. Practical tools for income, identity, and freedom.</p>
   </header>
 
