@@ -1,0 +1,47 @@
+name: Restore system why section
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/restore-system-why-section.yml
+
+permissions:
+  contents: write
+
+jobs:
+  restore-system-section:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Restore the why section
+        run: node scripts/restore-system-why-section.mjs
+
+      - name: Validate final system page
+        shell: bash
+        run: |
+          grep -Fq 'Why I built this' system.html
+          grep -Fq 'AI Made Building A Business' system.html
+          ! grep -Fq 'The results: updated May 2026' system.html
+          ! grep -Fq 'Go From “I Have No Idea What To Build” To Something You Can Launch' system.html
+          ! grep -Fq 'What happens after you join?' system.html
+          ! grep -Fq 'What the community is using every day' system.html
+          grep -Fq '<section class="band" id="proof"><div class="wrap"><span class="eyebrow">Sean'"'"'s proof</span>' system.html
+
+      - name: Remove updater and commit restoration
+        shell: bash
+        run: |
+          rm -f scripts/restore-system-why-section.mjs
+          rm -f .github/workflows/restore-system-why-section.yml
+          git config user.name 'SEAN ALI'
+          git config user.email '158592572+seanmillionaire@users.noreply.github.com'
+          git add system.html
+          git add -u scripts/restore-system-why-section.mjs .github/workflows/restore-system-why-section.yml
+          git commit -m 'Restore Why I built this section on system page'
+          git push origin HEAD:main
