@@ -22,24 +22,30 @@
 html{scroll-behavior:smooth}
 body{margin:0;min-height:100vh;background:radial-gradient(circle at 15% 5%,rgba(255,84,46,.14),transparent 31%),radial-gradient(circle at 90% 92%,rgba(225,29,36,.09),transparent 30%),var(--cream);color:var(--ink);font-family:Inter,Arial,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:inherit}
+button{font:inherit}
 .announcement{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:center;min-height:46px;padding:11px 18px;background:linear-gradient(90deg,#b90f18,var(--red),#b90f18);color:#fff;text-align:center;box-shadow:0 8px 24px rgba(92,0,5,.24)}
 .announcement-inner{display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;line-height:1.25;font-weight:900;letter-spacing:.055em;text-transform:uppercase}
 .down-arrows{display:inline-flex;gap:1px;font-size:16px;line-height:1;animation:nudge 1.35s ease-in-out infinite}
 @keyframes nudge{0%,100%{transform:translateY(-1px)}50%{transform:translateY(3px)}}
 .page{width:min(620px,100%);margin:0 auto;padding:38px 18px 56px}
 .profile{text-align:center;margin-bottom:28px}
-.profile-update{display:flex;align-items:center;justify-content:center;gap:16px;margin:0 auto 18px}
-.avatar-wrap{position:relative;width:112px;height:112px;flex:0 0 112px;padding:5px;border-radius:50%;background:conic-gradient(var(--update) 0 88%,#d7ddd9 88% 100%);box-shadow:0 16px 34px rgba(0,0,0,.15)}
-.avatar-wrap::before{content:"";position:absolute;inset:-5px;border:2px solid rgba(37,211,102,.45);border-radius:50%;animation:ring-pulse 1.9s ease-out infinite;pointer-events:none}
-.avatar{width:100%;height:100%;display:block;border:4px solid var(--white);border-radius:50%;object-fit:cover;object-position:center top;background:#ddd}
-.update-badge{position:absolute;right:-3px;bottom:5px;display:grid;place-items:center;width:29px;height:29px;border:4px solid var(--cream);border-radius:50%;background:var(--update);color:#fff;font-size:12px;font-weight:900;box-shadow:0 7px 16px rgba(19,138,69,.3)}
-.update-message{position:relative;width:min(235px,46vw);padding:13px 15px;border:1px solid rgba(19,138,69,.2);border-radius:5px 14px 14px 14px;background:var(--message);text-align:left;box-shadow:0 12px 28px rgba(20,88,48,.14);animation:message-pop .55s cubic-bezier(.2,.85,.25,1.15) both}
-.update-message::before{content:"";position:absolute;left:-9px;top:18px;width:18px;height:18px;background:var(--message);border-left:1px solid rgba(19,138,69,.2);border-bottom:1px solid rgba(19,138,69,.2);transform:rotate(45deg)}
-.message-meta{position:relative;display:flex;align-items:center;gap:6px;margin-bottom:6px;color:var(--update-dark);font-size:9px;line-height:1;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.profile-update{position:relative;margin:0 auto 18px;text-align:center}
+.avatar-trigger{position:relative;display:grid;place-items:center;width:112px;height:112px;margin:0 auto;padding:0;border:0;border-radius:50%;background:transparent;cursor:pointer;isolation:isolate;filter:drop-shadow(0 16px 18px rgba(0,0,0,.13))}
+.avatar-trigger::before{content:"";position:absolute;inset:0;z-index:0;border-radius:50%;background:conic-gradient(from 0deg,var(--update) 0 19%,transparent 19% 25%,var(--update) 25% 48%,transparent 48% 55%,var(--update) 55% 82%,#bdeecf 82% 100%);animation:ring-spin 2.1s linear infinite}
+.avatar-trigger::after{content:"";position:absolute;inset:5px;z-index:1;border-radius:50%;background:var(--cream)}
+.avatar-trigger:hover::before{animation-duration:1.25s}
+.avatar-trigger:focus-visible{outline:4px solid rgba(37,211,102,.25);outline-offset:6px}
+.avatar{position:relative;z-index:2;width:100px;height:100px;display:block;border:4px solid var(--white);border-radius:50%;object-fit:cover;object-position:center top;background:#ddd}
+.update-badge{position:absolute;right:-3px;bottom:5px;z-index:3;display:grid;place-items:center;width:29px;height:29px;border:4px solid var(--cream);border-radius:50%;background:var(--update);color:#fff;font-size:12px;font-weight:900;box-shadow:0 7px 16px rgba(19,138,69,.3)}
+.update-message{position:relative;display:block;width:min(280px,92vw);margin:14px auto 0;padding:13px 15px;border:1px solid rgba(19,138,69,.2);border-radius:14px 14px 14px 5px;background:var(--message);color:var(--ink);text-align:center;text-decoration:none;box-shadow:0 12px 28px rgba(20,88,48,.14);animation:message-pop .38s cubic-bezier(.2,.85,.25,1.15) both}
+.update-message[hidden]{display:none}
+.update-message::before{content:"";position:absolute;left:50%;top:-9px;width:18px;height:18px;background:var(--message);border-left:1px solid rgba(19,138,69,.2);border-bottom:1px solid rgba(19,138,69,.2);transform:translateX(-50%) rotate(135deg)}
+.update-message:hover,.update-message:focus-visible{transform:translateY(-2px);box-shadow:0 16px 34px rgba(20,88,48,.18);outline:none}
+.message-meta{position:relative;display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:6px;color:var(--update-dark);font-size:9px;line-height:1;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
 .message-dot{width:7px;height:7px;border-radius:50%;background:var(--update);box-shadow:0 0 0 3px rgba(37,211,102,.16)}
 .update-message strong{position:relative;display:block;font-size:15px;line-height:1.35;font-weight:850;letter-spacing:-.015em}
-@keyframes ring-pulse{0%{opacity:.9;transform:scale(.96)}75%,100%{opacity:0;transform:scale(1.13)}}
-@keyframes message-pop{0%{opacity:0;transform:translateX(-10px) scale(.92)}100%{opacity:1;transform:translateX(0) scale(1)}}
+@keyframes ring-spin{to{transform:rotate(360deg)}}
+@keyframes message-pop{0%{opacity:0;transform:translateY(-8px) scale(.94)}100%{opacity:1;transform:translateY(0) scale(1)}}
 .name-row{display:flex;align-items:center;justify-content:center;gap:8px}
 h1{margin:0;font-size:36px;line-height:1;letter-spacing:-.045em;font-weight:900}
 h1 span{color:var(--red)}
@@ -65,8 +71,8 @@ h1 span{color:var(--red)}
 .home-link{display:flex;justify-content:center;margin-top:26px;color:#555;text-decoration:none;font-size:13px;font-weight:800}
 .home-link:hover{text-decoration:underline}
 .footer{margin-top:28px;text-align:center;color:#8a8279;font-size:11px;font-weight:700}
-@media(prefers-reduced-motion:reduce){.down-arrows,.avatar-wrap::before,.update-message{animation:none}}
-@media(max-width:520px){.announcement{min-height:48px;padding:10px 12px}.announcement-inner{gap:7px;font-size:11px;letter-spacing:.035em}.page{padding:28px 14px 44px}.profile-update{flex-direction:column;gap:12px}.avatar-wrap{width:100px;height:100px;flex-basis:100px}.update-message{width:min(280px,92vw);border-radius:14px 14px 14px 5px;text-align:center}.update-message::before{left:50%;top:-9px;transform:translateX(-50%) rotate(135deg)}.message-meta{justify-content:center}h1{font-size:32px}.verified{width:23px;height:23px;flex-basis:23px}.bio{font-size:15px}.link-card{grid-template-columns:46px 1fr 18px;gap:12px;min-height:82px;padding:14px}.icon{width:46px;height:46px;font-size:22px}.link-copy strong{font-size:17px}.socials{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.down-arrows,.avatar-trigger::before,.update-message{animation:none}}
+@media(max-width:520px){.announcement{min-height:48px;padding:10px 12px}.announcement-inner{gap:7px;font-size:11px;letter-spacing:.035em}.page{padding:28px 14px 44px}.avatar-trigger{width:100px;height:100px}.avatar{width:90px;height:90px}h1{font-size:32px}.verified{width:23px;height:23px;flex-basis:23px}.bio{font-size:15px}.link-card{grid-template-columns:46px 1fr 18px;gap:12px;min-height:82px;padding:14px}.icon{width:46px;height:46px;font-size:22px}.link-copy strong{font-size:17px}.socials{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -79,14 +85,14 @@ h1 span{color:var(--red)}
 <main class="page">
   <header class="profile">
     <div class="profile-update">
-      <div class="avatar-wrap">
+      <button class="avatar-trigger" id="sean-update-trigger" type="button" aria-expanded="false" aria-controls="sean-update-message" aria-label="Open Sean Ali's new update">
         <img class="avatar" src="https://hypnoticmeditations.b-cdn.net/images/proof/sean_hypnotic.png" alt="Sean Ali">
         <span class="update-badge" aria-label="One new update">1</span>
-      </div>
-      <div class="update-message" role="status" aria-label="New update from Sean Ali">
+      </button>
+      <a class="update-message" id="sean-update-message" href="#main-links" hidden>
         <span class="message-meta"><span class="message-dot" aria-hidden="true"></span>New update · now</span>
         <strong>Check out the links below 👇</strong>
-      </div>
+      </a>
     </div>
     <div class="name-row">
       <h1>SEAN <span>ALI</span></h1>
@@ -98,7 +104,7 @@ h1 span{color:var(--red)}
   </header>
 
   <div class="section-label">Main Links</div>
-  <section class="links" aria-label="Sean Ali main links">
+  <section class="links" id="main-links" aria-label="Sean Ali main links">
     <a class="link-card" href="https://hypnoticmeditations.ai/" target="_blank" rel="noopener">
       <span class="icon">🎧</span>
       <span class="link-copy"><strong>Hypnotic Meditations</strong><span>Subconscious audios for money, focus, health, and peace.</span></span>
@@ -135,5 +141,37 @@ h1 span{color:var(--red)}
   <a class="home-link" href="/">Visit SeanAli.online →</a>
   <footer class="footer">© 2026 Sean Ali. AI. Business. Identity. Freedom.</footer>
 </main>
+<script>
+(function(){
+  const trigger=document.getElementById('sean-update-trigger');
+  const message=document.getElementById('sean-update-message');
+  if(!trigger||!message)return;
+
+  function setOpen(open){
+    trigger.setAttribute('aria-expanded',String(open));
+    message.hidden=!open;
+  }
+
+  trigger.addEventListener('click',function(event){
+    event.stopPropagation();
+    setOpen(message.hidden);
+  });
+
+  message.addEventListener('click',function(){
+    setOpen(false);
+  });
+
+  document.addEventListener('click',function(event){
+    if(!message.hidden&&!trigger.contains(event.target)&&!message.contains(event.target))setOpen(false);
+  });
+
+  document.addEventListener('keydown',function(event){
+    if(event.key==='Escape'&&!message.hidden){
+      setOpen(false);
+      trigger.focus();
+    }
+  });
+})();
+</script>
 </body>
 </html>
