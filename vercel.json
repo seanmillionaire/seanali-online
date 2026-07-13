@@ -14,6 +14,16 @@
       ],
       "destination": "https://seanali.online/$1",
       "permanent": true
+    },
+    {
+      "source": "/blog/money/the-sean-ali-guide-to-money-identity",
+      "destination": "/blog/money/how-to-reprogram-your-subconscious-money-beliefs",
+      "permanent": true
+    },
+    {
+      "source": "/blog/money/the-sean-ali-guide-to-money-identity/",
+      "destination": "/blog/money/how-to-reprogram-your-subconscious-money-beliefs",
+      "permanent": true
     }
   ],
   "rewrites": [
