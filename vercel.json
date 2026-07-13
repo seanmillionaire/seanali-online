@@ -17,22 +17,32 @@
     },
     {
       "source": "/blog/money/the-sean-ali-guide-to-money-identity",
-      "destination": "/blog/money/what-panama-taught-me-about-reprogramming-subconscious-money-beliefs",
+      "destination": "/blog/money/7-lessons-i-learned-in-panama-about-money-programming",
       "permanent": true
     },
     {
       "source": "/blog/money/the-sean-ali-guide-to-money-identity/",
-      "destination": "/blog/money/what-panama-taught-me-about-reprogramming-subconscious-money-beliefs",
+      "destination": "/blog/money/7-lessons-i-learned-in-panama-about-money-programming",
       "permanent": true
     },
     {
       "source": "/blog/money/how-to-reprogram-your-subconscious-money-beliefs",
-      "destination": "/blog/money/what-panama-taught-me-about-reprogramming-subconscious-money-beliefs",
+      "destination": "/blog/money/7-lessons-i-learned-in-panama-about-money-programming",
       "permanent": true
     },
     {
       "source": "/blog/money/how-to-reprogram-your-subconscious-money-beliefs/",
-      "destination": "/blog/money/what-panama-taught-me-about-reprogramming-subconscious-money-beliefs",
+      "destination": "/blog/money/7-lessons-i-learned-in-panama-about-money-programming",
+      "permanent": true
+    },
+    {
+      "source": "/blog/money/what-panama-taught-me-about-reprogramming-subconscious-money-beliefs",
+      "destination": "/blog/money/7-lessons-i-learned-in-panama-about-money-programming",
+      "permanent": true
+    },
+    {
+      "source": "/blog/money/what-panama-taught-me-about-reprogramming-subconscious-money-beliefs/",
+      "destination": "/blog/money/7-lessons-i-learned-in-panama-about-money-programming",
       "permanent": true
     }
   ],
