@@ -17,12 +17,22 @@
     },
     {
       "source": "/blog/money/the-sean-ali-guide-to-money-identity",
-      "destination": "/blog/money/how-to-reprogram-your-subconscious-money-beliefs",
+      "destination": "/blog/money/what-panama-taught-me-about-reprogramming-subconscious-money-beliefs",
       "permanent": true
     },
     {
       "source": "/blog/money/the-sean-ali-guide-to-money-identity/",
-      "destination": "/blog/money/how-to-reprogram-your-subconscious-money-beliefs",
+      "destination": "/blog/money/what-panama-taught-me-about-reprogramming-subconscious-money-beliefs",
+      "permanent": true
+    },
+    {
+      "source": "/blog/money/how-to-reprogram-your-subconscious-money-beliefs",
+      "destination": "/blog/money/what-panama-taught-me-about-reprogramming-subconscious-money-beliefs",
+      "permanent": true
+    },
+    {
+      "source": "/blog/money/how-to-reprogram-your-subconscious-money-beliefs/",
+      "destination": "/blog/money/what-panama-taught-me-about-reprogramming-subconscious-money-beliefs",
       "permanent": true
     }
   ],
