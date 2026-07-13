@@ -26,9 +26,8 @@
     body{font-family:Inter,Arial,sans-serif;background:radial-gradient(circle at 10% 6%,rgba(255,215,46,.18),transparent 26%),radial-gradient(circle at 92% 20%,rgba(225,29,46,.10),transparent 30%),#fff;color:var(--dark);line-height:1.55}
     .announcement{width:100%;padding:13px 18px;background:var(--red);color:#fff;text-align:center;font-size:16px;font-weight:900;line-height:1.35}
     .announcement strong{color:var(--yellow)}
-    .container{width:min(820px,100%);margin:auto;padding:34px 22px 50px}
+    .container{width:min(820px,100%);margin:auto;padding:38px 22px 50px}
     .hero{text-align:center}
-    .eyebrow{display:inline-block;margin-bottom:20px;padding:9px 17px;border:2px solid var(--dark);border-radius:999px;background:var(--yellow);box-shadow:4px 4px 0 var(--dark);font-size:14px;font-weight:900;letter-spacing:.05em;text-transform:uppercase}
     h1{max-width:780px;margin:0 auto 18px;font-size:clamp(42px,7vw,67px);line-height:1.02;letter-spacing:-.045em;font-weight:900}
     h1 span{color:var(--red)}
     .subhead{max-width:700px;margin:0 auto 28px;color:var(--muted);font-size:22px;line-height:1.5;font-weight:600}
@@ -44,17 +43,17 @@
     .buttonContainer input.submit{width:100%!important;min-height:62px!important;padding:15px 20px!important;border:2px solid var(--dark)!important;border-radius:12px!important;background:linear-gradient(135deg,#ff3b1d,var(--red))!important;color:#fff!important;box-shadow:5px 5px 0 var(--dark)!important;font-family:Inter,Arial,sans-serif!important;font-size:19px!important;font-weight:900!important;cursor:pointer!important;transition:.2s!important}
     .buttonContainer input.submit:hover{transform:translate(-2px,-2px)!important;box-shadow:8px 8px 0 var(--dark)!important}
     .privacyPolicy{padding-bottom:0!important;text-align:center!important}.privacyPolicy p{color:#6b7280!important;font-size:13px!important}
-    .details{width:min(700px,100%);margin:30px auto 0;padding:28px;border:2px solid rgba(225,29,46,.25);border-radius:22px;background:var(--soft);box-shadow:0 18px 42px rgba(17,24,39,.08)}
-    .details-lead{margin-bottom:24px;font-size:20px;line-height:1.55;font-weight:700;text-align:center}
-    .details-grid{display:grid;grid-template-columns:170px 1fr;gap:24px;align-items:center}
+    .details{width:calc(100vw - 32px);max-width:1200px;margin:36px 50% 0;padding:40px clamp(24px,5vw,68px);transform:translateX(-50%);border-top:2px solid rgba(225,29,46,.22);border-bottom:2px solid rgba(225,29,46,.22);background:var(--soft);box-shadow:0 18px 42px rgba(17,24,39,.08)}
+    .details-lead{max-width:900px;margin:0 auto 30px;font-size:21px;line-height:1.55;font-weight:700;text-align:center}
+    .details-grid{display:grid;grid-template-columns:210px minmax(0,1fr);gap:36px;align-items:center;max-width:980px;margin:0 auto}
     .product-img{display:block;width:100%;border-radius:18px;box-shadow:0 14px 28px rgba(17,24,39,.16)}
-    .details-copy h2{margin-bottom:10px;font-size:28px;line-height:1.1;font-weight:900}.details-copy p{color:var(--muted);font-size:18px;line-height:1.6;font-weight:600}
-    .topic-list{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}.topic-list span{padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:15px;font-weight:800}
-    .creator{display:grid;grid-template-columns:74px 1fr;gap:16px;align-items:center;margin-top:24px;padding-top:22px;border-top:1px solid rgba(225,29,46,.22)}
-    .creator img{width:74px;height:74px;border:3px solid var(--red);border-radius:50%;object-fit:cover}.creator p{color:var(--muted);font-size:17px;line-height:1.55;font-weight:600}.creator strong{color:var(--dark);font-size:18px}
-    .faq{margin-top:26px;padding-top:24px;border-top:1px solid rgba(225,29,46,.22)}.faq h3{margin-bottom:14px;font-size:24px;font-weight:900}.faq article{padding:15px 0;border-top:1px solid #eadfd9}.faq article:first-of-type{border-top:0}.faq article strong{display:block;margin-bottom:5px;font-size:17px}.faq article p{color:var(--muted);font-size:16px;line-height:1.55;font-weight:600}
+    .details-copy{text-align:left}.details-copy h2{margin-bottom:10px;font-size:32px;line-height:1.1;font-weight:900}.details-copy p{color:var(--muted);font-size:19px;line-height:1.6;font-weight:600}
+    .topic-list{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.topic-list span{padding:13px 14px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:16px;font-weight:800}
+    .creator{display:grid;grid-template-columns:82px 1fr;gap:18px;align-items:center;max-width:980px;margin:30px auto 0;padding-top:26px;border-top:1px solid rgba(225,29,46,.22);text-align:left}
+    .creator img{width:82px;height:82px;border:3px solid var(--red);border-radius:50%;object-fit:cover}.creator p{color:var(--muted);font-size:18px;line-height:1.55;font-weight:600}.creator strong{color:var(--dark);font-size:19px}
+    .faq{max-width:980px;margin:30px auto 0;padding-top:26px;border-top:1px solid rgba(225,29,46,.22);text-align:left}.faq h3{margin-bottom:14px;font-size:27px;font-weight:900}.faq article{padding:17px 0;border-top:1px solid #eadfd9}.faq article:first-of-type{border-top:0}.faq article strong{display:block;margin-bottom:5px;font-size:18px}.faq article p{color:var(--muted);font-size:17px;line-height:1.55;font-weight:600}
     footer{margin-top:38px;padding-top:24px;border-top:1px solid var(--line);color:#9ca3af;text-align:center;font-size:13px}
-    @media(max-width:620px){.announcement{font-size:15px;padding:12px 14px}.container{padding:26px 16px 40px}.eyebrow{font-size:13px;margin-bottom:18px}h1{font-size:43px}.subhead{font-size:20px;line-height:1.5}.form-card{padding:24px 18px 20px;box-shadow:7px 7px 0 var(--dark)}.form-prompt{font-size:19px}.af-element label.previewLabel{font-size:17px!important}.af-body input.text,.af-body input.email{font-size:18px!important;padding:17px!important}.buttonContainer input.submit{font-size:18px!important}.details{padding:22px 18px}.details-lead{font-size:19px}.details-grid{grid-template-columns:1fr;text-align:center}.product-img{width:160px;margin:auto}.details-copy h2{font-size:27px}.details-copy p{font-size:18px}.topic-list{grid-template-columns:1fr}.creator{grid-template-columns:1fr;text-align:center}.creator img{margin:auto}.creator p{font-size:17px}.faq{text-align:left}.faq article p{font-size:16px}}
+    @media(max-width:620px){.announcement{font-size:15px;padding:12px 14px}.container{padding:30px 16px 40px}h1{font-size:43px}.subhead{font-size:20px;line-height:1.5}.form-card{padding:24px 18px 20px;box-shadow:7px 7px 0 var(--dark)}.form-prompt{font-size:19px}.af-element label.previewLabel{font-size:17px!important}.af-body input.text,.af-body input.email{font-size:18px!important;padding:17px!important}.buttonContainer input.submit{font-size:18px!important}.details{width:100vw;margin-top:34px;padding:30px 18px;border-left:0;border-right:0}.details-lead{font-size:19px}.details-grid{grid-template-columns:1fr;text-align:center;gap:22px}.product-img{width:170px;margin:auto}.details-copy{text-align:center}.details-copy h2{font-size:29px}.details-copy p{font-size:18px}.topic-list{grid-template-columns:1fr}.creator{grid-template-columns:1fr;text-align:center}.creator img{margin:auto}.creator p{font-size:17px}.faq article p{font-size:16px}}
   </style>
 </head>
 <body>
@@ -62,7 +61,6 @@
 
   <main class="container">
     <section class="hero">
-      <div class="eyebrow">🔥 Hurry — Limited Time Only</div>
       <h1>27 Claude Prompts To Build Your First <span>AI Income Stream</span></h1>
       <p class="subhead">The exact prompt pack I would open if I had to start from zero, find a clear offer, and get my first buyer online.</p>
 
