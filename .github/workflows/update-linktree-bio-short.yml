@@ -1,0 +1,33 @@
+name: Update Linktree bio short
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/update-linktree-bio-short.yml
+
+permissions:
+  contents: write
+
+jobs:
+  update-linktree-bio:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - run: node scripts/update-linktree-bio-short.mjs
+      - run: |
+          grep -Fq 'I help people escape poverty, tap into abundance, and build a successful life.' linktree.html
+          ! grep -Fq 'through money, mindset, God, manifestation, business, AI, freedom, and inner work.' linktree.html
+      - run: |
+          rm -f scripts/update-linktree-bio-short.mjs
+          rm -f .github/workflows/update-linktree-bio-short.yml
+          git config user.name 'SEAN ALI'
+          git config user.email '158592572+seanmillionaire@users.noreply.github.com'
+          git add linktree.html
+          git add -u scripts/update-linktree-bio-short.mjs .github/workflows/update-linktree-bio-short.yml
+          git commit -m 'Shorten Linktree bio'
+          git push origin HEAD:main
