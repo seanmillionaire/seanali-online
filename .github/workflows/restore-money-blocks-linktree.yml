@@ -1,0 +1,33 @@
+name: Restore Money Blocks Linktree card
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/restore-money-blocks-linktree.yml
+
+permissions:
+  contents: write
+
+jobs:
+  restore-card:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - run: node scripts/restore-money-blocks-linktree.mjs
+      - run: |
+          grep -Fq 'https://seanali.online/videos/moneyblocks1.html' linktree.html
+          grep -Fq '<strong>Money Blocks Video</strong>' linktree.html
+      - run: |
+          rm -f scripts/restore-money-blocks-linktree.mjs
+          rm -f .github/workflows/restore-money-blocks-linktree.yml
+          git config user.name 'SEAN ALI'
+          git config user.email '158592572+seanmillionaire@users.noreply.github.com'
+          git add linktree.html
+          git add -u scripts/restore-money-blocks-linktree.mjs .github/workflows/restore-money-blocks-linktree.yml
+          git commit -m 'Restore Money Blocks video to Linktree spot 1'
+          git push origin HEAD:main
