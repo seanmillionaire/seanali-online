@@ -2,16 +2,11 @@
   if (document.querySelector('[data-game-breadcrumbs]')) return;
 
   const games = [
-    { href: '/games/traffic-town/', label: '🚗 Traffic Town' },
     { href: '/games/isla-aventura/', label: '🏝️ Isla Aventura' },
     { href: '/games/mirror/', label: '🪞 The Mirror' },
-    { href: '/games/math-dissector/', label: '🧠 Math Dissector' },
     { href: '/games/math-race/', label: '🚗 Math Race' },
     { href: '/games/elements/', label: '🌎 Nature Elements' },
-    { href: '/games/family-gems/', label: '💎 Family Gems' },
-    { href: '/games/piano/', label: '🎹 Piano Patterns' },
-    { href: '/games/tongue-twister/', label: '🌀 Tongue Twister' },
-    { href: '/games/food-groups/', label: '🥑 Natural Food' },
+    { href: '/games/food-groups/', label: '🍓 Food Word Lab' },
     { href: '/games/beats/', label: '🥁 Beat Maker' },
     { href: '/games/family/', label: '👨‍👩‍👧 Family Habits' },
     { href: '/games/money/', label: '💰 Money Tips' },
@@ -29,7 +24,7 @@
     '/games/family-gems/': 'Family Gems',
     '/games/piano/': 'Piano Patterns',
     '/games/tongue-twister/': 'Tongue Twister',
-    '/games/food-groups/': 'Natural Food',
+    '/games/food-groups/': 'Food Word Lab',
     '/games/beats/': 'Beat Maker',
     '/games/family/': 'Family Habits',
     '/games/money/': 'Money Tips',
