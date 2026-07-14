@@ -1,0 +1,33 @@
+name: Update Money Blocks Linktree card
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/update-money-blocks-link.yml
+
+permissions:
+  contents: write
+
+jobs:
+  update-card:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - run: node scripts/update-money-blocks-link.mjs
+      - run: |
+          grep -Fq 'href="https://seanali.online/flow"' linktree.html
+          grep -Fq '<strong>Remove Your Money Blocks</strong>' linktree.html
+      - run: |
+          rm -f scripts/update-money-blocks-link.mjs
+          rm -f .github/workflows/update-money-blocks-link.yml
+          git config user.name 'SEAN ALI'
+          git config user.email '158592572+seanmillionaire@users.noreply.github.com'
+          git add linktree.html
+          git add -u scripts/update-money-blocks-link.mjs .github/workflows/update-money-blocks-link.yml
+          git commit -m 'Update Money Blocks Linktree card'
+          git push origin HEAD:main
