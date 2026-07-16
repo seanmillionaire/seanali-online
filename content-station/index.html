@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#00d26a">
+    <title>Sean's Content Printer</title>
+    <link rel="stylesheet" href="styles.css?v=modern-lovable-6">
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="sidebar">
+        <div class="brand-lockup">
+          <img src="assets/sean.png" alt="Sean Ali">
+          <div>
+            <p class="eyebrow">Revenue OS</p>
+            <h1>Content Printer</h1>
+          </div>
+        </div>
+
+        <nav class="steps" aria-label="Workflow">
+          <a href="#concept" class="step-link active"><span>1</span><strong>Find Content Angle</strong><small>Generate + score</small></a>
+          <a href="#confirm" class="step-link"><span>2</span><strong>Pick Winner</strong><small>Approve or remix</small></a>
+          <a href="#assets" class="step-link"><span>3</span><strong>Print Assets</strong><small>Full batch</small></a>
+        </nav>
+
+      </aside>
+
+      <section class="workspace">
+        <header class="hero">
+          <p class="eyebrow" id="today-label">Content batch</p>
+          <h2>Press create. Print content.</h2>
+          <p>One strong angle. One winner. Full asset batch.</p>
+          <div class="money-strip" aria-label="Content printer focus">
+            <span>Search</span>
+            <span>Click</span>
+            <span>Watch</span>
+            <span>Buy</span>
+          </div>
+        </header>
+
+        <section id="concept" class="panel concept-panel">
+          <div class="panel-heading">
+            <div>
+              <span class="step-label">Step 1</span>
+              <h3>Find Content Angle</h3>
+              <p>Pick a lane. The War Room scores every angle before it shows.</p>
+            </div>
+            <div class="button-row">
+              <button id="use-pasted-concept" class="secondary-button" type="button">Use Pasted Idea</button>
+              <button id="create-concept" class="primary-button" type="button">Print Angle</button>
+            </div>
+          </div>
+
+          <div class="control-grid">
+            <label>
+              <span>Traffic lane</span>
+              <select id="lane">
+                <option value="neville">Neville Wealth</option>
+                <option value="manifestation">Neville Manifestation</option>
+                <option value="oldWealth">Wallace Wattles</option>
+                <option value="operator">AI Business</option>
+                <option value="freedom">Panama Untold</option>
+              </select>
+            </label>
+            <label>
+              <span>Money path</span>
+              <select id="cta">
+                <option value="auto">Auto by lane</option>
+                <option value="genie">Manifestation Genie</option>
+                <option value="moneyflow">Money Flow</option>
+                <option value="newsletter">Newsletter</option>
+              </select>
+            </label>
+            <label>
+              <span>Hook strength</span>
+              <select id="intensity">
+                <option value="strong">Fresh CTR Angle</option>
+                <option value="closest">Closest To Proven</option>
+                <option value="clean">Clean Sean</option>
+              </select>
+            </label>
+          </div>
+
+          <label class="field">
+            <span>Paste idea or seed</span>
+            <textarea id="seed" rows="4" placeholder="Paste your exact title or rough idea here. First line becomes the title when you press Use Pasted Idea."></textarea>
+          </label>
+        </section>
+
+        <section id="confirm" class="panel confirm-panel">
+          <div class="panel-heading">
+            <div>
+              <span class="step-label">Step 2</span>
+              <h3>Pick Winner</h3>
+              <p>Keep the money angle. Remix the weak one.</p>
+            </div>
+            <div class="button-row">
+              <button id="remix-concept" class="secondary-button" type="button">Remix</button>
+              <button id="approve-concept" class="primary-button" type="button">Approve Winner</button>
+            </div>
+          </div>
+
+          <article id="concept-card" class="concept-card empty">
+            <p class="empty-state">Press Print Angle.</p>
+          </article>
+        </section>
+
+        <section id="assets" class="panel assets-panel">
+          <div class="panel-heading">
+            <div>
+              <span class="step-label">Step 3</span>
+              <h3>Print Assets</h3>
+              <p>One winner becomes the full content batch.</p>
+            </div>
+            <div class="button-row">
+              <button id="create-assets" class="primary-button" type="button">Print Batch</button>
+              <button id="export-pack" class="secondary-button" type="button">Export Content Pack</button>
+            </div>
+          </div>
+
+          <div class="asset-tabs" role="tablist" aria-label="Assets">
+            <button class="asset-tab active" data-asset="slideshow" type="button">YouTube Slideshow HTML</button>
+            <button class="asset-tab" data-asset="shorts" type="button">YT Shorts</button>
+            <button class="asset-tab" data-asset="ig" type="button">IG Captions</button>
+            <button class="asset-tab" data-asset="blog" type="button">Vlog Plan</button>
+            <button class="asset-tab" data-asset="broadcast" type="button">Email Broadcast</button>
+            <button class="asset-tab" data-asset="followup" type="button">Email Follow Up</button>
+          </div>
+
+          <div class="asset-toolbar">
+            <span id="asset-status">Content printer idle</span>
+            <button id="copy-asset" class="copy-button" type="button">Copy Current Asset</button>
+            <button id="download-slideshow" class="copy-button" type="button">Download Slideshow HTML</button>
+          </div>
+
+          <textarea id="asset-output" class="asset-output" aria-label="Generated asset"></textarea>
+        </section>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status"></div>
+    <script src="app.js?v=modern-lovable-6"></script>
+  </body>
+</html>
