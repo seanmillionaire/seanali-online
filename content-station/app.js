@@ -178,10 +178,10 @@ function scoreConcept(concept) {
   const text = `${concept.title} ${concept.hook} ${concept.payoff}`.toLowerCase();
   const checks = [
     { label: "Cold Stranger", pass: concept.title.length >= 24 },
-    { label: "Click in the Mind", pass: /(god|money|wealth|sleep|love|job|income|book|phone|fear|prayer|affirmation|manifest)/i.test(text) },
-    { label: "Tangible Payoff", pass: /(calm|see|choose|build|sleep|receive|protect|move|earn|read|reply|review|remove|stop)/i.test(text) },
-    { label: "Specificity", pass: /(\d|before|tonight|daily|morning|book|script|sign|review|email)/i.test(text) },
-    { label: "Seven-Year-Old Clear", pass: concept.title.split(/\s+/).length <= 14 },
+    { label: "Click in the Mind", pass: concept.title.length >= 18 && !/^(content|idea|lesson|tips)$/i.test(concept.title) },
+    { label: "Tangible Payoff", pass: concept.payoff.length >= 30 && Boolean(concept.topic) },
+    { label: "Specificity", pass: Boolean(concept.systemName) && Boolean(concept.status) },
+    { label: "Seven-Year-Old Clear", pass: concept.title.split(/\s+/).length <= 20 },
     { label: "System Match", pass: concept.system === state.system },
     { label: "CTA Match", pass: Boolean(concept.cta) },
     { label: "Truth Gate", pass: !/(guarantee|will make you rich|cure|God told me)/i.test(text) }
