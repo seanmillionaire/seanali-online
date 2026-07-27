@@ -3,152 +3,84 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#00d26a">
-    <title>Sean Ali Organic Station</title>
-    <meta name="description" content="Sean Ali's organic content production console for God Shorts, Manifestation Genie, book reviews, emails, affirmations, and prayer content.">
-    <link rel="stylesheet" href="/content-station/styles.css?v=organic-tools-20260727">
+    <meta name="theme-color" content="#16c784">
+    <title>Sean Ali Content Station</title>
+    <meta name="description" content="Sean Ali's Content Station with rooms for organic content, idea generation, and image rendering.">
+    <link rel="stylesheet" href="/content-station/styles.css?v=saas-rooms-20260727">
   </head>
   <body>
-    <main class="app-shell">
-      <aside class="sidebar">
-        <div class="brand-lockup">
+    <main class="saas-shell">
+      <aside class="saas-sidebar">
+        <div class="saas-brand">
           <img src="/content-station/assets/sean.png" alt="Sean Ali">
           <div>
-            <p class="eyebrow">Sean Ali OS</p>
-            <h1>Organic Station</h1>
+            <p>Sean Ali OS</p>
+            <h1>Content Station</h1>
           </div>
         </div>
 
-        <nav class="steps" aria-label="Workflow">
-          <a href="#concept" class="step-link active"><span>1</span><strong>Choose System</strong><small>Live workflow</small></a>
-          <a href="#confirm" class="step-link"><span>2</span><strong>Approve Angle</strong><small>Cold-traffic gate</small></a>
-          <a href="#assets" class="step-link"><span>3</span><strong>Generate Pack</strong><small>Copy-ready output</small></a>
-          <a href="/content-station/idea-engine/" class="step-link"><span>⚡</span><strong>Run Idea Engine</strong><small>Offers + ads</small></a>
-          <a href="/content-station/image-generator/" class="step-link"><span>🎨</span><strong>Image Generator</strong><small>Brain-matched prompts</small></a>
+        <nav class="saas-nav" aria-label="Content Station rooms">
+          <a href="/content-station/" class="active"><span>⌂</span><strong>Home</strong><small>Choose room</small></a>
+          <a href="/content-station/organic/"><span>🌱</span><strong>Organic</strong><small>Daily content</small></a>
+          <a href="/content-station/idea-engine/"><span>⚡</span><strong>Ideas</strong><small>Offers + ads</small></a>
+          <a href="/content-station/image-generator/"><span>🎨</span><strong>Images</strong><small>Visual assets</small></a>
         </nav>
+        <div class="sidebar-foot">One operating system. Three rooms. Pick the tool that moves the asset forward.</div>
       </aside>
 
-      <section class="workspace">
-        <header class="hero">
-          <p class="eyebrow" id="today-label">Organic production console</p>
-          <h2>Pick a system. Add an idea. Print the pack.</h2>
-          <p>Built from Sean's current automations and locked content rules.</p>
-          <div class="money-strip" aria-label="Organic Station focus">
-            <span>Hook</span>
-            <span>Script</span>
-            <span>CTA</span>
-            <span>Publish</span>
+      <section class="saas-main">
+        <div class="topbar">
+          <div class="topbar-title">
+            <strong>Content Station</strong>
+            <span>Organic assets, idea strategy, and image rendering.</span>
           </div>
-          <div style="position:relative;z-index:1;margin-top:18px">
-            <a class="primary-button" href="/content-station/idea-engine/" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none">Run The Idea Engine</a>
-            <a class="secondary-button" href="/content-station/image-generator/" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;margin-left:10px">Open Image Generator</a>
-          </div>
+          <a class="primary-button" href="/content-station/organic/" style="display:inline-flex;align-items:center;text-decoration:none">Start With Organic</a>
+        </div>
+
+        <header class="selector-hero">
+          <p class="eyebrow">Choose your room</p>
+          <h2>Where do you want to work?</h2>
+          <p>Use the room that matches the job: print organic assets, create campaign ideas, or render visuals from Sean's company brain.</p>
         </header>
 
-        <section id="concept" class="panel concept-panel">
-          <div class="panel-heading">
-            <div>
-              <span class="step-label">Step 1</span>
-              <h3>Choose Production System</h3>
-              <p>Each system has its own locked format, voice, CTA, and quality gate.</p>
-            </div>
-            <div class="button-row">
-              <button id="use-pasted-concept" class="secondary-button" type="button">Use My Exact Idea</button>
-              <button id="create-concept" class="primary-button" type="button">Generate Angle</button>
-            </div>
-          </div>
+        <section class="room-grid" aria-label="Content Station rooms">
+          <a class="room-card" href="/content-station/organic/">
+            <span class="room-icon">🌱</span>
+            <h3>Organic Station</h3>
+            <p>Generate Sean-style organic assets from locked formats, voice rules, CTAs, and quality gates.</p>
+            <ul>
+              <li>God Shorts, Genie videos, reviews, emails</li>
+              <li>Approve an angle before printing assets</li>
+              <li>Copy, export, and download output</li>
+            </ul>
+            <span class="room-cta">Enter Organic</span>
+          </a>
 
-          <div class="control-grid">
-            <label>
-              <span>Content system</span>
-              <select id="lane">
-                <option value="godShorts">Sean Ali God Shorts</option>
-                <option value="genieFactory">Genie Video Factory</option>
-                <option value="bookReview">Manifestation Book Review</option>
-                <option value="jenniferEmail">Jennifer / HM Sales Email</option>
-                <option value="reviewShorts">Sean Ali Review Shorts</option>
-                <option value="hmAffirmations">HM Wealth Affirmations</option>
-                <option value="abundancePrayer">Abundance Prayers</option>
-              </select>
-            </label>
-            <label>
-              <span>Output volume</span>
-              <select id="cta">
-                <option value="auto">Locked system default</option>
-                <option value="one">1 asset</option>
-                <option value="two">2 assets</option>
-                <option value="three">3 assets</option>
-                <option value="five">5 assets</option>
-              </select>
-            </label>
-            <label>
-              <span>Idea mode</span>
-              <select id="intensity">
-                <option value="cold">Cold-Traffic Winner</option>
-                <option value="proven">Closest to Proven</option>
-                <option value="fresh">Fresh Adjacent Angle</option>
-              </select>
-            </label>
-          </div>
+          <a class="room-card" href="/content-station/idea-engine/">
+            <span class="room-icon">⚡</span>
+            <h3>Idea Engine</h3>
+            <p>Turn a trend, ad, comment, or rough clue into offer ideas and copy-ready campaign assets.</p>
+            <ul>
+              <li>Paste a clue and generate angles</li>
+              <li>Score ideas by offer fit</li>
+              <li>Print ads, emails, shorts, and Claude prompts</li>
+            </ul>
+            <span class="room-cta">Enter Ideas</span>
+          </a>
 
-          <label class="field">
-            <span>Idea, topic, title, desire, book, or offer</span>
-            <textarea id="seed" rows="4" placeholder="Examples: more income, God's guidance before a decision, dream job, The Power of Your Subconscious Mind, phone addiction, Money Flow"></textarea>
-          </label>
-        </section>
-
-        <section id="confirm" class="panel confirm-panel">
-          <div class="panel-heading">
-            <div>
-              <span class="step-label">Step 2</span>
-              <h3>Approve the Angle</h3>
-              <p>The app checks clarity, click power, tangible payoff, format match, and CTA match.</p>
-            </div>
-            <div class="button-row">
-              <button id="remix-concept" class="secondary-button" type="button">Remix</button>
-              <button id="approve-concept" class="primary-button" type="button">Approve Winner</button>
-            </div>
-          </div>
-
-          <article id="concept-card" class="concept-card empty">
-            <p class="empty-state">Choose a system and press Generate Angle.</p>
-          </article>
-        </section>
-
-        <section id="assets" class="panel assets-panel">
-          <div class="panel-heading">
-            <div>
-              <span class="step-label">Step 3</span>
-              <h3>Generate Production Pack</h3>
-              <p>The selected system controls the exact output structure.</p>
-            </div>
-            <div class="button-row">
-              <button id="create-assets" class="primary-button" type="button">Generate Pack</button>
-              <button id="export-pack" class="secondary-button" type="button">Export Pack</button>
-            </div>
-          </div>
-
-          <div class="asset-tabs" role="tablist" aria-label="Assets">
-            <button class="asset-tab active" data-asset="final" type="button">Final Pack</button>
-            <button class="asset-tab" data-asset="scripts" type="button">Scripts</button>
-            <button class="asset-tab" data-asset="titles" type="button">Titles</button>
-            <button class="asset-tab" data-asset="platform" type="button">Platform Copy</button>
-            <button class="asset-tab" data-asset="production" type="button">Production Notes</button>
-            <button class="asset-tab" data-asset="qa" type="button">QA Gate</button>
-          </div>
-
-          <div class="asset-toolbar">
-            <span id="asset-status">Organic Station ready</span>
-            <button id="copy-asset" class="copy-button" type="button">Copy Current</button>
-            <button id="download-slideshow" class="copy-button" type="button">Download Current</button>
-          </div>
-
-          <textarea id="asset-output" class="asset-output" aria-label="Generated asset"></textarea>
+          <a class="room-card" href="/content-station/image-generator/">
+            <span class="room-icon">🎨</span>
+            <h3>Image Generator</h3>
+            <p>Render visual directions and image prompts using Sean's company brain, offers, and brand rules.</p>
+            <ul>
+              <li>Toggle visual ideas and render canvas images</li>
+              <li>Download PNGs</li>
+              <li>Export prompts and designer briefs</li>
+            </ul>
+            <span class="room-cta">Enter Images</span>
+          </a>
         </section>
       </section>
     </main>
-
-    <div id="toast" class="toast" role="status"></div>
-    <script src="/content-station/app.js?v=organic-tools-20260727"></script>
   </body>
 </html>

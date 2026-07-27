@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#16c784">
     <title>Sean Ali Idea Engine | Content Station</title>
     <meta name="description" content="A guided Sean Ali Idea Engine for turning trends, comments, ads, and rough ideas into offers, hooks, ads, emails, shorts, landing page angles, and Claude-ready creative briefs.">
-    <link rel="stylesheet" href="/content-station/styles.css?v=live-systems-20260727">
+    <link rel="stylesheet" href="/content-station/styles.css?v=saas-rooms-20260727">
     <style>
       .engine-shell { min-height: 100vh; padding: 28px; }
       .engine-wrap { width: min(1280px, 100%); margin: 0 auto; }
@@ -26,6 +26,12 @@
         border-radius: 34px;
         box-shadow: var(--shadow);
       }
+      .workspace .engine-hero,
+      .workspace .engine-section {
+        width: min(1180px, 100%);
+        margin-left: auto;
+        margin-right: auto;
+      }
       .engine-hero::after {
         content: "ENGINE";
         position: absolute;
@@ -37,7 +43,7 @@
         letter-spacing: -.09em;
       }
       .engine-hero > * { position: relative; z-index: 1; }
-      .engine-hero h1 { max-width: 780px; margin: 10px 0 14px; font-size: clamp(42px, 5.6vw, 78px); line-height: .88; letter-spacing: -.07em; }
+      .engine-hero h1 { max-width: 780px; margin: 10px 0 14px; font-size: clamp(36px, 4.8vw, 62px); line-height: .94; letter-spacing: -.065em; }
       .engine-hero p { max-width: 650px; margin: 0; color: #d1d5db; font-size: 20px; font-weight: 740; line-height: 1.22; }
       .engine-card { padding: 22px; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .14); border-radius: 26px; backdrop-filter: blur(16px); }
       .engine-card h2 { margin: 0 0 12px; color: #fff; font-size: 28px; line-height: .98; letter-spacing: -.04em; }
@@ -176,19 +182,36 @@
     </style>
   </head>
   <body>
-    <main class="engine-shell">
-      <div class="engine-wrap">
-        <nav class="engine-nav">
-          <a class="engine-logo" href="/content-station/">
-            <img src="/content-station/assets/sean.png" alt="Sean Ali">
-            <span>Sean Ali Organic Station</span>
-          </a>
-          <div class="button-row">
-            <a class="secondary-button" href="/content-station/image-generator/" style="display:inline-flex;align-items:center;text-decoration:none">Image Generator</a>
-            <a class="secondary-button" href="/content-station/" style="display:inline-flex;align-items:center;text-decoration:none">Organic Station</a>
+    <main class="saas-shell">
+      <aside class="saas-sidebar">
+        <div class="saas-brand">
+          <img src="/content-station/assets/sean.png" alt="Sean Ali">
+          <div>
+            <p>Sean Ali OS</p>
+            <h1>Content Station</h1>
           </div>
-        </nav>
+        </div>
 
+        <nav class="saas-nav" aria-label="Content Station rooms">
+          <a href="/content-station/"><span>⌂</span><strong>Home</strong><small>Choose room</small></a>
+          <a href="/content-station/organic/"><span>🌱</span><strong>Organic</strong><small>Daily content</small></a>
+          <a href="/content-station/idea-engine/" class="active"><span>⚡</span><strong>Ideas</strong><small>Offers + ads</small></a>
+          <a href="/content-station/image-generator/"><span>🎨</span><strong>Images</strong><small>Visual assets</small></a>
+        </nav>
+        <div class="sidebar-foot">One operating system. Three rooms. Pick the tool that moves the asset forward.</div>
+      </aside>
+
+      <section class="workspace">
+        <div class="topbar">
+          <div class="topbar-title">
+            <strong>Idea Engine</strong>
+            <span>Turn clues into campaigns.</span>
+          </div>
+          <div class="button-row" style="margin-top:0">
+            <a class="secondary-button" href="/content-station/organic/" style="display:inline-flex;align-items:center;text-decoration:none">Organic</a>
+            <a class="secondary-button" href="/content-station/image-generator/" style="display:inline-flex;align-items:center;text-decoration:none">Images</a>
+          </div>
+        </div>
         <section class="engine-hero">
           <div>
             <p class="eyebrow">Guided idea tool</p>
@@ -337,7 +360,7 @@
             <div class="empty-note">No saved runs yet.</div>
           </div>
         </section>
-      </div>
+      </section>
     </main>
 
     <div id="toast" class="toast" role="status"></div>

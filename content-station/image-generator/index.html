@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#7c3aed">
     <title>Sean Ali Image Generator | Content Station</title>
     <meta name="description" content="Sean Ali's company-brain image generator for rendering premium brand-matched images, prompts, ad creatives, thumbnails, product mockups, and landing page visuals.">
-    <link rel="stylesheet" href="/content-station/styles.css?v=live-systems-20260727">
+    <link rel="stylesheet" href="/content-station/styles.css?v=saas-rooms-20260727">
     <style>
       .gen-shell { min-height: 100vh; padding: 28px; }
       .gen-wrap { width: min(1280px, 100%); margin: 0 auto; }
@@ -28,6 +28,12 @@
         border-radius: 34px;
         box-shadow: var(--shadow);
       }
+      .workspace .gen-hero,
+      .workspace .gen-section {
+        width: min(1180px, 100%);
+        margin-left: auto;
+        margin-right: auto;
+      }
       .gen-hero::after {
         content: "VISUALS";
         position: absolute;
@@ -39,7 +45,7 @@
         letter-spacing: -.09em;
       }
       .gen-hero > * { position: relative; z-index: 1; }
-      .gen-hero h1 { max-width: 760px; margin: 10px 0 14px; font-size: clamp(42px, 5.4vw, 76px); line-height: .88; letter-spacing: -.07em; }
+      .gen-hero h1 { max-width: 760px; margin: 10px 0 14px; font-size: clamp(36px, 4.8vw, 62px); line-height: .94; letter-spacing: -.065em; }
       .gen-hero p { max-width: 650px; margin: 0; color: #e5e7eb; font-size: 20px; font-weight: 740; line-height: 1.22; }
       .gen-card {
         padding: 22px;
@@ -187,19 +193,36 @@
     </style>
   </head>
   <body>
-    <main class="gen-shell">
-      <div class="gen-wrap">
-        <nav class="gen-nav">
-          <a class="gen-logo" href="/content-station/">
-            <img src="/content-station/assets/sean.png" alt="Sean Ali">
-            <span>Sean Ali Organic Station</span>
-          </a>
-          <div class="button-row">
-            <a class="secondary-button" href="/content-station/idea-engine/" style="display:inline-flex;align-items:center;text-decoration:none">Idea Engine</a>
-            <a class="secondary-button" href="/content-station/" style="display:inline-flex;align-items:center;text-decoration:none">Organic Station</a>
+    <main class="saas-shell">
+      <aside class="saas-sidebar">
+        <div class="saas-brand">
+          <img src="/content-station/assets/sean.png" alt="Sean Ali">
+          <div>
+            <p>Sean Ali OS</p>
+            <h1>Content Station</h1>
           </div>
-        </nav>
+        </div>
 
+        <nav class="saas-nav" aria-label="Content Station rooms">
+          <a href="/content-station/"><span>⌂</span><strong>Home</strong><small>Choose room</small></a>
+          <a href="/content-station/organic/"><span>🌱</span><strong>Organic</strong><small>Daily content</small></a>
+          <a href="/content-station/idea-engine/"><span>⚡</span><strong>Ideas</strong><small>Offers + ads</small></a>
+          <a href="/content-station/image-generator/" class="active"><span>🎨</span><strong>Images</strong><small>Visual assets</small></a>
+        </nav>
+        <div class="sidebar-foot">One operating system. Three rooms. Pick the tool that moves the asset forward.</div>
+      </aside>
+
+      <section class="workspace">
+        <div class="topbar">
+          <div class="topbar-title">
+            <strong>Image Generator</strong>
+            <span>Render visuals from the company brain.</span>
+          </div>
+          <div class="button-row" style="margin-top:0">
+            <a class="secondary-button" href="/content-station/organic/" style="display:inline-flex;align-items:center;text-decoration:none">Organic</a>
+            <a class="secondary-button" href="/content-station/idea-engine/" style="display:inline-flex;align-items:center;text-decoration:none">Ideas</a>
+          </div>
+        </div>
         <section class="gen-hero">
           <div>
             <p class="eyebrow">Company-brain image generator</p>
@@ -349,7 +372,7 @@
             <div class="empty-note">No saved image prompt runs yet.</div>
           </div>
         </section>
-      </div>
+      </section>
     </main>
 
     <div id="toast" class="toast" role="status"></div>
