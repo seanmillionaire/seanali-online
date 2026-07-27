@@ -13,38 +13,11 @@
       .engine-nav { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 18px; }
       .engine-logo { display: flex; align-items: center; gap: 12px; color: var(--ink); text-decoration: none; font-weight: 950; }
       .engine-logo img { width: 46px; height: 46px; border-radius: 16px; object-fit: cover; object-position: center 24%; box-shadow: 0 12px 28px rgba(15, 23, 42, .12); }
-      .engine-hero {
-        position: relative;
-        overflow: hidden;
-        display: grid;
-        grid-template-columns: 1fr .86fr;
-        gap: 24px;
-        align-items: stretch;
-        padding: 32px;
-        color: #fff;
-        background: radial-gradient(circle at top right, rgba(22, 199, 132, .34), transparent 24rem), linear-gradient(135deg, #0f172a, #111827 52%, #172554);
-        border-radius: 34px;
-        box-shadow: var(--shadow);
-      }
-      .workspace .engine-hero,
       .workspace .engine-section {
         width: min(1180px, 100%);
         margin-left: auto;
         margin-right: auto;
       }
-      .engine-hero::after {
-        content: "ENGINE";
-        position: absolute;
-        right: -18px;
-        bottom: -42px;
-        color: rgba(255, 255, 255, .06);
-        font-size: clamp(90px, 16vw, 210px);
-        font-weight: 1000;
-        letter-spacing: -.09em;
-      }
-      .engine-hero > * { position: relative; z-index: 1; }
-      .engine-hero h1 { max-width: 780px; margin: 10px 0 14px; font-size: clamp(36px, 4.8vw, 62px); line-height: .94; letter-spacing: -.065em; }
-      .engine-hero p { max-width: 650px; margin: 0; color: #d1d5db; font-size: 20px; font-weight: 740; line-height: 1.22; }
       .engine-card { padding: 22px; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .14); border-radius: 26px; backdrop-filter: blur(16px); }
       .engine-card h2 { margin: 0 0 12px; color: #fff; font-size: 28px; line-height: .98; letter-spacing: -.04em; }
       .engine-card ul { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
@@ -173,10 +146,9 @@
       .signal-chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
       .signal-chip { padding: 7px 10px; color: #0f172a; background: #eef2ff; border-radius: 999px; font-size: 12px; font-weight: 850; }
       @media (max-width: 980px) {
-        .engine-hero, .guide-grid, .tool-grid, .score-row, .history-grid { grid-template-columns: 1fr; }
+        .guide-grid, .tool-grid, .score-row, .history-grid { grid-template-columns: 1fr; }
         .engine-shell { padding: 16px; }
-        .engine-hero, .engine-section { padding: 22px; border-radius: 24px; }
-        .engine-hero h1 { font-size: 42px; }
+        .engine-section { padding: 22px; border-radius: 24px; }
         .engine-nav { align-items: flex-start; }
       }
     </style>
@@ -198,75 +170,36 @@
           <a href="/content-station/idea-engine/" class="active"><span>⚡</span><strong>Ideas</strong><small>Offers + ads</small></a>
           <a href="/content-station/image-generator/"><span>🎨</span><strong>Images</strong><small>Visual assets</small></a>
         </nav>
-        <div class="sidebar-foot">One operating system. Three rooms. Pick the tool that moves the asset forward.</div>
+        <div class="sidebar-foot">Choose a room.</div>
       </aside>
 
       <section class="workspace">
         <div class="topbar">
           <div class="topbar-title">
             <strong>Idea Engine</strong>
-            <span>Turn clues into campaigns.</span>
+            <span>Paste a clue. Generate assets.</span>
           </div>
           <div class="button-row" style="margin-top:0">
             <a class="secondary-button" href="/content-station/organic/" style="display:inline-flex;align-items:center;text-decoration:none">Organic</a>
             <a class="secondary-button" href="/content-station/image-generator/" style="display:inline-flex;align-items:center;text-decoration:none">Images</a>
           </div>
         </div>
-        <section class="engine-hero">
-          <div>
-            <p class="eyebrow">Guided idea tool</p>
-            <h1>Turn A Trend Into Ads, Emails, And Content Ideas</h1>
-            <p>Paste something people are reacting to. The engine shows you why it works, what Sean offer it fits, and what to create next.</p>
-          </div>
-          <aside class="engine-card">
-            <h2>What You Get</h2>
-            <ul>
-              <li><span>🎯</span><span>Best ideas to test, ranked from strongest to weakest.</span></li>
-              <li><span>📦</span><span>Ads, short scripts, email, landing page copy, and thumbnail text.</span></li>
-              <li><span>🧠</span><span>A Claude prompt when you want a deeper campaign.</span></li>
-              <li><span>📈</span><span>A place to save winners and learn from test results.</span></li>
-            </ul>
-          </aside>
-        </section>
-
-        <section class="engine-section">
-          <p class="eyebrow">How to use this</p>
-          <h2>Three Steps. No Guessing.</h2>
-          <p>If you can paste a comment, ad, YouTube title, problem, or rough idea, you can use this.</p>
-          <div class="guide-grid">
-            <article class="guide-card">
-              <span>1</span>
-              <h3>Paste A Clue</h3>
-              <p>Use anything people are reacting to: an ad, comment, YouTube title, problem, review, or rough idea.</p>
-            </article>
-            <article class="guide-card">
-              <span>2</span>
-              <h3>Press Generate</h3>
-              <p>The engine finds what people want, what pain is underneath, and which Sean offer fits best.</p>
-            </article>
-            <article class="guide-card">
-              <span>3</span>
-              <h3>Pick A Winner</h3>
-              <p>Choose the best idea, then copy ads, email, shorts, landing-page copy, or a Claude prompt.</p>
-            </article>
-          </div>
-        </section>
 
         <section class="engine-section" id="tool">
-          <p class="eyebrow">Start here</p>
-          <h2>Paste A Clue → Get A Campaign Pack</h2>
-          <p>A clue is anything that shows what people already care about. The tool turns that clue into original Sean-style ideas.</p>
+          <p class="eyebrow">Start</p>
+          <h2>Paste A Clue</h2>
+          <p>Add a trend, ad, comment, or rough idea.</p>
 
           <div class="tool-grid">
             <article class="tool-card">
-              <h3>1. Add Your Clue</h3>
+              <h3>Add Your Clue</h3>
               <div class="field-stack">
                 <label>
                   <span>Paste the clue</span>
                   <textarea id="market-input" placeholder="Paste a trend, comment, ad, YouTube title, customer problem, review, or rough idea here. Example: People are overwhelmed by AI and do not know what to sell."></textarea>
                 </label>
                 <div class="example-box">
-                  <strong>Example clue</strong>
+                  <strong>Example</strong>
                   <p>People are overwhelmed by AI and do not know what to sell.</p>
                   <button id="sample-engine" class="secondary-button" type="button">Use This Example</button>
                 </div>
@@ -313,9 +246,9 @@
             </article>
 
             <article class="result-card">
-              <h3>2. What The Engine Found</h3>
+              <h3>What It Found</h3>
               <div id="readout" class="engine-output">
-                <div class="empty-note">Paste a clue or press Use This Example. Then press Generate Idea Pack. The engine will show what people want, what pain is underneath, and what offer fits.</div>
+                <div class="empty-note">Paste a clue, use the example, then generate.</div>
               </div>
             </article>
           </div>
@@ -324,16 +257,16 @@
         <section class="engine-section">
           <p class="eyebrow">Winner bank</p>
           <h2>Best Ideas To Test</h2>
-          <p>Higher score = better fit for Sean’s offers. Click the score button on the idea you want to use.</p>
+          <p>Higher score = stronger offer fit.</p>
           <div id="angles" class="angle-list">
-            <div class="empty-note">Your best ideas will appear here after you press Generate Idea Pack.</div>
+            <div class="empty-note">Generated ideas appear here.</div>
           </div>
         </section>
 
         <section class="engine-section">
           <p class="eyebrow">Creative engine</p>
-          <h2>Copy-Ready Assets</h2>
-          <p>Click a tab to switch what you want to copy: ads, short scripts, email, landing-page copy, or the Claude prompt.</p>
+          <h2>Assets</h2>
+          <p>Choose a tab and copy what you need.</p>
           <div class="tabs" id="pack-tabs">
             <button class="active" data-pack="brief" type="button">Strategy Brief</button>
             <button data-pack="ads" type="button">Meta Ads</button>
@@ -348,14 +281,14 @@
             <button id="export-pack" class="secondary-button" type="button">Export Full Pack</button>
             <button id="save-run" class="primary-button" type="button">Save This Run</button>
           </div>
-          <p class="helper-note">Save keeps this idea in this browser. Export downloads the full pack as a text file.</p>
+          <p class="helper-note">Save stays in this browser. Export downloads every tab.</p>
           <textarea id="pack-output" class="pack-output" aria-label="Generated idea engine pack"></textarea>
         </section>
 
         <section class="engine-section">
           <p class="eyebrow">Saved runs</p>
-          <h2>Local Idea Engine History</h2>
-          <p>Saved in this browser so the best angles are not lost between sessions.</p>
+          <h2>Saved</h2>
+          <p>Your browser keeps saved runs here.</p>
           <div id="history" class="history-grid">
             <div class="empty-note">No saved runs yet.</div>
           </div>

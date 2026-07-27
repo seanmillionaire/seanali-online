@@ -13,40 +13,11 @@
       .gen-nav { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 18px; }
       .gen-logo { display: flex; align-items: center; gap: 12px; color: var(--ink); text-decoration: none; font-weight: 950; }
       .gen-logo img { width: 46px; height: 46px; border-radius: 16px; object-fit: cover; object-position: center 24%; box-shadow: 0 12px 28px rgba(15, 23, 42, .12); }
-      .gen-hero {
-        position: relative;
-        overflow: hidden;
-        display: grid;
-        grid-template-columns: 1fr .92fr;
-        gap: 24px;
-        padding: 32px;
-        color: #fff;
-        background:
-          radial-gradient(circle at top right, rgba(249, 115, 22, .34), transparent 24rem),
-          radial-gradient(circle at bottom left, rgba(124, 58, 237, .34), transparent 26rem),
-          linear-gradient(135deg, #111827, #171717 55%, #312e81);
-        border-radius: 34px;
-        box-shadow: var(--shadow);
-      }
-      .workspace .gen-hero,
       .workspace .gen-section {
         width: min(1180px, 100%);
         margin-left: auto;
         margin-right: auto;
       }
-      .gen-hero::after {
-        content: "VISUALS";
-        position: absolute;
-        right: -18px;
-        bottom: -42px;
-        color: rgba(255, 255, 255, .06);
-        font-size: clamp(82px, 14vw, 190px);
-        font-weight: 1000;
-        letter-spacing: -.09em;
-      }
-      .gen-hero > * { position: relative; z-index: 1; }
-      .gen-hero h1 { max-width: 760px; margin: 10px 0 14px; font-size: clamp(36px, 4.8vw, 62px); line-height: .94; letter-spacing: -.065em; }
-      .gen-hero p { max-width: 650px; margin: 0; color: #e5e7eb; font-size: 20px; font-weight: 740; line-height: 1.22; }
       .gen-card {
         padding: 22px;
         background: rgba(255, 255, 255, .08);
@@ -184,10 +155,9 @@
       .history-card p { margin: 0 0 12px; color: var(--muted); font-size: 13px; font-weight: 670; line-height: 1.35; }
       .empty-note { padding: 22px; color: var(--muted); background: #f9fafb; border: 1px dashed var(--line-strong); border-radius: 20px; font-weight: 750; text-align: center; }
       @media (max-width: 980px) {
-        .gen-hero, .gen-grid, .brain-strip, .visual-summary, .preview-grid, .history-grid { grid-template-columns: 1fr; }
+        .gen-grid, .brain-strip, .visual-summary, .preview-grid, .history-grid { grid-template-columns: 1fr; }
         .gen-shell { padding: 16px; }
-        .gen-hero, .gen-section { padding: 22px; border-radius: 24px; }
-        .gen-hero h1 { font-size: 42px; }
+        .gen-section { padding: 22px; border-radius: 24px; }
         .gen-nav { align-items: flex-start; }
       }
     </style>
@@ -209,51 +179,29 @@
           <a href="/content-station/idea-engine/"><span>⚡</span><strong>Ideas</strong><small>Offers + ads</small></a>
           <a href="/content-station/image-generator/" class="active"><span>🎨</span><strong>Images</strong><small>Visual assets</small></a>
         </nav>
-        <div class="sidebar-foot">One operating system. Three rooms. Pick the tool that moves the asset forward.</div>
+        <div class="sidebar-foot">Choose a room.</div>
       </aside>
 
       <section class="workspace">
         <div class="topbar">
           <div class="topbar-title">
             <strong>Image Generator</strong>
-            <span>Render visuals from the company brain.</span>
+            <span>Render visuals. Download PNGs.</span>
           </div>
           <div class="button-row" style="margin-top:0">
             <a class="secondary-button" href="/content-station/organic/" style="display:inline-flex;align-items:center;text-decoration:none">Organic</a>
             <a class="secondary-button" href="/content-station/idea-engine/" style="display:inline-flex;align-items:center;text-decoration:none">Ideas</a>
           </div>
         </div>
-        <section class="gen-hero">
-          <div>
-            <p class="eyebrow">Company-brain image generator</p>
-            <h1>Make The Visuals Look Like Sean’s World.</h1>
-            <p>Pick the brand, offer, platform, and emotional angle. The tool prints premium image prompts, thumbnail text, negative prompts, and creative directions tied to Sean’s company brain.</p>
-            <div class="brain-strip" aria-label="Company brain">
-              <div class="brain-pill"><strong>Sean Ali</strong><span>Trust engine</span></div>
-              <div class="brain-pill"><strong>HM</strong><span>Cash engine</span></div>
-              <div class="brain-pill"><strong>Genie</strong><span>Recurring</span></div>
-              <div class="brain-pill"><strong>AFS</strong><span>AI freedom</span></div>
-            </div>
-          </div>
-          <aside class="gen-card">
-            <h2>Outputs</h2>
-            <ul>
-              <li><span>🖼</span><span>Rendered hero, ad, thumbnail, social post, product mockup, and lifestyle scenes.</span></li>
-              <li><span>🎯</span><span>Visual strategy based on desire: money, peace, freedom, or change.</span></li>
-              <li><span>🧲</span><span>Overlay text, composition, color, lighting, and proof direction.</span></li>
-              <li><span>🚫</span><span>Negative prompts to avoid cheap, fake, generic AI visuals.</span></li>
-            </ul>
-          </aside>
-        </section>
 
         <section class="gen-section">
-          <p class="eyebrow">Render images</p>
-          <h2>Campaign Visual → Rendered Image + Prompt Pack</h2>
-          <p>This does not create random art. It renders brand-matched creative directions and gives you prompts for deeper AI image generation when needed.</p>
+          <p class="eyebrow">Start</p>
+          <h2>Set The Visual</h2>
+          <p>Pick brand, offer, format, and angle.</p>
 
           <div class="gen-grid">
             <article class="tool-card">
-              <h3>1. Feed The Visual Brain</h3>
+              <h3>Inputs</h3>
               <div class="field-stack">
                 <label>
                   <span>Brand</span>
@@ -312,9 +260,9 @@
             </article>
 
             <article class="output-card">
-              <h3>2. Visual Strategy</h3>
+              <h3>Strategy</h3>
               <div id="summary">
-                <div class="empty-note">Generate a pack to see visual direction, palette, proof angle, and what the image must avoid.</div>
+                <div class="empty-note">Generate to see direction and palette.</div>
               </div>
               <div class="preview-grid" id="preview" style="margin-top:14px"></div>
             </article>
@@ -323,8 +271,8 @@
 
         <section class="gen-section">
           <p class="eyebrow">Rendered output</p>
-          <h2>Toggle Ideas. Render The Image.</h2>
-          <p>Choose the visual direction you want. The image below updates instantly and can be downloaded as a PNG.</p>
+          <h2>Render</h2>
+          <p>Toggle an idea. Download the PNG.</p>
           <div class="render-stage">
             <div class="render-controls" id="render-controls" aria-label="Rendered image ideas">
               <button class="active" data-render="Founder Authority" type="button">Founder Authority</button>
@@ -346,8 +294,8 @@
 
         <section class="gen-section">
           <p class="eyebrow">Prompt pack</p>
-          <h2>Copy Into Your Image Model</h2>
-          <p>The canvas render gives you the quick visual. Use these prompts when you want a full AI-generated version in ChatGPT, Midjourney, or another image model.</p>
+          <h2>Prompts</h2>
+          <p>Use these for a full AI image version.</p>
           <div class="tabs" id="tabs">
             <button class="active" data-tab="main" type="button">Main Prompt</button>
             <button data-tab="variants" type="button">Variants</button>
@@ -366,8 +314,8 @@
 
         <section class="gen-section">
           <p class="eyebrow">Saved visuals</p>
-          <h2>Local Image Prompt History</h2>
-          <p>Saved in this browser so winning visual directions are easy to reuse.</p>
+          <h2>Saved</h2>
+          <p>Your browser keeps saved visuals here.</p>
           <div id="history" class="history-grid">
             <div class="empty-note">No saved image prompt runs yet.</div>
           </div>
