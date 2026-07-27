@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#7c3aed">
     <title>Sean Ali Image Generator | Content Station</title>
-    <meta name="description" content="Sean Ali's company-brain image generator for producing premium brand-matched prompts, ad creatives, thumbnails, product mockups, and landing page visuals.">
+    <meta name="description" content="Sean Ali's company-brain image generator for rendering premium brand-matched images, prompts, ad creatives, thumbnails, product mockups, and landing page visuals.">
     <link rel="stylesheet" href="/content-station/styles.css?v=live-systems-20260727">
     <style>
       .gen-shell { min-height: 100vh; padding: 28px; }
@@ -110,6 +110,53 @@
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         font-size: 13px;
       }
+      .render-stage {
+        display: grid;
+        gap: 14px;
+      }
+      .render-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .render-controls button {
+        min-height: 42px;
+        padding: 0 13px;
+        color: var(--ink);
+        background: #fff;
+        border: 1px solid var(--line-strong);
+        border-radius: 999px;
+        font-weight: 850;
+      }
+      .render-controls button.active {
+        color: #fff;
+        background: linear-gradient(135deg, #7c3aed, #f97316);
+        border-color: transparent;
+      }
+      .canvas-shell {
+        overflow: hidden;
+        padding: 12px;
+        background:
+          linear-gradient(135deg, rgba(124, 58, 237, .12), rgba(249, 115, 22, .1)),
+          #fff;
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        box-shadow: 0 18px 48px rgba(15, 23, 42, .08);
+      }
+      #render-canvas {
+        display: block;
+        width: 100%;
+        height: auto;
+        background: #111827;
+        border-radius: 18px;
+      }
+      .render-note {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 740;
+        line-height: 1.4;
+      }
       .preview-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
       .mock-tile {
         min-height: 190px;
@@ -168,7 +215,7 @@
           <aside class="gen-card">
             <h2>Outputs</h2>
             <ul>
-              <li><span>🖼</span><span>Hero, ad, thumbnail, social post, product mockup, and lifestyle scene prompts.</span></li>
+              <li><span>🖼</span><span>Rendered hero, ad, thumbnail, social post, product mockup, and lifestyle scenes.</span></li>
               <li><span>🎯</span><span>Visual strategy based on desire: money, peace, freedom, or change.</span></li>
               <li><span>🧲</span><span>Overlay text, composition, color, lighting, and proof direction.</span></li>
               <li><span>🚫</span><span>Negative prompts to avoid cheap, fake, generic AI visuals.</span></li>
@@ -177,9 +224,9 @@
         </section>
 
         <section class="gen-section">
-          <p class="eyebrow">Generate prompts</p>
-          <h2>Campaign Visual → Image Prompt Pack</h2>
-          <p>This does not create random art. It creates brand-matched prompts for images that can sell: hooks, proof, emotion, product clarity, and Sean-style trust.</p>
+          <p class="eyebrow">Render images</p>
+          <h2>Campaign Visual → Rendered Image + Prompt Pack</h2>
+          <p>This does not create random art. It renders brand-matched creative directions and gives you prompts for deeper AI image generation when needed.</p>
 
           <div class="gen-grid">
             <article class="tool-card">
@@ -252,9 +299,32 @@
         </section>
 
         <section class="gen-section">
+          <p class="eyebrow">Rendered output</p>
+          <h2>Toggle Ideas. Render The Image.</h2>
+          <p>Choose the visual direction you want. The image below updates instantly and can be downloaded as a PNG.</p>
+          <div class="render-stage">
+            <div class="render-controls" id="render-controls" aria-label="Rendered image ideas">
+              <button class="active" data-render="Founder Authority" type="button">Founder Authority</button>
+              <button data-render="Proof-First Visual" type="button">Proof-First</button>
+              <button data-render="Mechanism Visual" type="button">Mechanism</button>
+              <button data-render="Desire Visual" type="button">Desire</button>
+              <button data-render="Contrarian Hook" type="button">Contrarian</button>
+            </div>
+            <div class="button-row tight" style="margin-top:0">
+              <button id="download-render" class="primary-button" type="button">Download Rendered PNG</button>
+              <button id="rerender" class="secondary-button" type="button">Re-render Current Idea</button>
+            </div>
+            <div class="canvas-shell">
+              <canvas id="render-canvas" width="1280" height="720" aria-label="Rendered generated image"></canvas>
+            </div>
+            <p class="render-note" id="render-note">Generate an image pack first, then toggle between ideas.</p>
+          </div>
+        </section>
+
+        <section class="gen-section">
           <p class="eyebrow">Prompt pack</p>
           <h2>Copy Into Your Image Model</h2>
-          <p>Use the main prompt for ChatGPT image generation. Use the variants for ads, thumbnails, landing pages, and social creative tests.</p>
+          <p>The canvas render gives you the quick visual. Use these prompts when you want a full AI-generated version in ChatGPT, Midjourney, or another image model.</p>
           <div class="tabs" id="tabs">
             <button class="active" data-tab="main" type="button">Main Prompt</button>
             <button data-tab="variants" type="button">Variants</button>
@@ -287,7 +357,7 @@
     <script>
       const STORAGE_KEY = "seanImageGeneratorRunsV1";
       const $ = (id) => document.getElementById(id);
-      const state = { run: null, tab: "main" };
+      const state = { run: null, tab: "main", renderIdea: "Founder Authority" };
 
       const brandBrain = {
         "Sean Ali": {
@@ -390,6 +460,7 @@
           offerData: offerBrain[offer]
         };
         state.tab = "main";
+        state.renderIdea = "Founder Authority";
         render();
         showToast("Image pack generated");
       }
@@ -398,6 +469,7 @@
         if (!state.run) return;
         renderSummary();
         setTab(state.tab);
+        setRenderIdea(state.renderIdea);
         $("output").value = buildPacks()[state.tab];
       }
 
@@ -420,6 +492,346 @@
           <div class="mock-tile"><strong>${escapeHtml(run.offer)}</strong><span>${escapeHtml(run.offerData)}</span></div>
           <div class="mock-tile"><strong>${escapeHtml(run.visualType)}</strong><span>${escapeHtml(run.mustInclude || run.brandData.subjects)}</span></div>
         `;
+      }
+
+      function setRenderIdea(idea) {
+        state.renderIdea = idea;
+        document.querySelectorAll("#render-controls button").forEach((button) => {
+          button.classList.toggle("active", button.dataset.render === idea);
+        });
+        renderCanvas();
+      }
+
+      function canvasSizeFor(type) {
+        if (type === "YouTube thumbnail" || type === "Landing page hero") return { width: 1280, height: 720 };
+        if (type === "Meta ad image" || type === "Instagram carousel slide") return { width: 1080, height: 1080 };
+        if (type === "Product mockup") return { width: 1200, height: 900 };
+        return { width: 1200, height: 800 };
+      }
+
+      function renderCanvas() {
+        const canvas = $("render-canvas");
+        const ctx = canvas.getContext("2d");
+        const run = state.run;
+        if (!run) {
+          drawEmptyCanvas(ctx, canvas);
+          return;
+        }
+        const size = canvasSizeFor(run.visualType);
+        canvas.width = size.width;
+        canvas.height = size.height;
+        const w = canvas.width;
+        const h = canvas.height;
+        const palette = paletteFor(run);
+        drawBackground(ctx, w, h, palette);
+        drawGrid(ctx, w, h, palette);
+        const idea = state.renderIdea;
+        if (idea === "Founder Authority") drawFounderAuthority(ctx, run, w, h, palette);
+        if (idea === "Proof-First Visual") drawProofFirst(ctx, run, w, h, palette);
+        if (idea === "Mechanism Visual") drawMechanism(ctx, run, w, h, palette);
+        if (idea === "Desire Visual") drawDesire(ctx, run, w, h, palette);
+        if (idea === "Contrarian Hook") drawContrarian(ctx, run, w, h, palette);
+        $("render-note").textContent = `${idea} render · ${run.visualType} · ${w}x${h}. Toggle another idea or download this PNG.`;
+      }
+
+      function drawEmptyCanvas(ctx, canvas) {
+        const w = canvas.width;
+        const h = canvas.height;
+        const gradient = ctx.createLinearGradient(0, 0, w, h);
+        gradient.addColorStop(0, "#111827");
+        gradient.addColorStop(1, "#312e81");
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, w, h);
+        ctx.fillStyle = "rgba(255,255,255,.08)";
+        roundRect(ctx, 56, 56, w - 112, h - 112, 32, true);
+        drawText(ctx, "Generate An Image Pack", 92, h / 2 - 36, w - 184, 62, "#fff", 900);
+        drawText(ctx, "Then toggle the ideas to render different visual directions.", 92, h / 2 + 38, w - 184, 32, "#d1d5db", 750);
+      }
+
+      function paletteFor(run) {
+        if (run.desire === "More Peace") return { bg1: "#0f172a", bg2: "#1e3a8a", accent: "#22c55e", hot: "#f59e0b", soft: "#dbeafe" };
+        if (run.desire === "More Freedom") return { bg1: "#f8fafc", bg2: "#0ea5e9", accent: "#f97316", hot: "#16c784", soft: "#e0f2fe" };
+        if (run.desire === "Change My Life") return { bg1: "#111827", bg2: "#7c3aed", accent: "#ef4444", hot: "#f97316", soft: "#ede9fe" };
+        return { bg1: "#f8fafc", bg2: "#111827", accent: "#ef4444", hot: "#f97316", soft: "#dcfce7" };
+      }
+
+      function drawBackground(ctx, w, h, palette) {
+        const gradient = ctx.createLinearGradient(0, 0, w, h);
+        gradient.addColorStop(0, palette.bg1);
+        gradient.addColorStop(.58, "#111827");
+        gradient.addColorStop(1, palette.bg2);
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, w, h);
+        drawBlob(ctx, w * .78, h * .08, w * .35, palette.hot, .24);
+        drawBlob(ctx, w * .14, h * .82, w * .28, palette.accent, .18);
+        drawBlob(ctx, w * .88, h * .86, w * .22, "#16c784", .16);
+      }
+
+      function drawGrid(ctx, w, h) {
+        ctx.save();
+        ctx.strokeStyle = "rgba(255,255,255,.06)";
+        ctx.lineWidth = 1;
+        for (let x = 0; x < w; x += 64) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, h);
+          ctx.stroke();
+        }
+        for (let y = 0; y < h; y += 64) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(w, y);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      function drawFounderAuthority(ctx, run, w, h, palette) {
+        drawTopLabel(ctx, run.brand, run.visualType, w);
+        drawFounderShape(ctx, w * .72, h * .55, Math.min(w, h) * .32, palette);
+        drawGlassCard(ctx, w * .06, h * .18, w * .52, h * .58);
+        drawText(ctx, overlayText(run), w * .09, h * .25, w * .45, Math.min(78, w * .07), "#fff", 950);
+        drawText(ctx, run.angle, w * .09, h * .48, w * .42, Math.min(32, w * .028), "#d1d5db", 760);
+        drawPill(ctx, w * .09, h * .68, mechanismOverlay(run), palette.hot);
+        drawProofBar(ctx, w * .09, h * .77, w * .42, run);
+      }
+
+      function drawProofFirst(ctx, run, w, h, palette) {
+        drawTopLabel(ctx, "PROOF FIRST", run.offer, w);
+        drawDashboard(ctx, w * .08, h * .2, w * .48, h * .52, palette);
+        drawGlassCard(ctx, w * .58, h * .18, w * .34, h * .55);
+        drawText(ctx, proofOverlay(run), w * .62, h * .25, w * .26, Math.min(64, w * .055), "#fff", 950);
+        drawText(ctx, run.desireData.proof, w * .62, h * .48, w * .25, Math.min(28, w * .024), "#d1d5db", 780);
+        drawPill(ctx, w * .62, h * .68, "VERIFIED DIRECTION", "#16c784");
+      }
+
+      function drawMechanism(ctx, run, w, h, palette) {
+        drawTopLabel(ctx, "MECHANISM", run.offer, w);
+        drawGlassCard(ctx, w * .08, h * .16, w * .84, h * .64);
+        const steps = mechanismOverlay(run).split("→").map((step) => clean(step));
+        steps.forEach((step, index) => {
+          const x = w * (.16 + index * .26);
+          const y = h * .45;
+          drawStepNode(ctx, x, y, step, index + 1, palette);
+          if (index < steps.length - 1) drawArrow(ctx, x + w * .09, y, x + w * .18, y, palette.hot);
+        });
+        drawText(ctx, "The Simple Path", w * .14, h * .24, w * .72, Math.min(64, w * .055), "#fff", 950);
+        drawText(ctx, run.offerData, w * .14, h * .68, w * .7, Math.min(28, w * .024), "#d1d5db", 760);
+      }
+
+      function drawDesire(ctx, run, w, h, palette) {
+        drawTopLabel(ctx, run.desire, run.brand, w);
+        drawLifestyleScene(ctx, w, h, palette);
+        drawGlassCard(ctx, w * .07, h * .16, w * .46, h * .54);
+        drawText(ctx, desireOverlay(run), w * .1, h * .24, w * .38, Math.min(70, w * .06), "#fff", 950);
+        drawText(ctx, run.desireData.emotion, w * .1, h * .47, w * .36, Math.min(30, w * .026), "#e5e7eb", 760);
+        drawPill(ctx, w * .1, h * .63, run.offer, palette.hot);
+      }
+
+      function drawContrarian(ctx, run, w, h, palette) {
+        drawTopLabel(ctx, "PATTERN INTERRUPT", run.offer, w);
+        ctx.fillStyle = "rgba(0,0,0,.36)";
+        ctx.fillRect(0, 0, w, h);
+        drawWarningMark(ctx, w * .75, h * .48, Math.min(w, h) * .22, palette.hot);
+        drawGlassCard(ctx, w * .07, h * .2, w * .55, h * .52);
+        drawText(ctx, contrarianOverlay(run), w * .1, h * .29, w * .46, Math.min(82, w * .07), "#fff", 950);
+        drawText(ctx, run.angle, w * .1, h * .55, w * .42, Math.min(30, w * .026), "#d1d5db", 780);
+        drawPill(ctx, w * .1, h * .69, "ONE CLEAR MOVE", "#ef4444");
+      }
+
+      function drawTopLabel(ctx, left, right, w) {
+        ctx.save();
+        ctx.font = "900 24px Inter, Arial, sans-serif";
+        ctx.fillStyle = "rgba(255,255,255,.84)";
+        ctx.fillText(left.toUpperCase(), 48, 56);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "rgba(255,255,255,.58)";
+        ctx.fillText(right.toUpperCase(), w - 48, 56);
+        ctx.restore();
+      }
+
+      function drawFounderShape(ctx, x, y, size, palette) {
+        ctx.save();
+        drawBlob(ctx, x, y, size * 1.05, "rgba(255,255,255,.14)", 1);
+        ctx.fillStyle = "#f3c7a6";
+        ctx.beginPath();
+        ctx.arc(x, y - size * .22, size * .22, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#111827";
+        ctx.beginPath();
+        ctx.arc(x, y - size * .3, size * .23, Math.PI, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = palette.accent;
+        roundRect(ctx, x - size * .26, y + size * .02, size * .52, size * .46, size * .14, true);
+        ctx.fillStyle = "rgba(255,255,255,.18)";
+        roundRect(ctx, x - size * .18, y + size * .16, size * .36, size * .18, size * .04, true);
+        ctx.restore();
+      }
+
+      function drawDashboard(ctx, x, y, w, h, palette) {
+        drawGlassCard(ctx, x, y, w, h);
+        ctx.fillStyle = "rgba(255,255,255,.92)";
+        roundRect(ctx, x + w * .06, y + h * .08, w * .88, h * .12, 12, true);
+        for (let i = 0; i < 3; i += 1) {
+          ctx.fillStyle = i === 0 ? palette.hot : i === 1 ? "#16c784" : palette.accent;
+          roundRect(ctx, x + w * (.08 + i * .29), y + h * .28, w * .22, h * .18, 14, true);
+        }
+        ctx.strokeStyle = "rgba(255,255,255,.62)";
+        ctx.lineWidth = 8;
+        ctx.beginPath();
+        ctx.moveTo(x + w * .1, y + h * .72);
+        ctx.bezierCurveTo(x + w * .32, y + h * .54, x + w * .44, y + h * .86, x + w * .62, y + h * .62);
+        ctx.bezierCurveTo(x + w * .72, y + h * .5, x + w * .82, y + h * .48, x + w * .9, y + h * .36);
+        ctx.stroke();
+      }
+
+      function drawStepNode(ctx, x, y, label, number, palette) {
+        ctx.fillStyle = "rgba(255,255,255,.12)";
+        roundRect(ctx, x - 95, y - 80, 190, 160, 28, true);
+        ctx.fillStyle = palette.hot;
+        ctx.beginPath();
+        ctx.arc(x, y - 34, 26, 0, Math.PI * 2);
+        ctx.fill();
+        drawText(ctx, String(number), x - 16, y - 48, 32, 30, "#fff", 950);
+        drawText(ctx, label, x - 72, y + 3, 144, 25, "#fff", 900, "center");
+      }
+
+      function drawArrow(ctx, x1, y1, x2, y2, color) {
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.fillStyle = color;
+        ctx.lineWidth = 7;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x2, y2);
+        ctx.lineTo(x2 - 18, y2 - 12);
+        ctx.lineTo(x2 - 18, y2 + 12);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function drawLifestyleScene(ctx, w, h, palette) {
+        ctx.fillStyle = "rgba(255,255,255,.12)";
+        roundRect(ctx, w * .58, h * .2, w * .31, h * .45, 28, true);
+        ctx.fillStyle = palette.soft;
+        roundRect(ctx, w * .62, h * .28, w * .23, h * .18, 18, true);
+        ctx.fillStyle = palette.hot;
+        ctx.beginPath();
+        ctx.arc(w * .75, h * .37, h * .045, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "rgba(255,255,255,.65)";
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.moveTo(w * .61, h * .58);
+        ctx.bezierCurveTo(w * .7, h * .52, w * .78, h * .62, w * .88, h * .54);
+        ctx.stroke();
+      }
+
+      function drawWarningMark(ctx, x, y, size, color) {
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(x, y - size);
+        ctx.lineTo(x + size * .86, y + size * .58);
+        ctx.lineTo(x - size * .86, y + size * .58);
+        ctx.closePath();
+        ctx.fill();
+        drawText(ctx, "!", x - size * .08, y - size * .32, size * .16, size * .92, "#fff", 950, "center");
+        ctx.restore();
+      }
+
+      function drawGlassCard(ctx, x, y, w, h) {
+        ctx.save();
+        ctx.fillStyle = "rgba(255,255,255,.12)";
+        roundRect(ctx, x, y, w, h, 30, true);
+        ctx.strokeStyle = "rgba(255,255,255,.18)";
+        ctx.lineWidth = 2;
+        roundRect(ctx, x, y, w, h, 30, false);
+        ctx.restore();
+      }
+
+      function drawProofBar(ctx, x, y, w, run) {
+        const items = [run.desire, run.offer, "Sean Fit"];
+        items.forEach((item, index) => {
+          ctx.fillStyle = "rgba(255,255,255,.1)";
+          roundRect(ctx, x + index * (w / 3), y, w / 3 - 10, 54, 14, true);
+          drawText(ctx, item, x + index * (w / 3) + 14, y + 16, w / 3 - 38, 18, "#fff", 850);
+        });
+      }
+
+      function drawPill(ctx, x, y, text, color) {
+        ctx.save();
+        ctx.font = "900 22px Inter, Arial, sans-serif";
+        const width = Math.min(ctx.measureText(text).width + 34, 420);
+        ctx.fillStyle = color;
+        roundRect(ctx, x, y, width, 48, 24, true);
+        ctx.fillStyle = "#fff";
+        ctx.fillText(text.toUpperCase(), x + 17, y + 31);
+        ctx.restore();
+      }
+
+      function drawBlob(ctx, x, y, size, color, alpha) {
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(x, y, size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function drawText(ctx, text, x, y, maxWidth, fontSize, color, weight = 800, align = "left") {
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.font = `${weight} ${fontSize}px Inter, Arial, sans-serif`;
+        ctx.textAlign = align;
+        ctx.textBaseline = "top";
+        const words = clean(text).split(" ");
+        const lines = [];
+        let line = "";
+        words.forEach((word) => {
+          const test = line ? `${line} ${word}` : word;
+          if (ctx.measureText(test).width > maxWidth && line) {
+            lines.push(line);
+            line = word;
+          } else {
+            line = test;
+          }
+        });
+        if (line) lines.push(line);
+        const lineHeight = fontSize * 1.06;
+        lines.slice(0, 5).forEach((row, index) => {
+          const drawX = align === "center" ? x + maxWidth / 2 : x;
+          ctx.fillText(row, drawX, y + index * lineHeight);
+        });
+        ctx.restore();
+      }
+
+      function roundRect(ctx, x, y, width, height, radius, fill) {
+        const r = Math.min(radius, width / 2, height / 2);
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + width, y, x + width, y + height, r);
+        ctx.arcTo(x + width, y + height, x, y + height, r);
+        ctx.arcTo(x, y + height, x, y, r);
+        ctx.arcTo(x, y, x + width, y, r);
+        ctx.closePath();
+        if (fill) ctx.fill();
+        else ctx.stroke();
+      }
+
+      function downloadRendered() {
+        if (!state.run) return showToast("Generate an image pack first");
+        const canvas = $("render-canvas");
+        const anchor = document.createElement("a");
+        anchor.href = canvas.toDataURL("image/png");
+        anchor.download = `sean-render-${state.renderIdea.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${Date.now()}.png`;
+        anchor.click();
       }
 
       function buildPacks() {
@@ -669,6 +1081,7 @@ Modern Trust + Direct-Response Clarity. Clean, polished, human, premium, emotion
 
       function saveRun() {
         if (!state.run) return showToast("Generate a pack first");
+        state.run.renderIdea = state.renderIdea;
         const runs = loadRuns();
         runs.unshift(state.run);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(runs.slice(0, 12)));
@@ -704,6 +1117,7 @@ Modern Trust + Direct-Response Clarity. Clean, polished, human, premium, emotion
             $("angle").value = state.run.angle;
             $("must-include").value = state.run.mustInclude || "";
             state.tab = "main";
+            state.renderIdea = state.run.renderIdea || "Founder Authority";
             render();
             showToast("Run loaded");
           });
@@ -732,6 +1146,11 @@ Modern Trust + Direct-Response Clarity. Clean, polished, human, premium, emotion
       $("copy").addEventListener("click", copyCurrent);
       $("export").addEventListener("click", exportPack);
       $("save").addEventListener("click", saveRun);
+      $("download-render").addEventListener("click", downloadRendered);
+      $("rerender").addEventListener("click", renderCanvas);
+      document.querySelectorAll("#render-controls button").forEach((button) => {
+        button.addEventListener("click", () => setRenderIdea(button.dataset.render));
+      });
       document.querySelectorAll("#tabs button").forEach((button) => {
         button.addEventListener("click", () => {
           setTab(button.dataset.tab);
@@ -740,6 +1159,7 @@ Modern Trust + Direct-Response Clarity. Clean, polished, human, premium, emotion
       });
 
       renderHistory();
+      drawEmptyCanvas($("render-canvas").getContext("2d"), $("render-canvas"));
     </script>
   </body>
 </html>
