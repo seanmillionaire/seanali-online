@@ -31,9 +31,8 @@ button{font:inherit}
 .profile{text-align:center;margin-bottom:28px}
 .profile-update{position:relative;margin:0 auto 18px;text-align:center}
 .avatar-trigger{position:relative;display:grid;place-items:center;width:112px;height:112px;margin:0 auto;padding:0;border:0;border-radius:50%;background:transparent;cursor:pointer;isolation:isolate;filter:drop-shadow(0 16px 18px rgba(0,0,0,.13))}
-.avatar-trigger::before{content:"";position:absolute;inset:0;z-index:0;border-radius:50%;background:conic-gradient(from 0deg,var(--update) 0 19%,transparent 19% 25%,var(--update) 25% 48%,transparent 48% 55%,var(--update) 55% 82%,#bdeecf 82% 100%);animation:ring-spin 2.1s linear infinite}
+.avatar-trigger::before{content:"";position:absolute;inset:0;z-index:0;border-radius:50%;background:conic-gradient(from 0deg,var(--update) 0 19%,transparent 19% 25%,var(--update) 25% 48%,transparent 48% 55%,var(--update) 55% 82%,#bdeecf 82% 100%)}
 .avatar-trigger::after{content:"";position:absolute;inset:5px;z-index:1;border-radius:50%;background:var(--cream)}
-.avatar-trigger:hover::before{animation-duration:1.25s}
 .avatar-trigger:focus-visible{outline:4px solid rgba(37,211,102,.25);outline-offset:6px}
 .avatar{position:relative;z-index:2;width:100px;height:100px;display:block;border:4px solid var(--white);border-radius:50%;object-fit:cover;object-position:center top;background:#ddd}
 .update-badge{position:absolute;right:-3px;bottom:5px;z-index:3;display:grid;place-items:center;width:29px;height:29px;border:4px solid var(--cream);border-radius:50%;background:var(--update);color:#fff;font-size:12px;font-weight:900;box-shadow:0 7px 16px rgba(19,138,69,.3)}
@@ -44,7 +43,6 @@ button{font:inherit}
 .message-meta{position:relative;display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:6px;color:var(--update-dark);font-size:9px;line-height:1;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
 .message-dot{width:7px;height:7px;border-radius:50%;background:var(--update);box-shadow:0 0 0 3px rgba(37,211,102,.16)}
 .update-message strong{position:relative;display:block;font-size:15px;line-height:1.35;font-weight:850;letter-spacing:-.015em}
-@keyframes ring-spin{to{transform:rotate(360deg)}}
 @keyframes message-pop{0%{opacity:0;transform:translateY(-8px) scale(.94)}100%{opacity:1;transform:translateY(0) scale(1)}}
 .name-row{display:flex;align-items:center;justify-content:center;gap:8px}
 h1{margin:0;font-size:36px;line-height:1;letter-spacing:-.045em;font-weight:900}
