@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#16c784">
     <title>Sean Ali Idea Engine | Content Station</title>
-    <meta name="description" content="A working Sean Ali Idea Engine for turning market signals into scored offers, hooks, ads, emails, shorts, landing page angles, and Claude-ready creative briefs.">
+    <meta name="description" content="A guided Sean Ali Idea Engine for turning trends, comments, ads, and rough ideas into offers, hooks, ads, emails, shorts, landing page angles, and Claude-ready creative briefs.">
     <link rel="stylesheet" href="/content-station/styles.css?v=live-systems-20260727">
     <style>
       .engine-shell { min-height: 100vh; padding: 28px; }
@@ -54,6 +54,31 @@
       }
       .engine-section h2 { margin: 4px 0 10px; font-size: clamp(30px, 4vw, 48px); line-height: .95; letter-spacing: -.05em; }
       .engine-section > p { max-width: 820px; margin: 0 0 22px; color: var(--muted); font-size: 17px; font-weight: 680; line-height: 1.45; }
+      .guide-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+      .guide-card {
+        min-height: 180px;
+        display: grid;
+        align-content: start;
+        gap: 12px;
+        padding: 22px;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        box-shadow: 0 12px 34px rgba(15, 23, 42, .055);
+      }
+      .guide-card span {
+        width: 52px;
+        height: 52px;
+        display: grid;
+        place-items: center;
+        color: #fff;
+        background: linear-gradient(135deg, var(--green), #0ea5e9);
+        border-radius: 18px;
+        font-size: 22px;
+        font-weight: 950;
+      }
+      .guide-card h3 { margin: 0; font-size: 24px; line-height: 1; letter-spacing: -.04em; }
+      .guide-card p { margin: 0; color: var(--muted); font-size: 15px; font-weight: 700; line-height: 1.38; }
       .tool-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 18px; align-items: start; }
       .tool-card, .result-card {
         padding: 22px;
@@ -77,6 +102,34 @@
         outline: none;
       }
       .field-stack textarea { min-height: 172px; resize: vertical; line-height: 1.45; }
+      .example-box {
+        display: grid;
+        gap: 10px;
+        margin-top: 10px;
+        padding: 14px;
+        background: #ecfdf5;
+        border: 1px solid #bbf7d0;
+        border-radius: 18px;
+      }
+      .example-box strong { color: #064e3b; font-size: 15px; }
+      .example-box p { margin: 0; color: #065f46; font-size: 14px; font-weight: 720; line-height: 1.35; }
+      .helper-note {
+        margin: 10px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 750;
+        line-height: 1.35;
+      }
+      .next-step-note {
+        padding: 14px 16px;
+        color: #0f172a;
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        border-radius: 18px;
+        font-size: 14px;
+        font-weight: 850;
+        line-height: 1.35;
+      }
       .button-row.tight { justify-content: flex-start; margin-top: 14px; }
       .engine-output { display: grid; gap: 14px; }
       .score-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
@@ -114,7 +167,7 @@
       .signal-chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
       .signal-chip { padding: 7px 10px; color: #0f172a; background: #eef2ff; border-radius: 999px; font-size: 12px; font-weight: 850; }
       @media (max-width: 980px) {
-        .engine-hero, .tool-grid, .score-row, .history-grid { grid-template-columns: 1fr; }
+        .engine-hero, .guide-grid, .tool-grid, .score-row, .history-grid { grid-template-columns: 1fr; }
         .engine-shell { padding: 16px; }
         .engine-hero, .engine-section { padding: 22px; border-radius: 24px; }
         .engine-hero h1 { font-size: 42px; }
@@ -138,36 +191,64 @@
 
         <section class="engine-hero">
           <div>
-            <p class="eyebrow">Working offer intelligence tool</p>
-            <h1>The Sean Ali Idea Engine</h1>
-            <p>Paste what the market is reacting to. The engine extracts the desire, maps it to your offers, scores the angles, and prints a ready-to-use creative pack.</p>
+            <p class="eyebrow">Guided idea tool</p>
+            <h1>Turn A Trend Into Ads, Emails, And Content Ideas</h1>
+            <p>Paste something people are reacting to. The engine shows you why it works, what Sean offer it fits, and what to create next.</p>
           </div>
           <aside class="engine-card">
-            <h2>What It Prints</h2>
+            <h2>What You Get</h2>
             <ul>
-              <li><span>🎯</span><span>Scored campaign angles by desire, proof, urgency, and offer fit.</span></li>
-              <li><span>📦</span><span>Meta ad, short script, email, landing-page block, and thumbnail text.</span></li>
-              <li><span>🧠</span><span>Claude-ready prompt that turns one winner into a deeper campaign.</span></li>
-              <li><span>📈</span><span>Feedback fields so winners can sharpen the next run.</span></li>
+              <li><span>🎯</span><span>Best ideas to test, ranked from strongest to weakest.</span></li>
+              <li><span>📦</span><span>Ads, short scripts, email, landing page copy, and thumbnail text.</span></li>
+              <li><span>🧠</span><span>A Claude prompt when you want a deeper campaign.</span></li>
+              <li><span>📈</span><span>A place to save winners and learn from test results.</span></li>
             </ul>
           </aside>
         </section>
 
+        <section class="engine-section">
+          <p class="eyebrow">How to use this</p>
+          <h2>Three Steps. No Guessing.</h2>
+          <p>If you can paste a comment, ad, YouTube title, problem, or rough idea, you can use this.</p>
+          <div class="guide-grid">
+            <article class="guide-card">
+              <span>1</span>
+              <h3>Paste A Clue</h3>
+              <p>Use anything people are reacting to: an ad, comment, YouTube title, problem, review, or rough idea.</p>
+            </article>
+            <article class="guide-card">
+              <span>2</span>
+              <h3>Press Generate</h3>
+              <p>The engine finds what people want, what pain is underneath, and which Sean offer fits best.</p>
+            </article>
+            <article class="guide-card">
+              <span>3</span>
+              <h3>Pick A Winner</h3>
+              <p>Choose the best idea, then copy ads, email, shorts, landing-page copy, or a Claude prompt.</p>
+            </article>
+          </div>
+        </section>
+
         <section class="engine-section" id="tool">
-          <p class="eyebrow">Run the engine</p>
-          <h2>Market Signal → Sean-Style Campaign Pack</h2>
-          <p>This is not a spy-and-copy tool. It turns market clues into original ideas for Sean Ali, Hypnotic Meditations, Manifestation Genie, AI Freedom System, and related offers.</p>
+          <p class="eyebrow">Start here</p>
+          <h2>Paste A Clue → Get A Campaign Pack</h2>
+          <p>A clue is anything that shows what people already care about. The tool turns that clue into original Sean-style ideas.</p>
 
           <div class="tool-grid">
             <article class="tool-card">
-              <h3>1. Feed The Engine</h3>
+              <h3>1. Add Your Clue</h3>
               <div class="field-stack">
                 <label>
-                  <span>Market signal, trend, ad, comment, page, or idea</span>
-                  <textarea id="market-input" placeholder="Paste the YouTube idea, ad copy, competitor angle, comment thread, customer problem, Amazon review language, or rough idea here. Example: People are overwhelmed by AI and still do not know how to turn it into money."></textarea>
+                  <span>Paste the clue</span>
+                  <textarea id="market-input" placeholder="Paste a trend, comment, ad, YouTube title, customer problem, review, or rough idea here. Example: People are overwhelmed by AI and do not know what to sell."></textarea>
                 </label>
+                <div class="example-box">
+                  <strong>Example clue</strong>
+                  <p>People are overwhelmed by AI and do not know what to sell.</p>
+                  <button id="sample-engine" class="secondary-button" type="button">Use This Example</button>
+                </div>
                 <label>
-                  <span>Primary brand</span>
+                  <span>Where should this idea go?</span>
                   <select id="brand-select">
                     <option value="Sean Ali">Sean Ali</option>
                     <option value="AI Freedom System">AI Freedom System</option>
@@ -177,7 +258,7 @@
                   </select>
                 </label>
                 <label>
-                  <span>Core desire</span>
+                  <span>What do people want?</span>
                   <select id="desire-select">
                     <option value="auto">Auto-detect</option>
                     <option value="More Money">More Money</option>
@@ -187,7 +268,7 @@
                   </select>
                 </label>
                 <label>
-                  <span>Offer to route into</span>
+                  <span>What should this sell?</span>
                   <select id="offer-select">
                     <option value="auto">Auto-match best offer</option>
                     <option value="AI Freedom System">AI Freedom System</option>
@@ -199,20 +280,19 @@
                   </select>
                 </label>
                 <label>
-                  <span>Optional performance feedback</span>
+                  <span>Results from a past test, if you have them</span>
                   <input id="feedback-input" placeholder="Example: CTR 1.8%, CPA $22, comments mention undercharging">
                 </label>
               </div>
               <div class="button-row tight">
                 <button id="generate-engine" class="primary-button" type="button">Generate Idea Pack</button>
-                <button id="sample-engine" class="secondary-button" type="button">Load Sample Signal</button>
               </div>
             </article>
 
             <article class="result-card">
-              <h3>2. Pattern Readout</h3>
+              <h3>2. What The Engine Found</h3>
               <div id="readout" class="engine-output">
-                <div class="empty-note">Paste a signal and generate. The engine will identify desire, pain, mechanism, proof angle, and offer match.</div>
+                <div class="empty-note">Paste a clue or press Use This Example. Then press Generate Idea Pack. The engine will show what people want, what pain is underneath, and what offer fits.</div>
               </div>
             </article>
           </div>
@@ -220,17 +300,17 @@
 
         <section class="engine-section">
           <p class="eyebrow">Winner bank</p>
-          <h2>Scored Angles</h2>
-          <p>Pick the winner before printing the full pack. The score favors specific pain, desire, proof, Sean fit, offer fit, and speed to produce.</p>
+          <h2>Best Ideas To Test</h2>
+          <p>Higher score = better fit for Sean’s offers. Click the score button on the idea you want to use.</p>
           <div id="angles" class="angle-list">
-            <div class="empty-note">No angles generated yet.</div>
+            <div class="empty-note">Your best ideas will appear here after you press Generate Idea Pack.</div>
           </div>
         </section>
 
         <section class="engine-section">
           <p class="eyebrow">Creative engine</p>
-          <h2>Production Pack</h2>
-          <p>Use the tabs to copy a specific asset, or export the whole run for Claude, a VA, or your publishing workflow.</p>
+          <h2>Copy-Ready Assets</h2>
+          <p>Click a tab to switch what you want to copy: ads, short scripts, email, landing-page copy, or the Claude prompt.</p>
           <div class="tabs" id="pack-tabs">
             <button class="active" data-pack="brief" type="button">Strategy Brief</button>
             <button data-pack="ads" type="button">Meta Ads</button>
@@ -245,6 +325,7 @@
             <button id="export-pack" class="secondary-button" type="button">Export Full Pack</button>
             <button id="save-run" class="primary-button" type="button">Save This Run</button>
           </div>
+          <p class="helper-note">Save keeps this idea in this browser. Export downloads the full pack as a text file.</p>
           <textarea id="pack-output" class="pack-output" aria-label="Generated idea engine pack"></textarea>
         </section>
 
@@ -470,7 +551,7 @@
 
       function runEngine() {
         const signal = clean(marketInput.value);
-        if (!signal) return showToast("Paste a market signal first");
+        if (!signal) return showToast("Paste a clue first");
         const brand = brandSelect.value;
         const desire = detectDesire(signal);
         const pain = detectPain(signal, desire);
@@ -508,13 +589,14 @@
       function renderReadout() {
         readout.innerHTML = `
           <div class="score-row">
-            <div class="score-pill"><strong>${escapeHtml(currentRun.desire)}</strong><span>Desire</span></div>
+            <div class="score-pill"><strong>${escapeHtml(currentRun.desire)}</strong><span>People want</span></div>
             <div class="score-pill"><strong>${escapeHtml(currentRun.offerName)}</strong><span>Offer</span></div>
             <div class="score-pill"><strong>${currentRun.angles[0].score}/100</strong><span>Top score</span></div>
             <div class="score-pill"><strong>${currentRun.angles.length}</strong><span>Angles</span></div>
           </div>
+          <p class="next-step-note">Next: look at the best ideas below. Click a score to pick a different winner.</p>
           <div class="angle-card">
-            <h4>Pattern Extracted</h4>
+            <h4>Simple Explanation</h4>
             <p><strong>Pain:</strong> ${escapeHtml(sentenceCase(currentRun.pain))}.</p>
             <p><strong>Mechanism:</strong> ${escapeHtml(currentRun.mechanism)}.</p>
             <p><strong>Brand:</strong> ${escapeHtml(currentRun.brand)}.</p>
@@ -574,16 +656,16 @@
 
         const brief = `STRATEGY BRIEF
 
-Market signal:
+Clue pasted:
 ${currentRun.signal}
 
 Pattern:
 People are reacting because ${currentRun.pain}.
 
-Core desire:
+What people want:
 ${currentRun.desire}
 
-Best offer match:
+Best offer fit:
 ${currentRun.offerName}
 
 Mechanism:
@@ -758,13 +840,13 @@ You are Sean Ali's Chief Strategy Officer.
 Do not copy the market examples.
 Extract the psychology, then create original Sean Ali campaign ideas.
 
-MARKET SIGNAL:
+CLUE PASTED:
 ${currentRun.signal}
 
 BRAND:
 ${currentRun.brand}
 
-DESIRE:
+WHAT PEOPLE WANT:
 ${currentRun.desire}
 
 PAIN PATTERN:
@@ -851,7 +933,7 @@ Run the same desire with a different mechanism and compare.`;
       }
 
       function saveRun() {
-        if (!currentRun) return showToast("Generate a run first");
+        if (!currentRun) return showToast("Generate an idea pack first");
         const runs = loadRuns();
         runs.unshift(currentRun);
         localStorage.setItem(ENGINE_KEY, JSON.stringify(runs.slice(0, 12)));
@@ -867,7 +949,7 @@ Run the same desire with a different mechanism and compare.`;
       function renderHistory() {
         const runs = loadRuns();
         if (!runs.length) {
-          $("history").innerHTML = '<div class="empty-note">No saved runs yet.</div>';
+          $("history").innerHTML = '<div class="empty-note">Saved ideas will show here after you press Save This Run.</div>';
           return;
         }
         $("history").innerHTML = runs.map((run, index) => `
@@ -921,7 +1003,7 @@ Run the same desire with a different mechanism and compare.`;
         brandSelect.value = "AI Freedom System";
         desireSelect.value = "auto";
         offerSelect.value = "auto";
-        showToast("Sample loaded");
+        showToast("Example loaded");
       });
       $("copy-pack").addEventListener("click", async () => {
         if (!packOutput.value) return showToast("Nothing to copy yet");
