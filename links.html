@@ -73,6 +73,29 @@ h1 span{color:var(--red)}
 .footer{margin-top:28px;text-align:center;color:#8a8279;font-size:11px;font-weight:700}
 @media(prefers-reduced-motion:reduce){.down-arrows,.avatar-trigger::before,.update-message{animation:none}}
 @media(max-width:520px){.announcement{min-height:48px;padding:10px 12px}.announcement-inner{gap:7px;font-size:11px;letter-spacing:.035em}.page{padding:28px 14px 44px}.avatar-trigger{width:100px;height:100px}.avatar{width:90px;height:90px}h1{font-size:32px}.verified{width:23px;height:23px;flex-basis:23px}.bio{font-size:15px}.link-card{grid-template-columns:46px 1fr 18px;gap:12px;min-height:82px;padding:14px}.icon{width:46px;height:46px;font-size:22px}.link-copy strong{font-size:17px}.socials{grid-template-columns:1fr}}
+
+.link-card{width:100%;font:inherit;color:inherit;text-align:left;cursor:pointer}
+body.modal-open{overflow:hidden}
+.optin-modal[hidden]{display:none}
+.optin-modal{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:18px}
+.modal-backdrop{position:absolute;inset:0;background:rgba(9,9,9,.64);backdrop-filter:blur(4px)}
+.modal-panel{position:relative;width:min(430px,100%);padding:30px 26px 24px;border:1px solid rgba(255,255,255,.6);border-radius:18px;background:#fff;box-shadow:0 28px 80px rgba(0,0,0,.3);animation:modal-in .22s ease-out both}
+.modal-close{position:absolute;top:12px;right:12px;display:grid;place-items:center;width:40px;height:40px;padding:0;border:0;border-radius:50%;background:#f1eee9;color:#5b554e;font-size:25px;line-height:1;cursor:pointer}
+.modal-close:hover,.modal-close:focus-visible{background:#e7e1d9;outline:3px solid rgba(225,29,36,.18)}
+.choice-confirm{display:inline-flex;margin:0 0 13px;padding:7px 10px;border-radius:999px;background:#fff0eb;color:#b5161d;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.modal-panel h2{margin:0 34px 9px 0;font-size:28px;line-height:1.08;letter-spacing:-.04em}
+.modal-copy{margin:0 0 20px;color:var(--muted);font-size:15px;line-height:1.5;font-weight:650}
+.optin-form{display:grid;gap:11px}
+.optin-label{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.optin-input{width:100%;min-height:52px;padding:13px 14px;border:1px solid #ccc5bc;border-radius:10px;background:#fff;color:var(--ink);font:inherit;font-size:16px;outline:none}
+.optin-input:focus{border-color:var(--red);box-shadow:0 0 0 4px rgba(225,29,36,.11)}
+.optin-submit{min-height:54px;padding:13px 16px;border:0;border-radius:10px;background:linear-gradient(90deg,#c8141d,var(--red));color:#fff;font:inherit;font-size:16px;font-weight:900;cursor:pointer;box-shadow:0 12px 24px rgba(225,29,36,.2)}
+.optin-submit:hover,.optin-submit:focus-visible{filter:brightness(.96);transform:translateY(-1px);outline:3px solid rgba(225,29,36,.18)}
+.optin-skip{justify-self:center;padding:7px;border:0;background:transparent;color:#6d665e;font:inherit;font-size:12px;font-weight:800;text-decoration:underline;cursor:pointer}
+.privacy-note{margin:3px 0 0;color:#8a8279;font-size:10px;line-height:1.4;text-align:center}
+@keyframes modal-in{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:520px){.modal-panel{padding:27px 18px 21px}.modal-panel h2{font-size:25px}}
+@media(prefers-reduced-motion:reduce){.modal-panel{animation:none}}
 </style>
 </head>
 <body>
@@ -105,26 +128,26 @@ h1 span{color:var(--red)}
 
   <div class="section-label">Choose Your Path</div>
   <section class="links" id="main-links" aria-label="Sean Ali main links">
-    <a class="link-card featured" href="https://seanali.online/flow">
+    <button class="link-card featured path-choice" type="button" data-choice="More Money" data-list="awlist6889085" data-destination="https://seanali.online/flow" data-tags="links-page,money">
       <span class="icon red">▶</span>
       <span class="link-copy"><strong>I Want More Money</strong><span>See what may be keeping money stuck and start changing the pattern.</span></span>
       <span class="arrow">›</span>
-    </a>
-    <a class="link-card" href="https://hypnoticmeditations.ai/" target="_blank" rel="noopener">
+    </button>
+    <button class="link-card path-choice" type="button" data-choice="More Peace" data-list="awlist6889085" data-destination="https://hypnoticmeditations.ai/" data-tags="links-page,peace">
       <span class="icon">🎧</span>
       <span class="link-copy"><strong>I Want More Peace</strong><span>Use targeted audio tools for calm, sleep, focus, health, and mental relief.</span></span>
       <span class="arrow">›</span>
-    </a>
-    <a class="link-card" href="https://manifestationgenie.app" target="_blank" rel="noopener">
+    </button>
+    <button class="link-card path-choice" type="button" data-choice="Change My Life" data-list="awlist6908195" data-destination="https://manifestationgenie.app" data-tags="links-page,change-my-life">
       <span class="icon red">🧞</span>
       <span class="link-copy"><strong>I’m Ready To Change My Life</strong><span>Choose your goal and get personalized guidance for your next step.</span></span>
       <span class="arrow">›</span>
-    </a>
-    <a class="link-card featured" href="/system">
+    </button>
+    <button class="link-card featured path-choice" type="button" data-choice="More Freedom" data-list="awlist6923562" data-destination="https://seanali.online/system" data-tags="links-page,freedom">
       <span class="icon orange">⚡</span>
       <span class="link-copy"><strong>I Want More Freedom</strong><span>Use AI and simple systems to build income with fewer moving parts.</span></span>
       <span class="arrow">›</span>
-    </a>
+    </button>
   </section>
 
   <div class="section-label">Follow Sean</div>
@@ -146,6 +169,31 @@ h1 span{color:var(--red)}
   <a class="home-link" href="/">Visit SeanAli.online →</a>
   <footer class="footer">© 2026 Sean Ali. AI. Business. Identity. Freedom.</footer>
 </main>
+<div class="optin-modal" id="path-optin" hidden>
+  <div class="modal-backdrop" data-close-modal aria-hidden="true"></div>
+  <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="optin-title" aria-describedby="optin-copy">
+    <button class="modal-close" type="button" data-close-modal aria-label="Close">&times;</button>
+    <p class="choice-confirm" id="choice-confirm">You chose More Money</p>
+    <h2 id="optin-title">Let’s start here.</h2>
+    <p class="modal-copy" id="optin-copy">Enter your details and I’ll send you the best place to start.</p>
+    <form class="optin-form" id="path-optin-form" method="post" action="https://www.aweber.com/scripts/addlead.pl">
+      <label class="optin-label" for="optin-name">First name</label>
+      <input class="optin-input" id="optin-name" type="text" name="name" placeholder="First name" autocomplete="given-name">
+      <label class="optin-label" for="optin-email">Email address</label>
+      <input class="optin-input" id="optin-email" type="email" name="email" placeholder="Email address" autocomplete="email" required>
+      <input id="optin-list" type="hidden" name="listname" value="">
+      <input id="optin-redirect" type="hidden" name="redirect" value="">
+      <input id="optin-existing" type="hidden" name="meta_redirect_onlist" value="">
+      <input id="optin-tags" type="hidden" name="meta_tags" value="">
+      <input id="optin-tracking" type="hidden" name="meta_adtracking" value="">
+      <input type="hidden" name="meta_required" value="email">
+      <button class="optin-submit" id="optin-submit" type="submit">Show Me My Starting Point</button>
+      <button class="optin-skip" id="optin-skip" type="button">Continue without email</button>
+      <p class="privacy-note">No spam. Unsubscribe anytime.</p>
+    </form>
+  </section>
+</div>
+
 <script>
 (function(){
   const trigger=document.getElementById('sean-update-trigger');
@@ -175,6 +223,64 @@ h1 span{color:var(--red)}
       setOpen(false);
       trigger.focus();
     }
+  });
+})();
+</script>
+
+<script>
+(function(){
+  const modal=document.getElementById('path-optin');
+  const form=document.getElementById('path-optin-form');
+  const choices=Array.from(document.querySelectorAll('.path-choice'));
+  const confirm=document.getElementById('choice-confirm');
+  const list=document.getElementById('optin-list');
+  const redirect=document.getElementById('optin-redirect');
+  const existing=document.getElementById('optin-existing');
+  const tags=document.getElementById('optin-tags');
+  const tracking=document.getElementById('optin-tracking');
+  const email=document.getElementById('optin-email');
+  const skip=document.getElementById('optin-skip');
+  let destination='';
+  let opener=null;
+
+  function openModal(button){
+    opener=button;
+    destination=button.dataset.destination;
+    confirm.textContent='You chose '+button.dataset.choice;
+    list.value=button.dataset.list;
+    redirect.value=destination;
+    existing.value=destination;
+    tags.value=button.dataset.tags;
+    tracking.value='Sean Ali Links - '+button.dataset.choice;
+    modal.hidden=false;
+    document.body.classList.add('modal-open');
+    requestAnimationFrame(function(){email.focus();});
+  }
+
+  function closeModal(){
+    modal.hidden=true;
+    document.body.classList.remove('modal-open');
+    if(opener)opener.focus();
+  }
+
+  choices.forEach(function(button){
+    button.addEventListener('click',function(){openModal(button);});
+  });
+
+  modal.querySelectorAll('[data-close-modal]').forEach(function(control){
+    control.addEventListener('click',closeModal);
+  });
+
+  skip.addEventListener('click',function(){
+    if(destination)window.location.href=destination;
+  });
+
+  form.addEventListener('submit',function(){
+    document.getElementById('optin-submit').textContent='Opening Your Path…';
+  });
+
+  document.addEventListener('keydown',function(event){
+    if(event.key==='Escape'&&!modal.hidden)closeModal();
   });
 })();
 </script>
