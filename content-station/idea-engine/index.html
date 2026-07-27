@@ -5,110 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#16c784">
     <title>Sean Ali Idea Engine | Content Station</title>
-    <meta name="description" content="Sean Ali's Idea Engine blueprint for turning market signals into offers, hooks, ads, emails, VSL angles, and creative tests across his brands.">
+    <meta name="description" content="A working Sean Ali Idea Engine for turning market signals into scored offers, hooks, ads, emails, shorts, landing page angles, and Claude-ready creative briefs.">
     <link rel="stylesheet" href="/content-station/styles.css?v=live-systems-20260727">
     <style>
-      .engine-shell {
-        min-height: 100vh;
-        padding: 28px;
-      }
-      .engine-wrap {
-        width: min(1240px, 100%);
-        margin: 0 auto;
-      }
-      .engine-nav {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 18px;
-        margin-bottom: 18px;
-      }
-      .engine-logo {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        color: var(--ink);
-        text-decoration: none;
-        font-weight: 950;
-      }
-      .engine-logo img {
-        width: 46px;
-        height: 46px;
-        border-radius: 16px;
-        object-fit: cover;
-        object-position: center 24%;
-        box-shadow: 0 12px 28px rgba(15, 23, 42, .12);
-      }
+      .engine-shell { min-height: 100vh; padding: 28px; }
+      .engine-wrap { width: min(1280px, 100%); margin: 0 auto; }
+      .engine-nav { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 18px; }
+      .engine-logo { display: flex; align-items: center; gap: 12px; color: var(--ink); text-decoration: none; font-weight: 950; }
+      .engine-logo img { width: 46px; height: 46px; border-radius: 16px; object-fit: cover; object-position: center 24%; box-shadow: 0 12px 28px rgba(15, 23, 42, .12); }
       .engine-hero {
         position: relative;
         overflow: hidden;
         display: grid;
-        grid-template-columns: 1.05fr .95fr;
+        grid-template-columns: 1fr .86fr;
         gap: 24px;
         align-items: stretch;
-        padding: 34px;
+        padding: 32px;
         color: #fff;
-        background:
-          radial-gradient(circle at top right, rgba(22, 199, 132, .34), transparent 24rem),
-          linear-gradient(135deg, #0f172a, #111827 52%, #172554);
+        background: radial-gradient(circle at top right, rgba(22, 199, 132, .34), transparent 24rem), linear-gradient(135deg, #0f172a, #111827 52%, #172554);
         border-radius: 34px;
         box-shadow: var(--shadow);
       }
       .engine-hero::after {
-        content: "IDEAS";
+        content: "ENGINE";
         position: absolute;
         right: -18px;
         bottom: -42px;
         color: rgba(255, 255, 255, .06);
-        font-size: clamp(94px, 18vw, 220px);
+        font-size: clamp(90px, 16vw, 210px);
         font-weight: 1000;
         letter-spacing: -.09em;
       }
       .engine-hero > * { position: relative; z-index: 1; }
-      .engine-hero h1 {
-        max-width: 820px;
-        margin: 10px 0 14px;
-        font-size: clamp(42px, 6vw, 82px);
-        line-height: .88;
-        letter-spacing: -.07em;
-      }
-      .engine-hero p {
-        max-width: 650px;
-        margin: 0;
-        color: #d1d5db;
-        font-size: 21px;
-        font-weight: 740;
-        line-height: 1.22;
-      }
-      .engine-card {
-        padding: 24px;
-        background: rgba(255, 255, 255, .08);
-        border: 1px solid rgba(255, 255, 255, .14);
-        border-radius: 26px;
-        backdrop-filter: blur(16px);
-      }
-      .engine-card h2 {
-        margin: 0 0 12px;
-        color: #fff;
-        font-size: 28px;
-        line-height: .98;
-        letter-spacing: -.04em;
-      }
-      .engine-card ul {
-        display: grid;
-        gap: 10px;
-        margin: 0;
-        padding: 0;
-        list-style: none;
-      }
-      .engine-card li {
-        display: grid;
-        grid-template-columns: 28px 1fr;
-        gap: 10px;
-        color: #ecfdf5;
-        font-weight: 780;
-        line-height: 1.25;
-      }
+      .engine-hero h1 { max-width: 780px; margin: 10px 0 14px; font-size: clamp(42px, 5.6vw, 78px); line-height: .88; letter-spacing: -.07em; }
+      .engine-hero p { max-width: 650px; margin: 0; color: #d1d5db; font-size: 20px; font-weight: 740; line-height: 1.22; }
+      .engine-card { padding: 22px; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .14); border-radius: 26px; backdrop-filter: blur(16px); }
+      .engine-card h2 { margin: 0 0 12px; color: #fff; font-size: 28px; line-height: .98; letter-spacing: -.04em; }
+      .engine-card ul { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+      .engine-card li { display: grid; grid-template-columns: 28px 1fr; gap: 10px; color: #ecfdf5; font-weight: 780; line-height: 1.25; }
       .engine-section {
         margin-top: 22px;
         padding: 28px;
@@ -118,162 +52,73 @@
         box-shadow: var(--shadow-soft);
         backdrop-filter: blur(14px);
       }
-      .engine-section h2 {
-        margin: 4px 0 10px;
-        font-size: clamp(30px, 4vw, 48px);
-        line-height: .95;
-        letter-spacing: -.05em;
-      }
-      .engine-section > p {
-        max-width: 820px;
-        margin: 0 0 22px;
-        color: var(--muted);
-        font-size: 17px;
-        font-weight: 680;
-        line-height: 1.45;
-      }
-      .level-grid,
-      .bucket-grid,
-      .question-grid,
-      .prompt-grid {
-        display: grid;
-        gap: 14px;
-      }
-      .level-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .bucket-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-      .question-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .prompt-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .mini-card {
-        padding: 20px;
+      .engine-section h2 { margin: 4px 0 10px; font-size: clamp(30px, 4vw, 48px); line-height: .95; letter-spacing: -.05em; }
+      .engine-section > p { max-width: 820px; margin: 0 0 22px; color: var(--muted); font-size: 17px; font-weight: 680; line-height: 1.45; }
+      .tool-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 18px; align-items: start; }
+      .tool-card, .result-card {
+        padding: 22px;
         background: #fff;
         border: 1px solid var(--line);
-        border-radius: 22px;
+        border-radius: 24px;
         box-shadow: 0 12px 34px rgba(15, 23, 42, .055);
       }
-      .mini-card .num {
-        display: inline-grid;
-        place-items: center;
-        min-width: 42px;
-        height: 42px;
-        margin-bottom: 13px;
-        padding: 0 10px;
-        color: #fff;
-        background: linear-gradient(135deg, var(--green), #0ea5e9);
-        border-radius: 15px;
-        font-weight: 950;
+      .tool-card h3, .result-card h3 { margin: 0 0 10px; font-size: 24px; line-height: 1; letter-spacing: -.04em; }
+      .field-stack { display: grid; gap: 14px; }
+      .field-stack label { display: grid; gap: 7px; color: var(--ink); font-weight: 850; }
+      .field-stack label span { color: var(--muted); font-size: 13px; letter-spacing: .02em; text-transform: uppercase; }
+      .field-stack textarea, .field-stack select, .field-stack input {
+        width: 100%;
+        min-height: 48px;
+        padding: 13px 14px;
+        color: var(--ink);
+        background: #f9fafb;
+        border: 1px solid var(--line-strong);
+        border-radius: 16px;
+        outline: none;
       }
-      .mini-card h3 {
-        margin: 0 0 8px;
-        font-size: 22px;
-        line-height: 1.02;
-        letter-spacing: -.035em;
-      }
-      .mini-card p {
-        margin: 0;
-        color: var(--muted);
-        font-size: 15px;
-        font-weight: 650;
-        line-height: 1.42;
-      }
-      .bucket {
-        min-height: 220px;
-      }
-      .bucket strong {
-        display: block;
-        margin-bottom: 12px;
-        font-size: 26px;
-        letter-spacing: -.04em;
-      }
-      .bucket ul,
-      .signal-list {
-        display: grid;
-        gap: 9px;
-        margin: 0;
-        padding: 0;
-        list-style: none;
-      }
-      .bucket li,
-      .signal-list li {
-        position: relative;
-        padding-left: 24px;
-        color: var(--muted);
-        font-size: 14px;
-        font-weight: 740;
-        line-height: 1.32;
-      }
-      .bucket li::before,
-      .signal-list li::before {
-        content: "✓";
-        position: absolute;
-        left: 0;
-        color: var(--green-dark);
-        font-weight: 950;
-      }
-      .flow-row {
-        display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-        gap: 10px;
-      }
-      .flow-step {
-        padding: 18px 14px;
-        text-align: center;
-        background: #0f172a;
-        color: #fff;
-        border-radius: 20px;
-        font-weight: 900;
-      }
-      .flow-step span {
-        display: block;
-        margin-top: 6px;
-        color: #a7f3d0;
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: .08em;
-      }
-      .prompt-card pre {
-        overflow: auto;
-        white-space: pre-wrap;
-        margin: 0;
-        padding: 16px;
+      .field-stack textarea { min-height: 172px; resize: vertical; line-height: 1.45; }
+      .button-row.tight { justify-content: flex-start; margin-top: 14px; }
+      .engine-output { display: grid; gap: 14px; }
+      .score-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+      .score-pill { padding: 13px; background: #f9fafb; border: 1px solid var(--line); border-radius: 18px; }
+      .score-pill strong { display: block; font-size: 24px; letter-spacing: -.04em; }
+      .score-pill span { color: var(--muted); font-size: 12px; font-weight: 850; text-transform: uppercase; }
+      .angle-list { display: grid; gap: 12px; }
+      .angle-card { padding: 18px; background: #f9fafb; border: 1px solid var(--line); border-radius: 20px; }
+      .angle-card.active { border-color: rgba(22, 199, 132, .7); box-shadow: 0 14px 30px rgba(22, 199, 132, .12); }
+      .angle-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+      .angle-card h4 { margin: 0 0 8px; font-size: 22px; line-height: 1.02; letter-spacing: -.04em; }
+      .angle-card p { margin: 0; color: var(--muted); font-size: 14px; font-weight: 670; line-height: 1.42; }
+      .badge { display: inline-flex; align-items: center; justify-content: center; min-height: 30px; padding: 0 10px; color: #065f46; background: #d1fae5; border-radius: 999px; font-size: 12px; font-weight: 950; white-space: nowrap; }
+      .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 12px; }
+      .tabs button { min-height: 40px; padding: 0 12px; color: var(--ink); background: #fff; border: 1px solid var(--line-strong); border-radius: 999px; font-weight: 850; }
+      .tabs button.active { color: #fff; background: linear-gradient(135deg, var(--green), #0ea5e9); border-color: transparent; }
+      .pack-output {
+        width: 100%;
+        min-height: 420px;
+        padding: 18px;
         color: #e5e7eb;
         background: #101827;
-        border-radius: 16px;
+        border: 0;
+        border-radius: 20px;
+        resize: vertical;
+        line-height: 1.55;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         font-size: 13px;
-        line-height: 1.5;
       }
-      .use-box {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 18px;
-        align-items: center;
-        padding: 24px;
-        color: #fff;
-        background: linear-gradient(135deg, #111827, #0f766e);
-        border-radius: 26px;
-      }
-      .use-box h2 {
-        margin: 0 0 8px;
-        color: #fff;
-      }
-      .use-box p {
-        margin: 0;
-        color: #d1fae5;
-        font-weight: 720;
-      }
+      .history-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+      .history-card { padding: 16px; background: #fff; border: 1px solid var(--line); border-radius: 20px; }
+      .history-card strong { display: block; margin-bottom: 8px; font-size: 17px; line-height: 1.1; }
+      .history-card p { margin: 0 0 12px; color: var(--muted); font-size: 13px; font-weight: 670; line-height: 1.35; }
+      .empty-note { padding: 22px; color: var(--muted); background: #f9fafb; border: 1px dashed var(--line-strong); border-radius: 20px; font-weight: 750; text-align: center; }
+      .signal-chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+      .signal-chip { padding: 7px 10px; color: #0f172a; background: #eef2ff; border-radius: 999px; font-size: 12px; font-weight: 850; }
       @media (max-width: 980px) {
-        .engine-hero,
-        .level-grid,
-        .bucket-grid,
-        .question-grid,
-        .prompt-grid,
-        .flow-row,
-        .use-box {
-          grid-template-columns: 1fr;
-        }
+        .engine-hero, .tool-grid, .score-row, .history-grid { grid-template-columns: 1fr; }
         .engine-shell { padding: 16px; }
-        .engine-hero,
-        .engine-section { padding: 22px; border-radius: 24px; }
+        .engine-hero, .engine-section { padding: 22px; border-radius: 24px; }
         .engine-hero h1 { font-size: 42px; }
+        .engine-nav { align-items: flex-start; }
       }
     </style>
   </head>
@@ -290,187 +135,806 @@
 
         <section class="engine-hero">
           <div>
-            <p class="eyebrow">Offer intelligence system</p>
+            <p class="eyebrow">Working offer intelligence tool</p>
             <h1>The Sean Ali Idea Engine</h1>
-            <p>Parmeet is not talking about a spy tool. He is pointing at a machine that watches the market, extracts the psychology, then turns it into original offers, hooks, ads, emails, VSLs, and tests for your brands.</p>
+            <p>Paste what the market is reacting to. The engine extracts the desire, maps it to your offers, scores the angles, and prints a ready-to-use creative pack.</p>
           </div>
           <aside class="engine-card">
-            <h2>What This Is</h2>
+            <h2>What It Prints</h2>
             <ul>
-              <li><span>👀</span><span>Observe what the market is already reacting to.</span></li>
-              <li><span>🧠</span><span>Extract the emotion, desire, fear, proof, and mechanism.</span></li>
-              <li><span>⚡</span><span>Generate original Sean-style offers and creative packages.</span></li>
-              <li><span>📈</span><span>Feed back CTR, CPA, comments, watch time, and sales data.</span></li>
+              <li><span>🎯</span><span>Scored campaign angles by desire, proof, urgency, and offer fit.</span></li>
+              <li><span>📦</span><span>Meta ad, short script, email, landing-page block, and thumbnail text.</span></li>
+              <li><span>🧠</span><span>Claude-ready prompt that turns one winner into a deeper campaign.</span></li>
+              <li><span>📈</span><span>Feedback fields so winners can sharpen the next run.</span></li>
             </ul>
           </aside>
         </section>
 
-        <section class="engine-section">
-          <p class="eyebrow">The real interpretation</p>
-          <h2>Not Spy → Copy → Launch.</h2>
-          <p>The higher-value workflow is Observe → Extract Patterns → Synthesize → Generate Original Ideas → Test → Learn → Repeat. That turns Claude from a chatbot into a strategy operator.</p>
-          <div class="flow-row">
-            <div class="flow-step">Observe<span>market signals</span></div>
-            <div class="flow-step">Extract<span>psychology</span></div>
-            <div class="flow-step">Synthesize<span>Sean's offers</span></div>
-            <div class="flow-step">Generate<span>assets</span></div>
-            <div class="flow-step">Improve<span>feedback loop</span></div>
-          </div>
-        </section>
+        <section class="engine-section" id="tool">
+          <p class="eyebrow">Run the engine</p>
+          <h2>Market Signal → Sean-Style Campaign Pack</h2>
+          <p>This is not a spy-and-copy tool. It turns market clues into original ideas for Sean Ali, Hypnotic Meditations, Manifestation Genie, AI Freedom System, and related offers.</p>
 
-        <section class="engine-section">
-          <p class="eyebrow">Six levels</p>
-          <h2>The Automated Idea Engine</h2>
-          <p>This is the system broken down for Sean Ali, Hypnotic Meditations, Manifestation Genie, AI Freedom System, Panama Untold, and future offers.</p>
-          <div class="level-grid">
-            <article class="mini-card"><span class="num">1</span><h3>Input Engine</h3><p>Collect market signals from YouTube, Meta ads, comments, Reddit, Amazon reviews, competitor pages, emails, affiliate promos, and Facebook Ad Library.</p></article>
-            <article class="mini-card"><span class="num">2</span><h3>Pattern Extraction</h3><p>Claude does not just say what worked. It explains why people responded: fear, desire, identity shift, proof, mechanism, urgency, simplicity.</p></article>
-            <article class="mini-card"><span class="num">3</span><h3>Company Brain</h3><p>Store Sean's brands, offers, landing pages, emails, VSLs, past winners, product promises, voice, banned language, and audience desires.</p></article>
-            <article class="mini-card"><span class="num">4</span><h3>Idea Generation</h3><p>Combine current market patterns with Sean's product universe to generate hooks, lead magnets, emails, quizzes, shorts, VSLs, and offer concepts.</p></article>
-            <article class="mini-card"><span class="num">5</span><h3>Creative Engine</h3><p>Turn one insight into a complete package: ad, short, email, landing page headline, image prompt, thumbnail idea, CTA, and testing note.</p></article>
-            <article class="mini-card"><span class="num">6</span><h3>Feedback Loop</h3><p>Use CTR, CPA, comments, watch time, retention, and purchases to update the company brain so next week's ideas get sharper.</p></article>
-          </div>
-        </section>
+          <div class="tool-grid">
+            <article class="tool-card">
+              <h3>1. Feed The Engine</h3>
+              <div class="field-stack">
+                <label>
+                  <span>Market signal, trend, ad, comment, page, or idea</span>
+                  <textarea id="market-input" placeholder="Paste the YouTube idea, ad copy, competitor angle, comment thread, customer problem, Amazon review language, or rough idea here. Example: People are overwhelmed by AI and still do not know how to turn it into money."></textarea>
+                </label>
+                <label>
+                  <span>Primary brand</span>
+                  <select id="brand-select">
+                    <option value="Sean Ali">Sean Ali</option>
+                    <option value="AI Freedom System">AI Freedom System</option>
+                    <option value="Hypnotic Meditations">Hypnotic Meditations</option>
+                    <option value="Manifestation Genie">Manifestation Genie</option>
+                    <option value="Panama Untold">Panama Untold</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Core desire</span>
+                  <select id="desire-select">
+                    <option value="auto">Auto-detect</option>
+                    <option value="More Money">More Money</option>
+                    <option value="More Peace">More Peace</option>
+                    <option value="More Freedom">More Freedom</option>
+                    <option value="Change My Life">Change My Life</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Offer to route into</span>
+                  <select id="offer-select">
+                    <option value="auto">Auto-match best offer</option>
+                    <option value="AI Freedom System">AI Freedom System</option>
+                    <option value="Manifestation Genie">Manifestation Genie</option>
+                    <option value="Money Flow">Money Flow</option>
+                    <option value="MoneyWave">MoneyWave</option>
+                    <option value="Complete Library">Complete Library</option>
+                    <option value="Claude27 Guide">Claude27 Guide</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Optional performance feedback</span>
+                  <input id="feedback-input" placeholder="Example: CTR 1.8%, CPA $22, comments mention undercharging">
+                </label>
+              </div>
+              <div class="button-row tight">
+                <button id="generate-engine" class="primary-button" type="button">Generate Idea Pack</button>
+                <button id="sample-engine" class="secondary-button" type="button">Load Sample Signal</button>
+              </div>
+            </article>
 
-        <section class="engine-section">
-          <p class="eyebrow">Applied to Sean</p>
-          <h2>The Engine Should Revolve Around Desire.</h2>
-          <p>Your bottleneck is not writing copy. The bottleneck is finding high-quality ideas consistently. Every idea should map back to one of these four desire buckets.</p>
-          <div class="bucket-grid">
-            <article class="mini-card bucket">
-              <strong>💰 More Money</strong>
-              <ul>
-                <li>Money blocks</li>
-                <li>Income ceilings</li>
-                <li>Receiving more</li>
-                <li>Charging more</li>
-                <li>Wealth identity</li>
-              </ul>
-            </article>
-            <article class="mini-card bucket">
-              <strong>🕊 More Peace</strong>
-              <ul>
-                <li>Stress resets</li>
-                <li>Sleep loops</li>
-                <li>God shorts</li>
-                <li>Overthinking</li>
-                <li>Subconscious safety</li>
-              </ul>
-            </article>
-            <article class="mini-card bucket">
-              <strong>🌍 More Freedom</strong>
-              <ul>
-                <li>AI operator content</li>
-                <li>One-person systems</li>
-                <li>Panama lifestyle proof</li>
-                <li>Online income angles</li>
-                <li>Location control</li>
-              </ul>
-            </article>
-            <article class="mini-card bucket">
-              <strong>⚡ Change My Life</strong>
-              <ul>
-                <li>Identity stories</li>
-                <li>Habits</li>
-                <li>Transformation</li>
-                <li>Motivation with teeth</li>
-                <li>Before/after self-image</li>
-              </ul>
+            <article class="result-card">
+              <h3>2. Pattern Readout</h3>
+              <div id="readout" class="engine-output">
+                <div class="empty-note">Paste a signal and generate. The engine will identify desire, pain, mechanism, proof angle, and offer match.</div>
+              </div>
             </article>
           </div>
         </section>
 
         <section class="engine-section">
-          <p class="eyebrow">One signal becomes a week</p>
-          <h2>Example: “People Are Overwhelmed By AI.”</h2>
-          <p>A weak operator writes one post. This engine turns the insight into a multi-brand campaign.</p>
-          <div class="level-grid">
-            <article class="mini-card"><span class="num">SA</span><h3>Sean Ali</h3><p>“The One-Person AI Business System” angle for authority, YouTube, email, and Content Station.</p></article>
-            <article class="mini-card"><span class="num">AFS</span><h3>AI Freedom System</h3><p>Lead magnet, offer page angle, founder note, and 7-day action path.</p></article>
-            <article class="mini-card"><span class="num">MG</span><h3>Manifestation Genie</h3><p>“Manifest clarity before opportunity” angle for daily guidance and identity diagnosis.</p></article>
-            <article class="mini-card"><span class="num">HM</span><h3>Hypnotic Meditations</h3><p>7-minute mental reset for overwhelm, money stress, and action resistance.</p></article>
-            <article class="mini-card"><span class="num">YT</span><h3>YouTube + Shorts</h3><p>10 hooks, thumbnail concepts, title bank, and one simple story-led script.</p></article>
-            <article class="mini-card"><span class="num">ADS</span><h3>Ad Tests</h3><p>5 Meta ad angles with desire, mechanism, proof point, CTA, and creative direction.</p></article>
+          <p class="eyebrow">Winner bank</p>
+          <h2>Scored Angles</h2>
+          <p>Pick the winner before printing the full pack. The score favors specific pain, desire, proof, Sean fit, offer fit, and speed to produce.</p>
+          <div id="angles" class="angle-list">
+            <div class="empty-note">No angles generated yet.</div>
           </div>
         </section>
 
         <section class="engine-section">
-          <p class="eyebrow">Daily questions</p>
-          <h2>What The Engine Should Answer Every Morning</h2>
-          <div class="question-grid">
-            <article class="mini-card"><h3>🔥 What are 20 ad angles worth testing today?</h3><p>Sorted by desire bucket, offer match, emotional intensity, and speed to produce.</p></article>
-            <article class="mini-card"><h3>🎬 What are the 10 strongest YouTube hooks?</h3><p>Not generic titles. Hooks with a clear pain, curiosity gap, and Sean-style point of view.</p></article>
-            <article class="mini-card"><h3>🎁 What lead magnet should be built next?</h3><p>Based on active demand, email list fit, and which paid offer it naturally leads to.</p></article>
-            <article class="mini-card"><h3>🧲 Which emotional themes are trending?</h3><p>Money fear, AI overwhelm, spiritual doubt, sleep stress, procrastination, or identity pressure.</p></article>
-            <article class="mini-card"><h3>🧩 Which offer matches the signal?</h3><p>Money Flow, MoneyWave, Complete Library, Manifestation Genie, AI Freedom System, or a new bundle.</p></article>
-            <article class="mini-card"><h3>📦 What complete package should we create?</h3><p>Email, short, landing-page block, image prompt, thumbnail, CTA, and follow-up test.</p></article>
+          <p class="eyebrow">Creative engine</p>
+          <h2>Production Pack</h2>
+          <p>Use the tabs to copy a specific asset, or export the whole run for Claude, a VA, or your publishing workflow.</p>
+          <div class="tabs" id="pack-tabs">
+            <button class="active" data-pack="brief" type="button">Strategy Brief</button>
+            <button data-pack="ads" type="button">Meta Ads</button>
+            <button data-pack="shorts" type="button">Shorts</button>
+            <button data-pack="email" type="button">Email</button>
+            <button data-pack="landing" type="button">Landing Page</button>
+            <button data-pack="claude" type="button">Claude Prompt</button>
+            <button data-pack="feedback" type="button">Feedback Loop</button>
           </div>
+          <div class="button-row tight" style="margin-bottom:12px">
+            <button id="copy-pack" class="secondary-button" type="button">Copy Current Tab</button>
+            <button id="export-pack" class="secondary-button" type="button">Export Full Pack</button>
+            <button id="save-run" class="primary-button" type="button">Save This Run</button>
+          </div>
+          <textarea id="pack-output" class="pack-output" aria-label="Generated idea engine pack"></textarea>
         </section>
 
         <section class="engine-section">
-          <p class="eyebrow">Copy prompts</p>
-          <h2>Claude Prompts To Run The Engine</h2>
-          <p>Use these inside Claude with your current offer docs, ad examples, comments, emails, and landing pages.</p>
-          <div class="prompt-grid">
-            <article class="mini-card prompt-card">
-              <h3>1. Extract The Psychology</h3>
-              <pre>Read these market examples. Do not copy them.
-Extract the psychology:
-- desire
-- fear
-- identity shift
-- curiosity gap
-- proof
-- mechanism
-- urgency
-- simplicity
-Then tell me what people are really responding to.</pre>
-            </article>
-            <article class="mini-card prompt-card">
-              <h3>2. Map To Sean's Offers</h3>
-              <pre>Using Sean Ali's offers, map each market signal to the best product:
-Money Flow, MoneyWave, Complete Library, Manifestation Genie, AI Freedom System, Hypnotic Meditations, or a new bundle.
-Explain why each match makes sense.</pre>
-            </article>
-            <article class="mini-card prompt-card">
-              <h3>3. Generate Original Angles</h3>
-              <pre>Create 25 original campaign angles based on the extracted psychology.
-Do not copy the examples.
-Sort by:
-1. More Money
-2. More Peace
-3. More Freedom
-4. Change My Life
-Include hook, promise, mechanism, offer match, CTA, and test priority.</pre>
-            </article>
-            <article class="mini-card prompt-card">
-              <h3>4. Build The Creative Pack</h3>
-              <pre>Take the top 5 angles and create:
-- Meta ad copy
-- YouTube title
-- Shorts script
-- Email subject
-- Email body
-- Landing-page headline
-- CTA
-- Image prompt
-- thumbnail text
-Keep it Sean Ali: simple, direct, emotional, not corporate.</pre>
-            </article>
-          </div>
-        </section>
-
-        <section class="engine-section">
-          <div class="use-box">
-            <div>
-              <p class="eyebrow">Next build</p>
-              <h2>Turn This Into A Real App Module</h2>
-              <p>The next version should let you paste market examples, pick a brand, pick an offer, then print a scored idea bank and complete creative packages.</p>
-            </div>
-            <a class="primary-button" href="/content-station/">Open Content Station</a>
+          <p class="eyebrow">Saved runs</p>
+          <h2>Local Idea Engine History</h2>
+          <p>Saved in this browser so the best angles are not lost between sessions.</p>
+          <div id="history" class="history-grid">
+            <div class="empty-note">No saved runs yet.</div>
           </div>
         </section>
       </div>
     </main>
+
+    <div id="toast" class="toast" role="status"></div>
+
+    <script>
+      const ENGINE_KEY = "seanIdeaEngineRunsV1";
+      const $ = (id) => document.getElementById(id);
+      const marketInput = $("market-input");
+      const brandSelect = $("brand-select");
+      const desireSelect = $("desire-select");
+      const offerSelect = $("offer-select");
+      const feedbackInput = $("feedback-input");
+      const readout = $("readout");
+      const anglesEl = $("angles");
+      const packOutput = $("pack-output");
+      const toastEl = $("toast");
+      let currentRun = null;
+      let activeAngle = 0;
+      let activePack = "brief";
+
+      const offers = {
+        "AI Freedom System": {
+          promise: "turn one useful idea into an offer, content, leads, and a simple launch",
+          cta: "Join the AI Freedom System",
+          bestFor: ["ai", "business", "offer", "funnel", "content", "buyer", "client", "income stream"]
+        },
+        "Manifestation Genie": {
+          promise: "diagnose what your subconscious is rehearsing and get a daily ritual to shift it",
+          cta: "Talk To The Genie",
+          bestFor: ["manifest", "identity", "stuck", "guidance", "ritual", "subconscious"]
+        },
+        "Money Flow": {
+          promise: "calm the money stress pattern so you can stop pulling back around success",
+          cta: "Play Money Flow tonight",
+          bestFor: ["money stress", "sleep", "overthinking", "income ceiling", "undercharge", "hesitate"]
+        },
+        "MoneyWave": {
+          promise: "interrupt the old money loop and start feeling safer with more",
+          cta: "Get the MoneyWave audio",
+          bestFor: ["money blocks", "poverty", "freedom", "manifest money", "reset"]
+        },
+        "Complete Library": {
+          promise: "use the full subconscious operating system across money, sleep, confidence, and identity",
+          cta: "Get the Complete Library",
+          bestFor: ["bundle", "library", "multiple", "identity", "sleep", "wealth", "confidence"]
+        },
+        "Claude27 Guide": {
+          promise: "use 27 Claude prompts to find an offer, write content, build a page, and move toward your first buyer",
+          cta: "Get the free Claude27 Guide",
+          bestFor: ["claude", "prompt", "ai", "guide", "first buyer"]
+        }
+      };
+
+      const desireSignals = {
+        "More Money": ["money", "income", "client", "buyer", "sales", "charge", "undercharge", "wealth", "revenue", "ad", "offer", "business"],
+        "More Peace": ["stress", "sleep", "calm", "overthinking", "anxiety", "peace", "pressure", "burnout"],
+        "More Freedom": ["freedom", "travel", "panama", "escape", "job", "9-5", "control", "time", "online"],
+        "Change My Life": ["identity", "stuck", "procrastination", "self-sabotage", "pattern", "manifest", "future", "confidence"]
+      };
+
+      const angleTemplates = [
+        {
+          name: "Pain Mirror",
+          line: "You do not need another tactic. You need to see the pattern that makes you abandon the tactic.",
+          format: "Call out the hidden reason they keep repeating the same result."
+        },
+        {
+          name: "Specific Outcome",
+          line: "Build one useful thing that can attract a buyer instead of collecting another folder of ideas.",
+          format: "Make the result concrete enough to picture."
+        },
+        {
+          name: "Sean Proof Bridge",
+          line: "I have spent years buying traffic, testing offers, and watching where people freeze before money moves.",
+          format: "Use Sean's path to explain why the mechanism matters."
+        },
+        {
+          name: "Before You Are Forced To",
+          line: "The market is shifting. Waiting makes the first move heavier.",
+          format: "Create urgency without fake countdown energy."
+        },
+        {
+          name: "Identity Switch",
+          line: "The next level does not just require better tools. It requires the version of you who can use them without pulling back.",
+          format: "Make identity the bottleneck behind business behavior."
+        },
+        {
+          name: "Small Door",
+          line: "Start with one page, one offer, one email, one useful move.",
+          format: "Reduce overwhelm into the smallest credible next action."
+        }
+      ];
+
+      function clean(value) {
+        return String(value || "").trim().replace(/\s+/g, " ");
+      }
+
+      function showToast(message) {
+        toastEl.textContent = message;
+        toastEl.classList.add("show");
+        clearTimeout(showToast.timer);
+        showToast.timer = setTimeout(() => toastEl.classList.remove("show"), 1800);
+      }
+
+      function containsAny(text, words) {
+        const low = text.toLowerCase();
+        return words.some((word) => low.includes(word));
+      }
+
+      function detectDesire(text) {
+        if (desireSelect.value !== "auto") return desireSelect.value;
+        const scores = Object.entries(desireSignals).map(([desire, words]) => ({
+          desire,
+          score: words.filter((word) => text.toLowerCase().includes(word)).length
+        }));
+        scores.sort((a, b) => b.score - a.score);
+        return scores[0].score ? scores[0].desire : "More Money";
+      }
+
+      function detectPain(text, desire) {
+        const low = text.toLowerCase();
+        if (/undercharge|price|charging/.test(low)) return "they know they should charge more, but freeze at the ask";
+        if (/ai|claude|prompt|tool/.test(low)) return "they have AI tools, but still do not know what to build or sell";
+        if (/sleep|stress|overthinking/.test(low)) return "their brain keeps rehearsing pressure when they need calm action";
+        if (/job|9-5|freedom/.test(low)) return "they want more control, but the first online move still feels risky";
+        if (/manifest|identity|stuck|self/.test(low)) return "the old identity keeps pulling them back to the same level";
+        return desire === "More Money"
+          ? "they want more money, but keep repeating the same money behavior"
+          : "they know they want change, but the old pattern keeps winning";
+      }
+
+      function detectMechanism(text, desire) {
+        const low = text.toLowerCase();
+        if (/ai|claude|prompt/.test(low)) return "AI offer-and-content workflow";
+        if (/undercharge|price|income ceiling/.test(low)) return "wealth identity reset";
+        if (/sleep|stress|overthinking/.test(low)) return "7-minute subconscious audio reset";
+        if (/manifest|subconscious|identity/.test(low)) return "daily subconscious diagnosis and ritual";
+        if (desire === "More Freedom") return "one-person online asset system";
+        return "desire-to-offer pattern extraction";
+      }
+
+      function pickOffer(text, desire) {
+        if (offerSelect.value !== "auto") return offerSelect.value;
+        const candidates = Object.entries(offers).map(([name, offer]) => {
+          let score = offer.bestFor.filter((word) => text.toLowerCase().includes(word)).length;
+          if (desire === "More Freedom" && name === "AI Freedom System") score += 2;
+          if (desire === "More Peace" && name === "Money Flow") score += 2;
+          if (desire === "Change My Life" && name === "Manifestation Genie") score += 1;
+          if (desire === "More Money" && (name === "Money Flow" || name === "AI Freedom System")) score += 1;
+          return { name, score };
+        }).sort((a, b) => b.score - a.score);
+        return candidates[0].name;
+      }
+
+      function extractThemes(text, desire) {
+        const themes = [];
+        if (containsAny(text, ["ai", "claude", "prompt", "tool"])) themes.push("AI overwhelm");
+        if (containsAny(text, ["undercharge", "price", "charge", "$", "income"])) themes.push("money ceiling");
+        if (containsAny(text, ["stress", "sleep", "overthinking", "panic"])) themes.push("nervous-system pressure");
+        if (containsAny(text, ["freedom", "job", "9-5", "travel", "panama"])) themes.push("escape and control");
+        if (containsAny(text, ["comment", "review", "reddit", "youtube", "ad"])) themes.push("market proof language");
+        themes.push(desire.toLowerCase());
+        return [...new Set(themes)].slice(0, 6);
+      }
+
+      function scoreAngle(template, text, desire, offerName, index) {
+        let score = 72 + index;
+        if (template.name === "Specific Outcome" && /ai|offer|buyer|client|sales/.test(text.toLowerCase())) score += 13;
+        if (template.name === "Identity Switch" && /stuck|identity|undercharge|ceiling/.test(text.toLowerCase())) score += 14;
+        if (template.name === "Sean Proof Bridge") score += 9;
+        if (desire === "More Money") score += 5;
+        if (offerName === "AI Freedom System" && /ai|business|offer/.test(text.toLowerCase())) score += 8;
+        return Math.min(98, score);
+      }
+
+      function generateAngles({ signal, brand, desire, pain, mechanism, offerName }) {
+        const offer = offers[offerName];
+        return angleTemplates.map((template, index) => {
+          const score = scoreAngle(template, signal, desire, offerName, index);
+          const hook = buildHook(template.name, desire, pain, mechanism, offerName);
+          return {
+            name: template.name,
+            score,
+            hook,
+            promise: offer.promise,
+            mechanism,
+            offerName,
+            cta: offer.cta,
+            format: template.format,
+            reason: template.line,
+            brand
+          };
+        }).sort((a, b) => b.score - a.score);
+      }
+
+      function buildHook(type, desire, pain, mechanism, offerName) {
+        if (type === "Pain Mirror") return `You are not lazy. ${sentenceCase(pain)}.`;
+        if (type === "Specific Outcome") return offerName === "AI Freedom System"
+          ? "Use AI to build one offer, one page, and one buyer path before you chase another tool."
+          : `Use ${mechanism} to stop repeating the same pattern around ${desire.toLowerCase()}.`;
+        if (type === "Sean Proof Bridge") return "After years of buying traffic and building funnels, I kept seeing the same hidden bottleneck.";
+        if (type === "Before You Are Forced To") return "The people learning this now will move faster than the people who wait until pressure forces them.";
+        if (type === "Identity Switch") return "The next level is not blocked by information. It is blocked by the identity running the information.";
+        return "One useful move beats another week of collecting ideas.";
+      }
+
+      function sentenceCase(value) {
+        const text = clean(value);
+        return text ? text.charAt(0).toUpperCase() + text.slice(1) : text;
+      }
+
+      function runEngine() {
+        const signal = clean(marketInput.value);
+        if (!signal) return showToast("Paste a market signal first");
+        const brand = brandSelect.value;
+        const desire = detectDesire(signal);
+        const pain = detectPain(signal, desire);
+        const mechanism = detectMechanism(signal, desire);
+        const offerName = pickOffer(signal, desire);
+        const themes = extractThemes(signal, desire);
+        const angles = generateAngles({ signal, brand, desire, pain, mechanism, offerName });
+        currentRun = {
+          id: Date.now(),
+          createdAt: new Date().toISOString(),
+          signal,
+          brand,
+          desire,
+          pain,
+          mechanism,
+          offerName,
+          themes,
+          feedback: clean(feedbackInput.value),
+          angles
+        };
+        activeAngle = 0;
+        activePack = "brief";
+        renderRun();
+        showToast("Idea pack generated");
+      }
+
+      function renderRun() {
+        if (!currentRun) return;
+        renderReadout();
+        renderAngles();
+        setPackTab(activePack);
+        renderPack();
+      }
+
+      function renderReadout() {
+        readout.innerHTML = `
+          <div class="score-row">
+            <div class="score-pill"><strong>${escapeHtml(currentRun.desire)}</strong><span>Desire</span></div>
+            <div class="score-pill"><strong>${escapeHtml(currentRun.offerName)}</strong><span>Offer</span></div>
+            <div class="score-pill"><strong>${currentRun.angles[0].score}/100</strong><span>Top score</span></div>
+            <div class="score-pill"><strong>${currentRun.angles.length}</strong><span>Angles</span></div>
+          </div>
+          <div class="angle-card">
+            <h4>Pattern Extracted</h4>
+            <p><strong>Pain:</strong> ${escapeHtml(sentenceCase(currentRun.pain))}.</p>
+            <p><strong>Mechanism:</strong> ${escapeHtml(currentRun.mechanism)}.</p>
+            <p><strong>Brand:</strong> ${escapeHtml(currentRun.brand)}.</p>
+            <div class="signal-chip-row">${currentRun.themes.map((theme) => `<span class="signal-chip">${escapeHtml(theme)}</span>`).join("")}</div>
+          </div>
+        `;
+      }
+
+      function renderAngles() {
+        anglesEl.innerHTML = currentRun.angles.map((angle, index) => `
+          <article class="angle-card ${index === activeAngle ? "active" : ""}">
+            <div class="angle-top">
+              <div>
+                <h4>${escapeHtml(angle.hook)}</h4>
+                <p><strong>${escapeHtml(angle.name)}:</strong> ${escapeHtml(angle.format)}</p>
+                <p>${escapeHtml(angle.reason)}</p>
+              </div>
+              <button class="secondary-button" type="button" data-angle="${index}">${angle.score}/100</button>
+            </div>
+          </article>
+        `).join("");
+        anglesEl.querySelectorAll("[data-angle]").forEach((button) => {
+          button.addEventListener("click", () => {
+            activeAngle = Number(button.dataset.angle);
+            renderRun();
+          });
+        });
+      }
+
+      function selectedAngle() {
+        return currentRun?.angles?.[activeAngle] || null;
+      }
+
+      function setPackTab(name) {
+        activePack = name;
+        document.querySelectorAll("#pack-tabs button").forEach((button) => {
+          button.classList.toggle("active", button.dataset.pack === name);
+        });
+      }
+
+      function renderPack() {
+        if (!currentRun) {
+          packOutput.value = "";
+          return;
+        }
+        const packs = buildPacks();
+        packOutput.value = packs[activePack] || packs.brief;
+      }
+
+      function buildPacks() {
+        const angle = selectedAngle();
+        const offer = offers[currentRun.offerName];
+        const proofLine = currentRun.brand === "Sean Ali"
+          ? "Sean has spent years buying traffic, building funnels, and turning simple offers into customers."
+          : `Route this through ${currentRun.brand} with Sean's direct-response voice.`;
+        const feedback = currentRun.feedback || "No performance feedback pasted yet. After testing, add CTR, CPA, watch time, comments, and sales notes.";
+
+        const brief = `STRATEGY BRIEF
+
+Market signal:
+${currentRun.signal}
+
+Pattern:
+People are reacting because ${currentRun.pain}.
+
+Core desire:
+${currentRun.desire}
+
+Best offer match:
+${currentRun.offerName}
+
+Mechanism:
+${currentRun.mechanism}
+
+Winning angle:
+${angle.hook}
+
+Promise:
+${angle.promise}
+
+Proof bridge:
+${proofLine}
+
+CTA:
+${angle.cta}
+
+Themes:
+${currentRun.themes.join(", ")}`;
+
+        const ads = `META AD TEST PACK
+
+AD 1 - PAIN MIRROR
+Primary text:
+${angle.hook}
+
+Most people keep looking for another tool, another tactic, or another perfect plan.
+
+But the real leak is usually simpler:
+${sentenceCase(currentRun.pain)}.
+
+That is why I built ${currentRun.offerName}.
+It helps you ${offer.promise}.
+
+CTA: ${angle.cta}
+
+Headline:
+${headlineFromAngle(angle)}
+
+Description:
+Simple next step. No hype. Built for people who are ready to move.
+
+---
+
+AD 2 - SEAN AUTHORITY
+Primary text:
+After years of buying traffic, testing offers, and watching people freeze right before the money move, I noticed the same pattern.
+
+The people who win are not always the smartest.
+They are the ones who can act without their old identity pulling them back.
+
+${currentRun.offerName} gives you the next practical step.
+
+CTA: ${angle.cta}
+
+Headline:
+Stop Repeating The Same Level
+
+---
+
+AD 3 - SIMPLE DOOR
+Primary text:
+You do not need to change your whole life today.
+
+You need one clean move:
+one idea,
+one offer,
+one page,
+one buyer path,
+or one reset that gets you moving again.
+
+Start there.
+
+CTA: ${angle.cta}`;
+
+        const shorts = `SHORTS / REELS SCRIPT
+
+TITLE:
+${headlineFromAngle(angle)}
+
+SCRIPT:
+${angle.hook}
+
+Listen.
+
+You can have the tools.
+You can have the ideas.
+You can even know what to do next.
+
+But if ${currentRun.pain}, you keep returning to the same place.
+
+That is the pattern.
+
+The fix is not more noise.
+It is a cleaner system and one useful next move.
+
+That is what ${currentRun.offerName} is built for.
+
+${angle.cta}.
+
+ON-SCREEN TEXT:
+${currentRun.desire}
+${currentRun.mechanism}
+One useful next move
+
+THUMBNAIL TEXT:
+${thumbnailText(angle)}`;
+
+        const email = `EMAIL DRAFT
+
+SUBJECT:
+${emailSubject(angle)}
+
+BODY:
+You ever notice this?
+
+You can want the next level badly...
+
+but when it is time to actually move, something in you starts negotiating.
+
+Wait.
+Research more.
+Fix one more thing.
+Maybe later.
+
+That is usually not a skill problem.
+
+It is this:
+${sentenceCase(currentRun.pain)}.
+
+So the move is not to collect more random information.
+
+The move is to use a simple system that gets you into action.
+
+For this, I would point you to ${currentRun.offerName}.
+
+It helps you ${offer.promise}.
+
+${angle.cta}.
+
+Sean`;
+
+        const landing = `LANDING PAGE BLOCK
+
+EYEBROW:
+${currentRun.desire} · ${currentRun.mechanism}
+
+HEADLINE:
+${headlineFromAngle(angle)}
+
+SUBHEAD:
+If you keep circling the same result, the problem may not be effort. It may be the old pattern running your decisions right when the next move matters.
+
+3 BULLETS:
+✓ See the hidden pattern behind ${currentRun.desire.toLowerCase()} resistance.
+✓ Use a simple system to turn the insight into action.
+✓ Move toward the next useful step without more noise or overthinking.
+
+PROOF LINE:
+${proofLine}
+
+CTA BUTTON:
+${angle.cta}
+
+RISK REVERSAL:
+Start with the smallest clear next step. No fake promise. No magic button. Just the system Sean would use from here.`;
+
+        const claude = `CLAUDE IDEA ENGINE PROMPT
+
+You are Sean Ali's Chief Strategy Officer.
+
+Do not copy the market examples.
+Extract the psychology, then create original Sean Ali campaign ideas.
+
+MARKET SIGNAL:
+${currentRun.signal}
+
+BRAND:
+${currentRun.brand}
+
+DESIRE:
+${currentRun.desire}
+
+PAIN PATTERN:
+${currentRun.pain}
+
+MECHANISM:
+${currentRun.mechanism}
+
+OFFER:
+${currentRun.offerName}
+
+TOP ANGLE:
+${angle.hook}
+
+Create:
+1. 20 original ad angles
+2. 10 YouTube titles
+3. 10 Shorts hooks
+4. 5 landing page headlines
+5. 5 email subjects
+6. 3 lead magnet ideas
+7. 1 complete campaign plan
+
+Rules:
+- Write like Sean: simple, direct, emotional, human.
+- No corporate phrasing.
+- No fake proof.
+- No guaranteed income or medical claims.
+- Sell pain -> mechanism -> relief.
+- Keep one CTA per asset.
+- Make the offer feel like the natural next step.`;
+
+        const feedbackLoop = `FEEDBACK LOOP
+
+Current feedback:
+${feedback}
+
+After publishing, paste back:
+- Hook
+- Platform
+- Spend
+- CTR
+- CPC
+- CPA
+- Watch time
+- Comments people repeated
+- Sales or leads
+- Objections
+
+How to improve next run:
+1. If CTR is weak, increase pain specificity in the first line.
+2. If comments are strong but sales are weak, tighten offer match.
+3. If watch time drops early, make the first 3 seconds less abstract.
+4. If people ask "how?", turn the mechanism into the next lead magnet.
+5. If people mention the same phrase in comments, reuse that phrase as the next hook.
+
+Next test:
+Run the same desire with a different mechanism and compare.`;
+
+        return { brief, ads, shorts, email, landing, claude, feedback: feedbackLoop };
+      }
+
+      function headlineFromAngle(angle) {
+        if (angle.name === "Specific Outcome") return "Turn One Useful Idea Into Something People Can Buy";
+        if (angle.name === "Identity Switch") return "The Hidden Pattern Keeping You At The Same Level";
+        if (angle.name === "Sean Proof Bridge") return "What Years Of Ads And Funnels Taught Me About Getting Unstuck";
+        if (angle.name === "Before You Are Forced To") return "Build The Next Move Before Pressure Forces You";
+        if (angle.name === "Small Door") return "Start With One Clear Move";
+        return "Why You Keep Getting Pulled Back";
+      }
+
+      function thumbnailText(angle) {
+        if (angle.name === "Identity Switch") return "OLD YOU IS STILL RUNNING";
+        if (angle.name === "Specific Outcome") return "BUILD THIS FIRST";
+        if (angle.name === "Sean Proof Bridge") return "I SAW THIS IN THE DATA";
+        return "THIS IS THE REAL BLOCK";
+      }
+
+      function emailSubject(angle) {
+        if (angle.name === "Specific Outcome") return "one useful thing";
+        if (angle.name === "Identity Switch") return "the old version of you";
+        if (angle.name === "Sean Proof Bridge") return "what the ads kept showing me";
+        return "this is why you pull back";
+      }
+
+      function saveRun() {
+        if (!currentRun) return showToast("Generate a run first");
+        const runs = loadRuns();
+        runs.unshift(currentRun);
+        localStorage.setItem(ENGINE_KEY, JSON.stringify(runs.slice(0, 12)));
+        renderHistory();
+        showToast("Run saved");
+      }
+
+      function loadRuns() {
+        try { return JSON.parse(localStorage.getItem(ENGINE_KEY) || "[]"); }
+        catch { return []; }
+      }
+
+      function renderHistory() {
+        const runs = loadRuns();
+        if (!runs.length) {
+          $("history").innerHTML = '<div class="empty-note">No saved runs yet.</div>';
+          return;
+        }
+        $("history").innerHTML = runs.map((run, index) => `
+          <article class="history-card">
+            <strong>${escapeHtml(run.angles?.[0]?.hook || run.offerName)}</strong>
+            <p>${escapeHtml(run.desire)} → ${escapeHtml(run.offerName)}<br>${new Date(run.createdAt).toLocaleString()}</p>
+            <button class="secondary-button" data-history="${index}" type="button">Load Run</button>
+          </article>
+        `).join("");
+        document.querySelectorAll("[data-history]").forEach((button) => {
+          button.addEventListener("click", () => {
+            currentRun = runs[Number(button.dataset.history)];
+            activeAngle = 0;
+            activePack = "brief";
+            marketInput.value = currentRun.signal;
+            brandSelect.value = currentRun.brand;
+            desireSelect.value = currentRun.desire;
+            offerSelect.value = currentRun.offerName;
+            feedbackInput.value = currentRun.feedback || "";
+            renderRun();
+            showToast("Run loaded");
+          });
+        });
+      }
+
+      function exportPack() {
+        if (!currentRun) return showToast("Generate a pack first");
+        const packs = buildPacks();
+        const text = Object.entries(packs).map(([key, value]) => `====================\n${key.toUpperCase()}\n====================\n\n${value}`).join("\n\n");
+        const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.download = `idea-engine-${currentRun.offerName.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${new Date().toISOString().slice(0, 10)}.txt`;
+        anchor.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function escapeHtml(value) {
+        return String(value || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      $("generate-engine").addEventListener("click", runEngine);
+      $("sample-engine").addEventListener("click", () => {
+        marketInput.value = "People are overwhelmed by AI. They see everyone talking about prompts, agents, and automation, but they still do not know what to build, what to sell, or how to get their first buyer online.";
+        brandSelect.value = "AI Freedom System";
+        desireSelect.value = "auto";
+        offerSelect.value = "auto";
+        showToast("Sample loaded");
+      });
+      $("copy-pack").addEventListener("click", async () => {
+        if (!packOutput.value) return showToast("Nothing to copy yet");
+        await navigator.clipboard.writeText(packOutput.value);
+        showToast("Copied");
+      });
+      $("export-pack").addEventListener("click", exportPack);
+      $("save-run").addEventListener("click", saveRun);
+      document.querySelectorAll("#pack-tabs button").forEach((button) => {
+        button.addEventListener("click", () => {
+          setPackTab(button.dataset.pack);
+          renderPack();
+        });
+      });
+
+      renderHistory();
+    </script>
   </body>
 </html>
