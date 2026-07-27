@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#7c3aed">
+    <title>Sean Ali Image Generator | Content Station</title>
+    <meta name="description" content="Sean Ali's company-brain image generator for producing premium brand-matched prompts, ad creatives, thumbnails, product mockups, and landing page visuals.">
+    <link rel="stylesheet" href="/content-station/styles.css?v=live-systems-20260727">
+    <style>
+      .gen-shell { min-height: 100vh; padding: 28px; }
+      .gen-wrap { width: min(1280px, 100%); margin: 0 auto; }
+      .gen-nav { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 18px; }
+      .gen-logo { display: flex; align-items: center; gap: 12px; color: var(--ink); text-decoration: none; font-weight: 950; }
+      .gen-logo img { width: 46px; height: 46px; border-radius: 16px; object-fit: cover; object-position: center 24%; box-shadow: 0 12px 28px rgba(15, 23, 42, .12); }
+      .gen-hero {
+        position: relative;
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 1fr .92fr;
+        gap: 24px;
+        padding: 32px;
+        color: #fff;
+        background:
+          radial-gradient(circle at top right, rgba(249, 115, 22, .34), transparent 24rem),
+          radial-gradient(circle at bottom left, rgba(124, 58, 237, .34), transparent 26rem),
+          linear-gradient(135deg, #111827, #171717 55%, #312e81);
+        border-radius: 34px;
+        box-shadow: var(--shadow);
+      }
+      .gen-hero::after {
+        content: "VISUALS";
+        position: absolute;
+        right: -18px;
+        bottom: -42px;
+        color: rgba(255, 255, 255, .06);
+        font-size: clamp(82px, 14vw, 190px);
+        font-weight: 1000;
+        letter-spacing: -.09em;
+      }
+      .gen-hero > * { position: relative; z-index: 1; }
+      .gen-hero h1 { max-width: 760px; margin: 10px 0 14px; font-size: clamp(42px, 5.4vw, 76px); line-height: .88; letter-spacing: -.07em; }
+      .gen-hero p { max-width: 650px; margin: 0; color: #e5e7eb; font-size: 20px; font-weight: 740; line-height: 1.22; }
+      .gen-card {
+        padding: 22px;
+        background: rgba(255, 255, 255, .08);
+        border: 1px solid rgba(255, 255, 255, .14);
+        border-radius: 26px;
+        backdrop-filter: blur(16px);
+      }
+      .gen-card h2 { margin: 0 0 12px; color: #fff; font-size: 28px; line-height: .98; letter-spacing: -.04em; }
+      .gen-card ul { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+      .gen-card li { display: grid; grid-template-columns: 28px 1fr; gap: 10px; color: #f5f3ff; font-weight: 780; line-height: 1.25; }
+      .gen-section {
+        margin-top: 22px;
+        padding: 28px;
+        background: var(--paper);
+        border: 1px solid rgba(16, 24, 40, .08);
+        border-radius: 28px;
+        box-shadow: var(--shadow-soft);
+        backdrop-filter: blur(14px);
+      }
+      .gen-section h2 { margin: 4px 0 10px; font-size: clamp(30px, 4vw, 48px); line-height: .95; letter-spacing: -.05em; }
+      .gen-section > p { max-width: 850px; margin: 0 0 22px; color: var(--muted); font-size: 17px; font-weight: 680; line-height: 1.45; }
+      .gen-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 18px; align-items: start; }
+      .tool-card, .output-card, .preview-card {
+        padding: 22px;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        box-shadow: 0 12px 34px rgba(15, 23, 42, .055);
+      }
+      .tool-card h3, .output-card h3, .preview-card h3 { margin: 0 0 10px; font-size: 24px; line-height: 1; letter-spacing: -.04em; }
+      .field-stack { display: grid; gap: 14px; }
+      .field-stack label { display: grid; gap: 7px; color: var(--ink); font-weight: 850; }
+      .field-stack label span { color: var(--muted); font-size: 13px; letter-spacing: .02em; text-transform: uppercase; }
+      .field-stack textarea, .field-stack select, .field-stack input {
+        width: 100%;
+        min-height: 48px;
+        padding: 13px 14px;
+        color: var(--ink);
+        background: #f9fafb;
+        border: 1px solid var(--line-strong);
+        border-radius: 16px;
+        outline: none;
+      }
+      .field-stack textarea { min-height: 144px; resize: vertical; line-height: 1.45; }
+      .button-row.tight { justify-content: flex-start; margin-top: 14px; }
+      .brain-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 18px; }
+      .brain-pill { padding: 13px; background: rgba(255, 255, 255, .1); border: 1px solid rgba(255, 255, 255, .12); border-radius: 18px; }
+      .brain-pill strong { display: block; color: #fff; font-size: 18px; letter-spacing: -.03em; }
+      .brain-pill span { color: #ddd6fe; font-size: 12px; font-weight: 850; text-transform: uppercase; }
+      .visual-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px; }
+      .summary-pill { padding: 13px; background: #f9fafb; border: 1px solid var(--line); border-radius: 18px; }
+      .summary-pill strong { display: block; font-size: 20px; letter-spacing: -.04em; }
+      .summary-pill span { color: var(--muted); font-size: 12px; font-weight: 850; text-transform: uppercase; }
+      .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 12px; }
+      .tabs button { min-height: 40px; padding: 0 12px; color: var(--ink); background: #fff; border: 1px solid var(--line-strong); border-radius: 999px; font-weight: 850; }
+      .tabs button.active { color: #fff; background: linear-gradient(135deg, #7c3aed, #f97316); border-color: transparent; }
+      .prompt-output {
+        width: 100%;
+        min-height: 480px;
+        padding: 18px;
+        color: #e5e7eb;
+        background: #101827;
+        border: 0;
+        border-radius: 20px;
+        resize: vertical;
+        line-height: 1.55;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 13px;
+      }
+      .preview-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+      .mock-tile {
+        min-height: 190px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 18px;
+        color: #fff;
+        border-radius: 22px;
+        background: linear-gradient(135deg, #0f172a, #312e81 52%, #f97316);
+      }
+      .mock-tile:nth-child(2) { background: linear-gradient(135deg, #f8fafc, #dbeafe 58%, #a7f3d0); color: #111827; }
+      .mock-tile:nth-child(3) { background: linear-gradient(135deg, #111827, #064e3b 58%, #16c784); }
+      .mock-tile strong { font-size: 24px; line-height: .98; letter-spacing: -.05em; }
+      .mock-tile span { max-width: 220px; font-size: 13px; font-weight: 850; line-height: 1.25; opacity: .88; }
+      .history-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+      .history-card { padding: 16px; background: #fff; border: 1px solid var(--line); border-radius: 20px; }
+      .history-card strong { display: block; margin-bottom: 8px; font-size: 17px; line-height: 1.1; }
+      .history-card p { margin: 0 0 12px; color: var(--muted); font-size: 13px; font-weight: 670; line-height: 1.35; }
+      .empty-note { padding: 22px; color: var(--muted); background: #f9fafb; border: 1px dashed var(--line-strong); border-radius: 20px; font-weight: 750; text-align: center; }
+      @media (max-width: 980px) {
+        .gen-hero, .gen-grid, .brain-strip, .visual-summary, .preview-grid, .history-grid { grid-template-columns: 1fr; }
+        .gen-shell { padding: 16px; }
+        .gen-hero, .gen-section { padding: 22px; border-radius: 24px; }
+        .gen-hero h1 { font-size: 42px; }
+        .gen-nav { align-items: flex-start; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="gen-shell">
+      <div class="gen-wrap">
+        <nav class="gen-nav">
+          <a class="gen-logo" href="/content-station/">
+            <img src="/content-station/assets/sean.png" alt="Sean Ali">
+            <span>Sean Ali Organic Station</span>
+          </a>
+          <div class="button-row">
+            <a class="secondary-button" href="/content-station/idea-engine/" style="display:inline-flex;align-items:center;text-decoration:none">Idea Engine</a>
+            <a class="secondary-button" href="/content-station/" style="display:inline-flex;align-items:center;text-decoration:none">Organic Station</a>
+          </div>
+        </nav>
+
+        <section class="gen-hero">
+          <div>
+            <p class="eyebrow">Company-brain image generator</p>
+            <h1>Make The Visuals Look Like Sean’s World.</h1>
+            <p>Pick the brand, offer, platform, and emotional angle. The tool prints premium image prompts, thumbnail text, negative prompts, and creative directions tied to Sean’s company brain.</p>
+            <div class="brain-strip" aria-label="Company brain">
+              <div class="brain-pill"><strong>Sean Ali</strong><span>Trust engine</span></div>
+              <div class="brain-pill"><strong>HM</strong><span>Cash engine</span></div>
+              <div class="brain-pill"><strong>Genie</strong><span>Recurring</span></div>
+              <div class="brain-pill"><strong>AFS</strong><span>AI freedom</span></div>
+            </div>
+          </div>
+          <aside class="gen-card">
+            <h2>Outputs</h2>
+            <ul>
+              <li><span>🖼</span><span>Hero, ad, thumbnail, social post, product mockup, and lifestyle scene prompts.</span></li>
+              <li><span>🎯</span><span>Visual strategy based on desire: money, peace, freedom, or change.</span></li>
+              <li><span>🧲</span><span>Overlay text, composition, color, lighting, and proof direction.</span></li>
+              <li><span>🚫</span><span>Negative prompts to avoid cheap, fake, generic AI visuals.</span></li>
+            </ul>
+          </aside>
+        </section>
+
+        <section class="gen-section">
+          <p class="eyebrow">Generate prompts</p>
+          <h2>Campaign Visual → Image Prompt Pack</h2>
+          <p>This does not create random art. It creates brand-matched prompts for images that can sell: hooks, proof, emotion, product clarity, and Sean-style trust.</p>
+
+          <div class="gen-grid">
+            <article class="tool-card">
+              <h3>1. Feed The Visual Brain</h3>
+              <div class="field-stack">
+                <label>
+                  <span>Brand</span>
+                  <select id="brand">
+                    <option value="Sean Ali">Sean Ali</option>
+                    <option value="AI Freedom System">AI Freedom System</option>
+                    <option value="Hypnotic Meditations">Hypnotic Meditations</option>
+                    <option value="Manifestation Genie">Manifestation Genie</option>
+                    <option value="Panama Untold">Panama Untold</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Offer</span>
+                  <select id="offer">
+                    <option value="AI Freedom System">AI Freedom System</option>
+                    <option value="Money Flow">Money Flow</option>
+                    <option value="MoneyWave">MoneyWave</option>
+                    <option value="Manifestation Genie">Manifestation Genie</option>
+                    <option value="Claude27 Guide">Claude27 Guide</option>
+                    <option value="Complete Library">Complete Library</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Visual type</span>
+                  <select id="visual-type">
+                    <option value="Meta ad image">Meta ad image</option>
+                    <option value="YouTube thumbnail">YouTube thumbnail</option>
+                    <option value="Landing page hero">Landing page hero</option>
+                    <option value="Product mockup">Product mockup</option>
+                    <option value="Instagram carousel slide">Instagram carousel slide</option>
+                    <option value="Lifestyle proof image">Lifestyle proof image</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Core desire</span>
+                  <select id="desire">
+                    <option value="More Money">More Money</option>
+                    <option value="More Peace">More Peace</option>
+                    <option value="More Freedom">More Freedom</option>
+                    <option value="Change My Life">Change My Life</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Angle or market signal</span>
+                  <textarea id="angle" placeholder="Example: People are overwhelmed by AI and need one simple buyer path. Or: Money stress keeps smart people undercharging."></textarea>
+                </label>
+                <label>
+                  <span>Must include</span>
+                  <input id="must-include" placeholder="Example: Sean's face, laptop, ocean view, dashboard, audio player, proof screenshot">
+                </label>
+              </div>
+              <div class="button-row tight">
+                <button id="generate" class="primary-button" type="button">Generate Image Pack</button>
+                <button id="sample" class="secondary-button" type="button">Load Sample</button>
+              </div>
+            </article>
+
+            <article class="output-card">
+              <h3>2. Visual Strategy</h3>
+              <div id="summary">
+                <div class="empty-note">Generate a pack to see visual direction, palette, proof angle, and what the image must avoid.</div>
+              </div>
+              <div class="preview-grid" id="preview" style="margin-top:14px"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="gen-section">
+          <p class="eyebrow">Prompt pack</p>
+          <h2>Copy Into Your Image Model</h2>
+          <p>Use the main prompt for ChatGPT image generation. Use the variants for ads, thumbnails, landing pages, and social creative tests.</p>
+          <div class="tabs" id="tabs">
+            <button class="active" data-tab="main" type="button">Main Prompt</button>
+            <button data-tab="variants" type="button">Variants</button>
+            <button data-tab="thumbnail" type="button">Thumbnail</button>
+            <button data-tab="ad" type="button">Ad Creative</button>
+            <button data-tab="negative" type="button">Negative Prompt</button>
+            <button data-tab="brief" type="button">Designer Brief</button>
+          </div>
+          <div class="button-row tight" style="margin-bottom:12px">
+            <button id="copy" class="secondary-button" type="button">Copy Current</button>
+            <button id="export" class="secondary-button" type="button">Export Pack</button>
+            <button id="save" class="primary-button" type="button">Save Prompt Run</button>
+          </div>
+          <textarea id="output" class="prompt-output" aria-label="Image generator output"></textarea>
+        </section>
+
+        <section class="gen-section">
+          <p class="eyebrow">Saved visuals</p>
+          <h2>Local Image Prompt History</h2>
+          <p>Saved in this browser so winning visual directions are easy to reuse.</p>
+          <div id="history" class="history-grid">
+            <div class="empty-note">No saved image prompt runs yet.</div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <div id="toast" class="toast" role="status"></div>
+
+    <script>
+      const STORAGE_KEY = "seanImageGeneratorRunsV1";
+      const $ = (id) => document.getElementById(id);
+      const state = { run: null, tab: "main" };
+
+      const brandBrain = {
+        "Sean Ali": {
+          role: "trust engine",
+          look: "premium personal brand, real founder energy, direct-response clarity, clean white and black foundation, red emphasis, orange CTA accent",
+          subjects: "Sean Ali, laptop, ad dashboards, simple office, Panama/ocean lifestyle proof, founder authority",
+          avoid: "guru posing, fake luxury, rented mansion energy, cheesy money rain, spiritual coach aesthetic"
+        },
+        "AI Freedom System": {
+          role: "AI business system",
+          look: "modern AI product, clean dashboard feel, laptop, prompts, pages, funnels, content boards, sharp SaaS UI, warm founder-led trust",
+          subjects: "laptop workflow, AI prompt library, offer templates, content calendar, landing page wireframes, simple buyer path",
+          avoid: "robot mascots, neon sci-fi clutter, crypto bro aesthetic, generic circuit-board background"
+        },
+        "Hypnotic Meditations": {
+          role: "cash engine",
+          look: "calm premium subconscious reset brand, dark-to-soft gradient, audio player, nightstand, headphones, money calm, identity installation",
+          subjects: "phone audio player, calm room, bed, headphones, subtle money symbols, peaceful face, theta/night atmosphere",
+          avoid: "medical claims, therapist clinic vibe, stock yoga, cheap chakra art, fake miracle imagery"
+        },
+        "Manifestation Genie": {
+          role: "recurring guidance engine",
+          look: "magical but modern AI guide, clean app interface, daily ritual card, subtle glow, personal insight, practical next step",
+          subjects: "phone app, genie chat, daily guidance, ritual card, stars used minimally, human hand holding phone",
+          avoid: "cartoon lamp, childish genie, fake mystical overload, confusing tarot aesthetic"
+        },
+        "Panama Untold": {
+          role: "lifestyle proof engine",
+          look: "warm documentary lifestyle, Panama, ocean, city, food, travel, freedom, real-life authority proof",
+          subjects: "Panama skyline, beach, cafe, suitcase, founder lifestyle, natural sunlight, real travel moments",
+          avoid: "tourism brochure, generic beach stock, over-edited influencer travel"
+        }
+      };
+
+      const offerBrain = {
+        "AI Freedom System": "one-person AI business system, prompts, workflows, offer builder, landing page frameworks, content engine, lead systems",
+        "Money Flow": "7-minute subconscious money reset, calm money stress, stop overthinking, feel safer with more",
+        "MoneyWave": "free money block audio, poverty pattern interruption, manifest real freedom, more money, break free from old loops",
+        "Manifestation Genie": "AI Genie that diagnoses what your subconscious is rehearsing and gives a daily reset ritual",
+        "Claude27 Guide": "27 Claude prompts to find an offer, create content, build a page, write emails, and get first buyer",
+        "Complete Library": "full subconscious operating system across money, sleep, confidence, wealth, and identity rehearsal"
+      };
+
+      const desireBrain = {
+        "More Money": {
+          emotion: "relief from money pressure, confidence charging more, clean control",
+          proof: "ad dashboards, revenue screenshots, product sales, buyer path, offer stack",
+          palette: "white, black, red emphasis, orange CTA, small green proof accents"
+        },
+        "More Peace": {
+          emotion: "quiet mind, nervous system calm, soft nighttime relief",
+          proof: "audio player, user review, calm face, before-bed ritual",
+          palette: "deep navy, white, soft blue, gentle green, warm amber"
+        },
+        "More Freedom": {
+          emotion: "laptop freedom, travel, time control, life outside the 9-5",
+          proof: "Panama, ocean view, remote work, clean laptop system, founder lifestyle",
+          palette: "white, black, ocean blue, orange, green proof accent"
+        },
+        "Change My Life": {
+          emotion: "old identity vs new identity, one useful step, internal shift",
+          proof: "before/after mood, journal, phone ritual, simple action plan",
+          palette: "white, black, red tension, purple/blue transformation accent"
+        }
+      };
+
+      function clean(value) {
+        return String(value || "").trim().replace(/\s+/g, " ");
+      }
+
+      function showToast(message) {
+        const toast = $("toast");
+        toast.textContent = message;
+        toast.classList.add("show");
+        clearTimeout(showToast.timer);
+        showToast.timer = setTimeout(() => toast.classList.remove("show"), 1800);
+      }
+
+      function generate() {
+        const brand = $("brand").value;
+        const offer = $("offer").value;
+        const visualType = $("visual-type").value;
+        const desire = $("desire").value;
+        const angle = clean($("angle").value);
+        const mustInclude = clean($("must-include").value);
+        if (!angle) return showToast("Add an angle first");
+        const brandData = brandBrain[brand];
+        const desireData = desireBrain[desire];
+        state.run = {
+          id: Date.now(),
+          createdAt: new Date().toISOString(),
+          brand,
+          offer,
+          visualType,
+          desire,
+          angle,
+          mustInclude,
+          brandData,
+          desireData,
+          offerData: offerBrain[offer]
+        };
+        state.tab = "main";
+        render();
+        showToast("Image pack generated");
+      }
+
+      function render() {
+        if (!state.run) return;
+        renderSummary();
+        setTab(state.tab);
+        $("output").value = buildPacks()[state.tab];
+      }
+
+      function renderSummary() {
+        const run = state.run;
+        $("summary").innerHTML = `
+          <div class="visual-summary">
+            <div class="summary-pill"><strong>${escapeHtml(run.brand)}</strong><span>${escapeHtml(run.brandData.role)}</span></div>
+            <div class="summary-pill"><strong>${escapeHtml(run.desire)}</strong><span>Core desire</span></div>
+            <div class="summary-pill"><strong>${escapeHtml(run.visualType)}</strong><span>Format</span></div>
+          </div>
+          <div class="empty-note" style="text-align:left">
+            <strong>Visual strategy:</strong> ${escapeHtml(run.desireData.emotion)}.<br>
+            <strong>Proof angle:</strong> ${escapeHtml(run.desireData.proof)}.<br>
+            <strong>Company-brain look:</strong> ${escapeHtml(run.brandData.look)}.
+          </div>
+        `;
+        $("preview").innerHTML = `
+          <div class="mock-tile"><strong>${escapeHtml(run.desire)}</strong><span>${escapeHtml(run.angle)}</span></div>
+          <div class="mock-tile"><strong>${escapeHtml(run.offer)}</strong><span>${escapeHtml(run.offerData)}</span></div>
+          <div class="mock-tile"><strong>${escapeHtml(run.visualType)}</strong><span>${escapeHtml(run.mustInclude || run.brandData.subjects)}</span></div>
+        `;
+      }
+
+      function buildPacks() {
+        const run = state.run;
+        const includeLine = run.mustInclude ? `Must include: ${run.mustInclude}.` : `Must include brand-relevant subject matter: ${run.brandData.subjects}.`;
+        const main = `MAIN IMAGE PROMPT
+
+Create a premium ${run.visualType.toLowerCase()} for ${run.brand}.
+
+Campaign angle:
+${run.angle}
+
+Offer:
+${run.offer} - ${run.offerData}
+
+Core desire:
+${run.desire} - ${run.desireData.emotion}
+
+Visual direction:
+${run.brandData.look}.
+
+Composition:
+- Strong first-glance clarity.
+- One obvious focal point.
+- Founder-led trust, not generic stock.
+- Direct-response visual hierarchy: pain, mechanism, proof, next step.
+- Clean premium design with enough emotional tension to stop the scroll.
+- Use ${run.desireData.palette}.
+- ${includeLine}
+
+Style:
+High-end modern AI product meets clean personal brand. Realistic, cinematic, sharp, premium, bright, trustworthy, not cluttered. Use natural lighting or polished studio lighting depending on the format. Make it feel like a real brand asset Sean would run in ads or place above the fold.
+
+Text overlay:
+${overlayText(run)}
+
+Avoid:
+${run.brandData.avoid}. No fake income promises. No medical claims. No cheap guru energy. No messy text. No extra fingers, warped face, broken screens, distorted letters, or unreadable UI.`;
+
+        const variants = `IMAGE VARIANTS
+
+1. Founder Authority
+Show Sean as the trusted operator behind the idea. ${includeLine}
+Mood: calm confidence, direct-response authority, premium founder.
+Overlay: ${overlayText(run)}
+
+2. Proof-First Visual
+Lead with proof cues: ${run.desireData.proof}.
+Mood: real, grounded, verifiable, not flashy.
+Overlay: ${proofOverlay(run)}
+
+3. Mechanism Visual
+Make the mechanism visible: ${run.offerData}.
+Mood: simple system, clear next step, less overwhelm.
+Overlay: ${mechanismOverlay(run)}
+
+4. Desire Visual
+Show the life/result the audience wants: ${run.desireData.emotion}.
+Mood: relief, control, movement, new identity.
+Overlay: ${desireOverlay(run)}
+
+5. Contrarian Hook
+Show the mistake everyone is making before they discover Sean's system.
+Mood: tension, pattern interrupt, clean warning.
+Overlay: ${contrarianOverlay(run)}`;
+
+        const thumbnail = `YOUTUBE / SHORTS THUMBNAIL PROMPT
+
+Create a bold thumbnail for:
+${run.angle}
+
+Subject:
+${run.mustInclude || run.brandData.subjects}
+
+Layout:
+- Big readable face or main object on one side.
+- Large 3-5 word text block on the other side.
+- High contrast.
+- Clean background.
+- Red/orange emphasis only where the eye should go.
+- Make the viewer instantly understand the tension.
+
+Thumbnail text options:
+1. ${overlayText(run)}
+2. ${contrarianOverlay(run)}
+3. ${mechanismOverlay(run)}
+4. ${desireOverlay(run)}
+
+Style:
+Premium YouTube thumbnail, not cheap clickbait. Emotional face, clean text, strong contrast, realistic lighting, no clutter.`;
+
+        const ad = `META AD CREATIVE PROMPT
+
+Create a scroll-stopping Meta ad image for ${run.offer}.
+
+Audience problem:
+${run.angle}
+
+Image concept:
+Show the moment before the solution. The user should feel, "that's me."
+
+Visual elements:
+- ${run.brandData.subjects}
+- ${run.desireData.proof}
+- One clean proof cue or mechanism cue.
+- No more than one short text overlay.
+
+Text overlay:
+${overlayText(run)}
+
+CTA energy:
+Make the image feel like the next click is obvious, but do not make it look desperate.
+
+Style:
+Clean direct-response ad, modern, trustworthy, emotional, premium. White/black foundation with ${run.desireData.palette}.`;
+
+        const negative = `NEGATIVE PROMPT
+
+Avoid:
+- fake guru energy
+- rented mansion
+- lamborghini
+- money raining from sky
+- generic robot
+- cheesy magic lamp
+- stock-photo handshake
+- fake screenshots
+- overcomplicated dashboard
+- illegible text
+- warped face
+- extra fingers
+- broken hands
+- melted laptop
+- distorted logo
+- blurry UI
+- low-trust crypto look
+- corporate SaaS blandness
+- therapist clinic aesthetic
+- medical claims
+- guaranteed income claims
+- cluttered background
+- too many colors
+- purple-only gradient
+- old 2009 internet marketing style`;
+
+        const brief = `DESIGNER / IMAGE MODEL BRIEF
+
+Brand:
+${run.brand}
+
+Offer:
+${run.offer}
+
+Visual type:
+${run.visualType}
+
+Core desire:
+${run.desire}
+
+Angle:
+${run.angle}
+
+Company brain:
+${run.brandData.look}
+
+Proof direction:
+${run.desireData.proof}
+
+Must include:
+${run.mustInclude || run.brandData.subjects}
+
+Palette:
+${run.desireData.palette}
+
+Main overlay:
+${overlayText(run)}
+
+Quality bar:
+Modern Trust + Direct-Response Clarity. Clean, polished, human, premium, emotional, and easy to understand in 2 seconds.`;
+
+        return { main, variants, thumbnail, ad, negative, brief };
+      }
+
+      function overlayText(run) {
+        if (run.offer === "AI Freedom System") return "Build The Asset";
+        if (run.offer === "Claude27 Guide") return "27 Claude Prompts";
+        if (run.offer === "Money Flow") return "Clear The Money Loop";
+        if (run.offer === "MoneyWave") return "Remove Money Blocks";
+        if (run.offer === "Manifestation Genie") return "What Are You Rehearsing?";
+        if (run.offer === "Complete Library") return "Install The New Identity";
+        return "One Clear Move";
+      }
+
+      function proofOverlay(run) {
+        if (run.desire === "More Money") return "Real Money Patterns";
+        if (run.desire === "More Peace") return "7-Minute Reset";
+        if (run.desire === "More Freedom") return "Laptop. System. Freedom.";
+        return "Old Pattern. New Move.";
+      }
+
+      function mechanismOverlay(run) {
+        if (run.offer === "AI Freedom System") return "Offer → Page → Buyer";
+        if (run.offer === "Claude27 Guide") return "Prompt → Offer → Buyer";
+        if (run.offer === "Manifestation Genie") return "Diagnose → Ritual → Move";
+        return "Pattern → Reset → Action";
+      }
+
+      function desireOverlay(run) {
+        if (run.desire === "More Money") return "Feel Safer With More";
+        if (run.desire === "More Peace") return "Quiet The Loop";
+        if (run.desire === "More Freedom") return "Own Your Next Move";
+        return "Become The Next Version";
+      }
+
+      function contrarianOverlay(run) {
+        if (run.offer === "AI Freedom System") return "Stop Collecting Tools";
+        if (run.offer === "Money Flow" || run.offer === "MoneyWave") return "It's Not More Hustle";
+        if (run.offer === "Manifestation Genie") return "Your Mind Is Practicing";
+        return "This Is The Real Block";
+      }
+
+      function setTab(tab) {
+        state.tab = tab;
+        document.querySelectorAll("#tabs button").forEach((button) => {
+          button.classList.toggle("active", button.dataset.tab === tab);
+        });
+      }
+
+      function copyCurrent() {
+        const value = $("output").value;
+        if (!value) return showToast("Nothing to copy yet");
+        navigator.clipboard.writeText(value).then(() => showToast("Copied"));
+      }
+
+      function exportPack() {
+        if (!state.run) return showToast("Generate a pack first");
+        const packs = buildPacks();
+        const text = Object.entries(packs).map(([key, value]) => `====================\n${key.toUpperCase()}\n====================\n\n${value}`).join("\n\n");
+        const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.download = `sean-image-prompt-${state.run.offer.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${new Date().toISOString().slice(0, 10)}.txt`;
+        anchor.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function saveRun() {
+        if (!state.run) return showToast("Generate a pack first");
+        const runs = loadRuns();
+        runs.unshift(state.run);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(runs.slice(0, 12)));
+        renderHistory();
+        showToast("Prompt run saved");
+      }
+
+      function loadRuns() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
+        catch { return []; }
+      }
+
+      function renderHistory() {
+        const runs = loadRuns();
+        if (!runs.length) {
+          $("history").innerHTML = '<div class="empty-note">No saved image prompt runs yet.</div>';
+          return;
+        }
+        $("history").innerHTML = runs.map((run, index) => `
+          <article class="history-card">
+            <strong>${escapeHtml(run.visualType)} · ${escapeHtml(run.offer)}</strong>
+            <p>${escapeHtml(run.desire)}<br>${new Date(run.createdAt).toLocaleString()}</p>
+            <button class="secondary-button" data-run="${index}" type="button">Load Run</button>
+          </article>
+        `).join("");
+        document.querySelectorAll("[data-run]").forEach((button) => {
+          button.addEventListener("click", () => {
+            state.run = runs[Number(button.dataset.run)];
+            $("brand").value = state.run.brand;
+            $("offer").value = state.run.offer;
+            $("visual-type").value = state.run.visualType;
+            $("desire").value = state.run.desire;
+            $("angle").value = state.run.angle;
+            $("must-include").value = state.run.mustInclude || "";
+            state.tab = "main";
+            render();
+            showToast("Run loaded");
+          });
+        });
+      }
+
+      function escapeHtml(value) {
+        return String(value || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      $("generate").addEventListener("click", generate);
+      $("sample").addEventListener("click", () => {
+        $("brand").value = "AI Freedom System";
+        $("offer").value = "Claude27 Guide";
+        $("visual-type").value = "Meta ad image";
+        $("desire").value = "More Money";
+        $("angle").value = "People are overwhelmed by AI and need one simple prompt path to find an offer, build content, create a page, write emails, and move toward their first buyer online.";
+        $("must-include").value = "Sean holding the Claude27 guide, laptop, clean proof-style dashboard, orange CTA energy";
+        showToast("Sample loaded");
+      });
+      $("copy").addEventListener("click", copyCurrent);
+      $("export").addEventListener("click", exportPack);
+      $("save").addEventListener("click", saveRun);
+      document.querySelectorAll("#tabs button").forEach((button) => {
+        button.addEventListener("click", () => {
+          setTab(button.dataset.tab);
+          render();
+        });
+      });
+
+      renderHistory();
+    </script>
+  </body>
+</html>

@@ -170,7 +170,7 @@ function load() {
     countEl.value = saved.count || "auto";
     modeEl.value = saved.mode || "cold";
   } catch (error) {
-    console.warn("Content Station state could not be restored", error);
+    console.warn("Organic Station state could not be restored", error);
   }
 }
 
@@ -537,7 +537,7 @@ function renderAsset() {
   assetOutput.value = value;
   assetStatus.textContent = value
     ? `${SYSTEMS[state.system].name} · ${state.activeAsset.toUpperCase()} ready`
-    : "Content Station ready";
+    : "Organic Station ready";
 }
 
 function exportPack() {
