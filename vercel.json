@@ -44,6 +44,16 @@
       "source": "/blog/money/what-panama-taught-me-about-reprogramming-subconscious-money-beliefs/",
       "destination": "/blog/money/7-lessons-i-learned-in-panama-about-money-programming",
       "permanent": true
+    },
+    {
+      "source": "/blog/online-business/5-things-panama-taught-me-about-using-ai-to-see-your-business-from-above",
+      "destination": "/blog/online-business/panama-ai-business-lessons",
+      "permanent": true
+    },
+    {
+      "source": "/blog/online-business/5-things-panama-taught-me-about-using-ai-to-see-your-business-from-above/",
+      "destination": "/blog/online-business/panama-ai-business-lessons",
+      "permanent": true
     }
   ],
   "rewrites": [
