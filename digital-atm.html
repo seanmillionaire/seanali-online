@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Digital ATM Quick-Start System | Sean Ali</title>
+  <meta name="description" content="A simple, phone-friendly system for finding real buyer questions, creating useful AI-assisted recommendations, and earning retailer commissions through tracked links.">
+  <meta name="theme-color" content="#101010">
+  <meta property="og:title" content="Digital ATM Quick-Start System">
+  <meta property="og:description" content="Set up your tracked links, make your first useful recommendation, and follow a simple 15–20 minute daily routine.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://seanali.online/digital-atm">
+  <link rel="canonical" href="https://seanali.online/digital-atm">
+  <link rel="icon" type="image/png" href="https://hypnoticmeditations.b-cdn.net/images/fav/headphones.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageView');
+  </script>
+  <style>
+    :root{
+      --ink:#101010;--paper:#fff;--cream:#fff8e7;--red:#e11d2e;--red-dark:#b40f1e;
+      --yellow:#ffd62e;--orange:#ff6a1a;--green:#14833b;--green-pale:#edfbf1;
+      --gray:#f2f2f0;--muted:#5d5d58;--line:#d9d9d4;--shadow:10px 10px 0 #101010;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,Arial,sans-serif}
+    a{color:inherit}
+    .wrap{width:min(1120px,100%);margin:auto;padding:0 22px}
+    .narrow{width:min(850px,100%);margin:auto}
+    .top-strip{padding:10px 16px;background:var(--yellow);border-bottom:3px solid var(--ink);text-align:center;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
+    .nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line);box-shadow:0 5px 18px rgba(0,0,0,.06)}
+    .nav-inner{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .brand{font-size:26px;font-weight:900;text-decoration:none}
+    .brand span{color:var(--red)}
+    .nav-links{display:flex;align-items:center;gap:24px}
+    .nav-links>a:not(.mini-cta){font-size:12px;font-weight:900;text-decoration:none;text-transform:uppercase}
+    .mini-cta,.cta{display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#ff7b22,#e8470e);border:0;border-bottom:5px solid #a92c08;border-radius:8px;color:#fff;text-align:center;text-decoration:none;text-transform:uppercase;font-weight:900;box-shadow:0 12px 24px rgba(232,71,14,.24);transition:.15s ease}
+    .mini-cta{min-height:46px;padding:11px 18px;font-size:13px}
+    .cta{width:min(590px,100%);min-height:76px;margin:25px auto 0;padding:17px 24px;font-size:20px}
+    .cta:hover,.mini-cta:hover{transform:translateY(-2px);filter:saturate(1.12)}
+    .cta small{display:block;margin-top:4px;font-size:11px;letter-spacing:.02em}
+    section[id]{scroll-margin-top:92px}
+    .hero{position:relative;overflow:hidden;padding:55px 0 76px;background:
+      radial-gradient(circle at 10% 10%,rgba(255,214,46,.35),transparent 26%),
+      linear-gradient(180deg,#fff 0,#fffaf0 100%);text-align:center}
+    .hero:after{content:"";position:absolute;right:-100px;bottom:-160px;width:360px;height:360px;border:55px solid rgba(225,29,46,.06);border-radius:50%}
+    .badge{display:inline-block;margin-bottom:20px;padding:9px 14px;background:var(--yellow);border:2px solid var(--ink);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.05em}
+    h1{max-width:980px;margin:0 auto 20px;font-size:clamp(43px,6.4vw,80px);line-height:.96;letter-spacing:-.045em;font-weight:900}
+    h1 .red,.red{color:var(--red)}
+    .hero-sub{max-width:780px;margin:0 auto;color:#292925;font-size:clamp(18px,2.1vw,24px);line-height:1.42;font-weight:800}
+    .hero-sub strong{background:linear-gradient(transparent 58%,var(--yellow) 58%)}
+    .micro{margin:12px auto 0;color:var(--muted);font-size:12px;line-height:1.45;font-weight:800}
+    .proof-chips{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:930px;margin:28px auto 0}
+    .proof-chip{min-height:65px;padding:15px 12px;border:1px solid #b8e7c6;background:var(--green-pale);font-size:13px;line-height:1.3;font-weight:900}
+    .proof-chip:before{content:"✓";display:inline-flex;align-items:center;justify-content:center;width:21px;height:21px;margin-right:7px;border-radius:50%;background:var(--green);color:#fff}
+    .hero-visual{display:grid;grid-template-columns:.78fr 1.22fr;gap:0;max-width:940px;margin:42px auto 0;border:4px solid var(--ink);background:#fff;box-shadow:var(--shadow);text-align:left}
+    .phone-side{position:relative;display:flex;align-items:center;justify-content:center;min-height:390px;padding:35px;background:linear-gradient(145deg,#161616,#313131)}
+    .phone{width:210px;padding:12px;border:4px solid #000;border-radius:32px;background:#090909;box-shadow:0 24px 50px rgba(0,0,0,.35);transform:rotate(-4deg)}
+    .phone-screen{min-height:345px;padding:25px 15px;border-radius:22px;background:linear-gradient(180deg,#f9d92e,#ff7b22);text-align:center}
+    .phone-screen .tiny{font-size:11px;font-weight:900;text-transform:uppercase}
+    .phone-screen .atm{margin:18px 0 5px;font-size:40px;line-height:.9;font-weight:900;letter-spacing:-.05em}
+    .phone-screen .routine{margin:22px 0 0;padding:15px 9px;background:#fff;border:3px solid #101010;font-size:13px;line-height:1.45;font-weight:900}
+    .visual-copy{display:flex;flex-direction:column;justify-content:center;padding:38px}
+    .visual-copy .overline{color:var(--red);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+    .visual-copy h2{margin:10px 0 15px;font-size:clamp(33px,4vw,49px);line-height:1;font-weight:900}
+    .check-list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+    .check-list li{position:relative;padding:12px 12px 12px 42px;background:var(--green-pale);font-size:15px;line-height:1.35;font-weight:900}
+    .check-list li:before{content:"✓";position:absolute;left:14px;color:var(--green);font-size:19px;font-weight:900}
+    .black-band{padding:38px 0;background:var(--ink);color:#fff;text-align:center}
+    .black-band p{max-width:900px;margin:0 auto;font-size:clamp(24px,3vw,38px);line-height:1.16;font-weight:900}
+    .black-band span{color:var(--yellow)}
+    .band{padding:82px 0}
+    .band.gray{background:var(--gray)}
+    .band.cream{background:var(--cream)}
+    .eyebrow{display:block;margin:0 auto 14px;color:var(--red);font-size:12px;font-weight:900;text-align:center;text-transform:uppercase;letter-spacing:.09em}
+    .section-title{max-width:900px;margin:0 auto 18px;font-size:clamp(36px,5vw,60px);line-height:1;letter-spacing:-.03em;text-align:center;font-weight:900}
+    .section-copy{max-width:760px;margin:0 auto 32px;color:var(--muted);font-size:19px;line-height:1.5;text-align:center;font-weight:700}
+    .problem-box{max-width:880px;margin:auto;padding:42px;border:4px solid var(--ink);background:#fff;box-shadow:var(--shadow)}
+    .problem-box h2{margin:0 0 22px;font-size:clamp(34px,4vw,52px);line-height:1;font-weight:900}
+    .problem-box p{margin:0 0 15px;font-size:20px;line-height:1.52;font-weight:700}
+    .problem-box .big{color:var(--red);font-size:26px;font-weight:900}
+    .not-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:27px}
+    .not-card{padding:20px;border:2px solid var(--ink);background:#fff;text-align:center;font-size:14px;line-height:1.35;font-weight:900}
+    .not-card b{display:block;margin-bottom:8px;color:var(--red);font-size:26px}
+    .journey{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;max-width:1040px;margin:34px auto 0;padding:0;list-style:none}
+    .journey-step{position:relative;padding:20px 8px;background:var(--ink);color:#fff;text-align:center;font-size:12px;font-weight:900;text-transform:uppercase}
+    .journey-step:not(:last-child):after{content:"›";position:absolute;right:-8px;top:50%;z-index:2;width:16px;height:24px;margin-top:-12px;background:var(--yellow);color:var(--ink);font-size:21px;line-height:22px}
+    .module-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:34px}
+    .module{position:relative;padding:29px;border:2px solid var(--ink);background:#fff;box-shadow:6px 6px 0 #d8d8d3}
+    .module-number{position:absolute;right:18px;top:15px;color:#ecece8;font-size:68px;line-height:1;font-weight:900}
+    .module-time{display:inline-block;margin-bottom:14px;padding:7px 10px;background:var(--yellow);font-size:10px;font-weight:900;text-transform:uppercase}
+    .module h3{position:relative;max-width:83%;margin:0 0 13px;font-size:25px;line-height:1.08;font-weight:900}
+    .module p{position:relative;margin:0 0 16px;color:var(--muted);font-size:14px;line-height:1.5;font-weight:700}
+    .module ul{position:relative;margin:0;padding-left:19px;display:grid;gap:7px;font-size:13px;line-height:1.35;font-weight:800}
+    .module.outcome{grid-column:1/-1;display:grid;grid-template-columns:.8fr 1.2fr;gap:30px;align-items:center;background:var(--ink);color:#fff;box-shadow:8px 8px 0 var(--red)}
+    .module.outcome .module-number{color:#282828}
+    .module.outcome p{color:#d0d0cb}
+    .routine-wrap{display:grid;grid-template-columns:.8fr 1.2fr;gap:35px;align-items:center;max-width:980px;margin:auto}
+    .timer{display:flex;flex-direction:column;align-items:center;justify-content:center;aspect-ratio:1;border:18px solid var(--yellow);border-radius:50%;background:var(--ink);color:#fff;box-shadow:10px 12px 0 rgba(0,0,0,.15)}
+    .timer strong{font-size:75px;line-height:.85;font-weight:900}
+    .timer span{margin-top:10px;font-size:16px;font-weight:900;text-transform:uppercase}
+    .routine-copy h2{margin:0 0 14px;font-size:clamp(38px,5vw,58px);line-height:.98;font-weight:900}
+    .routine-copy>p{margin:0 0 22px;color:var(--muted);font-size:18px;line-height:1.5;font-weight:700}
+    .routine-list{display:grid;gap:9px;counter-reset:routine}
+    .routine-item{counter-increment:routine;position:relative;padding:15px 15px 15px 60px;border:1px solid var(--line);background:#fff;font-size:15px;font-weight:900}
+    .routine-item:before{content:counter(routine);position:absolute;left:13px;top:9px;display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:var(--red);color:#fff}
+    .deliverables{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:960px;margin:34px auto 0}
+    .deliverable{display:grid;grid-template-columns:54px 1fr;gap:16px;align-items:center;padding:21px;border:1px solid var(--line);background:#fff}
+    .deliverable-icon{display:flex;align-items:center;justify-content:center;width:54px;height:54px;border-radius:12px;background:var(--ink);font-size:26px}
+    .deliverable h3{margin:0 0 5px;font-size:17px;line-height:1.15}
+    .deliverable p{margin:0;color:var(--muted);font-size:12px;line-height:1.4;font-weight:700}
+    .bonus-stack{display:grid;gap:14px;max-width:880px;margin:34px auto 0}
+    .bonus{display:grid;grid-template-columns:110px 1fr auto;gap:20px;align-items:center;padding:22px;border:3px solid var(--ink);background:#fff;box-shadow:5px 5px 0 var(--yellow)}
+    .bonus-label{padding:11px;background:var(--red);color:#fff;text-align:center;font-size:12px;font-weight:900;text-transform:uppercase}
+    .bonus h3{margin:0 0 6px;font-size:21px}
+    .bonus p{margin:0;color:var(--muted);font-size:13px;line-height:1.4;font-weight:700}
+    .bonus .value{color:var(--red);font-size:19px;font-weight:900}
+    .value-table{max-width:850px;margin:34px auto 0;border:3px solid var(--ink);background:#fff}
+    .value-row{display:grid;grid-template-columns:1fr auto;gap:18px;padding:18px 21px;border-bottom:1px solid var(--line);font-size:16px;font-weight:900}
+    .value-row:last-child{border-bottom:0}
+    .value-row span:last-child{color:var(--red);font-size:20px}
+    .total{max-width:850px;margin:18px auto 0;padding:28px;background:var(--yellow);border:4px solid var(--ink);box-shadow:var(--shadow);text-align:center}
+    .total span{display:block;font-size:13px;font-weight:900;text-transform:uppercase}
+    .total s{display:block;margin-top:5px;color:#555;font-size:29px;font-weight:900}
+    .total strong{display:block;color:var(--red);font-size:72px;line-height:1;font-weight:900}
+    .who-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:960px;margin:34px auto 0}
+    .who{padding:28px;border:3px solid var(--ink);background:#fff}
+    .who.good{box-shadow:8px 8px 0 var(--green)}
+    .who.bad{box-shadow:8px 8px 0 var(--red)}
+    .who h3{margin:0 0 18px;font-size:26px}
+    .who ul{list-style:none;margin:0;padding:0;display:grid;gap:11px}
+    .who li{position:relative;padding-left:31px;font-size:14px;line-height:1.4;font-weight:800}
+    .good li:before{content:"✓";position:absolute;left:0;color:var(--green);font-size:19px}
+    .bad li:before{content:"×";position:absolute;left:0;color:var(--red);font-size:23px;line-height:18px}
+    .truth{max-width:850px;margin:auto;padding:38px;border-left:9px solid var(--yellow);background:#181818;color:#fff}
+    .truth h2{margin:0 0 17px;font-size:clamp(35px,4vw,50px);line-height:1}
+    .truth p{margin:0 0 13px;color:#d5d5d0;font-size:18px;line-height:1.52;font-weight:700}
+    .truth strong{color:var(--yellow)}
+    .offer{max-width:820px;margin:auto;padding:38px;border:6px solid var(--red);background:#fff;box-shadow:12px 12px 0 var(--ink);text-align:center}
+    .offer-mark{display:inline-block;padding:9px 14px;background:var(--yellow);border:2px solid var(--ink);font-size:12px;font-weight:900;text-transform:uppercase}
+    .offer h2{margin:18px 0 8px;font-size:clamp(39px,5vw,60px);line-height:.96;font-weight:900}
+    .offer-copy{max-width:650px;margin:0 auto 20px;color:var(--muted);font-size:17px;line-height:1.5;font-weight:700}
+    .price-note{font-size:12px;font-weight:900;text-transform:uppercase}
+    .price{margin:2px 0;color:var(--red);font-size:76px;line-height:1;font-weight:900}
+    .offer .check-list{max-width:630px;margin:22px auto;text-align:left}
+    .checkout-pending{width:min(590px,100%);min-height:76px;margin:25px auto 0;padding:17px 24px;background:#deded9;border:2px solid #bbb;border-radius:8px;color:#555;text-align:center;text-transform:uppercase;font-size:17px;font-weight:900;cursor:not-allowed}
+    .checkout-pending small{display:block;margin-top:5px;font-size:10px}
+    .safe-note{max-width:680px;margin:16px auto 0;color:var(--muted);font-size:11px;line-height:1.5;font-weight:700}
+    .faq{max-width:850px;margin:32px auto 0}
+    details{margin-bottom:11px;border:1px solid var(--line);background:#fff}
+    summary{padding:21px 55px 21px 21px;cursor:pointer;list-style:none;font-size:18px;font-weight:900}
+    summary::-webkit-details-marker{display:none}
+    summary:after{content:"+";float:right;margin-right:-34px;color:var(--red);font-size:25px;line-height:18px}
+    details[open] summary:after{content:"–"}
+    details p{margin:0;padding:0 21px 22px;color:var(--muted);font-size:15px;line-height:1.55;font-weight:700}
+    footer{padding:40px 22px;background:var(--ink);color:#fff;text-align:center}
+    footer strong{display:block;font-size:24px}
+    footer p{max-width:760px;margin:10px auto 0;color:#aaa;font-size:11px;line-height:1.5}
+    @media(max-width:900px){
+      .proof-chips,.not-grid{grid-template-columns:repeat(2,1fr)}
+      .hero-visual,.routine-wrap{grid-template-columns:1fr}
+      .journey{grid-template-columns:repeat(4,1fr)}
+      .module.outcome{grid-template-columns:1fr}
+      .nav-links>a:not(.mini-cta){display:none}
+    }
+    @media(max-width:650px){
+      .wrap{padding:0 16px}.top-strip{font-size:10px}.nav-inner{min-height:64px}.brand{font-size:21px}.mini-cta{font-size:11px;padding:9px 12px}
+      .hero{padding:42px 0 58px}h1{font-size:43px}.hero-sub{font-size:18px}.cta{min-height:70px;font-size:17px}
+      .proof-chips,.not-grid,.module-grid,.deliverables,.who-grid{grid-template-columns:1fr}
+      .hero-visual{box-shadow:6px 6px 0 #101010}.phone-side{min-height:340px;padding:25px}.phone{width:185px}.phone-screen{min-height:300px}
+      .visual-copy{padding:28px 20px}.band{padding:62px 0}.problem-box{padding:30px 21px;box-shadow:6px 6px 0 #101010}
+      .problem-box p{font-size:17px}.journey{grid-template-columns:repeat(2,1fr)}.module{padding:24px 20px}.module.outcome{grid-column:auto}
+      .timer{width:270px;margin:auto}.timer strong{font-size:62px}.bonus{grid-template-columns:1fr}.bonus-label{width:max-content}.bonus .value{font-size:16px}
+      .value-row{grid-template-columns:1fr}.total strong{font-size:57px}.offer{padding:30px 18px;box-shadow:7px 7px 0 #101010}.price{font-size:64px}
+    }
+  </style>
+</head>
+<body>
+  <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=878451855254470&amp;ev=PageView&amp;noscript=1" alt=""></noscript>
+  <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1586097145783190&amp;ev=PageView&amp;noscript=1" alt=""></noscript>
+  <div class="top-strip">New: The phone-friendly recommendation commission system for complete beginners</div>
+  <nav class="nav" aria-label="Page navigation">
+    <div class="wrap nav-inner">
+      <a class="brand" href="#top">DIGITAL <span>ATM</span></a>
+      <div class="nav-links">
+        <a href="#how">How It Works</a>
+        <a href="#inside">What You Get</a>
+        <a href="#faq">FAQ</a>
+        <a class="mini-cta" href="#get-access">Get Access — $297</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <header class="hero" id="top">
+      <div class="wrap">
+        <span class="badge">No inventory • No filming • No complicated tech</span>
+        <h1>Turn Your Phone Into A Simple <span class="red">Digital ATM</span></h1>
+        <p class="hero-sub">Learn how to find people already asking what to buy, use AI to create a useful recommendation, attach your tracked link, and follow a <strong>15–20 minute daily routine.</strong></p>
+        <a class="cta" href="#get-access">Show Me The Digital ATM System <small>Get the complete quick-start system for $297</small></a>
+        <p class="micro">Beginner-friendly training. No earnings are guaranteed. Your results depend on your actions, program approval, traffic, and other factors.</p>
+        <div class="proof-chips">
+          <div class="proof-chip">Works From Your Phone</div>
+          <div class="proof-chip">No Personal Brand Needed</div>
+          <div class="proof-chip">AI-Assisted Templates</div>
+          <div class="proof-chip">First Setup In One Day</div>
+        </div>
+
+        <div class="hero-visual" role="img" aria-label="Digital ATM system preview">
+          <div class="phone-side">
+            <div class="phone">
+              <div class="phone-screen">
+                <div class="tiny">Your quick-start system</div>
+                <div class="atm">DIGITAL<br>ATM</div>
+                <div class="routine">FIND → RECOMMEND<br>PLACE → TRACK<br>REPEAT</div>
+              </div>
+            </div>
+          </div>
+          <div class="visual-copy">
+            <span class="overline">What you will build</span>
+            <h2>A Real, Repeatable Recommendation System</h2>
+            <ul class="check-list">
+              <li>Open one beginner-friendly affiliate or retailer account</li>
+              <li>Create and test your first personal tracked link</li>
+              <li>Find real buyer questions instead of chasing random people</li>
+              <li>Use AI prompts to write useful, natural recommendations</li>
+              <li>Track clicks, orders, and commissions in one simple sheet</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="black-band">
+      <div class="wrap">
+        <p>You do not need to become an influencer.<br><span>You need one buyer question, one useful answer, and one tracked link.</span></p>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="wrap">
+        <span class="eyebrow">The problem with most online-income courses</span>
+        <div class="problem-box">
+          <h2>They Give You 100 Things To Do Before You Can Even Start.</h2>
+          <p>Build a website. Pick a niche. Create a brand. Film daily videos. Learn paid ads. Master funnels. Buy software. Grow an audience.</p>
+          <p>That is enough complexity to make a normal beginner quit before placing a single recommendation.</p>
+          <p class="big">Digital ATM starts with the smallest useful action that can produce real feedback.</p>
+          <p>One retailer program. One question from a real buyer. One suitable product. One honest recommendation. One tested link.</p>
+          <div class="not-grid">
+            <div class="not-card"><b>×</b>No daily selfie videos</div>
+            <div class="not-card"><b>×</b>No paid advertising</div>
+            <div class="not-card"><b>×</b>No inventory or shipping</div>
+            <div class="not-card"><b>×</b>No complicated funnel</div>
+            <div class="not-card"><b>×</b>No recruiting friends</div>
+            <div class="not-card"><b>×</b>No custom software</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band gray" id="how">
+      <div class="wrap">
+        <span class="eyebrow">The complete process</span>
+        <h2 class="section-title">Seven Simple Moves From Setup To Repeat</h2>
+        <p class="section-copy">The system removes the blank-page decisions and shows you what to do in the correct order.</p>
+        <ul class="journey" aria-label="Digital ATM customer journey">
+          <li class="journey-step">Activate</li>
+          <li class="journey-step">Find</li>
+          <li class="journey-step">Recommend</li>
+          <li class="journey-step">Place</li>
+          <li class="journey-step">Track</li>
+          <li class="journey-step">Improve</li>
+          <li class="journey-step">Repeat</li>
+        </ul>
+
+        <div class="module-grid">
+          <article class="module">
+            <div class="module-number">01</div>
+            <span class="module-time">35 minutes</span>
+            <h3>Activate Your Digital ATM</h3>
+            <p>Understand the model, open one beginner-friendly account, and create your first working tracked link.</p>
+            <ul><li>Choose the right first program</li><li>Open and verify your account</li><li>Generate and test a tracked link</li><li>Set up your activity tracker</li></ul>
+          </article>
+          <article class="module">
+            <div class="module-number">02</div>
+            <span class="module-time">40 minutes</span>
+            <h3>Find People Ready To Buy</h3>
+            <p>Stop trying to manufacture interest. Learn to recognize questions that already show purchase intent.</p>
+            <ul><li>Where buyer questions appear</li><li>The Buyer Question Filter</li><li>Use AI to rank opportunities</li><li>Pick one suitable opportunity</li></ul>
+          </article>
+          <article class="module">
+            <div class="module-number">03</div>
+            <span class="module-time">45 minutes</span>
+            <h3>Create Helpful Recommendations With AI</h3>
+            <p>Turn the buyer's question and honest product facts into clear, natural recommendations without needing writing skill.</p>
+            <ul><li>The three-part formula</li><li>Recommendation Prompt Pack</li><li>Remove hype and fake urgency</li><li>Build a personal swipe file</li></ul>
+          </article>
+          <article class="module">
+            <div class="module-number">04</div>
+            <span class="module-time">35 minutes</span>
+            <h3>Place Your First Tracked Recommendation</h3>
+            <p>Learn where and how to share a recommendation without turning into a spammer or breaking community rules.</p>
+            <ul><li>Confirm the question and product</li><li>Generate and test the link</li><li>Add disclosure when required</li><li>Record where it was placed</li></ul>
+          </article>
+          <article class="module">
+            <div class="module-number">05</div>
+            <span class="module-time">25 minutes</span>
+            <h3>The 15-Minute Digital ATM Routine</h3>
+            <p>Turn the complete process into one focused daily cycle that is small enough to repeat consistently.</p>
+            <ul><li>Open the opportunity list</li><li>Choose one buyer question</li><li>Create and review the answer</li><li>Post it and record the activity</li></ul>
+          </article>
+          <article class="module">
+            <div class="module-number">06</div>
+            <span class="module-time">40 minutes</span>
+            <h3>Get To Your First Commission</h3>
+            <p>Use a simple scorecard and troubleshooting system to diagnose the first bottleneck and improve one variable at a time.</p>
+            <ul><li>Understand the real timeline</li><li>No-click diagnosis</li><li>Clicks-but-no-orders diagnosis</li><li>Run the first optimization cycle</li></ul>
+          </article>
+          <article class="module outcome">
+            <div>
+              <div class="module-number">07</div>
+              <span class="module-time">35 minutes</span>
+              <h3>Build Your Second Check</h3>
+            </div>
+            <div>
+              <p>Use what the first cycle taught you to identify stronger categories, build a product shortlist, and carefully expand the process.</p>
+              <ul><li>Identify proven categories</li><li>Build a personal product shortlist</li><li>Add a second program when ready</li><li>Set the next milestone and map the $1,000 path</li></ul>
+            </div>
+          </article>
+        </div>
+        <a class="cta" href="#get-access">Get The Complete System For $297</a>
+      </div>
+    </section>
+
+    <section class="band cream">
+      <div class="wrap">
+        <div class="routine-wrap">
+          <div class="timer"><strong>15–20</strong><span>minutes a day</span></div>
+          <div class="routine-copy">
+            <h2>The Daily Routine Is Intentionally Small.</h2>
+            <p>You are not building an agency or posting all day. You are completing one focused recommendation cycle.</p>
+            <div class="routine-list">
+              <div class="routine-item">Find one recent buyer question</div>
+              <div class="routine-item">Match one suitable product</div>
+              <div class="routine-item">Use AI to draft the recommendation</div>
+              <div class="routine-item">Edit, disclose, and place it correctly</div>
+              <div class="routine-item">Log the activity and check prior results</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="inside">
+      <div class="wrap">
+        <span class="eyebrow">Everything included</span>
+        <h2 class="section-title">This Is A Complete Implementation System—Not A Pile Of Videos.</h2>
+        <p class="section-copy">Each piece exists to reduce a specific kind of confusion, delay, or setup mistake.</p>
+        <div class="deliverables">
+          <article class="deliverable"><div class="deliverable-icon">🎓</div><div><h3>7-Module Quick-Start Course</h3><p>Plain-English screen recordings with one focused task per lesson.</p></div></article>
+          <article class="deliverable"><div class="deliverable-icon">📊</div><div><h3>Digital ATM Tracker</h3><p>Record products, links, clicks, orders, commissions, and locations.</p></div></article>
+          <article class="deliverable"><div class="deliverable-icon">🎯</div><div><h3>Buyer Question Filter</h3><p>A one-page checklist for identifying useful purchase-intent questions.</p></div></article>
+          <article class="deliverable"><div class="deliverable-icon">🤖</div><div><h3>AI Recommendation Prompts</h3><p>Find intent, match products, draft answers, simplify language, and review hype.</p></div></article>
+          <article class="deliverable"><div class="deliverable-icon">📝</div><div><h3>50 Recommendation Templates</h3><p>Starting points organized by buyer-question and product type.</p></div></article>
+          <article class="deliverable"><div class="deliverable-icon">▶️</div><div><h3>First Recommendation Walkthrough</h3><p>A complete example from question selection through the tracker entry.</p></div></article>
+          <article class="deliverable"><div class="deliverable-icon">🧭</div><div><h3>Troubleshooting Decision Tree</h3><p>Know what to check when you see no clicks, no orders, or link errors.</p></div></article>
+          <article class="deliverable"><div class="deliverable-icon">📅</div><div><h3>30-Day Action Calendar</h3><p>One small action per day to build repetition without overwhelm.</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band gray">
+      <div class="wrap">
+        <span class="eyebrow">Fast-action bonus stack</span>
+        <h2 class="section-title">Five Extra Tools To Help You Move Faster</h2>
+        <div class="bonus-stack">
+          <article class="bonus"><div class="bonus-label">Bonus 1</div><div><h3>Ryan's Head Start System</h3><p>A guided checklist for account setup, first link creation, and your first recommendation.</p></div><div class="value">$97 Value</div></article>
+          <article class="bonus"><div class="bonus-label">Bonus 2</div><div><h3>Buyer Question Vault</h3><p>Purchase-intent examples that train your eye to recognize real opportunities.</p></div><div class="value">$67 Value</div></article>
+          <article class="bonus"><div class="bonus-label">Bonus 3</div><div><h3>100 Product Angles</h3><p>Useful angles for household, kitchen, pet, tool, electronics, and personal-use products.</p></div><div class="value">$47 Value</div></article>
+          <article class="bonus"><div class="bonus-label">Bonus 4</div><div><h3>Simple Phone Walkthroughs</h3><p>Large-text, slow-paced walkthroughs for completing key steps on iPhone and Android.</p></div><div class="value">$97 Value</div></article>
+          <article class="bonus"><div class="bonus-label">Bonus 5</div><div><h3>First $100 Plan</h3><p>An activity-based milestone plan focused on tracking and improvement—not guaranteed timing.</p></div><div class="value">$47 Value</div></article>
+        </div>
+
+        <div class="value-table">
+          <div class="value-row"><span>Digital ATM Quick-Start System</span><span>$497</span></div>
+          <div class="value-row"><span>Templates, Tracker &amp; Prompt Pack</span><span>$297</span></div>
+          <div class="value-row"><span>Complete Fast-Action Bonus Stack</span><span>$355</span></div>
+        </div>
+        <div class="total">
+          <span>Total combined value</span>
+          <s>$1,149</s>
+          <span>Get everything today for</span>
+          <strong>$297</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="wrap">
+        <span class="eyebrow">Is this for you?</span>
+        <h2 class="section-title">A Simple Fit Check Before You Join</h2>
+        <div class="who-grid">
+          <article class="who good">
+            <h3>This Is For You If…</h3>
+            <ul>
+              <li>You want a beginner-friendly process you can follow from your phone</li>
+              <li>You are willing to help real buyers with honest recommendations</li>
+              <li>You can commit 15–20 focused minutes most days</li>
+              <li>You want templates and walkthroughs instead of vague theory</li>
+              <li>You understand that data and repetition create improvement</li>
+            </ul>
+          </article>
+          <article class="who bad">
+            <h3>This Is Not For You If…</h3>
+            <ul>
+              <li>You want guaranteed income without taking consistent action</li>
+              <li>You plan to spam links where recommendations are not allowed</li>
+              <li>You expect proprietary software to earn automatically for you</li>
+              <li>You are unwilling to follow affiliate disclosure and platform rules</li>
+              <li>You want to skip setup, tracking, and honest product research</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band cream">
+      <div class="wrap">
+        <div class="truth">
+          <h2>Here Is The Honest Truth.</h2>
+          <p>This is not a magic app and it does not automatically create earnings.</p>
+          <p>It is a guided information product that helps a nontechnical beginner set up a legitimate recommendation-commission process and use AI to reduce the difficult research and writing work.</p>
+          <p><strong>The value is clarity:</strong> what to set up, where to look, what to write, how to track it, and what to fix next.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="get-access">
+      <div class="wrap">
+        <div class="offer">
+          <span class="offer-mark">Complete access</span>
+          <h2>Start Your Digital ATM Quick-Start System</h2>
+          <p class="offer-copy">Get the complete seven-module course, every template and prompt, the tracking system, the 30-day calendar, and all five bonuses.</p>
+          <div class="price-note">One-time enrollment</div>
+          <div class="price">$297</div>
+          <ul class="check-list">
+            <li>Approximately 4–5 hours of focused, plain-English training</li>
+            <li>Complete the initial setup and place your first recommendation in one day</li>
+            <li>Use the 30-day plan to collect data, improve, and repeat</li>
+            <li>No monthly software subscription required for the course</li>
+          </ul>
+          <div class="checkout-pending" aria-disabled="true">Digital ATM Checkout Link Needed <small>Purchase button will activate when the product checkout URL is connected</small></div>
+          <p class="safe-note">Important: This is education and implementation training. Affiliate-program acceptance, traffic, purchases, and commissions vary. No specific earnings or results are promised.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="band gray" id="faq">
+      <div class="wrap">
+        <span class="eyebrow">Common questions</span>
+        <h2 class="section-title">Before You Start</h2>
+        <div class="faq">
+          <details><summary>Do I need technical experience?</summary><p>No. The lessons use plain language, readable screen zooms, and one task per lesson. You should be comfortable using basic websites and apps on your phone.</p></details>
+          <details><summary>Do I need to film myself or build a following?</summary><p>No. This is not a selfie-video, influencer, or personal-brand course. The process focuses on answering real buyer questions where useful recommendations are permitted.</p></details>
+          <details><summary>Do I need to buy inventory or ship products?</summary><p>No. The system teaches recommendation commissions through third-party retailer or affiliate programs. The retailer handles the product transaction and fulfillment.</p></details>
+          <details><summary>How much time does the daily routine take?</summary><p>The target routine is 15–20 focused minutes. Initial account setup and the first walkthrough take longer, but the repeatable daily activity is intentionally small.</p></details>
+          <details><summary>Does AI do everything for me?</summary><p>No. AI helps analyze buyer intent, match options, and draft clear recommendations. You still verify facts, edit the answer, follow community rules, disclose tracked links when required, and track the results.</p></details>
+          <details><summary>How quickly will I earn a commission?</summary><p>There is no guaranteed timeline. Results depend on program approval, the questions you select, product fit, traffic, your recommendations, retailer conversion, and consistent execution. The course gives you a troubleshooting process so you can improve from real data.</p></details>
+          <details><summary>Is this a proprietary Digital ATM app?</summary><p>No. “Digital ATM” is the name of the guided process. You receive training, templates, prompts, checklists, walkthroughs, and a tracker—not software that automatically generates earnings.</p></details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <strong>SEAN ALI</strong>
+    <p>Digital ATM Quick-Start System is an educational information product. Earnings examples, if any are later added, must not be interpreted as typical or guaranteed results. Affiliate relationships should be disclosed and all retailer, platform, and community rules must be followed.</p>
+  </footer>
+
+  <script>
+    document.querySelectorAll('a[href^="#"]').forEach(function(link){
+      link.addEventListener('click',function(event){
+        var target=document.querySelector(link.getAttribute('href'));
+        if(target){event.preventDefault();target.scrollIntoView({behavior:'smooth',block:'start'});}
+      });
+    });
+  </script>
+  <script id="respondio__growth_tool" src="https://cdn.respond.io/widget/widget.js?wId=7f9488bf-e487-4928-9b01-6edb55b2ad22"></script>
+</body>
+</html>
