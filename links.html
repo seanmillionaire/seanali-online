@@ -55,9 +55,10 @@ h1 span{color:var(--red)}
 .link-card{position:relative;display:grid;grid-template-columns:52px 1fr 24px;gap:14px;align-items:center;min-height:88px;padding:16px 18px;border:1px solid #d8d2c8;border-radius:12px;background:rgba(255,255,255,.96);text-decoration:none;box-shadow:0 10px 24px rgba(0,0,0,.055);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
 .link-card:hover,.link-card:focus-visible{transform:translateY(-3px);border-color:#aaa39a;box-shadow:0 18px 36px rgba(0,0,0,.1);outline:none}
 .link-card.featured{border:2px solid var(--orange);background:linear-gradient(135deg,#fff 0%,#fff7f1 100%);box-shadow:0 16px 34px rgba(255,84,46,.14)}
-.icon{display:grid;place-items:center;width:52px;height:52px;border-radius:11px;background:#111;color:#fff;font-size:25px;box-shadow:0 8px 18px rgba(0,0,0,.16)}
-.icon.orange{background:linear-gradient(135deg,var(--orange),var(--orange2))}
-.icon.red{background:linear-gradient(135deg,var(--red),#ff5258)}
+.icon{display:grid;place-items:center;width:56px;height:56px;border-radius:16px;color:#fff;font-size:28px;line-height:1;box-shadow:0 12px 24px rgba(0,0,0,.16);transform:translateZ(0)}
+.icon.money{background:linear-gradient(135deg,#0f8f4f,#32c96b);box-shadow:0 12px 24px rgba(15,143,79,.28)}
+.icon.peace{background:linear-gradient(135deg,#0f6fff,#38bdf8);box-shadow:0 12px 24px rgba(14,116,255,.26)}
+.icon.change{background:linear-gradient(135deg,#7c3aed,#ec4899);box-shadow:0 12px 24px rgba(124,58,237,.28)}
 .link-copy strong{display:block;margin-bottom:5px;font-size:18px;line-height:1.1;font-weight:900;letter-spacing:-.025em}
 .link-copy span{display:block;color:var(--muted);font-size:13px;line-height:1.4;font-weight:650}
 .arrow{color:#777;font-size:22px;font-weight:900;text-align:right}
@@ -130,17 +131,17 @@ body.modal-open{overflow:hidden}
   <div class="section-label">Choose Your Path</div>
   <section class="links" id="main-links" aria-label="Sean Ali main links">
     <button class="link-card featured path-choice" type="button" data-choice="More Money" data-list="awlist6889085" data-destination="https://seanali.online/flow" data-tags="links-page,money" data-gift-title="Uninstall the Broke Thinking. Install the Rich Version of You." data-gift-copy="A guided money-mindset experience designed to help you change the pattern beneath the pressure." data-gift-value="$27 Value" data-gift-cta="Send Me My Money Gift">
-      <span class="icon red">▶</span>
+      <span class="icon money" aria-hidden="true">💸</span>
       <span class="link-copy"><strong>I Want More Money</strong><span>See what may be keeping money stuck and start changing the pattern.</span></span>
       <span class="arrow">›</span>
     </button>
     <button class="link-card path-choice" type="button" data-choice="More Peace" data-list="awlist6889085" data-destination="https://hypnoticmeditations.ai/" data-tags="links-page,peace" data-gift-title="Start Rewiring Your Mind in 7 Minutes Tonight" data-gift-copy="A calming audio experience created for the moments when your mind and body need relief." data-gift-value="$47 Value" data-gift-cta="Send Me My Peace Gift">
-      <span class="icon">🎧</span>
+      <span class="icon peace" aria-hidden="true">🧘</span>
       <span class="link-copy"><strong>I Want More Peace</strong><span>Use targeted audio tools for calm, sleep, focus, health, and mental relief.</span></span>
       <span class="arrow">›</span>
     </button>
     <button class="link-card path-choice" type="button" data-choice="Change My Life" data-list="awlist6908195" data-destination="https://manifestationgenie.app" data-tags="links-page,change-my-life" data-gift-title="Discover the One Thing Quietly Blocking Your Manifestations" data-gift-copy="A guided path designed to turn what you want into a clearer and more focused direction." data-gift-value="$97 Value" data-gift-cta="Send Me My Manifestation Gift">
-      <span class="icon red">🧞</span>
+      <span class="icon change" aria-hidden="true">✨</span>
       <span class="link-copy"><strong>I Want To Change My Life</strong><span>Choose your goal and get personalized guidance for your next step.</span></span>
       <span class="arrow">›</span>
     </button>
