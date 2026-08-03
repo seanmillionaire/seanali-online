@@ -1,0 +1,48 @@
+name: Upgrade links icons now
+
+on:
+  push:
+    paths:
+      - '.github/workflows/upgrade-links-icons-now.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upgrade button visuals
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('links.html')
+          s = p.read_text(encoding='utf-8')
+
+          old_css = '.icon{display:grid;place-items:center;width:52px;height:52px;border-radius:11px;background:#111;color:#fff;font-size:25px;box-shadow:0 8px 18px rgba(0,0,0,.16)}\n.icon.orange{background:linear-gradient(135deg,var(--orange),var(--orange2))}\n.icon.red{background:linear-gradient(135deg,var(--red),#ff5258)}'
+          new_css = '.icon{display:grid;place-items:center;width:56px;height:56px;border-radius:16px;color:#fff;font-size:28px;line-height:1;box-shadow:0 12px 24px rgba(0,0,0,.16);transform:translateZ(0)}\n.icon.money{background:linear-gradient(135deg,#0f8f4f,#32c96b);box-shadow:0 12px 24px rgba(15,143,79,.28)}\n.icon.peace{background:linear-gradient(135deg,#0f6fff,#38bdf8);box-shadow:0 12px 24px rgba(14,116,255,.26)}\n.icon.change{background:linear-gradient(135deg,#7c3aed,#ec4899);box-shadow:0 12px 24px rgba(124,58,237,.28)}'
+          if old_css not in s:
+              raise SystemExit('Base icon CSS not found')
+          s = s.replace(old_css, new_css, 1)
+
+          replacements = {
+              '<span class="icon red">▶</span>': '<span class="icon money" aria-hidden="true">💸</span>',
+              '<span class="icon">🎧</span>': '<span class="icon peace" aria-hidden="true">🧘</span>',
+              '<span class="icon red">🧞</span>': '<span class="icon change" aria-hidden="true">✨</span>',
+          }
+          for old, new in replacements.items():
+              if old not in s:
+                  raise SystemExit(f'Missing icon markup: {old}')
+              s = s.replace(old, new, 1)
+
+          p.write_text(s, encoding='utf-8')
+          PY
+          rm -f .github/workflows/upgrade-links-icons-now.yml
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add links.html .github/workflows/upgrade-links-icons-now.yml
+          git commit -m "Upgrade links page button visuals"
+          git push
