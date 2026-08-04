@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - '.github/workflows/add-fb-pixel-links-once.yml'
+  workflow_dispatch:
 
 permissions:
   contents: write
