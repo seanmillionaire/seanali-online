@@ -1,0 +1,56 @@
+name: Add Facebook pixel to links page once
+
+on:
+  push:
+    paths:
+      - '.github/workflows/add-fb-pixel-links-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add Meta Pixel
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('links.html')
+          s = p.read_text(encoding='utf-8')
+          pixel_id = '1586097145783190'
+          if pixel_id in s:
+              raise SystemExit('Pixel already exists in links.html')
+          marker = '</head>'
+          pixel = '''<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1586097145783190');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1586097145783190&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+'''
+          if marker not in s:
+              raise SystemExit('Closing head tag not found')
+          s = s.replace(marker, pixel + marker, 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+          rm -f .github/workflows/add-fb-pixel-links-once.yml
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add links.html .github/workflows/add-fb-pixel-links-once.yml
+          git commit -m "Install Meta Pixel on links page"
+          git push
