@@ -12,6 +12,12 @@
 <meta property="og:title" content="Sean Ali | Official Links">
 <meta property="og:description" content="AI systems, money identity, subconscious tools, and practical paths to more freedom.">
 <meta property="og:image" content="https://hypnoticmeditations.b-cdn.net/images/proof/sean_hypnotic.png">
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=878451855254470&ev=PageView&noscript=1" alt=""></noscript>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1586097145783190&ev=PageView&noscript=1" alt=""></noscript>
 <link rel="icon" type="image/png" href="https://hypnoticmeditations.b-cdn.net/images/fav/headphones.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -72,7 +78,6 @@ h1 span{color:var(--red)}
 .footer{margin-top:28px;text-align:center;color:#8a8279;font-size:11px;font-weight:700}
 @media(prefers-reduced-motion:reduce){.down-arrows,.avatar-trigger::before,.update-message{animation:none}}
 @media(max-width:520px){.announcement{min-height:48px;padding:10px 12px}.announcement-inner{gap:7px;font-size:11px;letter-spacing:.035em}.page{padding:28px 14px 44px}.avatar-trigger{width:100px;height:100px}.avatar{width:90px;height:90px}h1{font-size:32px}.verified{width:23px;height:23px;flex-basis:23px}.bio{font-size:15px}.link-card{grid-template-columns:46px 1fr 18px;gap:12px;min-height:82px;padding:14px}.icon{width:46px;height:46px;font-size:22px}.link-copy strong{font-size:17px}.socials{grid-template-columns:1fr}}
-
 .link-card{width:100%;font:inherit;color:inherit;text-align:left;cursor:pointer}
 body.modal-open{overflow:hidden}
 .optin-modal[hidden]{display:none}
@@ -95,7 +100,6 @@ body.modal-open{overflow:hidden}
 @keyframes modal-in{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(max-width:520px){.modal-panel{padding:27px 18px 21px}.modal-panel h2{font-size:25px}}
 @media(prefers-reduced-motion:reduce){.modal-panel{animation:none}}
-
 .gift-value{display:inline-flex;margin:-4px 0 12px;padding:7px 11px;border:1px solid #d8eadf;border-radius:8px;background:#effaf3;color:#14783e;font-size:13px;font-weight:900}
 .delivery-label{margin:2px 0 9px;color:var(--ink);font-size:13px;font-weight:900}
 </style>
@@ -127,7 +131,6 @@ body.modal-open{overflow:hidden}
     </div>
     <p class="bio">I will help you to reclaim your freedom.</p>
   </header>
-
   <div class="section-label">Choose Your Path</div>
   <section class="links" id="main-links" aria-label="Sean Ali main links">
     <button class="link-card featured path-choice" type="button" data-choice="More Money" data-list="awlist6889085" data-destination="https://seanali.online/flow" data-tags="links-page,money" data-gift-title="Uninstall the Broke Thinking. Install the Rich Version of You." data-gift-copy="A guided money-mindset experience designed to help you change the pattern beneath the pressure." data-gift-value="$27 Value" data-gift-cta="Send Me My Money Gift">
@@ -146,7 +149,6 @@ body.modal-open{overflow:hidden}
       <span class="arrow">›</span>
     </button>
   </section>
-
   <div class="section-label">Follow Sean</div>
   <section class="socials" aria-label="Sean Ali social media">
     <a class="social" href="https://www.youtube.com/@RealSeanAli" target="_blank" rel="noopener" aria-label="Sean Ali on YouTube">
@@ -162,7 +164,6 @@ body.modal-open{overflow:hidden}
       Facebook
     </a>
   </section>
-
   <a class="home-link" href="/">Visit SeanAli.online →</a>
   <footer class="footer">© 2026 Sean Ali. AI. Business. Identity. Freedom.</footer>
 </main>
@@ -192,40 +193,18 @@ body.modal-open{overflow:hidden}
     </form>
   </section>
 </div>
-
 <script>
 (function(){
   const trigger=document.getElementById('sean-update-trigger');
   const message=document.getElementById('sean-update-message');
   if(!trigger||!message)return;
-
-  function setOpen(open){
-    trigger.setAttribute('aria-expanded',String(open));
-    message.hidden=!open;
-  }
-
-  trigger.addEventListener('click',function(event){
-    event.stopPropagation();
-    setOpen(message.hidden);
-  });
-
-  message.addEventListener('click',function(){
-    setOpen(false);
-  });
-
-  document.addEventListener('click',function(event){
-    if(!message.hidden&&!trigger.contains(event.target)&&!message.contains(event.target))setOpen(false);
-  });
-
-  document.addEventListener('keydown',function(event){
-    if(event.key==='Escape'&&!message.hidden){
-      setOpen(false);
-      trigger.focus();
-    }
-  });
+  function setOpen(open){trigger.setAttribute('aria-expanded',String(open));message.hidden=!open;}
+  trigger.addEventListener('click',function(event){event.stopPropagation();setOpen(message.hidden);});
+  message.addEventListener('click',function(){setOpen(false);});
+  document.addEventListener('click',function(event){if(!message.hidden&&!trigger.contains(event.target)&&!message.contains(event.target))setOpen(false);});
+  document.addEventListener('keydown',function(event){if(event.key==='Escape'&&!message.hidden){setOpen(false);trigger.focus();}});
 })();
 </script>
-
 <script>
 (function(){
   const modal=document.getElementById('path-optin');
@@ -245,50 +224,15 @@ body.modal-open{overflow:hidden}
   const skip=document.getElementById('optin-skip');
   let destination='';
   let opener=null;
-
   function openModal(button){
-    opener=button;
-    destination=button.dataset.destination;
-    confirm.textContent='🎁 Selected for '+button.dataset.choice;
-    title.textContent=button.dataset.giftTitle;
-    copy.textContent=button.dataset.giftCopy;
-    value.textContent=button.dataset.giftValue;
-    submit.textContent=button.dataset.giftCta;
-    list.value=button.dataset.list;
-    redirect.value=destination;
-    existing.value=destination;
-    tags.value=button.dataset.tags;
-    tracking.value='Sean Ali Links - '+button.dataset.choice;
-    modal.hidden=false;
-    document.body.classList.add('modal-open');
-    requestAnimationFrame(function(){email.focus();});
+    opener=button;destination=button.dataset.destination;confirm.textContent='🎁 Selected for '+button.dataset.choice;title.textContent=button.dataset.giftTitle;copy.textContent=button.dataset.giftCopy;value.textContent=button.dataset.giftValue;submit.textContent=button.dataset.giftCta;list.value=button.dataset.list;redirect.value=destination;existing.value=destination;tags.value=button.dataset.tags;tracking.value='Sean Ali Links - '+button.dataset.choice;modal.hidden=false;document.body.classList.add('modal-open');requestAnimationFrame(function(){email.focus();});
   }
-
-  function closeModal(){
-    modal.hidden=true;
-    document.body.classList.remove('modal-open');
-    if(opener)opener.focus();
-  }
-
-  choices.forEach(function(button){
-    button.addEventListener('click',function(){openModal(button);});
-  });
-
-  modal.querySelectorAll('[data-close-modal]').forEach(function(control){
-    control.addEventListener('click',closeModal);
-  });
-
-  skip.addEventListener('click',function(){
-    if(destination)window.location.href=destination;
-  });
-
-  form.addEventListener('submit',function(){
-    submit.textContent='Sending Your Gift…';
-  });
-
-  document.addEventListener('keydown',function(event){
-    if(event.key==='Escape'&&!modal.hidden)closeModal();
-  });
+  function closeModal(){modal.hidden=true;document.body.classList.remove('modal-open');if(opener)opener.focus();}
+  choices.forEach(function(button){button.addEventListener('click',function(){openModal(button);});});
+  modal.querySelectorAll('[data-close-modal]').forEach(function(control){control.addEventListener('click',closeModal);});
+  skip.addEventListener('click',function(){if(destination)window.location.href=destination;});
+  form.addEventListener('submit',function(){submit.textContent='Sending Your Gift…';});
+  document.addEventListener('keydown',function(event){if(event.key==='Escape'&&!modal.hidden)closeModal();});
 })();
 </script>
 <!-- This site is converting visitors into subscribers and customers with https://respond.io -->
