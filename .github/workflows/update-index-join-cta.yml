@@ -1,0 +1,36 @@
+name: Update homepage nav CTA to Join
+
+on:
+  push:
+    paths:
+      - '.github/index-join-cta-trigger.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update nav CTA
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old = '<a class="nav-cta" href="prompts.html" target="_blank" rel="noopener">Get Claude27 Free</a>'
+          new = '<a class="nav-cta" href="/join.html">Join</a>'
+          if old not in s:
+              raise SystemExit('Expected Claude CTA not found')
+          p.write_text(s.replace(old, new, 1), encoding='utf-8')
+          PY
+      - name: Commit changes
+        run: |
+          rm -f .github/workflows/update-index-join-cta.yml .github/index-join-cta-trigger.txt
+          git config user.name "OpenAI"
+          git config user.email "openai@users.noreply.github.com"
+          git add index.html .github/workflows/update-index-join-cta.yml .github/index-join-cta-trigger.txt
+          git diff --cached --quiet || git commit -m "Change homepage nav CTA to Join"
+          git push
