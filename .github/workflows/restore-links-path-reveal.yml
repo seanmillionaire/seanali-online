@@ -1,0 +1,64 @@
+name: Restore links path reveal
+
+on:
+  push:
+    paths:
+      - '.github/workflows/restore-links-path-reveal.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore AWeber submit and path reveal
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('links.html')
+          s = p.read_text(encoding='utf-8')
+
+          form_old = '<form class="optin-form" id="main-optin-form" method="post" action="https://www.aweber.com/scripts/addlead.pl">'
+          form_new = '<form class="optin-form" id="main-optin-form" method="post" action="https://www.aweber.com/scripts/addlead.pl" target="aweber-main-submit-frame">'
+          if form_old in s:
+              s = s.replace(form_old, form_new, 1)
+          elif 'target="aweber-main-submit-frame"' not in s:
+              raise SystemExit('Main opt-in form not found')
+
+          iframe = '<iframe name="aweber-main-submit-frame" title="AWeber signup submission" hidden></iframe>'
+          if iframe not in s:
+              s = s.replace('</main>', '</main>\n' + iframe, 1)
+
+          old = """mainForm.addEventListener('submit',function(){
+      mainSubmit.textContent='Sending Your Tools…';
+      mainSubmit.disabled=true;
+    });"""
+          new = """mainForm.addEventListener('submit',function(){
+      mainSubmit.textContent='Opening Your Paths…';
+      mainSubmit.disabled=true;
+      window.setTimeout(function(){
+        profile.classList.add('is-focused');
+        mainOptin.hidden=true;
+        selector.classList.add('revealed');
+        selector.hidden=false;
+        selector.scrollIntoView({behavior:'smooth',block:'start'});
+      },180);
+    });"""
+          if old in s:
+              s = s.replace(old, new, 1)
+          elif "mainSubmit.textContent='Opening Your Paths…'" not in s:
+              raise SystemExit('Main form submit handler not found')
+
+          p.write_text(s, encoding='utf-8')
+          PY
+          rm -f .github/workflows/restore-links-path-reveal.yml
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add links.html .github/workflows/restore-links-path-reveal.yml
+          git commit -m "Restore path reveal after links opt-in"
+          git push
