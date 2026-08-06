@@ -161,7 +161,7 @@ body.modal-open{overflow:hidden}
   <section class="main-optin" id="main-optin" aria-labelledby="main-optin-title">
     <h2 id="main-optin-title">Change Your Mind, Change What’s Possible.</h2>
     <p>Enter your details below to receive my most popular mind rewiring tools, audios and more.</p>
-    <form class="optin-form" id="main-optin-form" method="post" action="https://www.aweber.com/scripts/addlead.pl">
+    <form class="optin-form" id="main-optin-form" method="post" action="https://www.aweber.com/scripts/addlead.pl" target="aweber-main-submit-frame">
       <label class="optin-label" for="main-optin-name">First name</label>
       <input class="optin-input" id="main-optin-name" type="text" name="name" placeholder="FIRST NAME" autocomplete="given-name">
       <label class="optin-label" for="main-optin-email">Email address</label>
@@ -219,6 +219,7 @@ body.modal-open{overflow:hidden}
   <a class="home-link" href="/">Explore SeanAli.online →</a>
   <footer class="footer">© 2026 Sean Ali. Mind. Money. Identity. Freedom.</footer>
 </main>
+<iframe name="aweber-main-submit-frame" title="AWeber signup submission" hidden></iframe>
 <div class="optin-modal" id="path-optin" hidden>
   <div class="modal-backdrop" data-close-modal aria-hidden="true"></div>
   <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="optin-title" aria-describedby="optin-copy">
@@ -266,8 +267,15 @@ body.modal-open{overflow:hidden}
   const selector=document.getElementById('path-selector');
   if(mainForm){
     mainForm.addEventListener('submit',function(){
-      mainSubmit.textContent='Sending Your Tools…';
+      mainSubmit.textContent='Opening Your Paths…';
       mainSubmit.disabled=true;
+      window.setTimeout(function(){
+        profile.classList.add('is-focused');
+        mainOptin.hidden=true;
+        selector.classList.add('revealed');
+        selector.hidden=false;
+        selector.scrollIntoView({behavior:'smooth',block:'start'});
+      },180);
     });
   }
   const modal=document.getElementById('path-optin');
