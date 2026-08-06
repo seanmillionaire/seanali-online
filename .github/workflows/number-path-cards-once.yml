@@ -1,0 +1,44 @@
+name: Number path cards once
+
+on:
+  push:
+    paths:
+      - '.deploy-number-paths'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add numbered path labels
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('links.html')
+          html = p.read_text()
+          css = '''
+          .path-number{display:inline-flex;align-items:center;justify-content:center;margin-bottom:7px;padding:5px 9px;border-radius:999px;font-size:10px;line-height:1;font-weight:950;letter-spacing:.11em;text-transform:uppercase}
+          .path-number.money{background:#e8f8ee;color:#08763d;border:1px solid #bde8cd}
+          .path-number.peace{background:#eaf4ff;color:#075fb8;border:1px solid #bddcff}
+          .path-number.change{background:#f7eafe;color:#8b2bb0;border:1px solid #e2bdf3}
+          '''
+          needle = '.link-copy strong{display:block;margin-bottom:5px;font-size:18px;line-height:1.1;font-weight:900;letter-spacing:-.025em}'
+          if '.path-number{' not in html:
+              html = html.replace(needle, css + needle)
+          html = html.replace('<span class="link-copy"><strong>I Want More Money</strong>', '<span class="link-copy"><span class="path-number money">Path 1</span><strong>I Want More Money</strong>')
+          html = html.replace('<span class="link-copy"><strong>I Want More Peace</strong>', '<span class="link-copy"><span class="path-number peace">Path 2</span><strong>I Want More Peace</strong>')
+          html = html.replace('<span class="link-copy"><strong>I Want To Change My Life</strong>', '<span class="link-copy"><span class="path-number change">Path 3</span><strong>I Want To Change My Life</strong>')
+          p.write_text(html)
+          PY
+      - name: Commit changes
+        run: |
+          rm -f .github/workflows/number-path-cards-once.yml .deploy-number-paths
+          git config user.name "OpenAI"
+          git config user.email "noreply@openai.com"
+          git add links.html .github/workflows/number-path-cards-once.yml .deploy-number-paths
+          git diff --cached --quiet || git commit -m "Number links page paths"
+          git push
