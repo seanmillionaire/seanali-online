@@ -1,0 +1,35 @@
+name: Update Join Page Title Once
+
+on:
+  push:
+    paths:
+      - '.github/join-title-trigger.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update join metadata
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('join.html')
+          s = p.read_text(encoding='utf-8')
+          s = s.replace('<title>Sean Ali | Official Links</title>', '<title>Sean Ali | Free Tools for More Money, Peace & Freedom</title>')
+          s = s.replace('<link rel="canonical" href="https://seanali.online/links">', '<link rel="canonical" href="https://seanali.online/join.html">')
+          s = s.replace('<meta property="og:title" content="Sean Ali | Official Links">', '<meta property="og:title" content="Sean Ali | Free Tools for More Money, Peace & Freedom">')
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit changes
+        run: |
+          rm -f .github/workflows/update-join-page-title-once.yml .github/join-title-trigger.txt
+          git config user.name "OpenAI"
+          git config user.email "openai@users.noreply.github.com"
+          git add join.html .github/workflows/update-join-page-title-once.yml .github/join-title-trigger.txt
+          git diff --cached --quiet || git commit -m "Update join page title and metadata"
+          git push
