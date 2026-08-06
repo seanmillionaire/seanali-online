@@ -37,11 +37,10 @@ button{font:inherit}
 .profile{text-align:center;margin-bottom:28px}
 .profile-update{position:relative;margin:0 auto 18px;text-align:center}
 .avatar-trigger{position:relative;display:grid;place-items:center;width:112px;height:112px;margin:0 auto;padding:0;border:0;border-radius:50%;background:transparent;cursor:pointer;isolation:isolate;filter:drop-shadow(0 16px 18px rgba(0,0,0,.13))}
-.avatar-trigger::before{content:"";position:absolute;inset:0;z-index:0;border-radius:50%;background:conic-gradient(from 0deg,var(--update) 0 19%,transparent 19% 25%,var(--update) 25% 48%,transparent 48% 55%,var(--update) 55% 82%,#bdeecf 82% 100%)}
-.avatar-trigger::after{content:"";position:absolute;inset:5px;z-index:1;border-radius:50%;background:var(--cream)}
-.avatar-trigger:focus-visible{outline:4px solid rgba(37,211,102,.25);outline-offset:6px}
+.avatar-trigger::before,.avatar-trigger::after{display:none}
+.avatar-trigger:focus-visible{outline:4px solid rgba(225,29,36,.25);outline-offset:6px}
 .avatar{position:relative;z-index:2;width:100px;height:100px;display:block;border:4px solid var(--white);border-radius:50%;object-fit:cover;object-position:center top;background:#ddd}
-.update-badge{position:absolute;right:-3px;bottom:5px;z-index:3;display:grid;place-items:center;width:29px;height:29px;border:4px solid var(--cream);border-radius:50%;background:var(--update);color:#fff;font-size:12px;font-weight:900;box-shadow:0 7px 16px rgba(19,138,69,.3)}
+.update-badge{display:none}
 .update-message{position:relative;display:block;width:min(280px,92vw);margin:14px auto 0;padding:13px 15px;border:1px solid rgba(19,138,69,.2);border-radius:14px 14px 14px 5px;background:var(--message);color:var(--ink);text-align:center;text-decoration:none;box-shadow:0 12px 28px rgba(20,88,48,.14);animation:message-pop .38s cubic-bezier(.2,.85,.25,1.15) both}
 .update-message[hidden]{display:none}
 .update-message::before{content:"";position:absolute;left:50%;top:-9px;width:18px;height:18px;background:var(--message);border-left:1px solid rgba(19,138,69,.2);border-bottom:1px solid rgba(19,138,69,.2);transform:translateX(-50%) rotate(135deg)}
@@ -55,8 +54,8 @@ h1{margin:0;font-size:36px;line-height:1;letter-spacing:-.045em;font-weight:900}
 h1 span{color:var(--red)}
 .verified{display:inline-flex;width:25px;height:25px;flex:0 0 25px;filter:drop-shadow(0 4px 8px rgba(22,137,244,.24))}
 .verified svg{display:block;width:100%;height:100%}
-.bio{max-width:500px;margin:12px auto 0;color:var(--muted);font-size:16px;line-height:1.5;font-weight:700}
-.section-label{margin:26px 4px 10px;color:#6d665e;font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.bio{max-width:100%;margin:12px auto 0;color:var(--muted);font-size:clamp(10px,3vw,16px);line-height:1.35;font-weight:700;letter-spacing:-.02em;white-space:nowrap}
+.section-label{margin:26px 4px 10px;color:#6d665e;font-size:11px;font-weight:900;letter-spacing:.12em;text-align:center;text-transform:uppercase}
 .links{display:grid;gap:12px}
 .link-card{position:relative;display:grid;grid-template-columns:52px 1fr 24px;gap:14px;align-items:center;min-height:88px;padding:16px 18px;border:1px solid #d8d2c8;border-radius:12px;background:rgba(255,255,255,.96);text-decoration:none;box-shadow:0 10px 24px rgba(0,0,0,.055);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
 .link-card:hover,.link-card:focus-visible{transform:translateY(-3px);border-color:#aaa39a;box-shadow:0 18px 36px rgba(0,0,0,.1);outline:none}
@@ -79,6 +78,28 @@ h1 span{color:var(--red)}
 @media(prefers-reduced-motion:reduce){.down-arrows,.avatar-trigger::before,.update-message{animation:none}}
 @media(max-width:520px){.announcement{min-height:48px;padding:10px 12px}.announcement-inner{gap:7px;font-size:11px;letter-spacing:.035em}.page{padding:28px 14px 44px}.avatar-trigger{width:100px;height:100px}.avatar{width:90px;height:90px}h1{font-size:32px}.verified{width:23px;height:23px;flex-basis:23px}.bio{font-size:15px}.link-card{grid-template-columns:46px 1fr 18px;gap:12px;min-height:82px;padding:14px}.icon{width:46px;height:46px;font-size:22px}.link-copy strong{font-size:17px}.socials{grid-template-columns:1fr}}
 .link-card{width:100%;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.main-optin{position:relative;margin-top:26px;padding:31px 22px 24px;border:1px solid #d8d2c8;border-radius:16px;background:#fff;box-shadow:0 16px 34px rgba(0,0,0,.08);text-align:center}
+.main-optin[hidden],.path-selector[hidden]{display:none}
+.main-optin h2{margin:0 auto 13px;max-width:440px;color:#101010;font-size:31px;line-height:1.06;letter-spacing:-.045em;font-weight:950}
+.main-optin p{max-width:440px;margin:0 auto 10px;color:var(--muted);font-size:15px;line-height:1.48;font-weight:650}
+.main-optin .optin-form{margin-top:18px}
+.path-selector{margin-top:26px}
+.profile.is-focused{display:none}
+.path-selector.revealed{margin-top:0}
+.path-guidance{position:relative;margin:0 auto 16px;padding:18px 20px 20px;border:2px solid transparent;border-radius:18px;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(120deg,#ff542e,#f6c453,#ec4899,#7c3aed) border-box;text-align:center;box-shadow:0 16px 34px rgba(225,29,36,.16);overflow:hidden}
+.path-guidance::before{content:"";position:absolute;inset:-60%;background:conic-gradient(from 0deg,transparent 0 22%,rgba(255,255,255,.8) 28%,transparent 34% 62%,rgba(255,255,255,.7) 68%,transparent 74%);animation:guidance-sweep 3.2s linear infinite}
+.path-guidance>*{position:relative;z-index:1;display:block}
+.path-kicker{margin-bottom:5px;color:#d11b25;font-size:12px;font-weight:950;letter-spacing:.12em;text-transform:uppercase}
+.path-guidance strong{color:#111;font-size:22px;line-height:1.12;letter-spacing:-.035em}
+.path-hint{margin-top:7px;color:var(--muted);font-size:13px;font-weight:700}
+.path-selector.revealed .path-guidance{animation:guidance-pop .65s cubic-bezier(.2,.85,.25,1.15) both}
+.path-selector.revealed .path-choice{animation:path-card-in .55s cubic-bezier(.2,.8,.25,1) both}
+.path-selector.revealed .path-choice:nth-child(1){animation-delay:.12s}
+.path-selector.revealed .path-choice:nth-child(2){animation-delay:.22s}
+.path-selector.revealed .path-choice:nth-child(3){animation-delay:.32s}
+@keyframes guidance-sweep{to{transform:rotate(360deg)}}
+@keyframes guidance-pop{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes path-card-in{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
 body.modal-open{overflow:hidden}
 .optin-modal[hidden]{display:none}
 .optin-modal{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:18px}
@@ -89,17 +110,23 @@ body.modal-open{overflow:hidden}
 .choice-confirm{display:inline-flex;margin:0 0 13px;padding:7px 10px;border-radius:999px;background:#fff0eb;color:#b5161d;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
 .modal-panel h2{margin:0 34px 9px 0;font-size:28px;line-height:1.08;letter-spacing:-.04em}
 .modal-copy{margin:0 0 20px;color:var(--muted);font-size:15px;line-height:1.5;font-weight:650}
-.optin-form{display:grid;gap:11px}
+.optin-form{display:grid;justify-items:center;gap:11px}
 .optin-label{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-.optin-input{width:100%;min-height:52px;padding:13px 14px;border:1px solid #ccc5bc;border-radius:10px;background:#fff;color:var(--ink);font:inherit;font-size:16px;outline:none}
+.optin-input{width:min(100%,360px);min-height:52px;padding:13px 14px;border:1px solid #ccc5bc;border-radius:10px;background:#fff;color:var(--ink);font:inherit;font-size:16px;text-align:center;outline:none}
 .optin-input:focus{border-color:var(--red);box-shadow:0 0 0 4px rgba(225,29,36,.11)}
-.optin-submit{min-height:54px;padding:13px 16px;border:0;border-radius:10px;background:linear-gradient(90deg,#c8141d,var(--red));color:#fff;font:inherit;font-size:16px;font-weight:900;cursor:pointer;box-shadow:0 12px 24px rgba(225,29,36,.2)}
-.optin-submit:hover,.optin-submit:focus-visible{filter:brightness(.96);transform:translateY(-1px);outline:3px solid rgba(225,29,36,.18)}
+.optin-submit{position:relative;isolation:isolate;min-width:min(100%,360px);min-height:56px;padding:13px 20px;border:0;border-radius:10px;background:linear-gradient(90deg,#c8141d,var(--red),#f04432,var(--red));background-size:220% 100%;color:#fff;font:inherit;font-size:17px;font-weight:950;letter-spacing:.02em;cursor:pointer;box-shadow:0 12px 24px rgba(225,29,36,.25);animation:button-bounce 2.3s ease-in-out infinite,button-shimmer 3s linear infinite}
+.optin-submit::before,.optin-submit::after{position:absolute;z-index:-1;color:#f6c453;font-size:18px;line-height:1;opacity:.9;animation:sparkle 1.5s ease-in-out infinite;content:"✦"}
+.optin-submit::before{top:-10px;left:15%;}
+.optin-submit::after{right:12%;bottom:-10px;font-size:14px;animation-delay:.55s}
+.optin-submit:hover,.optin-submit:focus-visible{filter:brightness(1.06);transform:translateY(-2px) scale(1.02);outline:3px solid rgba(225,29,36,.18)}
+@keyframes button-bounce{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-4px) scale(1.015)}}
+@keyframes button-shimmer{0%{background-position:0 0}100%{background-position:220% 0}}
+@keyframes sparkle{0%,100%{opacity:.25;transform:scale(.7) rotate(0)}50%{opacity:1;transform:scale(1.25) rotate(18deg)}}
 .optin-skip{justify-self:center;padding:7px;border:0;background:transparent;color:#6d665e;font:inherit;font-size:12px;font-weight:800;text-decoration:underline;cursor:pointer}
 .privacy-note{margin:3px 0 0;color:#8a8279;font-size:10px;line-height:1.4;text-align:center}
 @keyframes modal-in{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(max-width:520px){.modal-panel{padding:27px 18px 21px}.modal-panel h2{font-size:25px}}
-@media(prefers-reduced-motion:reduce){.modal-panel{animation:none}}
+@media(prefers-reduced-motion:reduce){.modal-panel,.optin-submit,.optin-submit::before,.optin-submit::after,.path-guidance,.path-guidance::before,.path-choice{animation:none}}
 .gift-value{display:inline-flex;margin:-4px 0 12px;padding:7px 11px;border:1px solid #d8eadf;border-radius:8px;background:#effaf3;color:#14783e;font-size:13px;font-weight:900}
 .delivery-label{margin:2px 0 9px;color:var(--ink);font-size:13px;font-weight:900}
 </style>
@@ -107,7 +134,7 @@ body.modal-open{overflow:hidden}
 <body>
 <div class="announcement" role="note" aria-label="Sean Ali community social proof">
   <div class="announcement-inner">
-    <span>Join 100,000+ people who’ve used Sean’s tools</span>
+    <span>Join 125,000+ people who have used Sean’s tools</span>
     <span class="down-arrows" aria-hidden="true">↓↓</span>
   </div>
 </div>
@@ -129,8 +156,32 @@ body.modal-open{overflow:hidden}
         <svg viewBox="0 0 24 24" role="img" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#1689f4"/><path d="M7.3 12.1 10.4 15l6.4-7" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </span>
     </div>
-    <p class="bio">I will help you to reclaim your freedom.</p>
+    <p class="bio">I will help you to escape poverty and tap into abundance.</p>
   </header>
+  <section class="main-optin" id="main-optin" aria-labelledby="main-optin-title">
+    <h2 id="main-optin-title">Change Your Mind, Change What’s Possible.</h2>
+    <p>Enter your details below to receive my most popular mind rewiring tools, audios and more.</p>
+    <form class="optin-form" id="main-optin-form" method="post" action="https://www.aweber.com/scripts/addlead.pl">
+      <label class="optin-label" for="main-optin-name">First name</label>
+      <input class="optin-input" id="main-optin-name" type="text" name="name" placeholder="FIRST NAME" autocomplete="given-name">
+      <label class="optin-label" for="main-optin-email">Email address</label>
+      <input class="optin-input" id="main-optin-email" type="email" name="email" placeholder="EMAIL ADDRESS" autocomplete="email" required>
+      <input type="hidden" name="listname" value="awlist6946418">
+      <input type="hidden" name="redirect" value="https://seanali.online/links?subscribed=1">
+      <input type="hidden" name="meta_redirect_onlist" value="https://seanali.online/links?subscribed=1">
+      <input type="hidden" name="meta_tags" value="links-page,main-optin">
+      <input type="hidden" name="meta_adtracking" value="Sean Ali Links Main Optin">
+      <input type="hidden" name="meta_required" value="email">
+      <button class="optin-submit" id="main-optin-submit" type="submit">Send Me The Tools</button>
+      <p class="privacy-note">Free to join. No spam. Unsubscribe anytime.</p>
+    </form>
+  </section>
+  <div class="path-selector" id="path-selector" hidden>
+  <div class="path-guidance" role="status" aria-live="polite">
+    <span class="path-kicker">Great job!</span>
+    <strong>Now choose the first area you want to change.</strong>
+    <span class="path-hint">Pick the path that feels right for you.</span>
+  </div>
   <div class="section-label">Choose Your Path</div>
   <section class="links" id="main-links" aria-label="Sean Ali main links">
     <button class="link-card featured path-choice" type="button" data-choice="More Money" data-list="awlist6946418" data-destination="https://seanali.online/flow" data-tags="links-page,money" data-gift-title="Uninstall the Broke Thinking. Install the Rich Version of You." data-gift-copy="A guided money-mindset experience designed to help you change the pattern beneath the pressure." data-gift-value="$27 Value" data-gift-cta="Send Me My Money Gift">
@@ -149,6 +200,7 @@ body.modal-open{overflow:hidden}
       <span class="arrow">›</span>
     </button>
   </section>
+  </div>
   <div class="section-label">Follow Sean</div>
   <section class="socials" aria-label="Sean Ali social media">
     <a class="social" href="https://www.youtube.com/@RealSeanAli" target="_blank" rel="noopener" aria-label="Sean Ali on YouTube">
@@ -164,8 +216,8 @@ body.modal-open{overflow:hidden}
       Facebook
     </a>
   </section>
-  <a class="home-link" href="/">Visit SeanAli.online →</a>
-  <footer class="footer">© 2026 Sean Ali. AI. Business. Identity. Freedom.</footer>
+  <a class="home-link" href="/">Explore SeanAli.online →</a>
+  <footer class="footer">© 2026 Sean Ali. Mind. Money. Identity. Freedom.</footer>
 </main>
 <div class="optin-modal" id="path-optin" hidden>
   <div class="modal-backdrop" data-close-modal aria-hidden="true"></div>
@@ -178,9 +230,9 @@ body.modal-open{overflow:hidden}
     <p class="delivery-label">Where should I send it?</p>
     <form class="optin-form" id="path-optin-form" method="post" action="https://www.aweber.com/scripts/addlead.pl">
       <label class="optin-label" for="optin-name">First name</label>
-      <input class="optin-input" id="optin-name" type="text" name="name" placeholder="First name" autocomplete="given-name">
+      <input class="optin-input" id="optin-name" type="text" name="name" placeholder="FIRST NAME" autocomplete="given-name">
       <label class="optin-label" for="optin-email">Email address</label>
-      <input class="optin-input" id="optin-email" type="email" name="email" placeholder="Email address" autocomplete="email" required>
+      <input class="optin-input" id="optin-email" type="email" name="email" placeholder="EMAIL ADDRESS" autocomplete="email" required>
       <input id="optin-list" type="hidden" name="listname" value="">
       <input id="optin-redirect" type="hidden" name="redirect" value="">
       <input id="optin-existing" type="hidden" name="meta_redirect_onlist" value="">
@@ -207,6 +259,17 @@ body.modal-open{overflow:hidden}
 </script>
 <script>
 (function(){
+  const profile=document.querySelector('.profile');
+  const mainOptin=document.getElementById('main-optin');
+  const mainForm=document.getElementById('main-optin-form');
+  const mainSubmit=document.getElementById('main-optin-submit');
+  const selector=document.getElementById('path-selector');
+  if(mainForm){
+    mainForm.addEventListener('submit',function(){
+      mainSubmit.textContent='Sending Your Tools…';
+      mainSubmit.disabled=true;
+    });
+  }
   const modal=document.getElementById('path-optin');
   const form=document.getElementById('path-optin-form');
   const choices=Array.from(document.querySelectorAll('.path-choice'));
@@ -230,8 +293,8 @@ body.modal-open{overflow:hidden}
   function closeModal(){modal.hidden=true;document.body.classList.remove('modal-open');if(opener)opener.focus();}
   choices.forEach(function(button){button.addEventListener('click',function(){openModal(button);});});
   modal.querySelectorAll('[data-close-modal]').forEach(function(control){control.addEventListener('click',closeModal);});
-  skip.addEventListener('click',function(){if(destination)window.location.href=destination;});
-  form.addEventListener('submit',function(){submit.textContent='Sending Your Gift…';});
+  if(skip)skip.addEventListener('click',function(){if(destination)window.location.href=destination;});
+  if(form)form.addEventListener('submit',function(){submit.textContent='Sending Your Gift…';submit.disabled=true;});
   document.addEventListener('keydown',function(event){if(event.key==='Escape'&&!modal.hidden)closeModal();});
 })();
 </script>
