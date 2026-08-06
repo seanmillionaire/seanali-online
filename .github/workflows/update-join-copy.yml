@@ -1,0 +1,35 @@
+name: Update join page copy
+
+on:
+  push:
+    paths:
+      - '.github/join-copy-trigger.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update join page
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('join.html')
+          s = p.read_text(encoding='utf-8')
+          s = s.replace('Join 125,000+ people who have used Sean’s tools', 'Join 125,000+ people who use Sean’s tools')
+          s = s.replace('Join 125,000+ people who use Sean’s tools</span>\n    <span class="down-arrows" aria-hidden="true">↓↓</span>', 'Join 125,000+ people who use Sean’s tools ↓↓</span>')
+          s = s.replace('>Send Me The Tools</button>', '>Send Me The Tools →</button>')
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit changes
+        run: |
+          rm -f .github/workflows/update-join-copy.yml .github/join-copy-trigger.txt
+          git config user.name "OpenAI"
+          git config user.email "openai@users.noreply.github.com"
+          git add join.html .github/workflows/update-join-copy.yml .github/join-copy-trigger.txt
+          git diff --cached --quiet || git commit -m "Update join page banner and CTA"
+          git push
