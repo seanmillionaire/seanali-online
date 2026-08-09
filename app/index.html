@@ -28,22 +28,19 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 .modal-backdrop{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:18px;background:rgba(0,0,0,.55)}.modal{width:min(580px,100%);max-height:88vh;overflow:auto;padding:28px;border-radius:8px;background:#fff;box-shadow:0 30px 80px rgba(0,0,0,.3)}.modal-head{display:flex;align-items:start;justify-content:space-between;gap:20px}.modal-kind{color:var(--orange);font-size:12px;font-weight:900;text-transform:uppercase}.modal h2{margin:8px 0 12px;font-size:29px;line-height:1.15}.modal p{margin:0;color:var(--muted);font-size:16px;line-height:1.65}.modal-close{display:grid;place-items:center;flex:0 0 auto;width:38px;height:38px;border:0;border-radius:50%;background:#f0efeb;font-size:22px}.modal-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}.secondary-button{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:12px 18px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#222;font-weight:900;text-decoration:none}
 @media(max-width:800px){.desktop-nav{display:none}.app-main{padding-top:24px}.bottom-nav{display:block}.tools-grid{grid-template-columns:1fr}.view-head{display:block}.focus-strip{grid-template-columns:1fr}.focus-meta{text-align:left}.progress-track{width:100%}.ask-options{grid-template-columns:1fr}}
 @media(max-width:560px){.header-inner{min-height:64px;padding:0 15px}.brand img{width:38px;height:38px}.brand strong{font-size:18px}.app-main{padding:18px 12px 100px}.center-stage{padding:18px 12px}.stage-panel{padding:24px 16px}.stage-brand{margin-bottom:22px}.stage-panel h1{font-size:29px}.stage-copy{font-size:14px}.choice-button{grid-template-columns:42px 1fr 20px;padding:12px}.choice-icon{width:42px;height:42px}.choice-copy strong{font-size:15px}.view-head h1,.view-head h2{font-size:27px}.focus-strip{grid-template-columns:1fr;padding:10px 12px}.focus-meta{text-align:left}.progress-track{width:100%}.guided-steps{gap:13px}.guided-step{display:block;padding:8px 4px;text-align:center}.guided-step:not(:last-child):after{right:-10px;font-size:14px}.guided-step-icon{width:30px;height:30px;margin:0 auto 5px}.guided-step-state{font-size:8px}.next-action{padding:19px 13px 17px}.next-action h2{font-size:24px}.next-action p{font-size:13px}.primary-action-button{min-height:64px;padding:15px 12px;font-size:14px}.day-row{grid-template-columns:42px 1fr;padding:13px}.day-number{width:40px;height:40px}.day-status{grid-column:2}.modal{padding:22px 17px}.modal h2{font-size:25px}.modal-actions{display:grid}.modal-actions>*{width:100%}.stage-actions{display:grid}.stage-actions>*{width:100%}}
+.header-inner{width:min(880px,100%);min-height:68px}.header-label{margin-left:auto;color:#777;font-size:12px;font-weight:800}.app-main{width:min(880px,100%);padding-top:20px;padding-bottom:118px}.focus-strip{margin-bottom:10px;padding:9px 12px;border:0;background:transparent}.next-action{padding-top:22px}.guided-steps{margin-top:12px;margin-bottom:0}.app-footer{position:fixed;left:0;right:0;bottom:0;z-index:35;padding:8px max(10px,env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));border-top:1px solid var(--line);background:rgba(255,255,255,.98);backdrop-filter:blur(14px)}.app-footer .bottom-nav-inner{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;width:min(720px,100%);margin:auto}.app-footer .bottom-button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:7px 10px;border:0;border-radius:8px;background:transparent;color:#777;font-size:12px;font-weight:800}.app-footer .bottom-button span{display:grid;place-items:center;width:25px;height:25px;margin:0;border-radius:50%;background:#efeee9;color:#555;font-size:11px;font-weight:900}.app-footer .bottom-button:hover,.app-footer .bottom-button:focus-visible{background:#f4f3ef;color:#111;outline:none}.app-footer .bottom-button.active{background:#fff0e9;color:#c33b1b}.app-footer .bottom-button.active span{background:var(--orange);color:#fff}
+@media(max-width:560px){.header-inner{min-height:60px}.header-label{display:none}.app-main{padding-top:12px;padding-bottom:98px}.focus-strip{padding:7px 4px}.app-footer .bottom-nav-inner{gap:2px}.app-footer .bottom-button{display:grid;gap:2px;min-height:55px;padding:4px 2px;font-size:9px}.app-footer .bottom-button span{width:23px;height:23px;margin:auto}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}.primary-action-button{animation:none!important}}
 </style>
 </head>
 <body>
-<header class="app-header" id="app-header" hidden>
+<nav class="app-header" id="app-header" aria-label="Personal guide" hidden>
   <div class="header-inner">
     <a class="brand" href="/app/" aria-label="Sean Ali personal guide home"><img src="https://hypnoticmeditations.b-cdn.net/images/proof/sean_hypnotic.png" alt="Sean Ali"><strong>SEAN <span>ALI</span></strong></a>
-    <nav class="desktop-nav" aria-label="Personal guide navigation">
-      <button class="nav-button active" data-view="today" type="button">Today</button>
-      <button class="nav-button" data-view="path" type="button">My Path</button>
-      <button class="nav-button" data-view="tools" type="button">My Tools</button>
-      <button class="nav-button" data-view="ask" type="button">Ask Sean</button>
-    </nav>
+    <span class="header-label">Your Personal Guide</span>
     <button class="start-over" id="start-over" type="button">Start over</button>
   </div>
-</header>
+</nav>
 
 <main class="center-stage" id="recovery-screen" hidden>
   <section class="stage-panel" aria-labelledby="recovery-title">
@@ -70,9 +67,8 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 
 <main class="app-main" id="app-main" hidden>
   <section class="view active" id="view-today" aria-labelledby="today-title">
-    <div class="view-head"><span class="eyebrow">Today</span><h1 id="today-title"><span id="today-name">Friend</span>, here is your next move.</h1><p>One step. Then the next. Start with the orange button.</p></div>
-    <div class="focus-strip"><div><small>🎯 Your focus</small><strong id="focus-title">Your Personal Path</strong></div><div class="focus-meta"><span id="day-label">Day 1 of 7</span><div class="progress-track" aria-label="Path progress"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div></div></div>
-    <div class="guided-steps" id="guided-steps" aria-label="Today's four steps"></div>
+    <h1 class="sr-only" id="today-title"><span id="today-name">Friend</span>, here is your next move.</h1>
+    <div class="focus-strip"><div><small>🎯 Today’s focus</small><strong id="focus-title">Your Personal Path</strong></div><div class="focus-meta"><span id="day-label">Day 1 of 7</span><div class="progress-track" aria-label="Path progress"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div></div></div>
     <section class="next-action" id="next-action" aria-live="polite">
       <div class="next-action-top"><span class="do-now">Do this now</span><span id="next-step-count">Step 1 of 4</span></div>
       <div class="next-action-icon" id="next-action-icon" aria-hidden="true">◉</div>
@@ -82,6 +78,7 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
       <button class="primary-action-button" id="next-action-button" type="button">SHOW ME MY FIRST STEP →</button>
       <small class="button-instruction">☝ Tap here. Finish this step. Then continue.</small>
     </section>
+    <div class="guided-steps" id="guided-steps" aria-label="Today's four steps"></div>
     <section class="day-complete" id="day-complete" hidden><h2>✓ You finished today’s path.</h2><p>One perspective. One honest answer. One grounded choice.</p></section>
     <section class="recommendation" id="today-recommendation" hidden><small>Because you finished today’s path</small><h2 id="recommendation-title">Your next useful step</h2><p id="recommendation-copy"></p><a class="primary-button recommendation-link" id="recommendation-link" href="#">See Why This Fits →</a></section>
   </section>
@@ -103,12 +100,12 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
   </section>
 </main>
 
-<nav class="bottom-nav" id="bottom-nav" aria-label="Mobile personal guide navigation" hidden><div class="bottom-nav-inner">
-  <button class="bottom-button active" data-view="today" type="button"><span aria-hidden="true">☀</span>Today</button>
-  <button class="bottom-button" data-view="path" type="button"><span aria-hidden="true">◫</span>My Path</button>
-  <button class="bottom-button" data-view="tools" type="button"><span aria-hidden="true">◇</span>My Tools</button>
-  <button class="bottom-button" data-view="ask" type="button"><span aria-hidden="true">?</span>Ask Sean</button>
-</div></nav>
+<footer class="app-footer" id="bottom-nav" aria-label="Guide pages" hidden><div class="bottom-nav-inner">
+  <button class="bottom-button active" data-view="today" type="button"><span aria-hidden="true">1</span>Today</button>
+  <button class="bottom-button" data-view="path" type="button"><span aria-hidden="true">2</span>My Path</button>
+  <button class="bottom-button" data-view="tools" type="button"><span aria-hidden="true">3</span>My Tools</button>
+  <button class="bottom-button" data-view="ask" type="button"><span aria-hidden="true">4</span>Ask Sean</button>
+</div></footer>
 
 <div class="modal-backdrop" id="item-modal" hidden>
   <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
