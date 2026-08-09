@@ -38,14 +38,14 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 <section class="main-optin" id="main-optin" aria-labelledby="main-optin-title">
 <h2 id="main-optin-title">Get My 3 Most Popular Mind Rewiring Tools And Audios</h2>
 <p class="send-label">Just tell me where to send you access:</p>
-<form class="optin-form" id="main-optin-form" method="post" action="https://www.aweber.com/scripts/addlead.pl" target="aweber-main-submit-frame">
+<form class="optin-form" id="main-optin-form" method="post" action="https://www.aweber.com/scripts/addlead.pl">
 <label class="optin-label" for="main-optin-name">First name</label>
 <input class="optin-input" id="main-optin-name" type="text" name="name" placeholder="FIRST NAME" autocomplete="given-name" required>
 <label class="optin-label" for="main-optin-email">Email address</label>
 <input class="optin-input" id="main-optin-email" type="email" name="email" placeholder="EMAIL ADDRESS" autocomplete="email" required>
 <input type="hidden" name="listname" value="awlist6946418">
-<input type="hidden" name="redirect" value="https://seanali.online/links.html?subscribed=1">
-<input type="hidden" name="meta_redirect_onlist" value="https://seanali.online/links.html?subscribed=1">
+<input type="hidden" name="redirect" value="https://seanali.online/app/?source=links">
+<input type="hidden" name="meta_redirect_onlist" value="https://seanali.online/app/?source=links">
 <input type="hidden" name="meta_tags" value="join-page,main-optin">
 <input type="hidden" name="meta_adtracking" value="Sean Ali Links Main Optin">
 <input type="hidden" name="meta_required" value="name,email">
@@ -81,29 +81,15 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 </div>
 </main>
 <footer class="site-footer"><strong>© 2026 Sean Ali.</strong> All rights reserved.</footer>
-<iframe name="aweber-main-submit-frame" title="AWeber signup submission" hidden></iframe>
 <script>
 (function(){
 const form=document.getElementById('main-optin-form');
-const profile=document.getElementById('profile');
-const optin=document.getElementById('main-optin');
-const giveaway=document.getElementById('giveaway');
-const faq=document.getElementById('faq');
-const selector=document.getElementById('path-selector');
 const submit=document.getElementById('main-optin-submit');
 form.addEventListener('submit',function(){
-  submit.textContent='Opening Your Paths…';
+  submit.textContent='Opening Your Tools…';
   submit.disabled=true;
-  setTimeout(function(){
-    profile.hidden=true;
-    optin.hidden=true;
-    giveaway.hidden=true;
-    faq.hidden=true;
-    selector.hidden=false;
-    selector.scrollIntoView({behavior:'smooth',block:'start'});
-  },180);
+  if(typeof window.fbq==='function')window.fbq('track','Lead');
 });
-document.querySelectorAll('.path-choice').forEach(function(button){button.addEventListener('click',function(){window.location.href=button.dataset.destination;});});
 })();
 </script>
 <script id="respondio__growth_tool" src="https://cdn.respond.io/widget/widget.js?wId=7f9488bf-e487-4928-9b01-6edb55b2ad22"></script>
