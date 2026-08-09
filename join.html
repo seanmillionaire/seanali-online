@@ -44,8 +44,8 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 <label class="optin-label" for="main-optin-email">Email address</label>
 <input class="optin-input" id="main-optin-email" type="email" name="email" placeholder="EMAIL ADDRESS" autocomplete="email" required>
 <input type="hidden" name="listname" value="awlist6946418">
-<input type="hidden" name="redirect" value="https://seanali.online/join.html?subscribed=1">
-<input type="hidden" name="meta_redirect_onlist" value="https://seanali.online/join.html?subscribed=1">
+<input type="hidden" name="redirect" value="https://seanali.online/app/">
+<input type="hidden" name="meta_redirect_onlist" value="https://seanali.online/app/">
 <input type="hidden" name="meta_tags" value="join-page,main-optin">
 <input type="hidden" name="meta_adtracking" value="Sean Ali Join Main Optin">
 <input type="hidden" name="meta_required" value="name,email">
@@ -64,46 +64,69 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 <section class="faq" id="faq" aria-labelledby="faq-title">
 <h2 id="faq-title">Quick Questions</h2>
 <div class="faq-list">
-<details><summary>What happens after I enter my details?</summary><p>We’ll send your access instructions and the 3 tools to the email address you enter.</p></details>
+<details><summary>What happens after I enter my details?</summary><p>Your personal path opens immediately, and we’ll send your access instructions and tools to the email address you enter.</p></details>
 <details><summary>Do I need meditation or manifestation experience?</summary><p>No. These are simple, guided tools designed so you can start using them right away.</p></details>
 <details><summary>How much time do I need?</summary><p>You can start with just a few minutes. One of the tools is a 60-second reset you can use almost anywhere.</p></details>
 <details><summary>What will you do with my email?</summary><p>We’ll use it to send your access and occasional updates from Sean. You can unsubscribe anytime.</p></details>
 </div>
 </section>
-<div class="path-selector" id="path-selector" hidden>
-<div class="path-guidance" role="status" aria-live="polite"><span class="path-kicker">Great job!</span><strong>You’ve got the 3 tools. Now choose what you want help changing first.</strong></div>
-<div class="section-label">Choose Your Next Step</div>
-<section class="links" aria-label="Sean Ali next steps">
-<button class="link-card featured path-choice" type="button" data-destination="https://seanali.online/flow"><span class="icon money" aria-hidden="true">💸</span><span class="link-copy"><strong>More Money</strong><span>Keep working on scarcity thinking, money patterns, and prosperity.</span></span><span class="arrow">›</span></button>
-<button class="link-card path-choice" type="button" data-destination="https://hypnoticmeditations.ai/"><span class="icon peace" aria-hidden="true">🧘</span><span class="link-copy"><strong>More Peace</strong><span>Use simple tools for calm, sleep, focus, and feeling better.</span></span><span class="arrow">›</span></button>
-<button class="link-card path-choice" type="button" data-destination="https://manifestationgenie.app"><span class="icon change" aria-hidden="true">✨</span><span class="link-copy"><strong>Change My Life</strong><span>Get personalized guidance for the bigger life change you want to make.</span></span><span class="arrow">›</span></button>
-</section>
-</div>
 </main>
 <footer class="site-footer"><strong>© 2026 Sean Ali.</strong> All rights reserved.</footer>
 <iframe name="aweber-main-submit-frame" title="AWeber signup submission" hidden></iframe>
 <script>
 (function(){
 const form=document.getElementById('main-optin-form');
-const profile=document.getElementById('profile');
-const optin=document.getElementById('main-optin');
-const giveaway=document.getElementById('giveaway');
-const faq=document.getElementById('faq');
-const selector=document.getElementById('path-selector');
 const submit=document.getElementById('main-optin-submit');
-form.addEventListener('submit',function(){
-  submit.textContent='Opening Your Paths…';
+const frame=document.querySelector('iframe[name="aweber-main-submit-frame"]');
+let continuing=false;
+
+async function hashEmail(email){
+  const normalized=email.trim().toLowerCase();
+  if(window.crypto&&window.crypto.subtle&&window.TextEncoder){
+    const bytes=await window.crypto.subtle.digest('SHA-256',new TextEncoder().encode(normalized));
+    return Array.from(new Uint8Array(bytes)).map(function(value){return value.toString(16).padStart(2,'0');}).join('');
+  }
+  let hash=2166136261;
+  for(let index=0;index<normalized.length;index+=1){hash^=normalized.charCodeAt(index);hash=Math.imul(hash,16777619);}
+  return 'local-'+(hash>>>0).toString(16);
+}
+
+function openGuide(){
+  if(continuing)return;
+  continuing=true;
+  window.location.assign('/app/');
+}
+
+form.addEventListener('submit',async function(event){
+  event.preventDefault();
+  if(!form.reportValidity())return;
+  submit.textContent='Building Your Personal Path…';
   submit.disabled=true;
-  setTimeout(function(){
-    profile.hidden=true;
-    optin.hidden=true;
-    giveaway.hidden=true;
-    faq.hidden=true;
-    selector.hidden=false;
-    selector.scrollIntoView({behavior:'smooth',block:'start'});
-  },180);
+
+  try{
+    const firstName=document.getElementById('main-optin-name').value.trim().split(/\s+/)[0]||'Friend';
+    const email=document.getElementById('main-optin-email').value;
+    const emailHash=await hashEmail(email);
+    const profileKey='seanGuide.profile.'+emailHash;
+    const profile={version:1,emailHash:emailHash,firstName:firstName,joinedAt:new Date().toISOString(),lastSeen:new Date().toISOString(),primaryPath:'',answers:{},pathStartDate:'',completedItems:[],savedTools:[],recommendationClicks:[]};
+    localStorage.setItem(profileKey,JSON.stringify(profile));
+    localStorage.setItem('seanGuide.activeProfileKey',profileKey);
+    localStorage.setItem('seanGuide.pendingOnboarding','1');
+    if(typeof window.fbq==='function')window.fbq('track','Lead',{content_name:'Sean Ali Personalized Guide'});
+  }catch(error){
+    console.warn('The personal path could not be saved before continuing.',error);
+  }
+
+  let frameLoaded=false;
+  const onFrameLoad=function(){
+    if(frameLoaded)return;
+    frameLoaded=true;
+    window.setTimeout(openGuide,180);
+  };
+  frame.addEventListener('load',onFrameLoad,{once:true});
+  HTMLFormElement.prototype.submit.call(form);
+  window.setTimeout(openGuide,4000);
 });
-document.querySelectorAll('.path-choice').forEach(function(button){button.addEventListener('click',function(){window.location.href=button.dataset.destination;});});
 })();
 </script>
 <script id="respondio__growth_tool" src="https://cdn.respond.io/widget/widget.js?wId=7f9488bf-e487-4928-9b01-6edb55b2ad22"></script>
