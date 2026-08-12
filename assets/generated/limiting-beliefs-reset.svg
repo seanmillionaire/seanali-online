@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
-  <title id="title">Five Step Limiting Belief Reset</title>
-  <desc id="desc">A simple five step process to spot a limiting belief, test it, choose a better belief, prove it with action, and repeat the proof.</desc>
+  <title id="title">Spot, Test, Prove Limiting Belief Reset</title>
+  <desc id="desc">A simple three step process to spot a limiting belief, test it, and prove a better belief with action for seven days.</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#fff7ef"/>
@@ -12,8 +12,8 @@
     </filter>
   </defs>
   <rect width="1400" height="760" rx="42" fill="url(#bg)"/>
-  <text x="700" y="88" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="54" font-weight="900" fill="#101010">The 5-Step Limiting Belief Reset</text>
-  <text x="700" y="136" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="700" fill="#525b66">Do not fight the thought. Test it. Replace it. Prove the new one.</text>
+  <text x="700" y="88" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="54" font-weight="900" fill="#101010">The Spot, Test, Prove Reset</text>
+  <text x="700" y="136" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="700" fill="#525b66">Break the belief in 7 days without lying to yourself.</text>
   <g filter="url(#shadow)">
     <rect x="72" y="232" width="235" height="292" rx="26" fill="#ffffff"/>
     <rect x="332" y="232" width="235" height="292" rx="26" fill="#ffffff"/>
@@ -42,16 +42,16 @@
 
     <circle cx="970" cy="295" r="30" fill="#df1722"/>
     <text x="970" y="306" text-anchor="middle" font-size="27" font-weight="900" fill="#ffffff">4</text>
-    <text x="970" y="365" text-anchor="middle" font-size="30" font-weight="900" fill="#101010">Prove It</text>
-    <text x="970" y="412" text-anchor="middle" font-size="21" font-weight="750" fill="#4d5662">What small action</text>
-    <text x="970" y="443" text-anchor="middle" font-size="21" font-weight="750" fill="#4d5662">can I finish today?</text>
+    <text x="970" y="365" text-anchor="middle" font-size="30" font-weight="900" fill="#101010">7 Days</text>
+    <text x="970" y="412" text-anchor="middle" font-size="21" font-weight="750" fill="#4d5662">Repeat one proof</text>
+    <text x="970" y="443" text-anchor="middle" font-size="21" font-weight="750" fill="#4d5662">each day.</text>
 
     <circle cx="1230" cy="295" r="30" fill="#ff8a18"/>
     <text x="1230" y="306" text-anchor="middle" font-size="27" font-weight="900" fill="#ffffff">5</text>
-    <text x="1230" y="365" text-anchor="middle" font-size="30" font-weight="900" fill="#101010">Repeat It</text>
-    <text x="1230" y="412" text-anchor="middle" font-size="21" font-weight="750" fill="#4d5662">Give the new belief</text>
-    <text x="1230" y="443" text-anchor="middle" font-size="21" font-weight="750" fill="#4d5662">more evidence.</text>
+    <text x="1230" y="365" text-anchor="middle" font-size="30" font-weight="900" fill="#101010">No Fake</text>
+    <text x="1230" y="412" text-anchor="middle" font-size="21" font-weight="750" fill="#4d5662">Do not force</text>
+    <text x="1230" y="443" text-anchor="middle" font-size="21" font-weight="750" fill="#4d5662">a lie.</text>
   </g>
   <rect x="278" y="612" width="844" height="74" rx="37" fill="#101010"/>
-  <text x="700" y="659" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="850" fill="#ffffff">A belief changes faster when your behavior gives it proof.</text>
+  <text x="700" y="659" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="850" fill="#ffffff">Spot it. Test it. Prove it for seven days.</text>
 </svg>
