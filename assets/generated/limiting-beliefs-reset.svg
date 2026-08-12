@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
+  <title id="title">Five Step Limiting Belief Reset</title>
+  <desc id="desc">A simple five step process to spot a limiting belief, test it, choose a better belief, prove it with action, and repeat the proof.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff7ef"/>
+      <stop offset="0.55" stop-color="#eef5ff"/>
+      <stop offset="1" stop-color="#ffffff"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#101010" flood-opacity="0.14"/>
+    </filter>
+  </defs>
+  <rect width="1400" height="760" rx="42" fill="url(#bg)"/>
+  <text x="700" y="88" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="54" font-weight="900" fill="#101010">The 5-Step Limiting Belief Reset</text>
+  <text x="700" y="136" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="700" fill="#525b66">Do not fight the thought. Test it. Replace it. Prove the new one.</text>
+  <g filter="url(#shadow)">
+    <rect x="72" y="232" width="235" height="292" rx="26" fill="#ffffff"/>
+    <rect x="332" y="232" width="235" height="292" rx="26" fill="#ffffff"/>
+    <rect x="592" y="232" width="235" height="292" rx="26" fill="#ffffff"/>
+    <rect x="852" y="232" width="235" height="292" rx="26" fill="#ffffff"/>
+    <rect x="1112" y="232" width="235" height="292" rx="26" fill="#ffffff"/>
+  </g>
+  <g font-family="Inter, Arial, sans-serif">
+    <circle cx="190" cy="295" r="30" fill="#ff542e"/>
+    <text x="190" y="306" text-anchor="middle" font-size="27" font-weight="900" fill="#ffffff">1</text>
+    <text x="190" y="365" text-anchor="middle" font-size="30" font-weight="900" fill="#101010">Spot It</text>
+    <text x="190" y="412" text-anchor="middle" font-size="21" font-weight="750" fill="#4d5662">What sentence</text>
+    <text x="190" y="443" text-anchor="middle" font-size="21" font-weight="750" fill="#4d5662">keeps stopping me?</text>
+
+    <circle cx="450" cy="295" r="30" fill="#1f62ff"/>
+    <text x="450" y="306" text-anchor="middle" font-size="27" font-weight="900" fill="#ffffff">2</text>
+    <text x="450" y="365" text-anchor="middle" font-size="30" font-weight="900" fill="#101010">Test It</text>
+    <text x="450" y="412" text-anchor="middle" font-size="21" font-weight="750" fill="#4d5662">Is this fact, fear,</text>
+    <text x="450" y="443" text-anchor="middle" font-size="21" font-weight="750" fill="#4d5662">or old proof?</text>
+
+    <circle cx="710" cy="295" r="30" fill="#0f9f6e"/>
+    <text x="710" y="306" text-anchor="middle" font-size="27" font-weight="900" fill="#ffffff">3</text>
+    <text x="710" y="365" text-anchor="middle" font-size="30" font-weight="900" fill="#101010">Replace It</text>
+    <text x="710" y="412" text-anchor="middle" font-size="21" font-weight="750" fill="#4d5662">What belief is</text>
+    <text x="710" y="443" text-anchor="middle" font-size="21" font-weight="750" fill="#4d5662">true and useful?</text>
+
+    <circle cx="970" cy="295" r="30" fill="#df1722"/>
+    <text x="970" y="306" text-anchor="middle" font-size="27" font-weight="900" fill="#ffffff">4</text>
+    <text x="970" y="365" text-anchor="middle" font-size="30" font-weight="900" fill="#101010">Prove It</text>
+    <text x="970" y="412" text-anchor="middle" font-size="21" font-weight="750" fill="#4d5662">What small action</text>
+    <text x="970" y="443" text-anchor="middle" font-size="21" font-weight="750" fill="#4d5662">can I finish today?</text>
+
+    <circle cx="1230" cy="295" r="30" fill="#ff8a18"/>
+    <text x="1230" y="306" text-anchor="middle" font-size="27" font-weight="900" fill="#ffffff">5</text>
+    <text x="1230" y="365" text-anchor="middle" font-size="30" font-weight="900" fill="#101010">Repeat It</text>
+    <text x="1230" y="412" text-anchor="middle" font-size="21" font-weight="750" fill="#4d5662">Give the new belief</text>
+    <text x="1230" y="443" text-anchor="middle" font-size="21" font-weight="750" fill="#4d5662">more evidence.</text>
+  </g>
+  <rect x="278" y="612" width="844" height="74" rx="37" fill="#101010"/>
+  <text x="700" y="659" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="850" fill="#ffffff">A belief changes faster when your behavior gives it proof.</text>
+</svg>

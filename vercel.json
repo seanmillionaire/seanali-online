@@ -54,6 +54,16 @@
       "source": "/blog/online-business/5-things-panama-taught-me-about-using-ai-to-see-your-business-from-above/",
       "destination": "/blog/online-business/panama-ai-business-lessons",
       "permanent": true
+    },
+    {
+      "source": "/blog/mind-shifts/invisible-rules-running-your-life",
+      "destination": "/blog/mind-shifts/how-to-break-limiting-beliefs",
+      "permanent": true
+    },
+    {
+      "source": "/blog/mind-shifts/invisible-rules-running-your-life/",
+      "destination": "/blog/mind-shifts/how-to-break-limiting-beliefs",
+      "permanent": true
     }
   ],
   "rewrites": [
