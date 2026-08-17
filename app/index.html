@@ -20,6 +20,7 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;background:radial-gradient(circle at 20% 0%,rgba(225,29,36,.10),transparent 35%),var(--cream);color:var(--ink);font-family:Inter,Arial,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:inherit}
+.bookmark-bar{padding:13px 16px;background:var(--red);color:#fff;text-align:center;font-size:15px;line-height:1.25;font-weight:900;letter-spacing:.01em;box-shadow:0 4px 16px rgba(120,0,0,.18)}
 .page{width:min(760px,100%);margin:0 auto;padding:18px 14px 34px}
 .card{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:0 20px 50px rgba(0,0,0,.10);padding:36px 32px 30px}
 .hero{text-align:center}
@@ -37,10 +38,11 @@ h1{max-width:660px;margin:0 auto 14px;font-size:50px;line-height:1;letter-spacin
 .arrow{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--red);color:#fff;font-size:23px;font-weight:900}
 .note{margin:22px auto 0;max-width:600px;color:#6c655e;font-size:14px;line-height:1.5;text-align:center;font-weight:650}
 .footer{margin:18px auto 0;max-width:590px;color:#7a736a;font-size:12px;line-height:1.5;text-align:center}
-@media(max-width:520px){.page{padding:10px 10px 24px}.card{padding:26px 16px 22px;border-radius:18px}.kicker{font-size:14px}h1{font-size:40px;line-height:1.02}.subhead{font-size:18px}.divider{margin:24px 0 20px}.paths-title{font-size:23px}.path-card{grid-template-columns:48px 1fr 34px;gap:11px;padding:15px}.icon{width:48px;height:48px;border-radius:14px;font-size:25px}.path-copy strong{font-size:18px}.path-copy span{font-size:15px}.arrow{width:34px;height:34px;font-size:20px}.note{font-size:13px}}
+@media(max-width:520px){.bookmark-bar{padding:11px 12px;font-size:13px}.page{padding:10px 10px 24px}.card{padding:26px 16px 22px;border-radius:18px}.kicker{font-size:14px}h1{font-size:40px;line-height:1.02}.subhead{font-size:18px}.divider{margin:24px 0 20px}.paths-title{font-size:23px}.path-card{grid-template-columns:48px 1fr 34px;gap:11px;padding:15px}.icon{width:48px;height:48px;border-radius:14px;font-size:25px}.path-copy strong{font-size:18px}.path-copy span{font-size:15px}.arrow{width:34px;height:34px;font-size:20px}.note{font-size:13px}}
 </style>
 </head>
 <body>
+<aside class="bookmark-bar" aria-label="Bookmark reminder">🔖 Bookmark This Page Now And Save It</aside>
 <main class="page">
 <section class="card">
 <div class="hero">
