@@ -64,6 +64,26 @@
       "source": "/blog/mind-shifts/invisible-rules-running-your-life/",
       "destination": "/blog/mind-shifts/how-to-break-limiting-beliefs",
       "permanent": true
+    },
+    {
+      "source": "/blog/manifestation/7-lessons-i-learned-in-hawaii-about-why-manifestation-is-not-working",
+      "destination": "/blog/manifestation/why-manifestation-is-not-working",
+      "permanent": true
+    },
+    {
+      "source": "/blog/manifestation/7-lessons-i-learned-in-hawaii-about-why-manifestation-is-not-working/",
+      "destination": "/blog/manifestation/why-manifestation-is-not-working",
+      "permanent": true
+    },
+    {
+      "source": "/why-your-manifestation-is-not-working",
+      "destination": "/blog/manifestation/why-manifestation-is-not-working",
+      "permanent": true
+    },
+    {
+      "source": "/why-your-manifestation-is-not-working.html",
+      "destination": "/blog/manifestation/why-manifestation-is-not-working",
+      "permanent": true
     }
   ],
   "rewrites": [
