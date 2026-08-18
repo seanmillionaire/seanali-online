@@ -50,12 +50,37 @@
 .law-graph{margin:38px 0;padding:28px;border-radius:24px;background:linear-gradient(135deg,#101010,#24211e);color:#fff;box-shadow:0 18px 44px rgba(0,0,0,.12)}.law-graph h2{margin-top:0;color:#fff}.graph-flow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}.graph-step{position:relative;min-height:150px;padding:18px;border:1px solid rgba(255,255,255,.16);border-radius:18px;background:rgba(255,255,255,.08)}.graph-step:after{content:"";position:absolute;right:-18px;top:50%;width:24px;height:3px;background:linear-gradient(90deg,var(--orange),#ffd36a);transform:translateY(-50%)}.graph-step:last-child:after{display:none}.graph-num{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;margin-bottom:12px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--orange2));font-size:14px;font-weight:900}.graph-step strong{display:block;margin-bottom:8px;font-size:18px}.graph-step span{display:block;color:#e8e8e8;font-size:14px;line-height:1.45;font-weight:700}.graph-caption{margin:0;color:#dcdcdc;font-size:14px;line-height:1.5;font-weight:750}
 @media(max-width:850px){.graph-flow{grid-template-columns:1fr}.graph-step{min-height:auto}.graph-step:after{left:28px;right:auto;top:auto;bottom:-14px;width:3px;height:22px;transform:none}.law-graph{padding:22px}}
 @media(max-width:520px){.wrap{width:100%;padding:0 22px}.nav{min-height:74px}.brand{font-size:28px}.hero{padding:46px 0 28px}.hero h1,.subhead,.byline,.kicker,.hero-photo,.photo{width:300px;max-width:300px;margin-left:auto;margin-right:auto}.hero h1{font-size:30px;line-height:1.07;overflow-wrap:break-word}.subhead{font-size:14px;line-height:1.48}.byline{font-size:12px}.button{width:300px;max-width:300px;font-size:13px;padding-left:10px;padding-right:10px}.hero-photo,.photo{border-radius:18px}.hero-photo figcaption,.photo figcaption{font-size:12px;overflow-wrap:break-word}.content{max-width:300px}.content h2{font-size:30px}.content h3{font-size:22px}.sources,.social,.related,.checklist,.cta-box,.note{padding:20px}}
+
+/* ---- Site-wide hamburger menu (Sean Ali) ---- */
+.sa-burger{display:none;flex-direction:column;justify-content:center;gap:5px;width:46px;height:46px;padding:0;border:2px solid #111;border-radius:9px;background:#fff;cursor:pointer;position:relative;z-index:60;flex-shrink:0}
+.sa-burger-bar{display:block;width:20px;height:2px;margin:0 auto;background:#111;border-radius:2px;transition:transform .25s ease,opacity .2s ease}
+.sa-burger[aria-expanded="true"] .sa-burger-bar:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.sa-burger[aria-expanded="true"] .sa-burger-bar:nth-child(2){opacity:0}
+.sa-burger[aria-expanded="true"] .sa-burger-bar:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.sa-menu{position:fixed;inset:0;z-index:70;background:rgba(9,9,9,.55);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .25s ease;overflow-y:auto}
+.sa-menu.open{opacity:1;pointer-events:auto}
+.sa-menu-inner{max-width:560px;width:min(92%,560px);margin:0 auto;padding:0 0 60px;background:#fff;min-height:100%;box-shadow:0 30px 70px rgba(0,0,0,.35);transform:translateY(-18px);transition:transform .28s cubic-bezier(.23,1,.32,1)}
+.sa-menu.open .sa-menu-inner{transform:none}
+.sa-menu-head{position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 24px;border-bottom:1px solid #eaeaea;background:rgba(255,255,255,.97);backdrop-filter:blur(8px)}
+.sa-menu-head-label{font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#595959}
+.sa-menu-close{width:40px;height:40px;border:2px solid #111;border-radius:9px;background:#fff;color:#111;font-size:16px;font-weight:900;cursor:pointer}
+.sa-menu-body{padding:10px 24px 0}
+.sa-menu-group{padding:18px 0 2px}
+.sa-menu-heading{display:block;margin:0 0 8px;font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#e11d24}
+.sa-menu-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px 6px;border-bottom:1px solid #f0eeea;font-size:17px;font-weight:800;color:#151515;text-decoration:none;transition:padding .15s ease,color .15s ease}
+.sa-menu-item:hover{padding-left:14px;color:#e11d24}
+.sa-menu-item:after{content:"\2192";color:#d7d7d7;font-size:15px}
+.sa-menu-cta{display:block;margin:22px 6px 0;padding:18px;text-align:center;border-radius:9px;background:linear-gradient(135deg,#ff542e,#ff7a1a);color:#fff;font-size:16px;font-weight:900;text-transform:uppercase;text-decoration:none;box-shadow:0 10px 24px rgba(255,84,46,.28)}
+body.sa-menu-open{overflow:hidden}
+@media(min-width:941px){.sa-burger{display:inline-flex}.nav-links,.navlinks{gap:16px}.nav-links a,.navlinks a{font-size:12px}}
+@media(max-width:940px){.sa-burger{display:inline-flex}.nav-links a:not(.nav-cta):not(.nav-links-keep):nth-child(1){display:none}.nav-links a:not(.nav-cta):not(.nav-links-keep):nth-child(2){display:none}.nav-links a:not(.nav-cta):not(.nav-links-keep):nth-child(3){display:none}.nav-links a:not(.nav-cta):not(.nav-links-keep):nth-child(4){display:none}.nav-links a:not(.nav-cta):not(.nav-links-keep):nth-child(5){display:none}.nav-links a:not(.nav-cta):not(.nav-links-keep):nth-child(6){display:none}}
+@media(max-width:560px){.sa-menu-item{font-size:16px}}
 </style>
 </head>
 <body>
 <nav class="topbar">
   <div class="wrap nav">
-    <a class="brand" href="/">SEAN <span>ALI</span></a>
+    <a class="brand" href="/">SEAN <span>ALI</span></a><button type="button" class="sa-burger" id="saBurger" aria-label="Open menu" aria-expanded="false" aria-controls="saMenu"><span class="sa-burger-bar"></span><span class="sa-burger-bar"></span><span class="sa-burger-bar"></span></button>
     <div class="navlinks">
       <a href="/start-here/">Start Here</a>
       <a href="/blog/">Lessons Learned</a>
@@ -65,6 +90,13 @@
     </div>
   </div>
 </nav>
+<!-- Hamburger menu drawer (site-wide) -->
+<div class="sa-menu" id="saMenu" aria-hidden="true">
+  <div class="sa-menu-inner">
+    <div class="sa-menu-head"><span class="sa-menu-head-label">Explore the site</span><button type="button" class="sa-menu-close" id="saMenuClose" aria-label="Close menu">✕</button></div>
+    <div class="sa-menu-body"><div class="sa-menu-group"><span class="sa-menu-heading">GET STARTED</span><a class="sa-menu-item" href="/start-here/">Start Here</a><a class="sa-menu-item" href="/blog/">Lessons Learned</a><a class="sa-menu-item" href="/resources/">Resources</a></div><div class="sa-menu-group"><span class="sa-menu-heading">BUILD & EARN</span><a class="sa-menu-item" href="/system.html">AI Freedom System</a><a class="sa-menu-item" href="/products/">Products</a><a class="sa-menu-item" href="/work-with-me/">Work With Me</a></div><div class="sa-menu-group"><span class="sa-menu-heading">SEAN ALI</span><a class="sa-menu-item" href="/story.html">My Story</a><a class="sa-menu-item" href="/about-sean-ali/">About Sean</a><a class="sa-menu-item" href="https://www.youtube.com/@RealSeanAli">YouTube</a><a class="sa-menu-item" href="https://panamauntold.com">Panama Untold</a></div><div class="sa-menu-group"><span class="sa-menu-heading">FREE TOOLS</span><a class="sa-menu-item" href="/prompts.html">Claude27 Prompt Guide</a><a class="sa-menu-item" href="https://hypnoticmeditations.ai">Hypnotic Meditations</a><a class="sa-menu-item" href="/games/">Education Games</a></div><a class="sa-menu-cta" href="/join.html">Join Now</a></div>
+  </div>
+</div>
 <header class="hero">
   <div class="wrap">
     <span class="kicker">Universal Laws</span>
@@ -247,5 +279,21 @@
     <a href="/blog/">Back to Lessons Learned -></a>
   </div>
 </footer>
+
+<script>
+(function(){
+  var burger=document.getElementById("saBurger");
+  var menu=document.getElementById("saMenu");
+  var close=document.getElementById("saMenuClose");
+  if(!burger||!menu)return;
+  function openMenu(){menu.classList.add("open");menu.setAttribute("aria-hidden","false");burger.setAttribute("aria-expanded","true");document.body.classList.add("sa-menu-open");}
+  function closeMenu(){menu.classList.remove("open");menu.setAttribute("aria-hidden","true");burger.setAttribute("aria-expanded","false");document.body.classList.remove("sa-menu-open");}
+  burger.addEventListener("click",function(e){e.stopPropagation();menu.classList.contains("open")?closeMenu():openMenu();});
+  close.addEventListener("click",closeMenu);
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&menu.classList.contains("open"))closeMenu();});
+  document.addEventListener("click",function(e){if(menu.classList.contains("open")&&!menu.contains(e.target)&&e.target!==burger)closeMenu();});
+  menu.addEventListener("click",function(e){if(e.target.classList&&e.target.classList.contains("sa-menu-item")||e.target.classList&&e.target.classList.contains("sa-menu-cta"))setTimeout(closeMenu,150);});
+})();
+</script>
 </body>
 </html>

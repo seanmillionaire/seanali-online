@@ -84,12 +84,37 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 @media(prefers-reduced-motion:no-preference){.welcome-inner>*{animation:proof-fire-in .65s cubic-bezier(.23,1,.32,1) both}.welcome-avatar{animation-delay:.04s}.welcome-label{animation-delay:.1s}.welcome-hero h1{animation-delay:.16s}.welcome-hero p{animation-delay:.22s}.welcome-actions{animation-delay:.28s}.hero-trust{animation-delay:.34s}.hero-content>*{animation:proof-fire-in .65s cubic-bezier(.23,1,.32,1) both}.hero-content .kicker{animation-delay:.08s}.hero-content h2{animation-delay:.15s}.hero-copy{animation-delay:.22s}.hero-content .button{animation-delay:.29s}.privacy{animation-delay:.35s}.guide-proof{animation-delay:.42s}@keyframes proof-fire-in{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}}
 @media(max-width:940px){.hero{min-height:670px;background-position:center center;background-size:auto 620px}.hero-content{width:min(620px,62%);padding:60px 0}.welcome-hero h1{font-size:clamp(3.2rem,7.2vw,4.65rem)}}
 @media(max-width:700px){.welcome-hero{padding:56px 0 34px}.welcome-inner{padding:0 3px}.welcome-inner>.welcome-avatar{width:82px;height:82px;margin-bottom:18px}.welcome-label{margin-bottom:15px;font-size:10px;letter-spacing:.13em}.welcome-label:before,.welcome-label:after{width:18px}.welcome-hero h1{max-width:520px;font-size:clamp(2.9rem,12.3vw,4.3rem);line-height:.9;letter-spacing:-.065em}.welcome-hero p{max-width:500px;margin-bottom:19px;font-size:1.1rem;line-height:1.38}.welcome-actions .button{min-height:62px;margin:0;padding:19px 24px;font-size:15px}.hero-trust{display:grid;grid-template-columns:1fr 1fr;margin-top:28px}.hero-trust-item{padding:14px 12px;border-left:0;border-top:1px solid rgba(88,38,13,.17);text-align:center}.hero-trust-item:nth-child(-n+2){border-top:0}.hero-trust-item:nth-child(even){border-left:1px solid rgba(88,38,13,.17)}.hero-trust-item:last-child{grid-column:1/-1;border-top:1px solid rgba(88,38,13,.17)}.hero-trust-item b{font-size:1.3rem}.hero-trust-item span{font-size:10px}.hero{min-height:0;background:#080808}.hero-content{width:100%;padding:47px 0 27px;text-align:center}.hero-content:before{left:50%;right:auto;top:15px;width:236px;height:236px;transform:translateX(-50%)}.kicker{margin-bottom:16px;font-size:11px}.hero h2{max-width:575px;margin:0 auto 18px;font-size:clamp(2.78rem,12.4vw,4.4rem);line-height:.88}.hero-copy{max-width:510px;margin:0 auto 24px;font-size:1.13rem;line-height:1.4}.hero .button{width:100%;min-height:64px;margin:0;padding:20px 18px;font-size:14px}.privacy{font-size:12px}.guide-proof{justify-content:center;margin-top:20px}.guide-proof span{font-size:10px}.hero:after{height:350px;background-position:50% 34%}}
+
+/* ---- Site-wide hamburger menu (Sean Ali) ---- */
+.sa-burger{display:none;flex-direction:column;justify-content:center;gap:5px;width:46px;height:46px;padding:0;border:2px solid #111;border-radius:9px;background:#fff;cursor:pointer;position:relative;z-index:60;flex-shrink:0}
+.sa-burger-bar{display:block;width:20px;height:2px;margin:0 auto;background:#111;border-radius:2px;transition:transform .25s ease,opacity .2s ease}
+.sa-burger[aria-expanded="true"] .sa-burger-bar:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.sa-burger[aria-expanded="true"] .sa-burger-bar:nth-child(2){opacity:0}
+.sa-burger[aria-expanded="true"] .sa-burger-bar:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.sa-menu{position:fixed;inset:0;z-index:70;background:rgba(9,9,9,.55);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .25s ease;overflow-y:auto}
+.sa-menu.open{opacity:1;pointer-events:auto}
+.sa-menu-inner{max-width:560px;width:min(92%,560px);margin:0 auto;padding:0 0 60px;background:#fff;min-height:100%;box-shadow:0 30px 70px rgba(0,0,0,.35);transform:translateY(-18px);transition:transform .28s cubic-bezier(.23,1,.32,1)}
+.sa-menu.open .sa-menu-inner{transform:none}
+.sa-menu-head{position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 24px;border-bottom:1px solid #eaeaea;background:rgba(255,255,255,.97);backdrop-filter:blur(8px)}
+.sa-menu-head-label{font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#595959}
+.sa-menu-close{width:40px;height:40px;border:2px solid #111;border-radius:9px;background:#fff;color:#111;font-size:16px;font-weight:900;cursor:pointer}
+.sa-menu-body{padding:10px 24px 0}
+.sa-menu-group{padding:18px 0 2px}
+.sa-menu-heading{display:block;margin:0 0 8px;font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#e11d24}
+.sa-menu-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px 6px;border-bottom:1px solid #f0eeea;font-size:17px;font-weight:800;color:#151515;text-decoration:none;transition:padding .15s ease,color .15s ease}
+.sa-menu-item:hover{padding-left:14px;color:#e11d24}
+.sa-menu-item:after{content:"\2192";color:#d7d7d7;font-size:15px}
+.sa-menu-cta{display:block;margin:22px 6px 0;padding:18px;text-align:center;border-radius:9px;background:linear-gradient(135deg,#ff542e,#ff7a1a);color:#fff;font-size:16px;font-weight:900;text-transform:uppercase;text-decoration:none;box-shadow:0 10px 24px rgba(255,84,46,.28)}
+body.sa-menu-open{overflow:hidden}
+@media(min-width:941px){.sa-burger{display:inline-flex}.nav-links,.navlinks{gap:16px}.nav-links a,.navlinks a{font-size:12px}}
+@media(max-width:940px){.sa-burger{display:inline-flex}.nav-links a:not(.nav-cta):not(.nav-links-keep):nth-child(1){display:none}.nav-links a:not(.nav-cta):not(.nav-links-keep):nth-child(2){display:none}.nav-links a:not(.nav-cta):not(.nav-links-keep):nth-child(3){display:none}.nav-links a:not(.nav-cta):not(.nav-links-keep):nth-child(4){display:none}.nav-links a:not(.nav-cta):not(.nav-links-keep):nth-child(5){display:none}.nav-links a:not(.nav-cta):not(.nav-links-keep):nth-child(6){display:none}}
+@media(max-width:560px){.sa-menu-item{font-size:16px}}
 </style>
 </head>
 <body>
 <nav class="topbar" aria-label="Main navigation">
   <div class="wrap nav">
-    <a class="brand" href="#top">SEAN <span>ALI</span></a>
+    <a class="brand" href="#top">SEAN <span>ALI</span></a><button type="button" class="sa-burger" id="saBurger" aria-label="Open menu" aria-expanded="false" aria-controls="saMenu"><span class="sa-burger-bar"></span><span class="sa-burger-bar"></span><span class="sa-burger-bar"></span></button>
     <div class="nav-links">
       <a href="story.html">Story</a>
       <a href="#watch">YouTube</a>
@@ -100,6 +125,13 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
     </div>
   </div>
 </nav>
+<!-- Hamburger menu drawer (site-wide) -->
+<div class="sa-menu" id="saMenu" aria-hidden="true">
+  <div class="sa-menu-inner">
+    <div class="sa-menu-head"><span class="sa-menu-head-label">Explore the site</span><button type="button" class="sa-menu-close" id="saMenuClose" aria-label="Close menu">✕</button></div>
+    <div class="sa-menu-body"><div class="sa-menu-group"><span class="sa-menu-heading">GET STARTED</span><a class="sa-menu-item" href="/start-here/">Start Here</a><a class="sa-menu-item" href="/blog/">Lessons Learned</a><a class="sa-menu-item" href="/resources/">Resources</a></div><div class="sa-menu-group"><span class="sa-menu-heading">BUILD & EARN</span><a class="sa-menu-item" href="/system.html">AI Freedom System</a><a class="sa-menu-item" href="/products/">Products</a><a class="sa-menu-item" href="/work-with-me/">Work With Me</a></div><div class="sa-menu-group"><span class="sa-menu-heading">SEAN ALI</span><a class="sa-menu-item" href="/story.html">My Story</a><a class="sa-menu-item" href="/about-sean-ali/">About Sean</a><a class="sa-menu-item" href="https://www.youtube.com/@RealSeanAli">YouTube</a><a class="sa-menu-item" href="https://panamauntold.com">Panama Untold</a></div><div class="sa-menu-group"><span class="sa-menu-heading">FREE TOOLS</span><a class="sa-menu-item" href="/prompts.html">Claude27 Prompt Guide</a><a class="sa-menu-item" href="https://hypnoticmeditations.ai">Hypnotic Meditations</a><a class="sa-menu-item" href="/games/">Education Games</a></div><a class="sa-menu-cta" href="/join.html">Join Now</a></div>
+  </div>
+</div>
 <header class="welcome-hero" id="top">
   <div class="wrap">
     <div class="welcome-inner">
@@ -152,5 +184,21 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 <section class="meditation-section" aria-label="Hypnotic Meditations"><div class="wrap meditation-card"><div class="meditation-copy"><span class="eyebrow">Hypnotic Meditations</span><h2>Reprogram Your Mind For <span>Abundance.</span></h2><p>Guided subconscious audios designed to calm old money patterns, install a stronger identity, and help your nervous system feel safer receiving more.</p><a class="button black" href="https://hypnoticmeditations.ai/" target="_blank" rel="noopener">Listen To Hypnotic Meditations</a></div><div class="video-box"><iframe src="https://www.youtube.com/embed/xnwA0okLepE?start=2" title="Sean Ali explains Hypnotic Meditations" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div></div></section>
 <footer class="authority-footer"><div class="authority-inner"><div class="footer-link-grid" aria-label="Footer paths"><nav class="footer-col" aria-label="Main pages"><h3>Main</h3><a href="/">Home</a><a href="/blog/">Lessons Learned Blog</a><a href="story.html">Story</a><a href="feed.html">Articles</a><a href="/work-with-me/">Work With Me</a></nav><nav class="footer-col" aria-label="AI Freedom pages"><h3>AI Freedom</h3><a href="prompts.html">Claude27 Guide</a><a href="system.html">AI Freedom System</a><a href="quit-your-9-to-5-with-ai.html">Quit 9-5 With AI</a></nav><nav class="footer-col" aria-label="Money identity pages"><h3>Money Identity</h3><a href="what-are-money-blocks.html">Money Blocks</a><a href="how-to-reprogram-your-subconscious-mind.html">Reprogram Mind</a><a href="/flow">Money Block Video</a></nav><nav class="footer-col" aria-label="Games pages"><h3>Games</h3><a href="/games/">Education Games</a><a href="/games/isla-aventura/">Isla Aventura</a><a href="/games/math-race/">Math Race</a><a href="/games/money/">Money Tips</a></nav><nav class="footer-col" aria-label="Hypnotic Meditations paths"><h3>Audio</h3><a href="https://hypnoticmeditations.ai/" target="_blank" rel="noopener">Hypnotic Meditations</a><a href="https://hypnoticmeditations.ai/store.html" target="_blank" rel="noopener">Store</a><a href="https://hypnoticmeditations.ai/free.html" target="_blank" rel="noopener">Free Sessions</a></nav><nav class="footer-col" aria-label="Sean Ali social paths"><h3>Social</h3><a href="https://www.youtube.com/@RealSeanAli" target="_blank" rel="noopener">YouTube</a><a href="https://www.instagram.com/seanaliofficial" target="_blank" rel="noopener">Instagram</a><a href="https://www.tiktok.com/@hypnoticmeditations" target="_blank" rel="noopener">TikTok</a></nav><nav class="footer-col" aria-label="Other brands"><h3>Brands</h3><a href="https://panamauntold.com" target="_blank" rel="noopener">Panama Untold</a><a href="https://manifestationgenie.app" target="_blank" rel="noopener">Manifestation Genie</a><a href="https://hypnoticmeditations.ai/about.html" target="_blank" rel="noopener">About Sean</a></nav></div><div class="authority-bottom"><div>&copy; 2026 Sean Ali. AI. Business. Identity. Freedom.</div><div class="authority-bottom-links"><a href="/blog/">Lessons Learned Blog</a><a href="/work-with-me/">Work With Me</a><a href="prompts.html">Claude27</a><a href="system.html">AI Freedom</a><a href="https://hypnoticmeditations.ai/" target="_blank" rel="noopener">Hypnotic Meditations</a></div></div></div></footer>
 <script id="respondio__growth_tool" src="https://cdn.respond.io/widget/widget.js?wId=7f9488bf-e487-4928-9b01-6edb55b2ad22"></script>
+
+<script>
+(function(){
+  var burger=document.getElementById("saBurger");
+  var menu=document.getElementById("saMenu");
+  var close=document.getElementById("saMenuClose");
+  if(!burger||!menu)return;
+  function openMenu(){menu.classList.add("open");menu.setAttribute("aria-hidden","false");burger.setAttribute("aria-expanded","true");document.body.classList.add("sa-menu-open");}
+  function closeMenu(){menu.classList.remove("open");menu.setAttribute("aria-hidden","true");burger.setAttribute("aria-expanded","false");document.body.classList.remove("sa-menu-open");}
+  burger.addEventListener("click",function(e){e.stopPropagation();menu.classList.contains("open")?closeMenu():openMenu();});
+  close.addEventListener("click",closeMenu);
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&menu.classList.contains("open"))closeMenu();});
+  document.addEventListener("click",function(e){if(menu.classList.contains("open")&&!menu.contains(e.target)&&e.target!==burger)closeMenu();});
+  menu.addEventListener("click",function(e){if(e.target.classList&&e.target.classList.contains("sa-menu-item")||e.target.classList&&e.target.classList.contains("sa-menu-cta"))setTimeout(closeMenu,150);});
+})();
+</script>
 </body>
 </html>

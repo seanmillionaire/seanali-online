@@ -299,7 +299,7 @@ footer strong{color:var(--orange)}
   <a class="social-logo" href="/" aria-label="Sean Ali home">
     <span class="social-logo-mark">SA</span>
     <span>Sean Ali</span>
-  </a>
+  </a><button type="button" class="sa-burger" id="saBurger" aria-label="Open menu" aria-expanded="false" aria-controls="saMenu"><span class="sa-burger-bar"></span><span class="sa-burger-bar"></span><span class="sa-burger-bar"></span></button>
   <label class="social-search" aria-label="Search the blog">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.75 4a6.75 6.75 0 0 1 5.33 10.89l3.52 3.51-1.2 1.2-3.51-3.52A6.75 6.75 0 1 1 10.75 4Zm0 1.7a5.05 5.05 0 1 0 0 10.1 5.05 5.05 0 0 0 0-10.1Z"/></svg>
     <input data-feed-search type="search" placeholder="Search AI income, money blocks, reset...">
@@ -307,6 +307,13 @@ footer strong{color:var(--orange)}
   <nav class="social-nav"><a class="social-nav-link" href="/">🏠 Home</a><a class="social-nav-link" href="/prompts.html">🚀 Start Here</a><a class="social-nav-link active" href="/quit-your-9-to-5-with-ai.html">⚙️ Success Systems</a><a class="social-nav-link" href="/story.html">👤 Story</a><a class="social-nav-link" href="https://panamauntold.com">🌴 Panama</a></nav>
   <a class="social-primary" href="/prompts.html">🤖 Claude27 prompts</a>
 </header>
+<!-- Hamburger menu drawer (site-wide) -->
+<div class="sa-menu" id="saMenu" aria-hidden="true">
+  <div class="sa-menu-inner">
+    <div class="sa-menu-head"><span class="sa-menu-head-label">Explore the site</span><button type="button" class="sa-menu-close" id="saMenuClose" aria-label="Close menu">✕</button></div>
+    <div class="sa-menu-body"><div class="sa-menu-group"><span class="sa-menu-heading">GET STARTED</span><a class="sa-menu-item" href="/start-here/">Start Here</a><a class="sa-menu-item" href="/blog/">Lessons Learned</a><a class="sa-menu-item" href="/resources/">Resources</a></div><div class="sa-menu-group"><span class="sa-menu-heading">BUILD & EARN</span><a class="sa-menu-item" href="/system.html">AI Freedom System</a><a class="sa-menu-item" href="/products/">Products</a><a class="sa-menu-item" href="/work-with-me/">Work With Me</a></div><div class="sa-menu-group"><span class="sa-menu-heading">SEAN ALI</span><a class="sa-menu-item" href="/story.html">My Story</a><a class="sa-menu-item" href="/about-sean-ali/">About Sean</a><a class="sa-menu-item" href="https://www.youtube.com/@RealSeanAli">YouTube</a><a class="sa-menu-item" href="https://panamauntold.com">Panama Untold</a></div><div class="sa-menu-group"><span class="sa-menu-heading">FREE TOOLS</span><a class="sa-menu-item" href="/prompts.html">Claude27 Prompt Guide</a><a class="sa-menu-item" href="https://hypnoticmeditations.ai">Hypnotic Meditations</a><a class="sa-menu-item" href="/games/">Education Games</a></div><a class="sa-menu-cta" href="/join.html">Join Now</a></div>
+  </div>
+</div>
 
 <main class="social-legacy-wrap">
   <article class="legacy-card">
@@ -1143,5 +1150,21 @@ function generateLTV(){
 <script src="assets/social-blog.js?v=20260525-6"></script>
 
 <!-- This site is converting visitors into subscribers and customers with https://respond.io --><script id="respondio__growth_tool" src="https://cdn.respond.io/widget/widget.js?wId=7f9488bf-e487-4928-9b01-6edb55b2ad22"></script><!-- https://respond.io -->
+
+<script>
+(function(){
+  var burger=document.getElementById("saBurger");
+  var menu=document.getElementById("saMenu");
+  var close=document.getElementById("saMenuClose");
+  if(!burger||!menu)return;
+  function openMenu(){menu.classList.add("open");menu.setAttribute("aria-hidden","false");burger.setAttribute("aria-expanded","true");document.body.classList.add("sa-menu-open");}
+  function closeMenu(){menu.classList.remove("open");menu.setAttribute("aria-hidden","true");burger.setAttribute("aria-expanded","false");document.body.classList.remove("sa-menu-open");}
+  burger.addEventListener("click",function(e){e.stopPropagation();menu.classList.contains("open")?closeMenu():openMenu();});
+  close.addEventListener("click",closeMenu);
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&menu.classList.contains("open"))closeMenu();});
+  document.addEventListener("click",function(e){if(menu.classList.contains("open")&&!menu.contains(e.target)&&e.target!==burger)closeMenu();});
+  menu.addEventListener("click",function(e){if(e.target.classList&&e.target.classList.contains("sa-menu-item")||e.target.classList&&e.target.classList.contains("sa-menu-cta"))setTimeout(closeMenu,150);});
+})();
+</script>
 </body>
 </html>

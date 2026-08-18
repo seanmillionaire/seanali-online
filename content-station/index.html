@@ -34,7 +34,14 @@
             <strong>Content Station</strong>
             <span>Choose a room.</span>
           </div>
-          <a class="primary-button" href="/content-station/organic/" style="display:inline-flex;align-items:center;text-decoration:none">Open Organic</a>
+          <button type="button" class="sa-burger" id="saBurger" aria-label="Open menu" aria-expanded="false" aria-controls="saMenu"><span class="sa-burger-bar"></span><
+<!-- Hamburger menu drawer (site-wide) -->
+<div class="sa-menu" id="saMenu" aria-hidden="true">
+  <div class="sa-menu-inner">
+    <div class="sa-menu-head"><span class="sa-menu-head-label">Explore the site</span><button type="button" class="sa-menu-close" id="saMenuClose" aria-label="Close menu">✕</button></div>
+    <div class="sa-menu-body"><div class="sa-menu-group"><span class="sa-menu-heading">GET STARTED</span><a class="sa-menu-item" href="/start-here/">Start Here</a><a class="sa-menu-item" href="/blog/">Lessons Learned</a><a class="sa-menu-item" href="/resources/">Resources</a></div><div class="sa-menu-group"><span class="sa-menu-heading">BUILD & EARN</span><a class="sa-menu-item" href="/system.html">AI Freedom System</a><a class="sa-menu-item" href="/products/">Products</a><a class="sa-menu-item" href="/work-with-me/">Work With Me</a></div><div class="sa-menu-group"><span class="sa-menu-heading">SEAN ALI</span><a class="sa-menu-item" href="/story.html">My Story</a><a class="sa-menu-item" href="/about-sean-ali/">About Sean</a><a class="sa-menu-item" href="https://www.youtube.com/@RealSeanAli">YouTube</a><a class="sa-menu-item" href="https://panamauntold.com">Panama Untold</a></div><div class="sa-menu-group"><span class="sa-menu-heading">FREE TOOLS</span><a class="sa-menu-item" href="/prompts.html">Claude27 Prompt Guide</a><a class="sa-menu-item" href="https://hypnoticmeditations.ai">Hypnotic Meditations</a><a class="sa-menu-item" href="/games/">Education Games</a></div><a class="sa-menu-cta" href="/join.html">Join Now</a></div>
+  </div>
+</div>span class="sa-burger-bar"></span><span class="sa-burger-bar"></span></button><a class="primary-button" href="/content-station/organic/" style="display:inline-flex;align-items:center;text-decoration:none">Open Organic</a>
         </div>
 
         <section class="room-grid" aria-label="Content Station rooms">
@@ -73,5 +80,21 @@
         </section>
       </section>
     </main>
-  </body>
+  
+<script>
+(function(){
+  var burger=document.getElementById("saBurger");
+  var menu=document.getElementById("saMenu");
+  var close=document.getElementById("saMenuClose");
+  if(!burger||!menu)return;
+  function openMenu(){menu.classList.add("open");menu.setAttribute("aria-hidden","false");burger.setAttribute("aria-expanded","true");document.body.classList.add("sa-menu-open");}
+  function closeMenu(){menu.classList.remove("open");menu.setAttribute("aria-hidden","true");burger.setAttribute("aria-expanded","false");document.body.classList.remove("sa-menu-open");}
+  burger.addEventListener("click",function(e){e.stopPropagation();menu.classList.contains("open")?closeMenu():openMenu();});
+  close.addEventListener("click",closeMenu);
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&menu.classList.contains("open"))closeMenu();});
+  document.addEventListener("click",function(e){if(menu.classList.contains("open")&&!menu.contains(e.target)&&e.target!==burger)closeMenu();});
+  menu.addEventListener("click",function(e){if(e.target.classList&&e.target.classList.contains("sa-menu-item")||e.target.classList&&e.target.classList.contains("sa-menu-cta"))setTimeout(closeMenu,150);});
+})();
+</script>
+</body>
 </html>
