@@ -8,7 +8,8 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 
 function GpsRouter() {
-  return <WouterRouter base="/gps"><Switch><Route path="/" component={Home} /><Route path="/404" component={NotFound} /><Route component={NotFound} /></Switch></WouterRouter>;
+  const base = window.location.pathname.startsWith("/gps") ? "/gps" : "";
+  return <WouterRouter base={base}><Switch><Route path="/" component={Home} /><Route path="/404" component={NotFound} /><Route component={NotFound} /></Switch></WouterRouter>;
 }
 
 export default function App() {
