@@ -11,6 +11,7 @@ import {
 
 type BuildView = "setup" | "questions" | "north";
 type Lens = "time" | "wealth" | "freedom" | "impact" | "mastery";
+type ImpactId = "family" | "health" | "home" | "time" | "adventure" | "team" | "giving" | "growth";
 
 const lifeLenses: { id: Lens; title: string; line: string; icon: typeof Compass }[] = [
   { id: "time", title: "More time", line: "A life with room to breathe.", icon: Compass },
@@ -18,6 +19,17 @@ const lifeLenses: { id: Lens; title: string; line: string; icon: typeof Compass 
   { id: "freedom", title: "More freedom", line: "More say over your days.", icon: Flag },
   { id: "impact", title: "More impact", line: "Help more people in a real way.", icon: Users },
   { id: "mastery", title: "More mastery", line: "Get great at work that matters.", icon: Sparkles },
+];
+
+const impactAreas: { id: ImpactId; emoji: string; title: string; line: string }[] = [
+  { id: "family", emoji: "❤️", title: "Family & love", line: "More calm time and stronger memories." },
+  { id: "health", emoji: "🌿", title: "Health & energy", line: "More rest, strength, and care." },
+  { id: "home", emoji: "🏡", title: "Home & comfort", line: "A home that feels safe and easy." },
+  { id: "time", emoji: "⏳", title: "Time & choice", line: "More say over how your days feel." },
+  { id: "adventure", emoji: "✈️", title: "New experiences", line: "New places, fun, and room to explore." },
+  { id: "team", emoji: "🤝", title: "Your team", line: "More wins and better lives together." },
+  { id: "giving", emoji: "🌎", title: "People you help", line: "More good reaching beyond your work." },
+  { id: "growth", emoji: "🚀", title: "Who you become", line: "More courage, skill, and belief." },
 ];
 
 const questionSets: Record<Lens, ((vision: string, people: string) => string)[]> = {
@@ -73,6 +85,7 @@ export default function Home() {
   const [vision, setVision] = useState("");
   const [beneficiary, setBeneficiary] = useState("");
   const [lens, setLens] = useState<Lens>("wealth");
+  const [impacts, setImpacts] = useState<ImpactId[]>([]);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [monthlyRevenue, setMonthlyRevenue] = useState(1_000_000);
@@ -91,8 +104,16 @@ export default function Home() {
   );
   const currentQuestion = questions[questionIndex];
   const currentAnswer = answers[questionIndex] ?? "";
-  const allQuestionsAnswered = questions.every((_, index) => Boolean(answers[index]?.trim()));
   const selectedLens = lifeLenses.find((item) => item.id === lens) ?? lifeLenses[0];
+  const selectedImpactAreas = impactAreas.filter((area) => impacts.includes(area.id));
+  const impactTitles = selectedImpactAreas.map((area) => area.title.toLowerCase());
+  const impactFuture = impactTitles.length === 0
+    ? "Pick every part of life you want success to touch. There is no wrong mix."
+    : impactTitles.length === 1
+      ? `${selectedImpactAreas[0].title} is part of the future you are building. Add more areas to see how the pieces work together.`
+      : impactTitles.length === 2
+        ? `Picture it: more room for ${impactTitles[0]} and ${impactTitles[1]}. Your success can support both at the same time.`
+        : `Picture it: more room for ${impactTitles.slice(0, -1).join(", ")}, and ${impactTitles.at(-1)}. This win reaches far beyond one number.`;
 
   const money = useMemo(() => {
     const profit = monthlyRevenue * (profitMargin / 100);
@@ -106,7 +127,9 @@ export default function Home() {
     ? buildView === "setup"
       ? { title: "Write the dream", message: "Write what you want to make true. Then choose the kind of change you want most.", button: "Ask the questions" }
       : buildView === "questions"
-        ? { title: "Answer the big question", message: "Use your own words. A real answer helps you see a new path.", button: questionIndex === questions.length - 1 ? "See my North Star" : "Next question" }
+        ? questionIndex === 0
+          ? { title: "Map your future", message: "Tap every part of life you want your success to improve. Watch the future picture grow.", button: "See the possibilities" }
+          : { title: "Answer the big question", message: "Use your own words. A real answer helps you see a new path.", button: questionIndex === questions.length - 1 ? "See my North Star" : "Next question" }
         : { title: "Read your North Star", message: "This is the bigger picture you just made. Take it with you to the money map.", button: "Plot the numbers" }
     : { title: "Move the numbers", message: "Slide one number at a time. Watch what changes for profit, payouts, and the business.", button: "Keep exploring" };
 
@@ -118,6 +141,10 @@ export default function Home() {
       return;
     }
     if (phase === "build" && buildView === "questions") {
+      if (questionIndex === 0) {
+        if (impacts.length) setQuestionIndex(1);
+        return;
+      }
       if (!currentAnswer.trim()) return;
       if (questionIndex === questions.length - 1) setBuildView("north");
       else setQuestionIndex((current) => current + 1);
@@ -139,14 +166,14 @@ export default function Home() {
     setMonthlyRevenue(revenue); setProfitMargin(margin); setCommissionRate(commission); setTakeHomeRate(takeHome);
   };
   const reset = () => {
-    setPhase("build"); setBuildView("setup"); setVision(""); setBeneficiary(""); setLens("wealth");
+    setPhase("build"); setBuildView("setup"); setVision(""); setBeneficiary(""); setLens("wealth"); setImpacts([]);
     setQuestionIndex(0); setAnswers({}); setMonthlyRevenue(1_000_000); setProfitMargin(50); setCommissionRate(5); setTakeHomeRate(30); setGuideActive(false);
   };
 
   const footerAction = phase === "build"
-    ? buildView === "setup" ? "Ask the questions" : buildView === "questions" ? questionIndex === questions.length - 1 ? "See my North Star" : "Next question" : "Plot the numbers"
+    ? buildView === "setup" ? "Ask the questions" : buildView === "questions" ? questionIndex === 0 ? "See the possibilities" : questionIndex === questions.length - 1 ? "See my North Star" : "Next question" : "Plot the numbers"
     : "Keep exploring";
-  const footerDisabled = phase === "build" && (buildView === "setup" ? !vision.trim() : buildView === "questions" ? !currentAnswer.trim() : false);
+  const footerDisabled = phase === "build" && (buildView === "setup" ? !vision.trim() : buildView === "questions" ? questionIndex === 0 ? !impacts.length : !currentAnswer.trim() : false);
 
   return <div className="simple-gps min-h-screen">
     <aside className="simple-rail phase-rail">
@@ -181,14 +208,17 @@ export default function Home() {
           </div>
         </div>}
 
-        {phase === "build" && buildView === "questions" && <div className="screen question-screen simple-enter">
+        {phase === "build" && buildView === "questions" && (questionIndex === 0 ? <div className="screen impact-screen simple-enter">
+          <div className="simple-heading"><span className="level-stamp ink">DREAM BUILDING</span><p>STEP 1 OF 4</p><h1>See the life<br />you are building.</h1><small>Tap every area you want your success to lift. Pick more than one.</small></div>
+          <article className={`impact-map-card ${guideActive ? "guide-focus" : ""}`}><div className="impact-map-top"><div><span className="impact-map-stamp">YOUR FUTURE IMPACT</span><h2>Where could this win make life better?</h2></div><span className="impact-count">{impacts.length} picked</span></div><div className="impact-grid">{impactAreas.map((area) => { const picked = impacts.includes(area.id); return <button key={area.id} type="button" className={`impact-card ${picked ? "picked" : ""}`} onClick={() => setImpacts((current) => picked ? current.filter((id) => id !== area.id) : [...current, area.id])} aria-pressed={picked}><span className="impact-emoji" aria-hidden="true">{area.emoji}</span><div><b>{area.title}</b><small>{area.line}</small></div>{picked && <i><Check size={15} /></i>}</button>; })}</div><div className={`future-blend ${impacts.length ? "ready" : ""}`}><div><Sparkles size={19} /><span>FUTURE POSSIBILITY</span></div><p>{impactFuture}</p></div></article>
+        </div> : <div className="screen question-screen simple-enter">
           <div className="simple-heading"><span className="level-stamp ink">DREAM BUILDING</span><p>BIG QUESTION {questionIndex + 1} OF {questions.length}</p><h1>Think bigger.</h1><small>There is no perfect answer. Write the one that feels honest.</small></div>
-          <article className={`question-card ${guideActive ? "guide-focus" : ""}`}><div className="question-route"><span>01</span><i className={questionIndex >= 1 ? "done" : ""} /><span className={questionIndex >= 1 ? "done" : ""}>02</span><i className={questionIndex >= 2 ? "done" : ""} /><span className={questionIndex >= 2 ? "done" : ""}>03</span><i className={questionIndex >= 3 ? "done" : ""} /><span className={questionIndex >= 3 ? "done" : ""}>04</span></div><div className="question-stamp"><Sparkles size={17} /> YOUR NEW ANGLE</div><h2>{currentQuestion}</h2><label className="answer-field"><span>YOUR ANSWER</span><textarea value={currentAnswer} onChange={(event) => setAnswers((current) => ({ ...current, [questionIndex]: event.target.value }))} placeholder="Write what comes up for you..." rows={6} autoFocus /></label><div className="question-note"><Compass size={16} /><p>Keep it simple. Your own words are the point.</p></div></article>
-        </div>}
+          <article className={`question-card ${guideActive ? "guide-focus" : ""}`}><div className="question-route"><span className="done">01</span><i className="done" /><span className={questionIndex >= 1 ? "done" : ""}>02</span><i className={questionIndex >= 2 ? "done" : ""} /><span className={questionIndex >= 2 ? "done" : ""}>03</span><i className={questionIndex >= 3 ? "done" : ""} /><span className={questionIndex >= 3 ? "done" : ""}>04</span></div><div className="question-stamp"><Sparkles size={17} /> YOUR NEW ANGLE</div><h2>{currentQuestion}</h2><label className="answer-field"><span>YOUR ANSWER</span><textarea value={currentAnswer} onChange={(event) => setAnswers((current) => ({ ...current, [questionIndex]: event.target.value }))} placeholder="Write what comes up for you..." rows={6} autoFocus /></label><div className="question-note"><Compass size={16} /><p>Keep it simple. Your own words are the point.</p></div></article>
+        </div>)}
 
         {phase === "build" && buildView === "north" && <div className="screen north-screen simple-enter">
           <div className="simple-heading"><span className="level-stamp ink">DREAM BUILDING</span><p>YOUR NORTH STAR</p><h1>Here is the bigger picture.</h1><small>Use this to keep the money plan pointed at the life you want.</small></div>
-          <article className={`north-card ${guideActive ? "guide-focus" : ""}`}><div className="north-top"><div><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><b>DREAM LIFE GPS</b></div><span>FIELD NOTE</span></div><div className="north-vision"><Flag size={22} /><div><p>WHAT YOU WANT TO MAKE TRUE</p><h2>{vision}</h2><small>{selectedLens.title} for {personPhrase}.</small></div></div><div className="north-answers">{questions.map((question, index) => <div key={question}><span>0{index + 1}</span><p>{question}</p><b>{answers[index]}</b></div>)}</div><div className="north-bottom"><Sparkles size={19} /><p><b>Your direction is clear enough to test with numbers.</b> Now see what the business would need to support it.</p></div></article>
+          <article className={`north-card ${guideActive ? "guide-focus" : ""}`}><div className="north-top"><div><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><b>DREAM LIFE GPS</b></div><span>FIELD NOTE</span></div><div className="north-vision"><Flag size={22} /><div><p>WHAT YOU WANT TO MAKE TRUE</p><h2>{vision}</h2><small>{selectedLens.title} for {personPhrase}.</small></div></div><div className="north-impact-summary"><span>THE LIFE THIS WIN COULD TOUCH</span><div>{selectedImpactAreas.map((area) => <b key={area.id}><i>{area.emoji}</i>{area.title}</b>)}</div><p>{impactFuture}</p></div><div className="north-answers">{questions.slice(1).map((question, index) => <div key={question}><span>0{index + 2}</span><p>{question}</p><b>{answers[index + 1]}</b></div>)}</div><div className="north-bottom"><Sparkles size={19} /><p><b>Your direction is clear enough to test with numbers.</b> Now see what the business would need to support it.</p></div></article>
         </div>}
 
         {phase === "realize" && <div className="screen money-map-screen simple-enter">
