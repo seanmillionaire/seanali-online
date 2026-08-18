@@ -1,273 +1,272 @@
 (() => {
-  if (document.querySelector('[data-guide-robot]')) return;
+  if (document.querySelector('[data-guide-robot-final]')) return;
 
-  const STORAGE_KEY = 'seanGameUserName';
-  const GUIDE_SHOWN_KEY = 'seanGameGuideShown';
-  const MAP_PROGRESS_KEY = 'seanGameMapProgress:v1';
+  const NAME_KEY = 'seanGuideRobotName';
+  const SEEN_KEY = 'seanGuideRobotSeen';
+  const userFromStorage = localStorage.getItem(NAME_KEY);
+  let userName = userFromStorage || '';
+  let welcomeStep = 0;
+  let ruleStep = 0;
 
-  const messages = {
-    welcome: (name) => [
-      `Hi ${name}! 👋✨`,
-      `I’m your game buddy 🤖🎮`,
-      `Tap buttons. Try answers. Have fun! 🚀⭐`
-    ],
-    gameStart: (name, gameName) => [
-      `Ready, ${name}? 🎮`,
-      `${gameName} time! 🌈`,
-      `Read. Tap. Win! 🏆`
-    ],
-    tip: (name) => [
-      `Tiny tip, ${name}! 💡`,
-      `Look for clues 👀`,
-      `Then tap your best answer ⭐`
-    ],
-    stuck: (name) => [
-      `Oops moment? 🫣`,
-      `Read it one more time 📖`,
-      `You can do it! 💪✨`
-    ],
-    celebrate: (name) => [
-      `YES ${name}! 🎉`,
-      `Big brain move! 🧠⚡`,
-      `Keep going! 🏁⭐`
-    ]
-  };
+  const welcomeMessages = name => [
+    `🌈 HI ${name.toUpperCase()}! I'M ROBOT BUDDY! 🤖`,
+    `⭐ LET'S HAVE A SUPER FUN TIME! 🎮`,
+    `🚀 TAP A BUTTON AND LET'S GO! ✨`
+  ];
 
-  let userName = localStorage.getItem(STORAGE_KEY);
-  let currentMessageIndex = 0;
-  let isOpen = false;
+  const tips = name => [
+    `💡 YOU CAN DO IT, ${name.toUpperCase()}!`,
+    '👀 READ THE CLUE FIRST.',
+    '☝️ THEN TAP YOUR BEST ANSWER.',
+    '🔄 IF YOU MISS, TRY AGAIN!'
+  ];
 
   const style = document.createElement('style');
   style.textContent = `
-    [data-guide-robot]{position:fixed;bottom:16px;right:14px;z-index:999;font-family:Arial,sans-serif}
-    .guide-robot-button{width:76px;height:76px;border-radius:50%;background:radial-gradient(circle at 30% 20%,#fff,#fff26f 24%,#ff62b7 58%,#7d4cff);border:5px solid #101436;box-shadow:0 8px 0 rgba(0,0,0,.28),0 0 22px rgba(255,98,183,.45);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:42px;animation:guideBounce 1.35s ease-in-out infinite;touch-action:manipulation}
-    .guide-robot-button:active{transform:translateY(6px) scale(.96);box-shadow:0 2px 0 rgba(0,0,0,.28),0 0 18px rgba(255,98,183,.55)}
-    @keyframes guideBounce{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-6px) rotate(2deg)}}
-    .guide-robot-modal{position:fixed;inset:0;background:rgba(16,20,54,.55);display:none;align-items:center;justify-content:center;padding:14px;z-index:1000}.guide-robot-modal.show{display:flex}
-    .guide-robot-panel{position:relative;width:min(430px,100%);background:linear-gradient(180deg,#fff6e6,#e8fbff);border:5px solid #101436;border-radius:30px;padding:18px;box-shadow:0 18px 0 rgba(0,0,0,.25),0 0 40px rgba(255,200,61,.45);color:#101436;animation:guidePop .28s ease}
-    @keyframes guidePop{from{opacity:0;transform:scale(.9) translateY(18px)}to{opacity:1;transform:scale(1) translateY(0)}}
-    .guide-robot-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;background:linear-gradient(90deg,#ff62b7,#ffc83d,#34d17a,#00d4ff);border:4px solid #101436;border-radius:22px;padding:10px;color:#101436}.guide-robot-header span{font-size:38px}.guide-robot-title{font-size:25px;line-height:1;margin:0;font-weight:900}
-    .guide-robot-message{font-size:24px;line-height:1.12;margin:12px 0;min-height:78px;display:flex;align-items:center;justify-content:center;text-align:center;background:#fff;border:4px solid #ffc83d;border-radius:22px;padding:14px;font-weight:900;color:#101436;box-shadow:0 7px 0 rgba(0,0,0,.14)}
-    .guide-robot-buttons{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}.guide-robot-btn{border:4px solid #101436;border-radius:20px;padding:15px 14px;font-size:20px;font-weight:900;cursor:pointer;color:#101436;box-shadow:0 7px 0 rgba(0,0,0,.25);touch-action:manipulation}.guide-robot-btn:active{transform:translateY(6px);box-shadow:0 1px 0 rgba(0,0,0,.25)}
-    .guide-robot-btn-primary{background:linear-gradient(180deg,#fff26f,#ffc83d)}.guide-robot-btn-secondary{background:linear-gradient(180deg,#d7b9ff,#9b7cff);color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.18)}
-    .guide-robot-close{position:absolute;top:10px;right:10px;background:#ff3d3d;border:4px solid #101436;border-radius:50%;width:46px;height:46px;cursor:pointer;font-size:24px;color:white;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:0 5px 0 rgba(0,0,0,.25)}
-    .guide-robot-name-input{width:100%;border:5px solid #101436;border-radius:24px;padding:22px 16px;font-size:30px;font-weight:900;margin:14px 0 4px;box-sizing:border-box;text-align:center;background:#fff;color:#101436;min-height:78px;box-shadow:0 7px 0 rgba(0,0,0,.18)}.guide-robot-name-input::placeholder{color:#777;font-size:22px}
-    .guide-robot-name-label{font-size:26px;font-weight:900;line-height:1.08;margin-bottom:4px}.guide-robot-name-wrap{width:100%}.guide-robot-name-hint{font-size:15px;font-weight:900;color:#334;text-align:center;margin-top:6px}
-    .guide-robot-dots{display:flex;gap:8px;justify-content:center;margin-top:12px}.guide-robot-dot{width:15px;height:15px;border-radius:50%;border:2px solid #101436;background:#fff;cursor:pointer}.guide-robot-dot.active{background:#ff62b7;transform:scale(1.25)}
-    .guide-robot-secret{margin-top:6px;background:transparent!important;border:0!important;box-shadow:none!important;color:#101436!important;opacity:.26;font-size:13px!important;padding:5px!important}.guide-robot-secret:active,.guide-robot-secret:hover{opacity:1}.guide-robot-unlocked{background:#f1fff3;border:4px solid #34d17a;border-radius:18px;padding:10px;margin-top:10px;font-size:18px;font-weight:900;text-align:center}
-    @media(max-width:480px){[data-guide-robot]{bottom:12px;right:10px}.guide-robot-button{width:66px;height:66px;font-size:36px}.guide-robot-panel{padding:14px}.guide-robot-title{font-size:21px}.guide-robot-message{font-size:21px;min-height:70px}.guide-robot-btn{font-size:18px;padding:14px 12px}.guide-robot-name-input{font-size:28px;min-height:82px;padding:22px 12px}.guide-robot-name-label{font-size:24px}}
+    [data-guide-robot-final] { font-family: Arial, Helvetica, sans-serif; }
+    [data-guide-robot-final] .robot-buddy-btn {
+      position: fixed; right: 24px; bottom: 24px; z-index: 10000;
+      width: 82px; height: 82px; border: 7px solid #fff; border-radius: 50%;
+      background: linear-gradient(45deg, #ff0080, #ff8c00); cursor: pointer;
+      font-size: 46px; line-height: 1; box-shadow: 0 10px 28px rgba(255, 0, 128, .48);
+      animation: robotBuddyFloat 2.8s ease-in-out infinite;
+    }
+    [data-guide-robot-final] .robot-buddy-btn:hover { transform: scale(1.1) rotate(8deg); }
+    @keyframes robotBuddyFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+    [data-guide-robot-final] .robot-buddy-modal {
+      position: fixed; inset: 0; z-index: 10001; display: none; align-items: center;
+      justify-content: center; padding: 18px; background: rgba(0, 0, 0, .68);
+    }
+    [data-guide-robot-final] .robot-buddy-modal.show { display: flex; }
+    [data-guide-robot-final] .robot-buddy-card {
+      position: relative; width: min(500px, 100%); max-height: min(700px, 92vh); overflow: auto;
+      box-sizing: border-box; padding: 34px 30px 30px; border: 9px solid #ff0080;
+      border-radius: 38px; background: #fff; text-align: center;
+      box-shadow: 0 28px 60px rgba(0,0,0,.5); animation: robotBuddyPop .35s ease-out;
+    }
+    @keyframes robotBuddyPop { from { opacity: 0; transform: scale(.82); } to { opacity: 1; transform: scale(1); } }
+    [data-guide-robot-final] .robot-buddy-card h2 { margin: 0 0 18px; color: #ff0080; font-size: 27px; }
+    [data-guide-robot-final] .robot-buddy-text {
+      margin: 16px 0 24px; color: #ff0080; font-size: 24px; font-weight: 900; line-height: 1.35;
+    }
+    [data-guide-robot-final] .robot-buddy-close {
+      position: absolute; top: 10px; right: 12px; width: 42px; height: 42px;
+      border: 4px solid #ff0080; border-radius: 50%; background: #fff; color: #ff0080;
+      font-size: 24px; font-weight: 900; cursor: pointer;
+    }
+    [data-guide-robot-final] .robot-buddy-input {
+      width: 100%; box-sizing: border-box; padding: 17px; margin: 14px 0 20px;
+      border: 4px solid #ff9800; border-radius: 18px; color: #444; background: #fff;
+      font-size: 18px; text-align: center; outline: none;
+    }
+    [data-guide-robot-final] .robot-buddy-input:focus { border-color: #ff0080; }
+    [data-guide-robot-final] .robot-buddy-grid { display: grid; gap: 11px; }
+    [data-guide-robot-final] .robot-buddy-btn-action {
+      width: 100%; padding: 16px 18px; border: 0; border-radius: 18px; cursor: pointer;
+      color: #fff; font-size: 17px; font-weight: 900; box-shadow: 0 6px 0 rgba(0,0,0,.18);
+    }
+    [data-guide-robot-final] .robot-buddy-btn-action:active { transform: translateY(3px); box-shadow: 0 3px 0 rgba(0,0,0,.18); }
+    [data-guide-robot-final] .robot-buddy-go { background: #ff9800; box-shadow: 0 6px 0 #cf7000; }
+    [data-guide-robot-final] .robot-buddy-next { background: #ff9800; }
+    [data-guide-robot-final] .robot-buddy-rules { background: #377dff; }
+    [data-guide-robot-final] .robot-buddy-tip { background: #7b61ff; }
+    [data-guide-robot-final] .robot-buddy-close-action { background: #39b96a; }
+    [data-guide-robot-final] .robot-buddy-icons { display: flex; justify-content: center; gap: 10px; margin: 8px 0 22px; }
+    [data-guide-robot-final] .robot-buddy-icon {
+      width: 52px; height: 52px; border: 3px solid #ff9800; border-radius: 15px;
+      background: #fff6d8; font-size: 28px;
+    }
+    [data-guide-robot-final] .robot-buddy-rule {
+      min-height: 86px; display: flex; align-items: center; justify-content: center;
+      padding: 14px; border: 4px solid #ffd33d; border-radius: 18px;
+      color: #333; font-size: 21px; font-weight: 900; line-height: 1.35;
+    }
+    [data-guide-robot-final] .robot-buddy-dots { margin: 14px 0; color: #ff0080; font-weight: 900; }
+    @media (max-width: 560px) {
+      [data-guide-robot-final] .robot-buddy-btn { right: 14px; bottom: 14px; width: 70px; height: 70px; font-size: 39px; }
+      [data-guide-robot-final] .robot-buddy-card { padding: 30px 20px 22px; border-width: 7px; }
+      [data-guide-robot-final] .robot-buddy-text { font-size: 21px; }
+    }
   `;
   document.head.appendChild(style);
 
-  const container = document.createElement('div');
-  container.setAttribute('data-guide-robot', 'true');
-
-  const button = document.createElement('button');
-  button.className = 'guide-robot-button';
-  button.textContent = '🤖';
-  button.setAttribute('aria-label', 'Open game buddy');
-
-  const modal = document.createElement('div');
-  modal.className = 'guide-robot-modal';
-
-  const panel = document.createElement('div');
-  panel.className = 'guide-robot-panel';
-
-  const closeBtn = document.createElement('button');
-  closeBtn.className = 'guide-robot-close';
-  closeBtn.textContent = '×';
-  closeBtn.setAttribute('aria-label', 'Close guide');
-
-  const header = document.createElement('div');
-  header.className = 'guide-robot-header';
-  header.innerHTML = '<span>🤖</span>';
-
-  const title = document.createElement('h2');
-  title.className = 'guide-robot-title';
-  title.textContent = 'Buddy Guide';
-
-  const messageDiv = document.createElement('div');
-  messageDiv.className = 'guide-robot-message';
-
-  const buttonsDiv = document.createElement('div');
-  buttonsDiv.className = 'guide-robot-buttons';
-
-  header.appendChild(title);
-  panel.appendChild(closeBtn);
-  panel.appendChild(header);
-  panel.appendChild(messageDiv);
-  panel.appendChild(buttonsDiv);
-  modal.appendChild(panel);
-  container.appendChild(button);
-  container.appendChild(modal);
-  document.body.appendChild(container);
-
-  function saveName(name) {
-    localStorage.setItem(STORAGE_KEY, name.trim());
-    userName = name.trim();
+  function hideLegacyHelp() {
+    const oldButton = document.getElementById('manualBtn');
+    if (oldButton) oldButton.style.display = 'none';
+    const oldClose = document.getElementById('closeManual');
+    if (oldClose) oldClose.style.display = 'none';
+    document.querySelectorAll('#manualTitle, #manualList').forEach(node => {
+      const box = node.closest('#modal, .modal, [role="dialog"], .manual-modal, .manual');
+      if (box) box.style.display = 'none';
+    });
+    document.querySelectorAll('button').forEach(button => {
+      if (button.closest('[data-guide-robot-final]')) return;
+      const label = (button.textContent || '').trim().toLowerCase();
+      if (/^(how to play|manual|game help)$/.test(label)) button.style.display = 'none';
+    });
   }
 
-  function unlockAllGames() {
-    localStorage.setItem(MAP_PROGRESS_KEY, '99');
-    localStorage.setItem('seanGameMapUnlockedAll:v1', 'true');
-    const box = document.createElement('div');
-    box.className = 'guide-robot-unlocked';
-    box.textContent = '🔓 All games unlocked!';
-    buttonsDiv.prepend(box);
-    setTimeout(() => { if (location.pathname.replace(/\/+$/, '/') === '/games/') location.reload(); }, 650);
+  function pageKey() {
+    const cleanPath = location.pathname.replace(/\/+$/, '');
+    const parts = cleanPath.split('/');
+    if (parts[parts.length - 1].toLowerCase() === 'index.html') parts.pop();
+    return parts[parts.length - 1] || 'console';
+  }
+
+  function pageRules() {
+    const all = window.GameRules || {};
+    return all[pageKey()] || all.console || [];
+  }
+
+  const root = document.createElement('div');
+  root.setAttribute('data-guide-robot-final', 'true');
+  root.innerHTML = `
+    <button class="robot-buddy-btn" aria-label="Open Robot Buddy">🤖</button>
+    <div class="robot-buddy-modal" role="dialog" aria-modal="true" aria-label="Robot Buddy">
+      <div class="robot-buddy-card">
+        <button class="robot-buddy-close" aria-label="Close">×</button>
+        <h2>🤖 ROBOT BUDDY</h2>
+        <div class="robot-buddy-content"></div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(root);
+
+  const openButton = root.querySelector('.robot-buddy-btn');
+  const modal = root.querySelector('.robot-buddy-modal');
+  const card = root.querySelector('.robot-buddy-card');
+  const content = root.querySelector('.robot-buddy-content');
+  const closeButton = root.querySelector('.robot-buddy-close');
+
+  function actionButton(label, className, handler) {
+    const button = document.createElement('button');
+    button.className = `robot-buddy-btn-action ${className}`;
+    button.textContent = label;
+    button.addEventListener('click', handler);
+    return button;
   }
 
   function showNamePrompt() {
-    currentMessageIndex = 0;
-    messageDiv.innerHTML = '';
-    buttonsDiv.innerHTML = '';
-
-    const wrap = document.createElement('div');
-    wrap.className = 'guide-robot-name-wrap';
-
-    const label = document.createElement('div');
-    label.className = 'guide-robot-name-label';
-    label.textContent = 'What is your name?';
-
+    content.innerHTML = '';
+    const text = document.createElement('div');
+    text.className = 'robot-buddy-text';
+    text.textContent = '👋 WHAT IS YOUR NAME?';
     const input = document.createElement('input');
-    input.className = 'guide-robot-name-input';
-    input.type = 'text';
-    input.placeholder = 'Type name here';
-    input.value = userName || '';
-
-    const hint = document.createElement('div');
-    hint.className = 'guide-robot-name-hint';
-    hint.textContent = 'Big letters are easier to tap.';
-
-    wrap.appendChild(label);
-    wrap.appendChild(input);
-    wrap.appendChild(hint);
-    messageDiv.appendChild(wrap);
-
-    const submitBtn = document.createElement('button');
-    submitBtn.className = 'guide-robot-btn guide-robot-btn-primary';
-    submitBtn.textContent = '🚀 Start Playing';
-
-    const skipBtn = document.createElement('button');
-    skipBtn.className = 'guide-robot-btn guide-robot-btn-secondary';
-    skipBtn.textContent = '🎮 Play Now';
-
-    buttonsDiv.appendChild(submitBtn);
-    buttonsDiv.appendChild(skipBtn);
-    addSecretButton();
-
-    submitBtn.addEventListener('click', () => {
-      if (input.value.trim()) {
-        saveName(input.value);
-        localStorage.setItem(GUIDE_SHOWN_KEY, 'true');
-        showWelcome();
-      }
+    input.className = 'robot-buddy-input';
+    input.placeholder = 'TYPE HERE!';
+    input.autocomplete = 'nickname';
+    const icons = document.createElement('div');
+    icons.className = 'robot-buddy-icons';
+    ['🎮', '🎨', '🎵', '🏆'].forEach(icon => {
+      const item = document.createElement('span');
+      item.className = 'robot-buddy-icon';
+      item.textContent = icon;
+      icons.appendChild(item);
     });
-
-    skipBtn.addEventListener('click', () => {
-      localStorage.setItem(GUIDE_SHOWN_KEY, 'true');
-      closeModal();
+    const go = actionButton('🚀 GO!', 'robot-buddy-go', () => {
+      const value = input.value.trim().slice(0, 24);
+      if (!value) { input.focus(); return; }
+      userName = value;
+      localStorage.setItem(NAME_KEY, userName);
+      localStorage.setItem(SEEN_KEY, 'true');
+      welcomeStep = 0;
+      renderWelcome();
     });
-
-    setTimeout(() => input.focus(), 50);
-    input.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter' && input.value.trim()) submitBtn.click();
-    });
+    input.addEventListener('keydown', event => { if (event.key === 'Enter') go.click(); });
+    content.append(text, input, icons, go);
+    setTimeout(() => input.focus(), 0);
   }
 
-  function addSecretButton() {
-    if (buttonsDiv.querySelector('.guide-robot-secret')) return;
-    const secret = document.createElement('button');
-    secret.className = 'guide-robot-btn guide-robot-secret';
-    secret.type = 'button';
-    secret.textContent = 'secret unlock';
-    secret.title = 'Unlock all games';
-    secret.addEventListener('click', unlockAllGames);
-    buttonsDiv.appendChild(secret);
-  }
-
-  function showWelcome() {
-    currentMessageIndex = 0;
-    const msgs = messages.welcome(userName || 'Friend');
-    showMessageCarousel(msgs);
-  }
-
-  function showMessageCarousel(msgs) {
-    messageDiv.innerHTML = '';
-    buttonsDiv.innerHTML = '';
-
-    const msgText = document.createElement('p');
-    msgText.style.margin = '0';
-    msgText.textContent = msgs[currentMessageIndex];
-    messageDiv.appendChild(msgText);
-
-    if (msgs.length > 1) {
-      const dotsDiv = document.createElement('div');
-      dotsDiv.className = 'guide-robot-dots';
-      msgs.forEach((_, idx) => {
-        const dot = document.createElement('button');
-        dot.className = 'guide-robot-dot' + (idx === currentMessageIndex ? ' active' : '');
-        dot.setAttribute('aria-label', `Message ${idx + 1}`);
-        dot.addEventListener('click', () => {
-          currentMessageIndex = idx;
-          showMessageCarousel(msgs);
-        });
-        dotsDiv.appendChild(dot);
-      });
-      messageDiv.appendChild(dotsDiv);
+  function renderWelcome() {
+    const messages = welcomeMessages(userName);
+    content.innerHTML = '';
+    const text = document.createElement('div');
+    text.className = 'robot-buddy-text';
+    text.textContent = messages[welcomeStep];
+    const grid = document.createElement('div');
+    grid.className = 'robot-buddy-grid';
+    if (welcomeStep < messages.length - 1) {
+      grid.appendChild(actionButton('⏭️ NEXT', 'robot-buddy-next', () => { welcomeStep += 1; renderWelcome(); }));
+    } else {
+      grid.appendChild(actionButton('🎮 SHOW ME THE GAMES', 'robot-buddy-next', renderMenu));
     }
+    content.append(text, grid);
+  }
 
-    const nextBtn = document.createElement('button');
-    nextBtn.className = 'guide-robot-btn guide-robot-btn-primary';
-    nextBtn.textContent = currentMessageIndex < msgs.length - 1 ? '👉 Next' : '✅ Got It';
+  function renderMenu() {
+    content.innerHTML = '';
+    const text = document.createElement('div');
+    text.className = 'robot-buddy-text';
+    text.textContent = `🎉 READY TO PLAY, ${userName.toUpperCase()}?`;
+    const grid = document.createElement('div');
+    grid.className = 'robot-buddy-grid';
+    const rules = pageRules();
+    if (rules.length) grid.appendChild(actionButton('📘 HOW TO PLAY', 'robot-buddy-rules', renderRules));
+    grid.appendChild(actionButton('💡 GIVE ME A TIP', 'robot-buddy-tip', () => renderTips(0)));
+    grid.appendChild(actionButton('🗺️ GO TO GAME HUB', 'robot-buddy-next', () => { location.href = '/games/'; }));
+    grid.appendChild(actionButton('👋 CLOSE', 'robot-buddy-close-action', closeModal));
+    content.append(text, grid);
+  }
 
-    const closeBtn2 = document.createElement('button');
-    closeBtn2.className = 'guide-robot-btn guide-robot-btn-secondary';
-    closeBtn2.textContent = '🎮 Play';
+  function renderTips(index) {
+    const list = tips(userName);
+    content.innerHTML = '';
+    const text = document.createElement('div');
+    text.className = 'robot-buddy-text';
+    text.textContent = list[index];
+    const dots = document.createElement('div');
+    dots.className = 'robot-buddy-dots';
+    dots.textContent = `${index + 1} of ${list.length} ⭐`;
+    const grid = document.createElement('div');
+    grid.className = 'robot-buddy-grid';
+    if (index < list.length - 1) grid.appendChild(actionButton('⏭️ NEXT TIP', 'robot-buddy-tip', () => renderTips(index + 1)));
+    grid.appendChild(actionButton('🏠 BACK', 'robot-buddy-close-action', renderMenu));
+    content.append(text, dots, grid);
+  }
 
-    buttonsDiv.appendChild(nextBtn);
-    buttonsDiv.appendChild(closeBtn2);
-    addSecretButton();
-
-    nextBtn.addEventListener('click', () => {
-      if (currentMessageIndex < msgs.length - 1) {
-        currentMessageIndex++;
-        showMessageCarousel(msgs);
-      } else {
-        closeModal();
-      }
-    });
-    closeBtn2.addEventListener('click', closeModal);
+  function renderRules() {
+    const rules = pageRules();
+    if (!rules.length) { renderMenu(); return; }
+    ruleStep = Math.min(ruleStep, rules.length - 1);
+    content.innerHTML = '';
+    const text = document.createElement('div');
+    text.className = 'robot-buddy-text';
+    text.textContent = `📘 HOW TO PLAY, ${userName.toUpperCase()}!`;
+    const rule = document.createElement('div');
+    rule.className = 'robot-buddy-rule';
+    rule.textContent = `⭐ ${rules[ruleStep]}`;
+    const dots = document.createElement('div');
+    dots.className = 'robot-buddy-dots';
+    dots.textContent = `${ruleStep + 1} of ${rules.length} ⭐`;
+    const grid = document.createElement('div');
+    grid.className = 'robot-buddy-grid';
+    if (ruleStep < rules.length - 1) grid.appendChild(actionButton('⏭️ NEXT RULE', 'robot-buddy-rules', () => { ruleStep += 1; renderRules(); }));
+    grid.appendChild(actionButton('🏠 BACK', 'robot-buddy-close-action', renderMenu));
+    content.append(text, rule, dots, grid);
   }
 
   function openModal() {
-    isOpen = true;
     modal.classList.add('show');
-    if (!userName) showNamePrompt();
-    else showWelcome();
+    hideLegacyHelp();
+    if (!userName) showNamePrompt(); else renderMenu();
   }
 
-  function closeModal() {
-    isOpen = false;
-    modal.classList.remove('show');
-  }
+  function closeModal() { modal.classList.remove('show'); }
 
-  button.addEventListener('click', openModal);
-  closeBtn.addEventListener('click', closeModal);
-  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-
-  if (!localStorage.getItem(GUIDE_SHOWN_KEY)) {
-    setTimeout(openModal, 800);
-  }
+  openButton.addEventListener('click', openModal);
+  closeButton.addEventListener('click', closeModal);
+  modal.addEventListener('click', event => { if (event.target === modal) closeModal(); });
+  hideLegacyHelp();
 
   window.GameGuide = {
-    setName: saveName,
-    getName: () => userName,
-    showTip: () => { showMessageCarousel(messages.tip(userName || 'Friend')); modal.classList.add('show'); },
-    showStuck: () => { showMessageCarousel(messages.stuck(userName || 'Friend')); modal.classList.add('show'); },
-    celebrate: () => { showMessageCarousel(messages.celebrate(userName || 'Friend')); modal.classList.add('show'); },
-    unlockAllGames,
     open: openModal,
-    close: closeModal
+    close: closeModal,
+    getName: () => userName,
+    setName: name => { userName = String(name || '').trim().slice(0, 24); localStorage.setItem(NAME_KEY, userName); },
+    showTip: () => { if (!userName) userName = 'FRIEND'; modal.classList.add('show'); renderTips(0); },
+    showRules: () => { if (!userName) userName = 'FRIEND'; modal.classList.add('show'); renderRules(); },
+    celebrate: () => { if (!userName) userName = 'FRIEND'; modal.classList.add('show'); content.innerHTML = ''; const text = document.createElement('div'); text.className = 'robot-buddy-text'; text.textContent = `🏆 AMAZING, ${userName.toUpperCase()}! 🎉`; const grid = document.createElement('div'); grid.className = 'robot-buddy-grid'; grid.appendChild(actionButton('✅ YAY!', 'robot-buddy-go', closeModal)); content.append(text, grid); }
   };
+
+  if (!localStorage.getItem(SEEN_KEY)) setTimeout(openModal, 900);
 })();
