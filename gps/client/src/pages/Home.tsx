@@ -21,6 +21,13 @@ const dreamCards = [
   { id: "craft", title: "Get really good", line: "Grow a skill I am proud of.", icon: Sparkles, tone: "yellow" },
 ];
 
+const creativePrompts = [
+  "What would this look like on a normal Tuesday?",
+  "What could you stop doing to make room for this?",
+  "What if these dreams helped each other instead of competing?",
+  "What is one bold version of this that still feels true to you?",
+];
+
 const roleCards: { id: Role; title: string; line: string; icon: typeof Target }[] = [
   { id: "Creative", title: "Make ideas", line: "Fresh ads and angles.", icon: Sparkles },
   { id: "Ads", title: "Run ads", line: "Put strong work in front of people.", icon: Target },
@@ -70,7 +77,7 @@ export default function Home() {
   const [phase, setPhase] = useState<"build" | "realize">("build");
   const [buildView, setBuildView] = useState<BuildView>("dream");
   const [realizeView, setRealizeView] = useState<RealizeView>("target");
-  const [dream, setDream] = useState("travel");
+  const [dreams, setDreams] = useState<string[]>(["travel"]);
   const [role, setRole] = useState<Role>("Ads");
   const [activePiece, setActivePiece] = useState<string | null>(null);
   const [slots, setSlots] = useState<Record<SlotId, string | null>>({ skill: null, week: null, score: null });
@@ -80,14 +87,17 @@ export default function Home() {
   const [started, setStarted] = useState(false);
   const [guideActive, setGuideActive] = useState(false);
 
-  const currentDream = dreamCards.find((item) => item.id === dream) ?? dreamCards[0];
+  const selectedDreams = dreamCards.filter((item) => dreams.includes(item.id));
+  const currentDream = selectedDreams[0] ?? dreamCards[0];
+  const dreamHeadline = selectedDreams.map((item) => item.title).join(" + ");
+  const creativePrompt = creativePrompts[(selectedDreams.length - 1) % creativePrompts.length];
   const currentStandard = standards.find((item) => item.id === standard) ?? standards[0];
   const currentBlock = blocks.find((item) => item.id === block) ?? blocks[1];
   const routeIsBuilt = Object.values(slots).every(Boolean);
   const currentView = phase === "build" ? buildView : realizeView;
   const guide = phase === "build"
     ? buildView === "dream"
-      ? { title: "Choose the dream", message: "Pick the outcome you want most.", button: "Choose your role" }
+      ? { title: "Build the dream", message: "Pick every dream you want in the picture. Then notice how they could work together.", button: "Choose your role" }
       : { title: "Choose your role", message: "Pick where you create the most value.", button: "Make it real" }
     : realizeView === "target"
       ? { title: "Lock the target", message: "Commit to the month you want to create.", button: "Choose the standard" }
@@ -100,7 +110,7 @@ export default function Home() {
             : { title: "Take the first move", message: "Do this first. Do it today.", button: "Finish guide" };
 
   const tinyWin = useMemo(() => {
-    if (block === "dream") return "Write the one outcome you want most.";
+    if (block === "dream") return "Write one sentence about how your dream blend feels.";
     if (block === "skill") return `Spend 20 minutes on ${roleIdeas[role].skill.toLowerCase()}.`;
     if (block === "go") return "Finish one important work step before changing the plan.";
     return roleIdeas[role].work;
@@ -130,9 +140,14 @@ export default function Home() {
     setSlots((old) => ({ ...old, [slot]: activePiece }));
     setActivePiece(null);
   };
+  const toggleDream = (dreamId: string) => {
+    setDreams((current) => current.includes(dreamId)
+      ? current.length === 1 ? current : current.filter((item) => item !== dreamId)
+      : [...current, dreamId]);
+  };
   const reset = () => {
     setPhase("build"); setBuildView("dream"); setRealizeView("target"); setSlots({ skill: null, week: null, score: null });
-    setTargetLocked(false); setStarted(false); setGuideActive(false);
+    setDreams(["travel"]); setTargetLocked(false); setStarted(false); setGuideActive(false);
   };
 
   const footerAction = phase === "build"
@@ -162,8 +177,8 @@ export default function Home() {
         {guideActive && <aside className="guide-panel" aria-label="Guided focus walkthrough"><div className="guide-panel-top"><span><Compass size={16} /> YOUR GUIDE</span><button onClick={() => setGuideActive(false)} aria-label="Exit guided focus"><X size={16} /></button></div><div className="guide-count">{phase === "build" ? "DREAM BUILDING" : "DREAM REALIZATION"}</div><h2>{guide.title}</h2><p>{guide.message}</p><button className="guide-next-button" onClick={next}>{guide.button}<ArrowRight size={16} /></button><small>Leave any time.</small></aside>}
 
         {phase === "build" && buildView === "dream" && <div className="screen intro-screen simple-enter">
-          <div className="intro-hero" style={{ backgroundImage: "linear-gradient(90deg, rgba(14,40,57,.98), rgba(14,40,57,.77) 52%, rgba(14,40,57,.12)), url('/manus-storage/dream-life-gps-hero_5e4ca605.jpg')" }}><div className="level-stamp">DREAM BUILDING</div><div className="big-compass" aria-hidden="true"><Compass size={39} /><span>N</span><i /><i /></div><p>CHOOSE THE OUTCOME</p><h1>What do you want<br />to build?</h1><span>Pick one.</span></div>
-          <div className="dream-board"><div className="board-title"><div><p>CHOOSE ONE</p><h2>Pick your dream.</h2></div></div><div className={`dream-cards ${guideActive ? "guide-focus" : ""}`}>{dreamCards.map((card) => { const Icon = card.icon; const selected = dream === card.id; return <button onClick={() => setDream(card.id)} className={`dream-card ${card.tone} ${selected ? "picked" : ""}`} key={card.id}><span className="dream-icon"><Icon size={22} /></span><b>{card.title}</b><small>{card.line}</small>{selected && <i><Check size={14} /></i>}</button>; })}</div></div>
+          <div className="intro-hero" style={{ backgroundImage: "linear-gradient(90deg, rgba(14,40,57,.98), rgba(14,40,57,.77) 52%, rgba(14,40,57,.12)), url('/manus-storage/dream-life-gps-hero_5e4ca605.jpg')" }}><div className="level-stamp">DREAM BUILDING</div><div className="big-compass" aria-hidden="true"><Compass size={39} /><span>N</span><i /><i /></div><p>BUILD THE PICTURE</p><h1>What do you want<br />to build?</h1><span>Pick every dream that belongs in your life.</span></div>
+          <div className="dream-board"><div className="board-title"><div><p>COMBINE YOUR DREAMS</p><h2>Choose more than one.</h2></div><span>{selectedDreams.length} chosen</span></div><div className={`dream-cards ${guideActive ? "guide-focus" : ""}`}>{dreamCards.map((card) => { const Icon = card.icon; const selected = dreams.includes(card.id); return <button onClick={() => toggleDream(card.id)} className={`dream-card ${card.tone} ${selected ? "picked" : ""}`} key={card.id} aria-pressed={selected}><span className="dream-icon"><Icon size={22} /></span><b>{card.title}</b><small>{card.line}</small>{selected && <i><Check size={14} /></i>}</button>; })}</div><div className="dream-blend"><div><p>YOUR DREAM BLEND</p><h3>{dreamHeadline}</h3></div><div className="creative-prompt"><Sparkles size={18} /><p>{creativePrompt}</p></div></div></div>
         </div>}
 
         {phase === "build" && buildView === "role" && <div className="screen player-screen simple-enter">
@@ -183,7 +198,7 @@ export default function Home() {
 
         {phase === "realize" && realizeView === "route" && <div className="screen build-screen simple-enter">
           <div className="build-side" style={{ backgroundImage: "linear-gradient(170deg, rgba(17,42,58,.99), rgba(17,42,58,.78)), url('/manus-storage/dream-life-gps-atlas_7f8f78a7.jpg')" }}><span className="level-stamp">DREAM REALIZATION</span><p>MAP THE WORK</p><h1>Choose three moves.</h1><small>Pick a card. Put it on the map.</small></div>
-          <div className="build-board"><div className={`piece-tray ${guideActive ? "guide-focus" : ""}`}><p>YOUR THREE MOVES</p><div>{routePieces.map((piece) => { const Icon = piece.icon; const used = Object.values(slots).includes(piece.id); return <button key={piece.id} draggable={!used} onDragStart={() => setActivePiece(piece.id)} onClick={() => !used && setActivePiece(piece.id)} className={`route-piece ${piece.color} ${activePiece === piece.id ? "held" : ""} ${used ? "used" : ""}`}><Icon size={22} /><b>{piece.title}</b><small>{used ? "On the map" : piece.line}</small></button>; })}</div></div><div className="path-map"><div className="path-start"><span>YOUR ROLE</span><b>{role}</b></div><svg viewBox="0 0 600 370" aria-hidden="true"><path d="M60 290 C135 290 149 100 255 152 S385 324 510 86" fill="none" stroke="#FF6B35" strokeDasharray="10 11" strokeWidth="4" /><circle cx="60" cy="290" r="10" fill="#FFFDF8" stroke="#FF6B35" strokeWidth="4" /><circle cx="510" cy="86" r="10" fill="#FF6B35" stroke="#FFFDF8" strokeWidth="4" /></svg>{(["skill", "week", "score"] as SlotId[]).map((slot, index) => { const pieceId = slots[slot]; const piece = routePieces.find((item) => item.id === pieceId); const Icon = piece?.icon ?? MapPin; return <button key={slot} onDragOver={(event) => event.preventDefault()} onDrop={() => placePiece(slot)} onClick={() => placePiece(slot)} className={`map-drop drop-${index} ${piece ? "filled" : ""}`}><span>{piece ? <Icon size={20} /> : "+"}</span><div><small>{index === 0 ? "FIRST" : index === 1 ? "THEN" : "LAST"}</small><b>{piece ? piece.title : "Drop a card here"}</b>{piece && <em>{titleForPiece(piece.id, role)}</em>}</div></button>; })}<div className="path-goal"><Flag size={18} /><span>DREAM</span><b>{currentDream.title}</b></div></div><div className={`path-message ${routeIsBuilt ? "ready" : ""}`}>{routeIsBuilt ? <><Check size={18} /><p><b>Route mapped.</b> Use these moves.</p></> : <><MapPin size={18} /><p><b>Build the route.</b> Put three cards on the map.</p></>}</div></div>
+          <div className="build-board"><div className={`piece-tray ${guideActive ? "guide-focus" : ""}`}><p>YOUR THREE MOVES</p><div>{routePieces.map((piece) => { const Icon = piece.icon; const used = Object.values(slots).includes(piece.id); return <button key={piece.id} draggable={!used} onDragStart={() => setActivePiece(piece.id)} onClick={() => !used && setActivePiece(piece.id)} className={`route-piece ${piece.color} ${activePiece === piece.id ? "held" : ""} ${used ? "used" : ""}`}><Icon size={22} /><b>{piece.title}</b><small>{used ? "On the map" : piece.line}</small></button>; })}</div></div><div className="path-map"><div className="path-start"><span>YOUR ROLE</span><b>{role}</b></div><svg viewBox="0 0 600 370" aria-hidden="true"><path d="M60 290 C135 290 149 100 255 152 S385 324 510 86" fill="none" stroke="#FF6B35" strokeDasharray="10 11" strokeWidth="4" /><circle cx="60" cy="290" r="10" fill="#FFFDF8" stroke="#FF6B35" strokeWidth="4" /><circle cx="510" cy="86" r="10" fill="#FF6B35" stroke="#FFFDF8" strokeWidth="4" /></svg>{(["skill", "week", "score"] as SlotId[]).map((slot, index) => { const pieceId = slots[slot]; const piece = routePieces.find((item) => item.id === pieceId); const Icon = piece?.icon ?? MapPin; return <button key={slot} onDragOver={(event) => event.preventDefault()} onDrop={() => placePiece(slot)} onClick={() => placePiece(slot)} className={`map-drop drop-${index} ${piece ? "filled" : ""}`}><span>{piece ? <Icon size={20} /> : "+"}</span><div><small>{index === 0 ? "FIRST" : index === 1 ? "THEN" : "LAST"}</small><b>{piece ? piece.title : "Drop a card here"}</b>{piece && <em>{titleForPiece(piece.id, role)}</em>}</div></button>; })}<div className="path-goal"><Flag size={18} /><span>DREAM BLEND</span><b>{dreamHeadline}</b></div></div><div className={`path-message ${routeIsBuilt ? "ready" : ""}`}>{routeIsBuilt ? <><Check size={18} /><p><b>Route mapped.</b> Use these moves.</p></> : <><MapPin size={18} /><p><b>Build the route.</b> Put three cards on the map.</p></>}</div></div>
         </div>}
 
         {phase === "realize" && realizeView === "block" && <div className="screen block-screen simple-enter">
@@ -193,7 +208,7 @@ export default function Home() {
 
         {phase === "realize" && realizeView === "move" && <div className="screen plan-screen simple-enter">
           <div className="simple-heading plan-heading"><span className="level-stamp ink">DREAM REALIZATION</span><p>TAKE THE FIRST MOVE</p><h1>Do this first.</h1></div>
-          <article className="little-plan"><div className="plan-top"><div><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><b>DREAM LIFE GPS</b></div><span>FIRST MOVE</span></div><div className="plan-dream"><span><Plane size={19} /></span><div><p>YOUR DREAM</p><h2>{currentDream.title}</h2><small>{currentDream.line}</small></div><Flag size={29} /></div><div className="plan-path"><p>YOUR ROUTE</p>{routePieces.map((piece, index) => { const Icon = piece.icon; const selected = slots[(["skill", "week", "score"] as SlotId[])[index]]; return <div key={piece.id} className={`plan-step ${selected ? "good" : ""}`}><span>0{index + 1}</span><Icon size={19} /><div><b>{piece.title}</b><small>{selected ? titleForPiece(selected, role) : piece.line}</small></div>{selected && <Check size={17} />}</div>; })}</div><div className="tiny-win"><span><Zap size={20} /></span><div><p>DO THIS FIRST</p><b>{tinyWin}</b></div></div><div className="plan-bottom"><p>Do this today.</p><Compass size={24} /></div></article>
+          <article className="little-plan"><div className="plan-top"><div><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><b>DREAM LIFE GPS</b></div><span>FIRST MOVE</span></div><div className="plan-dream"><span><Plane size={19} /></span><div><p>YOUR DREAM BLEND</p><h2>{dreamHeadline}</h2><small>{selectedDreams.map((item) => item.line).join(" ")}</small></div><Flag size={29} /></div><div className="plan-path"><p>YOUR ROUTE</p>{routePieces.map((piece, index) => { const Icon = piece.icon; const selected = slots[(["skill", "week", "score"] as SlotId[])[index]]; return <div key={piece.id} className={`plan-step ${selected ? "good" : ""}`}><span>0{index + 1}</span><Icon size={19} /><div><b>{piece.title}</b><small>{selected ? titleForPiece(selected, role) : piece.line}</small></div>{selected && <Check size={17} />}</div>; })}</div><div className="tiny-win"><span><Zap size={20} /></span><div><p>DO THIS FIRST</p><b>{tinyWin}</b></div></div><div className="plan-bottom"><p>Do this today.</p><Compass size={24} /></div></article>
           <div className={`celebrate-row ${guideActive ? "guide-focus" : ""}`}><button onClick={() => setStarted(true)}><PartyPopper size={18} /> Start my move</button><p>{started ? "Move started." : ""}</p></div>
         </div>}
       </section>
