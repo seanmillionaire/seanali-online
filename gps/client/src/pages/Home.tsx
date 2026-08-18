@@ -178,9 +178,9 @@ export default function Home() {
   return <div className="simple-gps min-h-screen">
     <aside className="simple-rail phase-rail">
       <div className="simple-brand"><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="Dream Life GPS" /><div><b>Dream Life</b><span>GPS / YOUR LIFE MAP</span></div></div>
-      <div className="rail-copy"><p>YOUR TWO PHASES</p><h2>Ask bigger.<br />See the numbers.</h2></div>
+      <div className="rail-copy"><p>YOUR TWO PHASES</p><h2>Gain clarity.<br />See the numbers.</h2></div>
       <nav className="phase-navigation" aria-label="Dream Life GPS phases">
-        <button className={`phase-button ${phase === "build" ? "now" : ""}`} onClick={() => goBuild()}><span>01</span><div><b>Dream Building</b><small>Write the dream. Ask bigger.</small></div></button>
+        <button className={`phase-button ${phase === "build" ? "now" : ""}`} onClick={() => goBuild()}><span>01</span><div><b>Dream Building</b><small>Write the dream. Gain clarity.</small></div></button>
         <button className={`phase-button ${phase === "realize" ? "now" : ""}`} onClick={goRealize}><span>02</span><div><b>Dream Realization</b><small>Move numbers. See trade-offs.</small></div></button>
       </nav>
       <div className="rail-footer"><Compass size={18} /><p>{phase === "build" ? "Name the life you want." : "See what the numbers change."}</p></div>
@@ -190,7 +190,7 @@ export default function Home() {
       <header className="simple-topbar">
         <div className="mobile-brand"><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><b>DREAM LIFE <em>GPS</em></b></div>
         <div className="phase-readout"><span>NOW</span><b>{phase === "build" ? "DREAM BUILDING" : "DREAM REALIZATION"}</b></div>
-        <div className="top-message"><span className="tiny-dot" />{phase === "build" ? "Ask bigger" : "See trade-offs"}</div>
+        <div className="top-message"><span className="tiny-dot" />{phase === "build" ? "Gain clarity" : "See trade-offs"}</div>
         <button className={`guide-launch-button ${guideActive ? "active" : ""}`} onClick={() => setGuideActive((value) => !value)} aria-pressed={guideActive}>{guideActive ? <X size={17} /> : <Compass size={17} />}<span>{guideActive ? "Exit guide" : "Guide me"}</span></button>
       </header>
 
@@ -237,7 +237,7 @@ export default function Home() {
           </div>
         </div>}
       </section>
-      <footer className="simple-footer"><button className="soft-button" onClick={back} disabled={phase === "build" && buildView === "setup"}><ArrowLeft size={17} /> Back</button><p><MapPin size={14} /> {phase === "build" ? "Ask bigger" : "Move the money map"}</p>{phase === "realize" ? <button className="go-button" onClick={reset}>Start new map<Compass size={17} /></button> : <button className="go-button" onClick={next} disabled={footerDisabled}>{footerAction}<ArrowRight size={17} /></button>}</footer>
+      <footer className="simple-footer"><button className="soft-button" onClick={back} disabled={phase === "build" && buildView === "setup"}><ArrowLeft size={17} /> Back</button><p><MapPin size={14} /> {phase === "build" ? "Gain clarity" : "Move the money map"}</p>{phase === "realize" ? <button className="go-button" onClick={reset}>Start new map<Compass size={17} /></button> : <button className="go-button" onClick={next} disabled={footerDisabled}>{footerAction}<ArrowRight size={17} /></button>}</footer>
       <span className="sr-only" aria-live="polite">{guideActive ? `${guide.title}. ${guide.message}` : ""}</span>
     </main>
   </div>;
