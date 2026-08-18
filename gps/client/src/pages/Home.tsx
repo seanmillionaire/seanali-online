@@ -9,12 +9,15 @@ import {
   Mic, MicOff, Sparkles, Target, TrendingUp, Users, Wallet, X,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
+import { findStatedMonthlyIncome } from "@/lib/incomePlan";
 import "../personalization.css";
+import "../income-plan.css";
+import "../income-plan-polish.css";
 
 type BuildView = "welcome" | "setup" | "questions" | "north";
 type Lens = "time" | "wealth" | "freedom" | "impact" | "mastery";
 type ImpactId = "family" | "health" | "home" | "time" | "adventure" | "team" | "giving" | "growth";
-type VisionMomentId = "morning" | "together" | "energy" | "home" | "adventure" | "team" | "giving" | "growth";
+type Commitment = "steady" | "serious" | "allIn";
 type VoiceFieldId = "name" | "location" | "vision" | "beneficiary" | "answer";
 
 type BrowserSpeechEvent = {
@@ -104,15 +107,10 @@ const impactAreas: { id: ImpactId; emoji: string; title: string; line: string }[
   { id: "growth", emoji: "🚀", title: "Who you become", line: "More courage, skill, and belief." },
 ];
 
-const visionMoments: { id: VisionMomentId; emoji: string; title: string; line: string }[] = [
-  { id: "morning", emoji: "☀️", title: "Slow mornings", line: "Start the day with room to breathe." },
-  { id: "together", emoji: "❤️", title: "More together time", line: "Be present for the people you love." },
-  { id: "energy", emoji: "🌿", title: "Real energy", line: "Feel strong, rested, and clear." },
-  { id: "home", emoji: "🏡", title: "A home you love", line: "Live in a space that feels safe and easy." },
-  { id: "adventure", emoji: "✈️", title: "More of the world", line: "Say yes to new places and shared memories." },
-  { id: "team", emoji: "🤝", title: "A winning team", line: "Build with people who grow with you." },
-  { id: "giving", emoji: "🌎", title: "Help that reaches", line: "Make room to give and lift others." },
-  { id: "growth", emoji: "🚀", title: "The person you become", line: "Lead with courage, skill, and belief." },
+const commitmentOptions: { id: Commitment; title: string; hours: string; line: string; blocks: number; days: number; move: string }[] = [
+  { id: "steady", title: "I am starting steady", hours: "4 focused hours a week", line: "I want a real plan that fits around my life.", blocks: 4, days: 4, move: "Give one clear money move your full attention each day." },
+  { id: "serious", title: "I am serious", hours: "8 focused hours a week", line: "I will make this a strong part of my week.", blocks: 8, days: 5, move: "Protect two clear money moves on most workdays." },
+  { id: "allIn", title: "I am all in", hours: "15 focused hours a week", line: "I am ready to make this my main push right now.", blocks: 15, days: 6, move: "Start each day with the highest-value money move first." },
 ];
 
 const questionSets: Record<Lens, ((vision: string, people: string) => string)[]> = {
@@ -159,7 +157,8 @@ export default function Home() {
   const [cleanedBeneficiary, setCleanedBeneficiary] = useState("");
   const [lens, setLens] = useState<Lens>("wealth");
   const [impacts, setImpacts] = useState<ImpactId[]>([]);
-  const [visionMomentIds, setVisionMomentIds] = useState<VisionMomentId[]>([]);
+  const [incomeTarget, setIncomeTarget] = useState(10000);
+  const [commitment, setCommitment] = useState<Commitment>("serious");
   const [questionIndex, setQuestionIndex] = useState(0);
   const [rawAnswers, setRawAnswers] = useState<Record<number, string>>({});
   const [answers, setAnswers] = useState<Record<number, string>>({});
@@ -185,8 +184,23 @@ export default function Home() {
   const selectedLens = lifeLenses.find((item) => item.id === lens) ?? lifeLenses[0];
   const selectedImpactAreas = impactAreas.filter((area) => impacts.includes(area.id));
   const impactTitles = selectedImpactAreas.map((area) => area.title.toLowerCase());
-  const selectedVisionMoments = visionMoments.filter((moment) => visionMomentIds.includes(moment.id));
-  const visionMomentTitles = selectedVisionMoments.map((moment) => moment.title.toLowerCase());
+  const selectedCommitment = commitmentOptions.find((option) => option.id === commitment) ?? commitmentOptions[1];
+  const weeklyIncomeTarget = Math.round(incomeTarget / 4);
+  const dailyIncomeTarget = Math.round(weeklyIncomeTarget / selectedCommitment.days);
+  const formatMoney = (amount: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(amount);
+  const northStarText = [polishedVision, ...Object.values(answers)].join(" ");
+  const statedMonthlyTarget = findStatedMonthlyIncome(northStarText);
+  const focusAnswer = answers[3] || answers[2] || answers[1] || polishedVision;
+  const lensMoneyMove: Record<Lens, string> = {
+    wealth: "Make one clear offer, sales, client, or campaign move that can bring money in.",
+    time: "Protect a money block by removing one low-value task from your day.",
+    freedom: "Choose one money move that gives you more control over your work and time.",
+    impact: "Show one clear result your work creates for the people you want to help.",
+    mastery: "Practice the one skill that makes your work more valuable this week.",
+  };
+  const impactPlanLine = selectedImpactAreas.length
+    ? `This plan is also for ${selectedImpactAreas.map((area) => area.title.toLowerCase()).join(", ")}.`
+    : `This plan is for ${personPhrase}.`;
   const impactFuture = impactTitles.length === 0
     ? "Pick every part of life you want success to touch. There is no wrong mix."
     : impactTitles.length === 1
@@ -194,14 +208,6 @@ export default function Home() {
       : impactTitles.length === 2
         ? `Picture it: more room for ${impactTitles[0]} and ${impactTitles[1]}. Your success can support both at the same time.`
         : `Picture it: more room for ${impactTitles.slice(0, -1).join(", ")}, and ${impactTitles.at(-1)}. This win reaches far beyond one number.`;
-
-  const visionFuture = visionMomentTitles.length === 0
-    ? "Tap the moments you want this win to create. Let yourself picture the life, not just the work."
-    : visionMomentTitles.length === 1
-      ? `${selectedVisionMoments[0].title} is part of what you are building. Add more moments to make the picture feel real.`
-      : visionMomentTitles.length === 2
-        ? `Picture it: ${visionMomentTitles[0]} and ${visionMomentTitles[1]}. This work can support both at the same time.`
-        : `Picture it: ${visionMomentTitles.slice(0, -1).join(", ")}, and ${visionMomentTitles.at(-1)}. This is the life your work is here to support.`;
 
   const greetingTime = new Date().getHours() < 12 ? "Good morning" : new Date().getHours() < 18 ? "Good afternoon" : "Good evening";
   const headerGreeting = userName.trim() && userLocation.trim()
@@ -277,7 +283,7 @@ export default function Home() {
           ? { title: "Map your future", message: "Tap every part of life you want your success to improve. Watch the future picture grow.", button: "See the possibilities" }
           : { title: "Answer the big question", message: "Use your own words. A real answer helps you see a new path.", button: questionIndex === questions.length - 1 ? "See my North Star" : "Next question" }
         : { title: "Read your North Star", message: "This is the bigger picture you just made. Take it with you to your vision board.", button: "Build the picture" }
-    : { title: "Build the picture", message: "Tap every moment you want this work to make possible. Connect the work to the life it can create.", button: "See the full picture" };
+    : { title: "Make the money plan", message: "Set the monthly income you want. Then choose how much focused work you are ready to give it.", button: "Start a new plan" };
 
   const goBuild = (view?: BuildView) => { setPhase("build"); setBuildView(view ?? (userName.trim() && userLocation.trim() ? "setup" : "welcome")); };
   const goRealize = () => setPhase("realize");
@@ -352,12 +358,12 @@ export default function Home() {
   };
   const reset = () => {
     setPhase("build"); setBuildView("setup"); setVision(""); setBeneficiary(""); setLens("wealth"); setImpacts([]);
-    setCleanedVision(""); setCleanedBeneficiary(""); setVisionMomentIds([]); setQuestionIndex(0); setRawAnswers({}); setAnswers({}); setGuideActive(false); stopVoice();
+    setCleanedVision(""); setCleanedBeneficiary(""); setIncomeTarget(10000); setCommitment("serious"); setQuestionIndex(0); setRawAnswers({}); setAnswers({}); setGuideActive(false); stopVoice();
   };
 
   const footerAction = phase === "build"
-    ? buildView === "welcome" ? "Begin Dream Building" : buildView === "setup" ? "Ask the questions" : buildView === "questions" ? questionIndex === 0 ? "See the possibilities" : cleanAnswer.isPending ? "Making it clear" : questionIndex === questions.length - 1 ? "See my North Star" : "Next question" : "Build the picture"
-    : "See the full picture";
+    ? buildView === "welcome" ? "Begin Dream Building" : buildView === "setup" ? "Ask the questions" : buildView === "questions" ? questionIndex === 0 ? "See the possibilities" : cleanAnswer.isPending ? "Making it clear" : questionIndex === questions.length - 1 ? "See my North Star" : "Next question" : "Plan my income"
+    : "Start a new plan";
   const footerDisabled = cleanAnswer.isPending || (phase === "build" && (buildView === "welcome" ? !userName.trim() || !userLocation.trim() : buildView === "setup" ? !vision.trim() : buildView === "questions" ? questionIndex === 0 ? !impacts.length : !currentAnswer.trim() : false));
 
   return <div className="simple-gps min-h-screen">
@@ -366,9 +372,9 @@ export default function Home() {
       <div className="rail-copy"><p>YOUR TWO PHASES</p><h2>Gain clarity.<br />Build the picture.</h2></div>
       <nav className="phase-navigation" aria-label="Dream Life GPS phases">
         <button className={`phase-button ${phase === "build" ? "now" : ""}`} onClick={() => goBuild()}><span>01</span><div><b>Dream Building</b><small>Write the dream. Gain clarity.</small></div></button>
-        <button className={`phase-button ${phase === "realize" ? "now" : ""}`} onClick={goRealize}><span>02</span><div><b>Dream Realization</b><small>Choose the moments. See the life.</small></div></button>
+        <button className={`phase-button ${phase === "realize" ? "now" : ""}`} onClick={goRealize}><span>02</span><div><b>Dream Realization</b><small>Plan the income. Make it real.</small></div></button>
       </nav>
-      <div className="rail-footer"><Compass size={18} /><p>{phase === "build" ? "Name the life you want." : "Connect the life you are building."}</p></div>
+      <div className="rail-footer"><Compass size={18} /><p>{phase === "build" ? "Name the life you want." : "Make the income you are building."}</p></div>
       <div className="creator-signature"><span>Created by</span><b>Sean Ali</b></div>
     </aside>
 
@@ -414,21 +420,21 @@ export default function Home() {
 
         {phase === "build" && buildView === "north" && <div className="screen north-screen simple-enter">
           <div className="simple-heading"><span className="level-stamp ink">DREAM BUILDING</span><p>YOUR NORTH STAR</p><h1>Here is the bigger picture.</h1><small>Use this to keep the money plan pointed at the life you want.</small></div>
-          <article className={`north-card ${guideActive ? "guide-focus" : ""}`}><div className="north-top"><div><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><b>DREAM LIFE GPS</b></div><span>FIELD NOTE</span></div><div className="north-vision"><Flag size={22} /><div><p>WHAT YOU WANT TO MAKE TRUE</p><h2>{polishedVision}</h2>{polishedVision !== vision && <small className="answer-source">Your words: “{vision}”</small>}<small>{selectedLens.title} for {personPhrase}.</small></div></div><div className="north-impact-summary"><span>THE LIFE THIS WIN COULD TOUCH</span><div>{selectedImpactAreas.map((area) => <b key={area.id}><i>{area.emoji}</i>{area.title}</b>)}</div><p>{impactFuture}</p></div><div className="north-answers">{questions.slice(1).map((question, index) => { const answerIndex = index + 1; const rawAnswer = rawAnswers[answerIndex] ?? ""; const cleanedAnswer = answers[answerIndex] ?? rawAnswer; return <div key={question}><span>0{answerIndex + 1}</span><p>{question}</p><b>{cleanedAnswer}</b>{cleanedAnswer !== rawAnswer && <small className="answer-source">Your words: “{rawAnswer}”</small>}</div>; })}</div><div className="north-bottom"><Sparkles size={19} /><p><b>Your direction is clear enough to picture.</b> Now connect the work to the life you want it to create.</p></div></article>
+          <article className={`north-card ${guideActive ? "guide-focus" : ""}`}><div className="north-top"><div><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><b>DREAM LIFE GPS</b></div><span>FIELD NOTE</span></div><div className="north-vision"><Flag size={22} /><div><p>WHAT YOU WANT TO MAKE TRUE</p><h2>{polishedVision}</h2>{polishedVision !== vision && <small className="answer-source">Your words: “{vision}”</small>}<small>{selectedLens.title} for {personPhrase}.</small></div></div><div className="north-impact-summary"><span>THE LIFE THIS WIN COULD TOUCH</span><div>{selectedImpactAreas.map((area) => <b key={area.id}><i>{area.emoji}</i>{area.title}</b>)}</div><p>{impactFuture}</p></div><div className="north-answers">{questions.slice(1).map((question, index) => { const answerIndex = index + 1; const rawAnswer = rawAnswers[answerIndex] ?? ""; const cleanedAnswer = answers[answerIndex] ?? rawAnswer; return <div key={question}><span>0{answerIndex + 1}</span><p>{question}</p><b>{cleanedAnswer}</b>{cleanedAnswer !== rawAnswer && <small className="answer-source">Your words: “{rawAnswer}”</small>}</div>; })}</div><div className="north-bottom"><Sparkles size={19} /><p><b>Your direction is clear enough to picture.</b> Now turn it into a money target and a clear work plan.</p></div></article>
         </div>}
 
-        {phase === "realize" && <div className="screen vision-board-screen simple-enter">
-          <div className="vision-board-hero" style={{ backgroundImage: "linear-gradient(90deg, rgba(14,40,57,.97), rgba(14,40,57,.72) 53%, rgba(14,40,57,.12)), url('/manus-storage/dream-life-gps-hero_5e4ca605.jpg')" }}><div><span className="level-stamp">DREAM REALIZATION</span><p>MAKE THE LIFE FEEL REAL</p><h1>See what you are<br />building toward.</h1><small>{vision.trim() ? `Let “${vision.trim()}” become a life you can almost feel.` : "Choose the moments you want this work to make possible."}</small></div><div className="vision-orbit" aria-hidden="true"><i>☀️</i><i>❤️</i><i>🏡</i><i>✈️</i><span><Compass size={32} /></span></div></div>
-          <div className={`vision-board ${guideActive ? "guide-focus" : ""}`}>
-            <div className="vision-board-heading"><div><p>YOUR LIVING VISION BOARD</p><h2>Pick the moments this win makes possible.</h2></div><button onClick={reset}>Start a new vision</button></div>
-            <section className="vision-impact-thread"><div><MapPin size={17} /><span>THE LIFE THIS WORK CAN TOUCH</span></div><div>{selectedImpactAreas.length ? selectedImpactAreas.map((area) => <b key={area.id}><i>{area.emoji}</i>{area.title}</b>) : <p>Choose your life impacts in Dream Building to bring them into this picture.</p>}</div></section>
-            <section className="vision-moments"><div className="vision-section-heading"><div><p>MAKE IT FEEL REAL</p><h3>Which moments are you building for?</h3></div><span>{visionMomentIds.length} chosen</span></div><div className="vision-moment-grid">{visionMoments.map((moment) => { const picked = visionMomentIds.includes(moment.id); return <button key={moment.id} type="button" className={`vision-moment ${picked ? "picked" : ""}`} onClick={() => setVisionMomentIds((current) => picked ? current.filter((id) => id !== moment.id) : [...current, moment.id])} aria-pressed={picked}><span className="vision-moment-emoji" aria-hidden="true">{moment.emoji}</span><div><b>{moment.title}</b><small>{moment.line}</small></div>{picked && <i><Check size={15} /></i>}</button>; })}</div></section>
-            <aside className={`vision-future ${visionMomentIds.length ? "ready" : ""}`}><div><Sparkles size={19} /><span>YOUR CONNECTED PICTURE</span></div><p>{visionFuture}</p></aside>
-            <section className="vision-checklist" aria-label="Your vision checklist"><div className="vision-check-head"><div><Check size={17} /><span>THE WHOLE PICTURE</span></div><p>These pieces now point to the same life.</p></div><div className="vision-check-lines"><div className={vision.trim() ? "done" : ""}><span>{vision.trim() ? <Check size={14} /> : "01"}</span><p><b>The work you want to make true</b><small>{vision.trim() || "Name the work in Dream Building."}</small></p></div><div className={selectedImpactAreas.length ? "done" : ""}><span>{selectedImpactAreas.length ? <Check size={14} /> : "02"}</span><p><b>Who this win can lift</b><small>{selectedImpactAreas.length ? selectedImpactAreas.map((area) => area.title).join(", ") : "Choose the life areas your success could touch."}</small></p></div><div className={visionMomentIds.length ? "done" : ""}><span>{visionMomentIds.length ? <Check size={14} /> : "03"}</span><p><b>The moments you want to feel</b><small>{visionMomentIds.length ? selectedVisionMoments.map((moment) => moment.title).join(", ") : "Tap the moments that make the future feel real."}</small></p></div></div></section>
+        {phase === "realize" && <div className="screen income-plan-screen simple-enter">
+          <div className="income-plan-hero" style={{ backgroundImage: "linear-gradient(90deg, rgba(14,40,57,.97), rgba(14,40,57,.72) 53%, rgba(14,40,57,.12)), url('/manus-storage/dream-life-gps-hero_5e4ca605.jpg')" }}><div><span className="level-stamp">DREAM REALIZATION</span><p>TURN THE DREAM INTO A MONEY PLAN</p><h1>Make the money<br />you want.</h1><small>{polishedVision.trim() ? `Now give “${polishedVision.trim()}” a clear income target and a work plan that fits your commitment.` : "Set an income target, then choose the work level you are ready to give it."}</small></div><div className="income-target-mark" aria-hidden="true"><DollarSign size={36} /><span>GO</span></div></div>
+          <div className={`income-plan ${guideActive ? "guide-focus" : ""}`}>
+            <div className="income-plan-heading"><div><p>YOUR INCOME ROUTE</p><h2>What do you want to make each month?</h2></div><button onClick={reset}>Start a new plan</button></div>
+            <section className="income-target-panel"><div className="income-target-copy"><span><Target size={16} /> MONTHLY INCOME TARGET</span><p>This is a planning number, not a promise. Pick the amount you want your work to create.</p>{statedMonthlyTarget !== null && <button type="button" className="north-star-recommendation" onClick={() => setIncomeTarget(statedMonthlyTarget)}><Sparkles size={14} /> I found {formatMoney(statedMonthlyTarget)} in your Dream Building words. Use this starting point.</button>}</div><label className="target-number" htmlFor="income-target"><span>$</span><input id="income-target" type="number" min="0" step="500" value={incomeTarget || ""} onChange={(event) => setIncomeTarget(Math.max(0, Number(event.target.value) || 0))} aria-label="Monthly income target" /><small>/ month</small></label><div className="income-presets" aria-label="Quick income target choices">{[5000, 10000, 25000, 50000].map((amount) => <button key={amount} type="button" className={incomeTarget === amount ? "picked" : ""} onClick={() => setIncomeTarget(amount)}>{formatMoney(amount)}</button>)}</div><input className="income-range" type="range" min="1000" max="100000" step="1000" value={Math.min(Math.max(incomeTarget || 1000, 1000), 100000)} onChange={(event) => setIncomeTarget(Number(event.target.value))} aria-label="Adjust monthly income target" /><div className="income-breakdown"><div><span>MONTHLY</span><b>{formatMoney(incomeTarget)}</b></div><div><span>WEEKLY</span><b>{formatMoney(weeklyIncomeTarget)}</b></div><div><span>FOCUS DAY</span><b>{formatMoney(dailyIncomeTarget)}</b><small>{selectedCommitment.days} days a week</small></div></div></section>
+            <section className="commitment-panel"><div className="income-section-title"><div><p>YOUR COMMITMENT LEVEL</p><h3>How much focused work are you ready to give this?</h3></div><span>{selectedCommitment.hours}</span></div><div className="commitment-grid">{commitmentOptions.map((option) => { const picked = commitment === option.id; return <button key={option.id} type="button" className={`commitment-card ${picked ? "picked" : ""}`} onClick={() => setCommitment(option.id)} aria-pressed={picked}><span>{option.id === "steady" ? "01" : option.id === "serious" ? "02" : "03"}</span><div><b>{option.title}</b><small>{option.line}</small><em>{option.hours}</em></div>{picked && <i><Check size={15} /></i>}</button>; })}</div></section>
+            <section className="action-route"><div className="income-section-title"><div><p><TrendingUp size={15} /> YOUR NEXT MONEY MOVES</p><h3>A route that matches your commitment.</h3></div><span>{selectedCommitment.blocks} focus blocks</span></div><p className="route-note">This route supports <b>“{polishedVision || "the life you named"}.”</b> {impactPlanLine} Keep it simple: do the work, track what happens, and adjust.</p><div className="route-steps"><article><span>01</span><div><b>Choose one money move</b><p>{lensMoneyMove[lens]}</p></div></article><article><span>02</span><div><b>Hit the weekly target</b><p>Work toward {formatMoney(weeklyIncomeTarget)} this week. Break it into offers, sales, clients, campaigns, or work that fits your role.</p></div></article><article><span>03</span><div><b>Use the focus you named</b><p>{focusAnswer ? `You said: “${focusAnswer}”` : "Review what brought money in, keep what worked, and choose the next move before the week ends."}</p></div></article></div></section>
+            <aside className="income-commitment-note"><Wallet size={20} /><p><b>{selectedCommitment.title} means this:</b> {selectedCommitment.hours}, {selectedCommitment.blocks} protected focus blocks, and one simple weekly review. {impactPlanLine} That is the commitment you chose.</p></aside>
           </div>
         </div>}
       </section>
-      <footer className="simple-footer"><button className="soft-button" onClick={back} disabled={phase === "build" && buildView === "setup"}><ArrowLeft size={17} /> Back</button><p><MapPin size={14} /> {phase === "build" ? "Gain clarity" : "Build the picture"}</p>{phase === "realize" ? <button className="go-button" onClick={reset}>Start new vision<Compass size={17} /></button> : <button className="go-button" onClick={next} disabled={footerDisabled}>{footerAction}<ArrowRight size={17} /></button>}</footer>
+      <footer className="simple-footer"><button className="soft-button" onClick={back} disabled={phase === "build" && buildView === "setup"}><ArrowLeft size={17} /> Back</button><p><MapPin size={14} /> {phase === "build" ? "Gain clarity" : "Hit your income target"}</p>{phase === "realize" ? <button className="go-button" onClick={reset}>Start new plan<Compass size={17} /></button> : <button className="go-button" onClick={next} disabled={footerDisabled}>{footerAction}<ArrowRight size={17} /></button>}</footer>
       <span className="sr-only" aria-live="polite">{guideActive ? `${guide.title}. ${guide.message}` : ""}</span>
     </main>
   </div>;
