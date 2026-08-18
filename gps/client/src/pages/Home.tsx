@@ -2,7 +2,7 @@
  * DREAM LIFE GPS — Simple Trail edition.
  * Plain eighth-grade language, visual play, and small actions that feel easy to start.
  */
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -22,8 +22,7 @@ import {
   TentTree,
   Trophy,
   Users,
-  Volume2,
-  VolumeX,
+  X,
   Zap,
 } from "lucide-react";
 
@@ -77,6 +76,14 @@ const roadBlocks = [
   { id: "go", title: "I keep stopping.", small: "I need to keep going.", icon: Mountain },
 ];
 
+const guideCues = [
+  { title: "Pick your dream", message: "Start here. Tap the dream card that sounds best to you.", button: "Go to your player" },
+  { title: "Pick your player", message: "Now tap the card that feels most like your job.", button: "Build your path" },
+  { title: "Build your path", message: "Pick a bright card. Then tap an empty spot on the map. Do that three times.", button: "Find the big rock" },
+  { title: "Find the big rock", message: "Tap the thing that is getting in your way right now. Keep it simple.", button: "See your little plan" },
+  { title: "Look at your little plan", message: "Check your tiny win. That is the only thing you need to do first.", button: "Finish guide" },
+];
+
 function titleForPiece(pieceId: string, role: Role) {
   const roleIdea = roleIdeas[role];
   if (pieceId === "skill") return roleIdea.skill;
@@ -92,8 +99,8 @@ export default function Home() {
   const [slots, setSlots] = useState<Record<SlotId, string | null>>({ skill: null, week: null, score: null });
   const [block, setBlock] = useState("path");
   const [celebrate, setCelebrate] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const [speechAvailable] = useState(() => typeof window !== "undefined" && "speechSynthesis" in window);
+  const [guideActive, setGuideActive] = useState(false);
+  const [guideCue, setGuideCue] = useState(0);
 
   const currentDream = dreamCards.find((item) => item.id === dream) ?? dreamCards[0];
   const currentBlock = roadBlocks.find((item) => item.id === block) ?? roadBlocks[1];
@@ -107,43 +114,6 @@ export default function Home() {
     return roleIdeas[role].work;
   }, [block, role]);
 
-  const audioPrompt = useMemo(() => {
-    if (step === 0) return `Step 1. Pick a dream. Choose the card that feels best to you. Right now, you picked ${currentDream.title}. You can change it later.`;
-    if (step === 1) return `Step 2. Pick what you help with. Right now, you picked ${role}. There are no wrong answers. Pick the one that feels closest.`;
-    if (step === 2) return `Step 3. Build your path. Pick the three bright cards and put them on your map. First get better. Then do the work. Last, look at the score. ${routeIsBuilt ? "Nice work. Your path is built." : "You can drag a card, or tap a card and then tap an empty spot."}`;
-    if (step === 3) return `Step 4. Find the big rock. You picked: ${currentBlock.title} Your next small move is: ${tinyWin}`;
-    return `Step 5. Here is your little plan. Your dream is ${currentDream.title}. Your tiny win this week is: ${tinyWin} You are ready to go.`;
-  }, [currentBlock.title, currentDream.title, role, routeIsBuilt, step, tinyWin]);
-
-  const stopReading = () => {
-    if (!speechAvailable) return;
-    window.speechSynthesis.cancel();
-    setIsSpeaking(false);
-  };
-
-  const toggleReading = () => {
-    if (!speechAvailable) return;
-    if (isSpeaking) {
-      stopReading();
-      return;
-    }
-    const message = new SpeechSynthesisUtterance(audioPrompt);
-    message.rate = 0.94;
-    message.pitch = 1;
-    message.onend = () => setIsSpeaking(false);
-    message.onerror = () => setIsSpeaking(false);
-    window.speechSynthesis.cancel();
-    setIsSpeaking(true);
-    window.speechSynthesis.speak(message);
-  };
-
-  useEffect(() => {
-    if (!speechAvailable) return;
-    window.speechSynthesis.cancel();
-    setIsSpeaking(false);
-    return () => window.speechSynthesis.cancel();
-  }, [step, speechAvailable]);
-
   const placePiece = (slot: SlotId) => {
     if (!activePiece) return;
     setSlots((oldSlots) => ({ ...oldSlots, [slot]: activePiece }));
@@ -151,16 +121,29 @@ export default function Home() {
   };
 
   const goToStep = (nextStep: number) => {
-    stopReading();
     setStep(nextStep);
   };
   const next = () => goToStep(Math.min(4, step + 1));
   const back = () => goToStep(Math.max(0, step - 1));
   const reset = () => {
-    stopReading();
     setStep(0);
     setSlots({ skill: null, week: null, score: null });
     setCelebrate(false);
+    setGuideActive(false);
+    setGuideCue(0);
+  };
+  const startGuide = () => {
+    setGuideCue(step);
+    setGuideActive(true);
+  };
+  const moveGuideForward = () => {
+    if (guideCue === 4) {
+      setGuideActive(false);
+      return;
+    }
+    const nextCue = guideCue + 1;
+    setGuideCue(nextCue);
+    goToStep(nextCue);
   };
 
   return (
@@ -183,10 +166,11 @@ export default function Home() {
           <div className="mobile-brand"><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><b>DREAM LIFE <em>GPS</em></b></div>
           <div className="step-readout"><span>YOUR PATH</span><div><i style={{ width: `${Math.max(progress, 5)}%` }} /></div><b>{step + 1} / 5</b></div>
           <div className="top-message"><span className="tiny-dot" />You are building your path</div>
-          {speechAvailable && <button className={`audio-prompt-button ${isSpeaking ? "reading" : ""}`} onClick={toggleReading} aria-pressed={isSpeaking} aria-label={isSpeaking ? "Stop reading this step" : "Read this step out loud"}>{isSpeaking ? <VolumeX size={17} /> : <Volume2 size={17} />}<span>{isSpeaking ? "Stop reading" : "Read this step"}</span></button>}
+          <button className={`guide-launch-button ${guideActive ? "active" : ""}`} onClick={() => guideActive ? setGuideActive(false) : startGuide()} aria-pressed={guideActive}>{guideActive ? <X size={17} /> : <Compass size={17} />}<span>{guideActive ? "Exit guide" : "Guide me"}</span></button>
         </header>
 
         <section className="simple-canvas">
+          {guideActive && <aside className="guide-panel" aria-label="Guided focus walkthrough"><div className="guide-panel-top"><span><Compass size={16} /> YOUR GUIDE</span><button onClick={() => setGuideActive(false)} aria-label="Exit guided focus"><X size={16} /></button></div><div className="guide-count">STEP {guideCue + 1} OF 5</div><h2>{guideCues[guideCue].title}</h2><p>{guideCues[guideCue].message}</p><div className="guide-dots">{guideCues.map((item, index) => <i className={index === guideCue ? "now" : index < guideCue ? "done" : ""} key={item.title} />)}</div><button className="guide-next-button" onClick={moveGuideForward}>{guideCues[guideCue].button}<ArrowRight size={16} /></button><small>You can leave the guide any time.</small></aside>}
           {step === 0 && <div className="screen intro-screen simple-enter">
             <div className="intro-hero" style={{ backgroundImage: "linear-gradient(90deg, rgba(14,40,57,.98), rgba(14,40,57,.77) 52%, rgba(14,40,57,.12)), url('/manus-storage/dream-life-gps-hero_5e4ca605.jpg')" }}>
               <div className="level-stamp">STEP 1</div><div className="big-compass" aria-hidden="true"><Compass size={39} /><span>N</span><i /><i /></div>
@@ -194,14 +178,14 @@ export default function Home() {
             </div>
             <div className="dream-board">
               <div className="board-title"><div><p>YOUR DREAM CARDS</p><h2>Choose the one that feels best.</h2></div><span><MapPin size={16} /> Put a pin on it</span></div>
-              <div className="dream-cards">{dreamCards.map((card) => { const Icon = card.icon; const selected = dream === card.id; return <button onClick={() => setDream(card.id)} className={`dream-card ${card.tone} ${selected ? "picked" : ""}`} key={card.id}><span className="dream-icon"><Icon size={22} /></span><b>{card.title}</b><small>{card.line}</small>{selected && <i><Check size={14} /></i>}</button>; })}</div>
+              <div className={`dream-cards ${guideActive && guideCue === 0 ? "guide-focus" : ""}`}>{dreamCards.map((card) => { const Icon = card.icon; const selected = dream === card.id; return <button onClick={() => setDream(card.id)} className={`dream-card ${card.tone} ${selected ? "picked" : ""}`} key={card.id}><span className="dream-icon"><Icon size={22} /></span><b>{card.title}</b><small>{card.line}</small>{selected && <i><Check size={14} /></i>}</button>; })}</div>
               <div className="simple-callout"><span className="mini-pin"><MapPin size={17} /></span><p><b>Your dream:</b> {currentDream.title}. Great. Now we will make a tiny path toward it.</p></div>
             </div>
           </div>}
 
           {step === 1 && <div className="screen player-screen simple-enter">
             <div className="simple-heading"><span className="level-stamp ink">STEP 2</span><p>NOW PICK YOUR PLAYER</p><h1>What do you help with?</h1><small>There are no wrong answers. Pick the closest one.</small></div>
-            <div className="player-map" style={{ backgroundImage: "linear-gradient(105deg, rgba(255,253,248,.98), rgba(255,253,248,.76)), url('/manus-storage/dream-life-gps-atlas_7f8f78a7.jpg')" }}>
+            <div className={`player-map ${guideActive && guideCue === 1 ? "guide-focus" : ""}`} style={{ backgroundImage: "linear-gradient(105deg, rgba(255,253,248,.98), rgba(255,253,248,.76)), url('/manus-storage/dream-life-gps-atlas_7f8f78a7.jpg')" }}>
               {roleCards.map((card, index) => { const Icon = card.icon; return <button className={`player-card ${role === card.id ? "picked" : ""}`} onClick={() => setRole(card.id)} key={card.id}><span>0{index + 1}</span><Icon size={24} /><b>{card.title}</b><small>{card.line}</small>{role === card.id && <i><Check size={13} /> Picked</i>}</button>; })}
             </div>
             <div className="role-bubble"><span><PartyPopper size={20} /></span><p><b>You picked: {role}.</b> Nice. Now let’s make a simple path for your job.</p></div>
@@ -212,7 +196,7 @@ export default function Home() {
               <span className="level-stamp">STEP 3</span><p>BUILD YOUR PATH</p><h1>Drag the 3 cards onto your map.</h1><small>Or tap a card, then tap an empty spot. Easy.</small><div className="drop-hint"><ArrowRight size={18} /> Pick, drop, done.</div>
             </div>
             <div className="build-board">
-              <div className="piece-tray"><p>YOUR 3 PATH CARDS</p><div>{routePieces.map((piece) => { const Icon = piece.icon; const used = Object.values(slots).includes(piece.id); return <button key={piece.id} draggable={!used} onDragStart={() => setActivePiece(piece.id)} onClick={() => !used && setActivePiece(piece.id)} className={`route-piece ${piece.color} ${activePiece === piece.id ? "held" : ""} ${used ? "used" : ""}`}><Icon size={22} /><b>{piece.title}</b><small>{used ? "On your map" : piece.line}</small></button>; })}</div></div>
+              <div className={`piece-tray ${guideActive && guideCue === 2 ? "guide-focus" : ""}`}><p>YOUR 3 PATH CARDS</p><div>{routePieces.map((piece) => { const Icon = piece.icon; const used = Object.values(slots).includes(piece.id); return <button key={piece.id} draggable={!used} onDragStart={() => setActivePiece(piece.id)} onClick={() => !used && setActivePiece(piece.id)} className={`route-piece ${piece.color} ${activePiece === piece.id ? "held" : ""} ${used ? "used" : ""}`}><Icon size={22} /><b>{piece.title}</b><small>{used ? "On your map" : piece.line}</small></button>; })}</div></div>
               <div className="path-map">
                 <div className="path-start"><span>YOU ARE HERE</span><b>{role}</b></div>
                 <svg viewBox="0 0 600 370" aria-hidden="true"><path d="M60 290 C135 290 149 100 255 152 S385 324 510 86" fill="none" stroke="#FF6B35" strokeDasharray="10 11" strokeWidth="4" /><circle cx="60" cy="290" r="10" fill="#FFFDF8" stroke="#FF6B35" strokeWidth="4" /><circle cx="510" cy="86" r="10" fill="#FF6B35" stroke="#FFFDF8" strokeWidth="4" /></svg>
@@ -225,7 +209,7 @@ export default function Home() {
 
           {step === 3 && <div className="screen block-screen simple-enter">
             <div className="block-hero" style={{ backgroundImage: "linear-gradient(100deg, rgba(14,40,57,.98), rgba(14,40,57,.68)), url('/manus-storage/dream-life-gps-checkpoint_6586c299.jpg')" }}><span className="level-stamp">STEP 4</span><p>FIND THE BIG ROCK</p><h1>What is making this hard right now?</h1><small>Pick the one that feels most true. No shame. We all get stuck.</small></div>
-            <div className="block-board"><div className="rock-list">{roadBlocks.map((item) => { const Icon = item.icon; return <button className={`rock-card ${block === item.id ? "picked" : ""}`} onClick={() => setBlock(item.id)} key={item.id}><span><Icon size={22} /></span><div><b>{item.title}</b><small>{item.small}</small></div>{block === item.id && <i><Check size={14} /></i>}</button>; })}</div><div className="rock-answer"><div className="answer-icon"><currentBlock.icon size={30} /></div><p>YOUR NEXT MOVE</p><h2>Let’s move this rock.</h2><b>{currentBlock.small}</b><span>{tinyWin}</span><div><MapPin size={17} /> Just do this one small thing first.</div></div></div>
+            <div className="block-board"><div className={`rock-list ${guideActive && guideCue === 3 ? "guide-focus" : ""}`}>{roadBlocks.map((item) => { const Icon = item.icon; return <button className={`rock-card ${block === item.id ? "picked" : ""}`} onClick={() => setBlock(item.id)} key={item.id}><span><Icon size={22} /></span><div><b>{item.title}</b><small>{item.small}</small></div>{block === item.id && <i><Check size={14} /></i>}</button>; })}</div><div className="rock-answer"><div className="answer-icon"><currentBlock.icon size={30} /></div><p>YOUR NEXT MOVE</p><h2>Let’s move this rock.</h2><b>{currentBlock.small}</b><span>{tinyWin}</span><div><MapPin size={17} /> Just do this one small thing first.</div></div></div>
           </div>}
 
           {step === 4 && <div className="screen plan-screen simple-enter">
@@ -237,12 +221,12 @@ export default function Home() {
               <div className="tiny-win"><span><Zap size={20} /></span><div><p>MY TINY WIN THIS WEEK</p><b>{tinyWin}</b></div></div>
               <div className="plan-bottom"><span>REMEMBER</span><p>Pick a dream. Take a step. Keep going.</p><Compass size={24} /></div>
             </article>
-            <div className="celebrate-row"><button onClick={() => setCelebrate(true)}><PartyPopper size={18} /> I am ready</button><p>{celebrate ? "Nice. Your first tiny step starts now." : "You do not need to do everything today."}</p></div>
+            <div className={`celebrate-row ${guideActive && guideCue === 4 ? "guide-focus" : ""}`}><button onClick={() => setCelebrate(true)}><PartyPopper size={18} /> I am ready</button><p>{celebrate ? "Nice. Your first tiny step starts now." : "You do not need to do everything today."}</p></div>
           </div>}
         </section>
 
         <footer className="simple-footer"><button className="soft-button" onClick={back} disabled={step === 0}><ArrowLeft size={17} /> Back</button><p><MapPin size={14} /> {steps[step].title} <ArrowRight size={13} /> {step === 4 ? "Go" : steps[step + 1]?.title}</p>{step < 4 ? <button className="go-button" onClick={next}>{step === 2 && !routeIsBuilt ? "Keep building" : "Next little step"}<ArrowRight size={17} /></button> : <button className="go-button" onClick={reset}>Try a new dream<Compass size={17} /></button>}</footer>
-        <span className="sr-only" aria-live="polite">{isSpeaking ? `Reading step ${step + 1} out loud.` : ""}</span>
+        <span className="sr-only" aria-live="polite">{guideActive ? `Guide step ${guideCue + 1}. ${guideCues[guideCue].message}` : ""}</span>
       </main>
     </div>
   );
