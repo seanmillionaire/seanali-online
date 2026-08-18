@@ -1,0 +1,31 @@
+/* Wayfinder's Atlas voice kit — tactile field-journal controls for speaking a personal future into view. */
+.creator-signature{display:flex;align-items:baseline;gap:7px;margin-top:15px;padding-top:13px;color:#B8D9CE;border-top:1px solid rgba(255,255,255,.13)}
+.creator-signature span{font-size:8px;font-weight:800;letter-spacing:1px;text-transform:uppercase;opacity:.78}
+.creator-signature b{color:#FFF5E8;font-family:'DM Serif Display',serif;font-size:17px;font-style:italic;font-weight:400;letter-spacing:.1px}
+
+.voice-field{display:block;margin-top:19px}
+.voice-field>label{display:block;margin:0;color:#60736C;font-size:10px;font-weight:800;letter-spacing:1px}
+.voice-field>label em{color:#84938C;font-style:normal;font-weight:600;letter-spacing:0}
+.voice-entry{position:relative;margin-top:8px}
+.voice-field .voice-entry textarea,.voice-field .voice-entry input{display:block;width:100%;margin:0;padding:14px 57px 14px 15px;color:#173A49;border:1px solid #D4C9BA;border-radius:0;background:rgba(255,252,245,.84);font:600 14px/1.48 'Manrope',sans-serif;outline:none;resize:vertical;transition:border-color .16s ease,box-shadow .16s ease,background .16s ease}
+.voice-field .voice-entry textarea:focus,.voice-field .voice-entry input:focus{border-color:#FF6B35;background:#FFFDF8;box-shadow:0 0 0 4px rgba(255,107,53,.12)}
+.voice-field .voice-entry textarea::placeholder,.voice-field .voice-entry input::placeholder{color:#9BA49D;font-weight:500}
+.voice-button{position:absolute;top:9px;right:9px;display:grid;place-items:center;width:36px;height:36px;color:#466D62;border:1px solid #BDD0C5;background:#EDF5F0;box-shadow:2px 2px 0 rgba(20,53,73,.12);transition:transform .16s ease,background .16s ease,color .16s ease,border-color .16s ease}
+.voice-button:hover{color:#FFF8ED;border-color:#FF6B35;background:#FF6B35}
+.voice-button:active{transform:scale(.94)}
+.voice-field.is-listening .voice-entry textarea,.voice-field.is-listening .voice-entry input{border-color:#FF6B35;background:#FFF9F3;box-shadow:0 0 0 4px rgba(255,107,53,.12)}
+.voice-field.is-listening .voice-button{color:#FFF8ED;border-color:#FF6B35;background:#FF6B35;animation:voice-pulse 1.25s ease-in-out infinite}
+.voice-hint{display:flex;align-items:center;gap:5px;min-height:17px;margin:7px 0 0;color:#708078;font-size:10px;line-height:1.35}
+.voice-field.is-listening .voice-hint{color:#B74C26;font-weight:700}
+.voice-hint svg{flex:0 0 auto;color:#FF6B35}
+@keyframes voice-pulse{50%{box-shadow:0 0 0 5px rgba(255,107,53,.14)}}
+
+@media(max-width:700px){
+  .creator-signature{margin-top:14px;padding-top:10px}
+  .creator-signature b{font-size:16px}
+  .voice-field .voice-entry textarea,.voice-field .voice-entry input{font-size:16px}
+  .voice-button{width:38px;height:38px}
+  .voice-hint{font-size:10px}
+}
+
+@media(prefers-reduced-motion:reduce){.voice-field.is-listening .voice-button{animation:none}}

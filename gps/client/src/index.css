@@ -1,5 +1,6 @@
 /* DREAM LIFE GPS — Simple Trail: approachable words, playful cards, and tangible map pieces instead of data-heavy forms. */
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap');
+@import "./voice.css";
 @import "tailwindcss";
 @import "tw-animate-css";
 

@@ -3,16 +3,85 @@
  * The page uses ink-blue route rails, parchment map panels, Compass Orange waypoints,
  * and plain language so every interaction creates a decision, answer, or rough plan.
  */
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft, ArrowRight, Check, Compass, DollarSign, Flag, MapPin,
-  Sparkles, Target, TrendingUp, Users, Wallet, X,
+  Mic, MicOff, Sparkles, Target, TrendingUp, Users, Wallet, X,
 } from "lucide-react";
 
 type BuildView = "setup" | "questions" | "north";
 type Lens = "time" | "wealth" | "freedom" | "impact" | "mastery";
 type ImpactId = "family" | "health" | "home" | "time" | "adventure" | "team" | "giving" | "growth";
 type VisionMomentId = "morning" | "together" | "energy" | "home" | "adventure" | "team" | "giving" | "growth";
+type VoiceFieldId = "vision" | "beneficiary" | "answer";
+
+type BrowserSpeechEvent = {
+  resultIndex: number;
+  results: ArrayLike<ArrayLike<{ transcript: string }>>;
+};
+
+type BrowserSpeechRecognition = {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  onresult: ((event: BrowserSpeechEvent) => void) | null;
+  onerror: ((event: { error: string }) => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  abort: () => void;
+};
+
+type BrowserSpeechRecognitionConstructor = new () => BrowserSpeechRecognition;
+
+declare global {
+  interface Window {
+    SpeechRecognition?: BrowserSpeechRecognitionConstructor;
+    webkitSpeechRecognition?: BrowserSpeechRecognitionConstructor;
+  }
+}
+
+type VoiceInputProps = {
+  fieldId: VoiceFieldId;
+  label: string;
+  optional?: boolean;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+  multiline?: boolean;
+  rows?: number;
+  autoFocus?: boolean;
+  activeField: VoiceFieldId | null;
+  status: { field: VoiceFieldId | null; message: string };
+  voiceAvailable: boolean;
+  onStart: (field: VoiceFieldId) => void;
+  onStop: () => void;
+  className: "inquiry-field" | "answer-field";
+};
+
+function VoiceInput({ fieldId, label, optional = false, value, onChange, placeholder, multiline = false, rows, autoFocus = false, activeField, status, voiceAvailable, onStart, onStop, className }: VoiceInputProps) {
+  const listening = activeField === fieldId;
+  const inputId = `dream-life-${fieldId}`;
+  const hint = listening
+    ? "Listening now. Speak naturally, then pause."
+    : status.field === fieldId && status.message
+      ? status.message
+      : voiceAvailable
+        ? "Tap the microphone to speak your answer."
+        : "Voice input is not available in this browser. You can type instead.";
+
+  return <div className={`${className} voice-field ${listening ? "is-listening" : ""}`}>
+    <label htmlFor={inputId}>{label}{optional && <em> Optional</em>}</label>
+    <div className="voice-entry">
+      {multiline
+        ? <textarea id={inputId} value={value} onChange={(event) => onChange(event.target.value)} placeholder={placeholder} rows={rows} autoFocus={autoFocus} />
+        : <input id={inputId} value={value} onChange={(event) => onChange(event.target.value)} placeholder={placeholder} autoFocus={autoFocus} />}
+      <button type="button" className="voice-button" onClick={() => listening ? onStop() : onStart(fieldId)} aria-pressed={listening} aria-label={listening ? "Stop voice input" : `Speak your answer for ${label}`} title={listening ? "Stop listening" : "Speak your answer"}>
+        {listening ? <MicOff size={18} /> : <Mic size={18} />}
+      </button>
+    </div>
+    <p className="voice-hint" aria-live="polite"><Mic size={13} /> {hint}</p>
+  </div>;
+}
 
 const lifeLenses: { id: Lens; title: string; line: string; icon: typeof Compass }[] = [
   { id: "time", title: "More time", line: "A life with room to breathe.", icon: Compass },
@@ -88,6 +157,10 @@ export default function Home() {
   const [questionIndex, setQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [guideActive, setGuideActive] = useState(false);
+  const [activeVoiceField, setActiveVoiceField] = useState<VoiceFieldId | null>(null);
+  const [voiceStatus, setVoiceStatus] = useState<{ field: VoiceFieldId | null; message: string }>({ field: null, message: "" });
+  const recognitionRef = useRef<BrowserSpeechRecognition | null>(null);
+  const voiceAvailable = typeof window !== "undefined" && Boolean(window.SpeechRecognition || window.webkitSpeechRecognition);
 
   const personPhrase = beneficiary.trim() || "the people you care about";
   const questionPersonPhrase = beneficiary.trim()
@@ -120,6 +193,63 @@ export default function Home() {
         ? `Picture it: ${visionMomentTitles[0]} and ${visionMomentTitles[1]}. This work can support both at the same time.`
         : `Picture it: ${visionMomentTitles.slice(0, -1).join(", ")}, and ${visionMomentTitles.at(-1)}. This is the life your work is here to support.`;
 
+  const updateVoiceField = (field: VoiceFieldId, value: string) => {
+    if (field === "vision") setVision(value);
+    else if (field === "beneficiary") setBeneficiary(value);
+    else setAnswers((current) => ({ ...current, [questionIndex]: value }));
+  };
+
+  const stopVoice = () => {
+    const stoppedField = activeVoiceField;
+    recognitionRef.current?.abort();
+    recognitionRef.current = null;
+    setActiveVoiceField(null);
+    if (stoppedField) setVoiceStatus({ field: stoppedField, message: "Voice input stopped. You can keep typing." });
+  };
+
+  const startVoice = (field: VoiceFieldId) => {
+    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!Recognition) {
+      setVoiceStatus({ field, message: "Voice input is not available here. You can type instead." });
+      return;
+    }
+    recognitionRef.current?.abort();
+    const currentValue = field === "vision" ? vision : field === "beneficiary" ? beneficiary : currentAnswer;
+    const startingText = currentValue.trim() ? `${currentValue.trim()} ` : "";
+    const recognition = new Recognition();
+    recognition.lang = navigator.language || "en-US";
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.onresult = (event) => {
+      const spoken = Array.from(event.results).slice(event.resultIndex).map((result) => result[0]?.transcript ?? "").join("").trim();
+      updateVoiceField(field, spoken ? `${startingText}${spoken}` : startingText.trim());
+    };
+    recognition.onerror = (event) => {
+      if (recognitionRef.current !== recognition) return;
+      recognitionRef.current = null;
+      setActiveVoiceField(null);
+      setVoiceStatus({ field, message: event.error === "not-allowed" ? "Microphone permission is off. Allow it in your browser, then try again." : "We could not hear that. Try again or type your answer." });
+    };
+    recognition.onend = () => {
+      if (recognitionRef.current !== recognition) return;
+      recognitionRef.current = null;
+      setActiveVoiceField(null);
+      setVoiceStatus({ field, message: "Voice input paused. Tap the microphone to keep going." });
+    };
+    recognitionRef.current = recognition;
+    setActiveVoiceField(field);
+    setVoiceStatus({ field, message: "Listening now. Speak naturally, then pause." });
+    try {
+      recognition.start();
+    } catch {
+      recognitionRef.current = null;
+      setActiveVoiceField(null);
+      setVoiceStatus({ field, message: "Voice input is busy. Please try again." });
+    }
+  };
+
+  useEffect(() => () => recognitionRef.current?.abort(), []);
+
   const guide = phase === "build"
     ? buildView === "setup"
       ? { title: "Write the dream", message: "Write what you want to make true. Then choose the kind of change you want most.", button: "Ask the questions" }
@@ -133,6 +263,7 @@ export default function Home() {
   const goBuild = (view: BuildView = "setup") => { setPhase("build"); setBuildView(view); };
   const goRealize = () => setPhase("realize");
   const next = () => {
+    stopVoice();
     if (phase === "build" && buildView === "setup") {
       if (vision.trim()) setBuildView("questions");
       return;
@@ -152,6 +283,7 @@ export default function Home() {
     }
   };
   const back = () => {
+    stopVoice();
     if (phase === "realize") return goBuild("north");
     if (buildView === "north") return setBuildView("questions");
     if (buildView === "questions") {
@@ -161,7 +293,7 @@ export default function Home() {
   };
   const reset = () => {
     setPhase("build"); setBuildView("setup"); setVision(""); setBeneficiary(""); setLens("wealth"); setImpacts([]);
-    setVisionMomentIds([]); setQuestionIndex(0); setAnswers({}); setGuideActive(false);
+    setVisionMomentIds([]); setQuestionIndex(0); setAnswers({}); setGuideActive(false); stopVoice();
   };
 
   const footerAction = phase === "build"
@@ -178,6 +310,7 @@ export default function Home() {
         <button className={`phase-button ${phase === "realize" ? "now" : ""}`} onClick={goRealize}><span>02</span><div><b>Dream Realization</b><small>Choose the moments. See the life.</small></div></button>
       </nav>
       <div className="rail-footer"><Compass size={18} /><p>{phase === "build" ? "Name the life you want." : "Connect the life you are building."}</p></div>
+      <div className="creator-signature"><span>Created by</span><b>Sean Ali</b></div>
     </aside>
 
     <main className="simple-main">
@@ -195,8 +328,8 @@ export default function Home() {
           <div className="intro-hero inquiry-hero" style={{ backgroundImage: "linear-gradient(90deg, rgba(14,40,57,.98), rgba(14,40,57,.77) 52%, rgba(14,40,57,.12)), url('/manus-storage/dream-life-gps-hero_5e4ca605.jpg')" }}><div className="level-stamp">DREAM BUILDING</div><div className="big-compass" aria-hidden="true"><Compass size={39} /><span>N</span><i /><i /></div><p>START WITH A BIGGER QUESTION</p><h1>What do you want<br />to make true?</h1><span>Write it your way. We will help you look at it from a new angle.</span></div>
           <div className={`inquiry-board ${guideActive ? "guide-focus" : ""}`}>
             <div className="board-title"><div><p>YOUR STARTING POINT</p><h2>Give the dream a name.</h2></div><span><MapPin size={14} /> First waypoint</span></div>
-            <label className="inquiry-field"><span>WHAT DO YOU WANT TO MAKE TRUE?</span><textarea value={vision} onChange={(event) => setVision(event.target.value)} placeholder="Example: I want to build a business that gives my family more freedom." rows={3} autoFocus /></label>
-            <label className="inquiry-field"><span>WHO GETS A BETTER LIFE WHEN THIS WORKS? <em>Optional</em></span><input value={beneficiary} onChange={(event) => setBeneficiary(event.target.value)} placeholder="My family, my team, my customers..." /></label>
+            <VoiceInput fieldId="vision" label="WHAT DO YOU WANT TO MAKE TRUE?" value={vision} onChange={setVision} placeholder="Example: I want to build a business that gives my family more freedom." multiline rows={3} autoFocus activeField={activeVoiceField} status={voiceStatus} voiceAvailable={voiceAvailable} onStart={startVoice} onStop={stopVoice} className="inquiry-field" />
+            <VoiceInput fieldId="beneficiary" label="WHO GETS A BETTER LIFE WHEN THIS WORKS?" optional value={beneficiary} onChange={setBeneficiary} placeholder="My family, my team, my customers..." activeField={activeVoiceField} status={voiceStatus} voiceAvailable={voiceAvailable} onStart={startVoice} onStop={stopVoice} className="inquiry-field" />
             <div className="lens-title"><p>WHAT DO YOU WANT MORE OF?</p><small>Pick the feeling you want the dream to create.</small></div>
             <div className="lens-grid">{lifeLenses.map((item) => { const Icon = item.icon; const picked = lens === item.id; return <button key={item.id} onClick={() => setLens(item.id)} className={`lens-card ${picked ? "picked" : ""}`} aria-pressed={picked}><span><Icon size={20} /></span><div><b>{item.title}</b><small>{item.line}</small></div>{picked && <i><Check size={14} /></i>}</button>; })}</div>
           </div>
@@ -207,7 +340,7 @@ export default function Home() {
           <article className={`impact-map-card ${guideActive ? "guide-focus" : ""}`}><div className="impact-map-top"><div><span className="impact-map-stamp">YOUR FUTURE IMPACT</span><h2>Where could this win make life better?</h2></div><span className="impact-count">{impacts.length} picked</span></div><div className="impact-grid">{impactAreas.map((area) => { const picked = impacts.includes(area.id); return <button key={area.id} type="button" className={`impact-card ${picked ? "picked" : ""}`} onClick={() => setImpacts((current) => picked ? current.filter((id) => id !== area.id) : [...current, area.id])} aria-pressed={picked}><span className="impact-emoji" aria-hidden="true">{area.emoji}</span><div><b>{area.title}</b><small>{area.line}</small></div>{picked && <i><Check size={15} /></i>}</button>; })}</div><div className={`future-blend ${impacts.length ? "ready" : ""}`}><div><Sparkles size={19} /><span>FUTURE POSSIBILITY</span></div><p>{impactFuture}</p></div></article>
         </div> : <div className="screen question-screen simple-enter">
           <div className="simple-heading"><span className="level-stamp ink">DREAM BUILDING</span><p>BIG QUESTION {questionIndex + 1} OF {questions.length}</p><h1>Think bigger.</h1><small>There is no perfect answer. Write the one that feels honest.</small></div>
-          <article className={`question-card ${guideActive ? "guide-focus" : ""}`}><div className="question-route"><span className="done">01</span><i className="done" /><span className={questionIndex >= 1 ? "done" : ""}>02</span><i className={questionIndex >= 2 ? "done" : ""} /><span className={questionIndex >= 2 ? "done" : ""}>03</span><i className={questionIndex >= 3 ? "done" : ""} /><span className={questionIndex >= 3 ? "done" : ""}>04</span></div><div className="question-stamp"><Sparkles size={17} /> YOUR NEW ANGLE</div><h2>{currentQuestion}</h2><label className="answer-field"><span>YOUR ANSWER</span><textarea value={currentAnswer} onChange={(event) => setAnswers((current) => ({ ...current, [questionIndex]: event.target.value }))} placeholder="Write what comes up for you..." rows={6} autoFocus /></label><div className="question-note"><Compass size={16} /><p>Keep it simple. Your own words are the point.</p></div></article>
+          <article className={`question-card ${guideActive ? "guide-focus" : ""}`}><div className="question-route"><span className="done">01</span><i className="done" /><span className={questionIndex >= 1 ? "done" : ""}>02</span><i className={questionIndex >= 2 ? "done" : ""} /><span className={questionIndex >= 2 ? "done" : ""}>03</span><i className={questionIndex >= 3 ? "done" : ""} /><span className={questionIndex >= 3 ? "done" : ""}>04</span></div><div className="question-stamp"><Sparkles size={17} /> YOUR NEW ANGLE</div><h2>{currentQuestion}</h2><VoiceInput fieldId="answer" label="YOUR ANSWER" value={currentAnswer} onChange={(value) => setAnswers((current) => ({ ...current, [questionIndex]: value }))} placeholder="Write what comes up for you..." multiline rows={6} autoFocus activeField={activeVoiceField} status={voiceStatus} voiceAvailable={voiceAvailable} onStart={startVoice} onStop={stopVoice} className="answer-field" /><div className="question-note"><Compass size={16} /><p>Keep it simple. Your own words are the point.</p></div></article>
         </div>)}
 
         {phase === "build" && buildView === "north" && <div className="screen north-screen simple-enter">
