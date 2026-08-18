@@ -9,6 +9,7 @@ import {
   Backpack,
   Check,
   Compass,
+  DollarSign,
   Flag,
   Gamepad2,
   Heart,
@@ -33,8 +34,9 @@ const steps = [
   { number: "01", title: "Pick", hint: "Choose a dream" },
   { number: "02", title: "Play", hint: "Pick your job" },
   { number: "03", title: "Build", hint: "Make your path" },
-  { number: "04", title: "Spot", hint: "Find the rock" },
-  { number: "05", title: "Go", hint: "Get your plan" },
+  { number: "04", title: "Results", hint: "Set the big goal" },
+  { number: "05", title: "Spot", hint: "Find the rock" },
+  { number: "06", title: "Go", hint: "Get your plan" },
 ];
 
 const dreamCards = [
@@ -76,10 +78,27 @@ const roadBlocks = [
   { id: "go", title: "I keep stopping.", small: "I need to keep going.", icon: Mountain },
 ];
 
+const bigMonthStandards = [
+  { id: "one", title: "Do the big thing first", line: "Start with the move that can help money most today.", icon: Target },
+  { id: "finish", title: "Finish what matters", line: "Do not hop between little jobs. Finish the important one.", icon: Check },
+  { id: "score", title: "Keep score", line: "Look at revenue, profit, and what is working every day.", icon: Trophy },
+  { id: "team", title: "Help the team move", line: "Talk straight, solve problems fast, and keep people moving.", icon: Users },
+];
+
+const roleMoneyMoves: Record<Role, string> = {
+  Creative: "Make the strongest new ad idea you can today.",
+  Ads: "Put your best ad in front of more of the right people.",
+  Products: "Fix the one place where people stop before buying.",
+  Words: "Write the one message that makes buying feel easy.",
+  Design: "Make the next buying step easier to see and use.",
+  Team: "Make the next important job clear and easy to follow.",
+};
+
 const guideCues = [
   { title: "Pick your dream", message: "Start here. Tap the dream card that sounds best to you.", button: "Go to your player" },
   { title: "Pick your player", message: "Now tap the card that feels most like your job.", button: "Build your path" },
-  { title: "Build your path", message: "Pick a bright card. Then tap an empty spot on the map. Do that three times.", button: "Find the big rock" },
+  { title: "Build your path", message: "Pick a bright card. Then tap an empty spot on the map. Do that three times.", button: "Set your big-month focus" },
+  { title: "Set your big-month focus", message: "Look at the big goal, then pick the work habit you need most today.", button: "Find the big rock" },
   { title: "Find the big rock", message: "Tap the thing that is getting in your way right now. Keep it simple.", button: "See your little plan" },
   { title: "Look at your little plan", message: "Check your tiny win. That is the only thing you need to do first.", button: "Finish guide" },
 ];
@@ -98,6 +117,7 @@ export default function Home() {
   const [activePiece, setActivePiece] = useState<string | null>(null);
   const [slots, setSlots] = useState<Record<SlotId, string | null>>({ skill: null, week: null, score: null });
   const [block, setBlock] = useState("path");
+  const [moneyFocus, setMoneyFocus] = useState("one");
   const [celebrate, setCelebrate] = useState(false);
   const [guideActive, setGuideActive] = useState(false);
   const [guideCue, setGuideCue] = useState(0);
@@ -105,7 +125,8 @@ export default function Home() {
   const currentDream = dreamCards.find((item) => item.id === dream) ?? dreamCards[0];
   const currentBlock = roadBlocks.find((item) => item.id === block) ?? roadBlocks[1];
   const routeIsBuilt = Object.values(slots).every(Boolean);
-  const progress = (step / 4) * 100;
+  const progress = (step / (steps.length - 1)) * 100;
+  const currentMoneyFocus = bigMonthStandards.find((item) => item.id === moneyFocus) ?? bigMonthStandards[0];
 
   const tinyWin = useMemo(() => {
     if (block === "dream") return "Write down one thing you want more of in your life.";
@@ -123,7 +144,7 @@ export default function Home() {
   const goToStep = (nextStep: number) => {
     setStep(nextStep);
   };
-  const next = () => goToStep(Math.min(4, step + 1));
+  const next = () => goToStep(Math.min(steps.length - 1, step + 1));
   const back = () => goToStep(Math.max(0, step - 1));
   const reset = () => {
     setStep(0);
@@ -137,7 +158,7 @@ export default function Home() {
     setGuideActive(true);
   };
   const moveGuideForward = () => {
-    if (guideCue === 4) {
+    if (guideCue === guideCues.length - 1) {
       setGuideActive(false);
       return;
     }
@@ -164,13 +185,13 @@ export default function Home() {
       <main className="simple-main">
         <header className="simple-topbar">
           <div className="mobile-brand"><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><b>DREAM LIFE <em>GPS</em></b></div>
-          <div className="step-readout"><span>YOUR PATH</span><div><i style={{ width: `${Math.max(progress, 5)}%` }} /></div><b>{step + 1} / 5</b></div>
+          <div className="step-readout"><span>YOUR PATH</span><div><i style={{ width: `${Math.max(progress, 5)}%` }} /></div><b>{step + 1} / {steps.length}</b></div>
           <div className="top-message"><span className="tiny-dot" />You are building your path</div>
           <button className={`guide-launch-button ${guideActive ? "active" : ""}`} onClick={() => guideActive ? setGuideActive(false) : startGuide()} aria-pressed={guideActive}>{guideActive ? <X size={17} /> : <Compass size={17} />}<span>{guideActive ? "Exit guide" : "Guide me"}</span></button>
         </header>
 
         <section className="simple-canvas">
-          {guideActive && <aside className="guide-panel" aria-label="Guided focus walkthrough"><div className="guide-panel-top"><span><Compass size={16} /> YOUR GUIDE</span><button onClick={() => setGuideActive(false)} aria-label="Exit guided focus"><X size={16} /></button></div><div className="guide-count">STEP {guideCue + 1} OF 5</div><h2>{guideCues[guideCue].title}</h2><p>{guideCues[guideCue].message}</p><div className="guide-dots">{guideCues.map((item, index) => <i className={index === guideCue ? "now" : index < guideCue ? "done" : ""} key={item.title} />)}</div><button className="guide-next-button" onClick={moveGuideForward}>{guideCues[guideCue].button}<ArrowRight size={16} /></button><small>You can leave the guide any time.</small></aside>}
+          {guideActive && <aside className="guide-panel" aria-label="Guided focus walkthrough"><div className="guide-panel-top"><span><Compass size={16} /> YOUR GUIDE</span><button onClick={() => setGuideActive(false)} aria-label="Exit guided focus"><X size={16} /></button></div><div className="guide-count">STEP {guideCue + 1} OF {guideCues.length}</div><h2>{guideCues[guideCue].title}</h2><p>{guideCues[guideCue].message}</p><div className="guide-dots">{guideCues.map((item, index) => <i className={index === guideCue ? "now" : index < guideCue ? "done" : ""} key={item.title} />)}</div><button className="guide-next-button" onClick={moveGuideForward}>{guideCues[guideCue].button}<ArrowRight size={16} /></button><small>You can leave the guide any time.</small></aside>}
           {step === 0 && <div className="screen intro-screen simple-enter">
             <div className="intro-hero" style={{ backgroundImage: "linear-gradient(90deg, rgba(14,40,57,.98), rgba(14,40,57,.77) 52%, rgba(14,40,57,.12)), url('/manus-storage/dream-life-gps-hero_5e4ca605.jpg')" }}>
               <div className="level-stamp">STEP 1</div><div className="big-compass" aria-hidden="true"><Compass size={39} /><span>N</span><i /><i /></div>
@@ -207,13 +228,18 @@ export default function Home() {
             </div>
           </div>}
 
-          {step === 3 && <div className="screen block-screen simple-enter">
-            <div className="block-hero" style={{ backgroundImage: "linear-gradient(100deg, rgba(14,40,57,.98), rgba(14,40,57,.68)), url('/manus-storage/dream-life-gps-checkpoint_6586c299.jpg')" }}><span className="level-stamp">STEP 4</span><p>FIND THE BIG ROCK</p><h1>What is making this hard right now?</h1><small>Pick the one that feels most true. No shame. We all get stuck.</small></div>
-            <div className="block-board"><div className={`rock-list ${guideActive && guideCue === 3 ? "guide-focus" : ""}`}>{roadBlocks.map((item) => { const Icon = item.icon; return <button className={`rock-card ${block === item.id ? "picked" : ""}`} onClick={() => setBlock(item.id)} key={item.id}><span><Icon size={22} /></span><div><b>{item.title}</b><small>{item.small}</small></div>{block === item.id && <i><Check size={14} /></i>}</button>; })}</div><div className="rock-answer"><div className="answer-icon"><currentBlock.icon size={30} /></div><p>YOUR NEXT MOVE</p><h2>Let’s move this rock.</h2><b>{currentBlock.small}</b><span>{tinyWin}</span><div><MapPin size={17} /> Just do this one small thing first.</div></div></div>
+          {step === 3 && <div className="screen money-screen simple-enter">
+            <div className="money-hero"><div><span className="level-stamp">STEP 4</span><p>MONEY + RESULTS</p><h1>Big months are built on purpose.</h1><small>When the goal gets big, stay calm, clear, and ready to do the important work.</small></div><div className="money-numbers"><div><span><DollarSign size={18} /> REVENUE GOAL</span><b>$1M</b><small>in one month</small></div><div><span><Trophy size={18} /> PROFIT GOAL</span><b>$500K</b><small>in one month</small></div></div></div>
+            <div className="money-board"><div className="money-intro"><p>THE BIG-MONTH MINDSET</p><h2>Keep this in your head:</h2><blockquote>“I do the hard thing first. I keep score. I help the team move.”</blockquote></div><div className={`money-standard-grid ${guideActive && guideCue === 3 ? "guide-focus" : ""}`}>{bigMonthStandards.map((item) => { const Icon = item.icon; return <button key={item.id} onClick={() => setMoneyFocus(item.id)} className={`money-standard ${moneyFocus === item.id ? "picked" : ""}`}><span><Icon size={20} /></span><div><b>{item.title}</b><small>{item.line}</small></div>{moneyFocus === item.id && <i><Check size={14} /></i>}</button>; })}</div><div className="money-move"><div><span><Zap size={22} /></span><p>YOUR BIG MOVE TODAY</p><h3>{roleMoneyMoves[role]}</h3><small><b>Your focus:</b> {currentMoneyFocus.title}. This is how a big month gets built: one important move at a time.</small></div><Target size={32} /></div></div>
           </div>}
 
-          {step === 4 && <div className="screen plan-screen simple-enter">
-            <div className="simple-heading plan-heading"><span className="level-stamp ink">STEP 5</span><p>YOUR LITTLE PLAN</p><h1>You are ready to go.</h1><small>Save this in your head. Or come back when you need it.</small></div>
+          {step === 4 && <div className="screen block-screen simple-enter">
+            <div className="block-hero" style={{ backgroundImage: "linear-gradient(100deg, rgba(14,40,57,.98), rgba(14,40,57,.68)), url('/manus-storage/dream-life-gps-checkpoint_6586c299.jpg')" }}><span className="level-stamp">STEP 5</span><p>FIND THE BIG ROCK</p><h1>What is making this hard right now?</h1><small>Pick the one that feels most true. No shame. We all get stuck.</small></div>
+            <div className="block-board"><div className={`rock-list ${guideActive && guideCue === 4 ? "guide-focus" : ""}`}>{roadBlocks.map((item) => { const Icon = item.icon; return <button className={`rock-card ${block === item.id ? "picked" : ""}`} onClick={() => setBlock(item.id)} key={item.id}><span><Icon size={22} /></span><div><b>{item.title}</b><small>{item.small}</small></div>{block === item.id && <i><Check size={14} /></i>}</button>; })}</div><div className="rock-answer"><div className="answer-icon"><currentBlock.icon size={30} /></div><p>YOUR NEXT MOVE</p><h2>Let’s move this rock.</h2><b>{currentBlock.small}</b><span>{tinyWin}</span><div><MapPin size={17} /> Just do this one small thing first.</div></div></div>
+          </div>}
+
+          {step === 5 && <div className="screen plan-screen simple-enter">
+            <div className="simple-heading plan-heading"><span className="level-stamp ink">STEP 6</span><p>YOUR LITTLE PLAN</p><h1>You are ready to go.</h1><small>Save this in your head. Or come back when you need it.</small></div>
             <article className="little-plan">
               <div className="plan-top"><div><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><b>DREAM LIFE GPS</b></div><span>MY LITTLE PLAN</span></div>
               <div className="plan-dream"><span><Plane size={19} /></span><div><p>THE DREAM I PICKED</p><h2>{currentDream.title}</h2><small>{currentDream.line}</small></div><Flag size={29} /></div>
@@ -221,11 +247,11 @@ export default function Home() {
               <div className="tiny-win"><span><Zap size={20} /></span><div><p>MY TINY WIN THIS WEEK</p><b>{tinyWin}</b></div></div>
               <div className="plan-bottom"><span>REMEMBER</span><p>Pick a dream. Take a step. Keep going.</p><Compass size={24} /></div>
             </article>
-            <div className={`celebrate-row ${guideActive && guideCue === 4 ? "guide-focus" : ""}`}><button onClick={() => setCelebrate(true)}><PartyPopper size={18} /> I am ready</button><p>{celebrate ? "Nice. Your first tiny step starts now." : "You do not need to do everything today."}</p></div>
+            <div className={`celebrate-row ${guideActive && guideCue === 5 ? "guide-focus" : ""}`}><button onClick={() => setCelebrate(true)}><PartyPopper size={18} /> I am ready</button><p>{celebrate ? "Nice. Your first tiny step starts now." : "You do not need to do everything today."}</p></div>
           </div>}
         </section>
 
-        <footer className="simple-footer"><button className="soft-button" onClick={back} disabled={step === 0}><ArrowLeft size={17} /> Back</button><p><MapPin size={14} /> {steps[step].title} <ArrowRight size={13} /> {step === 4 ? "Go" : steps[step + 1]?.title}</p>{step < 4 ? <button className="go-button" onClick={next}>{step === 2 && !routeIsBuilt ? "Keep building" : "Next little step"}<ArrowRight size={17} /></button> : <button className="go-button" onClick={reset}>Try a new dream<Compass size={17} /></button>}</footer>
+        <footer className="simple-footer"><button className="soft-button" onClick={back} disabled={step === 0}><ArrowLeft size={17} /> Back</button><p><MapPin size={14} /> {steps[step].title} <ArrowRight size={13} /> {step === steps.length - 1 ? "Go" : steps[step + 1]?.title}</p>{step < steps.length - 1 ? <button className="go-button" onClick={next}>{step === 2 && !routeIsBuilt ? "Keep building" : "Next little step"}<ArrowRight size={17} /></button> : <button className="go-button" onClick={reset}>Try a new dream<Compass size={17} /></button>}</footer>
         <span className="sr-only" aria-live="polite">{guideActive ? `Guide step ${guideCue + 1}. ${guideCues[guideCue].message}` : ""}</span>
       </main>
     </div>
