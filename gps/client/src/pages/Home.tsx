@@ -245,7 +245,7 @@ export default function Home() {
       if (recognitionRef.current !== recognition) return;
       recognitionRef.current = null;
       setActiveVoiceField(null);
-      setVoiceStatus({ field, message: event.error === "not-allowed" ? "Microphone permission is off. Allow it in your browser, then try again." : "We could not hear that. Try again or type your answer." });
+      setVoiceStatus({ field, message: event.error === "not-allowed" ? "Microphone permission is off. Allow it in your browser, then try again." : "I could not hear that. Try again or type your answer." });
     };
     recognition.onend = () => {
       if (recognitionRef.current !== recognition) return;
@@ -269,7 +269,7 @@ export default function Home() {
 
   const guide = phase === "build"
     ? buildView === "welcome"
-      ? { title: "Set your compass", message: "Tell us your name and where you are today. Your map will greet you from there.", button: "Begin Dream Building" }
+      ? { title: "Set your compass", message: "Tell me your name and where you are today. Your map will greet you from there.", button: "Begin Dream Building" }
       : buildView === "setup"
       ? { title: "Write the dream", message: "Write what you want to make true. Then choose the kind of change you want most.", button: "Ask the questions" }
       : buildView === "questions"
@@ -384,17 +384,17 @@ export default function Home() {
         {guideActive && <aside className="guide-panel" aria-label="Guided focus walkthrough"><div className="guide-panel-top"><span><Compass size={16} /> YOUR GUIDE</span><button onClick={() => setGuideActive(false)} aria-label="Exit guided focus"><X size={16} /></button></div><div className="guide-count">{phase === "build" ? "DREAM BUILDING" : "DREAM REALIZATION"}</div><h2>{guide.title}</h2><p>{guide.message}</p><button className="guide-next-button" onClick={next} disabled={footerDisabled}>{guide.button}<ArrowRight size={16} /></button><small>Leave any time.</small></aside>}
 
         {phase === "build" && buildView === "welcome" && <div className="screen inquiry-start simple-enter">
-          <div className="intro-hero inquiry-hero" style={{ backgroundImage: "linear-gradient(90deg, rgba(14,40,57,.98), rgba(14,40,57,.77) 52%, rgba(14,40,57,.12)), url('/manus-storage/dream-life-gps-hero_5e4ca605.jpg')" }}><div className="level-stamp">WELCOME TO DREAM LIFE GPS</div><div className="big-compass" aria-hidden="true"><Compass size={39} /><span>N</span><i /><i /></div><p>START WHERE YOU ARE</p><h1>Set your<br />starting point.</h1><span>We will use this to make your map feel like it is yours.</span></div>
+          <div className="intro-hero inquiry-hero" style={{ backgroundImage: "linear-gradient(90deg, rgba(14,40,57,.98), rgba(14,40,57,.77) 52%, rgba(14,40,57,.12)), url('/manus-storage/dream-life-gps-hero_5e4ca605.jpg')" }}><div className="level-stamp">WELCOME TO DREAM LIFE GPS</div><div className="big-compass" aria-hidden="true"><Compass size={39} /><span>N</span><i /><i /></div><p>START WHERE YOU ARE</p><h1>Set your<br />starting point.</h1><span>I will use this to make your map feel like it is yours.</span></div>
           <div className={`inquiry-board ${guideActive ? "guide-focus" : ""}`}>
-            <div className="board-title"><div><p>YOUR STARTING POINT</p><h2>Tell us where you are today.</h2></div><span><MapPin size={14} /> First waypoint</span></div>
-            <VoiceInput fieldId="name" label="WHAT SHOULD WE CALL YOU?" value={userName} onChange={setUserName} placeholder="Your first name" autoFocus activeField={activeVoiceField} status={voiceStatus} voiceAvailable={voiceAvailable} onStart={startVoice} onStop={stopVoice} className="inquiry-field" />
+            <div className="board-title"><div><p>YOUR STARTING POINT</p><h2>Tell me where you are today.</h2></div><span><MapPin size={14} /> First waypoint</span></div>
+            <VoiceInput fieldId="name" label="WHAT SHOULD I CALL YOU?" value={userName} onChange={setUserName} placeholder="Your first name" autoFocus activeField={activeVoiceField} status={voiceStatus} voiceAvailable={voiceAvailable} onStart={startVoice} onStop={stopVoice} className="inquiry-field" />
             <VoiceInput fieldId="location" label="WHERE ARE YOU BUILDING FROM TODAY?" value={userLocation} onChange={setUserLocation} placeholder="Example: Austin, Texas" activeField={activeVoiceField} status={voiceStatus} voiceAvailable={voiceAvailable} onStart={startVoice} onStop={stopVoice} className="inquiry-field" />
             <div className="welcome-note"><MapPin size={17} /><p>Your location is only used to greet you here. It is not a GPS check.</p></div>
           </div>
         </div>}
 
         {phase === "build" && buildView === "setup" && <div className="screen inquiry-start simple-enter">
-          <div className="intro-hero inquiry-hero" style={{ backgroundImage: "linear-gradient(90deg, rgba(14,40,57,.98), rgba(14,40,57,.77) 52%, rgba(14,40,57,.12)), url('/manus-storage/dream-life-gps-hero_5e4ca605.jpg')" }}><div className="level-stamp">DREAM BUILDING</div><div className="big-compass" aria-hidden="true"><Compass size={39} /><span>N</span><i /><i /></div><p>START WITH A BIGGER QUESTION</p><h1>What do you want<br />to make true?</h1><span>Write it your way. We will help you look at it from a new angle.</span></div>
+          <div className="intro-hero inquiry-hero" style={{ backgroundImage: "linear-gradient(90deg, rgba(14,40,57,.98), rgba(14,40,57,.77) 52%, rgba(14,40,57,.12)), url('/manus-storage/dream-life-gps-hero_5e4ca605.jpg')" }}><div className="level-stamp">DREAM BUILDING</div><div className="big-compass" aria-hidden="true"><Compass size={39} /><span>N</span><i /><i /></div><p>START WITH A BIGGER QUESTION</p><h1>What do you want<br />to make true?</h1><span>Write it your way. I will help you look at it from a new angle.</span></div>
           <div className={`inquiry-board ${guideActive ? "guide-focus" : ""}`}>
             <div className="board-title"><div><p>YOUR STARTING POINT</p><h2>Give the dream a name.</h2></div><span><MapPin size={14} /> First waypoint</span></div>
             <VoiceInput fieldId="vision" label="WHAT DO YOU WANT TO MAKE TRUE?" value={vision} onChange={(value) => { setVision(value); setCleanedVision(""); }} placeholder="Example: I want to build a business that gives my family more freedom." multiline rows={3} autoFocus activeField={activeVoiceField} status={voiceStatus} voiceAvailable={voiceAvailable} onStart={startVoice} onStop={stopVoice} className="inquiry-field" />
