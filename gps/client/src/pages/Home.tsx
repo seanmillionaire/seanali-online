@@ -8,12 +8,14 @@ import {
   ArrowLeft, ArrowRight, Check, Compass, DollarSign, Flag, MapPin,
   Mic, MicOff, Sparkles, Target, TrendingUp, Users, Wallet, X,
 } from "lucide-react";
+import { trpc } from "@/lib/trpc";
+import "../personalization.css";
 
-type BuildView = "setup" | "questions" | "north";
+type BuildView = "welcome" | "setup" | "questions" | "north";
 type Lens = "time" | "wealth" | "freedom" | "impact" | "mastery";
 type ImpactId = "family" | "health" | "home" | "time" | "adventure" | "team" | "giving" | "growth";
 type VisionMomentId = "morning" | "together" | "energy" | "home" | "adventure" | "team" | "giving" | "growth";
-type VoiceFieldId = "vision" | "beneficiary" | "answer";
+type VoiceFieldId = "name" | "location" | "vision" | "beneficiary" | "answer";
 
 type BrowserSpeechEvent = {
   resultIndex: number;
@@ -148,30 +150,38 @@ const questionSets: Record<Lens, ((vision: string, people: string) => string)[]>
 
 export default function Home() {
   const [phase, setPhase] = useState<"build" | "realize">("build");
-  const [buildView, setBuildView] = useState<BuildView>("setup");
+  const [buildView, setBuildView] = useState<BuildView>("welcome");
+  const [userName, setUserName] = useState("");
+  const [userLocation, setUserLocation] = useState("");
   const [vision, setVision] = useState("");
   const [beneficiary, setBeneficiary] = useState("");
+  const [cleanedVision, setCleanedVision] = useState("");
+  const [cleanedBeneficiary, setCleanedBeneficiary] = useState("");
   const [lens, setLens] = useState<Lens>("wealth");
   const [impacts, setImpacts] = useState<ImpactId[]>([]);
   const [visionMomentIds, setVisionMomentIds] = useState<VisionMomentId[]>([]);
   const [questionIndex, setQuestionIndex] = useState(0);
+  const [rawAnswers, setRawAnswers] = useState<Record<number, string>>({});
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [guideActive, setGuideActive] = useState(false);
   const [activeVoiceField, setActiveVoiceField] = useState<VoiceFieldId | null>(null);
   const [voiceStatus, setVoiceStatus] = useState<{ field: VoiceFieldId | null; message: string }>({ field: null, message: "" });
   const recognitionRef = useRef<BrowserSpeechRecognition | null>(null);
   const voiceAvailable = typeof window !== "undefined" && Boolean(window.SpeechRecognition || window.webkitSpeechRecognition);
+  const cleanAnswer = trpc.cleanAnswer.useMutation();
 
-  const personPhrase = beneficiary.trim() || "the people you care about";
-  const questionPersonPhrase = beneficiary.trim()
-    ? beneficiary.trim().replace(/^./, (character) => character.toLowerCase())
+  const polishedVision = cleanedVision || vision;
+  const polishedBeneficiary = cleanedBeneficiary || beneficiary;
+  const personPhrase = polishedBeneficiary.trim() || "the people you care about";
+  const questionPersonPhrase = polishedBeneficiary.trim()
+    ? polishedBeneficiary.trim().replace(/^./, (character) => character.toLowerCase())
     : "the people you care about";
   const questions = useMemo(
-    () => questionSets[lens].map((question) => question(vision.trim(), questionPersonPhrase)),
-    [lens, questionPersonPhrase, vision],
+    () => questionSets[lens].map((question) => question(polishedVision.trim(), questionPersonPhrase)),
+    [lens, polishedVision, questionPersonPhrase],
   );
   const currentQuestion = questions[questionIndex];
-  const currentAnswer = answers[questionIndex] ?? "";
+  const currentAnswer = rawAnswers[questionIndex] ?? "";
   const selectedLens = lifeLenses.find((item) => item.id === lens) ?? lifeLenses[0];
   const selectedImpactAreas = impactAreas.filter((area) => impacts.includes(area.id));
   const impactTitles = selectedImpactAreas.map((area) => area.title.toLowerCase());
@@ -193,10 +203,17 @@ export default function Home() {
         ? `Picture it: ${visionMomentTitles[0]} and ${visionMomentTitles[1]}. This work can support both at the same time.`
         : `Picture it: ${visionMomentTitles.slice(0, -1).join(", ")}, and ${visionMomentTitles.at(-1)}. This is the life your work is here to support.`;
 
+  const greetingTime = new Date().getHours() < 12 ? "Good morning" : new Date().getHours() < 18 ? "Good afternoon" : "Good evening";
+  const headerGreeting = userName.trim() && userLocation.trim()
+    ? `${greetingTime}, ${userName.trim()} — building from ${userLocation.trim()}`
+    : "Set your compass";
+
   const updateVoiceField = (field: VoiceFieldId, value: string) => {
-    if (field === "vision") setVision(value);
-    else if (field === "beneficiary") setBeneficiary(value);
-    else setAnswers((current) => ({ ...current, [questionIndex]: value }));
+    if (field === "name") setUserName(value);
+    else if (field === "location") setUserLocation(value);
+    else if (field === "vision") { setVision(value); setCleanedVision(""); }
+    else if (field === "beneficiary") { setBeneficiary(value); setCleanedBeneficiary(""); }
+    else setRawAnswers((current) => ({ ...current, [questionIndex]: value }));
   };
 
   const stopVoice = () => {
@@ -214,7 +231,7 @@ export default function Home() {
       return;
     }
     recognitionRef.current?.abort();
-    const currentValue = field === "vision" ? vision : field === "beneficiary" ? beneficiary : currentAnswer;
+    const currentValue = field === "name" ? userName : field === "location" ? userLocation : field === "vision" ? vision : field === "beneficiary" ? beneficiary : currentAnswer;
     const startingText = currentValue.trim() ? `${currentValue.trim()} ` : "";
     const recognition = new Recognition();
     recognition.lang = navigator.language || "en-US";
@@ -251,7 +268,9 @@ export default function Home() {
   useEffect(() => () => recognitionRef.current?.abort(), []);
 
   const guide = phase === "build"
-    ? buildView === "setup"
+    ? buildView === "welcome"
+      ? { title: "Set your compass", message: "Tell us your name and where you are today. Your map will greet you from there.", button: "Begin Dream Building" }
+      : buildView === "setup"
       ? { title: "Write the dream", message: "Write what you want to make true. Then choose the kind of change you want most.", button: "Ask the questions" }
       : buildView === "questions"
         ? questionIndex === 0
@@ -260,12 +279,40 @@ export default function Home() {
         : { title: "Read your North Star", message: "This is the bigger picture you just made. Take it with you to your vision board.", button: "Build the picture" }
     : { title: "Build the picture", message: "Tap every moment you want this work to make possible. Connect the work to the life it can create.", button: "See the full picture" };
 
-  const goBuild = (view: BuildView = "setup") => { setPhase("build"); setBuildView(view); };
+  const goBuild = (view?: BuildView) => { setPhase("build"); setBuildView(view ?? (userName.trim() && userLocation.trim() ? "setup" : "welcome")); };
   const goRealize = () => setPhase("realize");
   const next = () => {
     stopVoice();
+    if (cleanAnswer.isPending) return;
+    if (phase === "build" && buildView === "welcome") {
+      if (userName.trim() && userLocation.trim()) setBuildView("setup");
+      return;
+    }
     if (phase === "build" && buildView === "setup") {
-      if (vision.trim()) setBuildView("questions");
+      if (!vision.trim()) return;
+      const rawVision = vision.trim();
+      const rawBeneficiary = beneficiary.trim();
+      void (async () => {
+        let nextVision = rawVision;
+        let nextBeneficiary = rawBeneficiary;
+        try {
+          nextVision = (await cleanAnswer.mutateAsync({
+            rawAnswer: rawVision,
+            question: "What do you want to make true?",
+          })).cleanedAnswer;
+          if (rawBeneficiary) {
+            nextBeneficiary = (await cleanAnswer.mutateAsync({
+              rawAnswer: rawBeneficiary,
+              question: "Who gets a better life when this works?",
+            })).cleanedAnswer;
+          }
+        } catch {
+          // The original words remain the source of truth if a cleanup call cannot finish.
+        }
+        setCleanedVision(nextVision);
+        setCleanedBeneficiary(nextBeneficiary);
+        setBuildView("questions");
+      })();
       return;
     }
     if (phase === "build" && buildView === "questions") {
@@ -274,8 +321,19 @@ export default function Home() {
         return;
       }
       if (!currentAnswer.trim()) return;
-      if (questionIndex === questions.length - 1) setBuildView("north");
-      else setQuestionIndex((current) => current + 1);
+      const rawAnswer = currentAnswer.trim();
+      const question = currentQuestion;
+      void (async () => {
+        let cleanedAnswer = rawAnswer;
+        try {
+          cleanedAnswer = (await cleanAnswer.mutateAsync({ rawAnswer, question })).cleanedAnswer;
+        } catch {
+          // The original answer stays in place if the connection is not available.
+        }
+        setAnswers((current) => ({ ...current, [questionIndex]: cleanedAnswer }));
+        if (questionIndex === questions.length - 1) setBuildView("north");
+        else setQuestionIndex((current) => current + 1);
+      })();
       return;
     }
     if (phase === "build" && buildView === "north") {
@@ -290,16 +348,17 @@ export default function Home() {
       if (questionIndex === 0) setBuildView("setup");
       else setQuestionIndex((current) => current - 1);
     }
+    if (buildView === "setup") setBuildView("welcome");
   };
   const reset = () => {
     setPhase("build"); setBuildView("setup"); setVision(""); setBeneficiary(""); setLens("wealth"); setImpacts([]);
-    setVisionMomentIds([]); setQuestionIndex(0); setAnswers({}); setGuideActive(false); stopVoice();
+    setCleanedVision(""); setCleanedBeneficiary(""); setVisionMomentIds([]); setQuestionIndex(0); setRawAnswers({}); setAnswers({}); setGuideActive(false); stopVoice();
   };
 
   const footerAction = phase === "build"
-    ? buildView === "setup" ? "Ask the questions" : buildView === "questions" ? questionIndex === 0 ? "See the possibilities" : questionIndex === questions.length - 1 ? "See my North Star" : "Next question" : "Build the picture"
+    ? buildView === "welcome" ? "Begin Dream Building" : buildView === "setup" ? "Ask the questions" : buildView === "questions" ? questionIndex === 0 ? "See the possibilities" : cleanAnswer.isPending ? "Making it clear" : questionIndex === questions.length - 1 ? "See my North Star" : "Next question" : "Build the picture"
     : "See the full picture";
-  const footerDisabled = phase === "build" && (buildView === "setup" ? !vision.trim() : buildView === "questions" ? questionIndex === 0 ? !impacts.length : !currentAnswer.trim() : false);
+  const footerDisabled = cleanAnswer.isPending || (phase === "build" && (buildView === "welcome" ? !userName.trim() || !userLocation.trim() : buildView === "setup" ? !vision.trim() : buildView === "questions" ? questionIndex === 0 ? !impacts.length : !currentAnswer.trim() : false));
 
   return <div className="simple-gps min-h-screen">
     <aside className="simple-rail phase-rail">
@@ -317,19 +376,29 @@ export default function Home() {
       <header className="simple-topbar">
         <div className="mobile-brand"><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><b>DREAM LIFE <em>GPS</em></b></div>
         <div className="phase-readout"><span>NOW</span><b>{phase === "build" ? "DREAM BUILDING" : "DREAM REALIZATION"}</b></div>
-        <div className="top-message"><span className="tiny-dot" />{phase === "build" ? "Gain clarity" : "Build the picture"}</div>
+        <div className="top-message personal-greeting" aria-live="polite"><span className="tiny-dot" />{headerGreeting}</div>
         <button className={`guide-launch-button ${guideActive ? "active" : ""}`} onClick={() => setGuideActive((value) => !value)} aria-pressed={guideActive}>{guideActive ? <X size={17} /> : <Compass size={17} />}<span>{guideActive ? "Exit guide" : "Guide me"}</span></button>
       </header>
 
       <section className="simple-canvas">
         {guideActive && <aside className="guide-panel" aria-label="Guided focus walkthrough"><div className="guide-panel-top"><span><Compass size={16} /> YOUR GUIDE</span><button onClick={() => setGuideActive(false)} aria-label="Exit guided focus"><X size={16} /></button></div><div className="guide-count">{phase === "build" ? "DREAM BUILDING" : "DREAM REALIZATION"}</div><h2>{guide.title}</h2><p>{guide.message}</p><button className="guide-next-button" onClick={next} disabled={footerDisabled}>{guide.button}<ArrowRight size={16} /></button><small>Leave any time.</small></aside>}
 
+        {phase === "build" && buildView === "welcome" && <div className="screen inquiry-start simple-enter">
+          <div className="intro-hero inquiry-hero" style={{ backgroundImage: "linear-gradient(90deg, rgba(14,40,57,.98), rgba(14,40,57,.77) 52%, rgba(14,40,57,.12)), url('/manus-storage/dream-life-gps-hero_5e4ca605.jpg')" }}><div className="level-stamp">WELCOME TO DREAM LIFE GPS</div><div className="big-compass" aria-hidden="true"><Compass size={39} /><span>N</span><i /><i /></div><p>START WHERE YOU ARE</p><h1>Set your<br />starting point.</h1><span>We will use this to make your map feel like it is yours.</span></div>
+          <div className={`inquiry-board ${guideActive ? "guide-focus" : ""}`}>
+            <div className="board-title"><div><p>YOUR STARTING POINT</p><h2>Tell us where you are today.</h2></div><span><MapPin size={14} /> First waypoint</span></div>
+            <VoiceInput fieldId="name" label="WHAT SHOULD WE CALL YOU?" value={userName} onChange={setUserName} placeholder="Your first name" autoFocus activeField={activeVoiceField} status={voiceStatus} voiceAvailable={voiceAvailable} onStart={startVoice} onStop={stopVoice} className="inquiry-field" />
+            <VoiceInput fieldId="location" label="WHERE ARE YOU BUILDING FROM TODAY?" value={userLocation} onChange={setUserLocation} placeholder="Example: Austin, Texas" activeField={activeVoiceField} status={voiceStatus} voiceAvailable={voiceAvailable} onStart={startVoice} onStop={stopVoice} className="inquiry-field" />
+            <div className="welcome-note"><MapPin size={17} /><p>Your location is only used to greet you here. It is not a GPS check.</p></div>
+          </div>
+        </div>}
+
         {phase === "build" && buildView === "setup" && <div className="screen inquiry-start simple-enter">
           <div className="intro-hero inquiry-hero" style={{ backgroundImage: "linear-gradient(90deg, rgba(14,40,57,.98), rgba(14,40,57,.77) 52%, rgba(14,40,57,.12)), url('/manus-storage/dream-life-gps-hero_5e4ca605.jpg')" }}><div className="level-stamp">DREAM BUILDING</div><div className="big-compass" aria-hidden="true"><Compass size={39} /><span>N</span><i /><i /></div><p>START WITH A BIGGER QUESTION</p><h1>What do you want<br />to make true?</h1><span>Write it your way. We will help you look at it from a new angle.</span></div>
           <div className={`inquiry-board ${guideActive ? "guide-focus" : ""}`}>
             <div className="board-title"><div><p>YOUR STARTING POINT</p><h2>Give the dream a name.</h2></div><span><MapPin size={14} /> First waypoint</span></div>
-            <VoiceInput fieldId="vision" label="WHAT DO YOU WANT TO MAKE TRUE?" value={vision} onChange={setVision} placeholder="Example: I want to build a business that gives my family more freedom." multiline rows={3} autoFocus activeField={activeVoiceField} status={voiceStatus} voiceAvailable={voiceAvailable} onStart={startVoice} onStop={stopVoice} className="inquiry-field" />
-            <VoiceInput fieldId="beneficiary" label="WHO GETS A BETTER LIFE WHEN THIS WORKS?" optional value={beneficiary} onChange={setBeneficiary} placeholder="My family, my team, my customers..." activeField={activeVoiceField} status={voiceStatus} voiceAvailable={voiceAvailable} onStart={startVoice} onStop={stopVoice} className="inquiry-field" />
+            <VoiceInput fieldId="vision" label="WHAT DO YOU WANT TO MAKE TRUE?" value={vision} onChange={(value) => { setVision(value); setCleanedVision(""); }} placeholder="Example: I want to build a business that gives my family more freedom." multiline rows={3} autoFocus activeField={activeVoiceField} status={voiceStatus} voiceAvailable={voiceAvailable} onStart={startVoice} onStop={stopVoice} className="inquiry-field" />
+            <VoiceInput fieldId="beneficiary" label="WHO GETS A BETTER LIFE WHEN THIS WORKS?" optional value={beneficiary} onChange={(value) => { setBeneficiary(value); setCleanedBeneficiary(""); }} placeholder="My family, my team, my customers..." activeField={activeVoiceField} status={voiceStatus} voiceAvailable={voiceAvailable} onStart={startVoice} onStop={stopVoice} className="inquiry-field" />
             <div className="lens-title"><p>WHAT DO YOU WANT MORE OF?</p><small>Pick the feeling you want the dream to create.</small></div>
             <div className="lens-grid">{lifeLenses.map((item) => { const Icon = item.icon; const picked = lens === item.id; return <button key={item.id} onClick={() => setLens(item.id)} className={`lens-card ${picked ? "picked" : ""}`} aria-pressed={picked}><span><Icon size={20} /></span><div><b>{item.title}</b><small>{item.line}</small></div>{picked && <i><Check size={14} /></i>}</button>; })}</div>
           </div>
@@ -340,12 +409,12 @@ export default function Home() {
           <article className={`impact-map-card ${guideActive ? "guide-focus" : ""}`}><div className="impact-map-top"><div><span className="impact-map-stamp">YOUR FUTURE IMPACT</span><h2>Where could this win make life better?</h2></div><span className="impact-count">{impacts.length} picked</span></div><div className="impact-grid">{impactAreas.map((area) => { const picked = impacts.includes(area.id); return <button key={area.id} type="button" className={`impact-card ${picked ? "picked" : ""}`} onClick={() => setImpacts((current) => picked ? current.filter((id) => id !== area.id) : [...current, area.id])} aria-pressed={picked}><span className="impact-emoji" aria-hidden="true">{area.emoji}</span><div><b>{area.title}</b><small>{area.line}</small></div>{picked && <i><Check size={15} /></i>}</button>; })}</div><div className={`future-blend ${impacts.length ? "ready" : ""}`}><div><Sparkles size={19} /><span>FUTURE POSSIBILITY</span></div><p>{impactFuture}</p></div></article>
         </div> : <div className="screen question-screen simple-enter">
           <div className="simple-heading"><span className="level-stamp ink">DREAM BUILDING</span><p>BIG QUESTION {questionIndex + 1} OF {questions.length}</p><h1>Think bigger.</h1><small>There is no perfect answer. Write the one that feels honest.</small></div>
-          <article className={`question-card ${guideActive ? "guide-focus" : ""}`}><div className="question-route"><span className="done">01</span><i className="done" /><span className={questionIndex >= 1 ? "done" : ""}>02</span><i className={questionIndex >= 2 ? "done" : ""} /><span className={questionIndex >= 2 ? "done" : ""}>03</span><i className={questionIndex >= 3 ? "done" : ""} /><span className={questionIndex >= 3 ? "done" : ""}>04</span></div><div className="question-stamp"><Sparkles size={17} /> YOUR NEW ANGLE</div><h2>{currentQuestion}</h2><VoiceInput fieldId="answer" label="YOUR ANSWER" value={currentAnswer} onChange={(value) => setAnswers((current) => ({ ...current, [questionIndex]: value }))} placeholder="Write what comes up for you..." multiline rows={6} autoFocus activeField={activeVoiceField} status={voiceStatus} voiceAvailable={voiceAvailable} onStart={startVoice} onStop={stopVoice} className="answer-field" /><div className="question-note"><Compass size={16} /><p>Keep it simple. Your own words are the point.</p></div></article>
+          <article className={`question-card ${guideActive ? "guide-focus" : ""}`}><div className="question-route"><span className="done">01</span><i className="done" /><span className={questionIndex >= 1 ? "done" : ""}>02</span><i className={questionIndex >= 2 ? "done" : ""} /><span className={questionIndex >= 2 ? "done" : ""}>03</span><i className={questionIndex >= 3 ? "done" : ""} /><span className={questionIndex >= 3 ? "done" : ""}>04</span></div><div className="question-stamp"><Sparkles size={17} /> YOUR NEW ANGLE</div><h2>{currentQuestion}</h2><VoiceInput fieldId="answer" label="YOUR ANSWER" value={currentAnswer} onChange={(value) => setRawAnswers((current) => ({ ...current, [questionIndex]: value }))} placeholder="Write what comes up for you..." multiline rows={6} autoFocus activeField={activeVoiceField} status={voiceStatus} voiceAvailable={voiceAvailable} onStart={startVoice} onStop={stopVoice} className="answer-field" /><div className="question-note">{cleanAnswer.isPending ? <><Sparkles size={16} /><p>Making your answer clear while keeping it yours...</p></> : <><Compass size={16} /><p>Keep it simple. Your own words are the point.</p></>}</div></article>
         </div>)}
 
         {phase === "build" && buildView === "north" && <div className="screen north-screen simple-enter">
           <div className="simple-heading"><span className="level-stamp ink">DREAM BUILDING</span><p>YOUR NORTH STAR</p><h1>Here is the bigger picture.</h1><small>Use this to keep the money plan pointed at the life you want.</small></div>
-          <article className={`north-card ${guideActive ? "guide-focus" : ""}`}><div className="north-top"><div><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><b>DREAM LIFE GPS</b></div><span>FIELD NOTE</span></div><div className="north-vision"><Flag size={22} /><div><p>WHAT YOU WANT TO MAKE TRUE</p><h2>{vision}</h2><small>{selectedLens.title} for {personPhrase}.</small></div></div><div className="north-impact-summary"><span>THE LIFE THIS WIN COULD TOUCH</span><div>{selectedImpactAreas.map((area) => <b key={area.id}><i>{area.emoji}</i>{area.title}</b>)}</div><p>{impactFuture}</p></div><div className="north-answers">{questions.slice(1).map((question, index) => <div key={question}><span>0{index + 2}</span><p>{question}</p><b>{answers[index + 1]}</b></div>)}</div><div className="north-bottom"><Sparkles size={19} /><p><b>Your direction is clear enough to picture.</b> Now connect the work to the life you want it to create.</p></div></article>
+          <article className={`north-card ${guideActive ? "guide-focus" : ""}`}><div className="north-top"><div><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><b>DREAM LIFE GPS</b></div><span>FIELD NOTE</span></div><div className="north-vision"><Flag size={22} /><div><p>WHAT YOU WANT TO MAKE TRUE</p><h2>{polishedVision}</h2>{polishedVision !== vision && <small className="answer-source">Your words: “{vision}”</small>}<small>{selectedLens.title} for {personPhrase}.</small></div></div><div className="north-impact-summary"><span>THE LIFE THIS WIN COULD TOUCH</span><div>{selectedImpactAreas.map((area) => <b key={area.id}><i>{area.emoji}</i>{area.title}</b>)}</div><p>{impactFuture}</p></div><div className="north-answers">{questions.slice(1).map((question, index) => { const answerIndex = index + 1; const rawAnswer = rawAnswers[answerIndex] ?? ""; const cleanedAnswer = answers[answerIndex] ?? rawAnswer; return <div key={question}><span>0{answerIndex + 1}</span><p>{question}</p><b>{cleanedAnswer}</b>{cleanedAnswer !== rawAnswer && <small className="answer-source">Your words: “{rawAnswer}”</small>}</div>; })}</div><div className="north-bottom"><Sparkles size={19} /><p><b>Your direction is clear enough to picture.</b> Now connect the work to the life you want it to create.</p></div></article>
         </div>}
 
         {phase === "realize" && <div className="screen vision-board-screen simple-enter">
