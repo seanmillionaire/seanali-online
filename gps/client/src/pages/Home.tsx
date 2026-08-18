@@ -2,7 +2,7 @@
  * DREAM LIFE GPS — Simple Trail edition.
  * Plain eighth-grade language, visual play, and small actions that feel easy to start.
  */
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -22,6 +22,8 @@ import {
   TentTree,
   Trophy,
   Users,
+  Volume2,
+  VolumeX,
   Zap,
 } from "lucide-react";
 
@@ -90,6 +92,8 @@ export default function Home() {
   const [slots, setSlots] = useState<Record<SlotId, string | null>>({ skill: null, week: null, score: null });
   const [block, setBlock] = useState("path");
   const [celebrate, setCelebrate] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [speechAvailable] = useState(() => typeof window !== "undefined" && "speechSynthesis" in window);
 
   const currentDream = dreamCards.find((item) => item.id === dream) ?? dreamCards[0];
   const currentBlock = roadBlocks.find((item) => item.id === block) ?? roadBlocks[1];
@@ -103,15 +107,57 @@ export default function Home() {
     return roleIdeas[role].work;
   }, [block, role]);
 
+  const audioPrompt = useMemo(() => {
+    if (step === 0) return `Step 1. Pick a dream. Choose the card that feels best to you. Right now, you picked ${currentDream.title}. You can change it later.`;
+    if (step === 1) return `Step 2. Pick what you help with. Right now, you picked ${role}. There are no wrong answers. Pick the one that feels closest.`;
+    if (step === 2) return `Step 3. Build your path. Pick the three bright cards and put them on your map. First get better. Then do the work. Last, look at the score. ${routeIsBuilt ? "Nice work. Your path is built." : "You can drag a card, or tap a card and then tap an empty spot."}`;
+    if (step === 3) return `Step 4. Find the big rock. You picked: ${currentBlock.title} Your next small move is: ${tinyWin}`;
+    return `Step 5. Here is your little plan. Your dream is ${currentDream.title}. Your tiny win this week is: ${tinyWin} You are ready to go.`;
+  }, [currentBlock.title, currentDream.title, role, routeIsBuilt, step, tinyWin]);
+
+  const stopReading = () => {
+    if (!speechAvailable) return;
+    window.speechSynthesis.cancel();
+    setIsSpeaking(false);
+  };
+
+  const toggleReading = () => {
+    if (!speechAvailable) return;
+    if (isSpeaking) {
+      stopReading();
+      return;
+    }
+    const message = new SpeechSynthesisUtterance(audioPrompt);
+    message.rate = 0.94;
+    message.pitch = 1;
+    message.onend = () => setIsSpeaking(false);
+    message.onerror = () => setIsSpeaking(false);
+    window.speechSynthesis.cancel();
+    setIsSpeaking(true);
+    window.speechSynthesis.speak(message);
+  };
+
+  useEffect(() => {
+    if (!speechAvailable) return;
+    window.speechSynthesis.cancel();
+    setIsSpeaking(false);
+    return () => window.speechSynthesis.cancel();
+  }, [step, speechAvailable]);
+
   const placePiece = (slot: SlotId) => {
     if (!activePiece) return;
     setSlots((oldSlots) => ({ ...oldSlots, [slot]: activePiece }));
     setActivePiece(null);
   };
 
-  const next = () => setStep((value) => Math.min(4, value + 1));
-  const back = () => setStep((value) => Math.max(0, value - 1));
+  const goToStep = (nextStep: number) => {
+    stopReading();
+    setStep(nextStep);
+  };
+  const next = () => goToStep(Math.min(4, step + 1));
+  const back = () => goToStep(Math.max(0, step - 1));
   const reset = () => {
+    stopReading();
     setStep(0);
     setSlots({ skill: null, week: null, score: null });
     setCelebrate(false);
@@ -127,7 +173,7 @@ export default function Home() {
         <div className="rail-copy"><p>YOUR LITTLE ADVENTURE</p><h2>Pick a dream.<br />Take a step.<br />Keep going.</h2></div>
         <nav className="simple-steps" aria-label="Your Dream Life GPS steps">
           <i className="step-line"><em style={{ height: `${progress}%` }} /></i>
-          {steps.map((item, index) => <button className={`simple-step ${index === step ? "now" : ""} ${index < step ? "done" : ""}`} onClick={() => setStep(index)} key={item.title}><span>{index < step ? <Check size={13} /> : item.number}</span><div><b>{item.title}</b><small>{item.hint}</small></div></button>)}
+          {steps.map((item, index) => <button className={`simple-step ${index === step ? "now" : ""} ${index < step ? "done" : ""}`} onClick={() => goToStep(index)} key={item.title}><span>{index < step ? <Check size={13} /> : item.number}</span><div><b>{item.title}</b><small>{item.hint}</small></div></button>)}
         </nav>
         <div className="rail-footer"><Gamepad2 size={18} /><p>This is not a test. Just try things and learn.</p></div>
       </aside>
@@ -137,6 +183,7 @@ export default function Home() {
           <div className="mobile-brand"><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><b>DREAM LIFE <em>GPS</em></b></div>
           <div className="step-readout"><span>YOUR PATH</span><div><i style={{ width: `${Math.max(progress, 5)}%` }} /></div><b>{step + 1} / 5</b></div>
           <div className="top-message"><span className="tiny-dot" />You are building your path</div>
+          {speechAvailable && <button className={`audio-prompt-button ${isSpeaking ? "reading" : ""}`} onClick={toggleReading} aria-pressed={isSpeaking} aria-label={isSpeaking ? "Stop reading this step" : "Read this step out loud"}>{isSpeaking ? <VolumeX size={17} /> : <Volume2 size={17} />}<span>{isSpeaking ? "Stop reading" : "Read this step"}</span></button>}
         </header>
 
         <section className="simple-canvas">
@@ -195,6 +242,7 @@ export default function Home() {
         </section>
 
         <footer className="simple-footer"><button className="soft-button" onClick={back} disabled={step === 0}><ArrowLeft size={17} /> Back</button><p><MapPin size={14} /> {steps[step].title} <ArrowRight size={13} /> {step === 4 ? "Go" : steps[step + 1]?.title}</p>{step < 4 ? <button className="go-button" onClick={next}>{step === 2 && !routeIsBuilt ? "Keep building" : "Next little step"}<ArrowRight size={17} /></button> : <button className="go-button" onClick={reset}>Try a new dream<Compass size={17} /></button>}</footer>
+        <span className="sr-only" aria-live="polite">{isSpeaking ? `Reading step ${step + 1} out loud.` : ""}</span>
       </main>
     </div>
   );
