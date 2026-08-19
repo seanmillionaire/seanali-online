@@ -8,6 +8,7 @@ import { mergeVoiceTranscript } from "@/lib/voiceTranscript";
 import "../personalization.css";
 import "../guided-flow.css";
 import "../guided-flow-fix.css";
+import "../guided-flow-panel.css";
 
 type Step = "name" | "location" | "success" | "benefits" | "future" | "whyNow" | "summary" | "role" | "responsibility" | "commitment" | "action";
 type BenefitId = "family" | "health" | "calm" | "time" | "freedom" | "work" | "giving" | "growth";

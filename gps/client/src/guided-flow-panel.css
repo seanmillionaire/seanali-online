@@ -1,0 +1,38 @@
+/* A stable atlas reading surface: the page frame stays put and only the active card scrolls. */
+.guided-shell{height:100dvh;min-height:0;overflow:hidden}
+.guided-main{display:grid;grid-template-rows:86px minmax(0,1fr) 74px;height:100dvh;min-height:0;overflow:hidden}
+.guided-content{position:relative;display:flex;align-items:stretch;justify-content:center;min-height:0;padding:30px 34px;overflow:hidden;box-sizing:border-box;background:radial-gradient(circle at 18% 16%,rgba(255,255,255,.86),transparent 28%),radial-gradient(circle at 84% 78%,rgba(220,239,229,.72),transparent 34%),#f4efe6}
+.guided-content::before,.guided-content::after{position:absolute;width:170px;height:170px;content:"";opacity:.5;pointer-events:none}
+.guided-content::before{top:9%;left:9%;border-top:1px solid #b9c9bd;border-left:1px solid #b9c9bd}
+.guided-content::after{right:9%;bottom:9%;border-right:1px solid #b9c9bd;border-bottom:1px solid #b9c9bd}
+.guided-card{position:relative;z-index:1;box-sizing:border-box;width:min(900px,100%);height:100%;min-height:0;max-height:680px;padding:46px;overflow-y:auto;border:1px solid #bdb5a7;outline:5px solid rgba(255,253,248,.76);outline-offset:-15px;background:linear-gradient(135deg,rgba(255,255,255,.99),rgba(255,251,243,.97));box-shadow:0 24px 60px rgba(28,42,45,.14),inset 0 0 0 1px rgba(255,255,255,.92);scrollbar-color:#8ca997 #edf1eb;scrollbar-width:thin}
+.guided-card::before{position:absolute;top:20px;right:21px;bottom:20px;left:21px;border:1px solid rgba(190,180,163,.5);content:"";pointer-events:none}
+.guided-card>*{position:relative;z-index:1}
+.guided-card::-webkit-scrollbar{width:11px}
+.guided-card::-webkit-scrollbar-track{background:#edf1eb}
+.guided-card::-webkit-scrollbar-thumb{border:3px solid #edf1eb;border-radius:999px;background:#8ca997}
+.guided-card h1{max-width:760px}
+.guided-intro{max-width:720px}
+
+@media(max-width:900px){
+  .guided-shell,.guided-main{height:100dvh}
+  .guided-main{grid-template-rows:76px minmax(0,1fr) 70px}
+  .guided-content{padding:18px 15px}
+  .guided-content::before,.guided-content::after{width:95px;height:95px}
+  .guided-card{max-height:none;padding:35px 28px}
+}
+
+@media(max-width:560px){
+  .guided-topbar{gap:8px;padding:0 12px}
+  .simple-gps .mobile-brand{display:none!important}
+  .mobile-brand img{width:20px;height:20px}
+  .mobile-brand b{font-size:14px;line-height:1;white-space:nowrap}
+  .guided-top-progress{gap:6px;white-space:nowrap}
+  .guided-top-progress span{font-size:14px;white-space:nowrap}
+  .guided-top-progress i{width:29px}
+  .guided-help{padding:11px 9px;font-size:15px;white-space:nowrap}
+  .guided-content{padding:12px}
+  .guided-content::before,.guided-content::after{display:none}
+  .guided-card{padding:31px 22px;outline-width:3px;outline-offset:-11px}
+  .guided-card::before{top:15px;right:15px;bottom:15px;left:15px}
+}
