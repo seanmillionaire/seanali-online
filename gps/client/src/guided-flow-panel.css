@@ -51,6 +51,27 @@
 .guided-print-button{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;margin-top:19px;padding:14px 18px;border:1px solid #1c5960;background:#1f4650;color:#fff;font:800 17px Manrope,Arial,sans-serif;cursor:pointer;transition:transform 160ms cubic-bezier(.23,1,.32,1),background 160ms cubic-bezier(.23,1,.32,1)}
 .guided-print-button:hover{background:#173a42;transform:translateY(-1px)}
 .guided-print-button:active{transform:scale(.98)}
+.guided-success-visual{position:relative;overflow:hidden;margin-top:20px;padding:24px;border:1px solid #d99a6e;background:linear-gradient(132deg,#fffaf1 0%,#f4e6cf 50%,#d9efe5 100%)}
+.guided-success-visual::after{position:absolute;top:-72px;right:-60px;width:180px;height:180px;border:1px solid rgba(224,110,64,.27);border-radius:50%;box-shadow:0 0 0 26px rgba(224,110,64,.08),0 0 0 52px rgba(224,110,64,.05);content:"";pointer-events:none}
+.guided-success-visual header{position:relative;z-index:1;max-width:590px}
+.guided-success-visual header>span{display:flex;align-items:center;gap:7px;color:#b3542e;font-size:14px;font-weight:900;letter-spacing:.85px}
+.guided-success-visual header h2{margin:10px 0 7px;color:#204852;font-family:"DM Serif Display",Georgia,serif;font-size:34px;font-weight:400;line-height:1.1}
+.guided-success-visual header p{margin:0;color:#52695d;font-size:18px;line-height:1.44}
+.guided-success-visual-action{position:relative;z-index:1;margin-top:20px}
+.guided-success-visual-action button{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:56px;padding:15px 18px;border:1px solid #994622;background:#b3542e;color:#fff;font:800 18px Manrope,Arial,sans-serif;cursor:pointer;transition:transform 160ms cubic-bezier(.23,1,.32,1),background 160ms cubic-bezier(.23,1,.32,1),box-shadow 160ms cubic-bezier(.23,1,.32,1)}
+.guided-success-visual-action button:hover:not(:disabled){background:#954323;box-shadow:0 12px 22px rgba(151,67,35,.2);transform:translateY(-2px)}
+.guided-success-visual-action button:active:not(:disabled){transform:scale(.98)}
+.guided-success-visual-action button:disabled{cursor:wait;opacity:.85}
+.guided-success-visual-action small{display:block;max-width:620px;margin:13px auto 0;color:#5a6e61;font-size:16px;font-weight:700;line-height:1.45;text-align:center}
+.guided-success-visual-action p{margin:12px 0 0;color:#9a3425;font-size:16px;font-weight:800;text-align:center}
+.guided-success-visual-status{color:#275b4a!important}
+.guided-visual-spinner{animation:guided-visual-spin 1s linear infinite}
+.guided-success-visual-result{position:relative;z-index:1;margin:20px 0 0;border:1px solid rgba(32,72,82,.25);background:#143c44;box-shadow:0 18px 35px rgba(41,71,61,.18);animation:guided-visual-reveal .5s cubic-bezier(.23,1,.32,1) both}
+.guided-success-visual-result img{display:block;width:100%;max-height:520px;object-fit:cover;aspect-ratio:4/5;background:#d9c7ad}
+.guided-success-visual-result figcaption{display:flex;align-items:flex-start;gap:9px;padding:14px 16px;color:#edf8f3;font-size:16px;font-weight:800;line-height:1.4}
+.guided-success-visual-result figcaption svg{flex:0 0 auto;margin-top:2px;color:#f5b078}
+@keyframes guided-visual-spin{to{transform:rotate(360deg)}}
+@keyframes guided-visual-reveal{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
 .guided-final-payoff{position:relative;overflow:hidden;margin-top:20px;padding:24px;border:1px solid #274f58;background:linear-gradient(138deg,#102f38 0%,#1b4b51 58%,#216241 100%);color:#fff}
 .guided-final-payoff::after{position:absolute;right:-54px;bottom:-68px;width:220px;height:220px;border:1px solid rgba(255,255,255,.22);border-radius:50%;box-shadow:0 0 0 28px rgba(255,255,255,.04),0 0 0 56px rgba(255,255,255,.03);content:"";pointer-events:none}
 .guided-final-payoff header{position:relative;z-index:1;max-width:580px}
@@ -132,6 +153,9 @@
   .guided-personalizing b{font-size:27px}
   .guided-personalizing small{font-size:17px}
   .guided-final-payoff{padding:19px}
+  .guided-success-visual{padding:19px}
+  .guided-success-visual header h2{font-size:29px}
+  .guided-success-visual-action button{font-size:17px}
   .guided-final-payoff header h2{font-size:29px}
   .guided-quote-card{min-height:190px;padding:18px}
   .guided-quote-card blockquote{font-size:24px}
@@ -140,13 +164,13 @@
   .guided-daily-practice h2{font-size:27px}
 }
 
-@media (prefers-reduced-motion: reduce){.guided-personalizing-orbit::before,.guided-personalizing-orbit::after,.guided-personalizing-orbit span,.guided-personalizing-orbit svg,.guided-quote-card{animation:none}}
+@media (prefers-reduced-motion: reduce){.guided-personalizing-orbit::before,.guided-personalizing-orbit::after,.guided-personalizing-orbit span,.guided-personalizing-orbit svg,.guided-quote-card,.guided-visual-spinner,.guided-success-visual-result{animation:none}}
 
 @media print{
   @page{margin:.5in}
   html,body,#root,.guided-shell,.guided-main,.guided-content,.guided-card{height:auto!important;min-height:0!important;overflow:visible!important;background:#fff!important}
   .guided-shell,.guided-main{display:block!important}
-  .guided-rail,.guided-topbar,.guided-help-panel,.guided-footer,.guided-print-button,.guided-final-payoff,.guided-daily-practice{display:none!important}
+  .guided-rail,.guided-topbar,.guided-help-panel,.guided-footer,.guided-print-button,.guided-success-visual,.guided-final-payoff,.guided-daily-practice{display:none!important}
   .guided-content{display:block!important;padding:0!important}
   .guided-card{width:100%!important;max-width:none!important;max-height:none!important;padding:0!important;border:0!important;outline:0!important;box-shadow:none!important}
   .guided-card::before{display:none!important}
