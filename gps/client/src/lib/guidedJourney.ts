@@ -16,9 +16,9 @@ export const roles: RoleOption[] = [
 ];
 
 export const commitments: CommitmentOption[] = [
-  { id: "small", title: "Small start", hours: "4 focused hours each week", line: "I want to start without burning out.", blocks: 4, days: 4 },
-  { id: "solid", title: "Solid push", hours: "8 focused hours each week", line: "I can make this a real part of my week.", blocks: 8, days: 5 },
-  { id: "full", title: "Full push", hours: "15 focused hours each week", line: "I am ready to make this my main focus right now.", blocks: 15, days: 6 },
+  { id: "small", title: "A small win", hours: "4 focused hours this week", line: "I will move this forward without overloading my week.", blocks: 4, days: 4 },
+  { id: "solid", title: "A real win", hours: "8 focused hours this week", line: "I will make progress I can clearly see by Friday.", blocks: 8, days: 5 },
+  { id: "full", title: "A major win", hours: "15 focused hours this week", line: "I will make this result my main work this week.", blocks: 15, days: 6 },
 ];
 
 type ActionTemplate = { today: string; thisWeek: string; friday: string };
@@ -86,7 +86,7 @@ export function formatBenefitSentence(impactNames: string[]) {
   return `This supports the life you pictured: ${list}.`;
 }
 
-export function createNextAction(input: { role: RoleId; otherRole: string; commitment: CommitmentId; success: string; responsibility: string; impactNames: string[]; whyNow: string }) {
+export function createNextAction(input: { role: RoleId; otherRole: string; commitment: CommitmentId; success: string; responsibility: string; weeklyResult: string; impactNames: string[]; whyNow: string }) {
   const template = actionTemplates[input.role];
   const selected = commitments.find((item) => item.id === input.commitment) ?? commitments[1];
   const responsibility = input.responsibility.trim();
@@ -99,12 +99,14 @@ export function createNextAction(input: { role: RoleId; otherRole: string; commi
     impact,
     workFocus: responsibility ? `Your work focus: ${responsibility}` : "Your work focus: choose the result closest to your goal.",
     clearPicture: input.success.trim() || "Build the life you want.",
+    weeklyResult: input.weeklyResult.trim() || responsibility || "I have moved one clear result forward.",
+    commitmentHours: selected.hours,
     whyNow: input.whyNow.trim(),
     blocks: selected.blocks,
   };
 }
 
-export function canAdvanceStep(input: { step: string; userName: string; location: string; role: RoleId | null; otherRole: string; success: string; benefitCount: number; future: string; whyNow: string; responsibility: string; isCleaning: boolean }) {
+export function canAdvanceStep(input: { step: string; userName: string; location: string; role: RoleId | null; otherRole: string; success: string; benefitCount: number; future: string; whyNow: string; responsibility: string; weeklyResult: string; isCleaning: boolean }) {
   if (input.isCleaning) return false;
   if (input.step === "name") return Boolean(input.userName.trim());
   if (input.step === "location") return Boolean(input.location.trim());
@@ -114,5 +116,6 @@ export function canAdvanceStep(input: { step: string; userName: string; location
   if (input.step === "whyNow") return Boolean(input.whyNow.trim());
   if (input.step === "role") return Boolean(input.role) && (input.role !== "other" || Boolean(input.otherRole.trim()));
   if (input.step === "responsibility") return Boolean(input.responsibility.trim());
+  if (input.step === "commitment") return Boolean(input.weeklyResult.trim());
   return true;
 }

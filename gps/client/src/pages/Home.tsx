@@ -12,7 +12,7 @@ import "../guided-flow-panel.css";
 
 type Step = "name" | "location" | "success" | "benefits" | "future" | "whyNow" | "summary" | "role" | "responsibility" | "commitment" | "action";
 type BenefitId = "family" | "health" | "calm" | "time" | "freedom" | "work" | "giving" | "growth";
-type VoiceField = "name" | "location" | "otherRole" | "success" | "future" | "whyNow" | "responsibility";
+type VoiceField = "name" | "location" | "otherRole" | "success" | "future" | "whyNow" | "responsibility" | "weeklyResult";
 
 type SpeechResultEvent = { resultIndex: number; results: ArrayLike<ArrayLike<{ transcript: string }>> };
 type SpeechRecognitionLike = { lang: string; continuous: boolean; interimResults: boolean; onresult: ((event: SpeechResultEvent) => void) | null; onerror: ((event: { error: string }) => void) | null; onend: (() => void) | null; start: () => void; abort: () => void };
@@ -38,8 +38,8 @@ const stepHelp: Record<Step, { title: string; message: string; next: string }> =
   summary: { title: "Check your clear picture", message: "Read this. Go back if any part does not feel right yet.", next: "Take action" },
   role: { title: "Your work matters", message: "Your role helps me give you a next action that fits real work.", next: "Next" },
   responsibility: { title: "Name your work focus", message: "Pick the result you can help move right now.", next: "Next" },
-  commitment: { title: "Keep it real", message: "Choose time you can actually protect this week.", next: "Show my next step" },
-  action: { title: "Take one step", message: "Read your clear picture, then start the first action today.", next: "Start over" },
+  commitment: { title: "Commit to one result", message: "Choose one visible result for the next seven days, then make room to create it.", next: "Build my seven-day checklist" },
+  action: { title: "Work with the result in mind", message: "Picture Friday first. Then use this checklist to make the result more real today.", next: "Start over" },
 };
 
 function formatMoney(amount: number) { return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(amount); }
@@ -69,6 +69,8 @@ export default function Home() {
   const [otherRole, setOtherRole] = useState("");
   const [responsibility, setResponsibility] = useState("");
   const [cleanResponsibility, setCleanResponsibility] = useState("");
+  const [weeklyResult, setWeeklyResult] = useState("");
+  const [cleanWeeklyResult, setCleanWeeklyResult] = useState("");
   const [commitment, setCommitment] = useState<CommitmentId>("solid");
   const [helpOpen, setHelpOpen] = useState(false);
   const [activeVoice, setActiveVoice] = useState<VoiceField | null>(null);
@@ -86,14 +88,15 @@ export default function Home() {
   const futureText = cleanFuture || future;
   const whyNowText = cleanWhyNow || whyNow;
   const responsibilityText = cleanResponsibility || responsibility;
+  const weeklyResultText = cleanWeeklyResult || weeklyResult;
   const suggestedTarget = findStatedMonthlyIncome([successText, futureText].join(" "));
   const weekly = suggestedTarget !== null ? getWeeklyNumbers(suggestedTarget, commitment) : null;
-  const actionPlan = useMemo(() => role ? createNextAction({ role, otherRole, commitment, success: successText, responsibility: responsibilityText, impactNames: benefitNames, whyNow: whyNowText }) : null, [role, otherRole, commitment, successText, responsibilityText, benefitNames.join("|"), whyNowText]);
+  const actionPlan = useMemo(() => role ? createNextAction({ role, otherRole, commitment, success: successText, responsibility: responsibilityText, weeklyResult: weeklyResultText, impactNames: benefitNames, whyNow: whyNowText }) : null, [role, otherRole, commitment, successText, responsibilityText, weeklyResultText, benefitNames.join("|"), whyNowText]);
   const greetingTime = new Date().getHours() < 12 ? "Good morning" : new Date().getHours() < 18 ? "Good afternoon" : "Good evening";
   const greeting = userName.trim() && location.trim() ? `${greetingTime}, ${userName.trim()} — building from ${location.trim()}` : "One step at a time";
   const currentHelp = stepHelp[step];
 
-  const valueForVoice = (field: VoiceField) => ({ name: userName, location, otherRole, success, future, whyNow, responsibility }[field]);
+  const valueForVoice = (field: VoiceField) => ({ name: userName, location, otherRole, success, future, whyNow, responsibility, weeklyResult }[field]);
   const setVoiceValue = (field: VoiceField, value: string) => {
     if (field === "name") setUserName(value);
     if (field === "location") setLocation(value);
@@ -102,6 +105,7 @@ export default function Home() {
     if (field === "future") { setFuture(value); setCleanFuture(""); }
     if (field === "whyNow") { setWhyNow(value); setCleanWhyNow(""); }
     if (field === "responsibility") { setResponsibility(value); setCleanResponsibility(""); }
+    if (field === "weeklyResult") { setWeeklyResult(value); setCleanWeeklyResult(""); }
   };
   const stopVoice = () => { keepListening.current = false; recognition.current?.abort(); recognition.current = null; capturedVoice.current = null; setActiveVoice(null); };
   const beginVoiceSegment = (field: VoiceField, base: string) => {
@@ -132,23 +136,26 @@ export default function Home() {
   };
   useEffect(() => () => recognition.current?.abort(), []);
 
-  const canContinue = canAdvanceStep({ step, userName, location, role, otherRole, success, benefitCount: selectedBenefits.length, future, whyNow, responsibility, isCleaning: cleanAnswer.isPending });
+  const canContinue = canAdvanceStep({ step, userName, location, role, otherRole, success, benefitCount: selectedBenefits.length, future, whyNow, responsibility, weeklyResult, isCleaning: cleanAnswer.isPending });
   const cleanupDetails: Partial<Record<Step, { raw: string; question: string; apply: (value: string) => void }>> = {
     success: { raw: success, question: "What does success look like for you?", apply: setCleanSuccess },
     future: { raw: future, question: "If this worked, what would be better in your life?", apply: setCleanFuture },
     whyNow: { raw: whyNow, question: "Why is this worth doing now?", apply: setCleanWhyNow },
     responsibility: { raw: responsibility, question: "What result are you responsible for right now?", apply: setCleanResponsibility },
+    commitment: { raw: weeklyResult, question: "What result can you commit to in the next 7 days?", apply: setCleanWeeklyResult },
   };
   const move = (direction: "next" | "back") => {
     const position = steps.indexOf(step); setHelpOpen(false); stopVoice();
     if (direction === "back") { if (position > 0) setStep(steps[position - 1]); return; }
     if (!canContinue) return;
     const cleanup = cleanupDetails[step];
+    const alreadyCleaned = (step === "success" && Boolean(cleanSuccess)) || (step === "future" && Boolean(cleanFuture)) || (step === "whyNow" && Boolean(cleanWhyNow)) || (step === "responsibility" && Boolean(cleanResponsibility)) || (step === "commitment" && Boolean(cleanWeeklyResult));
+    if (cleanup && alreadyCleaned) { setStep(steps[position + 1]); return; }
     if (cleanup) { void (async () => { let cleaned = cleanup.raw.trim(); try { cleaned = (await cleanAnswer.mutateAsync({ rawAnswer: cleaned, question: cleanup.question })).cleanedAnswer; } catch { /* Keep the person’s own words if cleanup cannot finish. */ } cleanup.apply(cleaned); setStep(steps[position + 1]); })(); return; }
     if (step === "action") { reset(); return; }
     if (position < steps.length - 1) setStep(steps[position + 1]);
   };
-  const reset = () => { stopVoice(); setStep("name"); setUserName(""); setLocation(""); setSuccess(""); setCleanSuccess(""); setSelectedBenefits([]); setFuture(""); setCleanFuture(""); setWhyNow(""); setCleanWhyNow(""); setRole(null); setOtherRole(""); setResponsibility(""); setCleanResponsibility(""); setCommitment("solid"); setHelpOpen(false); };
+  const reset = () => { stopVoice(); setStep("name"); setUserName(""); setLocation(""); setSuccess(""); setCleanSuccess(""); setSelectedBenefits([]); setFuture(""); setCleanFuture(""); setWhyNow(""); setCleanWhyNow(""); setRole(null); setOtherRole(""); setResponsibility(""); setCleanResponsibility(""); setWeeklyResult(""); setCleanWeeklyResult(""); setCommitment("solid"); setHelpOpen(false); };
   const toggleBenefit = (id: BenefitId) => setSelectedBenefits((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
 
   const renderStep = () => {
@@ -161,9 +168,9 @@ export default function Home() {
     if (step === "summary") return <><p className="guided-kicker"><Check size={18} /> STEP 7 OF 11 · GET CLEAR</p><h1>Here is the life you are working toward.</h1><p className="guided-intro">Read this slowly. Go back if any part does not feel right yet.</p><div className="guided-summary"><article className="guided-summary-item"><span>WHAT SUCCESS LOOKS LIKE</span><b>{successText}</b>{cleanSuccess && cleanSuccess !== success && <small>Your words: “{success}”</small>}</article><article className="guided-summary-item"><span>WHAT YOU WANT MORE OF</span><b>{pickedBenefits.map((item) => `${item.emoji} ${item.title}`).join(" · ")}</b></article><article className="guided-summary-item"><span>WHAT GETS BETTER</span><b>{futureText}</b>{cleanFuture && cleanFuture !== future && <small>Your words: “{future}”</small>}</article><article className="guided-summary-item"><span>WHY NOW</span><b>{whyNowText}</b>{cleanWhyNow && cleanWhyNow !== whyNow && <small>Your words: “{whyNow}”</small>}</article></div><ClarityChecklist title="YOU ARE CLEARER NOW" items={["You know what success means to you.", "You can see what gets better when it works.", "You have a reason to keep going when work feels hard."]} /></>;
     if (step === "role") return <><p className="guided-kicker"><Compass size={18} /> STEP 8 OF 11 · TAKE ACTION</p><h1>What kind of work do you do?</h1><p className="guided-intro">Pick the closest fit. I will use this to give you a useful next action.</p><div className="guided-roles">{roles.map((item) => <button type="button" key={item.id} className={`guided-choice ${role === item.id ? "picked" : ""}`} onClick={() => setRole(item.id)} aria-pressed={role === item.id}><span className="guided-emoji">{item.emoji}</span><span><b>{item.title}</b><small>{item.line}</small></span>{role === item.id && <i><Check size={16} /></i>}</button>)}</div>{role === "other" && <VoiceField id="otherRole" label="TELL ME WHAT YOU DO" value={otherRole} setValue={setOtherRole} autoFocus active={activeVoice} note={voiceNote} start={startVoice} stop={stopVoice} />}</>;
     if (step === "responsibility") return <><p className="guided-kicker"><Target size={18} /> STEP 9 OF 11 · TAKE ACTION</p><h1>What result are you responsible for right now?</h1><p className="guided-intro">Name the result you can help move. It might be leads, sales, clearer work, faster delivery, happier customers, or your own words.</p><VoiceField id="responsibility" label="THE RESULT I CAN HELP MOVE" value={responsibility} setValue={setResponsibility} multiline autoFocus active={activeVoice} note={cleanAnswer.isPending ? "Making your words clear while keeping them yours..." : voiceNote} start={startVoice} stop={stopVoice} /><ClarityChecklist items={["You are narrowing your attention to one useful result.", "Your plan will focus on work you can actually influence."]} /></>;
-    if (step === "commitment") return <><p className="guided-kicker"><Compass size={18} /> STEP 10 OF 11 · TAKE ACTION</p><h1>What can you protect this week?</h1><p className="guided-intro">Choose time you can really protect. A smaller honest plan is better than a big plan you cannot keep.</p>{weekly && <div className="guided-planning-note"><Target size={21} /><span>You mentioned <b>{formatMoney(suggestedTarget!)}</b>. As a planning number, that is about <b>{formatMoney(weekly.weekly)}</b> each week.</span></div>}<div className="guided-commitments">{commitments.map((item) => <button type="button" key={item.id} className={`guided-commitment ${commitment === item.id ? "picked" : ""}`} onClick={() => setCommitment(item.id)} aria-pressed={commitment === item.id}><span>{item.id === "small" ? "01" : item.id === "solid" ? "02" : "03"}</span><div><b>{item.title}</b><small>{item.line}</small><em>{item.hours}</em></div></button>)}</div></>;
+    if (step === "commitment") return <><p className="guided-kicker"><Compass size={18} /> STEP 10 OF 11 · TAKE ACTION</p><h1>What result can you commit to in the next 7 days?</h1><p className="guided-intro">Make it real and easy to see. By Friday, what will be different because you did the work?</p><VoiceField id="weeklyResult" label="BY FRIDAY, THIS IS TRUE" value={weeklyResult} setValue={setWeeklyResult} multiline autoFocus active={activeVoice} note={cleanAnswer.isPending ? "Making your result clear while keeping it yours..." : voiceNote} start={startVoice} stop={stopVoice} /><ClarityChecklist title="A GOOD SEVEN-DAY RESULT" items={["I can see proof that it happened.", "It connects to the work I can influence.", "It is small enough to move this week."]} /><div className="guided-result-anchor"><Target size={21} /><span>{suggestedTarget ? <>Your bigger picture is <b>{formatMoney(suggestedTarget)}</b> each month. This is the one result that moves it forward this week.</> : <>This is one visible result that moves your bigger picture forward this week.</>}</span></div><div className="guided-commitment-heading"><span>HOW MUCH ROOM WILL YOU MAKE FOR IT?</span><p>Pick the level that gives this result a real chance by Friday.</p></div><div className="guided-commitments">{commitments.map((item) => <button type="button" key={item.id} className={`guided-commitment ${commitment === item.id ? "picked" : ""}`} onClick={() => setCommitment(item.id)} aria-pressed={commitment === item.id}><span>{item.id === "small" ? "01" : item.id === "solid" ? "02" : "03"}</span><div><b>{item.title}</b><small>{item.line}</small><em>{item.hours}</em></div>{commitment === item.id && <i><Check size={19} /></i>}</button>)}</div></>;
     if (!actionPlan || !role) return null;
-    return <><p className="guided-kicker"><Check size={18} /> STEP 11 OF 11 · TAKE ACTION</p><h1>Here is your next step.</h1><p className="guided-intro">Your work as a {getRoleName(role, otherRole)} can help move the result you named.</p><div className="guided-vision-reminder"><span>KEEP THIS IN MIND</span><b>{actionPlan.clearPicture}</b><p>{futureText}</p>{actionPlan.whyNow && <em>Why this matters now: {actionPlan.whyNow}</em>}<div><Check size={19} />Read this before you start. It is the reason this work matters today.</div></div><div className="guided-action-card"><span className="guided-kicker">ONE USEFUL MOVE AT A TIME</span><h2>Start with what you can control.</h2><p>{actionPlan.workFocus}</p><p>{actionPlan.impact}</p><div className="guided-action-list"><article><span>DO THIS TODAY</span><b>{actionPlan.today}</b></article><article><span>DO THIS THIS WEEK</span><b>{actionPlan.thisWeek}</b>{weekly && <p>Optional planning number: about {formatMoney(weekly.weekly)} this week and {formatMoney(weekly.focusDay)} on each focus day.</p>}</article><article><span>CHECK THIS ON FRIDAY</span><b>{actionPlan.friday}</b></article></div></div></>;
+    return <><p className="guided-kicker"><Check size={18} /> STEP 11 OF 11 · TAKE ACTION</p><h1>This is what you are making happen.</h1><p className="guided-intro">Work with Friday already in mind. Your role as a {getRoleName(role, otherRole)} can help make this result real.</p><div className="guided-vision-reminder"><span>THE RESULT I AM CREATING THIS WEEK</span><b>{actionPlan.weeklyResult}</b><p>This week supports the bigger life I pictured: {actionPlan.clearPicture}</p>{futureText && <p>{futureText}</p>}{actionPlan.whyNow && <em>Why this matters now: {actionPlan.whyNow}</em>}<div><Check size={19} />Before you begin, picture Friday and the proof that this result moved.</div></div><div className="guided-action-card guided-outcome-card"><span className="guided-kicker">YOUR FUTURE-PACED WORK CHECKLIST</span><h2>I work with the result already in mind.</h2><p>{actionPlan.workFocus}</p><p>{actionPlan.impact}</p><div className="guided-outcome-checklist"><article><i><Check size={20} /></i><div><span>THE RESULT I SEE</span><b>By Friday, this is true: {actionPlan.weeklyResult}</b><p>I can picture the proof before I open my work.</p></div></article><article><i><Check size={20} /></i><div><span>THE MOVE I MAKE TODAY</span><b>I protect this result by doing this first: {actionPlan.today}</b></div></article><article><i><Check size={20} /></i><div><span>THE FOCUS I KEEP THIS WEEK</span><b>I make room for {actionPlan.commitmentHours.toLowerCase()}: {actionPlan.thisWeek}</b>{weekly && <p>Optional planning number: about {formatMoney(weekly.weekly)} this week and {formatMoney(weekly.focusDay)} on each focus day.</p>}</div></article><article><i><Check size={20} /></i><div><span>THE FRIDAY PROOF</span><b>I look at what moved, keep what worked, and choose the next result: {actionPlan.friday}</b></div></article></div></div></>;
   };
 
   const nextLabel = cleanAnswer.isPending ? "Making it clear..." : stepHelp[step].next;
