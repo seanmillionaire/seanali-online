@@ -72,6 +72,28 @@ footer .mini{color:rgba(255,248,239,.45);font-size:12px}
 footer .mini a{color:rgba(255,248,239,.56);margin:0 6px}
 @media(max-width:640px){.hero{padding:60px 18px 52px}h1{font-size:38px}.sec{padding:56px 0}.track{padding:16px}}
 
+/* ===== urgency bar ===== */
+.urgency-bar{position:sticky;top:0;z-index:50;background:#e11d24;color:#fff;text-align:center;padding:11px 16px;font-size:15px;font-weight:950;letter-spacing:.01em;box-shadow:0 3px 14px rgba(225,29,36,.35)}
+.urgency-bar s{opacity:.78}
+.urgency-bar .ub-pulse{display:inline-block;animation:ubPulse 1.6s ease-in-out infinite}
+@keyframes ubPulse{0%,100%{opacity:1}50%{opacity:.45}}
+@media(max-width:640px){.urgency-bar{font-size:13px;padding:10px 14px}}
+
+/* ===== exit-intent popup ===== */
+.xp-overlay{position:fixed;inset:0;z-index:200;background:rgba(8,7,6,.82);display:none;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(6px)}
+.xp-overlay.show{display:flex}
+.xp-box{position:relative;background:#fff;border-radius:24px;box-shadow:0 34px 90px rgba(0,0,0,.5);max-width:480px;width:100%;padding:38px 32px 32px;text-align:center;animation:xpIn .28s ease}
+@keyframes xpIn{from{transform:translateY(24px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+.xp-close{position:absolute;top:12px;right:14px;width:36px;height:36px;border-radius:50%;border:0;background:rgba(17,16,13,.06);font-size:20px;font-weight:950;color:#51483d;cursor:pointer;line-height:1}
+.xp-box h3{font-size:26px;line-height:1.12;letter-spacing:-.02em;font-weight:950;margin:0 0 10px}
+.xp-box .xp-sub{color:#51483d;font-size:15px;line-height:1.5;font-weight:700;margin:0 0 18px}
+.xp-form{display:grid;gap:10px}
+.xp-form .xp-input{width:100%;height:52px;padding:0 16px;border:1px solid rgba(17,16,13,.18);border-radius:12px;font:800 14px var(--sans);background:#fff;color:#11100d}
+.xp-form .xp-input:focus{outline:3px solid rgba(249,115,22,.3);outline-offset:-1px;border-color:var(--orange)}
+.xp-form .xp-btn{min-height:52px;width:100%;border:0}
+.xp-skip{display:inline-block;margin-top:12px;color:#8a8074;font-size:12px;font-weight:850}
+@media(max-width:480px){.xp-box{padding:30px 20px 26px}.xp-box h3{font-size:22px}}
+
 /* ===== email opt-in banner ===== */
 
 
@@ -160,7 +182,7 @@ main.wrap{max-width:none;margin:0;padding:0}.band{max-width:640px;margin:0 auto;
 </style>
 </head>
 <body>
-
+<div class="urgency-bar"><span class="ub-pulse">🔴</span> Regular price <s>$197</s> — FREE for a limited time only.</div>
 <main class="wrap"><section class="hero"><div class="hero-layout"><div class="hero-copy"><div class="eyebrow"><span class="dot"></span>🎁 A Gift From Sean Ali</div><h1><span class="headline-line">Rehearse The Millionaire Life.</span><span class="accent headline-line">Before You Live It.</span></h1><p class="sub">Six guided audios to rehearse your identity, your day, and the life you are building.</p><div class="stars-row"><span class="stars">★★★★★</span><span class="stars-note">4.9/5 · Loved by 100,000+ people worldwide</span></div><div class="value-badge"><s>$197 total value</s><strong>All 6 included today</strong></div><div class="ctas"><a class="btn" href="#listen">Listen Now</a><a class="btn ghost" href="#tracks">Jump To The Audios</a></div><div class="trust"><span>No checkout</span><span>Download or stream</span><span>Yours forever</span></div></div><div class="hero-product"><img src="https://hypnoticmeditations.ai/products/new/millionaire-life-visualization-rehearsal/assets/millionaire-life-bundle.jpg" width="1536" height="1024" alt="Millionaire Life Visualization Rehearsal bundle with six guided audio programs" fetchpriority="high" decoding="async"><span class="product-caption">6 guided audios · Stream or download</span></div></div></section><section class="sec" id="why"><span class="label">Why This Exists</span><h2>Because you should hear it first.</h2><div><p class="body-copy">Athletes rehearse before the game. You should rehearse before the life.</p><p class="body-copy">Run them in order. Identity first. Then the abundant day. Then the rich life. Night after night, the rehearsal becomes the memory.</p><p class="body-copy">Visualization is mental training, not a shortcut. The actions you take after rehearsing are what build the life.</p><div class="note-box">This is a gift. No email gate, no checkout, no upsell on this page. Listen, download, use it before your next big moment.</div></div></section><section class="sec" id="mechanism"><span class="label">The Rehearsal System</span><h2>One audio changes the moment. Six build the pattern.</h2><p class="lead">This is not six versions of the same track. Each one rehearses a different part of the life you are building.</p><div class="mechanism-grid"><div class="mechanism-card"><span class="mechanism-num">1</span><strong>Install the identity</strong><p>Start with who you are becoming so the bigger decisions stop feeling foreign.</p></div><div class="mechanism-card"><span class="mechanism-num">2</span><strong>Rehearse the day</strong><p>Walk through the ordinary moments of abundance until they feel normal, not imaginary.</p></div><div class="mechanism-card"><span class="mechanism-num">3</span><strong>Use the right reset</strong><p>Before a call, workout, price, or decision, play the state you need and move.</p></div></div></section><div class="divider"></div><section class="sec" id="proof"><span class="label">Listener Stories</span><h2>What listeners say after pressing play.</h2><p class="lead">Real feedback from people who have used other Hypnotic Meditations audio programs.</p><div class="testimonials">
 <article class="testimonial"><div class="testimonial-stars" aria-label="5 out of 5 stars">★★★★★</div><blockquote>“i'm a data analyst so i don't do 'vibes' lol. but i tried Money Flow anyway. two weeks later i raised my rate $50/hr and the client didn't even flinch.”</blockquote><div class="testimonial-person"><span class="testimonial-avatar" aria-hidden="true">DK</span><div><span class="testimonial-name">David K.</span><span class="testimonial-role">Consultant · Austin, USA</span><span class="verified-listener">✓ Verified listener · Money Flow</span></div></div></article>
 <article class="testimonial"><div class="testimonial-stars" aria-label="5 out of 5 stars">★★★★★</div><blockquote>“It wasn't just about money. It was how I felt: confident, deserving, like the world finally saw me.”</blockquote><div class="testimonial-person"><span class="testimonial-avatar" aria-hidden="true">NT</span><div><span class="testimonial-name">Nina T.</span><span class="testimonial-role">Denver, USA</span><span class="verified-listener">✓ Verified listener</span></div></div></article>
@@ -198,6 +220,24 @@ main.wrap{max-width:none;margin:0;padding:0}.band{max-width:640px;margin:0 auto;
 <div class="mini">© 2026 Sean Ali · <a href="javascript:void(0)">Privacy &amp; Terms</a> · <a href="javascript:void(0)">Support</a></div>
 </div></footer>
 
+<div class="xp-overlay" id="exit-popup">
+<div class="xp-box">
+<button class="xp-close" type="button" aria-label="Close">&times;</button>
+<h3>Wait — before you go</h3>
+<p class="xp-sub">Subscribe for more meditations and updates from Sean. New audios, resets, and free tools straight to your inbox.</p>
+<form class="xp-form" id="exit-optin-form" method="post" action="https://www.aweber.com/scripts/addlead.pl">
+<input class="xp-input" type="text" name="name" placeholder="FIRST NAME" autocomplete="given-name" required>
+<input class="xp-input" type="email" name="email" placeholder="EMAIL ADDRESS" autocomplete="email" required>
+<input type="hidden" name="listname" value="awlist6946418">
+<input type="hidden" name="redirect" value="https://seanali.online/rehearsal#thanks">
+<input type="hidden" name="meta_redirect_onlist" value="https://seanali.online/rehearsal#thanks">
+<input type="hidden" name="meta_tags" value="rehearsal-exit-popup">
+<button class="btn xp-btn" type="submit">Subscribe →</button>
+</form>
+<a class="xp-skip" href="#listen">No thanks — just keep the free audios</a>
+</div>
+</div>
+
 <script>
 (function(){
 function band(el){
@@ -224,6 +264,24 @@ document.querySelectorAll('.faqq').forEach(function(button){
     }
   });
 });
+
+/* Exit-intent popup */
+(function(){
+  var overlay=document.getElementById('exit-popup');
+  if(!overlay)return;
+  var shown=sessionStorage.getItem('xpp')==='1';
+  function show(){if(shown)return;shown=true;sessionStorage.setItem('xpp','1');overlay.classList.add('show');}
+  document.addEventListener('mouseout',function(e){
+    if(e.relatedTarget||e.clientY>0)return;
+    show();
+  });
+  overlay.addEventListener('click',function(e){
+    if(e.target===overlay)overlay.classList.remove('show');
+  });
+  overlay.querySelector('.xp-close').addEventListener('click',function(){
+    overlay.classList.remove('show');
+  });
+})();
 })();
 </script>
 </body>
