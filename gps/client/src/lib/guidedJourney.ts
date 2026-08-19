@@ -77,11 +77,20 @@ export function getWeeklyNumbers(target: number, commitment: CommitmentId) {
   return { weekly, focusDay: Math.round(weekly / selected.days), selected };
 }
 
+export function formatBenefitSentence(impactNames: string[]) {
+  const unique = Array.from(new Set(impactNames.map((item) => item.trim()).filter(Boolean)));
+  if (!unique.length) return "This supports the life you want.";
+  const hasFamilyTime = unique.includes("more time with family");
+  const benefits = unique.map((item) => item === "more time" && hasFamilyTime ? "more time for yourself" : item);
+  const list = benefits.length === 1 ? benefits[0] : benefits.length === 2 ? `${benefits[0]} and ${benefits[1]}` : `${benefits.slice(0, -1).join(", ")}, and ${benefits.at(-1)}`;
+  return `This supports the life you pictured: ${list}.`;
+}
+
 export function createNextAction(input: { role: RoleId; otherRole: string; commitment: CommitmentId; success: string; responsibility: string; impactNames: string[]; whyNow: string }) {
   const template = actionTemplates[input.role];
   const selected = commitments.find((item) => item.id === input.commitment) ?? commitments[1];
   const responsibility = input.responsibility.trim();
-  const impact = input.impactNames.length ? `This supports the life you pictured: ${input.impactNames.join(" and ")}.` : "This supports the life you want.";
+  const impact = formatBenefitSentence(input.impactNames);
   return {
     roleName: getRoleName(input.role, input.otherRole),
     today: template.today,
