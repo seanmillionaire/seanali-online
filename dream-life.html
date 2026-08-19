@@ -26,8 +26,10 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 :root{--ink:#151515;--red:#e11d24;--cream:#f6f1e8;--muted:#5f5a52;--line:#e4ddd3;--dark1:#15100b;--dark2:#080706;--glow:rgba(249,115,22,.28);--gold:#f6b457;--light:#fff8ed}
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;background:var(--dark1);color:var(--light);font-family:Inter,Arial,sans-serif;-webkit-font-smoothing:antialiased}
-.page{width:min(720px,100%);margin:0 auto;padding:0 22px 48px}
-.hero{background:radial-gradient(circle at 50% -20%,var(--glow),transparent 40%),linear-gradient(180deg,var(--dark1),var(--dark2));text-align:center;padding:96px 0 56px;margin:0 -22px}
+
+/* One section, everything in it */
+.one{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:radial-gradient(circle at 50% -10%,var(--glow),transparent 45%),linear-gradient(180deg,var(--dark1),var(--dark2));text-align:center;padding:72px 22px 56px}
+.inner{width:min(720px,100%);display:flex;flex-direction:column;align-items:center;gap:0}
 .eyebrow{display:inline-flex;align-items:center;gap:9px;margin-bottom:22px;padding:8px 14px;border:1px solid rgba(249,115,22,.38);border-radius:999px;background:rgba(249,115,22,.12);font:900 11px/1 Inter,Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#ffbd87}
 .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:#f97316}
 h1{max-width:700px;margin:0 auto 18px;font-size:clamp(38px,6.2vw,60px);line-height:1.02;letter-spacing:-.04em;font-weight:900}
@@ -36,7 +38,7 @@ h1 .gold{color:var(--gold);display:block}
 .stars{display:flex;flex-direction:column;align-items:center;gap:6px;margin:0 auto 30px}
 .stars .glyph{font-size:22px;color:var(--gold);letter-spacing:3px;line-height:1}
 .stars .note{font:900 13px/1 Inter,Arial,sans-serif;color:var(--light)}
-.card{background:#14100a;border:1px solid rgba(249,115,22,.22);border-radius:24px;box-shadow:0 20px 50px rgba(0,0,0,.35);padding:34px 30px 28px}
+.card{width:100%;background:#14100a;border:1px solid rgba(249,115,22,.22);border-radius:24px;box-shadow:0 20px 50px rgba(0,0,0,.35);padding:34px 30px 28px;margin:0 auto}
 .form{display:grid;justify-items:center;gap:10px}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .input{width:min(100%,450px);min-height:56px;padding:14px 16px;border:1px solid rgba(255,248,237,.25);border-radius:12px;background:rgba(255,248,237,.07);color:var(--light);font:inherit;font-size:17px;text-align:center;outline:none}
@@ -45,22 +47,21 @@ h1 .gold{color:var(--gold);display:block}
 .submit{width:min(100%,450px);min-height:60px;padding:14px 18px;border:0;border-radius:12px;background:linear-gradient(90deg,#c9151d,var(--red),#f04432);color:#fff;font:inherit;font-size:18px;font-weight:900;cursor:pointer;box-shadow:0 12px 26px rgba(225,29,36,.3);transition:.16s ease}
 .submit:hover,.submit:focus-visible{filter:brightness(1.05);transform:translateY(-2px);outline:3px solid rgba(225,29,36,.15)}
 .submit:disabled{cursor:wait;opacity:.78;transform:none}
-.privacy{margin:2px 0 0;color:rgba(255,248,237,.5);font-size:13px;line-height:1.4;font-weight:700;text-align:center}
-.step{display:flex;align-items:center;justify-content:center;gap:10px;margin:38px auto 0;color:rgba(255,248,237,.6);font:900 13px/1 Inter,Arial,sans-serif;letter-spacing:.06em;text-transform:uppercase}
+.privacy{margin:2px 0 0;color:rgba(255,248,237,.5);font-size:13px;line-height:1.4;font-weight:700}
+.step{display:flex;align-items:center;justify-content:center;gap:10px;margin:26px auto 0;color:rgba(255,248,237,.6);font:900 13px/1 Inter,Arial,sans-serif;letter-spacing:.06em;text-transform:uppercase}
 .step .n{width:26px;height:26px;border-radius:50%;background:var(--gold);color:#14100a;display:inline-flex;align-items:center;justify-content:center;font-size:14px}
-.footer{margin:18px auto 0;max-width:590px;color:rgba(255,248,237,.45);font-size:12px;line-height:1.5;text-align:center}
-@media(max-width:520px){.page{padding:0 10px 36px}.hero{padding:72px 0 40px;margin:0 -10px}h1{font-size:38px}.card{padding:24px 14px 20px;border-radius:18px}.input{min-height:54px;font-size:16px}.submit{min-height:58px;font-size:17px}.subhead{font-size:16px;line-height:1.4}}
+.footer{margin:16px auto 0;color:rgba(255,248,237,.45);font-size:12px;line-height:1.5}
+@media(max-width:520px){body{min-height:0}.one{min-height:auto;padding:56px 10px 36px}h1{font-size:38px}.card{padding:24px 14px 20px;border-radius:18px}.input{min-height:54px;font-size:16px}.submit{min-height:58px;font-size:17px}.subhead{font-size:16px;line-height:1.4}}
 </style>
 </head>
 <body>
-<div class="hero">
+<section class="one">
+<div class="inner">
 <div class="eyebrow"><span class="dot"></span>🎁 Free Gift From Sean Ali</div>
 <h1>Your Dream Life Is Already Real.<span class="gold">Rehearse It Tonight.</span></h1>
 <p class="subhead">Stop thinking from your old limits. Your outer life changes when your inner world changes first.</p>
 <div class="stars"><span class="glyph">★★★★★</span><span class="note">4.9/5 · Loved by 100,000+ people worldwide</span></div>
-</div>
-<main class="page">
-<section class="card">
+<div class="card">
 <form class="form" id="dream-life-optin-form" method="post" action="https://www.aweber.com/scripts/addlead.pl">
 <label class="sr-only" for="dl-name">First name</label>
 <input class="input" id="dl-name" type="text" name="name" placeholder="FIRST NAME" autocomplete="given-name" required>
@@ -75,10 +76,11 @@ h1 .gold{color:var(--gold);display:block}
 <button class="submit" id="dl-submit" type="submit">SEND ME THE FREE AUDIO →</button>
 <p class="privacy">🔒 Free. Unsubscribe anytime.</p>
 </form>
-</section>
+</div>
 <div class="step"><span class="n">1</span> Opt in here &nbsp;·&nbsp; <span class="n">2</span> Get the audio &nbsp;·&nbsp; <span class="n">3</span> Rehearse tonight</div>
 <p class="footer">&copy; 2026 Sean Ali. All rights reserved.</p>
-</main>
+</div>
+</section>
 <script>
 (function(){
 const form=document.getElementById('dream-life-optin-form');
