@@ -21,11 +21,11 @@ type SpeechConstructor = new () => SpeechRecognitionLike;
 declare global { interface Window { SpeechRecognition?: SpeechConstructor; webkitSpeechRecognition?: SpeechConstructor } }
 
 const steps: Step[] = ["name", "location", "success", "benefits", "future", "whyNow", "summary", "role", "responsibility", "commitment", "action"];
-const benefits: { id: BenefitId; emoji: string; title: string }[] = [
-  { id: "family", emoji: "❤️", title: "More time with family" }, { id: "health", emoji: "🌿", title: "Better health and energy" },
-  { id: "calm", emoji: "☀️", title: "More calm" }, { id: "time", emoji: "⏳", title: "More time" },
-  { id: "freedom", emoji: "🕊️", title: "More freedom" }, { id: "work", emoji: "📈", title: "Better work" },
-  { id: "giving", emoji: "🌎", title: "Helping more people" }, { id: "growth", emoji: "🚀", title: "Growing into more" },
+const benefits: { id: BenefitId; emoji: string; title: string; impact: string }[] = [
+  { id: "family", emoji: "❤️", title: "Give my family more", impact: "giving my family more" }, { id: "health", emoji: "💪", title: "A stronger body", impact: "a stronger body and more energy" },
+  { id: "calm", emoji: "🏆", title: "More respect", impact: "more respect" }, { id: "time", emoji: "✈️", title: "See more of the world", impact: "seeing more of the world" },
+  { id: "freedom", emoji: "🕊️", title: "Real freedom", impact: "real freedom with my time" }, { id: "work", emoji: "📈", title: "Bigger wins at work", impact: "bigger wins at work" },
+  { id: "giving", emoji: "💸", title: "More money", impact: "more money in my pocket" }, { id: "growth", emoji: "🚀", title: "Build something big", impact: "building something I am proud of" },
 ];
 
 const stepHelp: Record<Step, { title: string; message: string; next: string }> = {
@@ -93,7 +93,7 @@ export default function Home() {
   const stepIndex = steps.indexOf(step);
   const isClearPhase = stepIndex <= steps.indexOf("summary");
   const pickedBenefits = benefits.filter((item) => selectedBenefits.includes(item.id));
-  const benefitNames = pickedBenefits.map((item) => item.title.toLowerCase());
+  const benefitNames = pickedBenefits.map((item) => item.impact);
   const successText = cleanSuccess || success;
   const futureText = cleanFuture || future;
   const whyNowText = cleanWhyNow || whyNow;
