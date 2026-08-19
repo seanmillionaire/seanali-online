@@ -1,0 +1,25 @@
+/* A narrower atlas rail leaves more room for the working card without shrinking its readable content. */
+.guided-rail,.guided-rail.simple-rail{width:252px;flex:0 0 252px;box-sizing:border-box}
+.guided-main.simple-main{width:calc(100% - 252px)}
+.guided-main{width:calc(100% - 252px)}
+.guided-rail .simple-brand{gap:9px}
+.guided-rail .simple-brand img{width:34px;height:34px}
+.guided-rail .simple-brand b{font-size:16px}
+.guided-rail .simple-brand span{font-size:13px;letter-spacing:.55px}
+.guided-rail .rail-copy{margin-top:34px}
+.guided-rail .rail-copy p{font-size:13px}
+.guided-rail .rail-copy h2{font-size:31px;line-height:1.04}
+.guided-phase-list{gap:9px;margin-top:22px}
+.guided-phase{gap:10px;padding:11px}
+.guided-phase span{width:29px;height:29px;font-size:13px}
+.guided-phase b{font-size:20px}
+.guided-phase small{margin-top:3px;font-size:14px;line-height:1.32}
+.guided-rail .rail-footer{margin-top:auto;padding-top:18px}
+.guided-rail .rail-footer p{font-size:15px}
+.guided-rail .creator-signature{margin-top:18px}
+.guided-sound-toggle{display:inline-flex;align-items:center;gap:7px;width:100%;margin-top:16px;padding:10px 11px;color:#dfece5;border:1px solid rgba(226,238,232,.22);background:rgba(255,255,255,.06);font:800 14px Manrope,Arial,sans-serif;cursor:pointer;transition:background 160ms cubic-bezier(.23,1,.32,1),border-color 160ms cubic-bezier(.23,1,.32,1),transform 160ms cubic-bezier(.23,1,.32,1)}
+.guided-sound-toggle:hover{border-color:#8cb8a1;background:rgba(255,255,255,.11)}
+.guided-sound-toggle:active{transform:scale(.98)}
+.guided-sound-toggle[aria-pressed="false"]{color:#b4c8be}
+@media(max-width:900px){.guided-main{width:100%}}
+@media(prefers-reduced-motion:reduce){.guided-sound-toggle{transition:none;cursor:not-allowed;opacity:.68}.guided-quote-card,.guided-final-payoff{animation:none!important;transition:none!important}}
