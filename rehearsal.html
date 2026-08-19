@@ -21,6 +21,11 @@
 :root{--ink:#11100d;--paper:#fffaf0;--orange:#f97316;--orange2:#ea580c;--muted:#61584d;--line:rgba(17,16,13,.10);--sans:'DM Sans',system-ui,sans-serif;--mono:'DM Mono',monospace}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--sans);background:var(--paper);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
+body:before{content:'';position:fixed;inset:0;z-index:-1;background:url('/assets/sean-life/sean-panama-bg.jpg') center/cover no-repeat}
+body:after{content:'';position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(21,16,11,.66),rgba(8,7,6,.74));pointer-events:none}
+h2,.lead{color:var(--light)}
+h3{color:var(--ink)}
+.sec>.band{background:rgba(255,250,240,.92);border-radius:24px;box-shadow:0 16px 44px rgba(0,0,0,.25);padding:34px 26px}
 .wrap{max-width:640px;margin:0 auto;padding:0 22px}
 
 
@@ -42,6 +47,7 @@ h1 em{font-style:normal;color:#f6b457}
 .ghost{background:transparent;border:1px solid rgba(255,255,255,.18);box-shadow:none;color:rgba(255,248,237,.88)}
 .trust{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;color:rgba(255,248,237,.55);font-size:13px;font-weight:800;margin-top:18px}
 .sec{padding:84px 0;text-align:center}
+main.wrap>section{position:relative}
 .label{display:inline-flex;margin-bottom:12px;font:900 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--orange)}
 h2{font-size:clamp(26px,4.2vw,38px);line-height:1.1;letter-spacing:-.03em;font-weight:900;margin-bottom:14px;max-width:580px;margin-left:auto;margin-right:auto}
 .lead{font-size:17px;line-height:1.5;color:#51483d;font-weight:650;max-width:560px;margin:0 auto 24px;text-align:center}
