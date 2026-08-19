@@ -77,9 +77,10 @@ export function getWeeklyNumbers(target: number, commitment: CommitmentId) {
   return { weekly, focusDay: Math.round(weekly / selected.days), selected };
 }
 
-export function createNextAction(input: { role: RoleId; otherRole: string; commitment: CommitmentId; goal: string; impactNames: string[] }) {
+export function createNextAction(input: { role: RoleId; otherRole: string; commitment: CommitmentId; success: string; responsibility: string; impactNames: string[]; whyNow: string }) {
   const template = actionTemplates[input.role];
   const selected = commitments.find((item) => item.id === input.commitment) ?? commitments[1];
+  const responsibility = input.responsibility.trim();
   const impact = input.impactNames.length ? `This supports ${input.impactNames.join(" and ")}.` : "This supports the life you want.";
   return {
     roleName: getRoleName(input.role, input.otherRole),
@@ -87,18 +88,22 @@ export function createNextAction(input: { role: RoleId; otherRole: string; commi
     thisWeek: `${template.thisWeek} You chose ${selected.hours.toLowerCase()}.`,
     friday: template.friday,
     impact,
+    workFocus: responsibility ? `Your work focus: ${responsibility}` : "Your work focus: choose the result closest to your goal.",
+    clearPicture: input.success.trim() || "Build the life you want.",
+    whyNow: input.whyNow.trim(),
     blocks: selected.blocks,
   };
 }
 
-export function canAdvanceStep(input: { step: string; userName: string; location: string; role: RoleId | null; otherRole: string; goal: string; impactCount: number; change: string; incomeTarget: number; isCleaning: boolean }) {
+export function canAdvanceStep(input: { step: string; userName: string; location: string; role: RoleId | null; otherRole: string; success: string; benefitCount: number; future: string; whyNow: string; responsibility: string; isCleaning: boolean }) {
   if (input.isCleaning) return false;
   if (input.step === "name") return Boolean(input.userName.trim());
   if (input.step === "location") return Boolean(input.location.trim());
+  if (input.step === "success") return Boolean(input.success.trim());
+  if (input.step === "benefits") return input.benefitCount > 0;
+  if (input.step === "future") return Boolean(input.future.trim());
+  if (input.step === "whyNow") return Boolean(input.whyNow.trim());
   if (input.step === "role") return Boolean(input.role) && (input.role !== "other" || Boolean(input.otherRole.trim()));
-  if (input.step === "goal") return Boolean(input.goal.trim());
-  if (input.step === "impact") return input.impactCount > 0;
-  if (input.step === "change") return Boolean(input.change.trim());
-  if (input.step === "income") return input.incomeTarget > 0;
+  if (input.step === "responsibility") return Boolean(input.responsibility.trim());
   return true;
 }
