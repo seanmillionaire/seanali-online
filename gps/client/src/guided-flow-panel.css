@@ -30,6 +30,23 @@
 .guided-outcome-checklist span{display:block;color:#287454;font-size:15px;font-weight:900;letter-spacing:.75px}
 .guided-outcome-checklist b{display:block;margin-top:7px;color:#1f4650;font-size:20px;line-height:1.42}
 .guided-outcome-checklist p{margin:8px 0 0;color:#4d675e;font-size:17px;line-height:1.45}
+.guided-personalizing{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;max-width:590px;margin:auto;padding:54px 22px;text-align:center;color:#204852}
+.guided-personalizing-orbit{position:relative;display:grid;place-items:center;width:114px;height:114px;margin-bottom:30px;color:#e06e40}
+.guided-personalizing-orbit::before,.guided-personalizing-orbit::after{position:absolute;border:1px solid #b6d2c2;border-radius:50%;content:""}
+.guided-personalizing-orbit::before{inset:0;animation:guided-orbit 2.7s linear infinite}
+.guided-personalizing-orbit::after{inset:16px;border-color:#f0af89;animation:guided-orbit-reverse 1.8s linear infinite}
+.guided-personalizing-orbit span{position:absolute;z-index:1;width:11px;height:11px;border-radius:50%;background:#239260;box-shadow:0 0 0 5px rgba(35,146,96,.12)}
+.guided-personalizing-orbit span:nth-child(1){top:3px;left:50%;animation:guided-pulse 1.2s ease-in-out infinite}
+.guided-personalizing-orbit span:nth-child(2){right:8px;bottom:15px;background:#e06e40;animation:guided-pulse 1.2s ease-in-out .2s infinite}
+.guided-personalizing-orbit span:nth-child(3){bottom:15px;left:8px;background:#9bbdaf;animation:guided-pulse 1.2s ease-in-out .4s infinite}
+.guided-personalizing-orbit svg{z-index:2;animation:guided-compass-breathe 1.8s ease-in-out infinite}
+.guided-personalizing p{margin:0 0 13px;color:#24805a;font-size:16px;font-weight:900;letter-spacing:1px}
+.guided-personalizing b{display:block;font-family:"DM Serif Display",Georgia,serif;font-size:30px;font-weight:400;line-height:1.18}
+.guided-personalizing small{display:block;max-width:470px;margin-top:18px;color:#537068;font-size:18px;line-height:1.52}
+@keyframes guided-orbit{to{transform:rotate(360deg)}}
+@keyframes guided-orbit-reverse{to{transform:rotate(-360deg)}}
+@keyframes guided-pulse{50%{transform:scale(1.42);opacity:.64}}
+@keyframes guided-compass-breathe{50%{transform:scale(1.12) rotate(8deg)}}
 
 @media(max-width:900px){
   .guided-shell,.guided-main{height:100dvh}
@@ -59,4 +76,9 @@
   .guided-commitment{align-items:flex-start;min-height:0}
   .guided-outcome-checklist article{gap:12px;padding:16px}
   .guided-outcome-checklist b{font-size:19px}
+  .guided-personalizing{padding:38px 12px}
+  .guided-personalizing b{font-size:27px}
+  .guided-personalizing small{font-size:17px}
 }
+
+@media (prefers-reduced-motion: reduce){.guided-personalizing-orbit::before,.guided-personalizing-orbit::after,.guided-personalizing-orbit span,.guided-personalizing-orbit svg{animation:none}}
