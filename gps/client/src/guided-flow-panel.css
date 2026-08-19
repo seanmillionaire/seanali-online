@@ -51,6 +51,31 @@
 .guided-print-button{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;margin-top:19px;padding:14px 18px;border:1px solid #1c5960;background:#1f4650;color:#fff;font:800 17px Manrope,Arial,sans-serif;cursor:pointer;transition:transform 160ms cubic-bezier(.23,1,.32,1),background 160ms cubic-bezier(.23,1,.32,1)}
 .guided-print-button:hover{background:#173a42;transform:translateY(-1px)}
 .guided-print-button:active{transform:scale(.98)}
+.guided-final-payoff{position:relative;overflow:hidden;margin-top:20px;padding:24px;border:1px solid #274f58;background:linear-gradient(138deg,#102f38 0%,#1b4b51 58%,#216241 100%);color:#fff}
+.guided-final-payoff::after{position:absolute;right:-54px;bottom:-68px;width:220px;height:220px;border:1px solid rgba(255,255,255,.22);border-radius:50%;box-shadow:0 0 0 28px rgba(255,255,255,.04),0 0 0 56px rgba(255,255,255,.03);content:"";pointer-events:none}
+.guided-final-payoff header{position:relative;z-index:1;max-width:580px}
+.guided-final-payoff header>span,.guided-daily-practice>span{display:flex;align-items:center;gap:7px;color:#f5b078;font-size:14px;font-weight:900;letter-spacing:.85px}
+.guided-final-payoff header h2{margin:10px 0 7px;font-family:"DM Serif Display",Georgia,serif;font-size:34px;font-weight:400;line-height:1.1}
+.guided-final-payoff header p{margin:0;color:#d8e9e1;font-size:18px;line-height:1.44}
+.guided-quote-card{position:relative;z-index:1;min-height:176px;margin-top:19px;padding:21px 22px;border:1px solid rgba(255,255,255,.27);background:rgba(7,31,37,.46);animation:guided-quote-rise .52s cubic-bezier(.23,1,.32,1) both}
+.guided-quote-card>span{display:block;color:#f2b37e;font-size:13px;font-weight:900;letter-spacing:.8px}
+.guided-quote-card blockquote{margin:11px 0 18px;color:#fff;font-family:"DM Serif Display",Georgia,serif;font-size:27px;line-height:1.23}
+.guided-quote-card footer{display:flex;flex-wrap:wrap;align-items:center;gap:7px 12px;color:#d2e4dc;font-size:15px}
+.guided-quote-card footer b{color:#fff}
+.guided-quote-card footer a{color:#f8bd8c;font-weight:800;text-underline-offset:3px}
+.guided-quote-controls{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:15px}
+.guided-quote-controls [role="tablist"]{display:flex;gap:8px}
+.guided-quote-controls [role="tab"]{width:11px;height:11px;padding:0;border:1px solid rgba(255,255,255,.76);border-radius:50%;background:transparent;cursor:pointer}
+.guided-quote-controls [role="tab"].active{border-color:#f5b078;background:#f5b078;box-shadow:0 0 0 4px rgba(245,176,120,.16)}
+.guided-motion-toggle{border:0;background:transparent;color:#d9eee4;font:800 14px Manrope,Arial,sans-serif;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+.guided-daily-practice{margin-top:14px;padding:21px 22px;border:1px solid #b9d7c3;background:#f4faf3}
+.guided-daily-practice>span{color:#27805a}
+.guided-daily-practice h2{margin:9px 0 14px;color:#204852;font-family:"DM Serif Display",Georgia,serif;font-size:29px;font-weight:400;line-height:1.12}
+.guided-daily-practice ol{display:grid;gap:9px;margin:0;padding:0;list-style:none}
+.guided-daily-practice li{display:flex;align-items:center;gap:11px;color:#3d6157}
+.guided-daily-practice li>b{display:grid;place-items:center;flex:0 0 auto;width:25px;height:25px;border-radius:50%;background:#2b965f;color:#fff;font-size:13px}
+.guided-daily-practice li p{margin:0;font-size:17px;font-weight:700;line-height:1.4}
+@keyframes guided-quote-rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .guided-personalizing{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;max-width:590px;margin:auto;padding:54px 22px;text-align:center;color:#204852}
 .guided-personalizing-orbit{position:relative;display:grid;place-items:center;width:114px;height:114px;margin-bottom:30px;color:#e06e40}
 .guided-personalizing-orbit::before,.guided-personalizing-orbit::after{position:absolute;border:1px solid #b6d2c2;border-radius:50%;content:""}
@@ -106,15 +131,22 @@
   .guided-personalizing{padding:38px 12px}
   .guided-personalizing b{font-size:27px}
   .guided-personalizing small{font-size:17px}
+  .guided-final-payoff{padding:19px}
+  .guided-final-payoff header h2{font-size:29px}
+  .guided-quote-card{min-height:190px;padding:18px}
+  .guided-quote-card blockquote{font-size:24px}
+  .guided-quote-controls{align-items:flex-start;flex-direction:column;gap:12px}
+  .guided-daily-practice{padding:18px}
+  .guided-daily-practice h2{font-size:27px}
 }
 
-@media (prefers-reduced-motion: reduce){.guided-personalizing-orbit::before,.guided-personalizing-orbit::after,.guided-personalizing-orbit span,.guided-personalizing-orbit svg{animation:none}}
+@media (prefers-reduced-motion: reduce){.guided-personalizing-orbit::before,.guided-personalizing-orbit::after,.guided-personalizing-orbit span,.guided-personalizing-orbit svg,.guided-quote-card{animation:none}}
 
 @media print{
   @page{margin:.5in}
   html,body,#root,.guided-shell,.guided-main,.guided-content,.guided-card{height:auto!important;min-height:0!important;overflow:visible!important;background:#fff!important}
   .guided-shell,.guided-main{display:block!important}
-  .guided-rail,.guided-topbar,.guided-help-panel,.guided-footer,.guided-print-button{display:none!important}
+  .guided-rail,.guided-topbar,.guided-help-panel,.guided-footer,.guided-print-button,.guided-final-payoff,.guided-daily-practice{display:none!important}
   .guided-content{display:block!important;padding:0!important}
   .guided-card{width:100%!important;max-width:none!important;max-height:none!important;padding:0!important;border:0!important;outline:0!important;box-shadow:none!important}
   .guided-card::before{display:none!important}
