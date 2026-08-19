@@ -81,7 +81,7 @@ export function createNextAction(input: { role: RoleId; otherRole: string; commi
   const template = actionTemplates[input.role];
   const selected = commitments.find((item) => item.id === input.commitment) ?? commitments[1];
   const responsibility = input.responsibility.trim();
-  const impact = input.impactNames.length ? `This supports ${input.impactNames.join(" and ")}.` : "This supports the life you want.";
+  const impact = input.impactNames.length ? `This supports the life you pictured: ${input.impactNames.join(" and ")}.` : "This supports the life you want.";
   return {
     roleName: getRoleName(input.role, input.otherRole),
     today: template.today,
