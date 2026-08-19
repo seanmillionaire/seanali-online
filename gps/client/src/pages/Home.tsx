@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, Check, Compass, MapPin, Mic, MicOff, Sparkles, T
 import { trpc } from "@/lib/trpc";
 import { findStatedMonthlyIncome } from "@/lib/incomePlan";
 import { canAdvanceStep, commitments, createNextAction, getRoleName, getWeeklyNumbers, roles, type CommitmentId, type RoleId } from "@/lib/guidedJourney";
+import { mergeVoiceTranscript } from "@/lib/voiceTranscript";
 import "../personalization.css";
 import "../guided-flow.css";
 import "../guided-flow-fix.css";
@@ -64,6 +65,8 @@ export default function Home() {
   const [activeVoice, setActiveVoice] = useState<VoiceField | null>(null);
   const [voiceNote, setVoiceNote] = useState("Tap the microphone to speak your answer.");
   const recognition = useRef<SpeechRecognitionLike | null>(null);
+  const keepListening = useRef(false);
+  const capturedVoice = useRef<{ field: VoiceField; value: string } | null>(null);
   const cleanAnswer = trpc.cleanAnswer.useMutation();
 
   const stepIndex = steps.indexOf(step);
@@ -87,18 +90,49 @@ export default function Home() {
     if (field === "goal") { setGoal(value); setCleanGoal(""); }
     if (field === "change") { setChange(value); setCleanChange(""); }
   };
-  const stopVoice = () => { recognition.current?.abort(); recognition.current = null; setActiveVoice(null); };
+  const stopVoice = () => { keepListening.current = false; recognition.current?.abort(); recognition.current = null; capturedVoice.current = null; setActiveVoice(null); };
+  const beginVoiceSegment = (field: VoiceField, base: string) => {
+    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!Recognition) return;
+    const instance = new Recognition(); instance.lang = navigator.language || "en-US"; instance.continuous = true; instance.interimResults = true;
+    const continueAfterPause = () => {
+      const held = capturedVoice.current?.field === field ? capturedVoice.current.value : base;
+      window.setTimeout(() => {
+        if (!keepListening.current || recognition.current) return;
+        beginVoiceSegment(field, held);
+      }, 250);
+    };
+    instance.onresult = (event) => {
+      const combined = mergeVoiceTranscript(base, event.results);
+      capturedVoice.current = { field, value: combined };
+      setVoiceValue(field, combined);
+    };
+    instance.onerror = (event) => {
+      if (recognition.current !== instance) return;
+      recognition.current = null;
+      if (event.error === "no-speech" && keepListening.current) { setVoiceNote("Still listening. Keep going when you are ready."); continueAfterPause(); return; }
+      keepListening.current = false;
+      setActiveVoice(null);
+      setVoiceNote(event.error === "not-allowed" ? "Please allow microphone access, then try again." : "I could not hear that. Try again or type your answer.");
+    };
+    instance.onend = () => {
+      if (recognition.current !== instance) return;
+      recognition.current = null;
+      if (!keepListening.current) { setActiveVoice(null); return; }
+      setVoiceNote("Still listening. Keep going when you are ready.");
+      continueAfterPause();
+    };
+    recognition.current = instance; setActiveVoice(field); setVoiceNote("Listening now. Speak naturally. I will keep your words when you pause.");
+    try { instance.start(); } catch { recognition.current = null; keepListening.current = false; setActiveVoice(null); setVoiceNote("Voice input is busy. Please try again."); }
+  };
   const startVoice = (field: VoiceField) => {
     const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!Recognition) { setVoiceNote("Voice input is not available here. You can type instead."); return; }
     recognition.current?.abort();
-    const original = valueForVoice(field).trim();
-    const instance = new Recognition(); instance.lang = navigator.language || "en-US"; instance.continuous = true; instance.interimResults = true;
-    instance.onresult = (event) => { const spoken = Array.from(event.results).slice(event.resultIndex).map((item) => item[0]?.transcript ?? "").join("").trim(); setVoiceValue(field, spoken ? `${original}${original ? " " : ""}${spoken}` : original); };
-    instance.onerror = (event) => { if (recognition.current !== instance) return; recognition.current = null; setActiveVoice(null); setVoiceNote(event.error === "not-allowed" ? "Please allow microphone access, then try again." : "I could not hear that. Try again or type your answer."); };
-    instance.onend = () => { if (recognition.current !== instance) return; recognition.current = null; setActiveVoice(null); setVoiceNote("Voice input paused. Tap the microphone to keep going."); };
-    recognition.current = instance; setActiveVoice(field); setVoiceNote("Listening now. Speak naturally, then pause.");
-    try { instance.start(); } catch { recognition.current = null; setActiveVoice(null); setVoiceNote("Voice input is busy. Please try again."); }
+    keepListening.current = true;
+    const base = valueForVoice(field).trim();
+    capturedVoice.current = { field, value: base };
+    beginVoiceSegment(field, base);
   };
   useEffect(() => () => recognition.current?.abort(), []);
 
