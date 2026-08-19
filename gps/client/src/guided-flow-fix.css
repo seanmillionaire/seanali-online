@@ -1,0 +1,47 @@
+/* Keep the numbered badge compact and allow the separate copy block to use the card width. */
+.guided-commitment > div {
+  display: block;
+  flex: 1 1 auto;
+  width: auto;
+  height: auto;
+  min-width: 0;
+  color: #45675d;
+  background: transparent;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.guided-commitment > div b,
+.guided-commitment > div small,
+.guided-commitment > div em {
+  overflow-wrap: anywhere;
+}
+
+.guided-action-context {
+  margin-top: 14px;
+  padding: 12px;
+  border-left: 3px solid #ff6b35;
+  background: #fffdf8;
+}
+
+.guided-action-context > span {
+  color: #e75e2e;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.guided-action-context > b {
+  display: block;
+  margin-top: 4px;
+  color: #214653;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.guided-action-context > p {
+  margin-top: 5px;
+  color: #607069;
+  font-size: 11px;
+  line-height: 1.45;
+}
