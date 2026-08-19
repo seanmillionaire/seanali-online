@@ -3,6 +3,7 @@ export type CommitmentId = "small" | "solid" | "full";
 
 export type RoleOption = { id: RoleId; title: string; line: string; emoji: string };
 export type CommitmentOption = { id: CommitmentId; title: string; hours: string; line: string; blocks: number; days: number };
+export type NextActionPlan = { roleName: string; today: string; thisWeek: string; friday: string; impact: string; workFocus: string; clearPicture: string; weeklyResult: string; commitmentHours: string; whyNow: string; blocks: number };
 
 export const roles: RoleOption[] = [
   { id: "mediaBuyer", title: "Media buyer", line: "I run ads and watch results.", emoji: "📈" },
@@ -86,7 +87,7 @@ export function formatBenefitSentence(impactNames: string[]) {
   return `This supports the life you pictured: ${list}.`;
 }
 
-export function createNextAction(input: { role: RoleId; otherRole: string; commitment: CommitmentId; success: string; responsibility: string; weeklyResult: string; impactNames: string[]; whyNow: string }) {
+export function createNextAction(input: { role: RoleId; otherRole: string; commitment: CommitmentId; success: string; responsibility: string; weeklyResult: string; impactNames: string[]; whyNow: string }): NextActionPlan {
   const template = actionTemplates[input.role];
   const selected = commitments.find((item) => item.id === input.commitment) ?? commitments[1];
   const responsibility = input.responsibility.trim();
@@ -104,6 +105,14 @@ export function createNextAction(input: { role: RoleId; otherRole: string; commi
     whyNow: input.whyNow.trim(),
     blocks: selected.blocks,
   };
+}
+
+export function createFinalChecklist(action: Pick<NextActionPlan, "today" | "thisWeek" | "friday">) {
+  return [
+    { label: "TODAY", title: "Make one useful move.", action: action.today },
+    { label: "THIS WEEK", title: "Keep the work moving.", action: action.thisWeek },
+    { label: "FRIDAY", title: "Look at the proof.", action: action.friday },
+  ];
 }
 
 export function canAdvanceStep(input: { step: string; userName: string; location: string; role: RoleId | null; otherRole: string; success: string; benefitCount: number; future: string; whyNow: string; responsibility: string; weeklyResult: string; isCleaning: boolean }) {
