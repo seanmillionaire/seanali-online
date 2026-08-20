@@ -16,6 +16,7 @@ import "../guided-sound.css";
 type Step = "name" | "location" | "success" | "benefits" | "future" | "whyNow" | "summary" | "role" | "responsibility" | "commitment" | "action";
 type BenefitId = "family" | "health" | "calm" | "time" | "freedom" | "work" | "giving" | "growth";
 type VoiceField = "name" | "location" | "otherRole" | "success" | "future" | "whyNow" | "responsibility" | "weeklyResult";
+type SuccessVisualTheme = "dubai" | "beach" | "family" | "supercar";
 
 type SpeechResultEvent = { resultIndex: number; results: ArrayLike<ArrayLike<{ transcript: string }>> };
 type SpeechRecognitionLike = { lang: string; continuous: boolean; interimResults: boolean; onresult: ((event: SpeechResultEvent) => void) | null; onerror: ((event: { error: string }) => void) | null; onend: (() => void) | null; start: () => void; abort: () => void };
@@ -29,6 +30,13 @@ const benefits: { id: BenefitId; emoji: string; title: string; impact: string }[
   { id: "calm", emoji: "🏆", title: "More respect", impact: "more respect" }, { id: "time", emoji: "✈️", title: "See more of the world", impact: "seeing more of the world" },
   { id: "freedom", emoji: "🕊️", title: "Real freedom", impact: "real freedom with my time" }, { id: "work", emoji: "📈", title: "Bigger wins at work", impact: "bigger wins at work" },
   { id: "giving", emoji: "💸", title: "More money", impact: "more money in my pocket" }, { id: "growth", emoji: "🚀", title: "Build something big", impact: "building something I am proud of" },
+];
+
+const visualThemes: { id: SuccessVisualTheme; emoji: string; title: string; line: string }[] = [
+  { id: "dubai", emoji: "🏙️", title: "Dubai", line: "Skyline win" },
+  { id: "beach", emoji: "🏝️", title: "Beach", line: "Ocean freedom" },
+  { id: "family", emoji: "🏡", title: "Family", line: "Home and connection" },
+  { id: "supercar", emoji: "🏎️", title: "Supercar", line: "Earned drive" },
 ];
 
 const stepHelp: Record<Step, { title: string; message: string; next: string }> = {
@@ -66,6 +74,18 @@ function PersonalizingIndicator() {
   </div>;
 }
 
+function SuccessVisualThemeSelector({ value, onChange, disabled }: { value: SuccessVisualTheme; onChange: (theme: SuccessVisualTheme) => void; disabled: boolean }) {
+  return <fieldset className="guided-visual-theme-selector" disabled={disabled}>
+    <legend>CHOOSE YOUR WIN SCENE</legend>
+    <p>Pick the picture that makes this goal feel real to you.</p>
+    <div className="guided-visual-theme-grid">
+      {visualThemes.map((theme) => <button type="button" key={theme.id} data-visual-theme={theme.id} className={value === theme.id ? "picked" : ""} onClick={() => onChange(theme.id)} aria-pressed={value === theme.id}>
+        <span aria-hidden="true">{theme.emoji}</span><div><b>{theme.title}</b><small>{theme.line}</small></div>{value === theme.id && <i><Check size={18} /></i>}
+      </button>)}
+    </div>
+  </fieldset>;
+}
+
 export default function Home() {
   const [step, setStep] = useState<Step>("name");
   const [userName, setUserName] = useState("");
@@ -90,6 +110,7 @@ export default function Home() {
   const [quoteMotionPaused, setQuoteMotionPaused] = useState(false);
   const [successVisualUrl, setSuccessVisualUrl] = useState("");
   const [successVisualKind, setSuccessVisualKind] = useState<"ai-photo" | "vision-card" | null>(null);
+  const [successVisualTheme, setSuccessVisualTheme] = useState<SuccessVisualTheme>("dubai");
   const [successVisualError, setSuccessVisualError] = useState("");
   const [soundEnabled, setSoundEnabled] = useState(() => window.localStorage.getItem("dream-life-gps-sound") !== "off");
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
@@ -116,6 +137,7 @@ export default function Home() {
   const weekly = suggestedTarget !== null ? getWeeklyNumbers(suggestedTarget, commitment) : null;
   const actionPlan = useMemo(() => role ? createNextAction({ role, otherRole, commitment, success: successText, responsibility: responsibilityText, weeklyResult: weeklyResultText, impactNames: benefitNames, whyNow: whyNowText }) : null, [role, otherRole, commitment, successText, responsibilityText, weeklyResultText, benefitNames.join("|"), whyNowText]);
   const finalChecklist = actionPlan ? createFinalChecklist(actionPlan) : [];
+  const selectedVisualTheme = visualThemes.find((theme) => theme.id === successVisualTheme) ?? visualThemes[0];
   const greetingTime = new Date().getHours() < 12 ? "Good morning" : new Date().getHours() < 18 ? "Good afternoon" : "Good evening";
   const greeting = userName.trim() && location.trim() ? `${greetingTime}, ${userName.trim()} — building from ${location.trim()}` : "One step at a time";
   const currentHelp = stepHelp[step];
@@ -233,7 +255,7 @@ export default function Home() {
     if (step === "action") { playSound("back"); reset(); return; }
     if (position < steps.length - 1) { setStep(steps[position + 1]); playSound(cueForAdvance(position, position + 1)); }
   };
-  const reset = () => { stopVoice(); setStep("name"); setUserName(""); setLocation(""); setSuccess(""); setCleanSuccess(""); setSelectedBenefits([]); setFuture(""); setCleanFuture(""); setWhyNow(""); setCleanWhyNow(""); setRole(null); setOtherRole(""); setResponsibility(""); setCleanResponsibility(""); setWeeklyResult(""); setCleanWeeklyResult(""); setCommitment("solid"); setActiveFinaleQuote(0); setQuoteMotionPaused(false); setSuccessVisualUrl(""); setSuccessVisualKind(null); setSuccessVisualError(""); successVisualRequestClaimed.current = false; setHelpOpen(false); };
+  const reset = () => { stopVoice(); setStep("name"); setUserName(""); setLocation(""); setSuccess(""); setCleanSuccess(""); setSelectedBenefits([]); setFuture(""); setCleanFuture(""); setWhyNow(""); setCleanWhyNow(""); setRole(null); setOtherRole(""); setResponsibility(""); setCleanResponsibility(""); setWeeklyResult(""); setCleanWeeklyResult(""); setCommitment("solid"); setActiveFinaleQuote(0); setQuoteMotionPaused(false); setSuccessVisualUrl(""); setSuccessVisualKind(null); setSuccessVisualTheme("dubai"); setSuccessVisualError(""); successVisualRequestClaimed.current = false; setHelpOpen(false); };
   const printFinalPlan = () => window.print();
   const createSuccessVisual = () => {
     if (!actionPlan || successVisualUrl || generateSuccessVisual.isPending || successVisualRequestClaimed.current) return;
@@ -247,6 +269,7 @@ export default function Home() {
       roleName: actionPlan.roleName,
       responsibility: responsibilityText,
       weeklyResult: actionPlan.weeklyResult,
+      theme: successVisualTheme,
     }).then(({ imageUrl, kind }) => { setSuccessVisualUrl(imageUrl); setSuccessVisualKind(kind); playSound("payoff"); }).catch(() => {
       successVisualRequestClaimed.current = false;
       setSuccessVisualError("Your success picture could not load. Please try again.");
@@ -273,7 +296,28 @@ export default function Home() {
     if (step === "commitment") return <><p className="guided-kicker"><Compass size={18} /> STEP 10 OF 11 · TAKE ACTION</p><h1>What result can you commit to in the next 7 days?</h1><p className="guided-intro">Make it real and easy to see. By Friday, what will be different because you did the work?</p><VoiceField id="weeklyResult" label="BY FRIDAY, THIS IS TRUE" value={weeklyResult} setValue={setWeeklyResult} multiline autoFocus active={activeVoice} note={isPersonalizing ? "Making your result clear while keeping it yours..." : voiceNote} start={startVoice} stop={stopVoice} /><ClarityChecklist title="A GOOD SEVEN-DAY RESULT" items={["I can see proof that it happened.", "It connects to the work I can influence.", "It is small enough to move this week."]} /><div className="guided-result-anchor"><Target size={21} /><span>{suggestedTarget ? <>Your bigger picture is <b>{formatMoney(suggestedTarget)}</b> each month. This is the one result that moves it forward this week.</> : <>This is one visible result that moves your bigger picture forward this week.</>}</span></div><div className="guided-commitment-heading"><span>HOW MUCH ROOM WILL YOU MAKE FOR IT?</span><p>Pick the level that gives this result a real chance by Friday.</p></div><div className="guided-commitments">{commitments.map((item) => <button type="button" key={item.id} className={`guided-commitment ${commitment === item.id ? "picked" : ""}`} onClick={() => { setCommitment(item.id); playSound("select"); }} aria-pressed={commitment === item.id}><span>{item.id === "small" ? "01" : item.id === "solid" ? "02" : "03"}</span><div><b>{item.title}</b><small>{item.line}</small><em>{item.hours}</em></div>{commitment === item.id && <i><Check size={19} /></i>}</button>)}</div></>;
     if (!actionPlan || !role) return null;
     const activeQuote = successQuotes[activeFinaleQuote];
-    return <><p className="guided-kicker"><Check size={18} /> STEP 11 OF 11 · TAKE ACTION</p><h1>Your week is set.</h1><p className="guided-intro">Keep this simple. Do these three things with Friday in mind.</p><section className="guided-final-plan"><div className="guided-print-meta"><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><span>Dream Life GPS</span><b>Created by Sean Ali</b></div><header className="guided-final-result"><span>MY RESULT BY FRIDAY</span><h2>{actionPlan.weeklyResult}</h2><p>This moves me toward: <b>{actionPlan.clearPicture}</b></p></header><div className="guided-final-context"><div><span>MY WORK FOCUS</span><b>{responsibilityText}</b></div><div><span>WHY THIS MATTERS</span><b>{actionPlan.whyNow || actionPlan.impact}</b></div></div><div className="guided-simple-checklist">{finalChecklist.map((item, index) => <article key={item.label}><i aria-hidden="true">{index + 1}</i><div><span>{item.label}</span><h2>{item.title}</h2><p>{item.action}</p></div></article>)}</div><div className="guided-final-close"><Check size={20} /><p>On Friday, look at what moved. Keep what worked. Choose your next result.</p></div><button type="button" className="guided-print-button" onClick={printFinalPlan}><Printer size={20} /> Print or save as PDF</button></section><section className="guided-success-visual" aria-labelledby="success-visual-title"><header><span><ImageIcon size={17} /> VISUALIZE MY SUCCESS</span><h2 id="success-visual-title">See the win before it happens.</h2><p>Make one personal picture from the life and result you just named.</p></header>{successVisualUrl ? <figure className="guided-success-visual-result"><img src={successVisualUrl} alt={successVisualKind === "vision-card" ? "A custom Dream Life GPS vision card made from the result and life you named." : "A cinematic first-person celebration scene created from your Dream Life GPS plan."} /><figcaption role="status"><Sparkles size={17} /> {successVisualKind === "vision-card" ? "Your custom success vision is ready. Keep this Friday result in mind when you do the work." : "Your success picture is ready. This is your Friday moment. Keep it in mind when you do the work."}</figcaption></figure> : <div className="guided-success-visual-action"><button type="button" onClick={createSuccessVisual} disabled={generateSuccessVisual.isPending} aria-busy={generateSuccessVisual.isPending}>{generateSuccessVisual.isPending ? <><LoaderCircle size={20} className="guided-visual-spinner" /> Making your success picture…</> : successVisualError ? <><Sparkles size={20} /> Try again</> : <><Sparkles size={20} /> Visualize my success</>}</button><small>{generateSuccessVisual.isPending ? "Your one picture is being made now. It can take up to a minute." : "Your goal, weekly result, work focus, and bigger life shape the scene. No photo of you is used."}</small>{generateSuccessVisual.isPending && <p className="guided-success-visual-status" role="status" aria-live="polite">Creating your one success picture now. Please keep this page open.</p>}{successVisualError && <p role="alert">{successVisualError}</p>}</div>}</section><section className="guided-final-payoff" aria-labelledby="great-ideas-title"><header><span><Sparkles size={17} /> THE GREAT IDEAS</span><h2 id="great-ideas-title">The greats kept showing up.</h2><p>Take one idea with you. Then make your move.</p></header><article className="guided-quote-card" key={activeQuote.id}><span>{activeQuote.field}</span><blockquote>“{activeQuote.quote}”</blockquote><footer><b>— {activeQuote.person}</b><a href={activeQuote.sourceUrl} target="_blank" rel="noreferrer">{activeQuote.sourceLabel}</a></footer></article><div className="guided-quote-controls"><div role="tablist" aria-label="Choose a success quote">{successQuotes.map((quote, index) => <button type="button" key={quote.id} className={index === activeFinaleQuote ? "active" : ""} onClick={() => setActiveFinaleQuote(index)} role="tab" aria-selected={index === activeFinaleQuote} aria-label={`Show quote ${index + 1} from ${quote.person}`} />)}</div><button type="button" className="guided-motion-toggle" onClick={() => setQuoteMotionPaused((paused) => !paused)}>{quoteMotionPaused ? "Play quote movement" : "Pause quote movement"}</button></div></section><aside className="guided-daily-practice" aria-labelledby="daily-practice-title"><span><Check size={17} /> DAILY PRACTICE BONUS</span><h2 id="daily-practice-title">Small repeats build big results.</h2><ol>{dailyPracticeTips.map((tip, index) => <li key={tip}><b>{index + 1}</b><p>{tip}</p></li>)}</ol></aside></>;
+    return <>
+      <p className="guided-kicker"><Check size={18} /> STEP 11 OF 11 · TAKE ACTION</p>
+      <h1>Your week is set.</h1>
+      <p className="guided-intro">Keep this simple. Do these three things with Friday in mind.</p>
+      <section className="guided-final-plan">
+        <div className="guided-print-meta"><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><span>Dream Life GPS</span><b>Created by Sean Ali</b></div>
+        <header className="guided-final-result"><span>MY RESULT BY FRIDAY</span><h2>{actionPlan.weeklyResult}</h2><p>This moves me toward: <b>{actionPlan.clearPicture}</b></p></header>
+        <div className="guided-final-context"><div><span>MY WORK FOCUS</span><b>{responsibilityText}</b></div><div><span>WHY THIS MATTERS</span><b>{actionPlan.whyNow || actionPlan.impact}</b></div></div>
+        <div className="guided-simple-checklist">{finalChecklist.map((item, index) => <article key={item.label}><i aria-hidden="true">{index + 1}</i><div><span>{item.label}</span><h2>{item.title}</h2><p>{item.action}</p></div></article>)}</div>
+        <div className="guided-final-close"><Check size={20} /><p>On Friday, look at what moved. Keep what worked. Choose your next result.</p></div>
+        <button type="button" className="guided-print-button" onClick={printFinalPlan}><Printer size={20} /> Print or save as PDF</button>
+      </section>
+      <section className="guided-success-visual" aria-labelledby="success-visual-title">
+        <header><span><ImageIcon size={17} /> VISUALIZE MY SUCCESS</span><h2 id="success-visual-title">See the win before it happens.</h2><p>Pick a scene. Then make one personal picture from the life and result you just named.</p></header>
+        {successVisualUrl ? <figure className="guided-success-visual-result"><img src={successVisualUrl} alt={successVisualKind === "vision-card" ? `A custom Dream Life GPS ${selectedVisualTheme.title} vision card made from the result and life you named.` : `A cinematic first-person ${selectedVisualTheme.title} celebration scene created from your Dream Life GPS plan.`} /><figcaption role="status"><Sparkles size={17} /> {successVisualKind === "vision-card" ? `Your ${selectedVisualTheme.title} success vision is ready. Keep this Friday result in mind when you do the work.` : `Your ${selectedVisualTheme.title} success picture is ready. This is your Friday moment. Keep it in mind when you do the work.`}</figcaption></figure> : <>
+          <SuccessVisualThemeSelector value={successVisualTheme} onChange={(theme) => { setSuccessVisualTheme(theme); playSound("select"); }} disabled={generateSuccessVisual.isPending} />
+          <div className="guided-success-visual-action"><button type="button" onClick={createSuccessVisual} disabled={generateSuccessVisual.isPending} aria-busy={generateSuccessVisual.isPending}>{generateSuccessVisual.isPending ? <><LoaderCircle size={20} className="guided-visual-spinner" /> Making your success picture…</> : successVisualError ? <><Sparkles size={20} /> Try again</> : <><Sparkles size={20} /> Visualize my success</>}</button><small>{generateSuccessVisual.isPending ? `Making your ${selectedVisualTheme.title} picture now. It can take up to a minute.` : `Your selected scene is ${selectedVisualTheme.title}. Your goal, weekly result, work focus, and bigger life shape the scene. No photo of you is used.`}</small>{generateSuccessVisual.isPending && <p className="guided-success-visual-status" role="status" aria-live="polite">Creating your one success picture now. Please keep this page open.</p>}{successVisualError && <p role="alert">{successVisualError}</p>}</div>
+        </>}
+      </section>
+      <section className="guided-final-payoff" aria-labelledby="great-ideas-title"><header><span><Sparkles size={17} /> THE GREAT IDEAS</span><h2 id="great-ideas-title">The greats kept showing up.</h2><p>Take one idea with you. Then make your move.</p></header><article className="guided-quote-card" key={activeQuote.id}><span>{activeQuote.field}</span><blockquote>“{activeQuote.quote}”</blockquote><footer><b>— {activeQuote.person}</b><a href={activeQuote.sourceUrl} target="_blank" rel="noreferrer">{activeQuote.sourceLabel}</a></footer></article><div className="guided-quote-controls"><div role="tablist" aria-label="Choose a success quote">{successQuotes.map((quote, index) => <button type="button" key={quote.id} className={index === activeFinaleQuote ? "active" : ""} onClick={() => setActiveFinaleQuote(index)} role="tab" aria-selected={index === activeFinaleQuote} aria-label={`Show quote ${index + 1} from ${quote.person}`} />)}</div><button type="button" className="guided-motion-toggle" onClick={() => setQuoteMotionPaused((paused) => !paused)}>{quoteMotionPaused ? "Play quote movement" : "Pause quote movement"}</button></div></section>
+      <aside className="guided-daily-practice" aria-labelledby="daily-practice-title"><span><Check size={17} /> DAILY PRACTICE BONUS</span><h2 id="daily-practice-title">Small repeats build big results.</h2><ol>{dailyPracticeTips.map((tip, index) => <li key={tip}><b>{index + 1}</b><p>{tip}</p></li>)}</ol></aside>
+    </>;
   };
 
   const nextLabel = isPersonalizing ? "Making it clear..." : stepHelp[step].next;
