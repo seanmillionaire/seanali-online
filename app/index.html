@@ -155,5 +155,28 @@ h1{font-size:38px;line-height:1.02}
     <p class="footer">No guaranteed outcomes. These are tools and practices designed to help you think more clearly and take better action toward the life you want.</p>
   </div>
 </div>
+<script>
+(function(){
+  var ctx=null,muted=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function beep(freq,vol,dur){
+    if(muted)return;
+    try{
+      ctx=ctx||(new (window.AudioContext||window.webkitAudioContext)());
+      if(ctx.state==='suspended')ctx.resume();
+      var o=ctx.createOscillator(),g=ctx.createGain();
+      o.type='sine';o.frequency.value=freq;
+      var t=ctx.currentTime;
+      g.gain.setValueAtTime(0,t);
+      g.gain.linearRampToValueAtTime(vol,t+0.008);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+      o.connect(g);g.connect(ctx.destination);
+      o.start(t);o.stop(t+dur);
+    }catch(e){}
+  }
+  document.querySelectorAll('a.path-card, a.nav-step, a.top-bookmark').forEach(function(el){
+    el.addEventListener('mouseenter',function(){beep(880,0.05,0.10);});
+  });
+})();
+</script>
 </body>
 </html>
