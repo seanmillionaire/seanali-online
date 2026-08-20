@@ -3,75 +3,157 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Choose What You Want To Manifest | Sean Ali</title>
+<title>Choose Your Path | Sean Ali</title>
 <meta name="description" content="Choose your next manifestation path with Sean Ali: more money, a stronger mind, or personalized guidance for the life you want.">
 <meta name="robots" content="noindex,nofollow">
 <link rel="canonical" href="https://seanali.online/app/">
 <link rel="icon" type="image/png" href="https://hypnoticmeditations.b-cdn.net/images/fav/headphones.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Manrope:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script>
-!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
 fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageView');
 </script>
 <style>
-:root{--ink:#151515;--red:#e11d24;--cream:#f6f1e8;--muted:#5f5a52;--line:#e4ddd3}
-*{box-sizing:border-box}
-body{margin:0;min-height:100vh;background:radial-gradient(circle at 20% 0%,rgba(225,29,36,.10),transparent 35%),var(--cream);color:var(--ink);font-family:Inter,Arial,sans-serif;-webkit-font-smoothing:antialiased}
-a{color:inherit}
-.bookmark-bar{padding:13px 16px;background:var(--red);color:#fff;text-align:center;font-size:15px;line-height:1.25;font-weight:900;letter-spacing:.01em;box-shadow:0 4px 16px rgba(120,0,0,.18)}
-.page{width:min(760px,100%);margin:0 auto;padding:18px 14px 34px}
-.card{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:0 20px 50px rgba(0,0,0,.10);padding:36px 32px 30px}
+:root{--navy:#0A1F30;--navy-deep:#07131F;--gold:#C9A24B;--cream:#F6F1E8;--ink:#122538;--muted:#5C766D;--line:#DDD3C6;--orange:#FF6B35}
+*{box-sizing:border-box;margin:0}
+body{min-height:100vh;background:var(--cream);color:var(--ink);font-family:'Manrope',Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.layout{display:flex;min-height:100vh}
+
+/* ===== Sidebar (GPS design) ===== */
+.rail{position:sticky;top:0;align-self:flex-start;width:285px;height:100vh;flex:0 0 285px;padding:31px 27px 26px;display:flex;flex-direction:column;color:#FDF7EC;background:var(--navy) url('/manus-storage/dream-life-gps-atlas_7f8f78a7.jpg') center/cover;z-index:5}
+.rail::before{content:'';position:absolute;inset:0;background:linear-gradient(158deg,rgba(10,31,48,.87),rgba(7,19,31,.98))}
+.rail>*{position:relative;z-index:1}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{width:39px;height:39px;object-fit:contain}
+.brand b{display:block;font-size:17px;font-weight:800;letter-spacing:-.5px;text-transform:uppercase}
+.brand span{display:block;margin-top:3px;color:#B8D9CE;font-size:10px;font-weight:800;letter-spacing:1.2px}
+.rail-copy{margin:55px 0 33px}
+.rail-copy p{margin:0;color:#B8D9CE;font-size:12px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase}
+.rail-copy h2{margin:10px 0 0;font-family:'DM Serif Display',serif;font-size:31px;line-height:1.05;font-weight:400;letter-spacing:-.5px}
+.paths-nav{position:relative;display:grid;gap:9px}
+.path-line{position:absolute;left:16px;top:17px;bottom:17px;width:1px;overflow:hidden;background:rgba(255,255,255,.2)}
+.path-line em{display:block;width:100%;height:33%;background:var(--orange)}
+.nav-step{position:relative;display:flex;gap:12px;align-items:center;padding:5px 0;color:rgba(255,255,255,.56);text-align:left;background:transparent}
+.nav-step>span{width:37px;height:37px;display:grid;place-items:center;flex:0 0 auto;color:#CFD9D5;border:1px solid rgba(255,255,255,.25);border-radius:50%;font-size:11px;font-weight:800;background:#153148}
+.nav-step b{display:block;font-size:14px}
+.nav-step small{display:block;margin-top:2px;font-size:11px}
+.nav-step.now{color:#fff}
+.nav-step.now>span{color:#fff;border-color:var(--orange);background:var(--orange);box-shadow:0 0 0 5px rgba(255,107,53,.14)}
+.rail-footer{display:flex;gap:9px;margin-top:auto;padding-top:16px;color:#B8D9CE;border-top:1px solid rgba(255,255,255,.13)}
+.rail-footer svg{flex:0 0 auto;color:var(--orange)}
+.rail-footer p{margin:0;font-family:'DM Serif Display',serif;font-size:16px;line-height:1.26}
+.creator{display:flex;gap:7px;margin-top:14px;color:#B8D9CE;font-size:10px;font-weight:800;letter-spacing:1.2px}
+.creator b{color:#FDF7EC;font-family:'DM Serif Display',serif;font-size:14px;letter-spacing:0;font-weight:400}
+
+/* ===== Main ===== */
+.main{width:calc(100% - 285px);display:flex;flex-direction:column}
+.topbar{height:75px;padding:0 5.2vw;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:rgba(246,241,232,.95);backdrop-filter:blur(8px)}
+.top-left{display:flex;align-items:center;gap:10px}
+.top-left img{width:22px;height:22px}
+.top-left b{font-size:12px;letter-spacing:.8px}
+.top-left em{color:var(--orange);font-style:normal}
+.top-greeting{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:12px;font-weight:700}
+.top-greeting i{width:7px;height:7px;border-radius:50%;background:#5BB39A;box-shadow:0 0 0 4px rgba(91,179,154,.14);font-style:normal}
+.top-bookmark{display:inline-flex;align-items:center;gap:7px;padding:10px 15px;color:#315C60;border:1px solid #B7C9C0;background:#EEF5F0;font-size:14px;font-weight:800}
+.canvas{flex:1;width:min(860px,100%);margin:0 auto;padding:42px 5.2vw 40px}
 .hero{text-align:center}
-.kicker{margin:0 0 10px;color:var(--red);font-size:15px;font-weight:900}
-h1{max-width:660px;margin:0 auto 14px;font-size:50px;line-height:1;letter-spacing:-.05em;font-weight:900}
-.subhead{max-width:610px;margin:0 auto;color:#302c28;font-size:20px;line-height:1.42;font-weight:750}
-.divider{height:1px;background:var(--line);margin:28px 0 24px}
-.paths-title{margin:0 0 18px;text-align:center;font-size:27px;line-height:1.15;letter-spacing:-.03em;font-weight:900}
+.kicker{margin:0 0 10px;color:var(--orange);font-size:12px;font-weight:900;letter-spacing:1.2px}
+h1{max-width:720px;margin:0 auto 14px;font-family:'DM Serif Display',serif;font-size:52px;line-height:1;font-weight:400;letter-spacing:-.5px}
+.subhead{max-width:610px;margin:0 auto;color:var(--muted);font-size:18px;line-height:1.5;font-weight:650}
+.divider{height:1px;background:var(--line);margin:30px 0 24px}
+.paths-title{margin:0 0 20px;text-align:center;font-family:'DM Serif Display',serif;font-size:31px;font-weight:400;line-height:1.1;letter-spacing:-.3px}
 .paths{display:grid;gap:14px}
-.path-card{display:grid;grid-template-columns:58px 1fr auto;gap:15px;align-items:center;padding:18px;border:1px solid var(--line);border-radius:16px;background:#fff;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.05);transition:.16s ease}
-.path-card:hover,.path-card:focus-visible{transform:translateY(-2px);border-color:#cfc5bb;box-shadow:0 14px 30px rgba(0,0,0,.09);outline:3px solid rgba(225,29,36,.10)}
-.icon{display:grid;place-items:center;width:56px;height:56px;border-radius:16px;background:#f8f3ee;font-size:30px}
-.path-copy strong{display:block;margin-bottom:5px;font-size:21px;line-height:1.15;font-weight:900}
-.path-copy span{display:block;color:var(--muted);font-size:16px;line-height:1.42;font-weight:650}
-.arrow{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--red);color:#fff;font-size:23px;font-weight:900}
-.note{margin:22px auto 0;max-width:600px;color:#6c655e;font-size:14px;line-height:1.5;text-align:center;font-weight:650}
-.footer{margin:18px auto 0;max-width:590px;color:#7a736a;font-size:12px;line-height:1.5;text-align:center}
-@media(max-width:520px){.bookmark-bar{padding:11px 12px;font-size:13px}.page{padding:10px 10px 24px}.card{padding:26px 16px 22px;border-radius:18px}.kicker{font-size:14px}h1{font-size:40px;line-height:1.02}.subhead{font-size:18px}.divider{margin:24px 0 20px}.paths-title{font-size:23px}.path-card{grid-template-columns:48px 1fr 34px;gap:11px;padding:15px}.icon{width:48px;height:48px;border-radius:14px;font-size:25px}.path-copy strong{font-size:18px}.path-copy span{font-size:15px}.arrow{width:34px;height:34px;font-size:20px}.note{font-size:13px}}
+.path-card{display:grid;grid-template-columns:58px 1fr auto;gap:15px;align-items:center;padding:20px;border:1px solid var(--line);border-radius:20px;background:#FFFDF8;box-shadow:0 18px 42px rgba(29,42,45,.08);transition:.16s ease}
+.path-card:hover,.path-card:focus-visible{transform:translateY(-2px);border-color:#C9A24B;box-shadow:0 22px 50px rgba(29,42,45,.14);outline:3px solid rgba(201,162,75,.15)}
+.icon{display:grid;place-items:center;width:56px;height:56px;border-radius:16px;background:#F3E9D8;font-size:28px}
+.path-copy strong{display:block;margin-bottom:5px;font-family:'DM Serif Display',serif;font-size:23px;font-weight:400;line-height:1.15;letter-spacing:-.3px}
+.path-copy span{display:block;color:var(--muted);font-size:15px;line-height:1.45;font-weight:600}
+.arrow{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:var(--orange);color:#fff;font-size:21px;font-weight:900;transition:.16s ease}
+.path-card:hover .arrow{transform:translateX(2px)}
+.note{margin:24px auto 0;max-width:600px;color:#7A8077;font-size:13px;line-height:1.55;text-align:center;font-weight:650}
+.footer{width:min(860px,100%);margin:0 auto;padding:16px 5.2vw 30px;color:#8B948C;font-size:11px;line-height:1.5;text-align:center;font-weight:600}
+
+/* ===== Mobile ===== */
+@media(max-width:960px){.rail{width:235px;flex-basis:235px;padding:25px 20px}.main{width:calc(100% - 235px)}.rail-copy{margin-top:42px}.rail-copy h2{font-size:26px}}
+@media(max-width:760px){
+.layout{display:block}.rail{position:relative;top:auto;width:auto;height:auto;min-height:0;flex:none;padding:18px}
+.rail-copy{margin:24px 0 20px}
+.paths-nav{display:flex;justify-content:space-between;gap:2px;margin-top:18px}
+.path-line{left:28px;right:28px;top:16px;bottom:auto;width:auto;height:1px}
+.path-line em{height:100%!important}
+.nav-step{width:auto;padding:0;flex-direction:column}
+.nav-step>div{display:none}
+.nav-step>span{width:33px;height:33px;font-size:10px}
+.main{width:auto}
+.topbar{height:55px;padding:0 17px}
+.top-greeting{display:none}
+.canvas{padding:26px 16px 34px}
+h1{font-size:38px;line-height:1.02}
+.subhead{font-size:17px}
+.paths-title{font-size:26px}
+.path-card{grid-template-columns:48px 1fr 36px;gap:11px;padding:16px}
+.icon{width:48px;height:48px;border-radius:14px;font-size:24px}
+.path-copy strong{font-size:19px}
+.path-copy span{font-size:14px}
+.arrow{width:36px;height:36px;font-size:18px}
+}
 </style>
 </head>
 <body>
-<aside class="bookmark-bar" aria-label="Bookmark reminder">🔖 Bookmark This Page Now And Save It</aside>
-<main class="page">
-<section class="card">
-<div class="hero">
-<p class="kicker">You're In 🎉</p>
-<h1>What Do You Want To Manifest First?</h1>
-<p class="subhead">Choose the path that matches what you want most right now.</p>
+<div class="layout">
+  <aside class="rail" aria-label="Your path sidebar">
+    <div class="brand"><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="Dream Life GPS" /><div><b>Dream Life</b><span>GPS / YOUR LIFE MAP</span></div></div>
+    <div class="rail-copy"><p>YOUR SIMPLE PATH</p><h2>Get clear.<br />Take the steps.</h2></div>
+    <div class="paths-nav" aria-label="Your three paths">
+      <div class="path-line"><em></em></div>
+      <a class="nav-step now" href="#money"><span>01</span><div><b>Manifest More Money</b><small>Remove the money blocks holding you back.</small></div></a>
+      <a class="nav-step" href="#mind"><span>02</span><div><b>Rewire My Mind</b><small>Guided audio for the life you want.</small></div></a>
+      <a class="nav-step" href="#genie"><span>03</span><div><b>My Next Goal</b><small>Personalized guidance, step by step.</small></div></a>
+    </div>
+    <div class="rail-footer"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l3 3"/></svg><p>One step at a time.</p></div>
+    <div class="creator">CREATED BY <b>Sean Ali</b></div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="top-left"><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><b>DREAM LIFE <em>GPS</em></b></div>
+      <div class="top-greeting"><i></i>Pick the path you want most right now</div>
+      <a class="top-bookmark" href="#bookmark">🔖 Bookmark This Page</a>
+    </header>
+
+    <main class="canvas">
+      <div class="hero">
+        <p class="kicker">YOU'RE IN 🎉</p>
+        <h1>What Do You Want To Manifest First?</h1>
+        <p class="subhead">Choose the path that matches what you want most right now.</p>
+      </div>
+      <div class="divider"></div>
+      <h2 class="paths-title">Pick Your Path 👇</h2>
+      <div class="paths">
+        <a class="path-card" id="money" href="https://seanali.online/flow" target="_blank" rel="noopener" onclick="if(typeof fbq==='function')fbq('trackCustom','ManifestPathClick',{path:'money'})">
+          <span class="icon">💰</span>
+          <span class="path-copy"><strong>I Want To Manifest More Money</strong><span>Work on the money beliefs, patterns and decisions that may be keeping you stuck.</span></span>
+          <span class="arrow">→</span>
+        </a>
+        <a class="path-card" id="mind" href="https://hypnoticmeditations.ai/" target="_blank" rel="noopener" onclick="if(typeof fbq==='function')fbq('trackCustom','ManifestPathClick',{path:'mind'})">
+          <span class="icon">🧠</span>
+          <span class="path-copy"><strong>I Want To Rewire My Mind</strong><span>Use guided audio for money, confidence, health, sleep, focus and the life you want to create.</span></span>
+          <span class="arrow">→</span>
+        </a>
+        <a class="path-card" id="genie" href="https://manifestationgenie.app" target="_blank" rel="noopener" onclick="if(typeof fbq==='function')fbq('trackCustom','ManifestPathClick',{path:'genie'})">
+          <span class="icon">✨</span>
+          <span class="path-copy"><strong>I Want Help Manifesting My Next Goal</strong><span>Tell Manifestation Genie what you want and get personalized guidance for your next step.</span></span>
+          <span class="arrow">→</span>
+        </a>
+      </div>
+      <p class="note">You do not need to do everything at once. Start with the one thing you most want to change right now.</p>
+    </main>
+
+    <p class="footer">No guaranteed outcomes. These are tools and practices designed to help you think more clearly and take better action toward the life you want.</p>
+  </div>
 </div>
-<div class="divider"></div>
-<h2 class="paths-title">Pick Your Path 👇</h2>
-<div class="paths">
-<a class="path-card" href="https://seanali.online/flow" target="_blank" rel="noopener" onclick="if(typeof fbq==='function')fbq('trackCustom','ManifestPathClick',{path:'money'})">
-<span class="icon">💰</span>
-<span class="path-copy"><strong>I Want To Manifest More Money</strong><span>Work on the money beliefs, patterns and decisions that may be keeping you stuck.</span></span>
-<span class="arrow">→</span>
-</a>
-<a class="path-card" href="https://hypnoticmeditations.ai/" target="_blank" rel="noopener" onclick="if(typeof fbq==='function')fbq('trackCustom','ManifestPathClick',{path:'mind'})">
-<span class="icon">🧠</span>
-<span class="path-copy"><strong>I Want To Rewire My Mind</strong><span>Use guided audio for money, confidence, health, sleep, focus and the life you want to create.</span></span>
-<span class="arrow">→</span>
-</a>
-<a class="path-card" href="https://manifestationgenie.app" target="_blank" rel="noopener" onclick="if(typeof fbq==='function')fbq('trackCustom','ManifestPathClick',{path:'genie'})">
-<span class="icon">✨</span>
-<span class="path-copy"><strong>I Want Help Manifesting My Next Goal</strong><span>Tell Manifestation Genie what you want and get personalized guidance for your next step.</span></span>
-<span class="arrow">→</span>
-</a>
-</div>
-<p class="note">You do not need to do everything at once. Start with the one thing you most want to change right now.</p>
-</section>
-<p class="footer">No guaranteed outcomes. These are tools and practices designed to help you think more clearly and take better action toward the life you want.</p>
-</main>
 </body>
 </html>
