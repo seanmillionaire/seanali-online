@@ -123,10 +123,5 @@
       ],
       "destination": "/games/:path*"
     }
-  ],
-  "functions": {
-    "api/checkout.js": {
-      "runtime": "nodejs20.x"
-    }
-  }
+  ]
 }
