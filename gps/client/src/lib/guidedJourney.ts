@@ -139,7 +139,7 @@ export function createFinalVisionScene(input: { success: string; benefits: strin
     ? `I can feel what this opens up: ${visionSentence(future, "")}`
     : `I am making more room for ${visionList(input.benefits)}.`;
   const workLine = responsibility
-    ? `I stayed locked in on the work that mattered: “${responsibility.replace(/[.!?]+$/, "").trim()}."`
+    ? `I stayed locked in on the work that mattered: “${responsibility.replace(/[.!?]+$/, "").trim()}.”`
     : "I used my energy on the work I can control.";
 
   return {
