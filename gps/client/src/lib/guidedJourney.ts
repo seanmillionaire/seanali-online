@@ -4,6 +4,7 @@ export type CommitmentId = "small" | "solid" | "full";
 export type RoleOption = { id: RoleId; title: string; line: string; emoji: string };
 export type CommitmentOption = { id: CommitmentId; title: string; hours: string; line: string; blocks: number; days: number };
 export type NextActionPlan = { roleName: string; today: string; thisWeek: string; friday: string; impact: string; workFocus: string; clearPicture: string; weeklyResult: string; commitmentHours: string; whyNow: string; blocks: number };
+export type FinalVisionScene = { title: string; scene: string; anchor: string };
 
 export const roles: RoleOption[] = [
   { id: "mediaBuyer", title: "Media buyer", line: "I run ads and watch results.", emoji: "📈" },
@@ -113,6 +114,43 @@ export function createFinalChecklist(action: Pick<NextActionPlan, "today" | "thi
     { label: "THIS WEEK", title: "Keep the work moving.", action: action.thisWeek },
     { label: "FRIDAY", title: "Look at the proof.", action: action.friday },
   ];
+}
+
+function visionSentence(value: string, fallback: string) {
+  const clean = (value.trim() || fallback.trim()).replace(/[.!?]+$/, "");
+  return clean ? `${clean}.` : "";
+}
+
+function visionList(items: string[]) {
+  const unique = Array.from(new Set(items.map((item) => item.trim()).filter(Boolean)));
+  if (unique.length === 0) return "the life I want";
+  if (unique.length === 1) return unique[0];
+  if (unique.length === 2) return `${unique[0]} and ${unique[1]}`;
+  return `${unique.slice(0, -1).join(", ")}, and ${unique.at(-1)}`;
+}
+
+export function createFinalVisionScene(input: { success: string; benefits: string[]; future: string; whyNow: string; responsibility: string; weeklyResult: string }): FinalVisionScene {
+  const result = visionSentence(input.weeklyResult, "I have moved one clear result forward");
+  const future = input.future.trim();
+  const responsibility = input.responsibility.trim();
+  const reason = input.whyNow.trim();
+  const success = input.success.trim();
+  const lifeLine = future
+    ? `I can feel what this opens up: ${visionSentence(future, "")}`
+    : `I am making more room for ${visionList(input.benefits)}.`;
+  const workLine = responsibility
+    ? `I stayed locked in on the work that mattered: “${responsibility.replace(/[.!?]+$/, "").trim()}."`
+    : "I used my energy on the work I can control.";
+
+  return {
+    title: "Picture Friday.",
+    scene: `It is Friday. ${result} The proof is in front of me. ${workLine} ${lifeLine}`,
+    anchor: reason
+      ? `Before I start, I remember: ${visionSentence(reason, "")}`
+      : success
+        ? `Before I start, I remember what I am building: ${visionSentence(success, "")}`
+        : "Before I start, I remember: one clear move today can change my week.",
+  };
 }
 
 export function canAdvanceStep(input: { step: string; userName: string; location: string; role: RoleId | null; otherRole: string; success: string; benefitCount: number; future: string; whyNow: string; responsibility: string; weeklyResult: string; isCleaning: boolean }) {
