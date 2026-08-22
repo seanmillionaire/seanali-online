@@ -16,13 +16,17 @@ img{max-width:100%}
 a{color:inherit;text-decoration:none}
 .wrap{width:min(1200px,100%);margin:auto;padding:0 24px}
 
-/* Nav */
-.topbar{position:sticky;top:0;z-index:100;border-bottom:1px solid var(--line);background:rgba(255,255,255,.98);backdrop-filter:blur(12px)}
-.nav{min-height:74px;display:flex;align-items:center;justify-content:space-between;gap:24px}
-.brand{font-family:Sora,sans-serif;font-size:24px;font-weight:800;letter-spacing:-0.02em}
+/* REPLACED TOP NAV STYLES TO MATCH INDEX.HTML EXACTLY */
+.topbar{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.97);border-bottom:1px solid #e8e8e8;box-shadow:0 8px 22px -10px rgba(21,21,21,.28)}
+.nav{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:26px}
+.brand{font-size:28px;font-weight:900;text-decoration:none;white-space:nowrap}
 .brand span{color:var(--red)}
-.navlinks{display:flex;align-items:center;gap:22px}
-.navlinks a{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.05em}
+.nav-links{display:flex;align-items:center;gap:26px}
+.nav-links a{font-size:13px;font-weight:900;text-decoration:none;text-transform:uppercase}
+.nav-links a:hover{color:var(--red)}
+.nav-cta{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:14px 22px;border:0;border-radius:7px;background:linear-gradient(135deg,var(--orange),var(--orange2));color:#fff;font:900 14px/1 Inter,Arial,sans-serif;text-decoration:none;text-transform:uppercase;cursor:pointer;box-shadow:0 10px 24px rgba(255,84,46,.22)}
+.btn-arrow{display:inline-block;margin-left:6px;transition:transform .18s ease}
+.nav-cta:hover .btn-arrow{transform:translateX(4px)}
 
 /* Hero */
 .hero{padding:80px 0 60px;text-align:center;background:linear-gradient(180deg,#fff 0%,#f9fafb 100%)}
@@ -76,6 +80,9 @@ a{color:inherit;text-decoration:none}
     .flagship-card{grid-template-columns:1fr;padding:40px 24px}
     .footer-grid{grid-template-columns:1fr 1fr}
 }
+@media (max-width: 760px) {
+    .nav-links a:not(.nav-cta){display:none}
+}
 @media (max-width: 600px) {
     .hero{padding:60px 0 40px}
     .hero h1{font-size:44px}
@@ -88,15 +95,19 @@ a{color:inherit;text-decoration:none}
 </head>
 <body>
 
-<nav class="topbar">
-    <div class="wrap nav">
-        <a class="brand" href="/">SEAN <span>ALI</span></a>
-        <div class="navlinks">
-            <a href="/blog/">Lessons</a>
-            <a href="/products/">Products</a>
-            <a href="/work-with-me/">Work With Me</a>
-        </div>
+<nav class="topbar" aria-label="Main navigation">
+  <div class="wrap nav">
+    <a class="brand" href="/">SEAN <span>ALI</span></a>
+    <div class="nav-links">
+      <a href="/story.html">Story</a>
+      <a href="/vision/">Vision</a>
+      <a href="/#watch">YouTube</a>
+      <a href="/#articles">Articles</a>
+      <a href="/system.html">AI Freedom System</a>
+      <a href="/work-with-me/">Work With Me</a>
+      <a class="nav-cta" href="/join.html">Join Now <span class="btn-arrow" aria-hidden="true">&#8594;</span></a>
     </div>
+  </div>
 </nav>
 
 <header class="hero">
