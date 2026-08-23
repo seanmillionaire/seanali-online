@@ -104,6 +104,133 @@
     .definition strong { display: block; margin-bottom: 10px; color: var(--red); font-size: 14px; font-weight: 900; letter-spacing: .17em; text-transform: uppercase; }
     .definition span { font-size: 24px; line-height: 1.25; font-weight: 900; text-transform: uppercase; }
 
+    /* Aggressive CTA Section */
+    .paid-next-step {
+      max-width: 600px;
+      margin: 60px auto 20px;
+      padding: 40px 30px;
+      border-radius: 32px;
+      background: #111827;
+      color: #fff;
+      border: 2px solid #F59E0B;
+      box-shadow: 0 30px 70px rgba(245, 158, 11, 0.25);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .paid-next-step::before {
+      content: "URGENT UPGRADE";
+      position: absolute;
+      top: 15px;
+      right: -35px;
+      background: #EF4444;
+      color: #fff;
+      padding: 5px 40px;
+      font-size: 10px;
+      font-weight: 900;
+      transform: rotate(45deg);
+      letter-spacing: 0.1em;
+    }
+    .paid-next-step-kicker {
+      display: inline-flex;
+      margin-bottom: 12px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #EF4444;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+    }
+    .paid-next-step h2 {
+      margin: 0 0 16px;
+      font-size: clamp(32px, 5vw, 48px);
+      line-height: 0.95;
+      letter-spacing: -0.05em;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+    .paid-next-step p {
+      margin: 0 0 24px;
+      color: #D1D5DB;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .paid-next-step ul {
+      list-style: none;
+      display: grid;
+      gap: 10px;
+      margin: 0 0 24px;
+      padding: 0;
+      text-align: left;
+    }
+    .paid-next-step li {
+      position: relative;
+      padding-left: 32px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+    .paid-next-step li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #16A34A;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .paid-next-step .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 68px;
+      width: 100%;
+      padding: 0 24px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+      color: #fff;
+      border: none;
+      box-shadow: 0 20px 40px rgba(245, 158, 11, 0.4);
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .paid-next-step .cta-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 25px 50px rgba(245, 158, 11, 0.5);
+    }
+    .price-anchor {
+      margin-bottom: 24px;
+    }
+    .price-was {
+      text-decoration: line-through;
+      color: #9CA3AF;
+      font-size: 22px;
+      font-weight: 700;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .price-now {
+      font-size: 56px;
+      font-weight: 900;
+      color: #F59E0B;
+      line-height: 1;
+    }
+
     .footer { padding: 48px 0; background: #000; text-align: center; }
     .footer p { margin-bottom: 20px; color: #777; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; }
     .footer-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 18px; }
@@ -271,6 +398,25 @@
         <div class="definition">
           <strong>HIGHER PERSPECTIVE</strong>
           <span>THE ABILITY TO STEP BACK, SEE THE WHOLE PICTURE, AND MAKE A CONSCIOUS CHOICE BASED ON TRUTH.</span>
+        </div>
+
+        <!-- Aggressive CTA Section -->
+        <div class="paid-next-step">
+          <div class="paid-next-step-kicker">STOP THE LEAK</div>
+          <h2>STOP MANIFESTING POVERTY BY ACCIDENT.</h2>
+          <p>The Vision is just the map. If you don't fix the root subconscious pattern, you will keep choosing the same old limits. Get the full system now.</p>
+          <ul>
+            <li>Unlocks the complete Money Flow system</li>
+            <li>Kills the "not enough" survival loop forever</li>
+            <li>Lifetime access to the entire Money Mind Stack</li>
+            <li>Instant Digital Delivery</li>
+          </ul>
+          <div class="price-anchor">
+            <span class="price-was">REGULARLY $197</span>
+            <div class="price-now">ONLY $67</div>
+          </div>
+          <a href="https://buy.hypnoticmeditations.ai/l/bundle-money?wanted=true" class="cta-btn">Claim The Full Stack Now →</a>
+          <p style="font-size: 12px; color: #9CA3AF; margin-top: 20px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0;">Secure Checkout · Instant Access</p>
         </div>
       </div>
     </section>
