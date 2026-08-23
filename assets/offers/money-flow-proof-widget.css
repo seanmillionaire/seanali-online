@@ -1,0 +1,126 @@
+.money-flow-proof {
+  position: fixed;
+  z-index: 9999;
+  left: 18px;
+  bottom: 18px;
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: 12px;
+  width: min(390px, calc(100vw - 36px));
+  padding: 13px 16px 13px 13px;
+  overflow: hidden;
+  color: #29232a;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(32, 26, 31, 0.08);
+  border-radius: 12px;
+  box-shadow: 0 16px 42px rgba(32, 26, 31, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(24px);
+  transition: opacity 240ms ease, transform 240ms ease, visibility 240ms ease;
+}
+
+.money-flow-proof.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.money-flow-proof:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 19px 48px rgba(32, 26, 31, 0.24);
+}
+
+.money-flow-proof__avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: linear-gradient(145deg, #c81e1e, #29232a);
+  background-position: center;
+  background-size: cover;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.money-flow-proof__copy {
+  min-width: 0;
+}
+
+.money-flow-proof__name {
+  display: inline;
+  margin-bottom: 2px;
+  color: #c81e1e;
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.money-flow-proof__location {
+  color: #d44e83;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.money-flow-proof__quote {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0 0 5px;
+  color: #352f34;
+  font-family: Georgia, serif;
+  font-size: 14px;
+  line-height: 1.28;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.money-flow-proof__meta {
+  color: #696169;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.money-flow-proof__stars {
+  margin-right: 5px;
+  color: #eea400;
+  letter-spacing: 0;
+}
+
+.money-flow-proof__check {
+  color: #159447;
+}
+
+@media (max-width: 520px) {
+  .money-flow-proof {
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+    width: auto;
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 10px;
+    padding: 11px 13px 11px 11px;
+  }
+
+  .money-flow-proof__avatar {
+    width: 48px;
+    height: 48px;
+  }
+
+  .money-flow-proof__name {
+    font-size: 14px;
+  }
+
+  .money-flow-proof__quote {
+    font-size: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .money-flow-proof {
+    transition: none;
+  }
+}
