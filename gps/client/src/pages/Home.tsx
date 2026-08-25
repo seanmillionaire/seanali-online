@@ -85,7 +85,7 @@ function FinalScreenSection({ sectionId, eyebrow, title, summary, open, onToggle
     <button type="button" className="guided-final-section-toggle" onClick={onToggle} aria-expanded={open} aria-controls={contentId}>
       <span>{eyebrow}</span><h2>{title}</h2><p>{summary}</p><ChevronDown size={23} aria-hidden="true" />
     </button>
-    <div id={contentId} className="guided-final-section-body" hidden={!open}>{children}</div>
+    <div id={contentId} className="guided-final-section-body" aria-hidden={!open}>{children}</div>
   </section>;
 }
 
@@ -254,7 +254,10 @@ export default function Home() {
     if (position < steps.length - 1) { setStep(steps[position + 1]); playSound(cueForAdvance(position, position + 1)); }
   };
   const reset = () => { stopVoice(); setStep("name"); setUserName(""); setLocation(""); setSuccess(""); setCleanSuccess(""); setSelectedBenefits([]); setFuture(""); setCleanFuture(""); setWhyNow(""); setCleanWhyNow(""); setRole(null); setOtherRole(""); setResponsibility(""); setCleanResponsibility(""); setWeeklyResult(""); setCleanWeeklyResult(""); setCommitment("solid"); setDreamScene("celebration"); setDreamDetail(""); setClarityPrintout(null); setClarityError(""); setOpenFinalSections({ vision: true, dream: false, plan: false }); setHelpOpen(false); };
-  const printFinalPlan = () => window.print();
+  const printFinalPlan = () => {
+    setOpenFinalSections({ vision: true, dream: true, plan: true });
+    window.requestAnimationFrame(() => window.requestAnimationFrame(() => window.print()));
+  };
   const writeClarityPrintout = () => {
     if (createClarityPrintout.isPending) return;
     setClarityError("");

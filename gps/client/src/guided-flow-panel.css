@@ -40,6 +40,7 @@
 .guided-final-section-toggle svg{grid-column:2;grid-row:1 / span 3;align-self:center;transition:transform 180ms cubic-bezier(.23,1,.32,1)}
 .guided-final-section.open .guided-final-section-toggle{border-bottom:1px solid #d0ddd3;background:linear-gradient(120deg,#fbfffa,#f2f8f0)}
 .guided-final-section.open .guided-final-section-toggle svg{transform:rotate(180deg)}
+.guided-final-section:not(.open) .guided-final-section-body{display:none}
 .guided-final-section-toggle:hover{background:#f4f9f3}
 .guided-final-section-toggle:focus-visible{outline:3px solid #e06e40;outline-offset:-4px}
 .guided-final-section-body{padding:0 22px 22px}
@@ -232,14 +233,26 @@
   @page{margin:.5in}
   html,body,#root,.guided-shell,.guided-main,.guided-content,.guided-card{height:auto!important;min-height:0!important;overflow:visible!important;background:#fff!important}
   .guided-shell,.guided-main{display:block!important}
-  .guided-rail,.guided-topbar,.guided-help-panel,.guided-footer,.guided-print-button,.guided-clarity-writer,.guided-final-section[data-final-section="vision"],.guided-final-section[data-final-section="dream"]{display:none!important}
+  .guided-rail,.guided-topbar,.guided-help-panel,.guided-footer,.guided-print-button{display:none!important}
   .guided-content{display:block!important;padding:0!important}
   .guided-card{width:100%!important;max-width:none!important;max-height:none!important;padding:0!important;border:0!important;outline:0!important;box-shadow:none!important}
   .guided-card::before{display:none!important}
-  .guided-card> .guided-kicker,.guided-card>h1,.guided-card>.guided-intro{display:none!important}
-  .guided-final-section[data-final-section="plan"]{display:block!important;border:0!important;background:#fff!important;box-shadow:none!important}
-  .guided-final-section[data-final-section="plan"] .guided-final-section-toggle{display:none!important}
-  .guided-final-section-body[hidden]{display:block!important;padding:0!important}
+  .guided-card>.guided-kicker,.guided-card>h1,.guided-card>.guided-intro{display:block!important}
+  .guided-card>.guided-kicker{margin-bottom:7px!important}
+  .guided-card>h1{margin:0!important;font-size:35px!important}
+  .guided-card>.guided-intro{margin:8px 0 20px!important;font-size:15px!important}
+  .guided-final-section{display:block!important;margin:18px 0 0!important;border:0!important;background:#fff!important;box-shadow:none!important;break-inside:auto;page-break-inside:auto}
+  .guided-final-section-toggle,.guided-final-section[data-final-section="plan"] .guided-final-section-toggle{display:grid!important;padding:14px 0 11px!important;border:0!important;border-bottom:1px solid #b9d7c3!important;background:#fff!important;cursor:default!important;break-after:avoid;page-break-after:avoid}
+  .guided-final-section-toggle h2{font-size:25px!important}
+  .guided-final-section-toggle p{font-size:14px!important}
+  .guided-final-section-toggle svg{display:none!important}
+  .guided-final-section .guided-final-section-body,.guided-final-section-body[hidden]{display:block!important;padding:0!important}
+  .guided-vision-scene{margin-top:14px!important;padding:19px!important;break-inside:avoid;page-break-inside:avoid;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .guided-vision-scene>p{font-size:24px!important}
+  .guided-clarity-writer{display:block!important;margin:0!important;padding:0!important;border:0!important;background:#fff!important;overflow:visible!important}
+  .guided-clarity-writer::after,.guided-clarity-writer header,.guided-dream-scene-selector,.guided-clarity-writer .guided-field,.guided-clarity-writer-action{display:none!important}
+  .guided-clarity-narrative{display:block!important;margin:14px 0 0!important;padding:17px 18px!important;break-inside:avoid;page-break-inside:avoid}
+  .guided-clarity-narrative p{font-size:22px!important}
   .guided-final-plan{margin:0!important;padding:0!important;border:0!important;background:#fff!important}
   .guided-print-meta{display:flex!important;align-items:center;gap:9px;padding-bottom:16px;border-bottom:2px solid #1f4650;color:#1f4650;font-size:14px;font-weight:900;letter-spacing:.5px;text-transform:uppercase}
   .guided-print-meta img{width:26px;height:26px}
