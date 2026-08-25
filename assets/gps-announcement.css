@@ -1,0 +1,82 @@
+:root {
+  --gps-announcement-height: 42px;
+}
+
+.gps-announcement {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  min-height: var(--gps-announcement-height);
+  background: #e11d24;
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(139, 8, 15, .24);
+}
+
+.gps-announcement__link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: var(--gps-announcement-height);
+  padding: 8px 18px;
+  color: #fff;
+  font-family: Inter, Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: .02em;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.gps-announcement__arrow {
+  flex: 0 0 auto;
+  color: #fff;
+  font-size: 19px;
+  line-height: 1;
+  transition: transform .18s ease;
+}
+
+.gps-announcement__link:hover .gps-announcement__arrow,
+.gps-announcement__link:focus-visible .gps-announcement__arrow {
+  transform: translateX(4px);
+}
+
+.gps-announcement__link:focus-visible {
+  outline: 3px solid #ff8a52;
+  outline-offset: -3px;
+}
+
+.gps-announcement + .topbar,
+.gps-announcement + .social-topbar,
+.gps-announcement + .nav {
+  top: var(--gps-announcement-height) !important;
+}
+
+.gps-announcement + .book {
+  height: calc(100vh - var(--gps-announcement-height));
+}
+
+@media (max-width: 520px) {
+  :root {
+    --gps-announcement-height: 40px;
+  }
+
+  .gps-announcement__link {
+    gap: 7px;
+    padding: 7px 10px;
+    font-size: 11px;
+    letter-spacing: 0;
+  }
+
+  .gps-announcement__arrow {
+    font-size: 17px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gps-announcement__arrow {
+    transition: none;
+  }
+}
