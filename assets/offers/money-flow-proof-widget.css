@@ -32,18 +32,18 @@
   box-shadow: 0 19px 48px rgba(32, 26, 31, 0.24);
 }
 
-.money-flow-proof__avatar {
+.money-flow-proof__verified-icon {
   width: 56px;
   height: 56px;
-  border-radius: 9px;
   display: grid;
   place-items: center;
   color: #fff;
-  background: linear-gradient(145deg, #c81e1e, #29232a);
-  background-position: center;
-  background-size: cover;
-  font-size: 15px;
+  background: linear-gradient(145deg, #38bd68, #168747);
+  border-radius: 50%;
+  box-shadow: 0 8px 18px rgba(21, 148, 71, 0.24);
+  font-size: 31px;
   font-weight: 900;
+  line-height: 1;
 }
 
 .money-flow-proof__copy {
@@ -60,21 +60,18 @@
 }
 
 .money-flow-proof__location {
-  color: #d44e83;
+  color: #696169;
   font-size: 13px;
   font-weight: 700;
 }
 
-.money-flow-proof__quote {
-  display: -webkit-box;
-  overflow: hidden;
-  margin: 0 0 5px;
+.money-flow-proof__purchase {
+  display: block;
+  margin: 3px 0 5px;
   color: #352f34;
-  font-family: Georgia, serif;
   font-size: 14px;
-  line-height: 1.28;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  font-weight: 800;
+  line-height: 1.25;
 }
 
 .money-flow-proof__meta {
@@ -84,14 +81,9 @@
   line-height: 1.2;
 }
 
-.money-flow-proof__stars {
-  margin-right: 5px;
-  color: #eea400;
-  letter-spacing: 0;
-}
-
 .money-flow-proof__check {
   color: #159447;
+  font-weight: 900;
 }
 
 @media (max-width: 520px) {
@@ -105,16 +97,17 @@
     padding: 11px 13px 11px 11px;
   }
 
-  .money-flow-proof__avatar {
+  .money-flow-proof__verified-icon {
     width: 48px;
     height: 48px;
+    font-size: 27px;
   }
 
   .money-flow-proof__name {
     font-size: 14px;
   }
 
-  .money-flow-proof__quote {
+  .money-flow-proof__purchase {
     font-size: 13px;
   }
 }
