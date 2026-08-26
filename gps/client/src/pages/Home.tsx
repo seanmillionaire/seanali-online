@@ -91,7 +91,7 @@ function FinalScreenSection({ sectionId, eyebrow, title, summary, open, onToggle
 
 export default function Home() {
   const [step, setStep] = useState<Step>("name");
-  const [userName, setUserName] = useState("");
+  const [userName, setUserName] = useState(() => window.localStorage.getItem("dream-life-gps-name") || "");
   const [location, setLocation] = useState("");
   const [success, setSuccess] = useState("");
   const [cleanSuccess, setCleanSuccess] = useState("");
