@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Build Your Dream Life GPS | Sean Ali</title>
-<meta name="description" content="Answer 11 simple questions and get a personalized Dream Life GPS with a clear route and your next three moves.">
+<title>Personalized 7-Day Dream Life Action Plan | Sean Ali</title>
+<meta name="description" content="Answer 11 simple questions and get a personalized, printable Dream Life action plan with one clear goal, a 7-day target, and your next three moves.">
 <meta name="robots" content="noindex, follow">
 <link rel="canonical" href="https://seanali.online/gps">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Sean Ali">
-<meta property="og:title" content="Build Your Dream Life GPS">
-<meta property="og:description" content="Answer 11 simple questions and get a personalized route for the life you actually want.">
+<meta property="og:title" content="Get Your Personalized 7-Day Dream Life Action Plan">
+<meta property="og:description" content="Turn 11 answers into one clear goal, a 7-day target, and your next three moves.">
 <meta property="og:image" content="https://seanali.online/manus-storage/dream-life-gps-hero_5e4ca605.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Build Your Dream Life GPS">
-<meta name="twitter:description" content="Answer 11 simple questions and get a personalized route for the life you actually want.">
+<meta name="twitter:title" content="Get Your Personalized 7-Day Dream Life Action Plan">
+<meta name="twitter:description" content="Turn 11 answers into one clear goal, a 7-day target, and your next three moves.">
 <meta name="twitter:image" content="https://seanali.online/manus-storage/dream-life-gps-hero_5e4ca605.jpg">
 <link rel="icon" type="image/png" href="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png">
 <link rel="apple-touch-icon" href="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png">
@@ -62,9 +62,9 @@ h1{max-width:650px;margin:0 auto 16px;font-size:52px;line-height:1.02;letter-spa
 <section class="card">
 <div class="hero">
 <img class="gps-logo" src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="Dream Life GPS compass">
-<p class="kicker">Free Dream Life GPS</p>
-<h1>Build A Clear Route For The Life You Actually Want</h1>
-<p class="subhead">Answer 11 simple questions. Get your personal route and your next three moves.</p>
+<p class="kicker">Personalized 7-Day Action Plan</p>
+<h1>Turn Your Dream Life Into A Plan You Can Use This Week</h1>
+<p class="subhead">Answer 11 simple questions. Get one clear goal, a 7-day target, and your next three moves.</p>
 </div>
 <form class="form" id="gps-optin-form" method="post" action="https://www.aweber.com/scripts/addlead.pl">
 <label class="sr-only" for="gps-name">First name</label>
@@ -77,16 +77,16 @@ h1{max-width:650px;margin:0 auto 16px;font-size:52px;line-height:1.02;letter-spa
 <input type="hidden" name="meta_tags" value="dream-life-gps,gps-optin,seanali-online">
 <input type="hidden" name="meta_adtracking" value="Sean Ali Dream Life GPS Optin">
 <input type="hidden" name="meta_required" value="name,email">
-<button class="submit" id="gps-submit" type="submit">BUILD MY DREAM LIFE GPS →</button>
-<p class="privacy">🔒 Free instant access. Unsubscribe anytime.</p>
+<button class="submit" id="gps-submit" type="submit">CREATE MY 7-DAY ACTION PLAN →</button>
+<p class="privacy">🔒 Instant access. Print it or save it as a PDF.</p>
 </form>
 <div class="divider"></div>
 <div class="benefits">
-<h2>Your GPS Will Show You 👇</h2>
+<h2>Here Is Exactly What You Get 👇</h2>
 <ul class="benefit-list">
-<li><span class="icon">🧭</span><span><strong>Where You Want To Go</strong><br><span class="check">✓</span> Put your dream life into clear words.</span></li>
-<li><span class="icon">🗺️</span><span><strong>Your Personal Route</strong><br><span class="check">✓</span> See what matters most and why.</span></li>
-<li><span class="icon">✅</span><span><strong>Your Next Three Moves</strong><br><span class="check">✓</span> Start with practical actions this week.</span></li>
+<li><span class="icon">🧭</span><span><strong>Your Goal, Written Clearly</strong><br><span class="check">✓</span> A personal summary built from your answers.</span></li>
+<li><span class="icon">📅</span><span><strong>Your Next 7-Day Target</strong><br><span class="check">✓</span> One result to move forward this week.</span></li>
+<li><span class="icon">✅</span><span><strong>Your Next Three Moves</strong><br><span class="check">✓</span> Three practical actions you can start now.</span></li>
 </ul>
 </div>
 </section>
@@ -100,7 +100,7 @@ const submit=document.getElementById('gps-submit');
 const name=document.getElementById('gps-name');
 form.addEventListener('submit',function(){
 try{window.localStorage.setItem('dream-life-gps-name',name.value.trim())}catch(error){}
-submit.textContent='BUILDING YOUR GPS...';
+submit.textContent='CREATING YOUR PLAN...';
 submit.disabled=true;
 if(typeof window.fbq==='function')window.fbq('track','Lead',{content_name:'Dream Life GPS'});
 if(Array.isArray(window.dataLayer))window.dataLayer.push({event:'dream_life_gps_lead'});
