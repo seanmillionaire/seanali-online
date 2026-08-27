@@ -64,12 +64,12 @@ h1 { max-width: 780px; margin: 0 auto 14px; color: var(--ink); font-size: clamp(
 
 @media (min-width: 1100px) {
   .hero-signal { max-width: 1320px; padding-top: 42px; }
-  .hero-content { width: min(1100px, calc(100% - 120px)); margin-top: 72px; padding: 30px 72px 36px; border-radius: 34px 34px 0 0; }
-  h1 { max-width: 980px; margin-bottom: 12px; font-size: clamp(58px, 4.4vw, 84px); }
+  .hero-content { width: min(880px, calc(100% - 120px)); margin-top: 72px; padding: 26px 42px 32px; border-radius: 30px 30px 0 0; }
+  h1 { max-width: 780px; margin-bottom: 12px; font-size: clamp(54px, 4.1vw, 72px); }
   .hero-subhead { max-width: 850px; font-size: clamp(20px, 1.55vw, 26px); line-height: 1.28; }
   .hero-supporting { max-width: 760px; margin-top: 10px; font-size: clamp(21px, 1.7vw, 28px); }
   .form-lead { margin-top: 14px; font-size: clamp(31px, 2.8vw, 42px); }
-  .manifest-form { max-width: 920px; padding: 20px 24px; gap: 12px; }
+  .manifest-form { max-width: 740px; padding: 18px 20px; gap: 10px; }
   .field-wrap label { font-size: 13px; }
   .input { min-height: 56px; font-size: 18px; }
   .submit { min-height: 62px; font-size: clamp(20px, 1.7vw, 25px); }
