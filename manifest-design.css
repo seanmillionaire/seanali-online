@@ -63,6 +63,25 @@ h1 { max-width: 780px; margin: 0 auto 20px; color: var(--ink); font-size: clamp(
 .signature { color: var(--gold-light); font: 600 42px/1 Caveat, cursive; }
 .manifest-footer p { margin: 8px 0 0; color: rgba(255,255,255,.74); font-size: 13px; }
 
+@media (min-width: 1100px) {
+  .hero-signal { max-width: 1320px; padding-top: 42px; }
+  .hero-content { width: min(1100px, calc(100% - 120px)); margin-top: 126px; padding: 50px 72px 62px; }
+  h1 { max-width: 980px; font-size: clamp(58px, 4.4vw, 84px); }
+  .hero-subhead { max-width: 850px; font-size: clamp(20px, 1.55vw, 26px); }
+  .hero-supporting { max-width: 760px; font-size: clamp(21px, 1.7vw, 28px); }
+  .form-lead { margin-top: 26px; font-size: clamp(31px, 2.8vw, 42px); }
+  .manifest-form { max-width: 920px; padding: 26px; gap: 15px; }
+  .field-wrap label { font-size: 13px; }
+  .input { min-height: 62px; font-size: 18px; }
+  .submit { min-height: 70px; font-size: clamp(20px, 1.7vw, 25px); }
+  .tools-section { max-width: 1380px; padding-top: 82px; }
+  .tools-grid { gap: 54px; margin-top: 52px; }
+  .tool-card { grid-template-columns: 220px 1fr; gap: 28px; }
+  .tool-image { width: 220px; height: 292px; }
+  .tool-copy h3 { font-size: clamp(24px, 2vw, 32px); }
+  .tool-copy p { font-size: 18px; }
+}
+
 @media (max-width: 760px) {
   .manifest-hero { min-height: auto; }
   .hero-visual { height: 485px; }
