@@ -22,15 +22,11 @@ body{min-height:100vh;background:var(--cream);color:var(--ink);font-family:'Inte
 a{color:inherit;text-decoration:none}
 .layout{display:flex;min-height:100vh}
 
-/* ===== Sidebar (GPS design) ===== */
+/* ===== Sidebar ===== */
 .rail{position:sticky;top:0;align-self:flex-start;width:285px;height:100vh;flex:0 0 285px;padding:31px 27px 26px;display:flex;flex-direction:column;color:#FDF7EC;background:var(--navy) url('/manus-storage/dream-life-gps-atlas_7f8f78a7.jpg') center/cover;z-index:5}
 .rail::before{content:'';position:absolute;inset:0;background:linear-gradient(158deg,rgba(10,31,48,.87),rgba(7,19,31,.98))}
 .rail>*{position:relative;z-index:1}
-.brand{display:flex;align-items:center;gap:10px}
-.brand img{width:39px;height:39px;object-fit:contain}
-.brand b{display:block;font-size:17px;font-weight:800;letter-spacing:-.5px;text-transform:uppercase}
-.brand span{display:block;margin-top:3px;color:#B8D9CE;font-size:10px;font-weight:800;letter-spacing:1.2px}
-.rail-copy{margin:55px 0 33px}
+.rail-copy{margin:0 0 33px}
 .rail-copy p{margin:0;color:#B8D9CE;font-size:12px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase}
 .rail-copy h2{margin:10px 0 0;font-family:'DM Serif Display',serif;font-size:31px;line-height:1.05;font-weight:400;letter-spacing:-.5px}
 .paths-nav{position:relative;display:grid;gap:9px}
@@ -42,25 +38,13 @@ a{color:inherit;text-decoration:none}
 .nav-step small{display:block;margin-top:2px;font-size:11px}
 .nav-step.now{color:#fff}
 .nav-step.now>span{color:#fff;border-color:var(--red);background:var(--red);box-shadow:0 0 0 5px rgba(225,29,36,.14)}
-.rail-footer{display:flex;gap:9px;margin-top:auto;padding-top:16px;color:#B8D9CE;border-top:1px solid rgba(255,255,255,.13)}
-.rail-footer svg{flex:0 0 auto;color:#FF4B40}
-.rail-footer p{margin:0;font-family:'DM Serif Display',serif;font-size:16px;line-height:1.26}
-.creator{display:flex;gap:7px;margin-top:14px;color:#B8D9CE;font-size:10px;font-weight:800;letter-spacing:1.2px}
+.creator{display:flex;gap:7px;margin-top:auto;padding-top:16px;color:#B8D9CE;border-top:1px solid rgba(255,255,255,.13);font-size:10px;font-weight:800;letter-spacing:1.2px}
 .creator b{color:#FDF7EC;font-family:'DM Serif Display',serif;font-size:14px;letter-spacing:0;font-weight:400}
 
 /* ===== Main ===== */
 .main{width:calc(100% - 285px);display:flex;flex-direction:column}
-.topbar{height:75px;padding:0 5.2vw;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:rgba(246,241,232,.95);backdrop-filter:blur(8px)}
-.top-left{display:flex;align-items:center;gap:10px}
-.top-left img{width:22px;height:22px}
-.top-left b{font-size:12px;letter-spacing:.8px}
-.top-left em{color:var(--red);font-style:normal}
-.top-greeting{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:12px;font-weight:700}
-.top-greeting i{width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 0 4px rgba(225,29,36,.12);font-style:normal}
-.top-bookmark{display:inline-flex;align-items:center;gap:7px;padding:10px 15px;color:#fff;border:1px solid transparent;border-radius:999px;background:linear-gradient(135deg,#E11D24,#FF4B40);font-size:14px;font-weight:800;box-shadow:0 6px 16px rgba(225,29,36,.3)}
 .canvas{flex:1;width:min(860px,100%);margin:0 auto;padding:42px 5.2vw 40px;background:radial-gradient(circle at 20% 0%,rgba(225,29,36,.08),transparent 35%)}
 .hero{text-align:center}
-.kicker{margin:0 0 10px;color:var(--red);font-size:15px;font-weight:900;letter-spacing:.01em}
 h1{max-width:720px;margin:0 auto 14px;font-family:'Inter',Arial,sans-serif;font-size:54px;line-height:1.02;letter-spacing:-.05em;font-weight:900;color:#0A0A0A}
 .subhead{max-width:610px;margin:0 auto;color:#302C28;font-size:20px;line-height:1.42;font-weight:750}
 .divider{height:1px;background:var(--line);margin:30px 0 24px}
@@ -77,10 +61,10 @@ h1{max-width:720px;margin:0 auto 14px;font-family:'Inter',Arial,sans-serif;font-
 .footer{width:min(860px,100%);margin:0 auto;padding:16px 5.2vw 30px;color:#7A736A;font-size:12px;line-height:1.5;text-align:center}
 
 /* ===== Mobile ===== */
-@media(max-width:960px){.rail{width:235px;flex-basis:235px;padding:25px 20px}.main{width:calc(100% - 235px)}.rail-copy{margin-top:42px}.rail-copy h2{font-size:26px}}
+@media(max-width:960px){.rail{width:235px;flex-basis:235px;padding:25px 20px}.main{width:calc(100% - 235px)}.rail-copy h2{font-size:26px}}
 @media(max-width:760px){
 .layout{display:block}.rail{position:relative;top:auto;width:auto;height:auto;min-height:0;flex:none;padding:18px}
-.rail-copy{margin:24px 0 20px}
+.rail-copy{margin:0 0 20px}
 .paths-nav{display:flex;justify-content:space-between;gap:2px;margin-top:18px}
 .path-line{left:28px;right:28px;top:16px;bottom:auto;width:auto;height:1px}
 .path-line em{height:100%!important}
@@ -88,8 +72,6 @@ h1{max-width:720px;margin:0 auto 14px;font-family:'Inter',Arial,sans-serif;font-
 .nav-step>div{display:none}
 .nav-step>span{width:33px;height:33px;font-size:10px}
 .main{width:auto}
-.topbar{height:55px;padding:0 17px}
-.top-greeting{display:none}
 .canvas{padding:26px 16px 34px}
 h1{font-size:38px;line-height:1.02}
 .subhead{font-size:17px}
@@ -105,7 +87,6 @@ h1{font-size:38px;line-height:1.02}
 <body>
 <div class="layout">
   <aside class="rail" aria-label="Your path sidebar">
-    <div class="brand"><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="Dream Life GPS" /><div><b>Dream Life</b><span>GPS / YOUR LIFE MAP</span></div></div>
     <div class="rail-copy"><p>YOUR SIMPLE PATH</p><h2>Get clear.<br />Take the steps.</h2></div>
     <div class="paths-nav" aria-label="Your three paths">
       <div class="path-line"><em></em></div>
@@ -113,21 +94,13 @@ h1{font-size:38px;line-height:1.02}
       <a class="nav-step" href="#mind"><span>02</span><div><b>Rewire My Mind</b><small>Guided audio for the life you want.</small></div></a>
       <a class="nav-step" href="#genie"><span>03</span><div><b>My Next Goal</b><small>Personalized guidance, step by step.</small></div></a>
     </div>
-    <div class="rail-footer"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l3 3"/></svg><p>One step at a time.</p></div>
     <div class="creator">CREATED BY <b>Sean Ali</b></div>
   </aside>
 
   <div class="main">
-    <header class="topbar">
-      <div class="top-left"><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><b>DREAM LIFE <em>GPS</em></b></div>
-      <div class="top-greeting"><i></i>Pick the path you want most right now</div>
-      <a class="top-bookmark" href="#bookmark">🔖 Bookmark This Page</a>
-    </header>
-
     <main class="canvas">
       <div class="hero">
-        <p class="kicker">YOU'RE IN 🎉</p>
-        <h1>What Do You Want To Manifest First?</h1>
+        <h1>What do you want to start with?</h1>
         <p class="subhead">Choose the path that matches what you want most right now.</p>
       </div>
       <div class="divider"></div>
@@ -173,7 +146,7 @@ h1{font-size:38px;line-height:1.02}
       o.start(t);o.stop(t+dur);
     }catch(e){}
   }
-  document.querySelectorAll('a.path-card, a.nav-step, a.top-bookmark').forEach(function(el){
+  document.querySelectorAll('a.path-card, a.nav-step').forEach(function(el){
     el.addEventListener('mouseenter',function(){beep(880,0.05,0.10);});
   });
 })();
