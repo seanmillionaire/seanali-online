@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
-  <title>Download Your Gifts Now | Sean Ali</title>
+  <title>Download Your Tools Now | Sean Ali</title>
   <meta name="description" content="Download your MoneyWave meditation and Subconscious Reprogramming Guide, then choose your next step.">
   <link rel="canonical" href="https://seanali.online/gifts/">
   <link rel="icon" type="image/png" href="https://hypnoticmeditations.b-cdn.net/images/fav/headphones.png">
@@ -29,14 +29,14 @@
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N3NV5TNP" height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager"></iframe></noscript>
   <main class="page">
     <section class="card">
-      <header class="hero"><p class="kicker">Congratulations, you’re in! 🎉</p><h1>Download Your Gifts Now</h1><div class="hero-rule" aria-hidden="true"></div></header>
+      <header class="hero"><p class="kicker">Congratulations, you’re in! 🎉</p><h1>Download Your Tools Now</h1><div class="hero-rule" aria-hidden="true"></div></header>
       <div class="delivery-panel">
         <section class="step active" data-step="1" aria-labelledby="gift-one-title">
           <p class="personal-line" data-step-greeting></p><p class="step-label">STEP 1 · LISTEN</p><h2 id="gift-one-title">7-Minute <span class="highlight">MoneyWave</span> Meditation</h2><p class="step-intro">This is a sample of one of our most popular programs.</p>
           <img class="gift-image" src="https://hypnoticmeditations.b-cdn.net/images/money%20wave.png" alt="MoneyWave meditation cover"><p class="value">$27 USD value</p>
           <div class="audio-wrap"><audio id="moneywave-audio" controls preload="metadata" src="https://hypnoticmeditations.b-cdn.net/Products/money%20flow/HM-preview.mp3">Your browser does not support audio playback.</audio><p class="audio-note">Tap ▶ to listen. Headphones are optional. Never listen while driving.</p></div>
-          <div class="handhold"><p class="handhold-title">Do this now</p><ol><li><b>1</b><span>Tap play and listen</span></li><li><b>2</b><span>Tap the orange button to download</span></li><li><b>3</b><span>Tap “Next gift” when you’re ready</span></li></ol></div>
-          <a class="button" id="moneywave-download" href="https://hypnoticmeditations.b-cdn.net/Products/money%20flow/HM-preview.mp3" download>DOWNLOAD MONEYWAVE TO YOUR DEVICE</a><button class="button step-next" type="button" data-next>I DOWNLOADED IT — NEXT GIFT →</button>
+          <div class="handhold"><p class="handhold-title">Do this now</p><ol><li><b>1</b><span>Tap play and listen</span></li><li><b>2</b><span>Tap the orange button to download</span></li><li><b>3</b><span>Tap “Next tool” when you’re ready</span></li></ol></div>
+          <a class="button" id="moneywave-download" href="https://hypnoticmeditations.b-cdn.net/Products/money%20flow/HM-preview.mp3" download>DOWNLOAD MONEYWAVE TO YOUR DEVICE</a><button class="button step-next" type="button" data-next>I DOWNLOADED IT — NEXT TOOL →</button>
         </section>
         <section class="step" data-step="2" aria-labelledby="gift-two-title" aria-hidden="true">
           <p class="personal-line" data-step-greeting></p><p class="step-label">STEP 2 · DOWNLOAD</p><h2 id="gift-two-title">Subconscious Reprogramming Guide</h2><p class="step-intro">A practical guide for the patterns shaping the way you think and act.</p>
@@ -45,7 +45,7 @@
           <a class="button" id="subconscious-guide-download" href="/guide/subconscious-reprogramming-guide.pdf" download>DOWNLOAD THE GUIDE PDF</a><button class="button step-next" type="button" data-next>I DOWNLOADED IT — SHOW ME MY OPTIONS →</button>
         </section>
         <section class="step" data-step="3" aria-labelledby="next-step-title" aria-hidden="true">
-          <p class="step-label">YOUR NEXT STEP</p><h2 id="next-step-title" data-final-heading>Ready to take the next step?</h2><p class="next-copy">You’ve got both gifts. Tap one option below to choose what you want help with next.</p>
+          <p class="step-label">YOUR NEXT STEP</p><h2 id="next-step-title" data-final-heading>Ready to take the next step?</h2><p class="next-copy">You’ve got both tools. Tap one option below to choose what you want help with next.</p>
           <div class="options"><a class="option" id="money-flow-checkout" href="https://seanali.online/flow" data-checkout-url="https://seanali.online/flow" data-checkout-verified="true"><span class="option-icon">💰</span><span><strong>Money Flow</strong><span>Click here if you want money to start flowing in your life</span></span></a><a class="option" id="manifestation-genie" href="https://manifestationgenie.app"><span class="option-icon">✨</span><span><strong>Manifestation Genie</strong><span>Click here if you want help manifesting your best life</span></span></a></div>
           <button class="button secondary back" type="button" data-back>← BACK TO GIFT 2</button>
         </section>
@@ -60,7 +60,7 @@
     function attribution(){var u=new URL(window.location.href),p=new URLSearchParams();['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid'].forEach(function(k){var v=u.searchParams.get(k);if(v)p.set(k,v.slice(0,200))});p.set('funnel',campaign);return p}
     function show(index){current=Math.max(0,Math.min(steps.length-1,index));steps.forEach(function(step,i){var active=i===current;step.classList.toggle('active',active);step.setAttribute('aria-hidden',active?'false':'true')});track('MoneyWaveDeliveryStepView',{step:current+1});window.scrollTo({top:0,behavior:'smooth'})}
     document.querySelectorAll('[data-next]').forEach(function(b){b.addEventListener('click',function(){show(current+1)})});document.querySelectorAll('[data-back]').forEach(function(b){b.addEventListener('click',function(){show(current-1)})});
-    var firstName=sessionStorage.getItem('hm_god_money_first_name');if(firstName){document.querySelectorAll('[data-step-greeting]').forEach(function(el,i){el.textContent=i===0?'Your first gift is ready, '+firstName+'.':'Your second gift is ready, '+firstName+'.'});document.querySelector('[data-final-heading]').textContent='Are you ready to take the next step, '+firstName+'?'}
+    var firstName=sessionStorage.getItem('hm_god_money_first_name');if(firstName){document.querySelectorAll('[data-step-greeting]').forEach(function(el,i){el.textContent=i===0?'Your first tool is ready, '+firstName+'.':'Your second tool is ready, '+firstName+'.'});document.querySelector('[data-final-heading]').textContent='Are you ready to take the next step, '+firstName+'?'}
     if(!sessionStorage.getItem('hm_god_money_lead_v1')){track('MoneyWaveDeliveryView',{value:0,currency:'USD'},'Lead');sessionStorage.setItem('hm_god_money_lead_v1','1')}
     var audio=document.getElementById('moneywave-audio'),played=false;if(audio){audio.addEventListener('play',function(){if(!played){played=true;track('MoneyWaveAudioStart',{asset:'moneywave'})}});audio.addEventListener('ended',function(){track('MoneyWaveAudioComplete',{asset:'moneywave'})})}
     var download=document.getElementById('moneywave-download');if(download)download.addEventListener('click',function(){track('MoneyWaveDownload',{asset:'moneywave'})});var guideDownload=document.getElementById('subconscious-guide-download');if(guideDownload)guideDownload.addEventListener('click',function(){track('SubconsciousGuideDownload',{asset:'subconscious-guide',format:'pdf'})});
