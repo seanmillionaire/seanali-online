@@ -56,6 +56,36 @@
       text-align: center;
     }
     .brand span { color: var(--red); }
+    .flow-vsl {
+      padding: 22px 0 30px;
+      background: linear-gradient(180deg, #fffaf2 0%, #fff 100%);
+      border-top: 1px solid #f2e8dc;
+      border-bottom: 1px solid #eadede;
+      text-align: center;
+    }
+    .flow-vsl h2 {
+      max-width: 720px;
+      margin: 0 auto 16px;
+      color: var(--ink);
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.08;
+    }
+    .flow-vsl h2 span { color: #b77716; }
+    .flow-vsl__player {
+      width: min(760px, 100%);
+      min-height: 260px;
+      margin: 0 auto;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border: 1px solid #eadede;
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 16px 34px rgba(36, 31, 35, .11);
+    }
+    .flow-vsl__player vturb-smartplayer { display: block; width: 100%; max-width: 760px; }
+    .flow-vsl__placeholder { padding: 34px 18px; color: var(--muted); font-size: 14px; font-weight: 700; }
+    .flow-vsl__note { margin: 12px auto 0; color: var(--muted); font-size: 12px; font-weight: 700; }
     .eyebrow {
       margin-bottom: 10px;
       color: var(--red);
@@ -659,6 +689,16 @@
 <body>
   <header>
     <div class="brand">SEAN <span>ALI</span></div>
+    <section class="flow-vsl" aria-labelledby="flow-vsl-title">
+      <div class="narrow">
+        <div class="eyebrow">Watch this first</div>
+        <h2 id="flow-vsl-title">Want to make more money?<br><span>Remove the money block in your brain 👇</span></h2>
+        <div class="flow-vsl__player" id="flowVslPlayerWrap">
+          <div class="flow-vsl__placeholder" id="flowVslPlaceholder">🎧 Loading the Money Flow training...</div>
+        </div>
+        <p class="flow-vsl__note">Watch the short training, then keep scrolling for Money Flow.</p>
+      </div>
+    </section>
     <section class="hero">
       <div class="wrap hero-grid">
         <div class="hero-visual">
@@ -917,5 +957,19 @@
   </footer>
 
   <script src="/assets/offers/money-flow-proof-widget.js" defer></script>
+  <script>
+    (function () {
+      var placeholder = document.getElementById('flowVslPlaceholder');
+      if (!placeholder) return;
+      var player = document.createElement('vturb-smartplayer');
+      player.id = 'vid-69f51fa252f93c09b7d0d149';
+      var parent = placeholder.parentNode;
+      parent.replaceChild(player, placeholder);
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://scripts.converteai.net/06805447-0fe0-4045-89f5-ea45443a5071/players/69f51fa252f93c09b7d0d149/v4/player.js';
+      document.head.appendChild(script);
+    }());
+  </script>
 </body>
 </html>
