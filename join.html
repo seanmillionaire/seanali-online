@@ -98,6 +98,8 @@ const submit=document.getElementById('manifest-submit');
 form.addEventListener('submit',function(){
 submit.textContent='SENDING YOUR TOOLS...';
 submit.disabled=true;
+const nameInput=document.getElementById('manifest-name');
+if(nameInput&&nameInput.value.trim())sessionStorage.setItem('hm_god_money_first_name',nameInput.value.trim().split(/\s+/)[0].slice(0,40));
 if(typeof window.fbq==='function')window.fbq('track','Lead');
 });
 })();
