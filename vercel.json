@@ -5,6 +5,16 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/gifts",
+      "destination": "/tools",
+      "permanent": true
+    },
+    {
+      "source": "/gifts/",
+      "destination": "/tools",
+      "permanent": true
+    },
+    {
       "source": "/(.*)",
       "has": [
         {
