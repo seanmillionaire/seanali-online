@@ -1,5 +1,5 @@
 /* Wayfinder's Atlas voice kit — tactile field-journal controls for speaking a personal future into view. */
-.creator-signature{display:flex;align-items:baseline;gap:7px;margin-top:15px;padding-top:13px;color:#B8D9CE;border-top:1px solid rgba(255,255,255,.13)}
+.creator-signature{display:flex;align-items:baseline;gap:7px;margin-top:15px;padding-top:13px;color:#B8D9CE;border-top:1px solid rgba(255,255,255,.13);text-decoration:none}
 .creator-signature span{font-size:8px;font-weight:800;letter-spacing:1px;text-transform:uppercase;opacity:.78}
 .creator-signature b{color:#FFF5E8;font-family:'DM Serif Display',serif;font-size:17px;font-style:italic;font-weight:400;letter-spacing:.1px}
 
