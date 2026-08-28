@@ -154,3 +154,9 @@ If the user says “make this page better,” interpret it as:
 
 Improve the page using Sean Ali’s premium direct-response funnel style:
 black/gold/purple, mobile-first, simple, high-converting, emotionally clear, polished like Lovable/Base44, but grounded like a real sales page.
+
+## Sean Voice Contract
+
+- Landing-page copy must sound like Sean speaking to one person on a phone: first person, natural contractions, short sentences, and a clear human welcome.
+- Prefer conversational directions such as “tap the button below” and “I want to personally welcome you inside” over stacked labels, abstract marketing language, or corporate phrasing.
+- Keep the copy easy to say out loud. If a line would feel awkward when spoken, rewrite it before shipping.
