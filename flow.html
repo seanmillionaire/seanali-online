@@ -682,6 +682,24 @@
       .cta::before, .cta-arrow { animation: none; }
     }
   </style>
+  <!-- Whop pixel: page-view attribution for ads sent to this external sales page. -->
+  <script>
+    (function () {
+      var scope = "biz_I0H7cTguJqPzj6";
+      var origin = "https://t.whop.tw";
+      var whop = window.whop = window.whop || { q: [], t: Date.now(), s: [], o: origin };
+      whop.o = origin;
+      whop.s = [scope];
+      whop.q.push([Date.now(), "setScope", scope]);
+      whop.q.push([Date.now(), "page"]);
+      if (!document.querySelector('script[src="' + origin + '/s.js"]')) {
+        var script = document.createElement("script");
+        script.async = true;
+        script.src = origin + "/s.js";
+        document.head.appendChild(script);
+      }
+    }());
+  </script>
 </head>
 <body>
   <header>
