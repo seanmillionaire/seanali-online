@@ -83,22 +83,34 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 /* content additions restored from later builds */.welcome-label{display:inline-block;margin-bottom:12px;color:var(--red);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.14em}.guide-proof{display:flex;flex-wrap:wrap;gap:8px;margin-top:25px}.guide-proof span{padding:9px 11px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.06);color:#fff;font-size:11px;font-weight:900;letter-spacing:.055em;text-transform:uppercase}@media(max-width:700px){.guide-proof{justify-content:center;margin-top:20px}.guide-proof span{font-size:10px}}
 .btn-arrow{display:inline-block;margin-left:6px;transition:transform .18s ease}.button:hover .btn-arrow,.nav-cta:hover .btn-arrow{transform:translateX(4px)}</style>
 <style>@media(min-width:1121px){.footer-link-grid{grid-template-columns:repeat(8,minmax(110px,1fr))}}</style>
-<style>@media(max-width:940px){.nav-links a:not(.nav-cta){display:inline-flex}}@media(max-width:700px){.nav-links{gap:8px}.nav-links a:not(.nav-cta){font-size:10px;letter-spacing:-.02em}}</style>
+<style>.mobile-nav{display:none;position:relative}.mobile-nav summary{display:flex;align-items:center;gap:8px;min-height:44px;padding:10px 13px;border:1px solid #dedede;border-radius:7px;background:#fff;color:#111;font-size:12px;font-weight:900;text-transform:uppercase;cursor:pointer;list-style:none}.mobile-nav summary::-webkit-details-marker{display:none}.mobile-nav summary:focus-visible{outline:3px solid rgba(255,84,46,.35);outline-offset:3px}.mobile-menu{position:absolute;top:calc(100% + 10px);right:0;display:grid;width:min(280px,calc(100vw - 34px));padding:10px;border:1px solid #dedede;border-radius:8px;background:#fff;box-shadow:0 18px 42px rgba(0,0,0,.18)}.mobile-menu a{padding:13px 12px;border-radius:6px;color:#111;font-size:13px;font-weight:900;text-decoration:none;text-transform:uppercase}.mobile-menu a:hover,.mobile-menu a:focus-visible{background:#fff1eb;color:var(--red)}.mobile-menu .mobile-join{margin-top:5px;background:linear-gradient(135deg,var(--orange),var(--orange2));color:#fff;text-align:center}@media(max-width:940px){.nav-links{display:none}.mobile-nav{display:block}}</style>
 </head>
 <nav class="topbar" aria-label="Main navigation">
   <div class="wrap nav">
     <a class="brand" href="#top">SEAN <span>ALI</span></a>
     <div class="nav-links">
-      <a href="/blog/">Blog</a>
+      <a href="/blog/">News</a>
+      <a href="/products/">Products</a>
+      <a href="/about-sean-ali/">About</a>
       <a href="/work-with-me/">Work With Me</a>
       <a class="nav-cta" href="/manifest.html">Join Now <span class="btn-arrow" aria-hidden="true">&#8594;</span></a>
     </div>
+    <details class="mobile-nav">
+      <summary>Menu <span aria-hidden="true">&#9776;</span></summary>
+      <div class="mobile-menu">
+        <a href="/blog/">News</a>
+        <a href="/products/">Products</a>
+        <a href="/about-sean-ali/">About</a>
+        <a href="/work-with-me/">Work With Me</a>
+        <a class="mobile-join" href="/manifest.html">Join Now &#8594;</a>
+      </div>
+    </details>
   </div>
 </nav>
 <header class="welcome-hero" id="top">
   <div class="wrap">
     <div class="welcome-inner">
-      <span class="welcome-label">Start With Your Subconscious Mind</span>
+      <span class="welcome-label">Let's Rewire Your Subconscious Mind To:</span>
       <h1>Reclaim Your Freedom And<br><span>Manifest A Better Life</span></h1>
       <p>Remove hidden money blocks, rewire old beliefs, and choose the next path that helps you create more freedom, income, and control.</p>
       <div class="welcome-actions">
