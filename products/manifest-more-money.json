@@ -17,8 +17,8 @@
     "pageCount": 24,
     "version": "v1.0",
     "driveUrl": "https://drive.google.com/file/d/1cBUGHvGdTFThVMkJisafJCxicHvXtQuU/view?usp=drivesdk",
-    "sha256": null,
-    "verified": false
+    "sha256": "dc7af1d6985379bd3af52ed9d75fe7b7dedf61f5790dce74ee1b36174dba308",
+    "verified": true
   },
   "images": {
     "hero": { "src": "/assets/lifehacks/manifest-more-money/hero.png", "alt": "Manifest More Money visual PDF cover mockup" },
@@ -107,8 +107,8 @@
     "robots": "noindex,nofollow"
   },
   "legal": "Educational content only. No guaranteed financial outcomes. Not financial, investment, legal, or tax advice.",
-  "checkout": { "status": "PENDING", "url": null, "provider": "Whop" },
-  "delivery": { "status": "PENDING", "accessUrl": null, "experienceId": null, "fileId": null, "fulfillmentEvent": "payment.succeeded" },
-  "whop": { "companyId": null, "productId": null, "planId": null, "checkoutId": null, "experienceId": null, "courseId": null, "pdfFileId": null, "verified": false },
-  "qa": { "purchase": "NOT_TESTED", "pdf": "SOURCE_VERIFIED_IN_DRIVE_NOT_PACKAGED", "lastRun": null, "openIssues": ["Whop authentication/account identity unavailable", "Verified checkout and gated PDF delivery IDs unavailable", "Approved v1.0 PDF is in Drive and must be packaged/read back before LIVE"] }
+  "checkout": { "status": "VERIFIED", "url": "https://whop.com/checkout/plan_sTmcKZ8fDMviQ", "provider": "Whop" },
+  "delivery": { "status": "CONTENT_APP_ATTACHED_BUYER_QA_PENDING", "accessUrl": null, "experienceId": null, "fileId": "file_9LLM9CaoHQKjZ", "fulfillmentEvent": "payment.succeeded" },
+  "whop": { "companyId": "biz_I0H7cTguJqPzj6", "productId": "prod_Lza6ikaYsifmf", "planId": "plan_sTmcKZ8fDMviQ", "checkoutId": null, "experienceId": null, "courseId": null, "pdfFileId": "file_9LLM9CaoHQKjZ", "coverFileId": "file_Z5v1KXbucTeIe", "verified": true },
+  "qa": { "purchase": "NOT_TESTED", "pdf": "PACKAGED_HASH_VERIFIED", "lastRun": null, "openIssues": ["Buyer purchase and gated access QA still required", "Whop product remains hidden until release gate passes", "Whop product public route and delivery access URL still require readback"] }
 }
