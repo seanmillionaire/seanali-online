@@ -1,0 +1,36 @@
+name: Life Hacks product pages
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  build-and-qa:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install --no-package-lock
+      - run: npx playwright install --with-deps chromium
+      - run: node scripts/product-pdp/generate.mjs
+      - run: node scripts/product-pdp/qa.mjs --mode=preview
+      - run: python3 -m http.server 4173 >/tmp/life-hacks-pdp-server.log 2>&1 &
+      - run: node tests/pdp-smoke.mjs
+      - run: git diff --check
+
+  drift-check:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/product-pdp/drift.mjs

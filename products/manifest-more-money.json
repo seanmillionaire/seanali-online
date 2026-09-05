@@ -1,0 +1,114 @@
+{
+  "productId": "LH-MMM-20260904-001",
+  "slug": "manifest-more-money",
+  "productLine": "Life Hacks",
+  "category": "Money",
+  "title": "Manifest More Money",
+  "version": "v1.0",
+  "status": "PUBLISH_GATE",
+  "releaseMode": "PUBLISH_GATE",
+  "headline": "Manifest More Money with 20 Practical Life Hacks",
+  "promise": "A practical visual tool for getting clear on the money you want, noticing more opportunity, and taking better action without pretending any method guarantees an outcome.",
+  "description": "20 visual, practical money manifestation exercises combining clarity, visualization, mindset, opportunity, planning, relationships, and concrete action.",
+  "badge": "20-hack visual PDF",
+  "price": { "amount": 10, "currency": "USD", "label": "$10" },
+  "pdf": {
+    "fileName": "manifest-more-money-v1.0.pdf",
+    "pageCount": 24,
+    "version": "v1.0",
+    "driveUrl": "https://drive.google.com/file/d/1cBUGHvGdTFThVMkJisafJCxicHvXtQuU/view?usp=drivesdk",
+    "sha256": null,
+    "verified": false
+  },
+  "images": {
+    "hero": { "src": "/assets/lifehacks/manifest-more-money/hero.png", "alt": "Manifest More Money visual PDF cover mockup" },
+    "thumbnail": { "src": "/assets/lifehacks/manifest-more-money/hero.png", "alt": "Manifest More Money PDF thumbnail" },
+    "inside": { "src": "/assets/lifehacks/manifest-more-money/inside.png", "alt": "Inside pages from the Manifest More Money visual PDF" },
+    "founder": { "src": "/assets/lifehacks/manifest-more-money/sean.jpg", "alt": "Sean Ali, creator of Sean Ali Life Hacks" }
+  },
+  "benefits": [
+    "20 distinct hacks, each with executable steps",
+    "24-page visual PDF built to open and use in minutes",
+    "Manifestation methods connected to clear money-related action"
+  ],
+  "hacks": [
+    { "id": 1, "title": "The Exact Money Target", "steps": ["Write the amount and date.", "Name what the money changes.", "Choose one action for today."] },
+    { "id": 2, "title": "The Quiet Money Scene", "steps": ["Take three slow breaths.", "Picture one completed money scene.", "Write the next grounded move."] },
+    { "id": 3, "title": "The Process Movie", "steps": ["Name the outcome.", "Picture the steps between here and there.", "Do the first step now."] },
+    { "id": 4, "title": "The Future Wealth Letter", "steps": ["Write from your future self.", "Describe the move you stopped avoiding.", "Schedule that move."] },
+    { "id": 5, "title": "Gratitude Before Growth", "steps": ["List three resources you have.", "Pick one resource to use.", "Turn it into a money action."] },
+    { "id": 6, "title": "The Money Script", "steps": ["Write the result simply.", "Remove exaggerated language.", "Attach one action to the script."] },
+    { "id": 7, "title": "The Money Belief Reset", "steps": ["Catch one repeated money thought.", "Write a more believable alternative.", "Use it before your next decision."] },
+    { "id": 8, "title": "The Money Evidence File", "steps": ["Collect three real wins.", "Name the value behind each win.", "Use one strength in a new offer."] },
+    { "id": 9, "title": "The 10-Door Opportunity Scan", "steps": ["List ten possible paths.", "Circle the two you can test.", "Send one message or proposal."] },
+    { "id": 10, "title": "The Value Exchange Map", "steps": ["Name what someone wants.", "Name what you can provide.", "Draft the simplest exchange."] },
+    { "id": 11, "title": "The Money Ask", "steps": ["Choose the ask you are avoiding.", "Write it in one sentence.", "Make the ask respectfully."] },
+    { "id": 12, "title": "The Warm Circle Money Move", "steps": ["List five relevant people.", "Choose one relationship to nurture.", "Send a useful, non-transactional message."] },
+    { "id": 13, "title": "The If-Then Money Plan", "steps": ["Name your avoidance trigger.", "Write an if-then response.", "Put the response where you will see it."] },
+    { "id": 14, "title": "The Money WOOP", "steps": ["Name the desired result.", "Name the likely obstacle.", "Choose the response to that obstacle."] },
+    { "id": 15, "title": "The Daily Money Move", "steps": ["List today's possible moves.", "Pick the highest-leverage one.", "Work on it for twenty minutes."] },
+    { "id": 16, "title": "The Money Environment Prime", "steps": ["Remove one visible distraction.", "Place one useful money cue.", "Begin the action beside the cue."] },
+    { "id": 17, "title": "The Night Money Rehearsal", "steps": ["Put the phone away.", "Picture one completed outcome.", "Write tomorrow's first action."] },
+    { "id": 18, "title": "Prayer, Silence, Move", "steps": ["Ask clearly for guidance.", "Sit quietly for two minutes.", "Take one grounded next action."] },
+    { "id": 19, "title": "Release The Checking", "steps": ["Choose a time to check metrics.", "Close the tabs outside that time.", "Return to the action you control."] },
+    { "id": 20, "title": "The Money Manifestation Stack", "steps": ["Choose a target.", "Rehearse the process.", "Take the daily money move."] }
+  ],
+  "quickFacts": [
+    { "value": "24 pages", "label": "Visual PDF" },
+    { "value": "20 hacks", "label": "One per practice" },
+    { "value": "$10", "label": "One-time access" }
+  ],
+  "story": {
+    "eyebrow": "From Sean",
+    "heading": "Why I Made Manifest More Money",
+    "paragraphs": [
+      "Hey, my name is Sean Ali. I kept seeing the same problem: useful ideas about money, mindset, and manifestation were buried inside giant books and complicated routines.",
+      "This is the shorter version. You get a set of practical controls you can test: clarify the target, rehearse the process, notice opportunity, make the ask, and take the next grounded move."
+    ]
+  },
+  "education": null,
+  "mechanism": {
+    "eyebrow": "The practice experience",
+    "heading": "Focus Your Attention. Then Make the Money Move.",
+    "description": "Each hack turns a broad idea into a small sequence: settle the noise, picture or write the useful outcome, then connect it to an action you can actually take.",
+    "cards": [
+      { "image": "/assets/lifehacks/manifest-more-money/inside.png", "alt": "Visual inside pages from Manifest More Money", "title": "Open to one useful page", "text": "You do not need to complete the pack in order. Start with the problem in front of you." },
+      { "image": "/assets/lifehacks/manifest-more-money/hero.png", "alt": "Manifest More Money visual PDF cover", "title": "Turn insight into action", "text": "Keep the method that improves your clarity, attention, or behavior. Leave the rest." }
+    ],
+    "disclaimer": "These are educational personal-development practices. They do not guarantee income and are not financial, investment, tax, or legal advice."
+  },
+  "offerStack": [
+    { "name": "Manifest More Money visual PDF", "description": "20 practical money manifestation hacks with visual instructions.", "value": null },
+    { "name": "How To Use guide", "description": "A simple way to choose one hack and apply it today.", "value": null },
+    { "name": "Keep It Simple default stack", "description": "A repeatable sequence for combining the strongest practices.", "value": null },
+    { "name": "Immediate digital access", "description": "Access to the approved PDF after verified checkout and fulfillment.", "value": null }
+  ],
+  "related": [
+    { "title": "Manifest It", "description": "20 manifestation practices for turning intention into a usable routine.", "href": "/lifehacks/manifest-it/", "status": "PLANNED", "image": null },
+    { "title": "Opportunity Attractor", "description": "20 ways to notice, create, and act on better opportunities.", "href": "/lifehacks/opportunity-attractor/", "status": "PLANNED", "image": null },
+    { "title": "Confidence On Command", "description": "20 practical tools for building a steadier state before action.", "href": "/lifehacks/confidence-on-command/", "status": "PLANNED", "image": null }
+  ],
+  "proof": null,
+  "faq": [
+    { "question": "Do I need to do all 20 hacks?", "answer": "No. Pick one that fits what you need right now. Try it. Notice whether it changes your clarity, attention, or behavior. Keep the useful ones." },
+    { "question": "Is this saying manifestation guarantees money?", "answer": "No. Some practices come from classic manifestation traditions; others come from goal-setting, planning, and behavioral methods. None guarantees income or external outcomes." },
+    { "question": "How do I receive it?", "answer": "After the verified Whop checkout is connected, buyers receive immediate gated access to the approved PDF and a simple first-use page." },
+    { "question": "Can I read it on my phone?", "answer": "Yes. The approved PDF is designed with large typography, one hack per page, and very little dense text." }
+  ],
+  "finalClose": {
+    "eyebrow": "Your next money move",
+    "heading": "Open the Pack. Pick One Hack. Make the Move.",
+    "description": "Use the page that matches your current goal, then connect the practice to one real action. Keep what helps."
+  },
+  "seo": {
+    "title": "Manifest More Money — 20 Practical Money Life Hacks | Sean Ali",
+    "description": "A 24-page visual PDF with 20 practical money manifestation hacks for clarity, opportunity, mindset, planning, and action.",
+    "canonical": "https://seanali.online/lifehacks/manifest-more-money/",
+    "robots": "noindex,nofollow"
+  },
+  "legal": "Educational content only. No guaranteed financial outcomes. Not financial, investment, legal, or tax advice.",
+  "checkout": { "status": "PENDING", "url": null, "provider": "Whop" },
+  "delivery": { "status": "PENDING", "accessUrl": null, "experienceId": null, "fileId": null, "fulfillmentEvent": "payment.succeeded" },
+  "whop": { "companyId": null, "productId": null, "planId": null, "checkoutId": null, "experienceId": null, "courseId": null, "pdfFileId": null, "verified": false },
+  "qa": { "purchase": "NOT_TESTED", "pdf": "SOURCE_VERIFIED_IN_DRIVE_NOT_PACKAGED", "lastRun": null, "openIssues": ["Whop authentication/account identity unavailable", "Verified checkout and gated PDF delivery IDs unavailable", "Approved v1.0 PDF is in Drive and must be packaged/read back before LIVE"] }
+}

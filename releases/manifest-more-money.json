@@ -1,0 +1,49 @@
+{
+  "generatedAt": null,
+  "productId": "LH-MMM-20260904-001",
+  "slug": "manifest-more-money",
+  "version": "v1.0",
+  "status": "PUBLISH_GATE",
+  "page": "https://seanali.online/lifehacks/manifest-more-money/",
+  "accessPage": "https://seanali.online/lifehacks/manifest-more-money/access/",
+  "pdf": {
+    "fileName": "manifest-more-money-v1.0.pdf",
+    "pageCount": 24,
+    "version": "v1.0",
+    "driveUrl": "https://drive.google.com/file/d/1cBUGHvGdTFThVMkJisafJCxicHvXtQuU/view?usp=drivesdk",
+    "sha256": null,
+    "verified": false
+  },
+  "checkout": {
+    "status": "PENDING",
+    "url": null,
+    "provider": "Whop"
+  },
+  "delivery": {
+    "status": "PENDING",
+    "accessUrl": null,
+    "experienceId": null,
+    "fileId": null,
+    "fulfillmentEvent": "payment.succeeded"
+  },
+  "whop": {
+    "companyId": null,
+    "productId": null,
+    "planId": null,
+    "checkoutId": null,
+    "experienceId": null,
+    "courseId": null,
+    "pdfFileId": null,
+    "verified": false
+  },
+  "qa": {
+    "purchase": "NOT_TESTED",
+    "pdf": "SOURCE_VERIFIED_IN_DRIVE_NOT_PACKAGED",
+    "lastRun": null,
+    "openIssues": [
+      "Whop authentication/account identity unavailable",
+      "Verified checkout and gated PDF delivery IDs unavailable",
+      "Approved v1.0 PDF is in Drive and must be packaged/read back before LIVE"
+    ]
+  }
+}
