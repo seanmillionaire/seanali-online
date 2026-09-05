@@ -6,6 +6,8 @@
     "pdp:generate": "node scripts/product-pdp/generate.mjs",
     "pdp:qa": "node scripts/product-pdp/qa.mjs --mode=preview",
     "pdp:qa:release": "node scripts/product-pdp/qa.mjs --mode=release",
+    "pdp:links": "node scripts/product-pdp/links.mjs",
+    "pdp:release": "node scripts/product-pdp/release.mjs",
     "pdp:smoke": "node tests/pdp-smoke.mjs",
     "pdp:drift": "node scripts/product-pdp/drift.mjs"
   },

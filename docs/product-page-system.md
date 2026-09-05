@@ -7,6 +7,8 @@
 ```bash
 node scripts/product-pdp/generate.mjs
 node scripts/product-pdp/qa.mjs --mode=preview
+# Generate, verify, and print the current product link bundle
+npm run pdp:release -- --manifest=products/manifest-more-money.json
 ```
 
 The generator writes the product page, access page, catalog, and release manifest from the same product record. Local product assets live under `assets/lifehacks/<slug>/` and are referenced with stable root-relative paths.
@@ -22,3 +24,9 @@ Preview generation is allowed while commerce is pending. Production promotion is
 Retries use Product ID + slug as the idempotency key. The adapter contract is documented in `scripts/product-pdp/commerce.mjs`; credentials never enter the repository.
 
 Manifest More Money is intentionally `PUBLISH_GATE`: the approved Drive artifact is `manifest-more-money-v1.0.pdf` with 24 pages. No v1.1 label is used until an approved v1.1 artifact exists.
+
+## Future product request
+
+The minimum input is a topic/outcome. The orchestrator creates a permanent Product ID and slug, writes the product manifest, and then runs the same sequence: approved assets and PDF, generated PDP/catalog/access pages, Whop idempotent create-or-update, readback, QA, deployment, and drift monitoring. No future product page gets hand-authored HTML.
+
+`npm run pdp:release -- --manifest=products/<slug>.json` is the single local release command. It always regenerates the page and release manifest, runs the preview or release gate, and prints the sales page, checkout, access, cover, PDF, and Whop links. A missing checkout, delivery URL, buyer QA result, or live status stops promotion.

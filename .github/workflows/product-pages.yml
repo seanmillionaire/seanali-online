@@ -1,0 +1,30 @@
+name: Life Hacks product pages
+
+on:
+  pull_request:
+    paths:
+      - "products/**"
+      - "scripts/product-pdp/**"
+      - "lifehacks/**"
+      - "assets/lifehacks/**"
+      - "package.json"
+  push:
+    branches: [main]
+    paths:
+      - "products/**"
+      - "scripts/product-pdp/**"
+      - "lifehacks/**"
+      - "assets/lifehacks/**"
+      - "package.json"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - run: npm run pdp:generate
+      - run: npm run pdp:qa

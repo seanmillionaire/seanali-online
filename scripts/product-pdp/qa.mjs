@@ -40,6 +40,7 @@ must(html.includes(p.title) && html.includes(p.version) && html.includes(`${p.pd
 must(html.includes(p.seo.canonical), "canonical URL");
 must((html.match(/application\/ld\+json/g) || []).length >= 2, "Product and FAQ schema");
 must(p.offerStack.length > 0 && !p.offerStack.some((item) => /TODO|placeholder|lorem/i.test(JSON.stringify(item))), "offer stack is complete");
+must(p.whop?.coverFileId && p.whop?.coverUrl, "Whop cover asset is recorded");
 must(p.related.every((item) => item.status === "LIVE" ? Boolean(item.href && item.image) : true), "related records are explicit");
 must(Array.isArray(p.hacks) && p.hacks.length === 20 && p.hacks.every((hack) => Array.isArray(hack.steps) && hack.steps.length >= 2), "exactly 20 hacks with executable steps");
 must(!/(TODO|FIXME|lorem ipsum|fake proof|guarantees you income|will make you money|money will appear)/i.test(html), "no placeholder or unsupported guarantee language");
