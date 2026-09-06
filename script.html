@@ -90,7 +90,15 @@
     }
   ]
 }</script>
-</head>
+<style>
+.script-gallery-controls{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:16px}
+.script-gallery-arrow{width:44px;height:44px;border:1px solid #d5c7a7;border-radius:50%;background:#fff;color:#171717;font-size:24px;cursor:pointer}
+.script-gallery-thumbs{display:flex;gap:8px}
+.script-gallery-thumb{width:64px;height:64px;padding:3px;border:2px solid transparent;border-radius:10px;background:#f4f0e8;cursor:pointer}
+.script-gallery-thumb[aria-pressed="true"]{border-color:#957129}
+.script-gallery-thumb img{width:100%;height:100%;object-fit:contain;border-radius:6px}
+.script-gallery-arrow:focus-visible,.script-gallery-thumb:focus-visible{outline:3px solid #957129;outline-offset:3px}
+</style></head>
 <body>
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N3NV5TNP" height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager"></iframe></noscript>
   <div class="pdp-site">
@@ -107,6 +115,15 @@
         <div class="pdp-container pdp-hero__grid">
           <div class="pdp-gallery">
             <div class="pdp-gallery__main"><span class="product-badge">Digital audio</span><img id="hero-product-image" src="https://hypnoticmeditations.b-cdn.net/images/7%20min%20script.png" alt="The 7-Minute Script guided wealth scripting audio cover"></div>
+            <div class="script-gallery-controls" role="group" aria-label="Product image gallery">
+              <button type="button" class="script-gallery-arrow" data-gallery-step="-1" aria-label="Previous product image">&#8249;</button>
+              <div class="script-gallery-thumbs">
+                <button type="button" class="script-gallery-thumb" aria-label="Show product cover" aria-pressed="true"><img src="https://hypnoticmeditations.b-cdn.net/images/7%20min%20script.png" alt=""></button>
+                <button type="button" class="script-gallery-thumb" aria-label="Show relaxation visual" aria-pressed="false"><img src="https://hypnoticmeditations.ai/images/user_images/Theta-Meditation.png" alt=""></button>
+                <button type="button" class="script-gallery-thumb" aria-label="Show visualization practice" aria-pressed="false"><img src="https://hypnoticmeditations.ai/images/user_images/Meditation-Woman.png" alt=""></button>
+              </div>
+              <button type="button" class="script-gallery-arrow" data-gallery-step="1" aria-label="Next product image">&#8250;</button>
+            </div>
             <div class="pdp-gallery__caption"><span class="pdp-thumb"><img id="hero-product-thumb" src="https://hypnoticmeditations.b-cdn.net/images/7%20min%20script.png" alt="The 7-Minute Script product thumbnail"></span><span id="hero-product-caption">The 7-Minute Script · 7-minute guided meditation</span></div>
           </div>
           <div class="pdp-buybox">
@@ -170,6 +187,25 @@
         const price = document.querySelector('.purchase-price');
         const cta = document.getElementById('hero-cta');
         if (!options.length || !productImage || !productThumb || !productCaption || !price || !cta) return;
+        const galleryThumbs = Array.from(document.querySelectorAll('.script-gallery-thumb'));
+        const gallerySlides = [
+          { src: productImage.src, alt: productImage.alt, caption: productCaption.textContent },
+          { src: galleryThumbs[1].querySelector('img').src, alt: 'Relaxed guided audio listening', caption: 'Settle in · Make space for your seven-minute practice' },
+          { src: galleryThumbs[2].querySelector('img').src, alt: 'Woman practicing meditation and visualization', caption: 'Visualize · Picture the wealthier life you want to build' }
+        ];
+        let galleryIndex = 0;
+        function showSlide(index) {
+          galleryIndex = (index + gallerySlides.length) % gallerySlides.length;
+          const slide = gallerySlides[galleryIndex];
+          productImage.src = slide.src;
+          productImage.alt = slide.alt;
+          productCaption.textContent = slide.caption;
+          galleryThumbs.forEach(function (thumb, i) { thumb.setAttribute('aria-pressed', String(i === galleryIndex)); });
+        }
+        galleryThumbs.forEach(function (thumb, i) { thumb.addEventListener('click', function () { showSlide(i); }); });
+        document.querySelectorAll('[data-gallery-step]').forEach(function (arrow) {
+          arrow.addEventListener('click', function () { showSlide(galleryIndex + Number(arrow.dataset.galleryStep)); });
+        });
         options.forEach(function (option) {
           option.addEventListener('click', function () {
             options.forEach(function (item) {
@@ -181,7 +217,9 @@
             productImage.alt = option.dataset.productAlt;
             productThumb.src = option.dataset.productImage;
             productThumb.alt = option.dataset.productAlt + ' thumbnail';
-            productCaption.textContent = option.dataset.productCaption;
+            gallerySlides[0] = { src: option.dataset.productImage, alt: option.dataset.productAlt, caption: option.dataset.productCaption };
+            galleryThumbs[0].querySelector('img').src = option.dataset.productImage;
+            showSlide(0);
             price.textContent = option.dataset.productPrice;
             cta.href = option.dataset.checkoutUrl;
             cta.querySelector('span').textContent = option.dataset.ctaLabel;
