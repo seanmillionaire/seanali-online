@@ -1,0 +1,41 @@
+name: Remove homepage rehearsal section once
+
+on:
+  push:
+    paths:
+      - '.github/workflows/remove-home-rehearsal-section-once.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove rehearsal section
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          pattern = re.compile(
+              r'<section class="mechanism-section" aria-labelledby="big-idea-title">.*?</section>\s*',
+              re.S,
+          )
+          updated, count = pattern.subn('', s, count=1)
+          if count != 1:
+              raise SystemExit(f'Expected exactly one rehearsal section; found {count}')
+          p.write_text(updated, encoding='utf-8')
+          PY
+          rm -f .github/workflows/remove-home-rehearsal-section-once.yml
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html .github/workflows/remove-home-rehearsal-section-once.yml
+          git commit -m "Remove homepage rehearsal section"
+          git push
