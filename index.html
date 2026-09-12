@@ -90,9 +90,39 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 <link rel="stylesheet" href="/assets/home-page.css?v=20260909b">
 <link rel="stylesheet" href="/assets/main-site.css?v=20260908">
 <link rel="stylesheet" href="/assets/homepage-cohesion.css?v=20260910">
+<style id="contextual-offer-modal-styles">
+body.sa-offer-modal-open{overflow:hidden}
+.sa-offer-modal[hidden]{display:none}
+.sa-offer-modal{position:fixed;inset:0;z-index:100000;display:grid;place-items:center;padding:20px;font-family:Inter,Arial,sans-serif}
+.sa-offer-modal__backdrop{position:absolute;inset:0;border:0;background:rgba(9,9,9,.76);backdrop-filter:blur(6px);cursor:pointer}
+.sa-offer-modal__dialog{position:relative;width:min(920px,96vw);max-height:92vh;overflow:auto;border:1px solid #e6ded5;border-radius:22px;background:#fff;color:var(--ink);box-shadow:0 30px 90px rgba(0,0,0,.34)}
+.sa-offer-modal__close{position:absolute;top:14px;right:14px;z-index:2;width:40px;height:40px;border:1px solid rgba(21,21,21,.12);border-radius:999px;background:rgba(255,255,255,.92);color:#151515;font:800 27px/1 Inter,Arial,sans-serif;cursor:pointer}
+.sa-offer-modal__close:hover,.sa-offer-modal__close:focus-visible{border-color:var(--orange);outline:3px solid rgba(255,84,46,.16);outline-offset:2px}
+.sa-offer-modal__top{padding:34px 68px 24px 34px;background:radial-gradient(circle at 92% 0%,rgba(255,84,46,.18),transparent 34%),linear-gradient(125deg,#fff 0%,#fff8ef 58%,#ffe8df 100%);border-bottom:1px solid #ece4da}
+.sa-offer-modal__eyebrow{display:block;margin:0 0 10px;color:var(--red);font-size:12px;font-weight:900;letter-spacing:.085em;text-transform:uppercase}
+.sa-offer-modal__top h2{max-width:760px;margin:0 0 10px;color:#151515;font-size:clamp(31px,4.5vw,46px);line-height:.98;letter-spacing:-.045em;font-weight:900}
+.sa-offer-modal__top p{max-width:720px;margin:0;color:#5b5149;font-size:16px;line-height:1.45;font-weight:700}
+.sa-offer-modal__body{padding:24px 34px 30px}
+.sa-offer-modal__options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.sa-offer-option{position:relative;width:100%;min-height:238px;padding:22px;border:2px solid #ded7cd;border-radius:16px;background:#fff;color:#151515;text-align:left;cursor:pointer;transition:.16s ease;box-shadow:none}
+.sa-offer-option:hover{transform:translateY(-2px);border-color:#c9bfb4;box-shadow:0 14px 30px rgba(21,21,21,.08)}
+.sa-offer-option.is-selected{border-color:var(--orange);background:#fff9f4;box-shadow:0 0 0 4px rgba(255,84,46,.10),0 16px 32px rgba(255,84,46,.12)}
+.sa-offer-option:focus-visible{outline:3px solid rgba(255,84,46,.22);outline-offset:3px}
+.sa-offer-option__badge{display:inline-block;min-height:25px;margin:0 0 12px;padding:6px 9px;border-radius:999px;background:#151515;color:#fff;font-size:10px;line-height:1.2;font-weight:900;letter-spacing:.055em;text-transform:uppercase;visibility:hidden}
+.sa-offer-option.has-badge .sa-offer-option__badge{visibility:visible;background:linear-gradient(135deg,var(--orange),var(--orange2))}
+.sa-offer-option__name{display:block;margin:0 0 7px;font-size:20px;line-height:1.08;font-weight:900;letter-spacing:-.025em}
+.sa-offer-option__price{display:block;margin:0 0 13px;font-size:35px;line-height:1;font-weight:900;letter-spacing:-.045em}
+.sa-offer-option__price small{margin-left:5px;color:#746b63;font-size:12px;font-weight:800;letter-spacing:0}
+.sa-offer-option__description{display:block;color:#5e5750;font-size:13px;line-height:1.42;font-weight:700}
+.sa-offer-option__original{display:block;margin-top:15px;color:#8a817a;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.055em}
+.sa-offer-modal__continue{display:flex;align-items:center;justify-content:center;width:100%;min-height:58px;margin-top:18px;padding:16px 22px;border:0;border-radius:7px;background:linear-gradient(135deg,var(--orange),var(--orange2));color:#fff;font:900 15px/1 Inter,Arial,sans-serif;text-decoration:none;text-transform:uppercase;box-shadow:0 12px 26px rgba(255,84,46,.23);transition:.16s ease}
+.sa-offer-modal__continue:hover,.sa-offer-modal__continue:focus-visible{transform:translateY(-2px);box-shadow:0 16px 32px rgba(255,84,46,.31);outline:3px solid rgba(255,84,46,.16);outline-offset:2px}
+.sa-offer-modal__note{margin:11px 0 0;color:#7a716a;font-size:12px;line-height:1.45;text-align:center;font-weight:700}
+@media(max-width:700px){.sa-offer-modal{padding:10px}.sa-offer-modal__dialog{width:min(100%,560px);max-height:95vh;border-radius:18px}.sa-offer-modal__top{padding:28px 54px 20px 20px}.sa-offer-modal__body{padding:18px 20px 22px}.sa-offer-modal__options{grid-template-columns:1fr}.sa-offer-option{min-height:0;padding:18px}.sa-offer-option__price{font-size:31px}.sa-offer-modal__continue{position:sticky;bottom:0}}
+</style>
 </head>
 <body>
-<nav class="sa-header" aria-label="Main navigation"><div class="sa-nav"><a class="sa-brand" href="/">SEAN <span>ALI</span></a><div class="sa-links"><a href="/blog/">News</a><a href="/resources/">Free Tools</a><a href="/products/">Products</a><a href="/about-sean-ali/">About</a><a href="/work-with-me/">Work With Me</a><a class="sa-button" href="/manifest.html">Join Now →</a></div><details class="sa-menu"><summary>Menu ☰</summary><nav aria-label="Mobile navigation"><a href="/blog/">News</a><a href="/resources/">Free Tools</a><a href="/products/">Products</a><a href="/about-sean-ali/">About</a><a href="/work-with-me/">Work With Me</a><a href="/manifest.html">Join Now →</a></nav></details></div></nav>
+<nav class="sa-header" aria-label="Main navigation"><div class="sa-nav"><a class="sa-brand" href="/">SEAN <span>ALI</span></a><div class="sa-links"><a href="/blog/">News</a><a href="/resources/">Free Tools</a><a href="/products/">Products</a><a href="/about-sean-ali/">About</a><a href="/work-with-me/">Work With Me</a><a class="sa-button" href="/manifest.html" data-cta-modal="join">Join Now →</a></div><details class="sa-menu"><summary>Menu ☰</summary><nav aria-label="Mobile navigation"><a href="/blog/">News</a><a href="/resources/">Free Tools</a><a href="/products/">Products</a><a href="/about-sean-ali/">About</a><a href="/work-with-me/">Work With Me</a><a href="/manifest.html" data-cta-modal="join">Join Now →</a></nav></details></div></nav>
 
 <header class="welcome-hero" id="top">
   <div class="wrap">
@@ -104,7 +134,7 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
       </div>
       <p class="welcome-copy">I share the tools I use to break subconscious blocks, rewire my mindset, earn online, and build more freedom.</p>
       <div class="welcome-actions">
-        <a class="button" href="/script">START WITH THE 7-MINUTE SCRIPT <span class="btn-arrow" aria-hidden="true">&#8594;</span></a>
+        <a class="button" href="/script" data-cta-modal="script">START WITH THE 7-MINUTE SCRIPT <span class="btn-arrow" aria-hidden="true">&#8594;</span></a>
       </div>
     </div>
   </div>
@@ -122,19 +152,19 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
         <span class="path-number">01</span>
         <h3>Understand Your Subconscious</h3>
         <p>Read how repeated thoughts and habits can affect your choices, with exercises you can try.</p>
-        <a href="/guide.html">Read The Guide &#8594;</a>
+        <a href="/guide.html" data-cta-modal="guide">Read The Guide &#8594;</a>
       </article>
       <article class="path-card">
         <span class="path-number">02</span>
         <h3>Listen To The 7-Minute Script</h3>
         <p>Put on the 7-Minute Script and follow a guided audio about earning, receiving, and keeping money.</p>
-        <a href="/script">Open The 7-Minute Script &#8594;</a>
+        <a href="/script" data-cta-modal="script">Open The 7-Minute Script &#8594;</a>
       </article>
       <article class="path-card">
         <span class="path-number">03</span>
         <h3>Talk Through Your Goal</h3>
         <p>Tell Manifestation Genie what you want. The AI app asks questions and suggests a next step based on your answers.</p>
-        <a href="https://www.manifestationgenie.ai/" target="_blank" rel="noopener">Try Manifestation Genie &#8594;</a>
+        <a href="https://www.manifestationgenie.ai/" target="_blank" rel="noopener" data-cta-modal="genie-free">Try Manifestation Genie &#8594;</a>
       </article>
     </div>
   </div>
@@ -148,9 +178,9 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
       <p>You don’t need every tool on this site. Start with the part of your life you actually want to move.</p>
     </div>
     <div class="choice-grid">
-      <a class="choice-card" href="/guide.html"><span class="choice-icon" aria-hidden="true">🧠</span><h3>Change My Mind</h3><p>Understand the thoughts, habits, and subconscious patterns shaping your choices.</p><span class="choice-link">Start With The Guide →</span></a>
-      <a class="choice-card" href="/script"><span class="choice-icon" aria-hidden="true">💰</span><h3>Make More Money</h3><p>Work on the beliefs and actions behind earning, receiving, and keeping more money.</p><span class="choice-link">Try The 7-Minute Script →</span></a>
-      <a class="choice-card" href="/prompts.html"><span class="choice-icon" aria-hidden="true">🤖</span><h3>Build With AI</h3><p>Use practical prompts and systems to turn skills and ideas into online offers.</p><span class="choice-link">Get The Free AI Guide →</span></a>
+      <a class="choice-card" href="/guide.html" data-cta-modal="guide"><span class="choice-icon" aria-hidden="true">🧠</span><h3>Change My Mind</h3><p>Understand the thoughts, habits, and subconscious patterns shaping your choices.</p><span class="choice-link">Start With The Guide →</span></a>
+      <a class="choice-card" href="/script" data-cta-modal="money"><span class="choice-icon" aria-hidden="true">💰</span><h3>Make More Money</h3><p>Work on the beliefs and actions behind earning, receiving, and keeping more money.</p><span class="choice-link">Try The 7-Minute Script →</span></a>
+      <a class="choice-card" href="/prompts.html" data-cta-modal="claude"><span class="choice-icon" aria-hidden="true">🤖</span><h3>Build With AI</h3><p>Use practical prompts and systems to turn skills and ideas into online offers.</p><span class="choice-link">Get The Free AI Guide →</span></a>
       <a class="choice-card" href="/blog/money/how-to-stop-waiting-for-financial-freedom-panama/"><span class="choice-icon" aria-hidden="true">🌎</span><h3>Create More Freedom</h3><p>Read what I’m learning about building a life with more control over my time and choices.</p><span class="choice-link">Read The Lesson →</span></a>
     </div>
   </div>
@@ -178,7 +208,7 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
       <span class="kicker">Free Claude27 Guide</span>
       <h2>Get The 27 Claude Prompts I'd Use To Build My First <span>AI Income Stream</span></h2>
       <p class="hero-copy">Copy these instructions into Claude AI to get help choosing something to sell, writing a page, and drafting customer emails.</p>
-      <a class="button" id="free-guide" href="/prompts.html">Get The Free Claude27 Guide <span class="btn-arrow" aria-hidden="true">&#8594;</span></a>
+      <a class="button" id="free-guide" href="/prompts.html" data-cta-modal="claude">Get The Free Claude27 Guide <span class="btn-arrow" aria-hidden="true">&#8594;</span></a>
       <p class="privacy">Free download. Instant access. No coding needed.</p>
       <div class="guide-proof" aria-label="Guide benefits"><span>27 ready-to-use prompts</span><span>Free instant access</span><span>Built for real offers</span></div>
     </div>
@@ -200,16 +230,16 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
       <p>These projects are how I turn the same ideas on this site into things people can actually use.</p>
     </div>
     <div class="build-grid">
-      <article class="build-card"><span class="build-tag">AI + Mindset</span><h3>Manifestation Genie</h3><p>An AI app that helps you think through what you want, answer better questions, and leave with a clearer next step.</p><a href="https://www.manifestationgenie.ai/" target="_blank" rel="noopener">Try Manifestation Genie →</a></article>
-      <article class="build-card"><span class="build-tag">Guided Audio</span><h3>Hypnotic Meditations</h3><p>Guided subconscious-reprogramming audios for money, sleep, calm, focus, confidence, and other goals.</p><a href="https://hypnoticmeditations.ai/" target="_blank" rel="noopener">Explore The Audios →</a></article>
-      <article class="build-card"><span class="build-tag">AI + Business</span><h3>AI Freedom System</h3><p>The practical systems I use to apply AI to offers, marketing, content, and running an online business with less manual work.</p><a href="/system.html">See The AI Freedom System →</a></article>
+      <article class="build-card"><span class="build-tag">AI + Mindset</span><h3>Manifestation Genie</h3><p>An AI app that helps you think through what you want, answer better questions, and leave with a clearer next step.</p><a href="https://www.manifestationgenie.ai/" target="_blank" rel="noopener" data-cta-modal="genie-free">Try Manifestation Genie →</a></article>
+      <article class="build-card"><span class="build-tag">Guided Audio</span><h3>Hypnotic Meditations</h3><p>Guided subconscious-reprogramming audios for money, sleep, calm, focus, confidence, and other goals.</p><a href="https://hypnoticmeditations.ai/" target="_blank" rel="noopener" data-cta-modal="hm">Explore The Audios →</a></article>
+      <article class="build-card"><span class="build-tag">AI + Business</span><h3>AI Freedom System</h3><p>The practical systems I use to apply AI to offers, marketing, content, and running an online business with less manual work.</p><a href="/system.html" data-cta-modal="afs">See The AI Freedom System →</a></article>
     </div>
   </div>
 </section>
 
 <section class="split" id="about">
   <div class="split-media" style="background-image:url('https://hypnoticmeditations.b-cdn.net/images/proof/sean_hypnotic.png')"></div>
-  <div class="split-copy"><div class="split-copy-inner"><span class="eyebrow">Who is Sean Ali?</span><h2>I’m Sharing What Has Helped Me.</h2><p>I grew up in a single-parent home in Canada and faced cancer at 15. I didn’t start with money or connections.</p><p>I discovered online business, meditation, and visualization. Over the years, I built businesses and made a life in Panama.</p><p>Now I share what I’m learning, what I’m trying, and the tools I use. Take what helps and try it for yourself.</p><a class="button black" href="/story.html">Read My Story <span class="btn-arrow" aria-hidden="true">&#8594;</span></a><a class="button outline" href="/system.html">See AI Freedom System <span class="btn-arrow" aria-hidden="true">&#8594;</span></a></div></div>
+  <div class="split-copy"><div class="split-copy-inner"><span class="eyebrow">Who is Sean Ali?</span><h2>I’m Sharing What Has Helped Me.</h2><p>I grew up in a single-parent home in Canada and faced cancer at 15. I didn’t start with money or connections.</p><p>I discovered online business, meditation, and visualization. Over the years, I built businesses and made a life in Panama.</p><p>Now I share what I’m learning, what I’m trying, and the tools I use. Take what helps and try it for yourself.</p><a class="button black" href="/story.html">Read My Story <span class="btn-arrow" aria-hidden="true">&#8594;</span></a><a class="button outline" href="/system.html" data-cta-modal="afs">See AI Freedom System <span class="btn-arrow" aria-hidden="true">&#8594;</span></a></div></div>
 </section>
 
 <section class="split youtube" id="watch">
@@ -226,7 +256,7 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 </section>
 
 <section class="meditation-section" aria-label="Hypnotic Meditations">
-  <div class="wrap meditation-card"><div class="meditation-copy"><span class="eyebrow">Hypnotic Meditations</span><h2>Reprogram Your Mind For <span>Abundance And Success.</span></h2><p>Subconscious-reprogramming audios for money, sleep, calm, focus, and confidence. Choose a session, press play, and follow the audio.</p><a class="button" href="https://hypnoticmeditations.ai/" target="_blank" rel="noopener">Listen To Hypnotic Meditations <span class="btn-arrow" aria-hidden="true">&#8594;</span></a></div><div class="video-box"><iframe src="https://www.youtube.com/embed/xnwA0okLepE?start=2" title="Sean Ali explains Hypnotic Meditations" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div></div>
+  <div class="wrap meditation-card"><div class="meditation-copy"><span class="eyebrow">Hypnotic Meditations</span><h2>Reprogram Your Mind For <span>Abundance And Success.</span></h2><p>Subconscious-reprogramming audios for money, sleep, calm, focus, and confidence. Choose a session, press play, and follow the audio.</p><a class="button" href="https://hypnoticmeditations.ai/" target="_blank" rel="noopener" data-cta-modal="hm">Listen To Hypnotic Meditations <span class="btn-arrow" aria-hidden="true">&#8594;</span></a></div><div class="video-box"><iframe src="https://www.youtube.com/embed/xnwA0okLepE?start=2" title="Sean Ali explains Hypnotic Meditations" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div></div>
 </section>
 
 <section class="capture-section" aria-labelledby="capture-title">
@@ -253,6 +283,23 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
   </div>
 </section>
 
+<div class="sa-offer-modal" id="sa-offer-modal" hidden aria-hidden="true">
+  <button class="sa-offer-modal__backdrop" type="button" data-offer-modal-close aria-label="Close offer choices"></button>
+  <section class="sa-offer-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="sa-offer-modal-title" tabindex="-1">
+    <button class="sa-offer-modal__close" type="button" data-offer-modal-close aria-label="Close offer choices">&times;</button>
+    <div class="sa-offer-modal__top">
+      <span class="sa-offer-modal__eyebrow" id="sa-offer-modal-eyebrow">Choose your path</span>
+      <h2 id="sa-offer-modal-title">Choose how you want to start</h2>
+      <p id="sa-offer-modal-subhead"></p>
+    </div>
+    <div class="sa-offer-modal__body">
+      <div class="sa-offer-modal__options" id="sa-offer-modal-options" aria-label="Offer choices"></div>
+      <a class="sa-offer-modal__continue" id="sa-offer-modal-continue" href="#">Continue</a>
+      <p class="sa-offer-modal__note" id="sa-offer-modal-note"></p>
+    </div>
+  </section>
+</div>
+
 <section class="other-projects" aria-label="Other Sean Ali projects">
   <div class="wrap other-projects-inner"><strong>Other things I build:</strong><a href="/games/">Education Games</a><a href="https://panamauntold.com" target="_blank" rel="noopener">Panama Untold</a><a href="/gps/">Dream Life GPS</a></div>
 </section>
@@ -270,6 +317,198 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
   var form=document.getElementById('homepage-optin');
   var submit=document.getElementById('homepage-submit');
   if(form&&submit){form.addEventListener('submit',function(){submit.textContent='SENDING...';submit.disabled=true;if(typeof window.fbq==='function')window.fbq('track','Lead');});}
+
+  var offerConfigs={
+    join:{
+      eyebrow:'Choose your starting point',
+      title:'How do you want to start?',
+      subhead:'You clicked Join Now. Start free, or go straight into the money-mind work.',
+      note:'The free path stays free. The paid option is here if you want to go deeper now.',
+      defaultIndex:1,
+      options:[
+        {name:'Sean Ali Free Tools',price:'$0',priceNote:'free',description:'Get the free tools and lessons by email.',url:'/manifest.html',cta:'Get The Free Tools',value:0,original:true},
+        {name:'Money Flow',price:'$19',priceNote:'one-time',description:'Start with the flagship guided money meditation.',url:'https://buy.hypnoticmeditations.ai/l/hzxybu',cta:'Get Money Flow',value:19,badge:'Recommended'}
+      ]
+    },
+    guide:{
+      eyebrow:'Subconscious work',
+      title:'Choose your next step',
+      subhead:'Keep learning for free, or turn the idea into a guided money practice right now.',
+      note:'You can still read the exact free guide you clicked for.',
+      defaultIndex:1,
+      options:[
+        {name:'Subconscious Guide',price:'$0',priceNote:'free',description:'Read the guide you clicked for and understand the pattern first.',url:'/guide.html',cta:'Read The Free Guide',value:0,original:true},
+        {name:'Money Flow',price:'$19',priceNote:'one-time',description:'Use a guided money meditation to put the subconscious work into practice.',url:'https://buy.hypnoticmeditations.ai/l/hzxybu',cta:'Start With Money Flow',value:19,badge:'Recommended'}
+      ]
+    },
+    script:{
+      eyebrow:'7-Minute Script',
+      title:'Choose how deep you want to go',
+      subhead:'Get the exact 7-Minute Script you clicked for, or get the larger ritual stack that includes it.',
+      note:'The $45 Ritual Stack includes the 7-Minute Script plus the 11:11 Ritual, Accelerator and Prosperity Codes.',
+      defaultIndex:1,
+      options:[
+        {name:'The 7-Minute Script',price:'$27',priceNote:'one-time',description:'The single daily scripting practice you clicked for.',url:'https://buy.hypnoticmeditations.ai/l/bqjzup',cta:'Get The 7-Minute Script',value:27,original:true},
+        {name:'The Ritual Stack',price:'$45',priceNote:'bundle',description:'Get the script plus the rest of the daily ritual stack.',url:'https://buy.hypnoticmeditations.ai/l/bundle-ritual',cta:'Get The Ritual Stack',value:45,badge:'Best Value'}
+      ]
+    },
+    money:{
+      eyebrow:'Money + mind',
+      title:'Choose your money-mind starting point',
+      subhead:'Start with the flagship money meditation, or get the broader five-session money stack.',
+      note:'Both options are built around the money + mind path you just selected.',
+      defaultIndex:1,
+      options:[
+        {name:'Money Flow',price:'$19',priceNote:'one-time',description:'Flagship money meditation for financial resistance and receiving.',url:'https://buy.hypnoticmeditations.ai/l/hzxybu',cta:'Get Money Flow',value:19,original:true},
+        {name:'Money Mind Stack',price:'$57',priceNote:'5-session bundle',description:'Money Flow + ATM In Your Mind + Money Magnet + Quantum Cash + Money Wave.',url:'https://buy.hypnoticmeditations.ai/l/bundle-money',cta:'Get The Money Mind Stack',value:57,badge:'Recommended'}
+      ]
+    },
+    'genie-free':{
+      eyebrow:'Manifestation Genie',
+      title:'Choose how you want to start with Genie',
+      subhead:'Try your first wish free, or unlock 30 days of full access.',
+      note:'Your first wish remains free. The 30-Day Reset is a $10 one-time pass with no auto-renew.',
+      defaultIndex:1,
+      options:[
+        {name:'First Wish Free',price:'$0',priceNote:'first wish',description:'Try the Genie and see the experience before paying.',url:'https://www.manifestationgenie.ai/',cta:'Try My First Wish Free',value:0,original:true},
+        {name:'30-Day Reset',price:'$10',priceNote:'one-time',description:'30 days of full Genie access, unlimited sessions, journal and tracking.',url:'https://www.manifestationgenie.ai/pricing',cta:'Get 30 Days Of Genie',value:10,badge:'Full Access'}
+      ]
+    },
+    claude:{
+      eyebrow:'Build with AI',
+      title:'Choose your AI starting point',
+      subhead:'Take the free Claude27 prompt guide, or step into the full AI Freedom System.',
+      note:'The free guide stays available. The $7/month option is the recurring system and workflow library.',
+      defaultIndex:1,
+      options:[
+        {name:'Claude27 Guide',price:'$0',priceNote:'free',description:'27 ready-to-use prompts for choosing, building and marketing an offer.',url:'/prompts.html',cta:'Get The Free Claude27 Guide',value:0,original:true},
+        {name:'AI Freedom System',price:'$7',priceNote:'/month',description:'Training + workflow library for turning AI into content, products, leads and funnels.',url:'https://whop.com/c/ai-freedom-system-9f/afs',cta:'Join AI Freedom System',value:7,badge:'Recommended'}
+      ]
+    },
+    hm:{
+      eyebrow:'Hypnotic Meditations',
+      title:'Choose how much you want to unlock',
+      subhead:'Start with the flagship money session, or get every session in the complete library.',
+      note:'The Complete Library is the broadest Hypnotic Meditations option and includes future releases.',
+      defaultIndex:1,
+      options:[
+        {name:'Money Flow',price:'$19',priceNote:'one-time',description:'Start with the flagship guided money meditation.',url:'https://buy.hypnoticmeditations.ai/l/hzxybu',cta:'Start With Money Flow',value:19,original:true},
+        {name:'Complete Library',price:'$97',priceNote:'all access',description:'Get every current session plus future releases in one bundle.',url:'https://buy.hypnoticmeditations.ai/l/bundle-library',cta:'Get The Complete Library',value:97,badge:'Get Everything'}
+      ]
+    },
+    afs:{
+      eyebrow:'AI Freedom System',
+      title:'Choose your level of access',
+      subhead:'Start with the low-cost recurring system, or take the higher-value full course path.',
+      note:'Two real AI Freedom System offers. Pick the access level that fits how you want to use it.',
+      defaultIndex:1,
+      options:[
+        {name:'AI Freedom Membership',price:'$7',priceNote:'/month',description:'Recurring training + workflow library for AI-powered online business.',url:'https://whop.com/c/ai-freedom-system-9f/afs',cta:'Start For $7/Month',value:7,original:true},
+        {name:'AI Freedom Full System',price:'$297',priceNote:'full course',description:'The higher-ticket complete AI Freedom System course path.',url:'https://whop.com/checkout/1pbVYNc863wiBvTlYd-4Xtw-ZbJ1-n6mO-V5FR2Xq3VxPp/',cta:'Get The Full System',value:297,badge:'Full System'}
+      ]
+    }
+  };
+
+  var modal=document.getElementById('sa-offer-modal');
+  var dialog=modal&&modal.querySelector('.sa-offer-modal__dialog');
+  var optionsWrap=document.getElementById('sa-offer-modal-options');
+  var eyebrow=document.getElementById('sa-offer-modal-eyebrow');
+  var title=document.getElementById('sa-offer-modal-title');
+  var subhead=document.getElementById('sa-offer-modal-subhead');
+  var note=document.getElementById('sa-offer-modal-note');
+  var continueLink=document.getElementById('sa-offer-modal-continue');
+  var previousFocus=null;
+  var activeKey=null;
+  var activeConfig=null;
+  var selectedIndex=0;
+
+  function focusable(){return dialog?Array.prototype.slice.call(dialog.querySelectorAll('a[href],button:not([disabled])')):[];}
+  function renderSelection(){
+    if(!activeConfig)return;
+    var cards=optionsWrap.querySelectorAll('.sa-offer-option');
+    Array.prototype.forEach.call(cards,function(card,index){
+      var selected=index===selectedIndex;
+      card.classList.toggle('is-selected',selected);
+      card.setAttribute('aria-pressed',selected?'true':'false');
+    });
+    var selected=activeConfig.options[selectedIndex];
+    continueLink.textContent=selected.cta+' →';
+    continueLink.href=selected.url;
+    continueLink.dataset.value=String(selected.value||0);
+    continueLink.dataset.offerName=selected.name;
+  }
+  function selectOption(index){
+    selectedIndex=index;
+    renderSelection();
+    var selected=activeConfig&&activeConfig.options[index];
+    if(selected&&typeof window.fbq==='function')window.fbq('trackCustom','ContextualOfferSelected',{context:activeKey,offer:selected.name,value:selected.value||0,currency:'USD'});
+  }
+  function buildOptions(config){
+    optionsWrap.innerHTML='';
+    config.options.forEach(function(option,index){
+      var card=document.createElement('button');
+      card.type='button';
+      card.className='sa-offer-option'+(option.badge?' has-badge':'');
+      card.setAttribute('aria-pressed','false');
+      var badge=document.createElement('span');badge.className='sa-offer-option__badge';badge.textContent=option.badge||'Option';
+      var name=document.createElement('span');name.className='sa-offer-option__name';name.textContent=option.name;
+      var price=document.createElement('span');price.className='sa-offer-option__price';price.textContent=option.price;
+      if(option.priceNote){var small=document.createElement('small');small.textContent=option.priceNote;price.appendChild(small);}
+      var desc=document.createElement('span');desc.className='sa-offer-option__description';desc.textContent=option.description;
+      card.appendChild(badge);card.appendChild(name);card.appendChild(price);card.appendChild(desc);
+      if(option.original){var original=document.createElement('span');original.className='sa-offer-option__original';original.textContent='The path you clicked';card.appendChild(original);}
+      card.addEventListener('click',function(){selectOption(index);});
+      optionsWrap.appendChild(card);
+    });
+  }
+  function openModal(key,trigger){
+    var config=offerConfigs[key];
+    if(!config||!modal||!dialog)return false;
+    activeKey=key;activeConfig=config;selectedIndex=typeof config.defaultIndex==='number'?config.defaultIndex:0;
+    previousFocus=trigger||document.activeElement;
+    eyebrow.textContent=config.eyebrow;
+    title.textContent=config.title;
+    subhead.textContent=config.subhead;
+    note.textContent=config.note||'';
+    buildOptions(config);
+    renderSelection();
+    modal.hidden=false;modal.setAttribute('aria-hidden','false');document.body.classList.add('sa-offer-modal-open');
+    window.setTimeout(function(){dialog.focus();},0);
+    if(typeof window.fbq==='function')window.fbq('trackCustom','ContextualOfferModalView',{context:key});
+    return true;
+  }
+  function closeModal(){
+    if(!modal||modal.hidden)return;
+    modal.hidden=true;modal.setAttribute('aria-hidden','true');document.body.classList.remove('sa-offer-modal-open');
+    if(previousFocus&&typeof previousFocus.focus==='function')previousFocus.focus();
+  }
+
+  document.addEventListener('click',function(event){
+    var trigger=event.target.closest('[data-cta-modal]');
+    if(trigger){
+      var key=trigger.getAttribute('data-cta-modal');
+      if(offerConfigs[key]){event.preventDefault();openModal(key,trigger);return;}
+    }
+    if(event.target.closest('[data-offer-modal-close]'))closeModal();
+  });
+  document.addEventListener('keydown',function(event){
+    if(!modal||modal.hidden)return;
+    if(event.key==='Escape'){event.preventDefault();closeModal();return;}
+    if(event.key==='Tab'){
+      var items=focusable();if(!items.length)return;
+      var first=items[0],last=items[items.length-1];
+      if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
+      else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+    }
+  });
+  if(continueLink){continueLink.addEventListener('click',function(){
+    if(!activeConfig)return;
+    var selected=activeConfig.options[selectedIndex];
+    if(typeof window.fbq==='function'){
+      if((selected.value||0)>0)window.fbq('track','InitiateCheckout',{content_name:selected.name,value:selected.value,currency:'USD'});
+      else window.fbq('trackCustom','ContextualFreePathContinue',{context:activeKey,offer:selected.name});
+    }
+  });}
 })();
 </script>
 <script id="respondio__growth_tool" src="https://cdn.respond.io/widget/widget.js?wId=7f9488bf-e487-4928-9b01-6edb55b2ad22"></script>
