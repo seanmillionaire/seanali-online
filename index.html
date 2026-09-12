@@ -90,9 +90,52 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 <link rel="stylesheet" href="/assets/home-page.css?v=20260909b">
 <link rel="stylesheet" href="/assets/main-site.css?v=20260908">
 <link rel="stylesheet" href="/assets/homepage-cohesion.css?v=20260910">
+<style>
+body.modal-open{overflow:hidden}
+.intent-modal[aria-hidden="true"]{display:none}
+.intent-modal{position:fixed;inset:0;z-index:100000;display:grid;place-items:center;padding:24px;font-family:Inter,Arial,sans-serif}
+.intent-modal__backdrop{position:absolute;inset:0;border:0;background:rgba(0,0,0,.76);backdrop-filter:blur(5px);cursor:pointer}
+.intent-modal__dialog{position:relative;width:min(1000px,94vw);max-height:min(690px,92vh);overflow:auto;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:18px;padding:22px;border:1px solid rgba(255,255,255,.09);border-radius:22px;background:#141619;color:#fff;box-shadow:0 28px 80px rgba(0,0,0,.48)}
+.intent-modal__close{position:absolute;top:14px;right:14px;z-index:2;width:38px;height:38px;border:0;border-radius:999px;background:rgba(255,255,255,.07);color:#fff;font-size:25px;line-height:1;cursor:pointer}
+.intent-modal__close:hover,.intent-modal__close:focus-visible{background:rgba(255,255,255,.14);outline:2px solid #32c5ff;outline-offset:2px}
+.intent-modal__sales{padding:12px 10px 10px 2px;align-self:center}
+.intent-modal__eyebrow{display:inline-flex;align-items:center;gap:7px;margin:0 0 12px;color:#aab1ba;font-size:13px;font-weight:800;letter-spacing:.02em}
+.intent-modal__eyebrow::before{content:'';width:8px;height:8px;border-radius:50%;background:#32c5ff;box-shadow:0 0 0 5px rgba(50,197,255,.12)}
+.intent-modal h2{max-width:430px;margin:0 0 18px;color:#fff;font-size:38px;line-height:1.02;letter-spacing:-.045em;font-weight:900}
+.intent-modal__plan{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px;padding:14px 16px;border:2px solid #32c5ff;border-radius:15px;background:#1a1d21}
+.intent-modal__plan strong{display:block;font-size:16px;line-height:1.1}
+.intent-modal__plan span{display:block;margin-top:4px;color:#aab1ba;font-size:13px;font-weight:700}
+.intent-modal__price{flex:0 0 auto;color:#fff;font-size:21px;font-weight:900}
+.intent-modal__price small{color:#9da4ad;font-size:12px;font-weight:700}
+.intent-modal__intro{margin:0 0 13px;color:#d9dde2;font-size:14px;font-weight:800}
+.intent-modal__benefits{display:grid;gap:11px;margin:0 0 20px;padding:0;list-style:none}
+.intent-modal__benefits li{display:flex;align-items:flex-start;gap:10px;color:#e7e9ec;font-size:14px;line-height:1.35;font-weight:700}
+.intent-modal__check{flex:0 0 20px;width:20px;height:20px;display:grid;place-items:center;margin-top:-1px;border-radius:999px;background:#32c5ff;color:#07131a;font-size:13px;font-weight:900}
+.intent-modal__form{display:grid;grid-template-columns:1fr 1.25fr;gap:8px}
+.intent-modal__form input{width:100%;min-width:0;height:48px;padding:0 13px;border:1px solid #353a40;border-radius:11px;background:#0f1114;color:#fff;font:inherit;font-size:14px;outline:none}
+.intent-modal__form input::placeholder{color:#858c95}
+.intent-modal__form input:focus{border-color:#32c5ff;box-shadow:0 0 0 3px rgba(50,197,255,.14)}
+.intent-modal__form button{grid-column:1/-1;min-height:50px;border:0;border-radius:999px;background:#32c5ff;color:#061219;font:inherit;font-size:15px;font-weight:900;cursor:pointer;transition:.16s ease}
+.intent-modal__form button:hover,.intent-modal__form button:focus-visible{filter:brightness(1.06);transform:translateY(-1px);outline:3px solid rgba(50,197,255,.2);outline-offset:2px}
+.intent-modal__form button:disabled{cursor:wait;opacity:.75;transform:none}
+.intent-modal__micro{margin:10px 0 0;color:#9299a2;font-size:12px;line-height:1.4;text-align:center;font-weight:700}
+.intent-modal__reward{position:relative;min-height:520px;overflow:hidden;display:grid;place-items:center;padding:36px;border-radius:17px;background:linear-gradient(145deg,#fff 0%,#f8fbff 52%,#f1fff6 100%);color:#0f1720}
+.intent-modal__reward::before,.intent-modal__reward::after{content:'';position:absolute;width:300px;height:140px;border-radius:50%;filter:blur(1px);opacity:.7;transform:rotate(-13deg)}
+.intent-modal__reward::before{top:-54px;right:-54px;background:linear-gradient(90deg,#d6b8ff,#9bdcff)}
+.intent-modal__reward::after{bottom:-60px;left:-70px;background:linear-gradient(90deg,#baffd4,#75e3a7)}
+.intent-modal__reward-card{position:relative;z-index:1;width:min(390px,100%);padding:28px;border:1px solid #e6edf4;border-radius:20px;background:rgba(255,255,255,.92);box-shadow:0 22px 52px rgba(23,42,58,.13)}
+.intent-modal__reward-kicker{margin:0 0 7px;color:#65717c;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+.intent-modal__reward-card h3{margin:0 0 20px;font-size:27px;line-height:1.05;letter-spacing:-.035em;font-weight:900}
+.intent-modal__tool{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid #e7edf3;font-size:14px;font-weight:800}
+.intent-modal__tool-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:11px;background:#eef8ff;font-size:19px}
+.intent-modal__reward-button{width:100%;margin-top:22px;padding:16px 18px;border:0;border-radius:999px;background:#32c5ff;color:#061219;font-size:17px;font-weight:900;text-align:center}
+.intent-modal__reward-note{margin:10px 0 0;color:#7d8790;font-size:11px;line-height:1.35;text-align:center;font-weight:700}
+@media(max-width:760px){.intent-modal{padding:10px}.intent-modal__dialog{width:min(100%,560px);max-height:94vh;grid-template-columns:1fr;padding:20px 16px 16px}.intent-modal__sales{padding:10px 2px 0}.intent-modal h2{padding-right:35px;font-size:31px}.intent-modal__reward{min-height:260px;padding:24px 16px}.intent-modal__reward-card{padding:20px}.intent-modal__reward-card h3{font-size:23px}.intent-modal__form{grid-template-columns:1fr}.intent-modal__form button{grid-column:auto}}
+@media(max-width:420px){.intent-modal__reward{display:none}.intent-modal__dialog{display:block}.intent-modal__plan{margin-bottom:16px}.intent-modal__benefits{gap:9px}.intent-modal__micro{margin-bottom:4px}}
+</style>
 </head>
 <body>
-<nav class="sa-header" aria-label="Main navigation"><div class="sa-nav"><a class="sa-brand" href="/">SEAN <span>ALI</span></a><div class="sa-links"><a href="/blog/">News</a><a href="/resources/">Free Tools</a><a href="/products/">Products</a><a href="/about-sean-ali/">About</a><a href="/work-with-me/">Work With Me</a><a class="sa-button" href="/manifest.html">Join Now →</a></div><details class="sa-menu"><summary>Menu ☰</summary><nav aria-label="Mobile navigation"><a href="/blog/">News</a><a href="/resources/">Free Tools</a><a href="/products/">Products</a><a href="/about-sean-ali/">About</a><a href="/work-with-me/">Work With Me</a><a href="/manifest.html">Join Now →</a></nav></details></div></nav>
+<nav class="sa-header" aria-label="Main navigation"><div class="sa-nav"><a class="sa-brand" href="/">SEAN <span>ALI</span></a><div class="sa-links"><a href="/blog/">News</a><a href="/resources/">Free Tools</a><a href="/products/">Products</a><a href="/about-sean-ali/">About</a><a href="/work-with-me/">Work With Me</a><a class="sa-button" href="/manifest.html" data-open-free-tools>Join Now →</a></div><details class="sa-menu"><summary>Menu ☰</summary><nav aria-label="Mobile navigation"><a href="/blog/">News</a><a href="/resources/">Free Tools</a><a href="/products/">Products</a><a href="/about-sean-ali/">About</a><a href="/work-with-me/">Work With Me</a><a href="/manifest.html" data-open-free-tools>Join Now →</a></nav></details></div></nav>
 
 <header class="welcome-hero" id="top">
   <div class="wrap">
@@ -253,6 +296,52 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
   </div>
 </section>
 
+<div class="intent-modal" id="free-tools-modal" aria-hidden="true">
+  <button class="intent-modal__backdrop" type="button" data-modal-close aria-label="Close free tools dialog"></button>
+  <section class="intent-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="free-tools-title" tabindex="-1">
+    <button class="intent-modal__close" type="button" data-modal-close aria-label="Close free tools dialog">&times;</button>
+    <div class="intent-modal__sales">
+      <p class="intent-modal__eyebrow">Free access</p>
+      <h2 id="free-tools-title">Get your free tools</h2>
+      <div class="intent-modal__plan" aria-label="Free tools plan">
+        <div><strong>Sean Ali Free Tools</strong><span>Instant email delivery</span></div>
+        <div class="intent-modal__price">$0 <small>free</small></div>
+      </div>
+      <p class="intent-modal__intro">I’ll send you:</p>
+      <ul class="intent-modal__benefits">
+        <li><span class="intent-modal__check" aria-hidden="true">✓</span><span>My 7-minute money script</span></li>
+        <li><span class="intent-modal__check" aria-hidden="true">✓</span><span>The subconscious reprogramming guide</span></li>
+        <li><span class="intent-modal__check" aria-hidden="true">✓</span><span>New mindset + online-business lessons I think are worth keeping</span></li>
+        <li><span class="intent-modal__check" aria-hidden="true">✓</span><span>Updates when I release a useful new tool</span></li>
+      </ul>
+      <form class="intent-modal__form" id="modal-optin" method="post" action="https://www.aweber.com/scripts/addlead.pl">
+        <label class="sr-only" for="modal-name">First name</label>
+        <input id="modal-name" type="text" name="name" placeholder="First name" autocomplete="given-name" required>
+        <label class="sr-only" for="modal-email">Email address</label>
+        <input id="modal-email" type="email" name="email" placeholder="Email address" autocomplete="email" required>
+        <input type="hidden" name="listname" value="awlist6946418">
+        <input type="hidden" name="redirect" value="https://seanali.online/tools/">
+        <input type="hidden" name="meta_redirect_onlist" value="https://seanali.online/tools/">
+        <input type="hidden" name="meta_tags" value="homepage-modal,owned-audience">
+        <input type="hidden" name="meta_adtracking" value="Sean Ali Homepage Intent Modal">
+        <input type="hidden" name="meta_required" value="name,email">
+        <button id="modal-submit" type="submit">Send Me The Free Tools</button>
+      </form>
+      <p class="intent-modal__micro">Free · Instant delivery · Unsubscribe anytime</p>
+    </div>
+    <div class="intent-modal__reward" aria-label="Preview of the free tools">
+      <div class="intent-modal__reward-card">
+        <p class="intent-modal__reward-kicker">Your tools are ready</p>
+        <h3>Open them right after you join.</h3>
+        <div class="intent-modal__tool"><span class="intent-modal__tool-icon" aria-hidden="true">🎧</span><span>7-Minute Money Script</span></div>
+        <div class="intent-modal__tool"><span class="intent-modal__tool-icon" aria-hidden="true">🧠</span><span>Subconscious Reprogramming Guide</span></div>
+        <div class="intent-modal__reward-button" aria-hidden="true">Open My Tools</div>
+        <p class="intent-modal__reward-note">The next screen gives you immediate access.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
 <section class="other-projects" aria-label="Other Sean Ali projects">
   <div class="wrap other-projects-inner"><strong>Other things I build:</strong><a href="/games/">Education Games</a><a href="https://panamauntold.com" target="_blank" rel="noopener">Panama Untold</a><a href="/gps/">Dream Life GPS</a></div>
 </section>
@@ -270,6 +359,39 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
   var form=document.getElementById('homepage-optin');
   var submit=document.getElementById('homepage-submit');
   if(form&&submit){form.addEventListener('submit',function(){submit.textContent='SENDING...';submit.disabled=true;if(typeof window.fbq==='function')window.fbq('track','Lead');});}
+
+  var modal=document.getElementById('free-tools-modal');
+  if(!modal)return;
+  var dialog=modal.querySelector('.intent-modal__dialog');
+  var triggers=document.querySelectorAll('[data-open-free-tools]');
+  var closeButtons=modal.querySelectorAll('[data-modal-close]');
+  var modalForm=document.getElementById('modal-optin');
+  var modalSubmit=document.getElementById('modal-submit');
+  var previousFocus=null;
+
+  function focusable(){return Array.prototype.slice.call(dialog.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'));}
+  function openModal(event){if(event)event.preventDefault();previousFocus=document.activeElement;modal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');dialog.focus();if(typeof window.fbq==='function')window.fbq('trackCustom','HomepageIntentModalOpen');}
+  function closeModal(){modal.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open');if(previousFocus&&typeof previousFocus.focus==='function')previousFocus.focus();}
+
+  triggers.forEach(function(trigger){trigger.addEventListener('click',openModal);});
+  closeButtons.forEach(function(button){button.addEventListener('click',closeModal);});
+  document.addEventListener('keydown',function(event){
+    if(modal.getAttribute('aria-hidden')==='true')return;
+    if(event.key==='Escape'){event.preventDefault();closeModal();return;}
+    if(event.key==='Tab'){
+      var items=focusable();if(!items.length){event.preventDefault();return;}
+      var first=items[0],last=items[items.length-1];
+      if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
+      else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+    }
+  });
+
+  if(modalForm&&modalSubmit){modalForm.addEventListener('submit',function(){
+    modalSubmit.textContent='SENDING YOUR TOOLS...';modalSubmit.disabled=true;
+    var name=document.getElementById('modal-name');
+    if(name&&name.value.trim())sessionStorage.setItem('hm_god_money_first_name',name.value.trim().split(/\s+/)[0].slice(0,40));
+    if(typeof window.fbq==='function')window.fbq('track','Lead');
+  });}
 })();
 </script>
 <script id="respondio__growth_tool" src="https://cdn.respond.io/widget/widget.js?wId=7f9488bf-e487-4928-9b01-6edb55b2ad22"></script>
