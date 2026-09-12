@@ -5,6 +5,16 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/ai-freedom-system",
+      "destination": "/system",
+      "permanent": true
+    },
+    {
+      "source": "/ai-freedom-system.html",
+      "destination": "/system",
+      "permanent": true
+    },
+    {
       "source": "/gifts",
       "destination": "/tools",
       "permanent": true
