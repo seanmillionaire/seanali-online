@@ -100,10 +100,21 @@
 .script-gallery-arrow:focus-visible,.script-gallery-thumb:focus-visible{outline:3px solid #957129;outline-offset:3px}
 .script-price-was{display:block;margin-bottom:2px;color:#8c7b5b;font-size:11px;font-weight:700;line-height:1.1;text-decoration:line-through;text-decoration-thickness:2px}
 .script-price-save{display:inline-flex;margin-top:5px;padding:4px 8px;border-radius:999px;background:#eaf7ee;color:#16723b;font-size:10px;font-weight:900;line-height:1;text-transform:uppercase;letter-spacing:.04em}
-#hero-cta .script-cta-offer{display:flex;flex-direction:column;align-items:flex-start;gap:3px;line-height:1.05}
-#hero-cta .script-cta-promo{font-size:10px;font-weight:900;letter-spacing:.055em;text-transform:uppercase;opacity:.86}
-#hero-cta .script-cta-promo s{opacity:.78;text-decoration-thickness:2px}
-#hero-cta .script-cta-main{font-size:15px;font-weight:900;line-height:1.08}
+.script-promo-box{max-width:440px;margin:18px auto 12px;padding:16px 18px 15px;border:2px solid #e5b44e;border-radius:14px;background:linear-gradient(180deg,#fffdf6 0%,#fff7df 100%);box-shadow:0 10px 28px rgba(91,62,11,.10);text-align:center}
+.script-promo-badge{display:inline-flex;margin:0 auto 10px;padding:5px 11px;border-radius:999px;background:#9f1d1d;color:#fff;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.script-promo-value{display:flex;align-items:center;justify-content:center;gap:8px;color:#675b45;font-size:13px;font-weight:800}
+.script-promo-value s{font-size:20px;color:#8c7b5b;text-decoration-thickness:2px}
+.script-promo-price{display:flex;align-items:baseline;justify-content:center;gap:9px;margin-top:4px}
+.script-promo-price span{font-size:13px;font-weight:800;color:#2a241b}
+.script-promo-price strong{font-size:44px;line-height:1;color:#17130d;font-weight:900;letter-spacing:-.04em}
+.script-promo-save{display:inline-flex;margin-top:8px;padding:5px 10px;border-radius:999px;background:#eaf7ee;color:#16723b;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.05em}
+#hero-cta{max-width:440px;margin-left:auto;margin-right:auto;justify-content:center;box-shadow:0 10px 24px rgba(169,53,33,.18)}
+#hero-cta>span:first-child{font-size:15px;font-weight:900;line-height:1.1;text-align:center}
+.pdp-buybox{text-align:center}
+.pdp-buybox .hero-badges{justify-content:center}
+.pdp-buybox .pdp-benefits{text-align:left}
+.pdp-buybox .payment-trust{justify-content:center}
+.purchase-selector{max-width:440px;margin-left:auto;margin-right:auto;text-align:left}
 .promo-active-chip{display:inline-flex;align-items:center;width:max-content;margin-right:7px;padding:4px 7px;border-radius:999px;background:#eaf7ee;color:#16723b;font-size:10px;font-weight:900;line-height:1;text-transform:uppercase;letter-spacing:.05em;text-decoration:none!important}
 .promo-total s,.script-final-price s{color:#8c7b5b;text-decoration-thickness:2px}
 .promo-total em{display:block;margin-top:5px;color:#16723b;font-size:12px;font-style:normal;font-weight:900}
@@ -121,9 +132,9 @@
   .pdp-lead{margin-bottom:14px;font-size:14px;line-height:1.35}
   .purchase-selector{display:none}
   .pdp-cta{min-height:54px;padding:13px 12px}
-  #hero-cta .script-cta-offer{align-items:center;text-align:center}
-  #hero-cta .script-cta-promo{font-size:9px}
-  #hero-cta .script-cta-main{font-size:13px}
+  .script-promo-box{margin:12px auto 10px;padding:13px 12px}
+  .script-promo-price strong{font-size:38px}
+  #hero-cta>span:first-child{font-size:13px}
   .payment-trust{margin-top:8px}
   .payment-trust img{width:150px}
   .pdp-buybox .pdp-benefits{margin-top:14px}
@@ -160,8 +171,9 @@
             <div class="hero-badges"><div class="eyebrow">7-minute wealth scripting audio</div><div class="rating" aria-label="One-time digital access"><span class="rating__stars">✦</span><strong>One-time</strong><span>access</span></div></div>
             <h1>Train Your Mind to Earn, Receive &amp; Hold More Money in 7 Minutes</h1>
             <p class="pdp-lead">Still feel like wealth is for other people? Give your subconscious a different story. This 7-minute script combines theta-focused audio and hypnosis to help you make a wealthier version of yourself feel familiar. Press play tonight.</p>
-            <div class="purchase-selector"><div class="purchase-selector__label">Current promo</div><div class="purchase-options" role="group" aria-label="Your audio"><button class="purchase-option is-selected" type="button" aria-pressed="true" data-product-image="https://hypnoticmeditations.b-cdn.net/images/7%20min%20script.png" data-product-alt="The 7-Minute Script wealth scripting audio product cover" data-product-caption="The 7-Minute Script · 7-minute wealth scripting audio" data-product-price="$37" data-checkout-url="https://buy.hypnoticmeditations.ai/l/bqjzup?wanted=true" data-cta-label="GET THE 7-MINUTE SCRIPT — $37"><span class="purchase-option__selected" aria-hidden="true">✓</span><div><strong>The 7-Minute Script</strong><span>One-time payment · Instant access</span></div><span class="purchase-price-group"><span class="script-price-was">$197 total value</span><strong class="purchase-price">$37</strong><span class="script-price-save">Save $160</span></span></button></div></div>
-            <a id="hero-cta" class="pdp-cta" href="https://buy.hypnoticmeditations.ai/l/bqjzup?wanted=true"><span class="script-cta-offer"><small class="script-cta-promo">PROMO ACTIVE · <s>$197 VALUE</s> · SAVE $160</small><span class="script-cta-main">GET THE 7-MINUTE SCRIPT — $37</span></span><span aria-hidden="true">&rarr;</span></a>
+            <div class="purchase-selector"><div class="purchase-selector__label">Your audio</div><div class="purchase-options" role="group" aria-label="Your audio"><button class="purchase-option is-selected" type="button" aria-pressed="true" data-product-image="https://hypnoticmeditations.b-cdn.net/images/7%20min%20script.png" data-product-alt="The 7-Minute Script wealth scripting audio product cover" data-product-caption="The 7-Minute Script · 7-minute wealth scripting audio" data-product-price="$37" data-checkout-url="https://buy.hypnoticmeditations.ai/l/bqjzup?wanted=true" data-cta-label="GET THE 7-MINUTE SCRIPT — $37"><span class="purchase-option__selected" aria-hidden="true">✓</span><div><strong>The 7-Minute Script</strong><span>One-time payment · Instant access</span></div><span class="purchase-price-group"><strong class="purchase-price">$37</strong></span></button></div></div>
+            <div class="script-promo-box" aria-label="Current promotional price"><span class="script-promo-badge">Current Promo</span><div class="script-promo-value"><span>Regular total value</span><s>$197</s></div><div class="script-promo-price"><span>Current promo price</span><strong>$37</strong></div><div class="script-promo-save">You save $160</div></div>
+            <a id="hero-cta" class="pdp-cta" href="https://buy.hypnoticmeditations.ai/l/bqjzup?wanted=true"><span>GET THE 7-MINUTE SCRIPT — $37</span><span aria-hidden="true">&rarr;</span></a>
             <div class="payment-trust"><img src="https://hypnoticmeditations.b-cdn.net/images/random/payments.png" alt="Accepted secure payment methods"><span><strong>Secure checkout</strong> · Instant access · 30-day guarantee</span></div>
             <ul class="pdp-benefits"><li>One focused script for rehearsing wealth, certainty, and momentum</li><li>Use it daily in the morning or before a high-leverage action</li><li>Includes the supporting guide, voice note, frequencies, and bonus meditation</li></ul>
           </div>
@@ -216,7 +228,7 @@
         const productCaption = document.getElementById('hero-product-caption');
         const price = document.querySelector('.purchase-price');
         const cta = document.getElementById('hero-cta');
-        const ctaLabel = cta && cta.querySelector('.script-cta-main');
+        const ctaLabel = cta && cta.querySelector('span:first-child');
         if (!options.length || !productImage || !productThumb || !productCaption || !price || !cta || !ctaLabel) return;
         const galleryThumbs = Array.from(document.querySelectorAll('.script-gallery-thumb'));
         const gallerySlides = [
