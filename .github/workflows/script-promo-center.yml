@@ -1,33 +1,8 @@
 name: Script promo center pass
 on:
-  push:
-    branches: [main]
-permissions:
-  contents: write
+  workflow_dispatch:
 jobs:
-  patch:
+  noop:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Update Script promo layout
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          p=Path('script.html')
-          s=p.read_text()
-          s=s.replace("#hero-cta .script-cta-offer{display:flex;flex-direction:column;align-items:flex-start;gap:3px;line-height:1.05}\n#hero-cta .script-cta-promo{font-size:10px;font-weight:900;letter-spacing:.055em;text-transform:uppercase;opacity:.86}\n#hero-cta .script-cta-promo s{opacity:.78;text-decoration-thickness:2px}\n#hero-cta .script-cta-main{font-size:15px;font-weight:900;line-height:1.08}\n", ".script-promo-box{max-width:440px;margin:18px auto 12px;padding:16px 18px 15px;border:2px solid #e5b44e;border-radius:14px;background:linear-gradient(180deg,#fffdf6 0%,#fff7df 100%);box-shadow:0 10px 28px rgba(91,62,11,.10);text-align:center}\n.script-promo-badge{display:inline-flex;margin:0 auto 10px;padding:5px 11px;border-radius:999px;background:#9f1d1d;color:#fff;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}\n.script-promo-value{display:flex;align-items:center;justify-content:center;gap:8px;color:#675b45;font-size:13px;font-weight:800}\n.script-promo-value s{font-size:20px;color:#8c7b5b;text-decoration-thickness:2px}\n.script-promo-price{display:flex;align-items:baseline;justify-content:center;gap:9px;margin-top:4px}\n.script-promo-price span{font-size:13px;font-weight:800;color:#2a241b}\n.script-promo-price strong{font-size:44px;line-height:1;color:#17130d;font-weight:900;letter-spacing:-.04em}\n.script-promo-save{display:inline-flex;margin-top:8px;padding:5px 10px;border-radius:999px;background:#eaf7ee;color:#16723b;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.05em}\n#hero-cta{max-width:440px;margin-left:auto;margin-right:auto;justify-content:center;box-shadow:0 10px 24px rgba(169,53,33,.18)}\n#hero-cta>span:first-child{font-size:15px;font-weight:900;line-height:1.1;text-align:center}\n.pdp-buybox{text-align:center}\n.pdp-buybox .hero-badges{justify-content:center}\n.pdp-buybox .pdp-benefits{text-align:left}\n.pdp-buybox .payment-trust{justify-content:center}\n.purchase-selector{max-width:440px;margin-left:auto;margin-right:auto;text-align:left}\n")
-          s=s.replace("  #hero-cta .script-cta-offer{align-items:center;text-align:center}\n  #hero-cta .script-cta-promo{font-size:9px}\n  #hero-cta .script-cta-main{font-size:13px}\n", "  .script-promo-box{margin:12px auto 10px;padding:13px 12px}\n  .script-promo-price strong{font-size:38px}\n  #hero-cta>span:first-child{font-size:13px}\n")
-          old='<div class="purchase-selector"><div class="purchase-selector__label">Current promo</div><div class="purchase-options" role="group" aria-label="Your audio"><button class="purchase-option is-selected" type="button" aria-pressed="true" data-product-image="https://hypnoticmeditations.b-cdn.net/images/7%20min%20script.png" data-product-alt="The 7-Minute Script wealth scripting audio product cover" data-product-caption="The 7-Minute Script · 7-minute wealth scripting audio" data-product-price="$37" data-checkout-url="https://buy.hypnoticmeditations.ai/l/bqjzup?wanted=true" data-cta-label="GET THE 7-MINUTE SCRIPT — $37"><span class="purchase-option__selected" aria-hidden="true">✓</span><div><strong>The 7-Minute Script</strong><span>One-time payment · Instant access</span></div><span class="purchase-price-group"><span class="script-price-was">$197 total value</span><strong class="purchase-price">$37</strong><span class="script-price-save">Save $160</span></span></button></div></div>\n            <a id="hero-cta" class="pdp-cta" href="https://buy.hypnoticmeditations.ai/l/bqjzup?wanted=true"><span class="script-cta-offer"><small class="script-cta-promo">PROMO ACTIVE · <s>$197 VALUE</s> · SAVE $160</small><span class="script-cta-main">GET THE 7-MINUTE SCRIPT — $37</span></span><span aria-hidden="true">&rarr;</span></a>'
-          new='<div class="purchase-selector"><div class="purchase-selector__label">Your audio</div><div class="purchase-options" role="group" aria-label="Your audio"><button class="purchase-option is-selected" type="button" aria-pressed="true" data-product-image="https://hypnoticmeditations.b-cdn.net/images/7%20min%20script.png" data-product-alt="The 7-Minute Script wealth scripting audio product cover" data-product-caption="The 7-Minute Script · 7-minute wealth scripting audio" data-product-price="$37" data-checkout-url="https://buy.hypnoticmeditations.ai/l/bqjzup?wanted=true" data-cta-label="GET THE 7-MINUTE SCRIPT — $37"><span class="purchase-option__selected" aria-hidden="true">✓</span><div><strong>The 7-Minute Script</strong><span>One-time payment · Instant access</span></div><span class="purchase-price-group"><strong class="purchase-price">$37</strong></span></button></div></div>\n            <div class="script-promo-box" aria-label="Current promotional price"><span class="script-promo-badge">Current Promo</span><div class="script-promo-value"><span>Regular total value</span><s>$197</s></div><div class="script-promo-price"><span>Current promo price</span><strong>$37</strong></div><div class="script-promo-save">You save $160</div></div>\n            <a id="hero-cta" class="pdp-cta" href="https://buy.hypnoticmeditations.ai/l/bqjzup?wanted=true"><span>GET THE 7-MINUTE SCRIPT — $37</span><span aria-hidden="true">&rarr;</span></a>'
-          if old not in s: raise SystemExit('hero block not found')
-          s=s.replace(old,new,1)
-          s=s.replace("const ctaLabel = cta && cta.querySelector('.script-cta-main');","const ctaLabel = cta && cta.querySelector('span:first-child');",1)
-          p.write_text(s)
-          PY
-      - name: Commit changes
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add script.html
-          git commit -m "Center and polish Script promo pricing"
-          git push
+      - run: echo "One-time Script promo pass already applied."
