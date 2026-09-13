@@ -3,15 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sean Ali — The hidden mental brake</title>
-<meta name="description" content="Why smart people stay stuck — and how to interrupt the internal loop before sleep.">
-<meta property="og:title" content="Sean Ali — The hidden mental brake">
-<meta property="og:description" content="Why smart people stay stuck — and how to interrupt the internal loop before sleep.">
+<title>Sean Ali — The Money Story You Rehearse</title>
+<meta name="description" content="A short guide from Sean Ali on noticing the money story you repeat, using visualization before bed, and pairing mind work with real-world action.">
+<meta property="og:title" content="Sean Ali — The Money Story You Rehearse">
+<meta property="og:description" content="A short guide from Sean Ali on noticing the money story you repeat, using visualization before bed, and pairing mind work with real-world action.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://seanali.online">
+<meta property="og:url" content="https://seanali.online/guide">
 <meta property="og:image" content="https://statics.myclickfunnels.com/workspace/vGVGzP/image/20204117/file/904663e23eb23a39d6f2459104b7bccc.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#faf6f0">
+<link rel="canonical" href="https://seanali.online/guide">
 <link rel="icon" type="image/png" href="https://hypnoticmeditations.b-cdn.net/images/fav/headphones.png">
 <link rel="apple-touch-icon" href="https://hypnoticmeditations.b-cdn.net/images/fav/headphones.png">
 
@@ -39,248 +40,42 @@ body{
   -webkit-font-smoothing:antialiased;
   overflow:hidden;
 }
-
-/* ---------- shell ---------- */
-.book{
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-}
-
-/* progress rail */
-.rail{
-  position:relative;
-  height:3px;
-  background:var(--rule);
-  flex-shrink:0;
-}
-.rail-fill{
-  position:absolute;
-  top:0;left:0;height:100%;
-  background:var(--accent);
-  transition:width .45s cubic-bezier(.4,0,.2,1);
-}
-
-.meta-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:18px 28px 0;
-  flex-shrink:0;
-}
-.meta-eyebrow{
-  font-size:12px;
-  font-weight:700;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  color:var(--accent);
-}
-.meta-count{
-  font-size:12px;
-  font-weight:600;
-  letter-spacing:.08em;
-  color:var(--muted);
-  font-variant-numeric:tabular-nums;
-}
-
-/* page area */
-.viewport{
-  flex:1;
-  position:relative;
-  overflow:hidden;
-}
-.chapter{
-  position:absolute;
-  inset:0;
-  overflow-y:auto;
-  padding:18px 28px 32px;
-  opacity:0;
-  transform:translateY(14px);
-  pointer-events:none;
-  transition:opacity .4s ease, transform .4s ease;
-  -webkit-overflow-scrolling:touch;
-}
-.chapter.active{
-  opacity:1;
-  transform:translateY(0);
-  pointer-events:auto;
-}
-.chapter-inner{
-  max-width:560px;
-  margin:0 auto;
-  padding-top:8px;
-  min-height:100%;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-}
+.book{height:100vh;display:flex;flex-direction:column}
+.rail{position:relative;height:3px;background:var(--rule);flex-shrink:0}
+.rail-fill{position:absolute;top:0;left:0;height:100%;background:var(--accent);transition:width .45s cubic-bezier(.4,0,.2,1)}
+.meta-row{display:flex;justify-content:space-between;align-items:center;padding:18px 28px 0;flex-shrink:0}
+.meta-eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.meta-count{font-size:12px;font-weight:600;letter-spacing:.08em;color:var(--muted);font-variant-numeric:tabular-nums}
+.viewport{flex:1;position:relative;overflow:hidden}
+.chapter{position:absolute;inset:0;overflow-y:auto;padding:18px 28px 32px;opacity:0;transform:translateY(14px);pointer-events:none;transition:opacity .4s ease,transform .4s ease;-webkit-overflow-scrolling:touch}
+.chapter.active{opacity:1;transform:translateY(0);pointer-events:auto}
+.chapter-inner{max-width:560px;margin:0 auto;padding-top:8px;min-height:100%;display:flex;flex-direction:column;justify-content:center}
 .chapter-inner.top-align{justify-content:flex-start}
-
-/* big watermark number */
-.numeral{
-  font-family:"DM Serif Display",serif;
-  font-style:italic;
-  font-size:120px;
-  line-height:1;
-  color:var(--accent);
-  opacity:.08;
-  position:absolute;
-  top:-6px;
-  right:8px;
-  pointer-events:none;
-  user-select:none;
-}
-
-/* typography */
-h1{
-  font-family:"DM Serif Display",serif;
-  font-style:italic;
-  font-weight:400;
-  font-size:clamp(30px,7vw,42px);
-  line-height:1.18;
-  margin-bottom:18px;
-  position:relative;
-  z-index:1;
-}
+.numeral{font-family:"DM Serif Display",serif;font-style:italic;font-size:120px;line-height:1;color:var(--accent);opacity:.08;position:absolute;top:-6px;right:8px;pointer-events:none;user-select:none}
+h1{font-family:"DM Serif Display",serif;font-style:italic;font-weight:400;font-size:clamp(30px,7vw,42px);line-height:1.18;margin-bottom:18px;position:relative;z-index:1}
 h1 .accent{color:var(--accent)}
-.lede{
-  font-family:"Newsreader",serif;
-  font-size:1.2rem;
-  line-height:1.7;
-  color:var(--ink-soft);
-  margin-bottom:18px;
-}
-p.body{
-  font-family:"Newsreader",serif;
-  font-size:1.12rem;
-  line-height:1.75;
-  margin-bottom:16px;
-}
+.lede{font-family:"Newsreader",serif;font-size:1.2rem;line-height:1.7;color:var(--ink-soft);margin-bottom:18px}
+p.body{font-family:"Newsreader",serif;font-size:1.12rem;line-height:1.75;margin-bottom:16px}
 p.body:last-child{margin-bottom:0}
-
-/* quote / pull-quote */
-.quote{
-  border-left:3px solid var(--accent);
-  padding-left:18px;
-  margin:22px 0;
-  font-family:"Newsreader",serif;
-  font-style:italic;
-  font-size:1.08rem;
-  line-height:1.65;
-  color:var(--ink);
-}
-.quote .who{
-  display:block;
-  font-family:"DM Sans",sans-serif;
-  font-style:normal;
-  font-weight:700;
-  font-size:11px;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  color:var(--accent);
-  margin-bottom:8px;
-}
-.pull{
-  font-family:"DM Serif Display",serif;
-  font-style:italic;
-  font-size:clamp(22px,5.5vw,30px);
-  line-height:1.35;
-  text-align:center;
-  margin:8px 0 26px;
-  padding:0 6px;
-}
-
-/* stacked list (replaces card grids) */
+.quote{border-left:3px solid var(--accent);padding-left:18px;margin:22px 0;font-family:"Newsreader",serif;font-style:italic;font-size:1.08rem;line-height:1.65;color:var(--ink)}
+.quote .who{display:block;font-family:"DM Sans",sans-serif;font-style:normal;font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.pull{font-family:"DM Serif Display",serif;font-style:italic;font-size:clamp(22px,5.5vw,30px);line-height:1.35;text-align:center;margin:8px 0 26px;padding:0 6px}
 .stack{margin:18px 0 6px}
-.stack-item{
-  padding:16px 0;
-  border-top:1px solid var(--rule);
-}
+.stack-item{padding:16px 0;border-top:1px solid var(--rule)}
 .stack-item:first-child{border-top:1px solid var(--rule)}
-.stack-label{
-  font-family:"DM Sans",sans-serif;
-  font-weight:700;
-  font-size:1rem;
-  margin-bottom:4px;
-  display:flex;
-  align-items:baseline;
-  gap:8px;
-}
+.stack-label{font-family:"DM Sans",sans-serif;font-weight:700;font-size:1rem;margin-bottom:4px;display:flex;align-items:baseline;gap:8px}
 .stack-label .emoji{font-size:1.1rem}
-.stack-text{
-  font-family:"Newsreader",serif;
-  font-size:1.02rem;
-  line-height:1.6;
-  color:var(--ink-soft);
-}
-
-/* numbered ritual list */
+.stack-text{font-family:"Newsreader",serif;font-size:1.02rem;line-height:1.6;color:var(--ink-soft)}
 .ritual{list-style:none;margin:18px 0}
-.ritual li{
-  display:flex;
-  gap:14px;
-  align-items:flex-start;
-  padding:12px 0;
-  border-top:1px solid var(--rule);
-  font-family:"Newsreader",serif;
-  font-size:1.08rem;
-  line-height:1.6;
-}
+.ritual li{display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--rule);font-family:"Newsreader",serif;font-size:1.08rem;line-height:1.6}
 .ritual li:first-child{border-top:1px solid var(--rule)}
-.ritual-num{
-  font-family:"DM Sans",sans-serif;
-  font-weight:700;
-  font-size:.85rem;
-  color:var(--accent);
-  border:1.5px solid var(--accent);
-  border-radius:999px;
-  width:26px;height:26px;
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;
-  margin-top:2px;
-}
-
-/* check list */
+.ritual-num{font-family:"DM Sans",sans-serif;font-weight:700;font-size:.85rem;color:var(--accent);border:1.5px solid var(--accent);border-radius:999px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
 .checks{list-style:none;margin:16px 0}
-.checks li{
-  font-family:"Newsreader",serif;
-  font-size:1.05rem;
-  line-height:1.6;
-  padding:6px 0;
-  display:flex;
-  gap:10px;
-}
-.checks li::before{
-  content:"✓";
-  color:var(--accent);
-  font-weight:700;
-  flex-shrink:0;
-}
-
-/* tags */
+.checks li{font-family:"Newsreader",serif;font-size:1.05rem;line-height:1.6;padding:6px 0;display:flex;gap:10px}
+.checks li::before{content:"✓";color:var(--accent);font-weight:700;flex-shrink:0}
 .tags{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
-.tag{
-  background:var(--paper-deep);
-  border-radius:999px;
-  padding:6px 14px;
-  font-size:.85rem;
-  font-weight:500;
-}
-
-/* CTA buttons */
-.cta-btn{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  text-decoration:none;
-  color:var(--paper);
-  background:var(--ink);
-  border-radius:16px;
-  padding:18px 20px;
-  margin:22px 0 8px;
-  transition:transform .2s ease, box-shadow .2s ease;
-  box-shadow:0 6px 18px -8px rgba(43,36,32,.35);
-}
+.tag{background:var(--paper-deep);border-radius:999px;padding:6px 14px;font-size:.85rem;font-weight:500}
+.cta-btn{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--paper);background:var(--ink);border-radius:16px;padding:18px 20px;margin:22px 0 8px;transition:transform .2s ease,box-shadow .2s ease;box-shadow:0 6px 18px -8px rgba(43,36,32,.35)}
 .cta-btn:hover{transform:translateY(-2px)}
 .cta-btn.primary{background:var(--accent);box-shadow:0 8px 22px -8px rgba(255,60,0,.55)}
 .cta-icon{font-size:24px;line-height:1}
@@ -288,82 +83,22 @@ p.body:last-child{margin-bottom:0}
 .cta-title{font-family:"DM Sans",sans-serif;font-weight:700;font-size:1.02rem;letter-spacing:.01em}
 .cta-sub{font-family:"DM Sans",sans-serif;font-size:.78rem;opacity:.8;margin-top:2px}
 .cta-arrow{font-size:20px;flex-shrink:0}
-.trust{
-  font-family:"DM Sans",sans-serif;
-  font-size:.78rem;
-  color:var(--muted);
-  text-align:center;
-  margin-top:6px;
-}
-
-/* cover */
-.cover{
-  display:flex;
-  flex-direction:column;
-  align-items:flex-start;
-  justify-content:center;
-  text-align:left;
-}
-.cover-byline{
-  display:flex;align-items:center;gap:12px;
-  margin-bottom:30px;
-}
-.cover-avatar{
-  width:46px;height:46px;border-radius:50%;
-  overflow:hidden;border:2px solid var(--ink);
-  flex-shrink:0;
-}
+.trust{font-family:"DM Sans",sans-serif;font-size:.78rem;color:var(--muted);text-align:center;margin-top:6px}
+.cover{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;text-align:left}
+.cover-byline{display:flex;align-items:center;gap:12px;margin-bottom:30px}
+.cover-avatar{width:46px;height:46px;border-radius:50%;overflow:hidden;border:2px solid var(--ink);flex-shrink:0}
 .cover-avatar img{width:100%;height:100%;object-fit:cover}
 .cover-byline-text{font-size:.85rem;color:var(--ink-soft)}
 .cover-byline-text strong{display:block;color:var(--ink);font-weight:700}
 .cover h1{font-size:clamp(34px,9vw,52px)}
-.cover-foot{
-  margin-top:34px;
-  font-family:"DM Sans",sans-serif;
-  font-size:.85rem;
-  color:var(--muted);
-}
-
-/* nav bar */
-.nav-bar{
-  flex-shrink:0;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:14px 28px;
-  border-top:1px solid var(--rule);
-  background:var(--paper);
-}
-.nav-btn{
-  font-family:"DM Sans",sans-serif;
-  font-weight:600;
-  font-size:.95rem;
-  background:none;
-  border:none;
-  cursor:pointer;
-  color:var(--ink);
-  display:flex;align-items:center;gap:8px;
-  padding:8px 4px;
-}
+.cover-foot{margin-top:34px;font-family:"DM Sans",sans-serif;font-size:.85rem;color:var(--muted)}
+.nav-bar{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-top:1px solid var(--rule);background:var(--paper)}
+.nav-btn{font-family:"DM Sans",sans-serif;font-weight:600;font-size:.95rem;background:none;border:none;cursor:pointer;color:var(--ink);display:flex;align-items:center;gap:8px;padding:8px 4px}
 .nav-btn:disabled{opacity:.25;cursor:default}
-.nav-btn.primary{
-  background:var(--ink);
-  color:var(--paper);
-  border-radius:999px;
-  padding:12px 24px;
-}
+.nav-btn.primary{background:var(--ink);color:var(--paper);border-radius:999px;padding:12px 24px}
 .nav-btn.primary.accent{background:var(--accent)}
-
-@media(max-width:520px){
-  .chapter{padding:14px 20px 26px}
-  .meta-row{padding:14px 20px 0}
-  .nav-bar{padding:12px 20px}
-  .numeral{font-size:84px;top:-4px;right:4px}
-}
-@media(prefers-reduced-motion:reduce){
-  .chapter{transition:none}
-  .cta-btn{transition:none}
-}
+@media(max-width:520px){.chapter{padding:14px 20px 26px}.meta-row{padding:14px 20px 0}.nav-bar{padding:12px 20px}.numeral{font-size:84px;top:-4px;right:4px}}
+@media(prefers-reduced-motion:reduce){.chapter{transition:none}.cta-btn{transition:none}}
 </style>
 </head>
 <body>
@@ -372,7 +107,7 @@ p.body:last-child{margin-bottom:0}
   <div class="rail"><div class="rail-fill" id="railFill"></div></div>
 
   <div class="meta-row">
-    <span class="meta-eyebrow" id="eyebrow">A short guide</span>
+    <span class="meta-eyebrow" id="eyebrow">A short guide from Sean Ali</span>
     <span class="meta-count" id="pageCount">1 / 10</span>
   </div>
 
@@ -383,10 +118,10 @@ p.body:last-child{margin-bottom:0}
       <div class="chapter-inner cover">
         <div class="cover-byline">
           <div class="cover-avatar"><img src="https://statics.myclickfunnels.com/workspace/vGVGzP/image/20204117/file/904663e23eb23a39d6f2459104b7bccc.png" alt="Sean Ali"></div>
-          <div class="cover-byline-text"><strong>Sean Ali</strong>Subconscious reprogramming</div>
+          <div class="cover-byline-text"><strong>Sean Ali</strong>Money, the mind, and what I practice</div>
         </div>
-        <h1>Your brain learned <span class="accent">survival</span> before success.</h1>
-        <p class="lede">Why smart people stay stuck — and the one thing to do tonight, before you fall asleep.</p>
+        <h1>The money story in your head becomes the one you keep <span class="accent">rehearsing.</span></h1>
+        <p class="lede">Here's the simple before-bed practice I use to picture a different financial life — without pretending meditation replaces action.</p>
         <div class="cover-foot">9 short chapters · about 4 minutes</div>
       </div>
     </section>
@@ -395,29 +130,15 @@ p.body:last-child{margin-bottom:0}
     <section class="chapter" data-index="1">
       <div class="chapter-inner top-align">
         <div class="numeral">01</div>
-        <h1>Why smart people <span class="accent">still feel stuck</span></h1>
-        <p class="body">You know exactly what to do. And somehow… you still don't do it.</p>
-        <p class="body">It's not laziness. It's not even fear, exactly. It's more like an invisible hand on the brake — right before things get good.</p>
-        <p class="body">Here's what's actually happening:</p>
-        <div class="stack">
-          <div class="stack-item">
-            <div class="stack-label"><span class="emoji">❄️</span> The Freeze</div>
-            <div class="stack-text">You know the move. You've known for a while. But right before you take it, something stalls. That's not a planning problem — that's the brake.</div>
-          </div>
-          <div class="stack-item">
-            <div class="stack-label"><span class="emoji">🔄</span> The Loop</div>
-            <div class="stack-text">Things start improving… then something pulls them back. Same pattern, just a different outfit.</div>
-          </div>
-          <div class="stack-item">
-            <div class="stack-label"><span class="emoji">🌀</span> The Overthinking</div>
-            <div class="stack-text">Simple decisions turn into emotional weight. By the time you decide, the moment's passed.</div>
-          </div>
-          <div class="stack-item">
-            <div class="stack-label"><span class="emoji">🧠</span> The Real Cause</div>
-            <div class="stack-text">Grow up around stress and scarcity, and your brain starts treating tension as normal. Not weakness — just old code, still running.</div>
-          </div>
-        </div>
-        <div class="quote"><span class="who">Sean's take</span>These aren't character flaws. They're patterns that were useful once — now they're just brakes on a car that's trying to move.</div>
+        <h1>You can want more money and still <span class="accent">rehearse the opposite</span></h1>
+        <p class="body">You can want a better income.</p>
+        <p class="body">More savings. More freedom.</p>
+        <p class="body">And still spend most of the day thinking about what could go wrong. Checking the account. Thinking about what you cannot afford. Telling yourself you're behind. Looking at opportunities through the lens of what you do not have.</p>
+        <p class="body">I've done this too.</p>
+        <p class="body">After years of studying the mind while building businesses, one thing keeps standing out to me:</p>
+        <div class="quote"><span class="who">What I keep noticing</span>What you repeatedly think about affects what you notice, what you expect, and what you do next.</div>
+        <p class="body">Not magic. Not destiny. Just something worth paying attention to.</p>
+        <div class="quote"><span class="who">Sean's take</span>Belief without action does not build the life. But action gets a lot harder when your mind keeps rehearsing the opposite of where you want to go.</div>
       </div>
     </section>
 
@@ -425,13 +146,13 @@ p.body:last-child{margin-bottom:0}
     <section class="chapter" data-index="2">
       <div class="chapter-inner top-align">
         <div class="numeral">02</div>
-        <h1>The moment I <span class="accent">saw the pattern</span></h1>
-        <p class="body">I remember standing in my kitchen — fridge almost empty, rent due — feeling close to something I couldn't quite touch.</p>
-        <p class="body">I wasn't broke because I didn't work hard. I was working constantly. But every time things started moving, I'd find a way to slow them back down. Pull back right before the breakthrough.</p>
-        <p class="body">I thought it was discipline I was missing. Or strategy. It wasn't.</p>
-        <p class="body">When I understood that my nervous system was running a survival loop — one that treated forward movement as a threat — everything started to make sense.</p>
-        <p class="body">Not just the money stuff. The hesitation. The retreating. All of it was the same program.</p>
-        <p class="body">That's what this guide is really about. Not money hacks — the pattern underneath everything.</p>
+        <h1>Money has been personal for me <span class="accent">since I was a kid</span></h1>
+        <p class="body">I grew up in a single-parent home in Canada.</p>
+        <p class="body">Money pressure was real. I know what an empty fridge feels like.</p>
+        <p class="body">Years later, I learned how to build businesses and make money online. But making money did not automatically erase everything I had learned to think about money.</p>
+        <p class="body">That is part of why I became so interested in the mind.</p>
+        <p class="body">For 15 years and counting, I've read, studied, paid for courses and coaching, practiced meditation and visualization, built businesses, made mistakes, changed my mind, and kept testing what actually helps me.</p>
+        <p class="body">This guide is one small piece of what has held up for me.</p>
       </div>
     </section>
 
@@ -439,16 +160,19 @@ p.body:last-child{margin-bottom:0}
     <section class="chapter" data-index="3">
       <div class="chapter-inner top-align">
         <div class="numeral">03</div>
-        <h1>Your brain prefers <span class="accent">familiar</span> over successful</h1>
-        <p class="pull">"Your nervous system would rather stay familiar than become successful."</p>
-        <p class="body">This is the part most people miss. Your brain isn't trying to sabotage you — it's trying to protect you. From the unfamiliar. From the unknown. Even when the unknown is better.</p>
-        <p class="body">Stress becomes identity. Struggle becomes comfortable. And you stay exactly where you are — not from a lack of ambition, but because your system has been rehearsing the wrong scene.</p>
+        <h1>Your mind is practicing <span class="accent">something every day</span></h1>
+        <p class="body">Think about this.</p>
+        <p class="body">When you replay a bad conversation in your head, you are practicing it again.</p>
+        <p class="body">When you picture everything going wrong tomorrow, you are practicing that too.</p>
+        <p class="body">When you clearly picture something you want and then take a useful action toward it, that is also practice.</p>
+        <p class="body">I do not use visualization as a substitute for reality. I use it to decide what picture I want my mind returning to.</p>
         <ul class="checks">
-          <li>The discomfort of growth gets read as danger</li>
-          <li>Old survival loops override your clearest intentions</li>
-          <li>You're not broken — you're running old software</li>
+          <li>What do I actually want?</li>
+          <li>What would that life look like on an ordinary Tuesday?</li>
+          <li>What would I do differently if I believed it was possible?</li>
+          <li>What can I do today that moves me one step toward it?</li>
         </ul>
-        <div class="quote"><span class="who">Rewiring starts when you see the pattern</span>Once you realize the brain's priority is familiarity, not progress, everything changes. You stop fighting yourself and start reprogramming.</div>
+        <div class="quote"><span class="who">Keep both parts</span>The picture matters. Then the action matters.</div>
       </div>
     </section>
 
@@ -456,35 +180,18 @@ p.body:last-child{margin-bottom:0}
     <section class="chapter" data-index="4">
       <div class="chapter-inner top-align">
         <div class="numeral">04</div>
-        <h1>Which pattern <span class="accent">is yours?</span></h1>
-        <p class="body">Most people running a survival loop fall into one (or two) of these. See what lands.</p>
+        <h1>What are you rehearsing <span class="accent">about money?</span></h1>
+        <p class="body">You do not need to diagnose yourself.</p>
+        <p class="body">Just listen to the sentences already running through your head.</p>
         <div class="stack">
-          <div class="stack-item">
-            <div class="stack-label"><span class="emoji">❄️</span> The Freezer</div>
-            <div class="stack-text">Gets close to the move… then stalls. Feels stuck even with a clear plan.</div>
-          </div>
-          <div class="stack-item">
-            <div class="stack-label"><span class="emoji">🌀</span> The Overthinker</div>
-            <div class="stack-text">Analyzes everything into paralysis. Makes the same "almost" decision on repeat.</div>
-          </div>
-          <div class="stack-item">
-            <div class="stack-label"><span class="emoji">🚪</span> The Escaper</div>
-            <div class="stack-text">Distracts when pressure builds. Buries urgency under busywork or avoidance.</div>
-          </div>
-          <div class="stack-item">
-            <div class="stack-label"><span class="emoji">👻</span> The Invisible Achiever</div>
-            <div class="stack-text">Works hard but stays small. Uncomfortable being seen at the next level.</div>
-          </div>
-          <div class="stack-item">
-            <div class="stack-label"><span class="emoji">⚙️</span> The Survival Grinder</div>
-            <div class="stack-text">Always moving but never quite arriving. Hustle as a way to avoid stillness.</div>
-          </div>
-          <div class="stack-item">
-            <div class="stack-label"><span class="emoji">📉</span> The Sabotager</div>
-            <div class="stack-text">Things get good… then one decision resets the progress. Every time.</div>
-          </div>
+          <div class="stack-item"><div class="stack-text">“There's never enough.”</div></div>
+          <div class="stack-item"><div class="stack-text">“I'll deal with it later.”</div></div>
+          <div class="stack-item"><div class="stack-text">“People like me don't make that kind of money.”</div></div>
+          <div class="stack-item"><div class="stack-text">“If I make more, I'll probably lose it.”</div></div>
+          <div class="stack-item"><div class="stack-text">“I need to learn one more thing before I'm ready.”</div></div>
+          <div class="stack-item"><div class="stack-text">“I already know what I should do. I'm just avoiding it.”</div></div>
         </div>
-        <div class="quote"><span class="who">Sean's take</span>Most people are a mix of two or three of these. The pattern doesn't define you — it just tells you where the loop is running strongest.</div>
+        <p class="body">You do not need a label for any of this. Notice the sentence. Ask whether it still serves you. Then decide what you want to practice instead.</p>
       </div>
     </section>
 
@@ -492,20 +199,13 @@ p.body:last-child{margin-bottom:0}
     <section class="chapter" data-index="5">
       <div class="chapter-inner top-align">
         <div class="numeral">05</div>
-        <h1>Why <span class="accent">before sleep</span> is the real leverage point</h1>
-        <p class="body">Right before you fall asleep, your brain enters a state where it's dramatically more absorbent. The analytical filter drops. The subconscious is wide open.</p>
-        <p class="body">Most people spend that window scrolling, or replaying the day. That's not relaxing — that's the subconscious rehearsing more of the same.</p>
-        <div class="stack">
-          <div class="stack-item">
-            <div class="stack-label"><span class="emoji">📵</span> The trap</div>
-            <div class="stack-text">News, social media, or anxious thinking → the subconscious gets programmed with more stress.</div>
-          </div>
-          <div class="stack-item">
-            <div class="stack-label"><span class="emoji">🎧</span> The shift</div>
-            <div class="stack-text">5–7 minutes of targeted audio → the old subconscious loop starts weakening, and new patterns can form.</div>
-          </div>
-        </div>
-        <p class="body">No willpower. No belief required. Just repetition during the brain's most receptive state. That's what makes this different from motivation.</p>
+        <h1>Why I like doing this <span class="accent">before bed</span></h1>
+        <p class="body">I like the few minutes before bed because the day is finally quiet.</p>
+        <p class="body">No meetings. No notifications. Nobody asking me for anything.</p>
+        <p class="body">It gives me a clean moment to stop feeding my mind random input and deliberately picture what I'm building.</p>
+        <p class="body">Sometimes I visualize. Sometimes I listen to one of my reprogramming audios. Sometimes I just ask myself a better question.</p>
+        <p class="body">I'm not telling you seven minutes guarantees anything. It doesn't.</p>
+        <div class="quote"><span class="who">The point</span>If you are going to spend those last few minutes thinking anyway, you can choose what you rehearse.</div>
       </div>
     </section>
 
@@ -513,15 +213,16 @@ p.body:last-child{margin-bottom:0}
     <section class="chapter" data-index="6">
       <div class="chapter-inner top-align">
         <div class="numeral">06</div>
-        <h1>What to do <span class="accent">before sleep</span></h1>
+        <h1>Try this <span class="accent">tonight</span></h1>
         <ol class="ritual">
-          <li><span class="ritual-num">1</span> Stop scrolling 5 minutes before bed — give your brain a second to decompress.</li>
-          <li><span class="ritual-num">2</span> Headphones on — this works better when outside noise is removed.</li>
-          <li><span class="ritual-num">3</span> Listen to a subconscious reset audio (7 minutes) — don't analyze it, just let it run.</li>
-          <li><span class="ritual-num">4</span> Don't force anything — your brain does the work in the background.</li>
-          <li><span class="ritual-num">5</span> Repeat nightly — small interruptions compound fast.</li>
+          <li><span class="ritual-num">1</span><span><strong>Put the phone down.</strong> Give yourself a few quiet minutes.</span></li>
+          <li><span class="ritual-num">2</span><span><strong>Choose one financial outcome you actually want.</strong> Not ten things. One.</span></li>
+          <li><span class="ritual-num">3</span><span><strong>Picture one ordinary scene that would be true if it happened.</strong> Paying something without stress. Seeing a stronger month in your business. Looking at savings you deliberately built. Having the freedom to book the trip.</span></li>
+          <li><span class="ritual-num">4</span><span><strong>Notice what your mind immediately says back.</strong> Do not fight it. Just notice it.</span></li>
+          <li><span class="ritual-num">5</span><span><strong>Decide one action you will take tomorrow.</strong> Send the message. Publish the offer. Review the numbers. Ask the question. Learn the skill. Make the call.</span></li>
+          <li><span class="ritual-num">6</span><span><strong>Then relax.</strong> If you want, this is also where I use a guided money meditation.</span></li>
         </ol>
-        <div class="quote"><span class="who">You don't need to "believe" it</span>Your brain doesn't need your permission to shift patterns. It just needs consistent input in the right state. You're not hoping something works — you're using a window that's already open.</div>
+        <div class="quote"><span class="who">Remember</span>The point is not to pretend. The point is to stop letting the worst-case picture be the only picture your mind sees.</div>
       </div>
     </section>
 
@@ -529,24 +230,22 @@ p.body:last-child{margin-bottom:0}
     <section class="chapter" data-index="7">
       <div class="chapter-inner top-align">
         <div class="numeral">07</div>
-        <h1>Play this <span class="accent">before sleep tonight</span></h1>
-        <p class="body">7 minutes. Designed to interrupt the stress loop and let your nervous system rehearse something different.</p>
-        <p class="body" style="font-weight:600;margin-bottom:6px;">Most people notice:</p>
-        <ul class="checks">
-          <li>Less internal pressure around money</li>
-          <li>Less hesitation before decisions</li>
-          <li>Clearer thinking in the morning</li>
-          <li>The anxious edge starts going quiet</li>
-        </ul>
-        <a href="https://hypnoticmeditations.ai/pages/moneyflow" target="_blank" class="cta-btn primary">
+        <h1>The audio I made <span class="accent">for this</span></h1>
+        <p class="body">Eventually I turned this practice into <strong>Money Flow</strong>.</p>
+        <p class="body">It's a guided money meditation I can put on, close my eyes, and follow.</p>
+        <p class="body">The audio uses guided imagery, repetition, and a money-focused script to help you picture a wealthier life and rehearse a different relationship with earning, receiving, and keeping money.</p>
+        <p class="body">But I want to be clear about something.</p>
+        <p class="body"><strong>The audio does not make money for you.</strong></p>
+        <p class="body">You still have to learn. Decide. Work. Sell. Save. Build. Ask. Take the opportunity. Whatever the real-world move is for your life.</p>
+        <a href="https://hypnoticmeditations.ai/products/money-flow/" target="_blank" rel="noopener" class="cta-btn primary">
           <div class="cta-icon">🎧</div>
           <div class="cta-body">
-            <div class="cta-title">Listen tonight</div>
-            <div class="cta-sub">No signup · 7 minutes · headphones recommended</div>
+            <div class="cta-title">See Money Flow</div>
+            <div class="cta-sub">7-minute guided money meditation · $27 one-time · instant access</div>
           </div>
           <div class="cta-arrow">→</div>
         </a>
-        <div class="trust">Used by 125,000+ people before sleep</div>
+        <div class="trust">Personal-development audio · Results vary · Real-world action still matters.</div>
       </div>
     </section>
 
@@ -554,24 +253,23 @@ p.body:last-child{margin-bottom:0}
     <section class="chapter" data-index="8">
       <div class="chapter-inner top-align">
         <div class="numeral">08</div>
-        <h1>Want deeper <span class="accent">reprogramming?</span></h1>
-        <p class="body">Targeted subconscious tools for specific emotional blocks. Browse by what you feel most stuck in — these go deeper than general relaxation.</p>
-        <div class="tags">
-          <span class="tag">💰 money stress</span>
-          <span class="tag">🧠 overthinking</span>
-          <span class="tag">😰 anxiety loops</span>
-          <span class="tag">⚡ confidence</span>
-          <span class="tag">💎 self‑worth</span>
-          <span class="tag">🌙 deep sleep</span>
-        </div>
-        <a href="https://www.hypnoticmeditations.ai" target="_blank" class="cta-btn">
-          <div class="cta-icon">📚</div>
-          <div class="cta-body">
-            <div class="cta-title">Explore the meditation library</div>
-            <div class="cta-sub">21+ targeted subconscious programs</div>
-          </div>
-          <div class="cta-arrow">→</div>
-        </a>
+        <h1>Use the audio. <span class="accent">Then do something.</span></h1>
+        <p class="body">This part matters.</p>
+        <p class="body">Do not turn meditation into another way to avoid your life.</p>
+        <p class="body">If you listen, pair it with movement.</p>
+        <ul class="checks">
+          <li>Send the proposal.</li>
+          <li>Publish the product.</li>
+          <li>Ask for the raise.</li>
+          <li>Look at the numbers.</li>
+          <li>Apply for the opportunity.</li>
+          <li>Save the money.</li>
+          <li>Learn the skill.</li>
+          <li>Make the call.</li>
+        </ul>
+        <p class="body">Your action will be different from mine. That is fine.</p>
+        <p class="body">The important part is that the mental practice eventually points back toward reality.</p>
+        <div class="quote"><span class="who">Sean's take</span>I use the mind work to support action — not replace it.</div>
       </div>
     </section>
 
@@ -579,22 +277,21 @@ p.body:last-child{margin-bottom:0}
     <section class="chapter" data-index="9">
       <div class="chapter-inner top-align">
         <div class="numeral">09</div>
-        <h1>Stop rehearsing the <span class="accent">old loop</span></h1>
-        <a href="https://hypnoticmeditations.ai/pages/moneyflow" target="_blank" class="cta-btn primary">
+        <h1>Choose what you <span class="accent">rehearse tonight</span></h1>
+        <p class="body">You are going to think about something before you fall asleep.</p>
+        <p class="body">You can replay the same worries.</p>
+        <p class="body">Or you can spend a few minutes picturing the life you are trying to build.</p>
+        <p class="body">Then wake up tomorrow and do something that moves you toward it.</p>
+        <p class="body">That is the whole idea.</p>
+        <a href="https://hypnoticmeditations.ai/products/money-flow/" target="_blank" rel="noopener" class="cta-btn primary">
           <div class="cta-icon">🎧</div>
           <div class="cta-body">
-            <div class="cta-title">Play the 7-minute reset</div>
+            <div class="cta-title">See Money Flow</div>
+            <div class="cta-sub">Listen to the guided money meditation I made for this practice.</div>
           </div>
           <div class="cta-arrow">→</div>
         </a>
-        <a href="https://www.hypnoticmeditations.ai" target="_blank" class="cta-btn">
-          <div class="cta-icon">🧠</div>
-          <div class="cta-body">
-            <div class="cta-title">Explore the meditation library</div>
-          </div>
-          <div class="cta-arrow">→</div>
-        </a>
-        <div class="quote"><span class="who">One shift. Then another.</span>You don't need to fix everything tonight. Just start the reset. The rest follows — not because you forced it, but because the pattern finally has somewhere else to go.</div>
+        <div class="quote"><span class="who">Take what helps</span>Test it in your own life. Keep what holds up.</div>
       </div>
     </section>
 
@@ -618,16 +315,16 @@ p.body:last-child{margin-bottom:0}
   var nextBtn = document.getElementById('nextBtn');
 
   var eyebrows = [
-    "A short guide",
-    "Chapter 1 — The invisible loop",
-    "Chapter 2 — Why I became obsessed with this",
-    "Chapter 3 — The core mechanism",
-    "Chapter 4 — Recognize yourself",
-    "Chapter 5 — The window",
-    "Chapter 6 — Tonight's move",
-    "Chapter 7 — Start tonight",
-    "Chapter 8 — Deeper work",
-    "Chapter 9 — Final word"
+    "A short guide from Sean Ali",
+    "Chapter 1 — The money story",
+    "Chapter 2 — Why this became personal",
+    "Chapter 3 — What the mind practices",
+    "Chapter 4 — Listen to your language",
+    "Chapter 5 — Why I use bedtime",
+    "Chapter 6 — Try this tonight",
+    "Chapter 7 — The audio",
+    "Chapter 8 — Action still matters",
+    "Chapter 9 — Your next move"
   ];
 
   function render(){
@@ -638,7 +335,6 @@ p.body:last-child{margin-bottom:0}
     railFill.style.width = (current/(total-1)*100) + '%';
     pageCount.textContent = (current+1) + ' / ' + total;
     eyebrow.textContent = eyebrows[current];
-
     backBtn.disabled = (current === 0);
 
     if(current === 0){
@@ -653,7 +349,7 @@ p.body:last-child{margin-bottom:0}
   function go(delta){
     var n = current + delta;
     if(n < 0) n = 0;
-    if(n > total-1){ n = 0; } // restart from final chapter
+    if(n > total-1){ n = 0; }
     current = n;
     render();
   }
@@ -666,7 +362,6 @@ p.body:last-child{margin-bottom:0}
     if(e.key === 'ArrowLeft') go(-1);
   });
 
-  // swipe support
   var startX = null;
   var viewport = document.getElementById('viewport');
   viewport.addEventListener('touchstart', function(e){
@@ -675,9 +370,7 @@ p.body:last-child{margin-bottom:0}
   viewport.addEventListener('touchend', function(e){
     if(startX === null) return;
     var dx = e.changedTouches[0].clientX - startX;
-    if(Math.abs(dx) > 50){
-      go(dx < 0 ? 1 : -1);
-    }
+    if(Math.abs(dx) > 50){ go(dx < 0 ? 1 : -1); }
     startX = null;
   }, {passive:true});
 
