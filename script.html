@@ -232,7 +232,7 @@
             productImage.alt = option.dataset.productAlt;
             productThumb.src = option.dataset.productImage;
             productThumb.alt = option.dataset.productAlt + ' thumbnail';
-            gallerySlides[0] = { src: option.dataset.productImage, alt: option.datasetProductAlt, caption: option.dataset.productCaption };
+            gallerySlides[0] = { src: option.dataset.productImage, alt: option.dataset.productAlt, caption: option.dataset.productCaption };
             galleryThumbs[0].querySelector('img').src = option.dataset.productImage;
             showSlide(0);
             price.textContent = option.dataset.productPrice;
