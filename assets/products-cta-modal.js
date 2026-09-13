@@ -7,8 +7,8 @@
       title:'Choose how you want to use Manifestation Genie',
       support:'Start with your first wish free, or use the Genie for 30 days.',
       options:[
-        {name:'First Wish Free',price:'$0',billing:'free',summary:'Try the Genie with your first wish before paying.',benefits:['Clarify the goal you want to work on','Get a personalized visualization and script','Leave with one concrete next action'],url:'https://www.manifestationgenie.ai/',cta:'Start My Free Wish',value:0,paid:false,original:true,nextTitle:'Start with your first wish',nextCopy:'Open Manifestation Genie and begin free.'},
-        {name:'30-Day Pass',price:'$10',billing:'30 days',summary:'Keep using the same guided money-goal process for 30 days.',benefits:['30 days of Manifestation Genie access','Repeat the daily money-goal ritual','Keep the same goal moving with concrete actions'],url:'https://www.manifestationgenie.ai/pricing',cta:'See The 30-Day Pass — $10',value:10,paid:true,badge:'Recommended',nextTitle:'Use the Genie for 30 days',nextCopy:'Review the 30-day access option and continue from the pricing page.'}
+        {name:'First Wish Free',price:'$0',billing:'free',summary:'Try the Genie with your first wish before paying.',benefits:['Clarify the goal you want to work on','Get a personalized visualization and script','Leave with one concrete next action'],url:'https://www.manifestationgenie.ai/',cta:'Start My Free Wish',value:0,paid:false,checkout:false,original:true,nextTitle:'Start with your first wish',nextCopy:'Open Manifestation Genie and begin free.'},
+        {name:'30-Day Pass',price:'$10',billing:'30 days',summary:'Keep using the same guided money-goal process for 30 days.',benefits:['30 days of Manifestation Genie access','Repeat the daily money-goal ritual','Keep the same goal moving with concrete actions'],url:'https://www.manifestationgenie.ai/pricing',cta:'See The 30-Day Pass — $10',value:10,paid:true,checkout:false,badge:'Recommended',nextTitle:'Use the Genie for 30 days',nextCopy:'Review the 30-day access option and continue from the pricing page.'}
       ]
     },
     'money-flow':{
@@ -16,8 +16,8 @@
       title:'Choose your Money Flow path',
       support:'Start with Money Flow, or get the broader five-session Money Mind Stack.',
       options:[
-        {name:'Money Flow',price:'$27',billing:'one-time',summary:'The focused money-mindset audio you clicked to see.',benefits:['Focused wealth-hypnosis session','Built around earning, receiving, and keeping money','See the full Money Flow page before you decide'],url:'/moneyflow.html',cta:'See Money Flow — $27',value:27,paid:true,original:true,nextTitle:'See Money Flow',nextCopy:'Continue to the full Money Flow page.'},
-        {name:'Money Mind Stack',price:'$57',billing:'one-time',summary:'Five money-focused sessions in one bundle.',benefits:['Money Flow included','ATM In Your Mind + Money Magnet','Quantum Cash + Money Wave'],url:'https://buy.hypnoticmeditations.ai/l/bundle-money',cta:'Get The Money Mind Stack — $57',value:57,paid:true,badge:'Best Value',nextTitle:'Get the broader money stack',nextCopy:'Go directly to the Money Mind Stack checkout.'}
+        {name:'Money Flow',price:'$27',billing:'one-time',summary:'The focused money-mindset audio you clicked to see.',benefits:['Focused wealth-hypnosis session','Built around earning, receiving, and keeping money','See the full Money Flow page before you decide'],url:'/moneyflow.html',cta:'See Money Flow — $27',value:27,paid:true,checkout:false,original:true,nextTitle:'See Money Flow',nextCopy:'Continue to the full Money Flow page.'},
+        {name:'Money Mind Stack',price:'$57',billing:'one-time',summary:'Five money-focused sessions in one bundle.',benefits:['Money Flow included','ATM In Your Mind + Money Magnet','Quantum Cash + Money Wave'],url:'https://buy.hypnoticmeditations.ai/l/bundle-money',cta:'Get The Money Mind Stack — $57',value:57,paid:true,checkout:true,badge:'Best Value',nextTitle:'Get the broader money stack',nextCopy:'Go directly to the Money Mind Stack checkout.'}
       ]
     },
     'ai-freedom':{
@@ -25,8 +25,8 @@
       title:'Choose your AI Freedom path',
       support:'See the system first, or go straight to the complete full-system course.',
       options:[
-        {name:'AI Freedom System',price:'$7',billing:'/mo path',summary:'See the full system page and the lower-friction membership path.',benefits:['Practical AI workflows and training','Build content, products, leads, and funnels','Choose the path that fits before paying'],url:'/system.html',cta:'See AI Freedom System',value:7,paid:false,original:true,nextTitle:'Explore the system',nextCopy:'Continue to the full AI Freedom System page.'},
-        {name:'AI Freedom Full System',price:'$297',billing:'one-time',summary:'Go straight to the complete course checkout.',benefits:['Complete AI Freedom System course','Choose and build a simple online offer','Create sales-page and email assets with AI'],url:'https://whop.com/checkout/1pbVYNc863wiBvTlYd-4Xtw-ZbJ1-n6mO-V5FR2Xq3VxPp/',cta:'Get The Full System — $297',value:297,paid:true,badge:'Full System',nextTitle:'Get the complete course',nextCopy:'Continue to the secure Whop checkout.'}
+        {name:'AI Freedom System',price:'$7/mo',billing:'membership path',summary:'See the full system page and the lower-friction membership path.',benefits:['Practical AI workflows and training','Build content, products, leads, and funnels','Choose the path that fits before paying'],url:'/system.html',cta:'See AI Freedom System',value:7,paid:true,checkout:false,original:true,nextTitle:'Explore the system',nextCopy:'Continue to the full AI Freedom System page.'},
+        {name:'AI Freedom Full System',price:'$297',billing:'one-time',summary:'Go straight to the complete course checkout.',benefits:['Complete AI Freedom System course','Choose and build a simple online offer','Create sales-page and email assets with AI'],url:'https://whop.com/checkout/1pbVYNc863wiBvTlYd-4Xtw-ZbJ1-n6mO-V5FR2Xq3VxPp/',cta:'Get The Full System — $297',value:297,paid:true,checkout:true,badge:'Full System',nextTitle:'Get the complete course',nextCopy:'Continue to the secure Whop checkout.'}
       ]
     },
     'money-wave':{
@@ -34,8 +34,8 @@
       title:'Choose your money-audio starting point',
       support:'Keep the free MoneyWave path, or move into the focused Money Flow practice.',
       options:[
-        {name:'MoneyWave Free',price:'$0',billing:'free',summary:'Get the free 7-minute money meditation you clicked for.',benefits:['Free 7-minute money meditation','Listen before deciding on anything paid','Download it and use it again'],url:'/free.html',cta:'Get MoneyWave Free',value:0,paid:false,original:true,nextTitle:'Get the free audio',nextCopy:'Continue to the free MoneyWave page.'},
-        {name:'Money Flow',price:'$27',billing:'one-time',summary:'Move from the free sample into the flagship money-focused audio.',benefits:['Focused wealth-hypnosis session','Built around financial resistance and receiving','One-time purchase'],url:'https://buy.hypnoticmeditations.ai/l/hzxybu',cta:'Get Money Flow — $27',value:27,paid:true,badge:'Next Step',nextTitle:'Go deeper with Money Flow',nextCopy:'Continue directly to Money Flow checkout.'}
+        {name:'MoneyWave Free',price:'$0',billing:'free',summary:'Get the free 7-minute money meditation you clicked for.',benefits:['Free 7-minute money meditation','Listen before deciding on anything paid','Download it and use it again'],url:'/free.html',cta:'Get MoneyWave Free',value:0,paid:false,checkout:false,original:true,nextTitle:'Get the free audio',nextCopy:'Continue to the free MoneyWave page.'},
+        {name:'Money Flow',price:'$27',billing:'one-time',summary:'Move from the free sample into the flagship money-focused audio.',benefits:['Focused wealth-hypnosis session','Built around financial resistance and receiving','One-time purchase'],url:'https://buy.hypnoticmeditations.ai/l/hzxybu',cta:'Get Money Flow — $27',value:27,paid:true,checkout:true,badge:'Next Step',nextTitle:'Go deeper with Money Flow',nextCopy:'Continue directly to Money Flow checkout.'}
       ]
     },
     reset:{
@@ -43,8 +43,8 @@
       title:'Choose your next reset',
       support:'Take the 60-second reset free, or continue with a 30-day guided Genie practice.',
       options:[
-        {name:'60-Second New Life Reset',price:'$0',billing:'free',summary:'Take the short questionnaire you clicked to try.',benefits:['Answer seven short questions','Get a reflection based on your answers','Receive a few lines to read and practice'],url:'/assets/2026-07-09-60-second-new-life-reset.html',cta:'Try The Free Reset',value:0,paid:false,original:true,nextTitle:'Take the free reset',nextCopy:'Continue to the 60-second questionnaire.'},
-        {name:'Manifestation Genie 30-Day Pass',price:'$10',billing:'30 days',summary:'Turn the same reflection into a longer guided goal practice.',benefits:['Interactive goal questions','Personalized visualization and script','Repeat the guided process for 30 days'],url:'https://www.manifestationgenie.ai/pricing',cta:'See 30-Day Genie — $10',value:10,paid:true,badge:'Deeper Path',nextTitle:'Continue for 30 days',nextCopy:'Review the 30-day Manifestation Genie option.'}
+        {name:'60-Second New Life Reset',price:'$0',billing:'free',summary:'Take the short questionnaire you clicked to try.',benefits:['Answer seven short questions','Get a reflection based on your answers','Receive a few lines to read and practice'],url:'/assets/2026-07-09-60-second-new-life-reset.html',cta:'Try The Free Reset',value:0,paid:false,checkout:false,original:true,nextTitle:'Take the free reset',nextCopy:'Continue to the 60-second questionnaire.'},
+        {name:'Manifestation Genie 30-Day Pass',price:'$10',billing:'30 days',summary:'Turn the same reflection into a longer guided goal practice.',benefits:['Interactive goal questions','Personalized visualization and script','Repeat the guided process for 30 days'],url:'https://www.manifestationgenie.ai/pricing',cta:'See 30-Day Genie — $10',value:10,paid:true,checkout:false,badge:'Deeper Path',nextTitle:'Continue for 30 days',nextCopy:'Review the 30-day Manifestation Genie option.'}
       ]
     }
   };
@@ -84,7 +84,9 @@
     text('sa-offer-next-copy',offer.nextCopy);
     continueLink.textContent=offer.cta+' →';
     continueLink.href=offer.url;
-    text('sa-offer-note',offer.paid?'Pricing shown before final payment.':'Free path stays available. No payment required to continue.');
+    if(!offer.paid)text('sa-offer-note','Free path stays available. No payment required to continue.');
+    else if(offer.checkout)text('sa-offer-note','You will review the final order before payment.');
+    else text('sa-offer-note','See the full details and pricing before payment.');
   }
 
   function renderOptions(){
@@ -139,12 +141,14 @@
     if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
     else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
   });
+
   continueLink.addEventListener('click',function(){
     if(!currentConfig)return;
     var offer=currentConfig.options[selectedIndex];
     track('contextual_offer_continue',{context:currentKey,offer:offer.name,value:offer.value,currency:'USD'});
     if(typeof window.fbq==='function'){
-      if(offer.paid){window.fbq('track','InitiateCheckout',{content_name:offer.name,value:offer.value,currency:'USD'});}
+      if(offer.checkout){window.fbq('track','InitiateCheckout',{content_name:offer.name,value:offer.value,currency:'USD'});}
+      else if(offer.paid){window.fbq('trackCustom','ContextualPaidPathContinue',{content_name:offer.name,value:offer.value,currency:'USD'});}
       else{window.fbq('trackCustom','ContextualFreePathContinue',{content_name:offer.name});}
     }
   });
