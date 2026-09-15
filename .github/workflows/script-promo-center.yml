@@ -1,8 +1,35 @@
-name: Script promo announcement bar
+name: Blog hero proper case
 on:
-  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/script-promo-center.yml'
+permissions:
+  contents: write
 jobs:
-  noop:
+  patch:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "One-time Script announcement-bar update already applied."
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Update blog hero capitalization and restore workflow
+        shell: python
+        run: |
+          from pathlib import Path
+          p = Path('blog/index.html')
+          text = p.read_text()
+          old = 'I’ve learned most of this the hard way. Maybe you won’t have to.'
+          new = 'I’ve Learned Most of This the Hard Way. Maybe You Won’t Have To.'
+          if old not in text:
+              raise SystemExit('Target blog hero text not found')
+          p.write_text(text.replace(old, new, 1))
+
+          wf = Path('.github/workflows/script-promo-center.yml')
+          wf.write_text('''name: Script promo announcement bar\non:\n  workflow_dispatch:\njobs:\n  noop:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo "One-time Script announcement-bar update already applied."\n''')
+      - name: Commit change
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add blog/index.html .github/workflows/script-promo-center.yml
+          git commit -m "Proper case blog hero headline"
+          git push
