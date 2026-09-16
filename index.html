@@ -103,9 +103,20 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
         <iframe src="https://www.youtube-nocookie.com/embed/zPq6adrXwg4?rel=0" title="Watch Sean Ali on YouTube" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
       </div>
       <p class="welcome-copy">I share the tools I use to break subconscious blocks, rewire my mindset, earn online, and build more freedom.</p>
-      <div class="welcome-actions">
-        <a class="button" href="/script">START WITH THE 7-MINUTE SCRIPT <span class="btn-arrow" aria-hidden="true">&#8594;</span></a>
-      </div>
+      <form class="welcome-optin" id="homepage-script-optin" method="post" action="https://www.aweber.com/scripts/addlead.pl">
+        <label class="sr-only" for="homepage-script-name">First name</label>
+        <input id="homepage-script-name" type="text" name="name" placeholder="First name" autocomplete="given-name" required>
+        <label class="sr-only" for="homepage-script-email">Email address</label>
+        <input id="homepage-script-email" type="email" name="email" placeholder="Email address" autocomplete="email" required>
+        <input type="hidden" name="listname" value="awlist6946418">
+        <input type="hidden" name="redirect" value="https://seanali.online/script">
+        <input type="hidden" name="meta_redirect_onlist" value="https://seanali.online/script">
+        <input type="hidden" name="meta_tags" value="homepage,7-minute-script">
+        <input type="hidden" name="meta_adtracking" value="Homepage 7-Minute Script Optin">
+        <input type="hidden" name="meta_required" value="name,email">
+        <button id="homepage-script-submit" class="button" type="submit">START WITH THE 7-MINUTE SCRIPT <span class="btn-arrow" aria-hidden="true">&#8594;</span></button>
+      </form>
+      <p class="welcome-optin-note">Free access. Enter your details and I’ll take you straight to it.</p>
     </div>
   </div>
 </header>
@@ -267,9 +278,11 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 
 <script>
 (function(){
-  var form=document.getElementById('homepage-optin');
-  var submit=document.getElementById('homepage-submit');
-  if(form&&submit){form.addEventListener('submit',function(){submit.textContent='SENDING...';submit.disabled=true;if(typeof window.fbq==='function')window.fbq('track','Lead');});}
+  [['homepage-optin','homepage-submit'],['homepage-script-optin','homepage-script-submit']].forEach(function(ids){
+    var form=document.getElementById(ids[0]);
+    var submit=document.getElementById(ids[1]);
+    if(form&&submit){form.addEventListener('submit',function(){submit.textContent='SENDING...';submit.disabled=true;if(typeof window.fbq==='function')window.fbq('track','Lead');});}
+  });
 })();
 </script>
 <script id="respondio__growth_tool" src="https://cdn.respond.io/widget/widget.js?wId=7f9488bf-e487-4928-9b01-6edb55b2ad22"></script>
