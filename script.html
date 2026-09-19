@@ -106,8 +106,11 @@
 .final-simple .payment-trust{justify-content:center}
 .promo-active-chip{display:inline-flex;align-items:center;width:max-content;margin-right:7px;padding:4px 7px;border-radius:999px;background:#eaf7ee;color:#16723b;font-size:10px;font-weight:900;line-height:1;text-transform:uppercase;letter-spacing:.05em;text-decoration:none!important}
 .hm-flow-video{margin-top:26px}
+.script-vsl-top{padding:26px 0 6px;background:#fff}
+.script-vsl-top .hm-flow-video{margin-top:0}
 @media(max-width:760px){
   .simple-section{padding:54px 0}
+  .script-vsl-top{padding:16px 0 0}
   .simple-steps,.how-grid,.proof-story,.offer-simple{grid-template-columns:1fr}
   .proof-story{gap:24px}
   .proof-story img{max-width:320px;margin:0 auto}
@@ -151,6 +154,12 @@
     </header>
 
     <main>
+      <section class="script-vsl-top" aria-label="The 7-Minute Script video">
+        <div class="pdp-container">
+          <div class="hm-flow-video" id="hmFlowVslPlayer"><div class="hm-flow-video__placeholder" id="hmFlowVslPlaceholder">Loading the 7-Minute Script training...</div></div>
+        </div>
+      </section>
+
       <section class="pdp-hero">
         <div class="pdp-container pdp-hero__grid">
           <div class="pdp-gallery">
@@ -212,7 +221,6 @@
           </div>
         </div>
         <div class="pdp-container">
-          <div class="hm-flow-video" id="hmFlowVslPlayer"><div class="hm-flow-video__placeholder" id="hmFlowVslPlaceholder">Loading the 7-Minute Script training...</div></div>
           <p class="disclaimer">The 7-Minute Wealth Script is a personal-development audio. It does not guarantee income or replace financial advice, skill, offers, sales, or real-world action.</p>
         </div>
       </section>
