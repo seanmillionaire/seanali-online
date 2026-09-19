@@ -41,6 +41,36 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    .sticky-value-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: linear-gradient(95deg, #991B1B 0%, #DC2626 50%, #EF4444 100%);
+      color: white;
+      padding: 15px 16px;
+      text-align: center;
+      font-size: clamp(14px, 2.6vw, 22px);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+      box-shadow: 0 8px 26px rgba(185, 28, 28, 0.32);
+      border-bottom: 1px solid rgba(255,255,255,0.26);
+      animation: urgentPulse 1.4s ease-in-out 2;
+    }
+
+    .sticky-value-bar span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    @keyframes urgentPulse {
+      0%,100% { filter: brightness(1); }
+      50% { filter: brightness(1.08); }
+    }
+
     .page {
       min-height: 100vh;
       background:
@@ -276,6 +306,10 @@
   </style>
 </head>
 <body>
+<div class="sticky-value-bar">
+  <span>🔥 Regularly $27 — Complimentary For A Limited Time</span>
+</div>
+
 <div class="page">
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N3NV5TNP" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
