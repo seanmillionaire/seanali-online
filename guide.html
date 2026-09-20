@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sean Ali — The Money Story You Rehearse</title>
-<meta name="description" content="A short guide from Sean Ali on noticing the money story you repeat, using visualization before bed, and pairing mind work with real-world action.">
-<meta property="og:title" content="Sean Ali — The Money Story You Rehearse">
-<meta property="og:description" content="A short guide from Sean Ali on noticing the money story you repeat, using visualization before bed, and pairing mind work with real-world action.">
+<title>Sean Ali — The 5-Minute Money Visualization Guide</title>
+<meta name="description" content="Choose one financial goal, turn it into a scene you can picture, and leave with one real action to take tomorrow.">
+<meta property="og:title" content="The 5-Minute Money Visualization Guide — Sean Ali">
+<meta property="og:description" content="Choose one financial goal, build one 10-second visualization, and decide the real action you will take tomorrow.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://seanali.online/guide">
 <meta property="og:image" content="https://statics.myclickfunnels.com/workspace/vGVGzP/image/20204117/file/904663e23eb23a39d6f2459104b7bccc.png">
@@ -15,283 +15,232 @@
 <link rel="canonical" href="https://seanali.online/guide">
 <link rel="icon" type="image/png" href="https://hypnoticmeditations.b-cdn.net/images/fav/headphones.png">
 <link rel="apple-touch-icon" href="https://hypnoticmeditations.b-cdn.net/images/fav/headphones.png">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
-
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --paper:#faf6f0;
-  --paper-deep:#f1e6d8;
-  --ink:#2b2420;
-  --ink-soft:#6b5f54;
-  --muted:#aa9d8d;
-  --rule:#e7dbc9;
-  --accent:#ff3c00;
-  --accent-soft:#fdece3;
-}
+:root{--paper:#faf6f0;--paper-deep:#f1e6d8;--ink:#2b2420;--ink-soft:#6b5f54;--muted:#aa9d8d;--rule:#e7dbc9;--accent:#ff3c00;--accent-soft:#fdece3;--white:#fffdf9}
 html,body{height:100%}
-body{
-  background:var(--paper);
-  color:var(--ink);
-  font-family:"DM Sans",sans-serif;
-  -webkit-font-smoothing:antialiased;
-  overflow:hidden;
-}
+body{background:var(--paper);color:var(--ink);font-family:"DM Sans",sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
 .book{height:100vh;display:flex;flex-direction:column}
 .rail{position:relative;height:3px;background:var(--rule);flex-shrink:0}
-.rail-fill{position:absolute;top:0;left:0;height:100%;background:var(--accent);transition:width .45s cubic-bezier(.4,0,.2,1)}
+.rail-fill{position:absolute;top:0;left:0;height:100%;background:var(--accent);transition:width .35s ease}
 .meta-row{display:flex;justify-content:space-between;align-items:center;padding:18px 28px 0;flex-shrink:0}
 .meta-eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
 .meta-count{font-size:12px;font-weight:600;letter-spacing:.08em;color:var(--muted);font-variant-numeric:tabular-nums}
 .viewport{flex:1;position:relative;overflow:hidden}
-.chapter{position:absolute;inset:0;overflow-y:auto;padding:18px 28px 32px;opacity:0;transform:translateY(14px);pointer-events:none;transition:opacity .4s ease,transform .4s ease;-webkit-overflow-scrolling:touch}
+.chapter{position:absolute;inset:0;overflow-y:auto;padding:18px 28px 34px;opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .35s ease,transform .35s ease;-webkit-overflow-scrolling:touch}
 .chapter.active{opacity:1;transform:translateY(0);pointer-events:auto}
-.chapter-inner{max-width:560px;margin:0 auto;padding-top:8px;min-height:100%;display:flex;flex-direction:column;justify-content:center}
+.chapter-inner{max-width:600px;margin:0 auto;padding:8px 0 20px;min-height:100%;display:flex;flex-direction:column;justify-content:center}
 .chapter-inner.top-align{justify-content:flex-start}
-.numeral{font-family:"DM Serif Display",serif;font-style:italic;font-size:120px;line-height:1;color:var(--accent);opacity:.08;position:absolute;top:-6px;right:8px;pointer-events:none;user-select:none}
-h1{font-family:"DM Serif Display",serif;font-style:italic;font-weight:400;font-size:clamp(30px,7vw,42px);line-height:1.18;margin-bottom:18px;position:relative;z-index:1}
+.numeral{font-family:"DM Serif Display",serif;font-style:italic;font-size:110px;line-height:1;color:var(--accent);opacity:.08;position:absolute;top:-4px;right:10px;pointer-events:none;user-select:none}
+h1{font-family:"DM Serif Display",serif;font-style:italic;font-weight:400;font-size:clamp(30px,7vw,43px);line-height:1.16;margin-bottom:16px;position:relative;z-index:1}
 h1 .accent{color:var(--accent)}
-.lede{font-family:"Newsreader",serif;font-size:1.2rem;line-height:1.7;color:var(--ink-soft);margin-bottom:18px}
-p.body{font-family:"Newsreader",serif;font-size:1.12rem;line-height:1.75;margin-bottom:16px}
-p.body:last-child{margin-bottom:0}
-.quote{border-left:3px solid var(--accent);padding-left:18px;margin:22px 0;font-family:"Newsreader",serif;font-style:italic;font-size:1.08rem;line-height:1.65;color:var(--ink)}
-.quote .who{display:block;font-family:"DM Sans",sans-serif;font-style:normal;font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
-.pull{font-family:"DM Serif Display",serif;font-style:italic;font-size:clamp(22px,5.5vw,30px);line-height:1.35;text-align:center;margin:8px 0 26px;padding:0 6px}
-.stack{margin:18px 0 6px}
-.stack-item{padding:16px 0;border-top:1px solid var(--rule)}
-.stack-item:first-child{border-top:1px solid var(--rule)}
-.stack-label{font-family:"DM Sans",sans-serif;font-weight:700;font-size:1rem;margin-bottom:4px;display:flex;align-items:baseline;gap:8px}
-.stack-label .emoji{font-size:1.1rem}
-.stack-text{font-family:"Newsreader",serif;font-size:1.02rem;line-height:1.6;color:var(--ink-soft)}
-.ritual{list-style:none;margin:18px 0}
-.ritual li{display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--rule);font-family:"Newsreader",serif;font-size:1.08rem;line-height:1.6}
-.ritual li:first-child{border-top:1px solid var(--rule)}
-.ritual-num{font-family:"DM Sans",sans-serif;font-weight:700;font-size:.85rem;color:var(--accent);border:1.5px solid var(--accent);border-radius:999px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
-.checks{list-style:none;margin:16px 0}
-.checks li{font-family:"Newsreader",serif;font-size:1.05rem;line-height:1.6;padding:6px 0;display:flex;gap:10px}
-.checks li::before{content:"✓";color:var(--accent);font-weight:700;flex-shrink:0}
-.tags{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
-.tag{background:var(--paper-deep);border-radius:999px;padding:6px 14px;font-size:.85rem;font-weight:500}
-.cta-btn{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--paper);background:var(--ink);border-radius:16px;padding:18px 20px;margin:22px 0 8px;transition:transform .2s ease,box-shadow .2s ease;box-shadow:0 6px 18px -8px rgba(43,36,32,.35)}
-.cta-btn:hover{transform:translateY(-2px)}
-.cta-btn.primary{background:var(--accent);box-shadow:0 8px 22px -8px rgba(255,60,0,.55)}
-.cta-icon{font-size:24px;line-height:1}
-.cta-body{flex:1}
-.cta-title{font-family:"DM Sans",sans-serif;font-weight:700;font-size:1.02rem;letter-spacing:.01em}
-.cta-sub{font-family:"DM Sans",sans-serif;font-size:.78rem;opacity:.8;margin-top:2px}
-.cta-arrow{font-size:20px;flex-shrink:0}
-.trust{font-family:"DM Sans",sans-serif;font-size:.78rem;color:var(--muted);text-align:center;margin-top:6px}
-.cover{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;text-align:left}
-.cover-byline{display:flex;align-items:center;gap:12px;margin-bottom:30px}
+.lede{font-family:"Newsreader",serif;font-size:1.18rem;line-height:1.68;color:var(--ink-soft);margin-bottom:18px}
+p.body{font-family:"Newsreader",serif;font-size:1.09rem;line-height:1.72;margin-bottom:14px}
+.quote{border-left:3px solid var(--accent);padding-left:18px;margin:20px 0;font-family:"Newsreader",serif;font-style:italic;font-size:1.06rem;line-height:1.62}
+.quote .who{display:block;font-family:"DM Sans",sans-serif;font-style:normal;font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:7px}
+.cover{align-items:flex-start;text-align:left}
+.cover-byline{display:flex;align-items:center;gap:12px;margin-bottom:24px}
 .cover-avatar{width:46px;height:46px;border-radius:50%;overflow:hidden;border:2px solid var(--ink);flex-shrink:0}
 .cover-avatar img{width:100%;height:100%;object-fit:cover}
 .cover-byline-text{font-size:.85rem;color:var(--ink-soft)}
 .cover-byline-text strong{display:block;color:var(--ink);font-weight:700}
-.cover h1{font-size:clamp(34px,9vw,52px)}
-.cover-foot{margin-top:34px;font-family:"DM Sans",sans-serif;font-size:.85rem;color:var(--muted)}
-.nav-bar{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-top:1px solid var(--rule);background:var(--paper)}
-.nav-btn{font-family:"DM Sans",sans-serif;font-weight:600;font-size:.95rem;background:none;border:none;cursor:pointer;color:var(--ink);display:flex;align-items:center;gap:8px;padding:8px 4px}
-.nav-btn:disabled{opacity:.25;cursor:default}
-.nav-btn.primary{background:var(--ink);color:var(--paper);border-radius:999px;padding:12px 24px}
-.nav-btn.primary.accent{background:var(--accent)}
-@media(max-width:520px){.chapter{padding:14px 20px 26px}.meta-row{padding:14px 20px 0}.nav-bar{padding:12px 20px}.numeral{font-size:84px;top:-4px;right:4px}}
-@media(prefers-reduced-motion:reduce){.chapter{transition:none}.cta-btn{transition:none}}
+.cover h1{font-size:clamp(35px,9vw,54px)}
+.outcome-box{background:var(--white);border:1px solid var(--rule);border-radius:18px;padding:18px;margin:18px 0}
+.outcome-title{font-weight:700;font-size:.92rem;margin-bottom:12px}
+.checks{list-style:none}
+.checks li{font-family:"Newsreader",serif;font-size:1.03rem;line-height:1.55;padding:5px 0;display:flex;gap:10px}
+.checks li::before{content:"✓";color:var(--accent);font-weight:700;flex-shrink:0}
+.prompt{background:var(--white);border:1px solid var(--rule);border-radius:18px;padding:18px;margin:18px 0}
+.prompt label{display:block;font-weight:700;font-size:.9rem;margin-bottom:9px}
+.prompt small{display:block;color:var(--ink-soft);font-family:"Newsreader",serif;font-size:.98rem;line-height:1.5;margin-bottom:12px}
+.field,textarea.field{width:100%;border:1.5px solid var(--rule);background:var(--paper);color:var(--ink);border-radius:12px;padding:14px 15px;font:500 .98rem/1.45 "DM Sans",sans-serif;outline:none;transition:border-color .2s,box-shadow .2s}
+textarea.field{min-height:92px;resize:vertical}
+.field:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.options{display:grid;gap:9px;margin-top:8px}
+.option{display:flex;gap:10px;align-items:flex-start;background:var(--paper);border:1.5px solid var(--rule);padding:12px 13px;border-radius:12px;cursor:pointer;font-family:"Newsreader",serif;font-size:1.02rem;line-height:1.4}
+.option:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.option input{margin-top:3px;accent-color:var(--accent)}
+.example{background:var(--paper-deep);border-radius:14px;padding:14px 16px;margin:12px 0;font-family:"Newsreader",serif;font-size:1rem;line-height:1.55;color:var(--ink-soft)}
+.ritual{list-style:none;margin:16px 0}
+.ritual li{display:flex;gap:13px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--rule);font-family:"Newsreader",serif;font-size:1.05rem;line-height:1.55}
+.ritual-num{font-family:"DM Sans",sans-serif;font-weight:700;font-size:.8rem;color:var(--accent);border:1.5px solid var(--accent);border-radius:999px;width:25px;height:25px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.plan-card{background:var(--ink);color:var(--paper);border-radius:20px;padding:20px;margin:18px 0}
+.plan-label{font-size:10px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#f5b8a5;margin:13px 0 4px}
+.plan-label:first-child{margin-top:0}
+.plan-value{font-family:"Newsreader",serif;font-size:1.08rem;line-height:1.5;white-space:pre-wrap}
+.copy-btn{width:100%;border:1px solid var(--rule);background:var(--white);border-radius:12px;padding:13px 15px;font-weight:700;color:var(--ink);cursor:pointer;margin-top:6px}
+.cta-btn{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--paper);background:var(--accent);border-radius:16px;padding:18px 20px;margin:20px 0 8px;box-shadow:0 8px 22px -8px rgba(255,60,0,.5)}
+.cta-icon{font-size:24px;line-height:1}.cta-body{flex:1}.cta-title{font-weight:700;font-size:1.02rem}.cta-sub{font-size:.78rem;opacity:.86;margin-top:2px}.cta-arrow{font-size:20px}
+.trust{font-size:.76rem;color:var(--muted);text-align:center;margin-top:7px;line-height:1.45}
+.nav-bar{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:13px 28px;border-top:1px solid var(--rule);background:var(--paper)}
+.nav-btn{font-family:"DM Sans",sans-serif;font-weight:600;font-size:.94rem;background:none;border:none;cursor:pointer;color:var(--ink);padding:8px 4px}
+.nav-btn:disabled{opacity:.25;cursor:default}.nav-btn.primary{background:var(--accent);color:var(--paper);border-radius:999px;padding:12px 22px}
+@media(max-width:520px){.chapter{padding:14px 20px 26px}.meta-row{padding:14px 20px 0}.nav-bar{padding:12px 20px}.numeral{font-size:82px}.prompt{padding:15px}.outcome-box{padding:15px}}
+@media(prefers-reduced-motion:reduce){.chapter,.rail-fill{transition:none}}
 </style>
 </head>
 <body>
-
 <div class="book">
   <div class="rail"><div class="rail-fill" id="railFill"></div></div>
-
   <div class="meta-row">
-    <span class="meta-eyebrow" id="eyebrow">A short guide from Sean Ali</span>
-    <span class="meta-count" id="pageCount">1 / 10</span>
+    <span class="meta-eyebrow" id="eyebrow">A practical guide from Sean Ali</span>
+    <span class="meta-count" id="pageCount">1 / 8</span>
   </div>
 
   <div class="viewport" id="viewport">
 
-    <!-- COVER -->
     <section class="chapter active" data-index="0">
       <div class="chapter-inner cover">
         <div class="cover-byline">
           <div class="cover-avatar"><img src="https://statics.myclickfunnels.com/workspace/vGVGzP/image/20204117/file/904663e23eb23a39d6f2459104b7bccc.png" alt="Sean Ali"></div>
-          <div class="cover-byline-text"><strong>Sean Ali</strong>Money, the mind, and what I practice</div>
+          <div class="cover-byline-text"><strong>Sean Ali</strong>A simple practice I actually use</div>
         </div>
-        <h1>The money story in your head becomes the one you keep <span class="accent">rehearsing.</span></h1>
-        <p class="lede">Here's the simple before-bed practice I use to picture a different financial life — without pretending meditation replaces action.</p>
-        <div class="cover-foot">9 short chapters · about 4 minutes</div>
+        <h1>The 5-Minute Money <span class="accent">Visualization Guide</span></h1>
+        <p class="lede">Choose one financial goal, turn it into a scene your mind can actually picture, and decide what you are going to do about it tomorrow.</p>
+        <div class="outcome-box">
+          <div class="outcome-title">By the end, you will have:</div>
+          <ul class="checks">
+            <li>One clear money goal</li>
+            <li>One thought you keep repeating</li>
+            <li>One 10-second scene to visualize tonight</li>
+            <li>One real action to take tomorrow</li>
+          </ul>
+        </div>
+        <p class="body"><strong>Do the exercises as you go.</strong> Your answers are saved on this device.</p>
       </div>
     </section>
 
-    <!-- 1 -->
     <section class="chapter" data-index="1">
       <div class="chapter-inner top-align">
         <div class="numeral">01</div>
-        <h1>You can want more money and still <span class="accent">rehearse the opposite</span></h1>
-        <p class="body">You can want a better income.</p>
-        <p class="body">More savings. More freedom.</p>
-        <p class="body">And still spend most of the day thinking about what could go wrong. Checking the account. Thinking about what you cannot afford. Telling yourself you're behind. Looking at opportunities through the lens of what you do not have.</p>
-        <p class="body">I've done this too.</p>
-        <p class="body">After years of studying the mind while building businesses, one thing keeps standing out to me:</p>
-        <div class="quote"><span class="who">What I keep noticing</span>What you repeatedly think about affects what you notice, what you expect, and what you do next.</div>
-        <p class="body">Not magic. Not destiny. Just something worth paying attention to.</p>
-        <div class="quote"><span class="who">Sean's take</span>Belief without action does not build the life. But action gets a lot harder when your mind keeps rehearsing the opposite of where you want to go.</div>
+        <h1>Why I started <span class="accent">doing this</span></h1>
+        <p class="body">I did not start with some secret advantage.</p>
+        <p class="body">I grew up in a single-parent home in Canada. Money was tight. At 15, I went through cancer and surgery.</p>
+        <p class="body">A few years later I discovered online business, meditation and visualization. I became fascinated by a simple question:</p>
+        <div class="quote"><span class="who">The question</span>What if I stopped spending all my mental time picturing what I was afraid would happen and got clearer about what I actually wanted to build?</div>
+        <p class="body">I still had to learn skills, sell, build websites, run ads, make mistakes and keep going.</p>
+        <p class="body">Over the next 15+ years, I built businesses, helped generate more than $25M in sales, traveled the world and built a location-independent life in Panama.</p>
+        <p class="body"><strong>Visualization did not do all of that for me.</strong> It became one tool I used to keep my mind pointed toward where I wanted to go while I did the real work.</p>
+        <div class="quote"><span class="who">That is what this guide is for</span>Not to escape reality. To get clear on the destination, then move.</div>
       </div>
     </section>
 
-    <!-- 2 -->
     <section class="chapter" data-index="2">
       <div class="chapter-inner top-align">
         <div class="numeral">02</div>
-        <h1>Money has been personal for me <span class="accent">since I was a kid</span></h1>
-        <p class="body">I grew up in a single-parent home in Canada.</p>
-        <p class="body">Money pressure was real. I know what an empty fridge feels like.</p>
-        <p class="body">Years later, I learned how to build businesses and make money online. But making money did not automatically erase everything I had learned to think about money.</p>
-        <p class="body">That is part of why I became so interested in the mind.</p>
-        <p class="body">For 15 years and counting, I've read, studied, paid for courses and coaching, practiced meditation and visualization, built businesses, made mistakes, changed my mind, and kept testing what actually helps me.</p>
-        <p class="body">This guide is one small piece of what has held up for me.</p>
+        <h1>Pick the money result that would <span class="accent">actually help</span></h1>
+        <p class="body">Do not choose your entire dream life. Pick the next result that would make a real difference.</p>
+        <div class="prompt">
+          <label>What would make your life better right now?</label>
+          <div class="options">
+            <label class="option"><input type="radio" name="goalPick" value="Make an extra $1,000 per month">Make an extra $1,000 per month</label>
+            <label class="option"><input type="radio" name="goalPick" value="Pay off a credit card or debt">Pay off a credit card or debt</label>
+            <label class="option"><input type="radio" name="goalPick" value="Build $10,000 in savings">Build $10,000 in savings</label>
+            <label class="option"><input type="radio" name="goalPick" value="Get a better-paying job">Get a better-paying job</label>
+            <label class="option"><input type="radio" name="goalPick" value="Grow my business income">Grow my business income</label>
+            <label class="option"><input type="radio" name="goalPick" value="Stop worrying every time I check my account">Feel calmer and more in control of my money</label>
+          </div>
+        </div>
+        <div class="prompt">
+          <label>Make it specific in your own words</label>
+          <small>Example: “I want $10,000 saved” or “I want my business consistently doing $1,000 days.”</small>
+          <textarea class="field saved" id="goal" placeholder="The money result I want is..."></textarea>
+        </div>
       </div>
     </section>
 
-    <!-- 3 -->
     <section class="chapter" data-index="3">
       <div class="chapter-inner top-align">
         <div class="numeral">03</div>
-        <h1>Your mind is practicing <span class="accent">something every day</span></h1>
-        <p class="body">Think about this.</p>
-        <p class="body">When you replay a bad conversation in your head, you are practicing it again.</p>
-        <p class="body">When you picture everything going wrong tomorrow, you are practicing that too.</p>
-        <p class="body">When you clearly picture something you want and then take a useful action toward it, that is also practice.</p>
-        <p class="body">I do not use visualization as a substitute for reality. I use it to decide what picture I want my mind returning to.</p>
-        <ul class="checks">
-          <li>What do I actually want?</li>
-          <li>What would that life look like on an ordinary Tuesday?</li>
-          <li>What would I do differently if I believed it was possible?</li>
-          <li>What can I do today that moves me one step toward it?</li>
-        </ul>
-        <div class="quote"><span class="who">Keep both parts</span>The picture matters. Then the action matters.</div>
+        <h1>Catch the sentence already <span class="accent">running in your head</span></h1>
+        <p class="body">You do not need to diagnose yourself. Just catch the sentence.</p>
+        <div class="example">Maybe it sounds like: “I don't know how.” “I'm already behind.” “Nothing I've tried works.” “I need more money before I can start.” “People like me don't make that much.”</div>
+        <div class="prompt">
+          <label>Finish this sentence</label>
+          <small>When I think about making or keeping more money, part of me says...</small>
+          <textarea class="field saved" id="thought" placeholder="Write the actual sentence you hear in your head..."></textarea>
+        </div>
+        <p class="body">Do not argue with it for ten minutes. You are simply noticing what your mind keeps practicing.</p>
       </div>
     </section>
 
-    <!-- 4 -->
     <section class="chapter" data-index="4">
       <div class="chapter-inner top-align">
         <div class="numeral">04</div>
-        <h1>What are you rehearsing <span class="accent">about money?</span></h1>
-        <p class="body">You do not need to diagnose yourself.</p>
-        <p class="body">Just listen to the sentences already running through your head.</p>
-        <div class="stack">
-          <div class="stack-item"><div class="stack-text">“There's never enough.”</div></div>
-          <div class="stack-item"><div class="stack-text">“I'll deal with it later.”</div></div>
-          <div class="stack-item"><div class="stack-text">“People like me don't make that kind of money.”</div></div>
-          <div class="stack-item"><div class="stack-text">“If I make more, I'll probably lose it.”</div></div>
-          <div class="stack-item"><div class="stack-text">“I need to learn one more thing before I'm ready.”</div></div>
-          <div class="stack-item"><div class="stack-text">“I already know what I should do. I'm just avoiding it.”</div></div>
+        <h1>Turn the goal into one <span class="accent">10-second scene</span></h1>
+        <p class="body">Do not picture “being rich.” Picture something you could actually see.</p>
+        <div class="example"><strong>If your goal is savings:</strong> picture opening your banking app and seeing $10,247.</div>
+        <div class="example"><strong>If your goal is business growth:</strong> picture looking at yesterday's sales and seeing your first $1,000 day.</div>
+        <div class="example"><strong>If your goal is paying off debt:</strong> picture opening the account and seeing BALANCE: $0.</div>
+        <p class="body">One scene. Ten seconds. Something your brain can actually picture.</p>
+        <div class="prompt">
+          <label>What exactly will you see?</label>
+          <small>Write the scene like a snapshot. Where are you? What is on the screen, page or in front of you?</small>
+          <textarea class="field saved" id="scene" placeholder="My 10-second scene is..."></textarea>
         </div>
-        <p class="body">You do not need a label for any of this. Notice the sentence. Ask whether it still serves you. Then decide what you want to practice instead.</p>
       </div>
     </section>
 
-    <!-- 5 -->
     <section class="chapter" data-index="5">
       <div class="chapter-inner top-align">
         <div class="numeral">05</div>
-        <h1>Why I like doing this <span class="accent">before bed</span></h1>
-        <p class="body">I like the few minutes before bed because the day is finally quiet.</p>
-        <p class="body">No meetings. No notifications. Nobody asking me for anything.</p>
-        <p class="body">It gives me a clean moment to stop feeding my mind random input and deliberately picture what I'm building.</p>
-        <p class="body">Sometimes I visualize. Sometimes I listen to one of my reprogramming audios. Sometimes I just ask myself a better question.</p>
-        <p class="body">I'm not telling you seven minutes guarantees anything. It doesn't.</p>
-        <div class="quote"><span class="who">The point</span>If you are going to spend those last few minutes thinking anyway, you can choose what you rehearse.</div>
+        <h1>Use this simple <span class="accent">5-minute routine tonight</span></h1>
+        <ol class="ritual">
+          <li><span class="ritual-num">1</span><span><strong>Minute 1:</strong> Put the phone down. Breathe slowly and let the day settle.</span></li>
+          <li><span class="ritual-num">2</span><span><strong>Minute 2:</strong> Bring up the 10-second scene you just created.</span></li>
+          <li><span class="ritual-num">3</span><span><strong>Minutes 3–4:</strong> Replay it slowly. See what you would see. Hear what you would hear. Notice how it would feel knowing it was handled.</span></li>
+          <li><span class="ritual-num">4</span><span><strong>Minute 5:</strong> Ask, “What is one thing I can do tomorrow to move closer to this?”</span></li>
+        </ol>
+        <div class="prompt">
+          <label>What is tomorrow's move?</label>
+          <small>Send the message. Publish the offer. Review the numbers. Apply. Save the money. Learn the skill. Make the call.</small>
+          <textarea class="field saved" id="action" placeholder="Tomorrow I will..."></textarea>
+        </div>
+        <div class="quote"><span class="who">Keep this grounded</span>You are not trying to magically create money in five minutes. You are practicing the destination, then connecting it to action.</div>
       </div>
     </section>
 
-    <!-- 6 -->
     <section class="chapter" data-index="6">
       <div class="chapter-inner top-align">
-        <div class="numeral">06</div>
-        <h1>Try this <span class="accent">tonight</span></h1>
-        <ol class="ritual">
-          <li><span class="ritual-num">1</span><span><strong>Put the phone down.</strong> Give yourself a few quiet minutes.</span></li>
-          <li><span class="ritual-num">2</span><span><strong>Choose one financial outcome you actually want.</strong> Not ten things. One.</span></li>
-          <li><span class="ritual-num">3</span><span><strong>Picture one ordinary scene that would be true if it happened.</strong> Paying something without stress. Seeing a stronger month in your business. Looking at savings you deliberately built. Having the freedom to book the trip.</span></li>
-          <li><span class="ritual-num">4</span><span><strong>Notice what your mind immediately says back.</strong> Do not fight it. Just notice it.</span></li>
-          <li><span class="ritual-num">5</span><span><strong>Decide one action you will take tomorrow.</strong> Send the message. Publish the offer. Review the numbers. Ask the question. Learn the skill. Make the call.</span></li>
-          <li><span class="ritual-num">6</span><span><strong>Then relax.</strong> If you want, this is also where I use a guided money meditation.</span></li>
-        </ol>
-        <div class="quote"><span class="who">Remember</span>The point is not to pretend. The point is to stop letting the worst-case picture be the only picture your mind sees.</div>
+        <div class="numeral">✓</div>
+        <h1>Your plan is now <span class="accent">simple</span></h1>
+        <p class="body">This is what you created. Screenshot it or copy it somewhere you will see it.</p>
+        <div class="plan-card" id="planCard">
+          <div class="plan-label">The money result I want</div>
+          <div class="plan-value" id="planGoal">Not filled in yet</div>
+          <div class="plan-label">The thought I caught</div>
+          <div class="plan-value" id="planThought">Not filled in yet</div>
+          <div class="plan-label">The scene I will picture tonight</div>
+          <div class="plan-value" id="planScene">Not filled in yet</div>
+          <div class="plan-label">The action I will take tomorrow</div>
+          <div class="plan-value" id="planAction">Not filled in yet</div>
+        </div>
+        <button class="copy-btn" id="copyPlan">Copy My Plan</button>
+        <div class="quote"><span class="who">Tonight</span>Picture the scene. Tomorrow, do the action.</div>
       </div>
     </section>
 
-    <!-- 7 -->
     <section class="chapter" data-index="7">
       <div class="chapter-inner top-align">
-        <div class="numeral">07</div>
-        <h1>The audio I made <span class="accent">for this</span></h1>
-        <p class="body">Eventually I turned this practice into <strong>Money Flow</strong>.</p>
-        <p class="body">It's a guided money meditation I can put on, close my eyes, and follow.</p>
-        <p class="body">The audio uses guided imagery, repetition, and a money-focused script to help you picture a wealthier life and rehearse a different relationship with earning, receiving, and keeping money.</p>
-        <p class="body">But I want to be clear about something.</p>
-        <p class="body"><strong>The audio does not make money for you.</strong></p>
-        <p class="body">You still have to learn. Decide. Work. Sell. Save. Build. Ask. Take the opportunity. Whatever the real-world move is for your life.</p>
-        <a href="https://hypnoticmeditations.ai/products/money-flow/" target="_blank" rel="noopener" class="cta-btn primary">
+        <div class="numeral">▶</div>
+        <h1>Want me to <span class="accent">guide you through it?</span></h1>
+        <p class="body">You can do everything in this guide by yourself.</p>
+        <p class="body">I also created <strong>Money Flow</strong>, a 7-minute subconscious reprogramming audio built around money.</p>
+        <p class="body">Put on headphones. Close your eyes. Press play. Let the audio guide the mental practice for you.</p>
+        <p class="body">Then take your real-world action when you are done.</p>
+        <a href="https://hypnoticmeditations.ai/products/money-flow/" target="_blank" rel="noopener" class="cta-btn">
           <div class="cta-icon">🎧</div>
           <div class="cta-body">
-            <div class="cta-title">See Money Flow</div>
-            <div class="cta-sub">7-minute guided money meditation · $27 one-time · instant access</div>
+            <div class="cta-title">Listen To Money Flow</div>
+            <div class="cta-sub">7-minute money audio · $27 one-time · instant access</div>
           </div>
           <div class="cta-arrow">→</div>
         </a>
         <div class="trust">Personal-development audio · Results vary · Real-world action still matters.</div>
-      </div>
-    </section>
-
-    <!-- 8 -->
-    <section class="chapter" data-index="8">
-      <div class="chapter-inner top-align">
-        <div class="numeral">08</div>
-        <h1>Use the audio. <span class="accent">Then do something.</span></h1>
-        <p class="body">This part matters.</p>
-        <p class="body">Do not turn meditation into another way to avoid your life.</p>
-        <p class="body">If you listen, pair it with movement.</p>
-        <ul class="checks">
-          <li>Send the proposal.</li>
-          <li>Publish the product.</li>
-          <li>Ask for the raise.</li>
-          <li>Look at the numbers.</li>
-          <li>Apply for the opportunity.</li>
-          <li>Save the money.</li>
-          <li>Learn the skill.</li>
-          <li>Make the call.</li>
-        </ul>
-        <p class="body">Your action will be different from mine. That is fine.</p>
-        <p class="body">The important part is that the mental practice eventually points back toward reality.</p>
-        <div class="quote"><span class="who">Sean's take</span>I use the mind work to support action — not replace it.</div>
-      </div>
-    </section>
-
-    <!-- 9 -->
-    <section class="chapter" data-index="9">
-      <div class="chapter-inner top-align">
-        <div class="numeral">09</div>
-        <h1>Choose what you <span class="accent">rehearse tonight</span></h1>
-        <p class="body">You are going to think about something before you fall asleep.</p>
-        <p class="body">You can replay the same worries.</p>
-        <p class="body">Or you can spend a few minutes picturing the life you are trying to build.</p>
-        <p class="body">Then wake up tomorrow and do something that moves you toward it.</p>
-        <p class="body">That is the whole idea.</p>
-        <a href="https://hypnoticmeditations.ai/products/money-flow/" target="_blank" rel="noopener" class="cta-btn primary">
-          <div class="cta-icon">🎧</div>
-          <div class="cta-body">
-            <div class="cta-title">See Money Flow</div>
-            <div class="cta-sub">Listen to the guided money meditation I made for this practice.</div>
-          </div>
-          <div class="cta-arrow">→</div>
-        </a>
-        <div class="quote"><span class="who">Take what helps</span>Test it in your own life. Keep what holds up.</div>
+        <div class="quote"><span class="who">My rule</span>Use the mind work to support action — not replace it.</div>
       </div>
     </section>
 
@@ -299,82 +248,93 @@ p.body:last-child{margin-bottom:0}
 
   <div class="nav-bar">
     <button class="nav-btn" id="backBtn">← Back</button>
-    <button class="nav-btn primary accent" id="nextBtn">Begin reading →</button>
+    <button class="nav-btn primary" id="nextBtn">Start the exercise →</button>
   </div>
 </div>
 
 <script>
 (function(){
-  var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
-  var total = chapters.length;
-  var current = 0;
-  var railFill = document.getElementById('railFill');
-  var pageCount = document.getElementById('pageCount');
-  var eyebrow = document.getElementById('eyebrow');
-  var backBtn = document.getElementById('backBtn');
-  var nextBtn = document.getElementById('nextBtn');
-
-  var eyebrows = [
-    "A short guide from Sean Ali",
-    "Chapter 1 — The money story",
-    "Chapter 2 — Why this became personal",
-    "Chapter 3 — What the mind practices",
-    "Chapter 4 — Listen to your language",
-    "Chapter 5 — Why I use bedtime",
-    "Chapter 6 — Try this tonight",
-    "Chapter 7 — The audio",
-    "Chapter 8 — Action still matters",
-    "Chapter 9 — Your next move"
+  var chapters=Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  var total=chapters.length,current=0;
+  var railFill=document.getElementById('railFill'),pageCount=document.getElementById('pageCount'),eyebrow=document.getElementById('eyebrow'),backBtn=document.getElementById('backBtn'),nextBtn=document.getElementById('nextBtn');
+  var eyebrows=[
+    "A practical guide from Sean Ali",
+    "Why I use visualization",
+    "Step 1 — Pick the result",
+    "Step 2 — Catch the thought",
+    "Step 3 — Build the scene",
+    "Step 4 — Use it tonight",
+    "Step 5 — Your plan",
+    "Guided version — Money Flow"
   ];
 
-  function render(){
-    chapters.forEach(function(ch, i){
-      ch.classList.toggle('active', i === current);
-      if(i === current) ch.scrollTop = 0;
-    });
-    railFill.style.width = (current/(total-1)*100) + '%';
-    pageCount.textContent = (current+1) + ' / ' + total;
-    eyebrow.textContent = eyebrows[current];
-    backBtn.disabled = (current === 0);
+  function getSaved(id){try{return localStorage.getItem('guide_'+id)||''}catch(e){return''}}
+  function setSaved(id,val){try{localStorage.setItem('guide_'+id,val)}catch(e){}}
+  document.querySelectorAll('.saved').forEach(function(el){
+    el.value=getSaved(el.id);
+    el.addEventListener('input',function(){setSaved(el.id,el.value);updatePlan()});
+  });
 
-    if(current === 0){
-      nextBtn.textContent = 'Begin reading →';
-    } else if(current === total-1){
-      nextBtn.textContent = 'Read again ↻';
-    } else {
-      nextBtn.textContent = 'Next →';
-    }
+  document.querySelectorAll('input[name="goalPick"]').forEach(function(radio){
+    if(getSaved('goalPick')===radio.value) radio.checked=true;
+    radio.addEventListener('change',function(){
+      setSaved('goalPick',radio.value);
+      var goal=document.getElementById('goal');
+      if(!goal.value.trim()){goal.value=radio.value;setSaved('goal',radio.value)}
+      updatePlan();
+    });
+  });
+
+  function clean(v){return v&&v.trim()?v.trim():'Not filled in yet'}
+  function updatePlan(){
+    document.getElementById('planGoal').textContent=clean(document.getElementById('goal').value||getSaved('goalPick'));
+    document.getElementById('planThought').textContent=clean(document.getElementById('thought').value);
+    document.getElementById('planScene').textContent=clean(document.getElementById('scene').value);
+    document.getElementById('planAction').textContent=clean(document.getElementById('action').value);
+  }
+
+  function render(){
+    chapters.forEach(function(ch,i){ch.classList.toggle('active',i===current);if(i===current)ch.scrollTop=0});
+    railFill.style.width=(current/(total-1)*100)+'%';
+    pageCount.textContent=(current+1)+' / '+total;
+    eyebrow.textContent=eyebrows[current];
+    backBtn.disabled=current===0;
+    if(current===0)nextBtn.textContent='Start the exercise →';
+    else if(current===6)nextBtn.textContent='See the guided version →';
+    else if(current===total-1)nextBtn.textContent='Start again ↻';
+    else nextBtn.textContent='Next →';
+    if(current===6)updatePlan();
   }
 
   function go(delta){
-    var n = current + delta;
-    if(n < 0) n = 0;
-    if(n > total-1){ n = 0; }
-    current = n;
-    render();
+    var n=current+delta;
+    if(n<0)n=0;
+    if(n>total-1)n=0;
+    current=n;render();
   }
 
-  nextBtn.addEventListener('click', function(){ go(1); });
-  backBtn.addEventListener('click', function(){ go(-1); });
-
-  document.addEventListener('keydown', function(e){
-    if(e.key === 'ArrowRight') go(1);
-    if(e.key === 'ArrowLeft') go(-1);
+  nextBtn.addEventListener('click',function(){go(1)});
+  backBtn.addEventListener('click',function(){go(-1)});
+  document.addEventListener('keydown',function(e){
+    var tag=(e.target&&e.target.tagName)||'';
+    if(tag==='INPUT'||tag==='TEXTAREA')return;
+    if(e.key==='ArrowRight')go(1);
+    if(e.key==='ArrowLeft')go(-1);
   });
 
-  var startX = null;
-  var viewport = document.getElementById('viewport');
-  viewport.addEventListener('touchstart', function(e){
-    startX = e.touches[0].clientX;
-  }, {passive:true});
-  viewport.addEventListener('touchend', function(e){
-    if(startX === null) return;
-    var dx = e.changedTouches[0].clientX - startX;
-    if(Math.abs(dx) > 50){ go(dx < 0 ? 1 : -1); }
-    startX = null;
-  }, {passive:true});
+  document.getElementById('copyPlan').addEventListener('click',function(){
+    updatePlan();
+    var text='MY MONEY VISUALIZATION PLAN\n\nThe money result I want:\n'+document.getElementById('planGoal').textContent+'\n\nThe thought I caught:\n'+document.getElementById('planThought').textContent+'\n\nThe scene I will picture tonight:\n'+document.getElementById('planScene').textContent+'\n\nThe action I will take tomorrow:\n'+document.getElementById('planAction').textContent;
+    var btn=this;
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){btn.textContent='Copied ✓';setTimeout(function(){btn.textContent='Copy My Plan'},1600)});
+    }else{btn.textContent='Screenshot this plan';setTimeout(function(){btn.textContent='Copy My Plan'},1600)}
+  });
 
-  render();
+  var startX=null,viewport=document.getElementById('viewport');
+  viewport.addEventListener('touchstart',function(e){if(e.target.closest('input,textarea,label,button,a'))return;startX=e.touches[0].clientX},{passive:true});
+  viewport.addEventListener('touchend',function(e){if(startX===null)return;var dx=e.changedTouches[0].clientX-startX;if(Math.abs(dx)>50)go(dx<0?1:-1);startX=null},{passive:true});
+  updatePlan();render();
 })();
 </script>
 
@@ -395,6 +355,5 @@ fbq('track', 'PageView');
 src="https://www.facebook.com/tr?id=878451855254470&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
-
 </body>
 </html>
