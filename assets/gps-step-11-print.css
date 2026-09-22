@@ -282,3 +282,10 @@
     color: #173f49;
   }
 }
+
+@media print {
+  .gps-print-hero { position: relative; min-height: 1.95in; padding-right: 1.85in; }
+  .gps-print-hero h1 { font-size: 28px; }
+  .gps-print-emblem { position: absolute; top: 10px; right: 0; width: 1.7in; }
+  .gps-print-emblem svg { display: block; width: 100%; height: auto; }
+}

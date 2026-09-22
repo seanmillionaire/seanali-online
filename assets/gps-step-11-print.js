@@ -127,7 +127,7 @@
 
     const hero = createElement("section", "gps-print-hero");
     hero.append(createElement("p", "gps-print-eyebrow", "YOUR PERSONAL ROUTE"));
-    hero.append(createElement("h1", "", isNamed ? `${name}’s Dream Life GPS` : "Your Dream Life GPS"));
+    hero.append(createElement("h1", "", isNamed ? `${name}’s Dream Life Map` : "Your Dream Life Map"));
     hero.append(createElement(
       "p",
       "gps-print-intro",
@@ -135,6 +135,12 @@
         ? `${name}, this is the life you described and the next three moves to bring it closer.`
         : "This is the life you described and the next three moves to bring it closer."
     ));
+    const emblem = document.querySelector("svg[data-dream-life-emblem]");
+    if (emblem) {
+      const visual = createElement("div", "gps-print-emblem");
+      visual.append(emblem.cloneNode(true));
+      hero.append(visual);
+    }
     report.append(hero);
 
     const destination = createElement("section", "gps-print-destination");
@@ -145,6 +151,7 @@
     const snapshot = createElement("div", "gps-print-snapshot");
     addLabeledCopy(snapshot, "WHY THIS MATTERS", why);
     addLabeledCopy(snapshot, "YOUR DREAM-LIFE PICTURE", dream);
+    addLabeledCopy(snapshot, "WHAT SUCCESS MEANS TO ME", textFrom(".guided-vision-scene > p"));
     report.append(snapshot);
 
     const resultSection = createElement("section", "gps-print-result");
