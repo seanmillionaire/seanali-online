@@ -87,7 +87,7 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/home-page.css?v=20260922a">
+<link rel="stylesheet" href="/assets/home-page.css?v=20260923b">
 <link rel="stylesheet" href="/assets/main-site.css?v=20260908">
 <link rel="stylesheet" href="/assets/homepage-cohesion.css?v=20260910">
 </head>
@@ -229,11 +229,22 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 </section>
 
 <section class="articles" id="articles">
-  <div class="wrap"><div class="section-head"><span class="eyebrow">Read The Latest</span><h2>Ideas You Can Actually Use.</h2><p>Stories and practical lessons from building businesses, using meditation, traveling, and raising a family.</p></div><div class="article-grid">
-    <a class="article-card" href="/blog/money/how-to-stop-waiting-for-financial-freedom-panama/"><div class="article-image" style="background-image:url('/assets/sean-life/sean-panama-view-selfie.png')"></div><div class="article-body"><span class="article-label">Sean Ali Lessons Learned</span><h3>How To Stop Waiting For Financial Freedom</h3><p>What living in Panama taught me about making plans and enjoying life along the way.</p><span class="read-link">Read today’s lesson →</span></div></a>
-    <a class="article-card" href="/quit-your-9-to-5-with-ai.html"><div class="article-image" style="background-image:url('https://hypnoticmeditations.b-cdn.net/images/proof/100k%20a%20day.jpeg')"></div><div class="article-body"><span class="article-label">AI & Freedom</span><h3>How To Quit Your 9-5 With AI: The Real Blueprint</h3><p>What to build and test before leaving your job, from choosing a product to finding customers.</p><span class="read-link">Read the blueprint →</span></div></a>
-    <a class="article-card" href="/how-to-reprogram-your-subconscious-mind.html"><div class="article-image" style="background-image:url('https://hypnoticmeditations.b-cdn.net/images/proof/sean%20kid.jpeg')"></div><div class="article-body"><span class="article-label">Identity</span><h3>How To Reprogram Your Subconscious Mind</h3><p>A guide to repeated thoughts and habits, and ways to practice responding differently.</p><span class="read-link">Read the guide →</span></div></a>
-  </div></div>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Read The Latest</span>
+      <h2>Ideas You Can Actually Use.</h2>
+      <p>Stories and practical lessons from building businesses, using meditation, traveling, and raising a family.</p>
+    </div>
+  </div>
+  <div class="article-slider" aria-label="Latest blog posts">
+    <div class="article-track" id="latest-article-track">
+      <div class="article-set" id="latest-article-set">
+        <a class="article-card" href="/blog/universal-laws/visualization-life-im-building/"><div class="article-image" style="background-image:url('/assets/generated/visualization-life-im-building.jpg')"></div><div class="article-body"><span class="article-label">Universal Laws</span><h3>Visualization: How I Picture the Life I'm Building</h3><p>The life inside the picture matters. So does what I do after I open my eyes.</p><span class="read-link">Read the latest →</span></div></a>
+        <a class="article-card" href="/blog/universal-laws/manifestation-app-positive-thinking/"><div class="article-image" style="background-image:url('/assets/sean-photos/sean-pro-office-desk.png')"></div><div class="article-body"><span class="article-label">Universal Laws</span><h3>I Built a Manifestation App Because Positive Thinking Wasn't Enough</h3><p>Why I wanted one tool that could hear the real problem and bring a big wish back to one honest next move.</p><span class="read-link">Read the lesson →</span></div></a>
+        <a class="article-card" href="/blog/mind-shifts/money-meditation/"><div class="article-image" style="background-image:url('/assets/sean-photos/sean-pro-meditation.png')"></div><div class="article-body"><span class="article-label">Mind Shifts</span><h3>Money Meditation: The Night One Changed How I Saw My Life</h3><p>What one quiet practice changed, what it did not change, and the real action that still mattered.</p><span class="read-link">Read the lesson →</span></div></a>
+      </div>
+    </div>
+  </div>
 </section>
 
 <section class="meditation-section" aria-label="Hypnotic Meditations">
@@ -283,6 +294,69 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
     var submit=document.getElementById(ids[1]);
     if(form&&submit){form.addEventListener('submit',function(){submit.textContent='SENDING...';submit.disabled=true;if(typeof window.fbq==='function')window.fbq('track','Lead');});}
   });
+})();
+</script>
+
+<script>
+(function(){
+  var track=document.getElementById('latest-article-track');
+  var set=document.getElementById('latest-article-set');
+  if(!track||!set)return;
+
+  function esc(value){
+    return String(value||'').replace(/[&<>"']/g,function(ch){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];
+    });
+  }
+
+  function buildCard(post){
+    return '<a class="article-card" href="'+esc(post.href)+'">'+
+      '<div class="article-image" style="background-image:url(&quot;'+esc(post.image)+'&quot;)"></div>'+
+      '<div class="article-body">'+
+      '<span class="article-label">'+esc(post.label)+'</span>'+
+      '<h3>'+esc(post.title)+'</h3>'+
+      '<p>'+esc(post.description)+'</p>'+
+      '<span class="read-link">Read the latest →</span>'+
+      '</div></a>';
+  }
+
+  fetch('/blog/',{credentials:'same-origin'})
+    .then(function(response){if(!response.ok)throw new Error('Blog fetch failed');return response.text();})
+    .then(function(html){
+      var doc=new DOMParser().parseFromString(html,'text/html');
+      var seen={};
+      var posts=[].slice.call(doc.querySelectorAll('.archive-card')).map(function(card){
+        var time=card.querySelector('time[datetime]');
+        var img=card.querySelector('img');
+        var meta=card.querySelector('.archive-meta span');
+        var title=card.querySelector('h3');
+        var desc=card.querySelector('p');
+        return {
+          href:card.getAttribute('href')||'',
+          date:time?time.getAttribute('datetime'):'',
+          image:img?img.getAttribute('src'):'',
+          label:meta?meta.textContent.trim():'Latest',
+          title:title?title.textContent.trim():'',
+          description:desc?desc.textContent.trim():''
+        };
+      }).filter(function(post){
+        if(!post.href||!post.date||!post.title||seen[post.href])return false;
+        seen[post.href]=true;
+        return true;
+      }).sort(function(a,b){return b.date.localeCompare(a.date);}).slice(0,6);
+
+      if(!posts.length)return;
+      var cards=posts.map(buildCard).join('');
+      set.innerHTML=cards;
+
+      var clone=set.cloneNode(true);
+      clone.id='latest-article-set-copy';
+      clone.setAttribute('aria-hidden','true');
+      clone.querySelectorAll('a').forEach(function(link){link.setAttribute('tabindex','-1');});
+      track.appendChild(clone);
+      track.classList.add('is-moving');
+    })
+    .catch(function(){});
 })();
 </script>
 <script id="respondio__growth_tool" src="https://cdn.respond.io/widget/widget.js?wId=7f9488bf-e487-4928-9b01-6edb55b2ad22"></script>
