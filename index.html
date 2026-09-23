@@ -87,7 +87,7 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/home-page.css?v=20260923b">
+<link rel="stylesheet" href="/assets/home-page.css?v=20260923c">
 <link rel="stylesheet" href="/assets/main-site.css?v=20260908">
 <link rel="stylesheet" href="/assets/homepage-cohesion.css?v=20260923c">
 </head>
@@ -103,23 +103,35 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
         <iframe src="https://www.youtube-nocookie.com/embed/zPq6adrXwg4?rel=0" title="Watch Sean Ali on YouTube" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
       </div>
       <p class="welcome-copy">I share the tools I use to break subconscious blocks, rewire my mindset, earn online, and build more freedom.</p>
-      <form class="welcome-optin" id="homepage-script-optin" method="post" action="https://www.aweber.com/scripts/addlead.pl">
-        <label class="sr-only" for="homepage-script-name">First name</label>
-        <input id="homepage-script-name" type="text" name="name" placeholder="First name" autocomplete="given-name" required>
-        <label class="sr-only" for="homepage-script-email">Email address</label>
-        <input id="homepage-script-email" type="email" name="email" placeholder="Email address" autocomplete="email" required>
-        <input type="hidden" name="listname" value="awlist6946418">
-        <input type="hidden" name="redirect" value="https://seanali.online/script">
-        <input type="hidden" name="meta_redirect_onlist" value="https://seanali.online/script">
-        <input type="hidden" name="meta_tags" value="homepage,7-minute-script">
-        <input type="hidden" name="meta_adtracking" value="Homepage 7-Minute Script Optin">
-        <input type="hidden" name="meta_required" value="name,email">
-        <button id="homepage-script-submit" class="button" type="submit">START WITH THE 7-MINUTE SCRIPT <span class="btn-arrow" aria-hidden="true">&#8594;</span></button>
-      </form>
-      <p class="welcome-optin-note">Enter your details and I’ll take you straight to it.</p>
+      <div class="welcome-actions">
+        <button id="homepage-script-open" class="button" type="button" aria-haspopup="dialog" aria-controls="homepage-script-dialog">START WITH THE 7-MINUTE SCRIPT <span class="btn-arrow" aria-hidden="true">&#8594;</span></button>
+      </div>
     </div>
   </div>
 </header>
+<dialog class="script-dialog" id="homepage-script-dialog" aria-labelledby="homepage-script-dialog-title">
+  <div class="script-dialog-card">
+    <button class="script-dialog-close" id="homepage-script-close" type="button" aria-label="Close signup form">&times;</button>
+    <span class="script-dialog-eyebrow">7-Minute Script</span>
+    <h2 id="homepage-script-dialog-title">Get The 7-Minute Script</h2>
+    <p>Enter your name and email and I’ll take you straight to it.</p>
+    <form class="welcome-optin script-dialog-form" id="homepage-script-optin" method="post" action="https://www.aweber.com/scripts/addlead.pl">
+      <label class="sr-only" for="homepage-script-name">First name</label>
+      <input id="homepage-script-name" type="text" name="name" placeholder="First name" autocomplete="given-name" required>
+      <label class="sr-only" for="homepage-script-email">Email address</label>
+      <input id="homepage-script-email" type="email" name="email" placeholder="Email address" autocomplete="email" required>
+      <input type="hidden" name="listname" value="awlist6946418">
+      <input type="hidden" name="redirect" value="https://seanali.online/script">
+      <input type="hidden" name="meta_redirect_onlist" value="https://seanali.online/script">
+      <input type="hidden" name="meta_tags" value="homepage,7-minute-script">
+      <input type="hidden" name="meta_adtracking" value="Homepage 7-Minute Script Optin">
+      <input type="hidden" name="meta_required" value="name,email">
+      <button id="homepage-script-submit" class="button" type="submit">OPEN THE 7-MINUTE SCRIPT <span class="btn-arrow" aria-hidden="true">&#8594;</span></button>
+    </form>
+    <p class="script-dialog-note">Unsubscribe anytime.</p>
+  </div>
+</dialog>
+
 
 
 <section class="hub-benefits" aria-label="What you can find on SeanAli.online">
@@ -351,6 +363,35 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
   <nav class="footer-col" aria-label="Read and watch"><h3>Follow</h3><a href="/blog/">Lessons Learned Blog</a><a href="/story.html">My Story</a><a href="/vision/">Vision</a><a href="https://www.youtube.com/@RealSeanAli" target="_blank" rel="noopener">YouTube</a><a href="https://www.instagram.com/seanaliofficial" target="_blank" rel="noopener">Instagram</a></nav>
   <nav class="footer-col" aria-label="Legal and contact"><h3>Info</h3><a href="/about-sean-ali/">About</a><a href="/contact.html">Contact</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/disclaimer.html">Disclaimer</a></nav>
 </div><div class="authority-bottom"><div>&copy; 2026 Sean Ali. Mindset, business, AI, and life.</div><div class="authority-bottom-links"><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/disclaimer.html">Disclaimer</a><a href="/contact.html">Contact</a></div></div></div></footer>
+
+<script>
+(function(){
+  var dialog=document.getElementById('homepage-script-dialog');
+  var openButton=document.getElementById('homepage-script-open');
+  var closeButton=document.getElementById('homepage-script-close');
+  var firstInput=document.getElementById('homepage-script-name');
+  if(!dialog||!openButton)return;
+
+  function openDialog(){
+    if(typeof dialog.showModal==='function') dialog.showModal();
+    else dialog.setAttribute('open','');
+    document.body.classList.add('modal-open');
+    window.setTimeout(function(){if(firstInput)firstInput.focus();},50);
+  }
+  function closeDialog(){
+    if(typeof dialog.close==='function') dialog.close();
+    else dialog.removeAttribute('open');
+    document.body.classList.remove('modal-open');
+    openButton.focus();
+  }
+
+  openButton.addEventListener('click',openDialog);
+  if(closeButton) closeButton.addEventListener('click',closeDialog);
+  dialog.addEventListener('click',function(event){if(event.target===dialog)closeDialog();});
+  dialog.addEventListener('close',function(){document.body.classList.remove('modal-open');});
+  dialog.addEventListener('cancel',function(){document.body.classList.remove('modal-open');});
+})();
+</script>
 
 <script>
 (function(){
