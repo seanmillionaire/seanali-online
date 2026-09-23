@@ -33,3 +33,23 @@
   .authority-bottom{justify-content:center;flex-direction:column;text-align:center}
   .authority-bottom-links{justify-content:center}
 }
+
+
+/* Dynamic latest-post slider — 2026-09-23 */
+.article-slider{width:100%;overflow:hidden;padding:2px 0 18px}
+.article-track{display:flex;width:max-content;will-change:transform}
+.article-set{display:flex;gap:20px;padding-right:20px}
+.article-slider .article-card{flex:0 0 360px;width:360px;min-height:500px}
+.article-track.is-moving{animation:latestPostsScroll 42s linear infinite}
+.article-slider:hover .article-track.is-moving,.article-slider:focus-within .article-track.is-moving{animation-play-state:paused}
+@keyframes latestPostsScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(max-width:700px){
+  .article-slider .article-card{flex-basis:min(84vw,330px);width:min(84vw,330px);min-height:0}
+  .article-set{gap:14px;padding-right:14px}
+  .article-track.is-moving{animation-duration:34s}
+}
+@media(prefers-reduced-motion:reduce){
+  .article-slider{overflow-x:auto;scroll-snap-type:x proximity}
+  .article-track.is-moving{animation:none}
+  .article-slider .article-card{scroll-snap-align:start}
+}
