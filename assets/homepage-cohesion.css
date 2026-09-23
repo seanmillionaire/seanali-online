@@ -7,3 +7,72 @@
 .other-projects{padding:34px 0;background:#fff;border-top:1px solid #e8e1d8}.other-projects-inner{display:flex;align-items:center;justify-content:center;gap:10px 20px;flex-wrap:wrap;color:#5d5751;font-size:13px;font-weight:800}.other-projects-inner strong{color:#151515}.other-projects-inner a{color:#151515;text-decoration:underline;text-underline-offset:3px}.legal-mini{display:flex;flex-wrap:wrap;gap:12px 18px;margin-top:12px}.legal-mini a{font-size:12px!important}
 @media(max-width:980px){.choice-grid{grid-template-columns:repeat(2,1fr)}.build-grid{grid-template-columns:1fr}.build-card{min-height:0}.capture-form{grid-template-columns:1fr 1fr}.capture-form button{grid-column:1/-1}.proof-facts{grid-template-columns:1fr}}
 @media(max-width:620px){.choice-section,.build-section,.capture-section{padding:62px 0}.choice-grid{grid-template-columns:1fr}.choice-card{min-height:0}.choice-head h2,.build-head h2,.capture-card h2{font-size:40px}.capture-form{grid-template-columns:1fr}.capture-form button{grid-column:auto}.other-projects-inner{align-items:flex-start;justify-content:flex-start}.proof-fact{padding:13px}}
+
+
+/* Sean hub SOP implementation — 2026-09-23 */
+.hub-benefits{position:relative;display:flex;align-items:center;overflow:hidden;background:#111;color:#fff;border-bottom:1px solid #292929}
+.hub-benefit-window{min-width:0;flex:1;overflow:hidden}
+.hub-benefit-track{display:flex;width:max-content;will-change:transform;animation:hubBenefitsMove 32s linear infinite}
+.hub-benefit-track.is-paused{animation-play-state:paused}
+.hub-benefit-set{display:flex;align-items:center;gap:28px;padding:13px 28px 13px 0}
+.hub-benefit-set span{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;font-size:12px;font-weight:900;letter-spacing:.045em;text-transform:uppercase}
+.hub-benefit-set b{font-size:16px;line-height:1}
+.hub-benefit-toggle{position:relative;z-index:2;align-self:stretch;min-width:70px;border:0;border-right:1px solid #333;background:#111;color:#fff;font:800 11px/1 Inter,Arial,sans-serif;text-transform:uppercase;cursor:pointer}
+.hub-benefit-toggle:hover,.hub-benefit-toggle:focus-visible{background:#1d1d1d;outline:none}
+@keyframes hubBenefitsMove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+.hub-tool-card{padding:0;overflow:hidden}
+.build-media{height:220px;display:flex;align-items:center;justify-content:center;padding:22px;background:linear-gradient(145deg,#fff,#ece6dd);border-bottom:1px solid #e1d9ce}
+.build-media img{display:block;width:100%;height:100%;object-fit:contain}
+.build-card-copy{display:flex;flex:1;flex-direction:column;padding:25px}
+.hub-tool-card .build-tag{margin-bottom:14px}
+.build-more{display:flex;justify-content:center;margin-top:26px}
+.article-more{display:flex;justify-content:center;margin-top:28px}
+
+.hub-faq{padding:84px 0;background:#f7f5f1;border-top:1px solid #e7e0d6}
+.hub-faq-inner{display:grid;grid-template-columns:minmax(260px,.75fr) minmax(0,1.25fr);gap:54px;align-items:start}
+.hub-faq-head h2{margin:0 0 15px;font-size:clamp(38px,4.3vw,58px);line-height:.98;letter-spacing:-.05em}
+.hub-faq-head p{margin:0;color:#625d57;font-size:17px;line-height:1.55;font-weight:700}
+.hub-faq-list{display:grid;gap:10px}
+.hub-faq-list details{border:1px solid #ddd5cb;border-radius:12px;background:#fff}
+.hub-faq-list summary{padding:19px 52px 19px 20px;font-weight:900;cursor:pointer;position:relative;list-style:none}
+.hub-faq-list summary::-webkit-details-marker{display:none}
+.hub-faq-list summary:after{content:"+";position:absolute;right:20px;top:50%;font-size:22px;transform:translateY(-50%)}
+.hub-faq-list details[open] summary:after{content:"–"}
+.hub-faq-list p{margin:0;padding:0 20px 20px;color:#625d57;line-height:1.55;font-weight:650}
+
+.hub-final-cta{padding:80px 0;background:#fff}
+.hub-final-inner{max-width:880px;text-align:center}
+.hub-final-inner .eyebrow{color:var(--red)}
+.hub-final-inner h2{margin:0 auto 14px;font-size:clamp(40px,4.8vw,66px);line-height:.96;letter-spacing:-.055em}
+.hub-final-inner>p{max-width:680px;margin:0 auto 27px;color:#625d57;font-size:18px;line-height:1.5;font-weight:700}
+.hub-final-actions{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.hub-final-actions .button{margin:0}
+.hub-text-link{padding:14px 12px;color:#111;font-size:13px;font-weight:900;text-decoration:underline;text-underline-offset:4px;text-transform:uppercase}
+
+@media(max-width:980px){
+  .hub-faq-inner{grid-template-columns:1fr;gap:28px}
+}
+@media(max-width:700px){
+  .hub-benefit-toggle{display:none}
+  .hub-benefit-track{animation-duration:38s}
+  .hub-benefit-set{gap:22px;padding-top:11px;padding-bottom:11px}
+  .hub-benefit-set span{font-size:10px}
+  .build-media{height:190px}
+  .build-card-copy{padding:22px 19px}
+  .build-more .button,.article-more .button{width:auto;min-height:50px;padding:14px 20px}
+  .hub-faq,.hub-final-cta{padding:60px 0}
+  .hub-faq-head h2,.hub-final-inner h2{font-size:39px}
+  .hub-final-actions{display:grid}
+  .hub-final-actions .button{width:100%}
+  .hub-text-link{display:block}
+  .article-slider{overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+  .article-track.is-moving{animation:none}
+  .article-slider .article-card{scroll-snap-align:start}
+}
+@media(prefers-reduced-motion:reduce){
+  .hub-benefit-track{animation:none}
+  .hub-benefit-window{overflow-x:auto}
+  .hub-benefit-set[aria-hidden="true"]{display:none}
+  .hub-benefit-toggle{display:none}
+}
