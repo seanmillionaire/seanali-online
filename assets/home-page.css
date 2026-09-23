@@ -53,3 +53,22 @@
   .article-track.is-moving{animation:none}
   .article-slider .article-card{scroll-snap-align:start}
 }
+
+
+/* Hero opt-in modal — 2026-09-23 */
+body.modal-open{overflow:hidden}
+.script-dialog{width:min(540px,calc(100% - 28px));max-width:540px;padding:0;border:0;border-radius:20px;background:transparent;box-shadow:none}
+.script-dialog::backdrop{background:rgba(10,10,10,.68);backdrop-filter:blur(5px)}
+.script-dialog-card{position:relative;padding:34px;border-radius:20px;background:#fff;color:#151515;box-shadow:0 28px 80px rgba(0,0,0,.28);text-align:center}
+.script-dialog-close{position:absolute;top:12px;right:14px;width:40px;height:40px;border:0;border-radius:50%;background:#f1ede8;color:#111;font:800 27px/1 Inter,Arial,sans-serif;cursor:pointer}
+.script-dialog-close:hover,.script-dialog-close:focus-visible{background:#e6ded5;outline:none}
+.script-dialog-eyebrow{display:block;margin-bottom:8px;color:var(--orange);font-size:11px;font-weight:900;letter-spacing:.09em;text-transform:uppercase}
+.script-dialog h2{max-width:440px;margin:0 auto 10px;font-size:clamp(32px,6vw,44px);line-height:.98;font-weight:900;letter-spacing:-.045em}
+.script-dialog-card>p{max-width:430px;margin:0 auto 22px;color:#615850;font-size:15px;line-height:1.5;font-weight:700}
+.script-dialog .welcome-optin{grid-template-columns:1fr;max-width:430px}
+.script-dialog .welcome-optin .button{width:100%;white-space:normal}
+.script-dialog-note{margin:11px auto 0!important;color:#83776d!important;font-size:11px!important;font-weight:700!important}
+@media(max-width:560px){
+  .script-dialog-card{padding:30px 18px 22px}
+  .script-dialog-close{top:9px;right:10px}
+}
