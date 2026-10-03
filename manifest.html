@@ -68,26 +68,26 @@ h1{max-width:650px;margin:0 auto 16px;font-size:54px;line-height:1;letter-spacin
 </style>
 </head>
 <body>
-<div class="urgency-bar">11:11 You Are Here For A Reason</div>
+<div class="urgency-bar">🧞 Your Genie Is Waiting…</div>
 <main class="page">
 <section class="card">
 <div class="hero">
-<h1>Get The 2 Tools I Use To Manifest My Dream Life</h1>
-<p class="subhead">A 7-minute money meditation audio + subconscious mind guide I use to reset my thoughts, focus on what I want, and keep moving toward it.</p>
-<p class="form-lead">Where should I send you the 2 free tools?</p>
+<h1>How to Manifest Anything You Want</h1>
+<p class="subhead">Tell me what you want most. More money, more love, better health, more peace, more confidence. I will show you how to get it.</p>
+<p class="form-lead">Where should I send your first wish?</p>
 <form class="form" id="manifest-optin-form" method="post" action="https://www.aweber.com/scripts/addlead.pl">
 <label class="sr-only" for="manifest-name">First name</label>
 <input class="input" id="manifest-name" type="text" name="name" placeholder="FIRST NAME" autocomplete="given-name" required>
 <label class="sr-only" for="manifest-email">Email address</label>
 <input class="input" id="manifest-email" type="email" name="email" placeholder="EMAIL ADDRESS" autocomplete="email" required>
 <input type="hidden" name="listname" value="awlist6946418">
-<input type="hidden" name="redirect" value="https://seanali.online/tools/">
-<input type="hidden" name="meta_redirect_onlist" value="https://seanali.online/tools/">
+<input type="hidden" name="redirect" value="https://www.manifestationgenie.ai">
+<input type="hidden" name="meta_redirect_onlist" value="https://www.manifestationgenie.ai">
 <input type="hidden" name="meta_tags" value="manifest-page,cold-ad,path-finder">
 <input type="hidden" name="meta_adtracking" value="Sean Ali Manifestation Path Finder Optin">
 <input type="hidden" name="meta_required" value="name,email">
-<button class="submit" id="manifest-submit" type="submit">YES! SEND ME THE TOOLS →</button>
-<p class="privacy">⚡ 7-minute audio · 🧠 Simple mind guide · 🌙 Use them tonight</p>
+<button class="submit" id="manifest-submit" type="submit">GET YOUR FIRST WISH FREE!</button>
+<p class="privacy">Free · No credit card · Start your first wish now</p>
 </form>
 </section>
 <p class="footer">No guaranteed outcomes. These tools and practices are designed to help you think more clearly and take better action toward the life you want.</p>
@@ -97,7 +97,7 @@ h1{max-width:650px;margin:0 auto 16px;font-size:54px;line-height:1;letter-spacin
 const form=document.getElementById('manifest-optin-form');
 const submit=document.getElementById('manifest-submit');
 form.addEventListener('submit',function(){
-submit.textContent='SENDING YOUR TOOLS...';
+submit.textContent='CREATING YOUR WISH...';
 submit.disabled=true;
 const nameInput=document.getElementById('manifest-name');
 if(nameInput&&nameInput.value.trim())sessionStorage.setItem('hm_god_money_first_name',nameInput.value.trim().split(/\s+/)[0].slice(0,40));
