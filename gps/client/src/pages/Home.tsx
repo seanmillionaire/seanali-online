@@ -13,6 +13,7 @@ import "../guided-flow-fix.css";
 import "../guided-flow-panel.css";
 import "../guided-sound.css";
 import "../dream-life-emblem.css";
+import "../friendly-quiz.css";
 import { DreamLifeEmblem } from "@/components/DreamLifeEmblem";
 import { buildDreamLifeEmblemSpec } from "@/lib/dreamLifeEmblem";
 import { downloadEmblemPng, downloadEmblemSvg } from "@/lib/emblemDownload";
@@ -94,6 +95,9 @@ function FinalScreenSection({ sectionId, eyebrow, title, summary, open, onToggle
 }
 
 export default function Home() {
+  const [welcome, setWelcome] = useState(true);
+  const [startingPoint, setStartingPoint] = useState("");
+  const [furthestStep, setFurthestStep] = useState(0);
   const [step, setStep] = useState<Step>("name");
   const [userName, setUserName] = useState(() => window.localStorage.getItem("dream-life-gps-name") || "");
   const [location, setLocation] = useState("");
@@ -144,6 +148,7 @@ export default function Home() {
   const createClarityPrintout = trpc.createClarityPrintout.useMutation();
 
   const stepIndex = steps.indexOf(step);
+  useEffect(() => { setFurthestStep((previous) => Math.max(previous, stepIndex)); }, [stepIndex]);
   const isClearPhase = stepIndex <= steps.indexOf("summary");
   const pickedBenefits = benefits.filter((item) => selectedBenefits.includes(item.id));
   const benefitNames = pickedBenefits.map((item) => item.impact);
@@ -295,7 +300,20 @@ export default function Home() {
   };
 
   const renderStep = () => {
-    if (step === "name") return <><p className="guided-kicker"><Compass size={18} /> STEP 1 OF 11 · START</p><h1>What’s your first name?</h1><p className="guided-intro">Answer a few simple questions to create your personal Dream Life Map, Dream Life Emblem, and next steps. I’ll use your name to make it yours.</p><VoiceField id="name" label="YOUR FIRST NAME" value={userName} setValue={setUserName} autoFocus active={activeVoice} note={voiceNote} start={startVoice} stop={stopVoice} /></>;
+    if (welcome) return <>
+      <p className="guided-kicker"><Compass size={18} /> DREAM LIFE GPS</p>
+      <h1>Let's find a little more direction.</h1>
+      <p className="guided-intro">Hey, I'm Sean. I'm glad you're here. You don't need your whole life figured out. Let's start with where you are today.</p>
+      <fieldset className="quiz-start"><legend>What feels most like you right now?</legend>
+        {[
+          { title: "I have a dream, but I don't know where to start.", note: "Let's find your first step.", icon: Compass },
+          { title: "I'm doing a lot, but I want a clearer direction.", note: "Let's focus on what matters to you.", icon: Target },
+          { title: "I'm ready for a fresh start.", note: "We can work it out together.", icon: Sparkles },
+        ].map(({ title, note, icon: Icon }) => <button type="button" key={title} onClick={() => { setStartingPoint(title); setWelcome(false); playSound("select"); }}><Icon size={23} /><span><b>{title}</b><small>{note}</small></span><ArrowRight size={20} /></button>)}
+      </fieldset>
+      <p className="quiz-reassurance"><Check size={17} /> No right or wrong answers. Just what feels true for you.</p>
+    </>;
+    if (step === "name") return <><p className="guided-kicker"><Compass size={18} /> LET'S GET TO KNOW YOU</p><h1>First, what should I call you?</h1><p className="guided-intro">{startingPoint === "I'm ready for a fresh start." ? "A fresh start can begin with one small step. I'm glad you're taking this one." : startingPoint === "I'm doing a lot, but I want a clearer direction." ? "Let's give all that effort a direction that feels right for you." : "You don't need to know every step yet. We'll start with the life you want."}</p><VoiceField id="name" label="Your first name" value={userName} setValue={setUserName} autoFocus active={activeVoice} note={voiceNote} start={startVoice} stop={stopVoice} /><p className="quiz-reassurance"><Check size={17} /> A first name is enough. We'll take this one question at a time.</p></>;
     if (step === "location") return <><p className="guided-kicker"><MapPin size={18} /> STEP 2 OF 11 · START</p><h1>Where are you today?</h1><p className="guided-intro">A city or place is enough. This is only for your greeting.</p><VoiceField id="location" label="YOUR CITY OR PLACE" value={location} setValue={setLocation} autoFocus active={activeVoice} note={voiceNote} start={startVoice} stop={stopVoice} /><div className="guided-privacy-note"><MapPin size={20} /><span>I do not check your location. I only use the words you type here.</span></div></>;
     if (step === "success") return <><p className="guided-kicker"><Target size={18} /> STEP 3 OF 11 · GET CLEAR</p><h1>What does success look like for you?</h1><p className="guided-intro">Say it your way. It can be about money, work, family, freedom, health, or all of it together.</p><VoiceField id="success" label="MY PICTURE OF SUCCESS" value={success} setValue={setSuccess} multiline autoFocus active={activeVoice} note={isPersonalizing ? "Making your words clear while keeping them yours..." : voiceNote} start={startVoice} stop={stopVoice} /><ClarityChecklist items={["You are giving your work a clear direction.", "You do not need the perfect words to begin."]} /></>;
     if (step === "benefits") return <><p className="guided-kicker"><Sparkles size={18} /> STEP 4 OF 11 · GET CLEAR</p><h1>What do you want more of in your life?</h1><p className="guided-intro">Pick every benefit you want this success to create. Pick more than one if you want.</p><div className="guided-impact-grid">{benefits.map((item) => <button type="button" key={item.id} className={`guided-impact ${selectedBenefits.includes(item.id) ? "picked" : ""}`} onClick={() => toggleBenefit(item.id)} aria-pressed={selectedBenefits.includes(item.id)}><span>{item.emoji}</span><b>{item.title}</b>{selectedBenefits.includes(item.id) && <Check size={19} />}</button>)}</div><ClarityChecklist items={["You can see who and what this success helps.", "This gives your daily work a deeper reason."]} /></>;
@@ -357,5 +375,55 @@ export default function Home() {
   };
 
   const nextLabel = isPersonalizing ? "Making it clear..." : stepHelp[step].next;
-  return <div className="simple-gps guided-shell"><aside className="simple-rail guided-rail"><div className="simple-brand"><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="Dream Life GPS" /><div><b>Dream Life</b><span>GPS</span></div></div><div className="guided-phase-list" aria-label="Your progress"><div className={`guided-phase ${isClearPhase ? "current" : "done"}`}><span>{isClearPhase ? "01" : <Check size={18} />}</span><div><b>Get clear</b></div></div><div className={`guided-phase ${!isClearPhase ? "current" : ""}`}><span>02</span><div><b>Take action</b></div></div></div></aside><main className="guided-main"><header className="guided-topbar"><div className="mobile-brand"><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><b>DREAM LIFE <em>GPS</em></b></div><div className="guided-top-progress"><span>STEP {stepIndex + 1} OF {steps.length}</span><i style={{ "--step-progress": `${((stepIndex + 1) / steps.length) * 100}%` } as React.CSSProperties} /><b>{isClearPhase ? "GET CLEAR" : "TAKE ACTION"}</b></div><div className="top-message personal-greeting" aria-live="polite"><span className="tiny-dot" />{greeting}</div><button type="button" className="guided-sound-toggle" onClick={() => setSoundEnabled((enabled) => !enabled)} aria-pressed={soundIsActive} aria-label={prefersReducedMotion ? "Sound is off because your device prefers reduced motion" : soundIsActive ? "Turn progress sounds off" : "Turn progress sounds on"} title={prefersReducedMotion ? "Progress sounds are off because your device prefers reduced motion." : undefined} disabled={prefersReducedMotion}>{soundIsActive ? <Volume2 size={17} /> : <VolumeX size={17} />}</button><button type="button" className="guided-help" onClick={() => setHelpOpen((open) => !open)}>{helpOpen ? <X size={19} /> : <Compass size={19} />} {helpOpen ? "Close" : "Need help?"}</button></header>{helpOpen && <aside className="guided-help-panel" aria-live="polite"><span>HELP FOR THIS STEP</span><b>{currentHelp.title}</b><p>{currentHelp.message}</p></aside>}<section className="guided-content"><article className="guided-card" key={step} onKeyDown={handleGuidedInputKeyDown}>{isPersonalizing ? <PersonalizingIndicator /> : renderStep()}</article></section><footer className="guided-footer"><button type="button" className="guided-button secondary" onClick={() => move("back")} disabled={stepIndex === 0 || isPersonalizing}><ArrowLeft size={20} /> Back</button><span className="guided-footer-note">{isPersonalizing ? "Making your next step personal." : stepIndex < steps.length - 1 ? "Finish this step to unlock the next one." : "Your next move is ready."}</span><button type="button" className="guided-button" onClick={() => move("next")} disabled={!canContinue}>{nextLabel}{step !== "action" && <ArrowRight size={20} />}</button></footer></main></div>;
+  const progress = welcome ? 0 : Math.round((stepIndex / (steps.length - 1)) * 100);
+  const milestones = [
+    { title: "A little about you", note: "Your starting point", start: 0, end: 1 },
+    { title: "The life you want", note: "What matters and why", start: 2, end: 5 },
+    { title: "Your clear picture", note: "Bring your answers together", start: 6, end: 6 },
+    { title: "Your next steps", note: "One result you can work toward", start: 7, end: 9 },
+    { title: "Your map & emblem", note: "Something to keep with you", start: 10, end: 10 },
+  ];
+  const goBack = () => {
+    if (stepIndex === 0) { stopVoice(); setWelcome(true); }
+    else move("back");
+  };
+  const startAgain = () => { reset(); setWelcome(true); setStartingPoint(""); setFurthestStep(0); };
+  return <div className="simple-gps guided-shell">
+    <aside className="simple-rail guided-rail" aria-label="Your Dream Life journey">
+      <a className="simple-brand" href="/"><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><div><b>Dream Life</b><span>GPS</span></div></a>
+      <div className="quiz-rail-welcome"><h2>{userName.trim() && !welcome ? `This is your space, ${userName.trim()}.` : "A little clarity. A step forward."}</h2><p>You don't have to have it all figured out to begin.</p></div>
+      <nav className="quiz-journey" aria-label="Your progress">
+        {milestones.map((item, index) => {
+          const current = stepIndex >= item.start && stepIndex <= item.end;
+          const done = !welcome && stepIndex > item.end;
+          return <button type="button" key={item.title} className={current ? "current" : done ? "done" : ""} aria-current={current ? "step" : undefined} disabled={welcome || isPersonalizing || furthestStep < item.start} onClick={() => { stopVoice(); setStep(steps[item.start]); }}>
+            <span>{done ? <Check size={17} /> : index + 1}</span><div><b>{item.title}</b><small>{item.note}</small></div>
+          </button>;
+        })}
+      </nav>
+      <section className="quiz-rail-summary" aria-label="Your answers so far" aria-live="polite">
+        <span><Sparkles size={16} /> YOUR MAP SO FAR</span>
+        {successText ? <p>{successText}</p> : <p>Your picture starts here. Each answer adds a little more of you.</p>}
+        {pickedBenefits.length > 0 && <ul>{pickedBenefits.map((item) => <li key={item.id}><Check size={14} />{item.title}</li>)}</ul>}
+        {weeklyResultText && <p><b>This week:</b> {weeklyResultText}</p>}
+      </section>
+      <div className="quiz-rail-footer"><Compass size={20} /><p>I'm here to help you find your next step.<br /><b>Sean Ali</b></p></div>
+    </aside>
+    <main className="guided-main">
+      <header className="guided-topbar">
+        <div className="quiz-mobile-brand"><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><b>Dream Life GPS</b></div>
+        <div className="guided-top-progress"><span>{welcome ? "LET'S BEGIN" : `QUESTION ${stepIndex + 1} OF ${steps.length}`}</span><i role="progressbar" aria-label="Your journey" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress} style={{ "--step-progress": `${progress}%` } as React.CSSProperties} /></div>
+        <div className="top-message personal-greeting" aria-live="polite">{welcome ? "One small step is enough." : greeting}</div>
+        <button type="button" className="guided-sound-toggle" onClick={() => setSoundEnabled((enabled) => !enabled)} aria-pressed={soundIsActive} aria-label={soundIsActive ? "Turn progress sounds off" : "Turn progress sounds on"} title={prefersReducedMotion ? "Progress sounds are off with reduced motion." : soundIsActive ? "Turn progress sounds off" : "Turn progress sounds on"} disabled={prefersReducedMotion}>{soundIsActive ? <Volume2 size={17} /> : <VolumeX size={17} />}</button>
+        <button type="button" className="guided-help" onClick={() => setHelpOpen((open) => !open)} aria-expanded={helpOpen} aria-controls="quiz-help">{helpOpen ? <X size={19} /> : <Compass size={19} />} {helpOpen ? "Close" : "Need a hand?"}</button>
+      </header>
+      {helpOpen && <aside id="quiz-help" className="guided-help-panel" aria-live="polite"><b>{welcome ? "Start wherever you are." : currentHelp.title}</b><p>{welcome ? "Choose the answer that feels closest today. You can go back and change your answers as we go." : currentHelp.message}</p></aside>}
+      <section className="guided-content"><article className={`guided-card ${welcome ? "quiz-welcome" : ""}`} key={welcome ? "welcome" : step} onKeyDown={handleGuidedInputKeyDown}>{isPersonalizing ? <PersonalizingIndicator /> : renderStep()}</article></section>
+      <footer className="guided-footer">
+        {!welcome && <button type="button" className="guided-button secondary" onClick={goBack} disabled={isPersonalizing}><ArrowLeft size={20} /> Back</button>}
+        <span className="guided-footer-note">{welcome ? "A little space to think about you." : isPersonalizing ? "Taking a moment with your words." : step === "action" ? "Keep this picture close." : "Take your time. Your words are enough."}</span>
+        {!welcome && <button type="button" className="guided-button" onClick={() => step === "action" ? startAgain() : move("next")} disabled={!canContinue}>{nextLabel}{step !== "action" && <ArrowRight size={20} />}</button>}
+      </footer>
+    </main>
+  </div>;
 }
