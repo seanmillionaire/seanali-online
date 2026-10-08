@@ -17,6 +17,8 @@ import "../friendly-quiz.css";
 import { DreamLifeEmblem } from "@/components/DreamLifeEmblem";
 import { buildDreamLifeEmblemSpec } from "@/lib/dreamLifeEmblem";
 import { downloadEmblemPng, downloadEmblemSvg } from "@/lib/emblemDownload";
+import { DownloadGate } from "@/components/DownloadGate";
+import { clearDownloadSession, readDownloadSession, saveDownloadSession, signupReturnParam } from "@/lib/downloadGate";
 
 type Step = "name" | "location" | "success" | "benefits" | "future" | "whyNow" | "summary" | "role" | "responsibility" | "commitment" | "action";
 type BenefitId = "family" | "health" | "calm" | "time" | "freedom" | "work" | "giving" | "growth";
@@ -95,31 +97,37 @@ function FinalScreenSection({ sectionId, eyebrow, title, summary, open, onToggle
 }
 
 export default function Home() {
-  const [welcome, setWelcome] = useState(true);
-  const [startingPoint, setStartingPoint] = useState("");
-  const [furthestStep, setFurthestStep] = useState(0);
-  const [step, setStep] = useState<Step>("name");
-  const [userName, setUserName] = useState(() => window.localStorage.getItem("dream-life-gps-name") || "");
-  const [location, setLocation] = useState("");
-  const [success, setSuccess] = useState("");
-  const [cleanSuccess, setCleanSuccess] = useState("");
-  const [selectedBenefits, setSelectedBenefits] = useState<BenefitId[]>([]);
-  const [future, setFuture] = useState("");
-  const [cleanFuture, setCleanFuture] = useState("");
-  const [whyNow, setWhyNow] = useState("");
-  const [cleanWhyNow, setCleanWhyNow] = useState("");
-  const [role, setRole] = useState<RoleId | null>(null);
-  const [otherRole, setOtherRole] = useState("");
-  const [responsibility, setResponsibility] = useState("");
-  const [cleanResponsibility, setCleanResponsibility] = useState("");
-  const [weeklyResult, setWeeklyResult] = useState("");
-  const [cleanWeeklyResult, setCleanWeeklyResult] = useState("");
-  const [commitment, setCommitment] = useState<CommitmentId>("solid");
+  const [resumed] = useState(() => {
+    try { return readDownloadSession(window.sessionStorage, window.location.href); }
+    catch { return null; }
+  });
+  const draft = resumed?.draft;
+  const [downloadsUnlocked, setDownloadsUnlocked] = useState(resumed?.unlocked ?? false);
+  const [welcome, setWelcome] = useState(!resumed);
+  const [startingPoint, setStartingPoint] = useState(draft?.startingPoint ?? "");
+  const [furthestStep, setFurthestStep] = useState(resumed ? 10 : 0);
+  const [step, setStep] = useState<Step>(resumed ? "action" : "name");
+  const [userName, setUserName] = useState(() => draft?.userName ?? window.localStorage.getItem("dream-life-gps-name") ?? "");
+  const [location, setLocation] = useState(draft?.location ?? "");
+  const [success, setSuccess] = useState(draft?.success ?? "");
+  const [cleanSuccess, setCleanSuccess] = useState(draft?.cleanSuccess ?? "");
+  const [selectedBenefits, setSelectedBenefits] = useState<BenefitId[]>(draft?.selectedBenefits ?? []);
+  const [future, setFuture] = useState(draft?.future ?? "");
+  const [cleanFuture, setCleanFuture] = useState(draft?.cleanFuture ?? "");
+  const [whyNow, setWhyNow] = useState(draft?.whyNow ?? "");
+  const [cleanWhyNow, setCleanWhyNow] = useState(draft?.cleanWhyNow ?? "");
+  const [role, setRole] = useState<RoleId | null>(draft?.role ?? null);
+  const [otherRole, setOtherRole] = useState(draft?.otherRole ?? "");
+  const [responsibility, setResponsibility] = useState(draft?.responsibility ?? "");
+  const [cleanResponsibility, setCleanResponsibility] = useState(draft?.cleanResponsibility ?? "");
+  const [weeklyResult, setWeeklyResult] = useState(draft?.weeklyResult ?? "");
+  const [cleanWeeklyResult, setCleanWeeklyResult] = useState(draft?.cleanWeeklyResult ?? "");
+  const [commitment, setCommitment] = useState<CommitmentId>(draft?.commitment ?? "solid");
   const [helpOpen, setHelpOpen] = useState(false);
   const [isPersonalizing, setIsPersonalizing] = useState(false);
-  const [dreamScene, setDreamScene] = useState<DreamDaySceneId>("celebration");
-  const [dreamDetail, setDreamDetail] = useState("");
-  const [clarityPrintout, setClarityPrintout] = useState<ClarityPrintout | null>(null);
+  const [dreamScene, setDreamScene] = useState<DreamDaySceneId>(draft?.dreamScene ?? "celebration");
+  const [dreamDetail, setDreamDetail] = useState(draft?.dreamDetail ?? "");
+  const [clarityPrintout, setClarityPrintout] = useState<ClarityPrintout | null>(draft?.clarityPrintout ?? null);
   const [clarityError, setClarityError] = useState("");
   const [openFinalSections, setOpenFinalSections] = useState<Record<FinalSectionId, boolean>>({ vision: true, dream: false, plan: false });
   const [soundEnabled, setSoundEnabled] = useState(() => window.localStorage.getItem("dream-life-gps-sound") !== "off");
@@ -129,7 +137,12 @@ export default function Home() {
   const emblemRef = useRef<SVGSVGElement | null>(null);
   const [emblemSaving, setEmblemSaving] = useState(false);
   const [emblemError, setEmblemError] = useState("");
+  const focusDownloadGate = () => {
+    document.getElementById("gps-download-gate")?.scrollIntoView({ block: "center" });
+    document.getElementById("gps-download-email")?.focus({ preventScroll: true });
+  };
   const saveEmblem = async (format: "png" | "svg") => {
+    if (!downloadsUnlocked) { focusDownloadGate(); return; }
     if (!emblemRef.current || emblemSaving) return;
     setEmblemSaving(true);
     setEmblemError("");
@@ -169,6 +182,17 @@ export default function Home() {
   const greeting = userName.trim() && location.trim() ? `${greetingTime}, ${userName.trim()} — building from ${location.trim()}` : "One step at a time";
   const currentHelp = stepHelp[step];
   const soundIsActive = canPlayProgressiveSound(soundEnabled, prefersReducedMotion);
+  const saveDraftForSignup = (token: string) => {
+    if (!role) throw new Error("Finish your map first.");
+    saveDownloadSession(window.sessionStorage, { userName, location, startingPoint, success, cleanSuccess, selectedBenefits, future, cleanFuture, whyNow, cleanWhyNow, role, otherRole, responsibility, cleanResponsibility, weeklyResult, cleanWeeklyResult, commitment, dreamScene, dreamDetail, clarityPrintout }, token, downloadsUnlocked);
+  };
+  useEffect(() => {
+    if (!resumed?.returned) return;
+    try { saveDownloadSession(window.sessionStorage, resumed.draft, resumed.token, true); } catch { /* The current page still has the restored map. */ }
+    const url = new URL(window.location.href);
+    url.searchParams.delete(signupReturnParam);
+    window.history.replaceState(window.history.state, "", url.href);
+  }, [resumed]);
 
   const valueForVoice = (field: VoiceField) => ({ name: userName, location, otherRole, success, future, whyNow, responsibility, weeklyResult, dreamDetail }[field]);
   const setVoiceValue = (field: VoiceField, value: string) => {
@@ -279,6 +303,7 @@ export default function Home() {
   };
   const reset = () => { stopVoice(); setStep("name"); setUserName(""); setLocation(""); setSuccess(""); setCleanSuccess(""); setSelectedBenefits([]); setFuture(""); setCleanFuture(""); setWhyNow(""); setCleanWhyNow(""); setRole(null); setOtherRole(""); setResponsibility(""); setCleanResponsibility(""); setWeeklyResult(""); setCleanWeeklyResult(""); setCommitment("solid"); setDreamScene("celebration"); setDreamDetail(""); setClarityPrintout(null); setClarityError(""); setEmblemError(""); setOpenFinalSections({ vision: true, dream: false, plan: false }); setHelpOpen(false); };
   const printFinalPlan = () => {
+    if (!downloadsUnlocked) { focusDownloadGate(); return; }
     setOpenFinalSections({ vision: true, dream: true, plan: true });
     window.requestAnimationFrame(() => window.requestAnimationFrame(() => window.print()));
   };
@@ -328,6 +353,7 @@ export default function Home() {
       <p className="guided-kicker"><Check size={18} /> STEP 11 OF 11 · TAKE ACTION</p>
       <h1>Here Is The Life I Am Building</h1>
       <p className="guided-intro">You just turned what was in your head into something you can see and follow.</p>
+      <DownloadGate name={userName} unlocked={downloadsUnlocked} onSignup={saveDraftForSignup} />
       <div className="guided-deliverables">
         <section className="guided-emblem-card" aria-labelledby="emblem-title">
           <h2 id="emblem-title">Your Dream Life Emblem</h2>
@@ -335,8 +361,8 @@ export default function Home() {
           <DreamLifeEmblem spec={emblemSpec} svgRef={emblemRef} />
           <small>Built from your answers.</small>
           <div className="guided-export-actions">
-            <button type="button" onClick={() => void saveEmblem("png")} disabled={emblemSaving}>{emblemSaving ? "Saving…" : "Save Image"}</button>
-            <button type="button" className="guided-svg-download" onClick={() => void saveEmblem("svg")} disabled={emblemSaving}>Save SVG</button>
+            <button type="button" onClick={() => void saveEmblem("png")} disabled={emblemSaving}>{emblemSaving ? "Saving…" : downloadsUnlocked ? "Save Image" : "Unlock image"}</button>
+            <button type="button" className="guided-svg-download" onClick={() => void saveEmblem("svg")} disabled={emblemSaving}>{downloadsUnlocked ? "Save SVG" : "Unlock SVG"}</button>
           </div>
           {emblemError && <p role="alert">{emblemError}</p>}
         </section>
@@ -345,7 +371,7 @@ export default function Home() {
           <h2 id="map-title">Your Dream Life Map</h2>
           <p>Your vision, your reasons, and your next moves.</p>
           <ul><li>The life I’m building</li><li>Why it matters to me</li><li>My next 7-day proof</li><li>My three next moves</li></ul>
-          <button type="button" className="guided-print-button" onClick={printFinalPlan}><Printer size={20} /> Print or Save PDF</button>
+          <button type="button" className="guided-print-button" onClick={printFinalPlan}><Printer size={20} />{downloadsUnlocked ? "Print or Save PDF" : "Unlock PDF"}</button>
         </section>
       </div>
       <FinalScreenSection sectionId="vision" eyebrow="MY CLEAR PICTURE" title={currentClarityPrintout.title} summary="A short near-future picture, built from my own words." open={openFinalSections.vision} onToggle={() => toggleFinalSection("vision")}>
@@ -368,7 +394,7 @@ export default function Home() {
           <div className="guided-final-context"><div><span>MY WORK FOCUS</span><b>{responsibilityText}</b></div><div><span>WHY THIS MATTERS</span><b>{actionPlan.whyNow || actionPlan.impact}</b></div></div>
           <div className="guided-simple-checklist">{finalChecklist.map((item, index) => <article key={item.label}><i aria-hidden="true">{index + 1}</i><div><span>{item.label}</span><h2>{item.title}</h2><p>{item.action}</p></div></article>)}</div>
           <div className="guided-final-close"><Check size={20} /><p>At my next check-in, I look at what moved. I keep what worked. Then I choose the next useful result.</p></div>
-          <button type="button" className="guided-print-button" onClick={printFinalPlan}><Printer size={20} /> Print or save as PDF</button>
+          <button type="button" className="guided-print-button" onClick={printFinalPlan}><Printer size={20} />{downloadsUnlocked ? "Print or save as PDF" : "Unlock PDF"}</button>
         </section>
       </FinalScreenSection>
     </>;
@@ -387,8 +413,11 @@ export default function Home() {
     if (stepIndex === 0) { stopVoice(); setWelcome(true); }
     else move("back");
   };
-  const startAgain = () => { reset(); setWelcome(true); setStartingPoint(""); setFurthestStep(0); };
-  return <div className="simple-gps guided-shell">
+  const startAgain = () => {
+    try { clearDownloadSession(window.sessionStorage); } catch { /* Reset the current journey even if storage is unavailable. */ }
+    setDownloadsUnlocked(false); reset(); setWelcome(true); setStartingPoint(""); setFurthestStep(0);
+  };
+  return <div className={`simple-gps guided-shell${downloadsUnlocked ? "" : " gps-downloads-locked"}`}>
     <aside className="simple-rail guided-rail" aria-label="Your Dream Life journey">
       <a className="simple-brand" href="/"><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><div><b>Dream Life</b><span>GPS</span></div></a>
       <div className="quiz-rail-welcome"><h2>{userName.trim() && !welcome ? `This is your space, ${userName.trim()}.` : "A little clarity. A step forward."}</h2><p>You don't have to have it all figured out to begin.</p></div>

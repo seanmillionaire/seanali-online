@@ -74,6 +74,7 @@
 
   const buildReport = () => {
     document.getElementById(REPORT_ID)?.remove();
+    if (document.querySelector(".gps-downloads-locked")) return;
 
     const finalPlan = document.querySelector(".guided-final-plan");
     if (!finalPlan) return;
