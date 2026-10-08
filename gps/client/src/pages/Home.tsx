@@ -1,6 +1,6 @@
 /** A simple, locked path: get clear on the life you want, then take one useful step. */
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Check, ChevronDown, Compass, MapPin, Mic, MicOff, Printer, Sparkles, Target, Volume2, VolumeX, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, ChevronDown, Compass, Download, MapPin, Mic, MicOff, Printer, Sparkles, Target, Volume2, VolumeX, X } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { findStatedMonthlyIncome } from "@/lib/incomePlan";
 import { canAdvanceStep, commitments, createFinalChecklist, createNextAction, getRoleName, getWeeklyNumbers, roles, type CommitmentId, type RoleId } from "@/lib/guidedJourney";
@@ -14,9 +14,8 @@ import "../guided-flow-panel.css";
 import "../guided-sound.css";
 import "../dream-life-emblem.css";
 import "../friendly-quiz.css";
-import { DreamLifeEmblem } from "@/components/DreamLifeEmblem";
-import { buildDreamLifeEmblemSpec } from "@/lib/dreamLifeEmblem";
-import { downloadEmblemPng, downloadEmblemSvg } from "@/lib/emblemDownload";
+import "../final-screen.css";
+import { compassImageUrl, downloadCompassImage } from "@/lib/compassDownload";
 import { DownloadGate } from "@/components/DownloadGate";
 import { clearDownloadSession, readDownloadSession, saveDownloadSession, signupReturnParam } from "@/lib/downloadGate";
 
@@ -77,7 +76,7 @@ function PersonalizingIndicator() {
 function DreamDaySceneSelector({ value, onChange }: { value: DreamDaySceneId; onChange: (scene: DreamDaySceneId) => void }) {
   return <fieldset className="guided-dream-scene-selector">
     <legend>CHOOSE THE KIND OF DAY YOU WANT TO STEP INTO</legend>
-    <p>Your choice and details shape your Dream Life Map and Emblem.</p>
+    <p>Your choice and details shape your Dream Life Map.</p>
     <div className="guided-dream-scene-grid">
       {dreamDayScenes.map((scene) => <button type="button" key={scene.id} data-dream-scene={scene.id} className={value === scene.id ? "picked" : ""} onClick={() => onChange(scene.id)} aria-pressed={value === scene.id}>
         <span aria-hidden="true">{scene.emoji}</span><div><b>{scene.title}</b><small>{scene.line}</small></div>{value === scene.id && <i><Check size={18} /></i>}
@@ -129,29 +128,27 @@ export default function Home() {
   const [dreamDetail, setDreamDetail] = useState(draft?.dreamDetail ?? "");
   const [clarityPrintout, setClarityPrintout] = useState<ClarityPrintout | null>(draft?.clarityPrintout ?? null);
   const [clarityError, setClarityError] = useState("");
-  const [openFinalSections, setOpenFinalSections] = useState<Record<FinalSectionId, boolean>>({ vision: true, dream: false, plan: false });
+  const [openFinalSections, setOpenFinalSections] = useState<Record<FinalSectionId, boolean>>({ vision: false, dream: false, plan: false });
   const [soundEnabled, setSoundEnabled] = useState(() => window.localStorage.getItem("dream-life-gps-sound") !== "off");
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   const [activeVoice, setActiveVoice] = useState<VoiceField | null>(null);
   const [voiceNote, setVoiceNote] = useState("Tap the microphone to speak your answer.");
-  const emblemRef = useRef<SVGSVGElement | null>(null);
-  const [emblemSaving, setEmblemSaving] = useState(false);
-  const [emblemError, setEmblemError] = useState("");
+  const [compassSaving, setCompassSaving] = useState(false);
+  const [compassError, setCompassError] = useState("");
   const focusDownloadGate = () => {
     document.getElementById("gps-download-gate")?.scrollIntoView({ block: "center" });
     document.getElementById("gps-download-email")?.focus({ preventScroll: true });
   };
-  const saveEmblem = async (format: "png" | "svg") => {
+  const saveCompass = async () => {
     if (!downloadsUnlocked) { focusDownloadGate(); return; }
-    if (!emblemRef.current || emblemSaving) return;
-    setEmblemSaving(true);
-    setEmblemError("");
+    if (compassSaving) return;
+    setCompassSaving(true);
+    setCompassError("");
     try {
-      if (format === "svg") downloadEmblemSvg(emblemRef.current);
-      else await downloadEmblemPng(emblemRef.current);
+      await downloadCompassImage();
     } catch {
-      setEmblemError("The image could not be saved. Try again, or choose Save SVG.");
-    } finally { setEmblemSaving(false); }
+      setCompassError("The compass could not be saved. Please try again.");
+    } finally { setCompassSaving(false); }
   };
   const recognition = useRef<SpeechRecognitionLike | null>(null);
   const audioContext = useRef<AudioContext | null>(null);
@@ -175,7 +172,6 @@ export default function Home() {
   const actionPlan = useMemo(() => role ? createNextAction({ role, otherRole, commitment, success: successText, responsibility: responsibilityText, weeklyResult: weeklyResultText, impactNames: benefitNames, whyNow: whyNowText }) : null, [role, otherRole, commitment, successText, responsibilityText, weeklyResultText, benefitNames.join("|"), whyNowText]);
   const finalChecklist = actionPlan ? createFinalChecklist(actionPlan) : [];
   const clarityInput = useMemo(() => ({ success: successText, benefits: pickedBenefits.map((benefit) => benefit.title), future: futureText, whyNow: whyNowText, responsibility: responsibilityText, nearTermResult: weeklyResultText, dreamScene, dreamDetail }), [successText, pickedBenefits.map((benefit) => benefit.title).join("|"), futureText, whyNowText, responsibilityText, weeklyResultText, dreamScene, dreamDetail]);
-  const emblemSpec = buildDreamLifeEmblemSpec({ success, future, whyNow, selectedBenefits: pickedBenefits.map(benefit => benefit.title), dreamScene, dreamDetail });
   const clarityFallback = useMemo(() => buildClarityPrintoutFallback(clarityInput), [clarityInput]);
   const currentClarityPrintout = clarityPrintout ?? clarityFallback;
   const greetingTime = new Date().getHours() < 12 ? "Good morning" : new Date().getHours() < 18 ? "Good afternoon" : "Good evening";
@@ -301,7 +297,7 @@ export default function Home() {
     if (step === "action") { playSound("back"); reset(); return; }
     if (position < steps.length - 1) { setStep(steps[position + 1]); playSound(cueForAdvance(position, position + 1)); }
   };
-  const reset = () => { stopVoice(); setStep("name"); setUserName(""); setLocation(""); setSuccess(""); setCleanSuccess(""); setSelectedBenefits([]); setFuture(""); setCleanFuture(""); setWhyNow(""); setCleanWhyNow(""); setRole(null); setOtherRole(""); setResponsibility(""); setCleanResponsibility(""); setWeeklyResult(""); setCleanWeeklyResult(""); setCommitment("solid"); setDreamScene("celebration"); setDreamDetail(""); setClarityPrintout(null); setClarityError(""); setEmblemError(""); setOpenFinalSections({ vision: true, dream: false, plan: false }); setHelpOpen(false); };
+  const reset = () => { stopVoice(); setStep("name"); setUserName(""); setLocation(""); setSuccess(""); setCleanSuccess(""); setSelectedBenefits([]); setFuture(""); setCleanFuture(""); setWhyNow(""); setCleanWhyNow(""); setRole(null); setOtherRole(""); setResponsibility(""); setCleanResponsibility(""); setWeeklyResult(""); setCleanWeeklyResult(""); setCommitment("solid"); setDreamScene("celebration"); setDreamDetail(""); setClarityPrintout(null); setClarityError(""); setCompassError(""); setOpenFinalSections({ vision: false, dream: false, plan: false }); setHelpOpen(false); };
   const printFinalPlan = () => {
     if (!downloadsUnlocked) { focusDownloadGate(); return; }
     setOpenFinalSections({ vision: true, dream: true, plan: true });
@@ -350,34 +346,30 @@ export default function Home() {
     if (step === "commitment") return <><p className="guided-kicker"><Compass size={18} /> STEP 10 OF 11 · TAKE ACTION</p><h1>What result can I commit to in the next 7 days?</h1><p className="guided-intro">Make it real and easy to see. At my next check-in, what will be different because I did the work?</p><VoiceField id="weeklyResult" label="AT MY NEXT CHECK-IN, THIS IS TRUE" value={weeklyResult} setValue={setWeeklyResult} multiline autoFocus active={activeVoice} note={isPersonalizing ? "Making your result clear while keeping it yours..." : voiceNote} start={startVoice} stop={stopVoice} /><ClarityChecklist title="A GOOD SEVEN-DAY RESULT" items={["I can see proof that it happened.", "It connects to the work I can influence.", "It is small enough to move this week."]} /><div className="guided-result-anchor"><Target size={21} /><span>{suggestedTarget ? <>Your bigger picture is <b>{formatMoney(suggestedTarget)}</b> each month. This is the one result that moves it forward this week.</> : <>This is one visible result that moves your bigger picture forward this week.</>}</span></div><div className="guided-commitment-heading"><span>HOW MUCH ROOM WILL I MAKE FOR IT?</span><p>Pick the level that gives this result a real chance soon.</p></div><div className="guided-commitments">{commitments.map((item) => <button type="button" key={item.id} className={`guided-commitment ${commitment === item.id ? "picked" : ""}`} onClick={() => { setCommitment(item.id); playSound("select"); }} aria-pressed={commitment === item.id}><span>{item.id === "small" ? "01" : item.id === "solid" ? "02" : "03"}</span><div><b>{item.title}</b><small>{item.line}</small><em>{item.hours}</em></div>{commitment === item.id && <i><Check size={19} /></i>}</button>)}</div></>;
     if (!actionPlan || !role) return null;
     return <>
-      <p className="guided-kicker"><Check size={18} /> STEP 11 OF 11 · TAKE ACTION</p>
-      <h1>Here Is The Life I Am Building</h1>
-      <p className="guided-intro">You just turned what was in your head into something you can see and follow.</p>
-      <DownloadGate name={userName} unlocked={downloadsUnlocked} onSignup={saveDraftForSignup} />
-      <div className="guided-deliverables">
-        <section className="guided-emblem-card" aria-labelledby="emblem-title">
-          <h2 id="emblem-title">Your Dream Life Emblem</h2>
-          <p>A simple symbol of the life you are building.</p>
-          <DreamLifeEmblem spec={emblemSpec} svgRef={emblemRef} />
-          <small>Built from your answers.</small>
-          <div className="guided-export-actions">
-            <button type="button" onClick={() => void saveEmblem("png")} disabled={emblemSaving}>{emblemSaving ? "Saving…" : downloadsUnlocked ? "Save Image" : "Unlock image"}</button>
-            <button type="button" className="guided-svg-download" onClick={() => void saveEmblem("svg")} disabled={emblemSaving}>{downloadsUnlocked ? "Save SVG" : "Unlock SVG"}</button>
-          </div>
-          {emblemError && <p role="alert">{emblemError}</p>}
-        </section>
-        <section className="guided-map-card" aria-labelledby="map-title">
-          <Compass size={32} aria-hidden="true" />
-          <h2 id="map-title">Your Dream Life Map</h2>
-          <p>Your vision, your reasons, and your next moves.</p>
-          <ul><li>The life I’m building</li><li>Why it matters to me</li><li>My next 7-day proof</li><li>My three next moves</li></ul>
-          <button type="button" className="guided-print-button" onClick={printFinalPlan}><Printer size={20} />{downloadsUnlocked ? "Print or Save PDF" : "Unlock PDF"}</button>
+      <p className="guided-kicker"><Check size={18} /> YOUR DREAM LIFE MAP</p>
+      <h1>Your plan is ready{userName.trim() ? `, ${userName.trim()}` : ""}.</h1>
+      <p className="guided-intro">You don't need to do everything today. Start with one small step toward the life you want.</p>
+      <div className="gps-final-overview">
+        <figure className="gps-north-star">
+          <img src={compassImageUrl} width={1024} height={1024} data-north-star-compass alt="A gold North Star above a forest-green compass, pointing toward your chosen direction." />
+          <figcaption><h2>Your North Star Compass</h2><p>A reminder of what matters to you.</p><small>Created by Sean Ali</small></figcaption>
+        </figure>
+        <section className="gps-plan-summary" aria-label="Your plan at a glance">
+          <div><span>The life you want</span><p>{successText}</p></div>
+          <div><span>Your goal this week</span><p>{actionPlan.weeklyResult}</p></div>
+          <div className="gps-first-step"><span><Target size={17} /> Start here</span><p>{finalChecklist[0]?.action}</p></div>
         </section>
       </div>
-      <FinalScreenSection sectionId="vision" eyebrow="MY CLEAR PICTURE" title={currentClarityPrintout.title} summary="A short near-future picture, built from my own words." open={openFinalSections.vision} onToggle={() => toggleFinalSection("vision")}>
+      <DownloadGate name={userName} unlocked={downloadsUnlocked} onSignup={saveDraftForSignup} />
+      {downloadsUnlocked && <div className="gps-final-downloads" aria-label="Your downloads">
+        <button type="button" onClick={printFinalPlan}><Printer size={20} /> Save my plan as PDF</button>
+        <button type="button" className="secondary" onClick={() => void saveCompass()} disabled={compassSaving}><Download size={20} />{compassSaving ? "Saving..." : "Save compass image"}</button>
+        {compassError && <p role="alert">{compassError}</p>}
+      </div>}
+      <FinalScreenSection sectionId="vision" eyebrow="YOUR BIGGER PICTURE" title="The life you're working toward" summary="Your answers, brought together." open={openFinalSections.vision} onToggle={() => toggleFinalSection("vision")}>
         <div className="guided-vision-scene"><span>A DAY I AM BUILDING</span><p>{currentClarityPrintout.opening}</p><div><Compass size={21} /><b>{currentClarityPrintout.anchor}</b></div></div>
       </FinalScreenSection>
-      <FinalScreenSection sectionId="dream" eyebrow="ADD MY DREAM-DAY DETAILS" title="Make this picture feel more like me" summary="Choose a kind of day, add what I can see, then let the words become clearer." open={openFinalSections.dream} onToggle={() => toggleFinalSection("dream")}>
+      <FinalScreenSection sectionId="dream" eyebrow="OPTIONAL" title="Add more detail to your dream day" summary="What would a good day look and feel like?" open={openFinalSections.dream} onToggle={() => toggleFinalSection("dream")}>
         <section className="guided-clarity-writer" aria-labelledby="clarity-writer-title">
           <header><span><Sparkles size={17} /> MY DREAM DAY</span><h2 id="clarity-writer-title">What kind of day am I moving toward?</h2><p>Pick what feels closest. Then add one small detail that makes it mine.</p></header>
           <DreamDaySceneSelector value={dreamScene} onChange={(scene) => { setDreamScene(scene); setClarityPrintout(null); playSound("select"); }} />
@@ -386,15 +378,14 @@ export default function Home() {
           <article className="guided-clarity-narrative" aria-live="polite"><span>{currentClarityPrintout.source === "ai" ? "MY WORDS, MADE CLEARER" : "MY WORDS"}</span><p>{currentClarityPrintout.scene}</p></article>
         </section>
       </FinalScreenSection>
-      <FinalScreenSection sectionId="plan" eyebrow="MY NEXT MOVES" title="The work that brings this closer" summary={`The next proof I am looking for: ${actionPlan.weeklyResult}`} open={openFinalSections.plan} onToggle={() => toggleFinalSection("plan")}>
+      <FinalScreenSection sectionId="plan" eyebrow="YOUR NEXT STEPS" title="Your three-step plan" summary="What to do today, this week, and at your next check-in." open={openFinalSections.plan} onToggle={() => toggleFinalSection("plan")}>
         <section className="guided-final-plan">
           <div className="guided-print-meta"><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><span>Dream Life GPS</span><b>Created by Sean Ali</b></div>
-          <header className="guided-final-result"><span>THE NEXT PROOF I AM LOOKING FOR</span><h2>{actionPlan.weeklyResult}</h2><p>This moves me toward: <b>{actionPlan.clearPicture}</b></p></header>
+          <header className="guided-final-result"><span>MY GOAL THIS WEEK</span><h2>{actionPlan.weeklyResult}</h2><p>This moves me toward: <b>{actionPlan.clearPicture}</b></p></header>
           <section className="guided-printout-copy"><span>MY NEAR-FUTURE PICTURE</span><h2>{currentClarityPrintout.title}</h2><p>{currentClarityPrintout.opening}</p><p>{currentClarityPrintout.scene}</p></section>
           <div className="guided-final-context"><div><span>MY WORK FOCUS</span><b>{responsibilityText}</b></div><div><span>WHY THIS MATTERS</span><b>{actionPlan.whyNow || actionPlan.impact}</b></div></div>
           <div className="guided-simple-checklist">{finalChecklist.map((item, index) => <article key={item.label}><i aria-hidden="true">{index + 1}</i><div><span>{item.label}</span><h2>{item.title}</h2><p>{item.action}</p></div></article>)}</div>
           <div className="guided-final-close"><Check size={20} /><p>At my next check-in, I look at what moved. I keep what worked. Then I choose the next useful result.</p></div>
-          <button type="button" className="guided-print-button" onClick={printFinalPlan}><Printer size={20} />{downloadsUnlocked ? "Print or save as PDF" : "Unlock PDF"}</button>
         </section>
       </FinalScreenSection>
     </>;
@@ -407,7 +398,7 @@ export default function Home() {
     { title: "The life you want", note: "What matters and why", start: 2, end: 5 },
     { title: "Your clear picture", note: "Bring your answers together", start: 6, end: 6 },
     { title: "Your next steps", note: "One result you can work toward", start: 7, end: 9 },
-    { title: "Your map & emblem", note: "Something to keep with you", start: 10, end: 10 },
+    { title: "Your plan & compass", note: "Something to keep with you", start: 10, end: 10 },
   ];
   const goBack = () => {
     if (stepIndex === 0) { stopVoice(); setWelcome(true); }
@@ -441,17 +432,17 @@ export default function Home() {
     <main className="guided-main">
       <header className="guided-topbar">
         <div className="quiz-mobile-brand"><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><b>Dream Life GPS</b></div>
-        <div className="guided-top-progress"><span>{welcome ? "LET'S BEGIN" : `QUESTION ${stepIndex + 1} OF ${steps.length}`}</span><i role="progressbar" aria-label="Your journey" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress} style={{ "--step-progress": `${progress}%` } as React.CSSProperties} /></div>
+        <div className="guided-top-progress"><span>{welcome ? "LET'S BEGIN" : step === "action" ? "YOUR PLAN IS READY" : `QUESTION ${stepIndex + 1} OF ${steps.length}`}</span><i role="progressbar" aria-label="Your journey" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress} style={{ "--step-progress": `${progress}%` } as React.CSSProperties} /></div>
         <div className="top-message personal-greeting" aria-live="polite">{welcome ? "One small step is enough." : greeting}</div>
         <button type="button" className="guided-sound-toggle" onClick={() => setSoundEnabled((enabled) => !enabled)} aria-pressed={soundIsActive} aria-label={soundIsActive ? "Turn progress sounds off" : "Turn progress sounds on"} title={prefersReducedMotion ? "Progress sounds are off with reduced motion." : soundIsActive ? "Turn progress sounds off" : "Turn progress sounds on"} disabled={prefersReducedMotion}>{soundIsActive ? <Volume2 size={17} /> : <VolumeX size={17} />}</button>
         <button type="button" className="guided-help" onClick={() => setHelpOpen((open) => !open)} aria-expanded={helpOpen} aria-controls="quiz-help">{helpOpen ? <X size={19} /> : <Compass size={19} />} {helpOpen ? "Close" : "Need a hand?"}</button>
       </header>
       {helpOpen && <aside id="quiz-help" className="guided-help-panel" aria-live="polite"><b>{welcome ? "Start wherever you are." : currentHelp.title}</b><p>{welcome ? "Choose the answer that feels closest today. You can go back and change your answers as we go." : currentHelp.message}</p></aside>}
-      <section className="guided-content"><article className={`guided-card ${welcome ? "quiz-welcome" : ""}`} key={welcome ? "welcome" : step} onKeyDown={handleGuidedInputKeyDown}>{isPersonalizing ? <PersonalizingIndicator /> : renderStep()}</article></section>
+      <section className="guided-content"><article className={`guided-card ${welcome ? "quiz-welcome" : step === "action" ? "gps-final-screen" : ""}`} key={welcome ? "welcome" : step} onKeyDown={handleGuidedInputKeyDown}>{isPersonalizing ? <PersonalizingIndicator /> : renderStep()}</article></section>
       <footer className="guided-footer">
         {!welcome && <button type="button" className="guided-button secondary" onClick={goBack} disabled={isPersonalizing}><ArrowLeft size={20} /> Back</button>}
         <span className="guided-footer-note">{welcome ? "A little space to think about you." : isPersonalizing ? "Taking a moment with your words." : step === "action" ? "Keep this picture close." : "Take your time. Your words are enough."}</span>
-        {!welcome && <button type="button" className="guided-button" onClick={() => step === "action" ? startAgain() : move("next")} disabled={!canContinue}>{nextLabel}{step !== "action" && <ArrowRight size={20} />}</button>}
+        {!welcome && <button type="button" className={`guided-button${step === "action" ? " secondary" : ""}`} onClick={() => step === "action" ? startAgain() : move("next")} disabled={!canContinue}>{nextLabel}{step !== "action" && <ArrowRight size={20} />}</button>}
       </footer>
     </main>
   </div>;

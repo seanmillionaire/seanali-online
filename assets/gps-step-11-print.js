@@ -136,10 +136,10 @@
         ? `${name}, this is the life you described and the next three moves to bring it closer.`
         : "This is the life you described and the next three moves to bring it closer."
     ));
-    const emblem = document.querySelector("svg[data-dream-life-emblem]");
-    if (emblem) {
+    const compass = document.querySelector("img[data-north-star-compass]");
+    if (compass) {
       const visual = createElement("div", "gps-print-emblem");
-      visual.append(emblem.cloneNode(true));
+      visual.append(compass.cloneNode(true));
       hero.append(visual);
     }
     report.append(hero);

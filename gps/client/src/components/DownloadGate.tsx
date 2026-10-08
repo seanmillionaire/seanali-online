@@ -18,11 +18,11 @@ export function DownloadGate({ name, unlocked, onSignup }: { name: string; unloc
     return () => window.removeEventListener("pageshow", restore);
   }, []);
 
-  if (unlocked) return <section id="gps-download-gate" className="gps-download-gate unlocked" role="status"><Check size={22} /><div><h2>Your downloads are ready.</h2><p>Your answers are right here. Save your map and emblem below. If AWeber sends a confirmation email, confirm it to receive my emails.</p></div></section>;
+  if (unlocked) return <section id="gps-download-gate" className="gps-download-gate unlocked" role="status"><Check size={22} /><div><h2>Your downloads are ready.</h2><p>Save your plan and compass below. Check your inbox for any email confirmation from Sean Ali.</p></div></section>;
   return <section id="gps-download-gate" className="gps-download-gate" aria-labelledby="download-gate-title">
-    <span className="gps-download-kicker"><LockKeyhole size={17} /> KEEP YOUR MAP & EMBLEM</span>
-    <h2 id="download-gate-title">Let's make this yours to keep.</h2>
-    <p>Enter your email to unlock your Dream Life Map PDF and emblem downloads. I'll also send you my emails with ideas and tools for building the life you want.</p>
+    <span className="gps-download-kicker"><LockKeyhole size={17} /> YOUR FREE DOWNLOADS</span>
+    <h2 id="download-gate-title">Keep your plan and compass.</h2>
+    <p>Enter your email to download your personal plan as a PDF and your North Star Compass as an image.</p>
     <form method="post" action="https://www.aweber.com/scripts/addlead.pl" acceptCharset="UTF-8" onSubmit={(event) => {
       if (submitting) { event.preventDefault(); return; }
       try { onSignup(token); setError(""); setSubmitting(true); }
@@ -38,7 +38,7 @@ export function DownloadGate({ name, unlocked, onSignup }: { name: string; unloc
       <input type="hidden" name="meta_forward_vars" value="0" />
       <label htmlFor="gps-download-email">Email address</label>
       <div className="gps-download-form-row"><input id="gps-download-email" name="email" type="email" autoComplete="email" placeholder="you@example.com" required maxLength={254} /><button type="submit" disabled={submitting}>{submitting ? "Opening signup..." : "Unlock my downloads"}<ArrowRight size={19} /></button></div>
-      <small>By signing up, you'll join Sean Ali's email list. Unsubscribe anytime. <a href="/privacy">Privacy policy</a></small>
+      <small>You'll also get emails from Sean Ali with ideas and tools for the life you want. Unsubscribe anytime. <a href="/privacy">Privacy policy</a></small>
       {error && <p className="gps-download-error" role="alert">{error}</p>}
     </form>
   </section>;
