@@ -2,9 +2,9 @@
 .simple-gps.guided-shell { background: #fff; letter-spacing: 0; }
 .simple-gps .guided-rail { width: 286px; flex: 0 0 286px; height: 100dvh; padding: 30px 25px; overflow-y: auto; color: #234c45; background: #edf5f1; }
 .simple-gps .guided-rail::before, .simple-gps .simple-brand::after { display: none; }
-.simple-gps .simple-brand { color: #234c45; text-decoration: none; }
-.simple-gps .simple-brand b { font-size: 19px; letter-spacing: 0; text-transform: none; }
-.simple-gps .simple-brand span { color: #567268; font-size: 12px; letter-spacing: 0; }
+.simple-gps .simple-brand { display: flex; align-items: center; gap: 8px; color: #234c45; text-decoration: none; }
+.simple-gps .simple-brand img { width: 28px; height: 28px; flex: 0 0 28px; }
+.simple-gps .simple-brand b { font-size: 18px; line-height: 1.2; letter-spacing: 0; text-transform: none; white-space: nowrap; }
 .simple-gps .guided-main { width: calc(100% - 286px); }
 .quiz-rail-welcome { margin: 32px 0 24px; }
 .quiz-rail-welcome h2 { margin: 0; font: 400 29px/1.2 'DM Serif Display', Georgia, serif; overflow-wrap: anywhere; }

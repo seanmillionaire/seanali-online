@@ -38,6 +38,7 @@ afterEach(() => vi.unstubAllGlobals());
 describe("final screen", () => {
   it("shows the compass, attribution and clear plan while gating downloads", () => {
     const html = finalScreen(false);
+    expect(html).toContain('>Dream Life GPS</b></a>');
     expect(html).toContain("Alex, this is your North Star.");
     expect(html).toContain('src="/assets/north-star-compass-sean-ali.png"');
     expect(html).toContain("Created by Sean Ali");

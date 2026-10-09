@@ -419,7 +419,7 @@ export default function Home() {
   };
   return <div className={`simple-gps guided-shell${downloadsUnlocked ? "" : " gps-downloads-locked"}`}>
     <aside className="simple-rail guided-rail" aria-label="Your Dream Life journey">
-      <a className="simple-brand" href="/"><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><div><b>Dream Life</b><span>GPS</span></div></a>
+      <a className="simple-brand" href="/"><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><b>Dream Life GPS</b></a>
       <div className="quiz-rail-welcome"><h2>{userName.trim() && !welcome ? `This is your space, ${userName.trim()}.` : "A little clarity. A step forward."}</h2><p>You don't have to have it all figured out to begin.</p></div>
       <nav className="quiz-journey" aria-label="Your progress">
         {milestones.map((item, index) => {
