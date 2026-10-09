@@ -1,7 +1,7 @@
 import {quests} from './content.js';
 export const SAVE_KEY='isla-adventure-v1';
-export function fresh(){return {version:1,started:false,lang:'es',sound:true,completed:{},active:null,discovered:[],palette:0,song:Array(24).fill(false),seen:[]};}
-export function normalize(raw){const s=fresh();if(!raw||raw.version!==1)return s;s.started=raw.started===true;s.lang=raw.lang==='en'?'en':'es';s.sound=raw.sound!==false;s.palette=Number.isInteger(raw.palette)&&raw.palette>=0&&raw.palette<4?raw.palette:0;
+export function fresh(){return {version:1,started:false,lang:'es',sound:true,motion:true,completed:{},active:null,discovered:[],palette:0,song:Array(24).fill(false),seen:[]};}
+export function normalize(raw){const s=fresh();if(!raw||raw.version!==1)return s;s.started=raw.started===true;s.lang=raw.lang==='en'?'en':'es';s.sound=raw.sound!==false;s.motion=raw.motion!==false;s.palette=Number.isInteger(raw.palette)&&raw.palette>=0&&raw.palette<4?raw.palette:0;
  for(const q of quests){const v=raw.completed?.[q.id];if(Number.isInteger(v)&&v>=1&&v<=3)s.completed[q.id]=v;else break;}
  s.discovered=Array.isArray(raw.discovered)?[...new Set(raw.discovered.filter(n=>Number.isInteger(n)&&n>=0&&n<6))]:[];
  s.seen=Array.isArray(raw.seen)?[...new Set(raw.seen.filter(n=>Number.isInteger(n)&&n>=0&&n<6))]:[];
