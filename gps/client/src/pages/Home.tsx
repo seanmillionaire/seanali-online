@@ -324,7 +324,7 @@ export default function Home() {
     if (welcome) return <>
       <p className="guided-kicker"><Compass size={18} /> DREAM LIFE GPS</p>
       <h1>Let's find a little more direction.</h1>
-      <p className="guided-intro">Hey, I'm Sean. I'm glad you're here. You don't need your whole life figured out. Let's start with where you are today.</p>
+      <p className="guided-intro">Hey, I'm Sean. I'm glad you're here. <span className="quiz-welcome-extra">You don't need your whole life figured out. </span>Let's start with where you are today.</p>
       <fieldset className="quiz-start"><legend>What feels most like you right now?</legend>
         {[
           { title: "I have a dream, but I don't know where to start.", note: "Find my first step", icon: Compass },
@@ -443,10 +443,10 @@ export default function Home() {
         <div className="guided-top-progress"><span>{welcome ? "LET'S BEGIN" : step === "action" ? "YOUR PLAN IS READY" : `QUESTION ${stepIndex + 1} OF ${steps.length}`}</span><i role="progressbar" aria-label="Your journey" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress} style={{ "--step-progress": `${progress}%` } as React.CSSProperties} /></div>
         <div className="top-message personal-greeting" aria-live="polite">{welcome ? "One small step is enough." : greeting}</div>
         <button type="button" className="guided-sound-toggle" onClick={() => setSoundEnabled((enabled) => !enabled)} aria-pressed={soundIsActive} aria-label={soundIsActive ? "Turn progress sounds off" : "Turn progress sounds on"} title={prefersReducedMotion ? "Progress sounds are off with reduced motion." : soundIsActive ? "Turn progress sounds off" : "Turn progress sounds on"} disabled={prefersReducedMotion}>{soundIsActive ? <Volume2 size={17} /> : <VolumeX size={17} />}</button>
-        <button type="button" className="guided-help" onClick={() => setHelpOpen((open) => !open)} aria-expanded={helpOpen} aria-controls="quiz-help">{helpOpen ? <X size={19} /> : <Compass size={19} />} {helpOpen ? "Close" : "Need a hand?"}</button>
+        <button type="button" className="guided-help" onClick={() => setHelpOpen((open) => !open)} aria-expanded={helpOpen} aria-controls="quiz-help" aria-label={helpOpen ? "Close help" : "Need a hand?"} title={helpOpen ? "Close help" : "Need a hand?"}>{helpOpen ? <X size={19} /> : <Compass size={19} />} <span>{helpOpen ? "Close" : "Need a hand?"}</span></button>
       </header>
       {helpOpen && <aside id="quiz-help" className="guided-help-panel" aria-live="polite"><b>{welcome ? "Start wherever you are." : currentHelp.title}</b><p>{welcome ? "Choose the answer that feels closest today. You can go back and change your answers as we go." : currentHelp.message}</p></aside>}
-      <section className="guided-content"><article className={`guided-card ${welcome ? "quiz-welcome" : step === "action" ? "gps-final-screen" : ""}`} key={welcome ? "welcome" : step} onKeyDown={handleGuidedInputKeyDown}>{isPersonalizing ? <PersonalizingIndicator /> : renderStep()}</article></section>
+      <section className="guided-content" key={welcome ? "welcome" : step}><article className={`guided-card ${welcome ? "quiz-welcome" : step === "action" ? "gps-final-screen" : ""}`} onKeyDown={handleGuidedInputKeyDown}>{isPersonalizing ? <PersonalizingIndicator /> : renderStep()}</article></section>
       <footer className="guided-footer">
         {!welcome && <button type="button" className="guided-button secondary" onClick={goBack} disabled={isPersonalizing}><ArrowLeft size={20} /> Back</button>}
         <span className="guided-footer-note">{welcome ? "A little space to think about you." : isPersonalizing ? "Taking a moment with your words." : step === "action" ? "Keep this picture close." : "Take your time. Your words are enough."}</span>

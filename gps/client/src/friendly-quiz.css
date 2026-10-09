@@ -105,4 +105,50 @@
 .simple-gps .guided-choice small { font-size: 18px; line-height: 1.5; }
 .simple-gps .guided-checklist p { font-size: 18px; line-height: 1.6; }
 .simple-gps .guided-topbar .personal-greeting { font-size: 16px; }
+/* Spend the phone viewport on the question, with one scroll area and reachable navigation. */
+@media screen and (max-width: 900px) {
+  .simple-gps .guided-main { grid-template-rows: auto minmax(0, 1fr) auto; min-width: 0; }
+  .simple-gps .guided-topbar { min-height: 0; grid-template-columns: minmax(0, 1fr) 44px 44px; grid-template-rows: 44px auto; gap: 0 4px; padding: max(4px, env(safe-area-inset-top)) 16px 10px; }
+  .quiz-mobile-brand { position: static; grid-column: 1; grid-row: 1; min-width: 0; gap: 6px; }
+  .simple-gps .guided-sound-toggle { grid-column: 2; grid-row: 1; }
+  .simple-gps .guided-help { grid-column: 3; grid-row: 1; width: 44px; height: 44px; justify-content: center; padding: 0; }
+  .simple-gps .guided-help span { display: none; }
+  .simple-gps .guided-top-progress { grid-column: 1 / -1; grid-row: 2; width: 100%; flex-direction: row; align-items: center; gap: 12px; }
+  .simple-gps .guided-top-progress span { white-space: nowrap; font-size: 13px; }
+  .simple-gps .guided-top-progress i { flex: 1; width: auto; }
+  .simple-gps .guided-help-panel { top: calc(86px + env(safe-area-inset-top)); }
+  .simple-gps .guided-content, .simple-gps .guided-content:has(.quiz-welcome) { display: block; padding: 16px; overflow-y: auto; overscroll-behavior-y: contain; }
+  .simple-gps .guided-card, .simple-gps .guided-card.quiz-welcome { width: 100%; height: auto; min-width: 0; padding: 0; margin: 0 auto; overflow: visible; }
+  .simple-gps .guided-card h1 { margin-top: 8px; font-size: 28px; line-height: 1.15; }
+  .simple-gps .guided-intro, .simple-gps .quiz-welcome .guided-intro { margin-top: 10px; font-size: 17px; line-height: 1.45; }
+  .simple-gps .guided-kicker { font-size: 13px; }
+  .simple-gps .quiz-welcome > .guided-kicker, .quiz-welcome-extra { display: none; }
+  .simple-gps .quiz-welcome h1 { margin-top: 0; }
+  .quiz-welcome .quiz-start { margin-top: 14px; }
+  .quiz-start legend { margin-bottom: 4px; font-size: 18px; line-height: 1.35; }
+  .quiz-welcome .quiz-start button { min-height: 64px; margin-top: 8px; gap: 10px; padding: 10px 12px; }
+  .quiz-start button > svg:first-child { display: none; }
+  .quiz-start button > svg:last-child { width: 22px; height: 22px; }
+  .quiz-start b { font-size: 16px; line-height: 1.35; }
+  .quiz-start small { margin-top: 3px; font-size: 14px; line-height: 1.35; }
+  .quiz-reassurance { margin-top: 12px; font-size: 14px; line-height: 1.4; }
+  .simple-gps .guided-main:has(.quiz-welcome) { grid-template-rows: auto minmax(0, 1fr); }
+  .simple-gps .guided-main:has(.quiz-welcome) > .guided-footer { display: none; }
+  .simple-gps .guided-field { margin-top: 20px; }
+  .simple-gps .guided-field label { margin-bottom: 7px; font-size: 15px; }
+  .simple-gps .guided-field input, .simple-gps .guided-field textarea { display: block; min-width: 0; font-size: 18px; }
+  .simple-gps .guided-field input { height: 54px; }
+  .simple-gps .guided-field textarea { height: 120px; }
+  .simple-gps .guided-mic { width: 44px; height: 44px; right: 5px; bottom: 5px; }
+  .simple-gps .guided-voice-note { margin-top: 8px; font-size: 14px; }
+  .simple-gps .guided-checklist { margin-top: 16px; padding: 12px; }
+  .simple-gps .guided-checklist > div { gap: 7px; margin-top: 8px; }
+  .simple-gps .guided-checklist p { font-size: 16px; line-height: 1.4; }
+  .simple-gps .guided-roles, .simple-gps .guided-impact-grid, .simple-gps .guided-commitments { margin-top: 18px; gap: 8px; }
+  .simple-gps .guided-choice, .simple-gps .guided-impact { padding: 12px; min-height: 56px; }
+  .simple-gps .guided-choice small { font-size: 16px; line-height: 1.4; }
+  .simple-gps .guided-footer { min-height: 64px; gap: 8px; padding: 8px 12px max(8px, env(safe-area-inset-bottom)); }
+  .simple-gps .guided-button { min-width: 0; min-height: 48px; padding: 10px 12px; font-size: 16px; line-height: 1.3; }
+  .simple-gps .guided-button svg { flex-shrink: 0; }
+}
 @media print { .quiz-mobile-brand { display: none; } }

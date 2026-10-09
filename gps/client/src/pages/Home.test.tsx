@@ -49,6 +49,8 @@ describe("welcome screen", () => {
     for (const action of ["Find my first step", "Find my direction", "Start my fresh chapter"]) {
       expect(choices).toContain(action);
     }
+    expect(html).toContain('aria-label="Need a hand?" title="Need a hand?"');
+    expect(html).toContain('class="quiz-welcome-extra"');
   });
 });
 
