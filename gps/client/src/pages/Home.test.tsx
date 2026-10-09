@@ -46,9 +46,12 @@ describe("final screen", () => {
     expect(html).toContain("Start here");
     expect(html).toContain("Evenings with family");
     expect(html).toContain("Time matters");
-    expect(html).toContain("Take this feeling with you.");
+    expect(html).toContain("Get Your Free Dream Life Map");
     expect(html.indexOf("Evenings with family")).toBeLessThan(html.indexOf('id="gps-download-gate"'));
-    expect(html).toContain("Unlock my downloads");
+    expect(html).toContain("Get My Free Dream Life Map");
+    expect(html).toContain('placeholder="Enter your email address"');
+    expect(html.match(/type="email"/g)).toHaveLength(1);
+    expect(html).toContain("Unsubscribe anytime.");
     expect(html).toContain('name="listname" value="awlist6946418"');
     expect(html).not.toContain('aria-label="Your downloads"');
     expect(html).not.toContain("Save SVG");
@@ -62,6 +65,6 @@ describe("final screen", () => {
     expect(html).toContain("Save my plan as PDF");
     expect(html).toContain("Save compass image");
     expect(html).not.toContain("gps-downloads-locked");
-    expect(html).not.toContain("Unlock my downloads");
+    expect(html).not.toContain("Get My Free Dream Life Map");
   });
 });
