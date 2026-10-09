@@ -5,6 +5,16 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/games/:legacy(math-dissector|math-race|piano|tongue-twister|isla-aventura|family|beats|food-groups|elements|money|family-gems|selva|traffic-town|mirror)",
+      "destination": "/games",
+      "permanent": false
+    },
+    {
+      "source": "/games/:legacy(math-dissector|math-race|piano|tongue-twister|isla-aventura|family|beats|food-groups|elements|money|family-gems|selva|traffic-town|mirror)/index.html",
+      "destination": "/games",
+      "permanent": false
+    },
+    {
       "source": "/ai-freedom-system",
       "destination": "/system",
       "permanent": true
