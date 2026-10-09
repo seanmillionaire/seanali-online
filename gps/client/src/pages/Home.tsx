@@ -435,13 +435,7 @@ export default function Home() {
           </button>;
         })}
       </nav>
-      <section className="quiz-rail-summary" aria-label="Your answers so far" aria-live="polite">
-        <span><Sparkles size={16} /> YOUR MAP SO FAR</span>
-        {successText ? <p>{successText}</p> : <p>Your picture starts here. Each answer adds a little more of you.</p>}
-        {pickedBenefits.length > 0 && <ul>{pickedBenefits.map((item) => <li key={item.id}><Check size={14} />{item.title}</li>)}</ul>}
-        {weeklyResultText && <p><b>This week:</b> {weeklyResultText}</p>}
-      </section>
-      <div className="quiz-rail-footer"><Compass size={20} /><p>I'm here to help you find your next step.<br /><b>Sean Ali</b></p></div>
+      <div className="quiz-rail-footer"><p>Created by Sean Ali</p></div>
     </aside>
     <main className="guided-main">
       <header className="guided-topbar">

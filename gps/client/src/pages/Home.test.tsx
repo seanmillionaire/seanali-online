@@ -36,6 +36,15 @@ function finalScreen(unlocked: boolean) {
 afterEach(() => vi.unstubAllGlobals());
 
 describe("final screen", () => {
+  it("keeps the sidebar footer to a simple creator credit", () => {
+    const sidebar = finalScreen(false).split("</aside>")[0];
+    expect(sidebar).toContain(">Created by Sean Ali</p>");
+    expect(sidebar).not.toContain("YOUR MAP SO FAR");
+    expect(sidebar).not.toContain("Your picture starts here");
+    expect(sidebar).not.toContain("I'm here to help you find your next step.");
+    expect(sidebar).not.toContain("More family time");
+  });
+
   it("shows the compass, attribution and clear plan while gating downloads", () => {
     const html = finalScreen(false);
     expect(html).toContain('>Dream Life GPS</b></a>');
