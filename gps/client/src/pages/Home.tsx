@@ -397,6 +397,11 @@ export default function Home() {
           <div className="guided-final-close"><Check size={20} /><p>At my next check-in, I look at what moved. I keep what worked. Then I choose the next useful result.</p></div>
         </section>
       </FinalScreenSection>
+      <section className="gps-work-with-sean" aria-labelledby="gps-work-with-sean-title">
+        <h2 id="gps-work-with-sean-title">Want some help taking the next step?</h2>
+        <p>See the ways we can work together, and find what feels right for you.</p>
+        <a href="https://seanali.online/work-with-me/" target="_blank" rel="noopener noreferrer" aria-label="Work with Sean (opens in a new tab)">Work with Sean <ArrowRight size={18} aria-hidden="true" /></a>
+      </section>
     </>;
   };
 

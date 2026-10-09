@@ -53,6 +53,9 @@ describe("final screen", () => {
     expect(html).toContain('placeholder="Enter your email address"');
     expect(html.match(/type="email"/g)).toHaveLength(1);
     expect(html).toContain("Unsubscribe anytime.");
+    expect(html).toContain("Want some help taking the next step?");
+    expect(html).toContain('href="https://seanali.online/work-with-me/" target="_blank" rel="noopener noreferrer"');
+    expect(html.indexOf('id="gps-work-with-sean-title"')).toBeGreaterThan(html.indexOf('id="gps-download-gate"'));
     expect(html).toContain('name="listname" value="awlist6946418"');
     expect(html).not.toContain('aria-label="Your downloads"');
     expect(html).not.toContain("Save SVG");
@@ -65,6 +68,7 @@ describe("final screen", () => {
     expect(html).toContain("Your downloads are ready.");
     expect(html).toContain("Save my plan as PDF");
     expect(html).toContain("Save compass image");
+    expect(html).toContain("Work with Sean (opens in a new tab)");
     expect(html).not.toContain("gps-downloads-locked");
     expect(html).not.toContain("Get My Free Dream Life Map");
   });
