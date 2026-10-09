@@ -1,32 +1,32 @@
 /* The journey stays visible while the questions keep a quiet reading surface. */
 .simple-gps.guided-shell { background: #fff; letter-spacing: 0; }
-.simple-gps .guided-rail { width: 286px; flex: 0 0 286px; height: 100dvh; padding: 30px 25px; overflow-y: auto; color: #234c45; background: #edf5f1; }
+.simple-gps .guided-rail { width: 310px; flex: 0 0 310px; height: 100dvh; padding: 30px 25px; overflow-y: auto; color: #234c45; background: #edf5f1; }
 .simple-gps .guided-rail::before, .simple-gps .simple-brand::after { display: none; }
 .simple-gps .simple-brand { display: flex; align-items: center; gap: 8px; color: #234c45; text-decoration: none; }
 .simple-gps .simple-brand img { width: 28px; height: 28px; flex: 0 0 28px; }
-.simple-gps .simple-brand b { font-size: 18px; line-height: 1.2; letter-spacing: 0; text-transform: none; white-space: nowrap; }
-.simple-gps .guided-main { width: calc(100% - 286px); }
+.simple-gps .simple-brand b { font-size: 20px; line-height: 1.2; letter-spacing: 0; text-transform: none; white-space: nowrap; }
+.simple-gps .guided-main { width: calc(100% - 310px); }
 .quiz-rail-welcome { margin: 32px 0 24px; }
 .quiz-rail-welcome h2 { margin: 0; font: 400 29px/1.2 'DM Serif Display', Georgia, serif; overflow-wrap: anywhere; }
-.quiz-rail-welcome p { margin: 12px 0 0; font-size: 14px; line-height: 1.65; color: #567268; }
+.quiz-rail-welcome p { margin: 12px 0 0; font-size: 17px; line-height: 1.65; color: #567268; }
 .quiz-journey { display: grid; gap: 5px; }
 .quiz-journey button { display: flex; gap: 12px; align-items: center; min-height: 65px; padding: 10px 8px; border-radius: 6px; background: transparent; color: #567268; text-align: left; }
-.quiz-journey button > span { display: grid; place-items: center; flex: 0 0 28px; height: 28px; border: 1px solid #b8cdc3; border-radius: 50%; font-size: 12px; }
-.quiz-journey b { display: block; font-size: 14px; line-height: 1.4; }
-.quiz-journey small { display: block; margin-top: 3px; font-size: 11px; line-height: 1.5; }
+.quiz-journey button > span { display: grid; place-items: center; flex: 0 0 28px; height: 28px; border: 1px solid #b8cdc3; border-radius: 50%; font-size: 15px; }
+.quiz-journey b { display: block; font-size: 17px; line-height: 1.4; }
+.quiz-journey small { display: block; margin-top: 3px; font-size: 15px; line-height: 1.5; }
 .quiz-journey button.current { color: #1b5849; background: #dcebe3; }
 .quiz-journey button.current > span, .quiz-journey button.done > span { background: #28725d; border-color: #28725d; color: #fff; }
 .quiz-journey button:disabled { cursor: default; }
 .quiz-journey button:enabled:hover { background: #dcebe3; }
 .quiz-rail-summary { margin-top: 27px; padding-top: 23px; border-top: 1px solid #cbddd3; }
-.quiz-rail-summary > span { display: flex; gap: 7px; align-items: center; font-size: 11px; font-weight: 800; }
-.quiz-rail-summary p { color: #567268; font-size: 13px; line-height: 1.7; margin: 11px 0 0; overflow-wrap: anywhere; }
+.quiz-rail-summary > span { display: flex; gap: 7px; align-items: center; font-size: 15px; font-weight: 800; }
+.quiz-rail-summary p { color: #567268; font-size: 16px; line-height: 1.7; margin: 11px 0 0; overflow-wrap: anywhere; }
 .quiz-rail-summary ul { display: grid; gap: 8px; list-style: none; margin: 12px 0 0; padding: 0; }
-.quiz-rail-summary li { display: flex; align-items: center; gap: 7px; font-size: 12px; }
+.quiz-rail-summary li { display: flex; align-items: center; gap: 7px; font-size: 15px; }
 .quiz-rail-summary li svg { flex-shrink: 0; }
 .quiz-rail-footer { display: flex; gap: 10px; align-items: flex-start; margin-top: auto; padding-top: 32px; }
 .quiz-rail-footer svg { flex-shrink: 0; margin-top: 3px; }
-.quiz-rail-footer p { margin: 0; color: #567268; font-size: 12px; line-height: 1.8; }
+.quiz-rail-footer p { margin: 0; color: #567268; font-size: 15px; line-height: 1.8; }
 .quiz-rail-footer b { color: #234c45; }
 .simple-gps .guided-topbar { padding: 0 32px; gap: 16px; background: #fff; border-color: #e7ece8; }
 .simple-gps .guided-content { padding: 32px 42px; background: #fff; }
@@ -37,63 +37,69 @@
 .simple-gps .quiz-welcome .guided-intro { line-height: 1.6; margin-top: 14px; }
 .quiz-welcome .quiz-start { margin-top: 22px; }
 .quiz-welcome .quiz-start button { min-height: 76px; padding-top: 13px; padding-bottom: 13px; }
-.simple-gps .guided-kicker { font-size: 12px; color: #28725d; letter-spacing: 0; }
-.simple-gps .guided-intro { max-width: 610px; font-size: 17px; line-height: 1.75; color: #60706a; margin-top: 18px; }
-.simple-gps .guided-top-progress { font-size: 12px; letter-spacing: 0; }
+.simple-gps .guided-kicker { font-size: 15px; color: #28725d; letter-spacing: 0; }
+.simple-gps .guided-intro { max-width: 610px; font-size: 20px; line-height: 1.75; color: #60706a; margin-top: 18px; }
+.simple-gps .guided-top-progress { font-size: 15px; letter-spacing: 0; }
 .simple-gps .guided-top-progress i { width: 85px; height: 5px; border-radius: 4px; background: #e7eee9; }
 .simple-gps .guided-top-progress i::after { background: #28725d; }
-.simple-gps .guided-help { border: 0; background: transparent; font-size: 13px; padding: 8px 0; }
+.simple-gps .guided-help { border: 0; background: transparent; font-size: 16px; padding: 8px 0; }
 .simple-gps .guided-sound-toggle { border: 0; background: transparent; }
 .simple-gps .guided-footer { border-color: #e7ece8; background: #fff; padding: 0 38px; }
-.simple-gps .guided-footer-note { font-size: 12px; }
-.simple-gps .guided-button { border-radius: 6px; background: #28725d; border-color: #28725d; font-size: 15px; }
+.simple-gps .guided-footer-note { font-size: 15px; }
+.simple-gps .guided-button { border-radius: 6px; background: #28725d; border-color: #28725d; font-size: 18px; }
 .simple-gps .guided-button.secondary { color: #567268; border-color: transparent; background: transparent; }
-.simple-gps .guided-field label { letter-spacing: 0; text-transform: none; font-size: 14px; }
-.simple-gps .guided-field input, .simple-gps .guided-field textarea { border-radius: 6px; border-color: #c8d8cf; font-size: 18px; }
+.simple-gps .guided-field label { letter-spacing: 0; text-transform: none; font-size: 17px; }
+.simple-gps .guided-field input, .simple-gps .guided-field textarea { border-radius: 6px; border-color: #c8d8cf; font-size: 20px; }
 .simple-gps .guided-field input:focus, .simple-gps .guided-field textarea:focus { border-color: #28725d; box-shadow: 0 0 0 3px #e1efe7; }
 .simple-gps .guided-mic { border-radius: 4px; }
-.simple-gps .guided-voice-note { font-size: 12px; }
+.simple-gps .guided-voice-note { font-size: 15px; }
 .quiz-start { padding: 0; border: 0; min-width: 0; margin: 28px 0 0; }
-.quiz-start legend { padding: 0; margin-bottom: 14px; font-size: 18px; font-weight: 800; color: #243e38; line-height: 1.5; }
+.quiz-start legend { padding: 0; margin-bottom: 14px; font-size: 20px; font-weight: 800; color: #243e38; line-height: 1.5; }
 .quiz-start button { display: flex; width: 100%; align-items: center; gap: 16px; min-height: 83px; padding: 17px 20px; margin-top: 10px; border: 1px solid #d1ded6; border-radius: 7px; background: #fff; color: #28725d; text-align: left; transition: background 140ms ease, border-color 140ms ease; }
 .quiz-start button:hover { border-color: #28725d; background: #f0f7f2; }
 .quiz-start button > svg { flex-shrink: 0; }
 .quiz-start button > svg:last-child { margin-left: auto; width: 18px; }
 .quiz-start button span { min-width: 0; }
-.quiz-start b { display: block; color: #243e38; font-size: 15px; font-weight: 700; line-height: 1.5; }
-.quiz-start small { display: block; margin-top: 3px; color: #60706a; font-size: 12px; line-height: 1.5; }
-.quiz-reassurance { display: flex; align-items: flex-start; gap: 8px; margin: 21px 0 0; color: #60706a; font-size: 12px; line-height: 1.6; }
+.quiz-start b { display: block; color: #243e38; font-size: 18px; font-weight: 700; line-height: 1.5; }
+.quiz-start small { display: block; margin-top: 3px; color: #60706a; font-size: 15px; line-height: 1.5; }
+.quiz-reassurance { display: flex; align-items: flex-start; gap: 8px; margin: 21px 0 0; color: #60706a; font-size: 15px; line-height: 1.6; }
 .quiz-reassurance svg { flex-shrink: 0; margin-top: 2px; color: #28725d; }
 .quiz-mobile-brand { display: none; }
 .simple-gps :is(button, a):focus-visible { outline: 3px solid #b15b78; outline-offset: 3px; }
 @media (max-width: 1100px) and (min-width: 901px) {
-  .simple-gps .guided-rail { width: 250px; flex-basis: 250px; padding: 28px 20px; }
-  .simple-gps .guided-main { width: calc(100% - 250px); }
+  .simple-gps .guided-rail { width: 280px; flex-basis: 280px; padding: 28px 20px; }
+  .simple-gps .guided-main { width: calc(100% - 280px); }
   .simple-gps .guided-content { padding: 26px; }
 }
 @media (max-width: 900px) {
-  .simple-gps .guided-main { width: 100%; grid-template-rows: 94px minmax(0, 1fr) 68px; }
-  .simple-gps .guided-topbar { position: relative; padding: 36px 18px 0; gap: 10px; }
-  .quiz-mobile-brand { position: absolute; top: 13px; left: 18px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: #234c45; }
+  .simple-gps .guided-main { width: 100%; grid-template-rows: 124px minmax(0, 1fr) 74px; }
+  .simple-gps .guided-topbar { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) 44px max-content; padding: 42px 16px 8px; gap: 8px; }
+  .quiz-mobile-brand { position: absolute; top: 13px; left: 18px; display: flex; align-items: center; gap: 8px; font-size: 16px; color: #234c45; }
   .quiz-mobile-brand img { width: 23px; height: 23px; }
   .simple-gps .guided-content { padding: 19px 24px; }
   .simple-gps .guided-card { padding: 12px 0 24px; }
   .simple-gps .guided-card h1 { font-size: 34px; }
   .simple-gps .guided-footer { padding: 0 18px; }
-  .simple-gps .guided-top-progress { margin-right: auto; gap: 8px; }
+  .simple-gps .guided-top-progress { min-width: 0; margin-right: auto; flex-direction: column; align-items: flex-start; gap: 6px; white-space: normal; }
   .simple-gps .guided-top-progress i { width: 40px; }
-  .simple-gps .guided-help { font-size: 12px; }
-  .simple-gps .guided-sound-toggle { width: 30px; height: 30px; padding: 6px; }
-  .simple-gps .guided-help-panel { top: 100px; }
+  .simple-gps .guided-help { font-size: 15px; }
+  .simple-gps .guided-sound-toggle { width: 44px; height: 44px; padding: 10px; }
+  .simple-gps .guided-help-panel { top: 130px; }
+  .simple-gps .guided-top-progress span { font-size: 14px; white-space: normal; }
+  .simple-gps .guided-help { min-height: 44px; }
 }
 @media (max-width: 560px) {
   .simple-gps .guided-content { padding: 16px 20px; }
-  .simple-gps .guided-card h1 { font-size: 31px; }
-  .simple-gps .guided-intro { font-size: 15px; line-height: 1.7; }
+  .simple-gps .guided-card h1 { font-size: 34px; }
+  .simple-gps .guided-intro { font-size: 18px; line-height: 1.7; }
   .quiz-start { margin-top: 24px; }
-  .quiz-start legend { font-size: 17px; }
+  .quiz-start legend { font-size: 20px; }
   .quiz-start button { gap: 12px; padding: 14px; min-height: 87px; }
-  .quiz-start b { font-size: 14px; }
-  .quiz-start small { font-size: 11px; }
+  .quiz-start b { font-size: 17px; }
+  .quiz-start small { font-size: 15px; }
 }
+.simple-gps .guided-card :is(p, b, small, label, h1, h2), .quiz-journey div { overflow-wrap: anywhere; }
+.simple-gps .guided-choice small { font-size: 18px; line-height: 1.5; }
+.simple-gps .guided-checklist p { font-size: 18px; line-height: 1.6; }
+.simple-gps .guided-topbar .personal-greeting { font-size: 16px; }
 @media print { .quiz-mobile-brand { display: none; } }

@@ -1,24 +1,24 @@
 .gps-download-gate { margin: 26px 0; padding: 32px 0; border-top: 1px solid #c8d8cf; border-bottom: 1px solid #c8d8cf; color: #243e38; text-align: center; }
 .gps-download-gate h2 { margin: 0; font: 400 31px/1.2 'DM Serif Display', Georgia, serif; }
-.gps-download-gate p { margin: 12px 0 18px; color: #52675f; font-size: 16px; line-height: 1.65; }
+.gps-download-gate p { margin: 12px 0 18px; color: #52675f; font-size: 18px; line-height: 1.65; }
 .gps-download-gate form { max-width: 440px; margin: 0 auto; }
 .gps-download-gate .gps-email-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .gps-download-form-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
-.gps-download-form-row input { min-width: 0; width: 100%; min-height: 54px; border: 1px solid #a8c1b4; border-radius: 6px; padding: 12px 14px; background: #fff; color: #243e38; font: inherit; font-size: 16px; }
+.gps-download-form-row input { min-width: 0; width: 100%; min-height: 54px; border: 1px solid #a8c1b4; border-radius: 6px; padding: 12px 14px; background: #fff; color: #243e38; font: inherit; font-size: 18px; }
 .gps-download-form-row input:focus { outline: 3px solid #dcebe3; border-color: #28725d; }
-.gps-download-form-row button { display: flex; justify-content: center; align-items: center; gap: 9px; min-height: 56px; padding: 12px 16px; border-radius: 6px; background: #28725d; color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; }
+.gps-download-form-row button { display: flex; justify-content: center; align-items: center; gap: 9px; min-height: 56px; padding: 12px 16px; border-radius: 6px; background: #28725d; color: #fff; font-size: 18px; font-weight: 800; cursor: pointer; }
 .gps-download-form-row button span { min-width: 0; }
 .gps-download-form-row button svg { flex-shrink: 0; }
 .gps-download-form-row button:hover { background: #1e5d4b; }
 .gps-download-form-row button:disabled { opacity: .65; cursor: wait; }
-.gps-download-gate small { display: block; margin-top: 12px; font-size: 12px; line-height: 1.6; color: #52675f; }
+.gps-download-gate small { display: block; margin-top: 12px; font-size: 15px; line-height: 1.6; color: #52675f; }
 .gps-download-gate a { color: #28725d; text-decoration: underline; }
-.gps-download-gate .gps-download-error { color: #a12d33; font-size: 14px; margin-bottom: 0; }
+.gps-download-gate .gps-download-error { color: #a12d33; font-size: 17px; margin-bottom: 0; }
 .gps-download-gate.unlocked { display: flex; gap: 13px; align-items: flex-start; text-align: left; }
 .gps-download-gate.unlocked > svg { flex: 0 0 auto; margin-top: 4px; color: #28725d; }
 .gps-download-gate.unlocked h2 { margin: 0; font-size: 25px; }
-.gps-download-gate.unlocked p { margin-bottom: 0; font-size: 14px; }
-.gps-download-locked-note { font-size: 13px; color: #52675f; }
+.gps-download-gate.unlocked p { margin-bottom: 0; font-size: 17px; }
+.gps-download-locked-note { font-size: 16px; color: #52675f; }
 @media print {
   .gps-download-gate { display: none !important; }
   .gps-downloads-locked .guided-card > * { display: none !important; }
