@@ -38,12 +38,16 @@ afterEach(() => vi.unstubAllGlobals());
 describe("final screen", () => {
   it("shows the compass, attribution and clear plan while gating downloads", () => {
     const html = finalScreen(false);
-    expect(html).toContain("Your plan is ready, Alex.");
+    expect(html).toContain("Alex, this is your North Star.");
     expect(html).toContain('src="/assets/north-star-compass-sean-ali.png"');
     expect(html).toContain("Created by Sean Ali");
     expect(html).toContain("Your goal this week");
     expect(html).toContain("Three user tests");
     expect(html).toContain("Start here");
+    expect(html).toContain("Evenings with family");
+    expect(html).toContain("Time matters");
+    expect(html).toContain("Take this feeling with you.");
+    expect(html.indexOf("Evenings with family")).toBeLessThan(html.indexOf('id="gps-download-gate"'));
     expect(html).toContain("Unlock my downloads");
     expect(html).toContain('name="listname" value="awlist6946418"');
     expect(html).not.toContain('aria-label="Your downloads"');

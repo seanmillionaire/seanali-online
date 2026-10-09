@@ -21,8 +21,8 @@ export function DownloadGate({ name, unlocked, onSignup }: { name: string; unloc
   if (unlocked) return <section id="gps-download-gate" className="gps-download-gate unlocked" role="status"><Check size={22} /><div><h2>Your downloads are ready.</h2><p>Save your plan and compass below. Check your inbox for any email confirmation from Sean Ali.</p></div></section>;
   return <section id="gps-download-gate" className="gps-download-gate" aria-labelledby="download-gate-title">
     <span className="gps-download-kicker"><LockKeyhole size={17} /> YOUR FREE DOWNLOADS</span>
-    <h2 id="download-gate-title">Keep your plan and compass.</h2>
-    <p>Enter your email to download your personal plan as a PDF and your North Star Compass as an image.</p>
+    <h2 id="download-gate-title">Take this feeling with you.</h2>
+    <p>Your words. Your reason. Your next step. Enter your email to keep your personal Dream Life Map as a PDF and your North Star Compass as an image.</p>
     <form method="post" action="https://www.aweber.com/scripts/addlead.pl" acceptCharset="UTF-8" onSubmit={(event) => {
       if (submitting) { event.preventDefault(); return; }
       try { onSignup(token); setError(""); setSubmitting(true); }

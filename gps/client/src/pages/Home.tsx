@@ -346,20 +346,29 @@ export default function Home() {
     if (step === "commitment") return <><p className="guided-kicker"><Compass size={18} /> STEP 10 OF 11 · TAKE ACTION</p><h1>What result can I commit to in the next 7 days?</h1><p className="guided-intro">Make it real and easy to see. At my next check-in, what will be different because I did the work?</p><VoiceField id="weeklyResult" label="AT MY NEXT CHECK-IN, THIS IS TRUE" value={weeklyResult} setValue={setWeeklyResult} multiline autoFocus active={activeVoice} note={isPersonalizing ? "Making your result clear while keeping it yours..." : voiceNote} start={startVoice} stop={stopVoice} /><ClarityChecklist title="A GOOD SEVEN-DAY RESULT" items={["I can see proof that it happened.", "It connects to the work I can influence.", "It is small enough to move this week."]} /><div className="guided-result-anchor"><Target size={21} /><span>{suggestedTarget ? <>Your bigger picture is <b>{formatMoney(suggestedTarget)}</b> each month. This is the one result that moves it forward this week.</> : <>This is one visible result that moves your bigger picture forward this week.</>}</span></div><div className="guided-commitment-heading"><span>HOW MUCH ROOM WILL I MAKE FOR IT?</span><p>Pick the level that gives this result a real chance soon.</p></div><div className="guided-commitments">{commitments.map((item) => <button type="button" key={item.id} className={`guided-commitment ${commitment === item.id ? "picked" : ""}`} onClick={() => { setCommitment(item.id); playSound("select"); }} aria-pressed={commitment === item.id}><span>{item.id === "small" ? "01" : item.id === "solid" ? "02" : "03"}</span><div><b>{item.title}</b><small>{item.line}</small><em>{item.hours}</em></div>{commitment === item.id && <i><Check size={19} /></i>}</button>)}</div></>;
     if (!actionPlan || !role) return null;
     return <>
-      <p className="guided-kicker"><Check size={18} /> YOUR DREAM LIFE MAP</p>
-      <h1>Your plan is ready{userName.trim() ? `, ${userName.trim()}` : ""}.</h1>
-      <p className="guided-intro">You don't need to do everything today. Start with one small step toward the life you want.</p>
-      <div className="gps-final-overview">
+      <header className="gps-payoff">
+        <p className="guided-kicker"><Sparkles size={18} /> YOUR DREAM LIFE GPS</p>
+        <h1>{userName.trim() ? `${userName.trim()}, this` : "This"} is your North Star.</h1>
+        <p className="gps-payoff-intro">Not someone else's idea of success. The life you said you want.</p>
+        <blockquote className={success.length > 180 ? "gps-dream-quote long" : "gps-dream-quote"}>{success}</blockquote>
         <figure className="gps-north-star">
           <img src={compassImageUrl} width={1024} height={1024} data-north-star-compass alt="A gold North Star above a forest-green compass, pointing toward your chosen direction." />
-          <figcaption><h2>Your North Star Compass</h2><p>A reminder of what matters to you.</p><small>Created by Sean Ali</small></figcaption>
+          <figcaption><h2>Your North Star Compass</h2><p>When life gets noisy, remember what you're moving toward.</p><small>Created by Sean Ali</small></figcaption>
         </figure>
-        <section className="gps-plan-summary" aria-label="Your plan at a glance">
-          <div><span>The life you want</span><p>{successText}</p></div>
-          <div><span>Your goal this week</span><p>{actionPlan.weeklyResult}</p></div>
-          <div className="gps-first-step"><span><Target size={17} /> Start here</span><p>{finalChecklist[0]?.action}</p></div>
-        </section>
-      </div>
+      </header>
+      <section className="gps-dream-meaning" aria-labelledby="gps-meaning-title">
+        <span className="gps-payoff-label">MORE THAN A GOAL</span>
+        <h2 id="gps-meaning-title">This is what it makes room for.</h2>
+        <p className="gps-future-words">{future}</p>
+        <div className="gps-personal-reason"><span>And this is why it matters to you.</span><blockquote>{whyNow}</blockquote></div>
+      </section>
+      <div className="gps-sean-note"><p>You don't have to change your whole life today. You have a direction now. Let your next small choice point toward it.</p><span>I'm glad you took this time for yourself.</span><b>Sean Ali</b></div>
+      <section className="gps-plan-summary" aria-labelledby="gps-first-step-title">
+        <span className="gps-payoff-label"><Target size={17} /> BRING IT INTO TODAY</span>
+        <h2 id="gps-first-step-title">Every big change has a first step.</h2>
+        <div className="gps-first-step"><span>Start here</span><p>{finalChecklist[0]?.action}</p></div>
+        <div><span>Your goal this week</span><p>{actionPlan.weeklyResult}</p></div>
+      </section>
       <DownloadGate name={userName} unlocked={downloadsUnlocked} onSignup={saveDraftForSignup} />
       {downloadsUnlocked && <div className="gps-final-downloads" aria-label="Your downloads">
         <button type="button" onClick={printFinalPlan}><Printer size={20} /> Save my plan as PDF</button>

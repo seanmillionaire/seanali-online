@@ -1,15 +1,35 @@
-/* A quiet overview, one signup, and optional detail. */
+/* Give the personal reveal room before asking for the next action. */
 .gps-final-screen { overflow-wrap: anywhere; }
-.gps-final-overview { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 32px; align-items: center; margin: 28px 0; }
-.gps-north-star { margin: 0; text-align: center; }
-.gps-north-star img { display: block; width: 100%; max-width: 300px; height: auto; aspect-ratio: 1; object-fit: contain; margin: 0 auto 12px; }
+.gps-payoff { text-align: center; padding: 8px 0 40px; }
+.gps-payoff .guided-kicker { justify-content: center; }
+.simple-gps .gps-payoff h1 { max-width: 640px; margin: 18px auto 0; font-size: 44px; line-height: 1.16; }
+.gps-payoff-intro { max-width: 470px; margin: 16px auto 24px; color: #60706a; font-size: 16px; line-height: 1.65; }
+.gps-dream-quote { max-width: 620px; margin: 0 auto 20px; color: #234c45; font: 400 31px/1.4 'DM Serif Display', Georgia, serif; }
+.gps-dream-quote::before { content: '\201C'; color: #987327; }
+.gps-dream-quote::after { content: '\201D'; color: #987327; }
+.gps-dream-quote.long { font-size: 25px; }
+.gps-north-star { margin: 20px 0 0; text-align: center; }
+.gps-north-star img { display: block; width: 100%; max-width: 290px; height: auto; aspect-ratio: 1; object-fit: contain; margin: 0 auto 14px; }
 .gps-north-star h2 { margin: 0; font: 400 23px/1.3 'DM Serif Display', Georgia, serif; color: #243e38; }
-.gps-north-star p { margin: 7px 0; font-size: 13px; color: #60706a; }
+.gps-north-star p { max-width: 340px; margin: 8px auto; font-size: 14px; line-height: 1.6; color: #60706a; }
 .gps-north-star small { font-size: 12px; color: #60706a; }
-.gps-plan-summary { display: grid; gap: 20px; }
+.gps-payoff-label { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; letter-spacing: 0; }
+.gps-dream-meaning { padding: 34px 0; border-top: 1px solid #c8d7cf; border-bottom: 1px solid #c8d7cf; }
+.gps-dream-meaning > span { color: #987327; }
+.gps-dream-meaning h2, .gps-plan-summary h2 { margin: 12px 0 18px; color: #243e38; font: 400 31px/1.25 'DM Serif Display', Georgia, serif; }
+.gps-future-words { font-size: 22px; line-height: 1.6; color: #243e38; }
+.gps-personal-reason { margin-top: 28px; padding-left: 20px; border-left: 2px solid #ad8d45; }
+.gps-personal-reason > span { font-size: 13px; color: #60706a; }
+.gps-personal-reason blockquote { margin: 10px 0 0; font-size: 18px; line-height: 1.7; color: #243e38; }
+.gps-sean-note { padding: 32px 0 38px; }
+.gps-sean-note p { max-width: 590px; margin: 0 0 16px; font-size: 19px; line-height: 1.75; color: #243e38; }
+.gps-sean-note span, .gps-sean-note b { display: block; font-size: 14px; line-height: 1.7; color: #60706a; }
+.gps-sean-note b { margin-top: 8px; color: #234c45; }
+.gps-plan-summary { display: grid; gap: 18px; padding: 28px 0; border-top: 1px solid #c8d7cf; }
+.gps-plan-summary h2 { margin: 0; }
 .gps-plan-summary span { display: flex; align-items: center; gap: 7px; color: #28725d; font-size: 13px; font-weight: 700; }
 .gps-plan-summary p { margin: 7px 0 0; font-size: 17px; line-height: 1.6; color: #243e38; }
-.gps-first-step { padding-top: 18px; border-top: 1px solid #d6e2da; }
+.gps-first-step { padding-top: 5px; }
 .gps-first-step svg { flex-shrink: 0; }
 .gps-final-downloads { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 28px; }
 .gps-final-downloads button { display: flex; align-items: center; justify-content: center; gap: 9px; min-height: 48px; border: 1px solid #28725d; border-radius: 6px; padding: 12px 16px; background: #28725d; color: #fff; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; }
@@ -27,10 +47,23 @@
 .gps-final-screen .guided-final-plan, .gps-final-screen .guided-clarity-writer, .gps-final-screen .guided-vision-scene { padding: 0; border: 0; background: #fff; box-shadow: none; }
 .gps-final-screen .guided-final-plan .guided-printout-copy { display: none; }
 @media (max-width: 650px) {
-  .gps-final-overview { grid-template-columns: minmax(0, 1fr); gap: 26px; }
+  .simple-gps .gps-payoff h1 { font-size: 34px; }
+  .gps-payoff-intro { font-size: 15px; }
+  .gps-dream-quote { font-size: 26px; }
+  .gps-dream-quote.long { font-size: 22px; }
   .gps-north-star img { max-width: 250px; }
+  .gps-dream-meaning h2, .gps-plan-summary h2 { font-size: 28px; }
+  .gps-future-words { font-size: 20px; }
+  .gps-sean-note p { font-size: 17px; }
   .gps-plan-summary p { font-size: 16px; }
   .gps-final-downloads { flex-direction: column; }
   .gps-final-downloads button { width: 100%; }
 }
+@media (prefers-reduced-motion: no-preference) {
+  .gps-payoff h1, .gps-dream-quote { animation: gps-payoff-arrive .65s ease-out both; }
+  .gps-dream-quote { animation-delay: .12s; }
+  .gps-north-star img { animation: gps-compass-arrive 1s ease-out both; }
+}
+@keyframes gps-payoff-arrive { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes gps-compass-arrive { from { opacity: .3; transform: scale(.94) rotate(-4deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
 @media print { .gps-final-downloads { display: none !important; } }
