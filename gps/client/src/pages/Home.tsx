@@ -327,9 +327,9 @@ export default function Home() {
       <p className="guided-intro">Hey, I'm Sean. I'm glad you're here. You don't need your whole life figured out. Let's start with where you are today.</p>
       <fieldset className="quiz-start"><legend>What feels most like you right now?</legend>
         {[
-          { title: "I have a dream, but I don't know where to start.", note: "Let's find your first step.", icon: Compass },
-          { title: "I'm doing a lot, but I want a clearer direction.", note: "Let's focus on what matters to you.", icon: Target },
-          { title: "I'm ready for a fresh start.", note: "We can work it out together.", icon: Sparkles },
+          { title: "I have a dream, but I don't know where to start.", note: "Find my first step", icon: Compass },
+          { title: "I'm doing a lot, but I want a clearer direction.", note: "Find my direction", icon: Target },
+          { title: "I'm ready for a fresh start.", note: "Start my fresh chapter", icon: Sparkles },
         ].map(({ title, note, icon: Icon }) => <button type="button" key={title} onClick={() => { setStartingPoint(title); setWelcome(false); playSound("select"); }}><Icon size={23} /><span><b>{title}</b><small>{note}</small></span><ArrowRight size={20} /></button>)}
       </fieldset>
       <p className="quiz-reassurance"><Check size={17} /> No right or wrong answers. Just what feels true for you.</p>

@@ -35,6 +35,23 @@ function finalScreen(unlocked: boolean) {
 
 afterEach(() => vi.unstubAllGlobals());
 
+describe("welcome screen", () => {
+  it("offers three clear starting actions", () => {
+    vi.stubGlobal("window", {
+      location: { href: "https://seanali.online/gps" },
+      sessionStorage: { getItem: () => null },
+      localStorage: { getItem: () => null },
+      matchMedia: () => ({ matches: false }),
+    });
+    const html = renderToStaticMarkup(<Home />);
+    const choices = html.split('class="quiz-start"')[1].split("</fieldset>")[0];
+    expect(choices.match(/<button /g)).toHaveLength(3);
+    for (const action of ["Find my first step", "Find my direction", "Start my fresh chapter"]) {
+      expect(choices).toContain(action);
+    }
+  });
+});
+
 describe("final screen", () => {
   it("keeps the sidebar footer to a simple creator credit", () => {
     const sidebar = finalScreen(false).split("</aside>")[0];

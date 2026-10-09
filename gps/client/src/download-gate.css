@@ -6,10 +6,10 @@
 .gps-download-form-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
 .gps-download-form-row input { min-width: 0; width: 100%; min-height: 54px; border: 1px solid #a8c1b4; border-radius: 6px; padding: 12px 14px; background: #fff; color: #243e38; font: inherit; font-size: 18px; }
 .gps-download-form-row input:focus { outline: 3px solid #dcebe3; border-color: #28725d; }
-.gps-download-form-row button { display: flex; justify-content: center; align-items: center; gap: 9px; min-height: 56px; padding: 12px 16px; border-radius: 6px; background: #28725d; color: #fff; font-size: 18px; font-weight: 800; cursor: pointer; }
+.gps-download-form-row button { display: flex; justify-content: center; align-items: center; gap: 9px; min-height: 56px; padding: 12px 16px; border-radius: 6px; background: var(--gps-cta, #bd253b); color: #fff; font-size: 18px; font-weight: 800; cursor: pointer; }
 .gps-download-form-row button span { min-width: 0; }
 .gps-download-form-row button svg { flex-shrink: 0; }
-.gps-download-form-row button:hover { background: #1e5d4b; }
+.gps-download-form-row button:hover:not(:disabled) { background: var(--gps-cta-hover, #9d1930); }
 .gps-download-form-row button:disabled { opacity: .65; cursor: wait; }
 .gps-download-gate small { display: block; margin-top: 12px; font-size: 15px; line-height: 1.6; color: #52675f; }
 .gps-download-gate a { color: #28725d; text-decoration: underline; }

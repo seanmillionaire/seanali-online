@@ -1,5 +1,5 @@
 /* The journey stays visible while the questions keep a quiet reading surface. */
-.simple-gps.guided-shell { background: #fff; letter-spacing: 0; }
+.simple-gps.guided-shell { --gps-cta: #bd253b; --gps-cta-hover: #9d1930; background: #fff; letter-spacing: 0; }
 .simple-gps .guided-rail { width: 310px; flex: 0 0 310px; height: 100dvh; padding: 30px 25px; overflow-y: auto; color: #234c45; background: #edf5f1; }
 .simple-gps .guided-rail::before, .simple-gps .simple-brand::after { display: none; }
 .simple-gps .simple-brand { display: flex; align-items: center; gap: 8px; color: #234c45; text-decoration: none; }
@@ -30,12 +30,13 @@
 .quiz-rail-footer b { color: #234c45; }
 .simple-gps .guided-topbar { padding: 0 32px; gap: 16px; background: #fff; border-color: #e7ece8; }
 .simple-gps .guided-content { padding: 32px 42px; background: #fff; }
+.simple-gps .guided-content:has(.quiz-welcome) { padding-top: 16px; padding-bottom: 16px; }
 .simple-gps .guided-content::before, .simple-gps .guided-content::after, .simple-gps .guided-card::before { display: none; }
 .simple-gps .guided-card { max-width: 720px; max-height: none; padding: 24px 12px; background: #fff; border: 0; outline: 0; box-shadow: none; }
 .simple-gps .guided-card h1 { font-size: 40px; line-height: 1.17; color: #243e38; letter-spacing: 0; }
-.simple-gps .guided-card.quiz-welcome { padding-top: 8px; }
+.simple-gps .guided-card.quiz-welcome { max-width: 780px; padding-top: 8px; }
 .simple-gps .quiz-welcome .guided-intro { line-height: 1.6; margin-top: 14px; }
-.quiz-welcome .quiz-start { margin-top: 22px; }
+.quiz-welcome .quiz-start { margin-top: 18px; }
 .quiz-welcome .quiz-start button { min-height: 76px; padding-top: 13px; padding-bottom: 13px; }
 .simple-gps .guided-kicker { font-size: 15px; color: #28725d; letter-spacing: 0; }
 .simple-gps .guided-intro { max-width: 610px; font-size: 20px; line-height: 1.75; color: #60706a; margin-top: 18px; }
@@ -46,7 +47,8 @@
 .simple-gps .guided-sound-toggle { border: 0; background: transparent; }
 .simple-gps .guided-footer { border-color: #e7ece8; background: #fff; padding: 0 38px; }
 .simple-gps .guided-footer-note { font-size: 15px; }
-.simple-gps .guided-button { border-radius: 6px; background: #28725d; border-color: #28725d; font-size: 18px; }
+.simple-gps .guided-button { border-radius: 6px; background: var(--gps-cta); border-color: var(--gps-cta); font-size: 18px; }
+.simple-gps .guided-button:not(.secondary):hover:not(:disabled) { background: var(--gps-cta-hover); border-color: var(--gps-cta-hover); }
 .simple-gps .guided-button.secondary { color: #567268; border-color: transparent; background: transparent; }
 .simple-gps .guided-field label { letter-spacing: 0; text-transform: none; font-size: 17px; }
 .simple-gps .guided-field input, .simple-gps .guided-field textarea { border-radius: 6px; border-color: #c8d8cf; font-size: 20px; }
@@ -55,17 +57,18 @@
 .simple-gps .guided-voice-note { font-size: 15px; }
 .quiz-start { padding: 0; border: 0; min-width: 0; margin: 28px 0 0; }
 .quiz-start legend { padding: 0; margin-bottom: 14px; font-size: 20px; font-weight: 800; color: #243e38; line-height: 1.5; }
-.quiz-start button { display: flex; width: 100%; align-items: center; gap: 16px; min-height: 83px; padding: 17px 20px; margin-top: 10px; border: 1px solid #d1ded6; border-radius: 7px; background: #fff; color: #28725d; text-align: left; transition: background 140ms ease, border-color 140ms ease; }
-.quiz-start button:hover { border-color: #28725d; background: #f0f7f2; }
+.quiz-start button { display: flex; width: 100%; align-items: center; gap: 16px; min-height: 83px; padding: 17px 20px; margin-top: 12px; border: 2px solid var(--gps-cta); border-radius: 7px; background: var(--gps-cta); color: #fff; text-align: left; cursor: pointer; transition: background 140ms ease, border-color 140ms ease; }
+.quiz-start button:hover { border-color: var(--gps-cta-hover); background: var(--gps-cta-hover); }
+.quiz-start button:active { background: #831328; }
 .quiz-start button > svg { flex-shrink: 0; }
-.quiz-start button > svg:last-child { margin-left: auto; width: 18px; }
+.quiz-start button > svg:last-child { margin-left: auto; width: 26px; height: 26px; stroke-width: 2.5; }
 .quiz-start button span { min-width: 0; }
-.quiz-start b { display: block; color: #243e38; font-size: 18px; font-weight: 700; line-height: 1.5; }
-.quiz-start small { display: block; margin-top: 3px; color: #60706a; font-size: 15px; line-height: 1.5; }
+.quiz-start b { display: block; color: #fff; font-size: 18px; font-weight: 700; line-height: 1.5; }
+.quiz-start small { display: block; margin-top: 3px; color: #fff; font-size: 15px; font-weight: 600; line-height: 1.5; }
 .quiz-reassurance { display: flex; align-items: flex-start; gap: 8px; margin: 21px 0 0; color: #60706a; font-size: 15px; line-height: 1.6; }
 .quiz-reassurance svg { flex-shrink: 0; margin-top: 2px; color: #28725d; }
 .quiz-mobile-brand { display: none; }
-.simple-gps :is(button, a):focus-visible { outline: 3px solid #b15b78; outline-offset: 3px; }
+.simple-gps :is(button, a):focus-visible { outline: 3px solid #225d87; outline-offset: 3px; }
 @media (max-width: 1100px) and (min-width: 901px) {
   .simple-gps .guided-rail { width: 280px; flex-basis: 280px; padding: 28px 20px; }
   .simple-gps .guided-main { width: calc(100% - 280px); }
