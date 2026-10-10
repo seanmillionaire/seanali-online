@@ -1,4 +1,4 @@
-// Manifest uses the Try the Script AWeber form with a minimal mobile-first presentation.
+// Manifest uses the Try the Script AWeber form with a compact mobile-first, higher-energy opt-in.
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { readFileSync, existsSync } = require('node:fs');
@@ -8,16 +8,20 @@ for (const page of ['manifest.html', 'manifestscreen.html']) {
   const html = readFileSync(resolve(root, page), 'utf8');
   test(page + ' uses a compact mobile-first manifestation opt-in', () => {
     assert(html.includes('7-Minute Manifestation Script'));
-    assert(html.includes('A 7-minute bedtime audio to help you picture the life you want.'));
+    assert(html.includes('Start making it happen tonight.'));
     assert(html.includes('class="optin-card"'));
-    assert(html.includes('SHOW ME THE SCRIPT'));
+    assert(html.includes('UNLOCK MY 7-MINUTE SCRIPT'));
     assert(html.includes('name="name"'));
     assert(html.includes('name="email"'));
     assert(html.includes('@media(max-width:640px)'));
     assert(html.includes('h1 { font-size:32px'));
     assert(!html.includes('hero-image'));
     assert(!html.includes('trust-badge'));
-    assert(!html.includes('4.9/5'));
+    assert(html.includes('4.9/5 · 3,800+ Hypnotic Meditations reviews'));
+    assert(html.includes('class="form-heading"'));
+    assert(html.includes('class="eyebrow"'));
+    assert(html.includes('class="proof-pill"'));
+    assert(html.includes('background:radial-gradient('));
     assert(!html.includes('video-caption'));
     assert(html.includes('© 2026 Sean Ali. All rights reserved.'));
     assert(html.includes('https://seanali.online/' + page.replace(/\.html$/, '')));
@@ -40,7 +44,7 @@ for (const page of ['manifest.html', 'manifestscreen.html']) {
     assert(html.includes("fbq('init','878451855254470')"));
     assert(html.includes("fbq('track', 'Lead')"));
     assert(html.includes('Unsubscribe anytime'));
-    assert(html.indexOf('class="privacy"') < html.indexOf('class="submit-btn"'));
+    assert(html.indexOf('class="submit-btn"') < html.indexOf('class="privacy"'));
     assert(html.indexOf('class="submit-btn"') < html.indexOf('<footer>'));
   });
 }
