@@ -31,6 +31,7 @@ export function createDelight({soundEnabled,motionEnabled}) {
   }
   function drum(n){if(n%3===0)voice(140,.22,{end:45,volume:.26});else if(n%3===1){noise(.14,.13,'highpass',1800);voice(185,.1,{type:'triangle',volume:.06});}else noise(.065,.095,'highpass',6500);}
   function effect(name){
+    if(name==='arrival'){noise(2.8,.055,'lowpass',1200);[0,2,4,5,6].forEach((n,i)=>voice(scale[n],1.1,{delay:i*.42,volume:.09}));return;}
     if(name==='tap'){voice(570,.065,{end:820,volume:.045});return;}
     if(name==='correct'){[0,2,4].forEach((n,i)=>voice(scale[n]*2,.42,{delay:i*.085,volume:.09}));voice(523.25,.6,{volume:.04});return;}
     if(name==='treasure'||name==='finish'){[0,2,4,5,6].forEach((n,i)=>{voice(scale[n]*2,.65,{delay:i*.11,volume:.085});voice(scale[n],.75,{delay:i*.11,volume:.035});});return;}
