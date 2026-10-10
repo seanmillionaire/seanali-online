@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Get Your Next Step | Manifestation Genie by Sean Ali</title>
+<meta name="description" content="Tell Manifestation Genie what you want and find a clear next step. Get free access to start the conversation.">
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://seanali.online/manifestscreen">
+<link rel="icon" type="image/png" href="https://hypnoticmeditations.b-cdn.net/images/fav/headphones.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/manifest-quiz.css?v=20261010-2">
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageView');
+</script>
+</head>
+<body>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=878451855254470&amp;ev=PageView&amp;noscript=1" alt=""><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1586097145783190&amp;ev=PageView&amp;noscript=1" alt=""></noscript>
+<header class="site-header"><a href="/" aria-label="Sean Ali home">Sean Ali</a></header>
+<main>
+<section class="finish finish-conversion" aria-labelledby="finish-title">
+  <img class="genie-image" src="https://storage.googleapis.com/mixo-sites/images/file-a7eebac5-6af9-4253-bc71-34c0d455a852.png" width="642" height="96" alt="Manifestation Genie">
+  <p class="eyebrow">YOUR NEXT STEP STARTS HERE</p>
+  <h1 id="finish-title">Turn What You Want Into a Clear Next Step.</h1>
+  <p class="finish-intro">Tell Manifestation Genie what you want. It helps you work through what's stopping you and find one practical step to take.</p>
+  <ul class="benefits benefits-conversion" aria-label="What you'll get">
+    <li><strong>Know where to start.</strong> Turn your wish into something you can do.</li>
+    <li><strong>Get unstuck.</strong> Talk through the doubts and questions holding you back.</li>
+    <li><strong>Make it personal.</strong> Explore your goal, your situation, and your next move.</li>
+    <li><strong>Start right away.</strong> Go straight to the Genie after signing up.</li>
+  </ul>
+  <section class="signup signup-conversion" aria-labelledby="signup-title">
+    <h2 id="signup-title">Get Your Free Genie Access</h2>
+    <p>Enter your details below to get started.</p>
+    <form id="manifest-optin-form" method="post" action="https://www.aweber.com/scripts/addlead.pl">
+      <label for="manifest-name">First name</label>
+      <input id="manifest-name" name="name" type="text" placeholder="Your first name" autocomplete="given-name" maxlength="80" required>
+      <label for="manifest-email">Email address</label>
+      <input id="manifest-email" name="email" type="email" placeholder="Your best email" autocomplete="email" required>
+      <input type="hidden" name="listname" value="awlist6946418">
+      <input type="hidden" name="redirect" value="https://www.manifestationgenie.ai">
+      <input type="hidden" name="meta_redirect_onlist" value="https://www.manifestationgenie.ai">
+      <input type="hidden" name="meta_tags" value="manifest-page,cold-ad,path-finder">
+      <input type="hidden" name="meta_adtracking" value="Sean Ali Manifestation Screen Optin">
+      <input type="hidden" name="meta_required" value="name,email">
+      <button class="primary" id="manifest-submit" type="submit">UNLOCK MY FREE GENIE ACCESS <span aria-hidden="true">→</span></button>
+      <p class="privacy">You'll also get emails from Sean Ali. Unsubscribe anytime. <a href="/privacy">Privacy policy</a>.</p>
+      <p class="form-error" id="form-error" role="alert" hidden></p>
+    </form>
+  </section>
+  <p class="disclosure conversion-disclosure">Manifestation Genie is an AI personal-development tool that helps you reflect and plan practical steps. It doesn't guarantee outcomes.</p>
+</section>
+</main>
+<footer class="site-footer"><p>Created by Sean Ali</p><nav aria-label="Legal"><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav><small>© 2026 Sean Ali. All rights reserved.</small></footer>
+<script>
+(() => {
+  const form = document.getElementById('manifest-optin-form');
+  const submit = document.getElementById('manifest-submit');
+  const name = document.getElementById('manifest-name');
+  const error = document.getElementById('form-error');
+  let submitting = false;
+  const reset = () => { submitting = false; submit.disabled = false; submit.innerHTML = 'UNLOCK MY FREE GENIE ACCESS <span aria-hidden="true">→</span>'; };
+  name.addEventListener('input', () => name.setCustomValidity(''));
+  form.addEventListener('submit', event => {
+    name.setCustomValidity(name.value.trim() ? '' : 'Please enter your first name.');
+    if (!form.reportValidity()) { event.preventDefault(); return; }
+    if (submitting) { event.preventDefault(); return; }
+    submitting = true; submit.disabled = true; submit.textContent = 'Opening the Genie…';
+    error.hidden = true;
+    try { sessionStorage.setItem('hm_god_money_first_name', name.value.trim().split(/\s+/)[0].slice(0, 40)); } catch {}
+    try { if (typeof fbq === 'function') fbq('track', 'Lead'); } catch {}
+    window.setTimeout(() => {
+      if (document.visibilityState !== 'hidden') {
+        reset(); error.textContent = 'Still here? Check your connection and try again.'; error.hidden = false;
+      }
+    }, 15000);
+  });
+  window.addEventListener('pageshow', reset);
+})();
+</script>
+</body>
+</html>
