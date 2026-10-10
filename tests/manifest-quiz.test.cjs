@@ -1,25 +1,28 @@
-// Manifest now uses the existing Try the Script /join opt-in funnel.
-// Verify both public routes keep the original AWeber handoff and pixels.
+// Manifest uses the Try the Script AWeber form with a minimal mobile-first presentation.
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { readFileSync, existsSync } = require('node:fs');
 const { resolve } = require('node:path');
 const root = resolve(__dirname, '..');
-const variants = ['manifest.html', 'manifestscreen.html'];
-for (const page of variants) {
+for (const page of ['manifest.html', 'manifestscreen.html']) {
   const html = readFileSync(resolve(root, page), 'utf8');
-  test(page + ': has manifestation copy and source opt-in appearance', () => {
-    assert(html.includes('7-Minute Manifestation Script Before Bed'));
+  test(page + ' uses a compact mobile-first manifestation opt-in', () => {
+    assert(html.includes('7-Minute Manifestation Script'));
+    assert(html.includes('A 7-minute bedtime audio to help you picture the life you want.'));
     assert(html.includes('class="optin-card"'));
-    assert(html.includes('class="hero-image"'));
+    assert(html.includes('SHOW ME THE SCRIPT'));
     assert(html.includes('name="name"'));
     assert(html.includes('name="email"'));
-    assert(html.includes('SHOW ME THE 7-MINUTE SCRIPT'));
-    assert(!html.includes('id="quiz"'));
-    assert(!html.includes('manifest-quiz.js'));
+    assert(html.includes('@media(max-width:640px)'));
+    assert(html.includes('h1 { font-size:32px'));
+    assert(!html.includes('hero-image'));
+    assert(!html.includes('trust-badge'));
+    assert(!html.includes('4.9/5'));
+    assert(!html.includes('video-caption'));
+    assert(html.includes('© 2026 Sean Ali. All rights reserved.'));
     assert(html.includes('https://seanali.online/' + page.replace(/\.html$/, '')));
   });
-  test(page + ': preserves Try the Script AWeber funnel destination', () => {
+  test(page + ' keeps Try the Script AWeber wiring', () => {
     assert(html.includes('action="https://www.aweber.com/scripts/addlead.pl"'));
     assert(html.includes('name="meta_web_form_id" value="184900578"'));
     assert(html.includes('name="listname" value="awlist6889085"'));
@@ -28,18 +31,16 @@ for (const page of variants) {
     assert(html.includes('name="meta_required" value="name,email"'));
     assert(!html.includes('https://www.manifestationgenie.ai'));
   });
-  test(page + ': loads self-hosted Script funnel assets and tracks valid lead', () => {
-    for (const [asset, ref] of [
-      ['manifest-script-events.js', '/assets/manifest-script-events.js?v=20261010'],
-      ['manifest-script-reset.js', '/assets/manifest-script-reset.js?v=20261010'],
-      ['manifest-script-reset.css', '/assets/manifest-script-reset.css?v=20261010']
-    ]) {
+  test(page + ' keeps tracking and consent intact', () => {
+    for (const asset of ['manifest-script-events.js', 'manifest-script-reset.js']) {
       assert(existsSync(resolve(root, 'assets', asset)));
-      assert(html.includes(ref));
+      assert(html.includes('/assets/' + asset));
     }
-    assert(html.includes("fbq('init', '1586097145783190')"));
-    assert(html.includes("fbq('init', '878451855254470')"));
+    assert(html.includes("fbq('init','1586097145783190')"));
+    assert(html.includes("fbq('init','878451855254470')"));
     assert(html.includes("fbq('track', 'Lead')"));
     assert(html.includes('Unsubscribe anytime'));
+    assert(html.indexOf('class="privacy"') < html.indexOf('class="submit-btn"'));
+    assert(html.indexOf('class="submit-btn"') < html.indexOf('<footer>'));
   });
 }
