@@ -67,7 +67,7 @@ test('manifest watch matches opt-in presentation and keeps original video/checko
   assert(watch.includes('Now Watch How the'));
   assert(watch.includes('7-Minute Manifestation Script'));
   assert(watch.includes('https://seanali.online/manifestwatch'));
-  assert(!/\\bfree\\b/i.test(watch));
+  assert(!/\bfree\b/i.test(watch));
   assert(!watch.includes('class="brand"'));
   assert(watch.includes('id="vid-6966599cbabb3c836813c52f"'));
   assert(watch.includes('https://scripts.converteai.net/06805447-0fe0-4045-89f5-ea45443a5071/players/6966599cbabb3c836813c52f/v4/player.js'));
