@@ -20,6 +20,11 @@ for (const page of ['manifest.html', 'manifestscreen.html']) {
     assert(html.includes('4.9/5 · 3,800+ Hypnotic Meditations reviews'));
     assert(html.includes('class="form-heading"'));
     assert(html.includes('class="eyebrow"'));
+    assert.equal((html.match(/class="eyebrow"/g) || []).length, 1);
+    assert(html.includes('🌙 7-MINUTE MANIFESTATION RITUAL'));
+    assert(!/\bfree\b/i.test(html));
+    assert(!html.includes('class="brand"'));
+    assert(!html.includes('class="form-kicker"'));
     assert(html.includes('class="proof-pill"'));
     assert(html.includes('background:radial-gradient('));
     assert(!html.includes('video-caption'));
