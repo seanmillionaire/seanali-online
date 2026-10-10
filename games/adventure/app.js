@@ -1,4 +1,4 @@
-import {createEntrance} from './entrance.js?v=4';
+import {createEntrance} from './entrance.js?v=5';
 import {createDelight,burst,livingWorld,foxPortrait} from './delight.js?v=2';
 import {regions,quests,challenges,ui,text} from './content.js';
 import {SAVE_KEY,fresh,normalize,completedCount,lightCount,totalStars,unlocked,award} from './state.js?v=2';
