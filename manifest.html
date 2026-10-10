@@ -214,7 +214,7 @@
     /></noscript>
     <!-- End Facebook Pixel Code -->
 
-<meta name="funnel-id" content="script"><link rel="stylesheet" href="https://trythescript.com/assets/funnel-reset.css?v=20261004"></head>
+<meta name="funnel-id" content="script"><link rel="stylesheet" href="/assets/manifest-script-reset.css?v=20261010"></head>
 <body>
     <div class="vsl-wrapper fade-in-up">
         <div class="vsl-container">
@@ -270,5 +270,14 @@
     <div style="padding: 20px 20px; text-align: center; font-size: 10px; color: #94a3b8;">
         © 2026 Sean Ali · This site is not a part of the Facebook website or Facebook Inc. Additionally, This site is NOT endorsed by Facebook in any way. FACEBOOK is a trademark of FACEBOOK, Inc.
     </div>
-<script src="https://trythescript.com/assets/funnel-events.js?v=20261004" defer></script><script src="https://trythescript.com/assets/funnel-reset.js?v=20261004" defer></script></body>
+<script src="/assets/manifest-script-events.js?v=20261010" defer></script><script src="/assets/manifest-script-reset.js?v=20261010" defer></script><script>
+    (function () {
+      var form = document.querySelector('.optin-card form');
+      if (!form) return;
+      form.addEventListener('submit', function () {
+        if (!form.checkValidity()) return;
+        try { if (typeof window.fbq === 'function') window.fbq('track', 'Lead'); } catch (e) {}
+      });
+    })();
+    </script></body>
 </html>
