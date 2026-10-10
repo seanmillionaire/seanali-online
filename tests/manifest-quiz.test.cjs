@@ -21,7 +21,7 @@ function setup() {
 }
 
 test('all 27 paths personalize the result and preserve the AWeber handoff', () => {
-  const headlines = ['Make room for more freedom in your life.', 'Your next chapter can have a direction.', 'There is room for a new chapter.'];
+  const headline = 'Turn What You Want Into a Clear Next Step.';
   const blockers = ['same doubts', 'advice can feel overwhelming', "don't need a perfect plan"];
   const feelings = ['More room to breathe.', 'The feeling of moving forward', 'More time. More choice.'];
   const prompts = new Set();
@@ -33,7 +33,9 @@ test('all 27 paths personalize the result and preserve the AWeber handoff', () =
       assert.equal(t.d.getElementById('entry').hidden, true);
       assert.equal(t.d.getElementById('finish').hidden, false);
       assert.equal(t.d.activeElement.id, 'finish-title');
-      assert.equal(t.d.getElementById('finish-title').textContent, headlines[a]);
+      assert.equal(t.d.getElementById('finish-title').textContent, headline);
+      assert.equal(t.d.querySelectorAll('#finish .benefits-conversion li').length, 4);
+      assert(t.d.getElementById('finish-intro').textContent.includes('Manifestation Genie'));
       assert(t.d.getElementById('reflection-copy').textContent.includes(blockers[b]));
       assert(t.d.getElementById('finish-feeling').textContent.startsWith(feelings[c]));
       prompts.add(t.d.getElementById('conversation-prompt').textContent);
@@ -70,7 +72,7 @@ test('Back restores the selection, return preserves progress, and rapid clicks c
     assert.equal(t.d.querySelectorAll('.answer')[1].getAttribute('aria-pressed'), 'true');
     assert.equal(t.d.querySelector('.progress-track').getAttribute('aria-valuenow'), '0');
     t.answer(2); t.answer(0); t.answer(1);
-    assert.equal(t.d.getElementById('finish-title').textContent, 'There is room for a new chapter.');
+    assert.equal(t.d.getElementById('finish-title').textContent, 'Turn What You Want Into a Clear Next Step.');
     t.d.getElementById('restart').click();
     t.answer(0); t.answer(0); t.answer(0);
     assert.equal(t.events.filter(e => e[1] === 'ManifestQuizComplete').length, 1);
@@ -103,4 +105,22 @@ test('existing pixels, consent, fallback and clean canonical are present', () =>
   for (const marker of ['878451855254470', '1586097145783190', "fbq('track','PageView')", 'Unsubscribe anytime', '<noscript>', 'https://seanali.online/manifest']) assert(html.includes(marker));
   assert(!html.includes('10x Faster'));
   assert(!html.includes('3,000+'));
+});
+
+test('standalone /manifestscreen has the same benefit-first AWeber signup', () => {
+  const screen = readFileSync(resolve(root, 'manifestscreen.html'), 'utf8');
+  const dom = new JSDOM(screen, { url: 'https://seanali.online/manifestscreen' });
+  try {
+    const d = dom.window.document;
+    assert.equal(d.querySelector('h1').textContent, 'Turn What You Want Into a Clear Next Step.');
+    assert.equal(d.querySelectorAll('.benefits-conversion li').length, 4);
+    assert(d.getElementById('manifest-submit').textContent.includes('UNLOCK MY FREE GENIE ACCESS'));
+    const form = d.getElementById('manifest-optin-form');
+    const data = new dom.window.FormData(form);
+    assert.equal(form.action, 'https://www.aweber.com/scripts/addlead.pl');
+    assert.equal(data.get('listname'), 'awlist6946418');
+    assert.equal(data.get('redirect'), 'https://www.manifestationgenie.ai');
+    assert(screen.includes("fbq('track','PageView')"));
+    assert(screen.includes('Unsubscribe anytime'));
+  } finally { dom.window.close(); }
 });
