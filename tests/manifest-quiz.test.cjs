@@ -35,7 +35,7 @@ for (const page of ['manifest.html', 'manifestscreen.html']) {
     assert(html.includes('action="https://www.aweber.com/scripts/addlead.pl"'));
     assert(html.includes('name="meta_web_form_id" value="184900578"'));
     assert(html.includes('name="listname" value="awlist6889085"'));
-    assert(html.includes('name="redirect" value="https://trythescript.com/watch?source=script-lead"'));
+    assert(html.includes('name="redirect" value="https://seanali.online/manifestwatch?source=script-lead"'));
     assert(html.includes('name="meta_message" value="1"'));
     assert(html.includes('name="meta_required" value="name,email"'));
     assert(!html.includes('https://www.manifestationgenie.ai'));
@@ -53,3 +53,29 @@ for (const page of ['manifest.html', 'manifestscreen.html']) {
     assert(html.indexOf('class="submit-btn"') < html.indexOf('<footer>'));
   });
 }
+
+const watch = readFileSync(resolve(root, 'manifestwatch.html'), 'utf8');
+test('manifest watch matches opt-in presentation and keeps original video/checkout', () => {
+  const optin = readFileSync(resolve(root, 'manifest.html'), 'utf8');
+  assert(watch.includes('class="eyebrow"'));
+  assert.equal((watch.match(/class="eyebrow"/g) || []).length, 1);
+  assert(watch.includes('🌙 7-MINUTE MANIFESTATION RITUAL'));
+  assert(watch.includes('class="optin-card watch-offer"'));
+  assert(watch.includes('background:radial-gradient('));
+  assert(watch.includes('background:#fffaf6;'));
+  assert(watch.includes('4.9/5 · 3,800+ Hypnotic Meditations reviews'));
+  assert(watch.includes('Now Watch How the'));
+  assert(watch.includes('7-Minute Manifestation Script'));
+  assert(watch.includes('https://seanali.online/manifestwatch'));
+  assert(!/\\bfree\\b/i.test(watch));
+  assert(!watch.includes('class="brand"'));
+  assert(watch.includes('id="vid-6966599cbabb3c836813c52f"'));
+  assert(watch.includes('https://scripts.converteai.net/06805447-0fe0-4045-89f5-ea45443a5071/players/6966599cbabb3c836813c52f/v4/player.js'));
+  assert(watch.includes('https://pay.hotmart.com/F102533819G?checkoutMode=10'));
+  assert(watch.includes('https://trythescript.com/tools/7-night-tracker.html'));
+  assert(watch.includes("hot('account','3a3058a6-7369-3d97-a1a0-ba9baed71541')"));
+  assert(watch.includes('/assets/manifest-script-events.js'));
+  assert(watch.includes('fbq(\'init\',\'1586097145783190\')'));
+  assert(watch.includes('fbq(\'init\',\'878451855254470\')'));
+  assert(optin.includes('name="redirect" value="https://seanali.online/manifestwatch?source=script-lead"'));
+});
