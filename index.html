@@ -168,26 +168,66 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 @media(max-width:920px){.life-showcase-grid{gap:28px}.life-mosaic{grid-template-rows:repeat(2,160px)}.life-chapter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.life-chapter{min-height:340px}.life-section-head{align-items:start;flex-direction:column;gap:9px}}
 @media(max-width:640px){.life-section{padding:55px 0}.life-wrap{padding:0 17px}.life-site h2{font-size:clamp(30px,9vw,39px);letter-spacing:-1.25px}.life-showcase{padding:57px 0 53px}.life-showcase-grid{grid-template-columns:1fr;gap:25px}.life-intro p{font-size:15px;line-height:1.58}.life-mosaic{grid-template-rows:repeat(2,145px);gap:9px}.life-photo{border-radius:13px}.life-photo span{left:11px;bottom:11px;font-size:11px}.life-section-head{margin-bottom:22px}.life-chapter-grid{gap:9px}.life-chapter{min-height:250px;border-radius:13px}.life-chapter-body{padding:17px 12px}.life-chapter strong{font-size:17px;letter-spacing:-.4px}.life-chapter-number{font-size:9px;margin-bottom:8px}.life-chapter em{font-size:11px}.life-topic-grid{grid-template-columns:1fr;gap:15px}.life-topic{display:grid;grid-template-columns:42% 58%;min-height:162px;align-items:stretch;border-radius:13px}.life-topic img{aspect-ratio:auto;height:100%;min-height:162px}.life-topic-body{padding:17px 14px}.life-topic h3{font-size:20px;margin-bottom:8px}.life-topic p{font-size:12px;margin-bottom:12px}.life-topic-tag{font-size:9px;margin-bottom:5px}.life-topic .life-go{font-size:12px}.life-quick{padding:45px 0}.life-quick-grid{grid-template-columns:1fr;gap:20px}.life-answers summary{font-size:14px}.life-next{min-height:300px}.life-next .life-wrap{padding-top:50px;padding-bottom:50px}}
 @media(prefers-reduced-motion:reduce){.life-photo img,.life-chapter img,.life-topic{transition:none!important}}
+
+
+/* Compact homepage welcome + smooth transition to Sean's real-life gallery. */
+.opener{min-height:0;display:block;background:#fcfaf7}
+.opener-top{background:linear-gradient(180deg,#fffdfb 0%,#fffaf3 72%,#fcfaf7 100%)}
+.opener-header{padding:22px 20px 0;text-align:center}
+.opener-header .brand{font-size:24px;line-height:1.2;letter-spacing:-.9px}
+.welcome{max-width:800px;margin:0 auto;padding:29px 24px 42px;text-align:center}
+.welcome-intro{display:inline-flex;align-items:center;gap:12px;background:#fff;border:1px solid #eee7de;border-radius:100px;padding:5px 17px 5px 5px;box-shadow:0 3px 12px #1c17090b;margin-bottom:17px}
+.welcome-intro .welcome-portrait{display:block;width:49px;height:49px;object-fit:cover;object-position:center 25%;border-radius:50%;border:2px solid #fff;margin:0;box-shadow:none}
+.welcome-intro .eyebrow{font-size:13px;letter-spacing:0;text-transform:none;font-weight:800;color:#a53c27;margin:0}
+.welcome h1{font-size:clamp(42px,5.7vw,65px);line-height:1.03;letter-spacing:-2.4px;margin:0 auto;font-weight:900;max-width:740px}
+.welcome .welcome-copy{font-size:16px;line-height:1.57;max-width:535px;margin:17px auto 0;color:#54595f}
+.welcome-actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;column-gap:22px;row-gap:12px;margin-top:23px}
+.welcome-actions .main-cta{display:inline-flex;min-width:233px;gap:22px;padding:15px 25px;font-size:16px;border-radius:11px;box-shadow:0 7px 20px #ed3d2526}
+.welcome-actions .main-cta span{font-size:21px}
+.welcome-story-link{display:inline-flex;align-items:center;gap:8px;color:#4f555b;text-decoration:none;font-size:14px;font-weight:750;padding:12px 2px}
+.welcome-story-link:hover{color:#c73e29;text-decoration:underline;text-underline-offset:4px}
+.life-showcase{padding-top:46px;padding-bottom:63px}
+.life-showcase-grid{gap:37px}
+.life-intro h2{font-size:clamp(30px,3.4vw,45px)}
+.life-intro p{margin:0 0 19px}
+@media(max-width:640px){
+.opener-header{padding:17px 18px 0}
+.opener-header .brand{font-size:22px}
+.welcome{padding:23px 20px 37px}
+.welcome-intro{padding:4px 13px 4px 4px;gap:9px;margin-bottom:15px}
+.welcome-intro .welcome-portrait{width:43px;height:43px}
+.welcome-intro .eyebrow{font-size:12px}
+.welcome h1{font-size:clamp(37px,10vw,46px);line-height:1.05;letter-spacing:-1.65px}
+.welcome .welcome-copy{font-size:14px;line-height:1.55;margin-top:14px;max-width:440px}
+.welcome-actions{margin-top:19px;gap:8px;flex-direction:column}
+.welcome-actions .main-cta{width:100%;max-width:320px;min-width:0;min-height:51px;padding:13px 22px;font-size:16px}
+.welcome-story-link{padding:9px 6px;font-size:13px}
+.life-showcase{padding-top:34px;padding-bottom:49px}
+.life-showcase-grid{gap:23px}
+.life-intro h2{font-size:clamp(30px,9vw,39px)}
+}
 </style>
 </head><body class="opener"><div class="opener-top"><a class="skip" href="#main">Skip to content</a>
-<header class="opener-header"><a class="brand" href="/" aria-label="Sean Ali home">SEAN <span>ALI</span></a><nav aria-label="Main navigation"><a href="/feed" style="display:inline-block;margin-top:12px;font-size:12px;font-weight:600;text-decoration:none;color:#62666c">News &amp; Updates</a></nav></header>
+<header class="opener-header"><a class="brand" href="/" aria-label="Sean Ali home">SEAN <span>ALI</span></a></header>
 <main id="main" class="welcome">
-<img class="welcome-portrait" src="/assets/sean-life/sean-couch-portrait.png" alt="Sean Ali" width="112" height="112" fetchpriority="high">
-<p class="eyebrow">Hey, I’m Sean — Welcome</p>
+<div class="welcome-intro">
+<img class="welcome-portrait" src="/assets/sean-life/sean-couch-portrait.png" alt="Sean Ali" width="52" height="52" fetchpriority="high">
+<p class="eyebrow">Hey, I'm Sean 👋</p>
+</div>
 <h1>Build A Life With<br><span>More Freedom</span></h1>
-<p class="welcome-copy">I share the mindset, meditation, and AI tools I use to think differently, build online, and create more freedom.</p>
-<p class="welcome-direction">Let me help you find your first step.</p>
+<p class="welcome-copy">I share what I'm learning about mindset, meditation, AI, and online business while building a freer life in Panama.</p>
+<div class="welcome-actions">
 <a class="main-cta" href="/start-here/">Start My Journey <span aria-hidden="true">→</span></a>
-<p class="cta-note">Choose what you want to work on. Start with a free tool.</p>
+<a class="welcome-story-link" href="#explore">Get to know me <span aria-hidden="true">↓</span></a>
+</div>
 </main></div>
 <div class="life-site" id="explore">
   <section class="life-section life-showcase" aria-labelledby="life-intro-title">
     <div class="life-wrap life-showcase-grid">
       <div class="life-intro">
         <span class="life-kicker">The life behind the lessons</span>
-        <h2 id="life-intro-title">From Canada to Panama. Still learning. Still building.</h2>
-        <p>I'm Sean. I've spent 15+ years building online businesses and learning how much my mindset shapes the choices I make.</p>
-        <p>This is what that journey looks like beyond the screen.</p>
+        <h2 id="life-intro-title">Here's the life behind the lessons.</h2>
+        <p>From growing up in Canada to building businesses and a life in Panama. It's been a journey of big lessons, risks, family, and finding freedom.</p>
         <a class="life-link" href="/story">Get to know my story <span aria-hidden="true">→</span></a>
       </div>
       <div class="life-mosaic" aria-label="Photos from Sean Ali's life">
@@ -278,4 +318,4 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
       <a class="life-button" href="/start-here/">Start My Journey →</a>
     </div>
   </section>
-</div><footer class="quiet-footer"><span>© 2026 Sean Ali</span><nav aria-label="Footer"><a href="/feed">Updates</a><a href="/about-sean-ali/">About</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/contact.html">Contact</a></nav></footer></body></html>
+</div><footer class="quiet-footer"><span>© 2026 Sean Ali</span><nav aria-label="Footer"><a href="/about-sean-ali/">About</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/contact.html">Contact</a></nav></footer></body></html>
