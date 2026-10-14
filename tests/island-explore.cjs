@@ -1,0 +1,23 @@
+const {JSDOM}=require('jsdom');const fs=require('node:fs');const path=require('node:path');const assert=require('node:assert/strict');const {pathToFileURL}=require('node:url');
+const root=path.resolve(__dirname,'../games/adventure');
+const source=['explore-state.js','explore.js'].map(f=>fs.readFileSync(path.join(root,f),'utf8').replace(/^import .*;\n/gm,'').replace(/\bexport /g,'')).join('\n');
+(async()=>{
+ const T=await import(pathToFileURL(path.join(root,'vendor/three.module.min.js')));
+ function boot(raw,lang='en'){
+  const dom=new JSDOM('<main></main><dialog></dialog>',{runScripts:'outside-only',url:'https://example.com'}),w=dom.window;w.WebGL2RenderingContext=function(){};let tick=null,saves=0,disposed=false,scene;
+  w.buildIsland=(three,canvas,motion,setup)=>{scene=new T.Scene();const mat=(color,opts={})=>new T.MeshStandardMaterial({color,...opts});const make=(g,m,x=0,y=0,z=0,sx=1,sy=sx,sz=sx,parent=scene)=>{const mesh=new T.Mesh(g,m);mesh.position.set(x,y,z);mesh.scale.set(sx,sy,sz);parent.add(mesh);return mesh;};const world=setup({T,scene,camera:new T.PerspectiveCamera(),target:new T.Vector3(),height:()=>0,make,geometry:x=>x,mat,ball:new T.IcosahedronGeometry(1,1),cone:new T.ConeGeometry(1,1,8),cylinder:new T.CylinderGeometry(1,1,1,8),box:new T.BoxGeometry()});tick=world.update;return {dispose(){disposed=true;world.dispose();}};};
+  w.eval(source+'\nwindow.api={createExplore,normalizeExplore,exploreItems,explorePlaces};');const state={lang,world:raw};const game=w.api.createExplore(w.document.querySelector('main'),{state,save:()=>saves++,joy:{gesture(){},effect(){},note(){}},motion:()=>true,openBook(){},openHome(){},load:()=>Promise.resolve(T)});
+  return {w,d:w.document,state,game,async ready(){await Promise.resolve();await Promise.resolve();},step(n=1){for(let i=0;i<n;i++)tick(1/30,i/30);},get saves(){return saves},get disposed(){return disposed},close(){game.dispose();dom.window.close();}};
+ }
+ let c=boot();await c.ready();c.step();assert(c.d.querySelector('.explore-ready'));assert(c.d.querySelector('.world-action').textContent.includes('Pip'));
+ c.d.querySelector('.world-action').click();assert(c.state.world.pet);const oldZ=c.state.world.z;c.w.document.dispatchEvent(new c.w.KeyboardEvent('keydown',{key:'ArrowUp',bubbles:true}));c.step(30);c.w.document.dispatchEvent(new c.w.KeyboardEvent('keyup',{key:'ArrowUp',bubbles:true}));assert(c.state.world.z<oldZ-3,'movement advances character');
+ c.d.querySelector('.explore-menu button').click();const button=[...c.d.querySelectorAll('.discover-place')].find(x=>x.textContent.includes('Bouncy'));button.click();c.step(240);assert(Math.hypot(c.state.world.x+4,c.state.world.z-6)<.3,'discovery path walks to destination');assert(c.d.querySelector('.world-action').textContent.includes('Bouncy'));c.d.querySelector('.world-action').click();c.step(120);assert(c.saves>0);c.close();assert(c.disposed);
+ for(const lang of ['en','es']){
+  c=boot({x:11,z:7},lang);await c.ready();c.step();for(let i=0;i<6;i++)c.d.querySelector('.world-action').click();assert.equal(c.state.world.flowers,6);assert(c.state.world.badges.includes('garden'));c.d.querySelector('.world-action').click();assert.equal(c.state.world.badges.length,1,'replay cannot duplicate rewards');c.close();
+ }
+ c=boot({x:-8,z:5,collected:['fruit0','fruit1','fruit2','fruit3','fruit4']});await c.ready();c.step();c.d.querySelector('.world-action').click();assert(c.state.world.badges.includes('picnic'));c.close();
+ c=boot({x:5,z:-7});await c.ready();c.step();c.d.querySelector('.world-action').click();assert(c.state.world.badges.includes('balloon'));c.step(300);assert.equal(c.d.querySelector('.world-jump').disabled,false,'ride returns control');c.close();
+ c=boot({x:-1,z:-2.5,badges:['picnic','glow','song','garden','treasure']});await c.ready();c.step();c.d.querySelector('.world-action').click();assert(c.state.world.badges.includes('beacon'));c.close();
+ c=boot({x:2,z:11});await c.ready();c.step();assert(c.state.world.collected.includes('shell0'));c.step(30);assert.equal(c.state.world.collected.filter(x=>x==='shell0').length,1);const normalize=c.w.api.normalizeExplore;assert.equal(normalize({x:Infinity,z:NaN,collected:['bad','shell0','shell0'],flowers:999}).collected.length,1);assert.equal(normalize({x:999,z:999}).x,4);c.close();
+ console.log('PASS exploration: keyboard movement, destination walking, companion, collectibles, repeat rewards, gardening in both languages, picnic, balloon return, lighthouse, corrupt-save normalization, disposal.');
+})().catch(e=>{console.error(e);process.exitCode=1;});
