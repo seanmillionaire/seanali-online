@@ -10,8 +10,19 @@ export function createTropical({T,scene,camera,height,geometry,mat,make,ball,ren
  const size=256,data=new Uint8Array(size*size*4);let seed=17;for(let y=0;y<size;y++)for(let x=0;x<size;x++){seed=(seed*1664525+1013904223)>>>0;const grain=(seed/4294967296-.5)*40,broad=Math.sin(x*.037+Math.sin(y*.03))*18+Math.sin(y*.13+x*.07)*8,v=Math.max(50,Math.min(255,188+grain+broad)),i=(y*size+x)*4;data[i]=v;data[i+1]=v;data[i+2]=v;data[i+3]=255;}
  const grain=new T.DataTexture(data,size,size,T.RGBAFormat);grain.wrapS=grain.wrapT=T.RepeatWrapping;grain.magFilter=T.LinearFilter;grain.minFilter=T.LinearMipmapLinearFilter;grain.generateMipmaps=true;grain.needsUpdate=true;textures.push(grain);
  let randomSeed=91;const random=()=>{randomSeed=(randomSeed*1664525+1013904223)>>>0;return randomSeed/4294967296;};
+ // Sculpted palms: curved trunks and individual tapered leaflets, sharing one canopy mesh.
+ const palms=[],bark=mat('#807052',{map:grain,bumpMap:grain,bumpScale:.08}),frond=mat('#397b39',{side:T.DoubleSide,roughness:.78,vertexColors:true}),coconut=mat('#807347',{roughness:.95});
+ const leafPoints=[],leafColors=[];
+ const addTri=(a,b,c,tone)=>{for(const p of [a,b,c]){leafPoints.push(...p);leafColors.push(.65*tone,tone,.55*tone);}};
+ for(let f=0;f<9;f++){
+  const angle=f*Math.PI*2/9,length=2.5+(f%3)*.25;
+  const point=(t,side=0)=>{const r=t*length;return [Math.cos(angle)*r-Math.sin(angle)*side,.38*Math.sin(t*Math.PI)-t*t*.9,Math.sin(angle)*r+Math.cos(angle)*side];};
+  for(let j=1;j<15;j++){const t=j/15,width=.48*Math.sin(t*Math.PI)**.6;for(const side of [-1,1]){const a=point(t-.035),b=point(Math.min(.99,t+.17),side*width),c=point(t+.035);addTri(a,b,c,.75+(j%3)*.1);}}
+ }
+ const canopyGeometry=geometry(new T.BufferGeometry());canopyGeometry.setAttribute('position',new T.Float32BufferAttribute(leafPoints,3));canopyGeometry.setAttribute('color',new T.Float32BufferAttribute(leafColors,3));canopyGeometry.computeVertexNormals();
+ function palm(x,z,scale){const root=new T.Group();root.position.set(x,height(x,z)-.06,z);root.rotation.y=random()*Math.PI*2;root.scale.setScalar(scale);scene.add(root);const curve=new T.CatmullRomCurve3([new T.Vector3(0,0,0),new T.Vector3(.12,1.8,0),new T.Vector3(.45,3.6,.12),new T.Vector3(.8,5.1,.2)]);make(geometry(new T.TubeGeometry(curve,10,.13,7,false)),bark,0,0,0,1,1,1,root);const crown=make(canopyGeometry,frond,.8,5.1,.2,1,1,1,root);for(let n=0;n<3;n++){const a=n*2.1;make(ball,coconut,.8+Math.cos(a)*.2,4.92,.2+Math.sin(a)*.2,.16,.21,.16,root);}palms.push({crown,phase:random()*6});}
  // Open sight lines, coconut groves, banana plants, coastal ferns, and exposed limestone.
- for(let i=0;i<31;i++){let x=(random()-.5)*34,z=(random()-.5)*21;if((x/18)**2+(z/12)**2>.9||(x>0&&x<9&&z>-4)||Math.hypot(x-11,z-7)<3||Math.hypot(x+1,z+5)<3)continue;const scale=.8+random()*.5;card(0,x,height(x,z)-.06,z,6*scale,7*scale);}
+ for(let i=0;i<31;i++){let x=(random()-.5)*34,z=(random()-.5)*21;if((x/18)**2+(z/12)**2>.9||(x>0&&x<9&&z>-4)||Math.hypot(x-11,z-7)<3||Math.hypot(x+1,z+5)<3)continue;const scale=.8+random()*.5;palm(x,z,scale);}
  for(let i=0;i<18;i++){const a=i*2.4,r=7+random()*7,x=Math.sin(a)*r,z=Math.cos(a)*r*.6;if((x>1&&x<9&&z>-2)||Math.hypot(x-11,z-7)<3)continue;card(i%3===0?1:2,x,height(x,z)-.03,z,i%3===0?3.6:1.8,i%3===0?4.2:1.4);}
  for(let i=0;i<14;i++){const a=i/14*Math.PI*2,x=Math.cos(a)*18,z=Math.sin(a)*12;card(3,x,height(x,z)-.08,z,1.2+random()*1.4,.7+random());}
  for(let i=0;i<7;i++){const a=i*2.4,x=11+Math.sin(a)*2,z=7+Math.cos(a)*2;card(15,x,height(x,z),z,1.4,1.2);}
@@ -20,5 +31,5 @@ export function createTropical({T,scene,camera,height,geometry,mat,make,ball,ren
  // Fish remain visible just below the transparent shallows; reef patches anchor them.
  for(let i=0;i<12;i++){const x=8+(i%4)*2.1,z=14+Math.floor(i/4)*2,g=card(i%2?12:13,x,-.32,z,.65,.4);wildlife.push({g,x,z,tile:12,phase:i});}
  for(let i=0;i<7;i++)card(14,-6+i*2,-.9,15+(i%2)*2,1.3,1);
- return {card,grain,update(time){for(const g of cards){const p=g.getWorldPosition(temp);g.rotation.y=Math.atan2(camera.position.x-p.x,camera.position.z-p.z)-(g.parent?.rotation.y||0);}for(const a of wildlife){const swimming=a.tile===12,speed=swimming?.6:.08;a.g.position.x=a.x+Math.sin(time*speed+a.phase)*(swimming?1.2:.35);a.g.position.z=a.z+Math.cos(time*speed+a.phase)*(swimming?.5:.2);if(!swimming)a.g.position.y=height(a.g.position.x,a.g.position.z)+.02;}},dispose(){textures.forEach(t=>t.dispose());}};
+ return {card,grain,update(time){for(const p of palms){p.crown.rotation.z=Math.sin(time*.65+p.phase)*.025;p.crown.rotation.x=Math.cos(time*.5+p.phase)*.018;}for(const g of cards){const p=g.getWorldPosition(temp);g.rotation.y=Math.atan2(camera.position.x-p.x,camera.position.z-p.z)-(g.parent?.rotation.y||0);}for(const a of wildlife){const swimming=a.tile===12,speed=swimming?.6:.08;a.g.position.x=a.x+Math.sin(time*speed+a.phase)*(swimming?1.2:.35);a.g.position.z=a.z+Math.cos(time*speed+a.phase)*(swimming?.5:.2);if(!swimming)a.g.position.y=height(a.g.position.x,a.g.position.z)+.02;}},dispose(){textures.forEach(t=>t.dispose());}};
 }

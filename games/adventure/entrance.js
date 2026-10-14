@@ -1,4 +1,4 @@
-import {createTropical} from './tropical.js?v=16';
+import {createTropical} from './tropical.js?v=17';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
 export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import('./vendor/three.module.min.js')}={}) {
   let disposed=false,world=null,pending=null;
@@ -14,11 +14,11 @@ export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import(
   };
 }
 export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={}) {
-  const renderer=new T.WebGLRenderer({canvas,antialias:false,alpha:false,powerPreference:'default'});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,light?1:1.5));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=.94;
+  const renderer=new T.WebGLRenderer({canvas,antialias:!light,alpha:false,powerPreference:'default'});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,light?1:1.5));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.02;
   renderer.shadowMap.enabled=!light;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
   const scene=new T.Scene();scene.background=new T.Color('#a4c9de');scene.fog=new T.FogExp2('#b0d1dc',.004);
-  const camera=new T.PerspectiveCamera(42,1,.2,300),sun=new T.DirectionalLight('#fff2d8',2.7);sun.position.set(-22,38,18);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-30;sun.shadow.camera.right=30;sun.shadow.camera.top=30;sun.shadow.camera.bottom=-30;sun.shadow.normalBias=.1;scene.add(sun,new T.HemisphereLight('#d8ecff','#68714e',1.7));
+  const camera=new T.PerspectiveCamera(42,1,.2,300),sun=new T.DirectionalLight('#fff0d2',3.0);sun.position.set(-22,38,18);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-30;sun.shadow.camera.right=30;sun.shadow.camera.top=30;sun.shadow.camera.bottom=-30;sun.shadow.normalBias=.1;scene.add(sun,new T.HemisphereLight('#c9edff','#58623c',1.45));
   const geometries=new Set(),materials=new Set(),clouds=[],bobbing=[];let seed=4107;
   const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
   const geometry=g=>{geometries.add(g);return g;};
@@ -31,11 +31,24 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   const tropical=createTropical({T,scene,camera,height,geometry,mat,make,ball,renderer});
   sand.map=wood.map=stone.map=trunk.map=cream.map=tropical.grain;wood.bumpMap=stone.bumpMap=trunk.bumpMap=tropical.grain;wood.bumpScale=.035;stone.bumpScale=.12;trunk.bumpScale=.06;
   const positions=[],colors=[],uvs=[],indices=[],rings=48,segments=128;
-  for(let ring=0;ring<=rings;ring++)for(let i=0;i<=segments;i++){const a=i/segments*Math.PI*2,r=ring/rings,shore=1+.035*Math.sin(a*7)+.03*Math.cos(a*5),x=Math.cos(a)*20*r*shore,z=Math.sin(a)*14*r*shore,y=ring===rings?.08:height(x,z);positions.push(x,y,z);uvs.push(x*.18,z*.18);const c=new T.Color(r>.86?'#d9cdb0':r>.77?'#939565':y>5.5?'#99968a':r>.5?'#647447':'#526b3f');c.multiplyScalar(.97+rand()*.08);colors.push(c.r,c.g,c.b);}
+  for(let ring=0;ring<=rings;ring++)for(let i=0;i<=segments;i++){const a=i/segments*Math.PI*2,r=ring/rings,shore=1+.035*Math.sin(a*7)+.03*Math.cos(a*5),x=Math.cos(a)*20*r*shore,z=Math.sin(a)*14*r*shore,y=ring===rings?.08:height(x,z);positions.push(x,y,z);uvs.push(x*.18,z*.18);const smooth=(a,b,v)=>{const t=Math.max(0,Math.min(1,(v-a)/(b-a)));return t*t*(3-2*t);};const c=new T.Color('#527842').lerp(new T.Color('#789454'),smooth(.3,.77,r));c.lerp(new T.Color('#e5d5ad'),smooth(.75,.91,r));c.lerp(new T.Color('#969784'),smooth(4.5,7,y)*.7);c.multiplyScalar(.96+rand()*.08);colors.push(c.r,c.g,c.b);}
   for(let j=0;j<rings;j++)for(let i=0;i<segments;i++){const a=j*(segments+1)+i,b=a+segments+1;indices.push(a,a+1,b,b,a+1,b+1);}
   const terrain=geometry(new T.BufferGeometry());terrain.setAttribute('position',new T.Float32BufferAttribute(positions,3));terrain.setAttribute('color',new T.Float32BufferAttribute(colors,3));terrain.setAttribute('uv',new T.Float32BufferAttribute(uvs,2));terrain.setIndex(indices);terrain.computeVertexNormals();make(terrain,mat('#ffffff',{vertexColors:true,map:tropical.grain,bumpMap:tropical.grain,bumpScale:.16,roughness:.98}));
   // Transparent lagoon, a visible sandy seabed, and small irregular wave highlights.
-  const waterMaterial=new T.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{time:{value:0}},vertexShader:`uniform float time;varying vec3 pos;void main(){vec3 p=position;p.z+=sin(p.x*.5+time*.6)*.025+cos(p.y*.7+time*.5)*.025;pos=p;gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.);}`,fragmentShader:`uniform float time;varying vec3 pos;void main(){float coast=length(pos.xy*vec2(.8,1.1));float a=sin(pos.x*2.7+sin(pos.y*.6)+time)*cos(pos.y*3.1+time*.65);float b=sin(pos.x*.36+pos.y*.53+time*.4);float glint=pow(max(0.,a),16.)*.055*(1.-smoothstep(25.,55.,coast));vec3 c=mix(vec3(.12,.57,.53),vec3(.018,.20,.29),smoothstep(19.,70.,coast));c+=glint+vec3(.003,.005,.004)*b;float edge=exp(-pow((coast-19.8)/1.3,2.));float foam=pow(max(0.,sin(coast*5.-time*1.2+sin(pos.x*2.))),8.)*edge;c=mix(c,vec3(.78,.89,.82),foam*.15);gl_FragColor=vec4(c,mix(.48,.98,smoothstep(19.,42.,coast)));\n#include <tonemapping_fragment>\n#include <colorspace_fragment>}`});
+  const waterMaterial=new T.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{time:{value:0}},vertexShader:`uniform float time;varying vec3 pos;void main(){vec3 p=position;p.z+=sin(p.x*.5+time*.6)*.025+cos(p.y*.7+time*.5)*.025;pos=p;gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.);}`,fragmentShader:`uniform float time;varying vec3 pos;
+float swell(vec2 p){return sin(p.x*1.7+p.y*.8+time*.8)*.45+sin(p.x*-.9+p.y*2.2-time*.65)*.3+sin(p.x*4.8+p.y*3.1+time)*.12;}
+void main(){
+ vec2 p=pos.xy;float coast=length(p/vec2(20.,14.));float depth=smoothstep(.95,2.9,coast);
+ float h=swell(p),hx=swell(p+vec2(.04,0.)),hy=swell(p+vec2(0.,.04));vec3 n=normalize(vec3((h-hx)*1.5,1.,(h-hy)*1.5));
+ vec3 view=normalize(cameraPosition-vec3(p.x,-.12,-p.y));float fresnel=pow(1.-max(dot(n,view),0.),4.);
+ vec3 c=mix(vec3(.12,.68,.59),vec3(.015,.19,.30),depth);c=mix(c,vec3(.55,.78,.88),fresnel*.65);
+ vec3 halfSun=normalize(normalize(vec3(-.5,1.,.45))+view);float spec=pow(max(dot(n,halfSun),0.),180.);c+=vec3(1.,.88,.61)*spec*.65*(1.-smoothstep(25.,65.,length(p)));
+ float caustic=pow(max(0.,sin(p.x*2.4+sin(p.y*1.5)+time*.6)*sin(p.y*2.6+sin(p.x*1.8)-time*.4)),9.);c+=vec3(.12,.22,.13)*caustic*(1.-depth);
+ float edge=exp(-pow((coast-1.025)/.055,2.));float foam=smoothstep(.55,.95,sin(coast*110.-time*1.1+sin(p.x*.8)*.6));c=mix(c,vec3(.83,.95,.88),edge*foam*.45);
+ gl_FragColor=vec4(c,mix(.42,.98,smoothstep(1.,2.2,coast)));
+ #include <tonemapping_fragment>
+ #include <colorspace_fragment>
+}`});
   materials.add(waterMaterial);const water=make(geometry(new T.PlaneGeometry(500,500,64,64)),waterMaterial,0,-.12,0);water.rotation.x=-Math.PI/2;water.castShadow=false;water.receiveShadow=false;water.renderOrder=2;
   const bedGeometry=geometry(new T.PlaneGeometry(140,140));const bedUV=bedGeometry.attributes.uv;for(let i=0;i<bedUV.count;i++)bedUV.setXY(i,bedUV.getX(i)*16,bedUV.getY(i)*16);const seabed=make(bedGeometry,mat('#b3c8b0',{map:tropical.grain,roughness:1}),0,-1.4,0);seabed.rotation.x=-Math.PI/2;seabed.castShadow=false;
   // A sandy path winding from the landing cove to the lighthouse.

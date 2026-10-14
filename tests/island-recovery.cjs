@@ -7,7 +7,7 @@ async function boot(failures=0){
  w.buildIsland=(T,canvas,motion,setup,opts)=>{builds++;options.push(opts);if(builds<=failures)throw Error('GPU allocation failed');return {dispose(){freed++;},resume(){resumes++;}};};
  w.eval(source+'\nwindow.createExplore=createExplore');const state={lang:'en',world:{x:5,z:3,flowers:4}};
  const game=w.createExplore(w.document.querySelector('main'),{state,save(){},joy:{gesture(){}},motion:()=>true,load:()=>{loads++;return Promise.resolve({});},openBook(){},openHome(){}});
- const settle=()=>new Promise(r=>setTimeout(r,30));await settle();
+ const settle=async()=>{for(let i=0;i<8;i++)await new Promise(r=>setTimeout(r,10));};await settle();
  return {w,game,state,settle,get builds(){return builds},get freed(){return freed},get resumes(){return resumes},options,close(){game.dispose();w.close();}};
 }
 (async()=>{
