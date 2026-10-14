@@ -1,4 +1,5 @@
-import {createTropical} from './tropical.js?v=20';
+import {isletHeight} from './explore-state.js?v=21';
+import {createTropical} from './tropical.js?v=21';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
 export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import('./vendor/three.module.min.js')}={}) {
   let disposed=false,world=null,pending=null;
@@ -26,7 +27,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   const make=(g,m,x=0,y=0,z=0,sx=1,sy=sx,sz=sx,parent=scene)=>{const mesh=new T.Mesh(g,m);mesh.position.set(x,y,z);mesh.scale.set(sx,sy,sz);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;};
   const ball=geometry(new T.SphereGeometry(1,16,12)),cone=geometry(new T.ConeGeometry(1,1,8)),cylinder=geometry(new T.CylinderGeometry(1,1,1,12)),box=geometry(new T.BoxGeometry(1,1,1));
   const sand=mat('#e8c895'),green=mat('#568d58'),darkGreen=mat('#246b57'),leaf=mat('#79a05b'),trunk=mat('#855b42'),stone=mat('#84958c'),cream=mat('#fff0ca'),wood=mat('#986b44'),red=mat('#ce826c'),blue=mat('#579c9d'),violet=mat('#a99ac0'),gold=mat('#ffda83',{emissive:'#efb449',emissiveIntensity:.32});
-  function height(x,z){const edge=Math.sqrt((x/20)**2+(z/14)**2);const hill=6*Math.exp(-((x+1)**2/30+(z+5)**2/22));return Math.max(.1,(1-edge*edge)*2.8)+hill;}
+  function height(x,z){if(isletHeight(x,z)>0)return isletHeight(x,z);const edge=Math.sqrt((x/20)**2+(z/14)**2);const hill=6*Math.exp(-((x+1)**2/30+(z+5)**2/22));return Math.max(.1,(1-edge*edge)*2.8)+hill;}
   // A sculpted, vertex-colored island; this is geometry, not a picture on a plane.
   const tropical=createTropical({T,scene,camera,height,geometry,mat,make,ball,renderer});
   sand.map=wood.map=stone.map=trunk.map=cream.map=tropical.grain;wood.bumpMap=stone.bumpMap=trunk.bumpMap=tropical.grain;wood.bumpScale=.035;stone.bumpScale=.12;trunk.bumpScale=.06;
@@ -34,11 +35,13 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   for(let ring=0;ring<=rings;ring++)for(let i=0;i<=segments;i++){const a=i/segments*Math.PI*2,r=ring/rings,shore=1+.035*Math.sin(a*7)+.03*Math.cos(a*5),x=Math.cos(a)*20*r*shore,z=Math.sin(a)*14*r*shore,y=ring===rings?.08:height(x,z);positions.push(x,y,z);uvs.push(x*.18,z*.18);const smooth=(a,b,v)=>{const t=Math.max(0,Math.min(1,(v-a)/(b-a)));return t*t*(3-2*t);};const c=new T.Color('#527842').lerp(new T.Color('#789454'),smooth(.3,.77,r));c.lerp(new T.Color('#e5d5ad'),smooth(.75,.91,r));c.lerp(new T.Color('#969784'),smooth(4.5,7,y)*.7);c.multiplyScalar(.96+rand()*.08);colors.push(c.r,c.g,c.b);}
   for(let j=0;j<rings;j++)for(let i=0;i<segments;i++){const a=j*(segments+1)+i,b=a+segments+1;indices.push(a,a+1,b,b,a+1,b+1);}
   const terrain=geometry(new T.BufferGeometry());terrain.setAttribute('position',new T.Float32BufferAttribute(positions,3));terrain.setAttribute('color',new T.Float32BufferAttribute(colors,3));terrain.setAttribute('uv',new T.Float32BufferAttribute(uvs,2));terrain.setIndex(indices);terrain.computeVertexNormals();make(terrain,mat('#ffffff',{vertexColors:true,map:tropical.grain,bumpMap:tropical.grain,bumpScale:.16,roughness:.98}));
+  // A reachable offshore island, sharing the same shoreline used by movement and boats.
+  const iv=[],ic=[],ii=[],iu=[];for(let ring=0;ring<=12;ring++)for(let j=0;j<=48;j++){const a=j/48*Math.PI*2,r=ring/12,x=24+Math.cos(a)*4*r,z=-8+Math.sin(a)*3*r;iv.push(x,isletHeight(x,z),z);iu.push(x*.18,z*.18);const c=new T.Color(r>.72?'#eddbac':'#72a65c');ic.push(c.r,c.g,c.b);if(ring<12&&j<48){const n=ring*49+j;ii.push(n,n+1,n+49,n+49,n+1,n+50);}}const ig=geometry(new T.BufferGeometry());ig.setAttribute('position',new T.Float32BufferAttribute(iv,3));ig.setAttribute('color',new T.Float32BufferAttribute(ic,3));ig.setAttribute('uv',new T.Float32BufferAttribute(iu,2));ig.setIndex(ii);ig.computeVertexNormals();const islet=make(ig,mat('#ffffff',{vertexColors:true,map:tropical.grain}));islet.name='Butterfly Island';tropical.palm(24.6,-8.6,.85);tropical.palm(22.8,-7.4,.65);for(let i=0;i<7;i++){const x=24+Math.sin(i*2.4)*1.6,z=-8+Math.cos(i*2.4)*1.1;tropical.card(15,x,height(x,z),z,.9,1);}
   // Transparent lagoon, a visible sandy seabed, and small irregular wave highlights.
   const waterMaterial=new T.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{time:{value:0}},vertexShader:`uniform float time;varying vec3 pos;void main(){vec3 p=position;p.z+=sin(p.x*.5+time*.6)*.025+cos(p.y*.7+time*.5)*.025;pos=p;gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.);}`,fragmentShader:`uniform float time;varying vec3 pos;
 float swell(vec2 p){return sin(p.x*1.7+p.y*.8+time*.8)*.45+sin(p.x*-.9+p.y*2.2-time*.65)*.3+sin(p.x*4.8+p.y*3.1+time)*.12;}
 void main(){
- vec2 p=pos.xy;float coast=length(p/vec2(20.,14.));float depth=smoothstep(.95,2.9,coast);
+ vec2 p=pos.xy;float coast=min(length(p/vec2(20.,14.)),length((p-vec2(24.,8.))/vec2(4.,3.)));float depth=smoothstep(.95,2.9,coast);
  float h=swell(p),hx=swell(p+vec2(.04,0.)),hy=swell(p+vec2(0.,.04));vec3 n=normalize(vec3((h-hx)*1.5,1.,(h-hy)*1.5));
  vec3 view=normalize(cameraPosition-vec3(p.x,-.12,-p.y));float fresnel=pow(1.-max(dot(n,view),0.),4.);
  vec3 c=mix(vec3(.12,.68,.59),vec3(.015,.19,.30),depth);c=mix(c,vec3(.55,.78,.88),fresnel*.65);
