@@ -2,10 +2,11 @@ const {JSDOM}=require('jsdom'),fs=require('node:fs'),assert=require('node:assert
 const source=fs.readFileSync(__dirname+'/../games/adventure/app.js','utf8');
 const dom=new JSDOM('',{runScripts:'outside-only'}),w=dom.window;Object.defineProperty(w.document,'hidden',{value:false,configurable:true});
 let cancellations=0,utterances=[];w.SpeechSynthesisUtterance=class{constructor(text){this.text=text;}};w.speechSynthesis={speaking:false,pending:false,cancel(){cancellations++},speak(u){utterances.push(u)},getVoices(){return [{lang:'en-US',localService:true},{lang:'es-ES',localService:true}]}};
-w.eval('const state={sound:true,lang:"en"},tr=x=>typeof x==="string"?x:x[state.lang],joy={duck(){}};'+source.slice(source.indexOf('function speak(message'),source.indexOf('\nfunction tone'))+'\nwindow.test={speak,state};');
+w.eval('let screen="entry";const state={sound:true,lang:"en"},tr=x=>typeof x==="string"?x:x[state.lang],joy={duck(){}};'+source.slice(source.indexOf('function speak(message'),source.indexOf('\nfunction tone'))+'\nwindow.test={speak,state,setScreen:s=>screen=s};');
 w.test.speak('Hello Angelique');assert.equal(utterances[0].lang,'en-US');assert(utterances[0].voice.localService);
 w.speechSynthesis.speaking=true;assert.equal(w.test.speak('Nearby hint',{interrupt:false}),false);assert.equal(utterances.length,1);w.test.speak('Listen again');assert.equal(utterances.length,2);
 w.test.state.lang='es';w.test.speak({es:'Hola Angelique',en:'Hello Angelique'});assert.equal(utterances.at(-1).lang,'es-ES');assert.equal(utterances.at(-1).text,'Hola Angelique');
-w.test.state.sound=false;assert.equal(w.test.speak('Muted'),false);assert.equal(utterances.length,3);w.test.state.sound=true;
+w.test.setScreen('explore');assert.equal(w.test.speak('Automatic gameplay narration'),false);assert.equal(utterances.length,3);w.test.speak('Requested help',{manual:true});assert.equal(utterances.length,4);w.test.setScreen('entry');
+w.test.state.sound=false;assert.equal(w.test.speak('Muted'),false);assert.equal(utterances.length,4);w.test.state.sound=true;
 Object.defineProperty(w.document,'hidden',{value:true});const before=cancellations;w.document.dispatchEvent(new w.Event('visibilitychange'));assert.equal(cancellations,before+1);assert.equal(w.test.speak('Hidden'),false);dom.window.close();
 console.log('PASS spoken guidance language, voice selection, no overlapping hints, explicit replay, mute, and hidden-tab cancellation.');
