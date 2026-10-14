@@ -313,3 +313,15 @@
   .sales-page .home-depth{padding-top:62px;padding-bottom:62px}
   .sales-page .final-offer{padding-top:66px;padding-bottom:82px;border:0}
 }
+
+/* Strong one-line AI income promise, adapted for narrow phones. */
+.sales-page .announcement .announcement-line{gap:7px}
+.sales-page .announcement .announcement-desktop{display:inline;white-space:nowrap}
+.sales-page .announcement .announcement-mobile{display:none}
+@media(max-width:760px){
+ .sales-page .announcement{padding:10px 5px}
+ .sales-page .announcement .announcement-line{gap:4px;font-size:clamp(8.5px,2.65vw,12px);letter-spacing:-.02em}
+ .sales-page .announcement .announcement-desktop{display:none}
+ .sales-page .announcement .announcement-mobile{display:inline;white-space:nowrap}
+ .sales-page .announcement .announcement-line b{font-size:17px}
+}
