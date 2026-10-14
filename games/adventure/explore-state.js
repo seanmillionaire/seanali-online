@@ -32,6 +32,18 @@ export function walkable(x,z){return (isletHeight(x,z)>0||(x/18.7)**2+(z/12.5)**
 // Match the sculpted shoreline; the wider lagoon is navigable, but buildings stay solid.
 export function onDock(x,z){return x>=3&&x<=5&&z>=11.8&&z<=17.4;}
 export function inWater(x,z){if(onDock(x,z)||isletHeight(x,z)>0)return false;const a=Math.atan2(z/14,x/20),shore=1+.035*Math.sin(a*7)+.03*Math.cos(a*5);return Math.hypot(x/20,z/14)>shore;}
+// Sharks steer around shores with clearance for their whole body, not just their center.
+export function sharkClearance(x,z){let wet=inWater(x,z)?1:0;for(let i=0;i<12;i++){const a=i*Math.PI/6;if(inWater(x+Math.sin(a)*1.4,z+Math.cos(a)*1.4))wet++;}return wet;}
+export function sharkStep(x,z,tx,tz,dt,speed,side=1){
+ const distance=Math.hypot(tx-x,tz-z),step=Math.min(Math.max(0,dt)*speed,distance);if(step===0)return {x,z};
+ const heading=Math.atan2(tx-x,tz-z),current=sharkClearance(x,z);let escape=null,best=-Infinity;
+ for(let i=0;i<=12;i++)for(const sign of i===0?[1]:[side,-side]){const a=heading+i*Math.PI/12*sign,dx=Math.sin(a),dz=Math.cos(a),nx=x+dx*step,nz=z+dz*step;if(!inWater(nx,nz))continue;const clearance=sharkClearance(nx,nz),ahead=sharkClearance(x+dx*1.7,z+dz*1.7);
+  if(clearance===13&&ahead===13)return {x:nx,z:nz};
+  // Recover smoothly if an older position is already too close to a beach.
+  const score=clearance*100+ahead-i*.01;if(clearance>=current&&score>best){escape={x:nx,z:nz};best=score;}
+ }
+ return escape||{x,z};
+}
 export function traversable(x,z){return Math.hypot(x/31,z/25)<=1&&worldObstacles.every(([a,b,r])=>Math.hypot(x-a,z-b)>r+.3);}
 export function islandPath(from,to){
  const ocean=from.x>19||to.x>19||!walkable(from.x,from.z)||!walkable(to.x,to.z),allowed=ocean?traversable:walkable;

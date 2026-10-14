@@ -1,5 +1,5 @@
-import {buildIsland} from './entrance.js?v=22';
-import {explorePlaces,exploreItems,normalizeExplore,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=22';
+import {buildIsland} from './entrance.js?v=23';
+import {explorePlaces,exploreItems,normalizeExplore,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=23';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);syncWallet(state);
  let disposed=false,engine=null,control=null,near=null,ride=s.flight?1:0,flightY=s.flight||0,flightTarget=s.flight||0,flightVX=0,flightVZ=0,route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;
@@ -162,7 +162,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    if(inside)ay=height(-1,-5)+towerY;
    if(airborne){const floor=inWater(ax,az)?-.95:onDock(ax,az)?.58:height(ax,az);if(active){towerV-=12*dt;towerY+=towerV*dt;}ay=towerY;if(ay<=floor){airborne=false;towerV=0;clearLanding();ax=s.x;az=s.z;ay=inWater(ax,az)?-.95:onDock(ax,az)?.58:height(ax,az);jumpY=0;velocity=0;}}
    danger=false;for(const shark of seaLife){const g=shark.g;const dist=Math.hypot(g.position.x-s.x,g.position.z-s.z);const chase=swimming&&dist<8&&rescueCooldown===0;let tx=Math.cos(time*.055+shark.a)*25,tz=Math.sin(time*.055+shark.a)*20;
-    if(chase){tx=s.x;tz=s.z;}const vx=tx-g.position.x,vz=tz-g.position.z,l=Math.hypot(vx,vz)||1;const pace=chase?1.7:1.1;const nx=g.position.x+vx/l*dt*pace,nz=g.position.z+vz/l*dt*pace;if(active&&inWater(nx,nz)){g.position.x=nx;g.position.z=nz;g.rotation.y=Math.atan2(vx,vz);}shark.tail.rotation.y=motion()?Math.sin(time*4+shark.a)*.3:0;
+    if(chase){tx=s.x;tz=s.z;}const pace=chase?1.7:1.1;if(active){const next=sharkStep(g.position.x,g.position.z,tx,tz,dt,pace,shark.a>3?-1:1),mx=next.x-g.position.x,mz=next.z-g.position.z;if(Math.hypot(mx,mz)>.00001)g.rotation.y=Math.atan2(mx,mz);g.position.x=next.x;g.position.z=next.z;}shark.tail.rotation.y=motion()?Math.sin(time*4+shark.a)*.3:0;
     if(chase&&dist<6)danger=true;if(chase&&dist<1.25&&active){s.x=lastShore.x;s.z=lastShore.z;ax=s.x;az=s.z;ay=height(ax,az);swimming=false;danger=false;rescueCooldown=8;targetPoint=null;route=[];blur();tell('🐢 Pip te llevó a la playa. ¡A salvo!','🐢 Pip brought you to shore. Safe!');save();}}
    host.classList.toggle('shark-nearby',danger);ripple.visible=swimming;ripple.position.set(ax,-.03,az);ripple.scale.setScalar(1+(motion()?Math.sin(time*4)*.12:0));arms.forEach((arm,i)=>{arm.rotation.x=swimming&&motion()?Math.sin(time*7+i*Math.PI)*.9:0;});
 
