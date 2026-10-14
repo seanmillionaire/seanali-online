@@ -147,6 +147,18 @@
   .sub-headline { max-width:100%; white-space:nowrap; font-size:clamp(11px,3.5vw,18px); letter-spacing:-.035em; }
 </style>
 <link rel="stylesheet" href="/assets/sean-optin-hmfree-template.css?v=20261013b" />
+<style>
+  /* Keep the meditation headline compact on desktop without changing mobile */
+  @media (min-width: 768px) {
+    body[data-optin-reference="hm-free"] #headline {
+      max-width: 680px !important;
+      font-size: 35px !important;
+      line-height: 1.12 !important;
+      letter-spacing: -.045em !important;
+      margin: 7px auto 10px !important;
+    }
+  }
+</style>
 </head>
 <body data-optin-reference="hm-free">
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N3NV5TNP" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
