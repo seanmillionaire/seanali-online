@@ -21,3 +21,12 @@ body[data-scene="explore"] .tools button{color:#264e49}body[data-scene="explore"
 body[data-scene="explore"] .explore-location,body[data-scene="explore"] .world-small{background:#f4f0e5e8;border-radius:10px;box-shadow:0 2px 8px #173d4020}.explore-bag{background:#f4f0e5e8}.explore-hint{background:#193c38d9}.world-action{background:#e8d4a6;border-radius:14px}.world-jump{border-radius:14px}.arrival-turtle{width:95px;height:95px;background-image:url('./tropical-atlas.png');background-size:400% 400%;background-position:0 66.6667%;filter:drop-shadow(0 4px 5px #173d4055)}@media(max-width:780px){.arrival-turtle{width:65px;height:65px}}
 
 .explore-menu{flex-wrap:wrap;max-width:calc(100% - 24px)}
+
+/* Island activities stay over the world, with a single way back to Angelique. */
+body[data-scene="islandQuest"]{overflow:hidden;background:#214b48}
+body[data-scene="islandQuest"] .topbar{position:absolute;inset:0 0 auto;z-index:30;background:#173d43;color:#fff8e5}
+body[data-scene="islandQuest"] .explore-world{position:fixed;inset:0}
+body[data-scene="islandQuest"] .explore-world>:not(canvas){display:none!important}
+.island-lesson{position:fixed;z-index:20;top:90px;bottom:12px;left:50%;transform:translateX(-50%);width:min(720px,96vw);overflow:auto;margin:0;padding:15px;background:#fff7e9f5;border-radius:24px;box-shadow:0 15px 70px #123a4d70}
+.island-lesson .activity{margin-bottom:0}.world-lesson{background:#d8ebcc}.explore-actions{flex-wrap:wrap;max-width:650px;justify-content:flex-end}
+@media(max-width:780px){.island-lesson{top:76px;padding:10px}.explore-actions{max-width:230px}.world-lesson{font-size:12px;min-height:44px;padding:10px}.explore-hint{bottom:260px}}

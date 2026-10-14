@@ -1,8 +1,10 @@
-import {normalizeExplore} from './explore-state.js?v=11';
+import {normalizeExplore} from './explore-state.js?v=12';
 import {quests} from './content.js';
 export const SAVE_KEY='isla-adventure-v1';
-export function fresh(){return {version:1,started:false,lang:'es',sound:true,motion:true,completed:{},active:null,discovered:[],palette:0,song:Array(24).fill(false),seen:[],world:normalizeExplore(null)};}
-export function normalize(raw){const s=fresh();if(!raw||raw.version!==1)return s;s.world=normalizeExplore(raw.world);s.started=raw.started===true;s.lang=raw.lang==='en'?'en':'es';s.sound=raw.sound!==false;s.motion=raw.motion!==false;s.palette=Number.isInteger(raw.palette)&&raw.palette>=0&&raw.palette<4?raw.palette:0;
+export function fresh(){return {version:1,started:false,lang:'es',sound:true,motion:true,completed:{},active:null,islandLessons:{completed:{},attempts:{}},discovered:[],palette:0,song:Array(24).fill(false),seen:[],world:normalizeExplore(null)};}
+export function normalize(raw){const s=fresh();if(!raw||raw.version!==1)return s;s.world=normalizeExplore(raw.world);
+ for(const q of quests){const v=raw.islandLessons?.completed?.[q.id];if(Number.isInteger(v)&&v>=1&&v<=3)s.islandLessons.completed[q.id]=v;const a=raw.islandLessons?.attempts?.[q.id];if(a&&Number.isInteger(a.stage)&&a.stage>=0&&a.stage<3)s.islandLessons.attempts[q.id]={id:q.id,stage:a.stage,mistakes:Math.max(0,Math.min(99,Number(a.mistakes)||0))};}
+s.started=raw.started===true;s.lang=raw.lang==='en'?'en':'es';s.sound=raw.sound!==false;s.motion=raw.motion!==false;s.palette=Number.isInteger(raw.palette)&&raw.palette>=0&&raw.palette<4?raw.palette:0;
  for(const q of quests){const v=raw.completed?.[q.id];if(Number.isInteger(v)&&v>=1&&v<=3)s.completed[q.id]=v;else break;}
  s.discovered=Array.isArray(raw.discovered)?[...new Set(raw.discovered.filter(n=>Number.isInteger(n)&&n>=0&&n<6))]:[];
  s.seen=Array.isArray(raw.seen)?[...new Set(raw.seen.filter(n=>Number.isInteger(n)&&n>=0&&n<6))]:[];
