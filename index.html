@@ -208,6 +208,23 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 .life-intro h2{font-size:clamp(30px,9vw,39px)}
 }
 </style>
+
+<style id="life-next-uncropped-photo">
+/* Display the entire original Panama photo beside the CTA instead of cropping it behind the text. */
+.life-site .life-next{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);align-items:stretch;min-height:0;text-align:left;overflow:hidden;background:#22302e}
+.life-site .life-next>img{position:static;inset:auto;display:block;width:100%;height:clamp(330px,36vw,500px);max-height:none;object-fit:contain;object-position:center;background:#182522;z-index:auto}
+.life-site .life-next::before{display:none}
+.life-site .life-next>.life-wrap{width:100%;max-width:570px;min-width:0;margin:0;align-self:center;padding:50px 38px}
+.life-site .life-next h2{margin:0 0 14px;max-width:490px;font-size:clamp(30px,3.5vw,44px)}
+.life-site .life-next p{margin:0 0 22px;max-width:430px}
+@media(max-width:760px){
+.life-site .life-next{display:flex;flex-direction:column;text-align:center}
+.life-site .life-next>img{width:100%;height:auto;max-height:480px;object-fit:contain;background:#182522}
+.life-site .life-next>.life-wrap{max-width:620px;padding:35px 22px 43px}
+.life-site .life-next h2{margin:0 auto 13px}
+.life-site .life-next p{margin:0 auto 20px}
+}
+</style>
 </head><body class="opener"><div class="opener-top"><a class="skip" href="#main">Skip to content</a>
 <header class="opener-header"><a class="brand" href="/" aria-label="Sean Ali home">SEAN <span>ALI</span></a></header>
 <main id="main" class="welcome">
