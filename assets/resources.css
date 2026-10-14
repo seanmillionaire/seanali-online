@@ -1,2 +1,4 @@
 /* Resources uses text-first cards until each offer has a verified matching image. */
 .resources-page .sa-card-media{display:none}
+
+.resource-topics{display:flex;flex-wrap:wrap;gap:12px 24px;margin-top:28px}.resource-topics a{color:inherit;font-weight:700;text-underline-offset:4px}.resources-page .sa-section{scroll-margin-top:100px}
