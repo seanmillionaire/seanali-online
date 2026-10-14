@@ -1,8 +1,8 @@
-import {createExplore} from './explore.js?v=8';
-import {createEntrance} from './entrance.js?v=8';
+import {createExplore} from './explore.js?v=9';
+import {createEntrance} from './entrance.js?v=9';
 import {createDelight,burst,livingWorld,foxPortrait} from './delight.js?v=2';
 import {regions,quests,challenges,ui,text} from './content.js';
-import {SAVE_KEY,fresh,normalize,completedCount,lightCount,totalStars,unlocked,award} from './state.js?v=8';
+import {SAVE_KEY,fresh,normalize,completedCount,lightCount,totalStars,unlocked,award} from './state.js?v=9';
 const $=s=>document.querySelector(s),app=$('#app'),dialog=$('#dialog');
 let storageOK=true,state;try{state=normalize(JSON.parse(localStorage.getItem(SAVE_KEY)));if(!localStorage.getItem(SAVE_KEY)){state.lang=localStorage.getItem('seanGameLang')==='en'?'en':'es';}}catch{state=fresh();}
 let screen='entry',entrance=null,exploration=null,timers=[],audioContext,run=0,solved=false,currentTask=null,playing=false,returnFocus=null;
@@ -34,7 +34,7 @@ function welcome(){
  const guide=el('div','arrival-guide');guide.append(el('div','arrival-turtle'),el('span','',text('¡Por aquí!','This way!')));section.append(copy,guide);
  const travel=el('div','arrival-caption');travel.hidden=true;travel.setAttribute('role','status');travel.append(el('span','arrival-orbit','✦'),el('p','',text('El puerto está cerca…','The harbor is just ahead…')));section.append(travel);
  const skip=button(text('Saltar llegada','Skip arrival'),'skip-arrival',()=>entrance?.skip());skip.hidden=true;section.append(skip);app.append(section);
- entrance=createEntrance(section,{motion:motionOn,label:tr(text('Una isla tridimensional con mar, nubes, casas, barcos y un faro.','A three-dimensional island with an ocean, clouds, cottages, boats, and a lighthouse.'))});
+ entrance=createEntrance(section,{motion:motionOn,label:tr(text('Una isla tropical con palmeras, fauna, mar, casas, barcos y un faro.','A tropical island with palms, wildlife, ocean, cottages, boats, and a lighthouse.'))});
  let entering=false;
  function arrive(){if(entering)return;entering=true;enter.disabled=true;section.classList.add('arriving');document.body.classList.add('arriving-world');skip.hidden=false;travel.hidden=false;skip.focus({preventScroll:true});joy.effect('arrival');entrance.flyIn(()=>{document.body.classList.remove('arriving-world');state.started=true;save();screen='explore';render();chime();});}
 }

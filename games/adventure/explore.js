@@ -1,5 +1,5 @@
-import {buildIsland} from './entrance.js?v=8';
-import {explorePlaces,exploreItems,normalizeExplore,collectExplore,badgeExplore,countExplore,islandPath,walkable} from './explore-state.js?v=8';
+import {buildIsland} from './entrance.js?v=9';
+import {explorePlaces,exploreItems,normalizeExplore,collectExplore,badgeExplore,countExplore,islandPath,walkable} from './explore-state.js?v=9';
 export function createExplore(host,{state,save,joy,motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);
  let disposed=false,engine=null,control=null,near=null,ride=0,rideType='',route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;
@@ -102,7 +102,7 @@ export function createExplore(host,{state,save,joy,motion,openBook,openHome,load
    if(!ride&&Math.hypot(s.x+4,s.z-6)<.75&&jumpY===0&&velocity===0){velocity=10;joy.effect('tap');}
    for(let i=bubbles.length-1;i>=0;i--){const b=bubbles[i];b.life-=dt;if(motion())b.m.position.y+=dt*.15;if(b.life<=0){scene.remove(b.m);bubbles.splice(i,1);}else if(Math.hypot(s.x-b.m.position.x,s.z-b.m.position.z)<.65&&Math.abs(ay+1-b.m.position.y)<1)popBubble(i);}
    for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.life-=dt;if(p.life<=0){scene.remove(p.m);particles.splice(i,1);continue;}p.vy-=5*dt;p.m.position.x+=p.vx*dt;p.m.position.y+=p.vy*dt;p.m.position.z+=p.vz*dt;p.m.scale.setScalar(Math.max(.01,p.life*.08));}
-   setText(quest,s.badges.includes('beacon')?say('¡El mundo es tuyo! Prueba otro estilo, pasea o crea una canción.','The world is yours! Try a new look, take a ride, or make a song.'):s.badges.length===0?say('Salta, explora, toca. No hay un camino correcto.','Jump, explore, touch. There’s no wrong way to go.'):say(`${s.badges.length} recuerdos · Cinco despiertan el faro.`,`${s.badges.length} memories · Five wake the lighthouse.`));
+   setText(quest,s.badges.includes('beacon')?say('¡El mundo es tuyo! Prueba otro estilo, pasea o crea una canción.','The world is yours! Try a new look, take a ride, or make a song.'):s.badges.length===0?say('Salta, explora, toca. No hay un camino correcto.','Jump, explore, touch. There’s no wrong way to go.'):say(`${s.badges.length} ${s.badges.length===1?"recuerdo":"recuerdos"} · Cinco despiertan el faro.`,`${s.badges.length} ${s.badges.length===1?"memory":"memories"} · Five wake the lighthouse.`));
   }
   return {update,dispose(){canvas.removeEventListener('pointerdown',walkTo);control=null;}};
  }

@@ -8,7 +8,7 @@ export function createTropical({T,scene,camera,height,geometry,mat,make,ball,ren
  function card(tile,x,y,z,w,h,parent=scene){const g=new T.Group();g.position.set(x,y,z);parent.add(g);const m=make(tileGeometries[tile],tileMaterials[tile],0,0,0,w,h,1,g);g.visible=loaded;cards.push(g);return g;}
  // Fine mineral grain, weathering, and broad tonal variation share a small procedural texture.
  const size=256,data=new Uint8Array(size*size*4);let seed=17;for(let y=0;y<size;y++)for(let x=0;x<size;x++){seed=(seed*1664525+1013904223)>>>0;const grain=(seed/4294967296-.5)*40,broad=Math.sin(x*.037+Math.sin(y*.03))*18+Math.sin(y*.13+x*.07)*8,v=Math.max(50,Math.min(255,188+grain+broad)),i=(y*size+x)*4;data[i]=v;data[i+1]=v;data[i+2]=v;data[i+3]=255;}
- const grain=new T.DataTexture(data,size,size,T.RGBAFormat);grain.wrapS=grain.wrapT=T.RepeatWrapping;grain.needsUpdate=true;textures.push(grain);
+ const grain=new T.DataTexture(data,size,size,T.RGBAFormat);grain.wrapS=grain.wrapT=T.RepeatWrapping;grain.magFilter=T.LinearFilter;grain.minFilter=T.LinearMipmapLinearFilter;grain.generateMipmaps=true;grain.needsUpdate=true;textures.push(grain);
  let randomSeed=91;const random=()=>{randomSeed=(randomSeed*1664525+1013904223)>>>0;return randomSeed/4294967296;};
  // Open sight lines, coconut groves, banana plants, coastal ferns, and exposed limestone.
  for(let i=0;i<31;i++){let x=(random()-.5)*34,z=(random()-.5)*21;if((x/18)**2+(z/12)**2>.9||(x>0&&x<9&&z>-4)||Math.hypot(x-11,z-7)<3||Math.hypot(x+1,z+5)<3)continue;const scale=.8+random()*.5;card(0,x,height(x,z)-.06,z,6*scale,7*scale);}
