@@ -1,5 +1,5 @@
-import {buildIsland} from './entrance.js?v=6';
-import {explorePlaces,exploreItems,normalizeExplore,collectExplore,badgeExplore,countExplore,islandPath,walkable} from './explore-state.js?v=6';
+import {buildIsland} from './entrance.js?v=7';
+import {explorePlaces,exploreItems,normalizeExplore,collectExplore,badgeExplore,countExplore,islandPath,walkable} from './explore-state.js?v=7';
 export function createExplore(host,{state,save,joy,motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);
  let disposed=false,engine=null,control=null,near=null,ride=0,rideType='',route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;
@@ -46,7 +46,7 @@ export function createExplore(host,{state,save,joy,motion,openBook,openHome,load
  function setup({T,scene,camera,target,height,make,geometry,mat,ball,cone,cylinder,box}){
   const gold=mat('#ffd46b'),pink=mat('#ed91b6'),orange=mat('#ef9955'),cream=mat('#fff2d3'),ink=mat('#254550'),purple=mat('#a895ed'),green=mat('#68bd7d');
   const avatar=new T.Group();scene.add(avatar);make(ball,purple,0,.7,0,.47,.63,.38,avatar);make(ball,cream,0,1.45,0,.4,.4,.38,avatar);make(ball,ink,0,1.66,-.1,.43,.26,.35,avatar);for(const x of [-.14,.14])make(ball,ink,x,1.49,.34,.045,.05,.03,avatar);const legs=[-.22,.22].map(x=>make(ball,ink,x,.16,0,.16,.27,.24,avatar));const hat=make(cone,gold,0,2,0,.5,.75,.5,avatar);
-  avatar.traverse(o=>o.castShadow=false);const shadow=make(geometry(new T.CircleGeometry(.55,20)),mat('#264e4c',{transparent:true,opacity:.2,depthWrite:false}),0,0,0);shadow.rotation.x=-Math.PI/2;shadow.castShadow=false;
+  avatar.traverse(o=>{o.castShadow=false;if(o.isMesh){o.material=mat(o.material.color,{depthTest:false});o.renderOrder=20;}});const shadow=make(geometry(new T.CircleGeometry(.55,20)),mat('#264e4c',{transparent:true,opacity:.2,depthWrite:false}),0,0,0);shadow.rotation.x=-Math.PI/2;shadow.castShadow=false;
   const pet=new T.Group();scene.add(pet);make(ball,orange,0,.4,0,.32,.4,.48,pet);make(ball,orange,0,.8,.25,.36,.32,.32,pet);for(const x of [-.23,.23])make(cone,orange,x,1.1,.2,.19,.4,.19,pet);make(ball,cream,0,.72,.5,.22,.15,.17,pet);
   const circle=geometry(new T.TorusGeometry(.55,.06,6,24));const marker=make(circle,gold,s.x,height(s.x,s.z)+.1,s.z);marker.rotation.x=-Math.PI/2;marker.visible=false;
   let jumpY=0,velocity=0,step=0,lastPad=-1,petX=s.x-1,petZ=s.z+1;
@@ -88,7 +88,7 @@ export function createExplore(host,{state,save,joy,motion,openBook,openHome,load
    if(ride){ride+=dt;const p=Math.min(ride/9,1),wave=Math.sin(p*Math.PI);if(rideType==='balloon'){ax=s.x+Math.sin(p*Math.PI*2)*4;az=s.z+Math.sin(p*Math.PI)*3;ay=height(s.x,s.z)+wave*12;}else{ax=7+Math.sin(p*Math.PI)*16;az=12+Math.sin(p*Math.PI)*10;ay=Math.max(.25,height(s.x,s.z)*(1-wave));}if(p===1){ride=0;rideBalloon.visible=rideBoat.visible=false;tell('¡Otra vez cuando quieras!','Again whenever you like!');}}
    avatar.position.set(ax,ay,az);shadow.position.set(ax,height(ax,az)+.05,az);shadow.visible=!ride;legs.forEach((l,i)=>l.rotation.x=len>0?Math.sin(step+i*Math.PI)*.55:0);rideBalloon.visible=!!ride&&rideType==='balloon';rideBalloon.position.copy(avatar.position);rideBoat.visible=!!ride&&rideType==='boat';rideBoat.position.set(ax,ay-.2,az);
    rainbow.visible=s.badges.includes('song');picnic.visible=s.badges.includes('picnic');wish.visible=s.badges.includes('beacon');wish.rotation.y=time*.2;pet.visible=s.pet;petX+=(s.x-1-petX)*Math.min(1,dt*3);petZ+=(s.z+1-petZ)*Math.min(1,dt*3);pet.position.set(petX,height(petX,petZ)+Math.abs(Math.sin(step))*.1,petZ);pet.rotation.y=avatar.rotation.y;
-   desired.set(ax,ay+15,az+19);camera.position.lerp(desired,dt===0?1:1-Math.exp(-dt*4));target.set(ax,ay+.7,az);
+   const phone=canvas.clientWidth<780;desired.set(ax,ay+(phone?19:15),az+(phone?23:19));camera.position.lerp(desired,dt===0?1:1-Math.exp(-dt*4));target.set(ax,ay+.7,az);
    near=null;let distance=2.6;for(const e of entityMeshes){const d=Math.hypot(s.x-e.p.x,s.z-e.p.z);if(d<distance){near=e.p;distance=d;}e.ring.material=d<2.6?pink:gold;e.ring.position.y=.14+(motion()?Math.sin(time*2)*.04:0);}
    act.hidden=!near||!!ride;setText(act,near?near.icon+' '+(es?near.es:near.en)+' · '+say('Jugar','Play'):'');jump.disabled=!!ride;setText(title,near?(es?near.es:near.en):say('Isla libre · explora a tu aire','Free island · wander anywhere'));
    for(let i=collectibles.length-1;i>=0;i--){const c=collectibles[i];if(motion()){c.m.position.y=height(c.item.x,c.item.z)+.6+Math.sin(time*2+i)*.15;c.m.rotation.y=time;}if(!ride&&Math.hypot(s.x-c.item.x,s.z-c.item.z)<.9){if(collectExplore(s,c.item.id)){scene.remove(c.m);collectibles.splice(i,1);spark(s.x,s.z);joy.note(countExplore(s,c.item.kind)%5,.18);tell(`${countExplore(s,c.item.kind)} · ${c.item.es} / ${c.item.en}  ✦`,`${countExplore(s,c.item.kind)} · ${c.item.en} / ${c.item.es}  ✦`);save();refresh();}}}
