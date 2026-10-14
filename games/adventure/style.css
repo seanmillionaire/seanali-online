@@ -30,3 +30,4 @@ body[data-scene="islandQuest"] .explore-world>:not(canvas){display:none!importan
 .island-lesson{position:fixed;z-index:20;top:90px;bottom:12px;left:50%;transform:translateX(-50%);width:min(720px,96vw);overflow:auto;margin:0;padding:15px;background:#fff7e9f5;border-radius:24px;box-shadow:0 15px 70px #123a4d70}
 .island-lesson .activity{margin-bottom:0}.world-lesson{background:#d8ebcc}.explore-actions{flex-wrap:wrap;max-width:650px;justify-content:flex-end}
 @media(max-width:780px){.island-lesson{top:76px;padding:10px}.explore-actions{max-width:230px}.world-lesson{font-size:12px;min-height:44px;padding:10px}.explore-hint{bottom:260px}}
+body[data-scene="islandQuest"] .tools button{color:#284e48}
