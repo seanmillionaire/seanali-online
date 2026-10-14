@@ -116,7 +116,10 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 .life-photo::after{content:"";position:absolute;inset:35% 0 0;background:linear-gradient(180deg,transparent,#0009);pointer-events:none;z-index:1}
 .life-photo img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
 .life-photo:hover img{transform:scale(1.045)}
-.life-photo span{position:absolute;left:18px;bottom:17px;z-index:2;font-size:12px;font-weight:800;text-shadow:0 2px 10px #0009;letter-spacing:.1px}
+.life-photo span{position:absolute;left:18px;bottom:17px;z-index:3;max-width:calc(100% - 32px);font-size:13px;font-weight:850;line-height:1.35;color:#fff!important;background:rgba(7,16,20,.88);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:9px 12px;box-shadow:0 4px 16px #0007;text-shadow:0 1px 3px #0009;letter-spacing:.1px}
+.life-site a.life-photo,.life-site a.life-chapter{color:#fff}
+.life-site .life-photo::after{background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.7) 100%)}
+.life-site .life-photo>span{color:#fff!important}
 .life-photo-main{grid-row:span 2}
 .life-photo-main img{object-position:50% 50%}
 .life-photo-small img{object-position:center}
@@ -131,7 +134,8 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 .life-chapter:nth-child(2) img{object-position:55% 42%}
 .life-chapter::after{content:"";position:absolute;inset:25% 0 0;background:linear-gradient(180deg,transparent 3%,#000c 100%)}
 .life-chapter:hover img{transform:scale(1.045)}
-.life-chapter-body{position:absolute;bottom:0;left:0;right:0;z-index:2;padding:25px 21px}
+.life-chapter-body{position:absolute;bottom:0;left:0;right:0;z-index:3;padding:25px 21px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.86) 45%,rgba(0,0,0,.92));color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.65)}
+.life-site .life-chapter .life-chapter-body,.life-site .life-chapter .life-chapter-body *{color:#fff}
 .life-chapter-number{display:block;color:#ffe0bd;font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px}
 .life-chapter strong{display:block;color:#fff;font-size:22px;letter-spacing:-.8px;line-height:1.13;max-width:210px}
 .life-chapter em{display:block;color:#fffdebdc;font-style:normal;font-size:12px;font-weight:600;line-height:1.4;margin-top:9px}
