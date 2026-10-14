@@ -46,3 +46,14 @@ body[data-scene="islandQuest"] .tools button{color:#284e48}
 .world-catch{border:1px solid #fff1c7;border-radius:18px;padding:12px 16px;background:#ffe8a8;color:#234b47;font-weight:800;min-height:48px;cursor:pointer}
 
 .stick-compass span{position:absolute}.stick-compass .north{top:0;left:45%}.stick-compass .south{bottom:0;left:45%}.stick-compass .west{left:0;top:40%}.stick-compass .east{right:0;top:40%}
+
+/* Mobile helpers are opt-in so the world and movement controls remain visible. */
+.helper-toggle{display:none}
+@media(max-width:780px){
+ .helper-toggle{display:block;position:absolute;right:12px;top:76px;z-index:24;width:44px;height:44px;padding:0;font-size:24px}
+ .explore-world:not(.helpers-open):not(.explore-fallback) .explore-menu,
+ .explore-world:not(.helpers-open) .explore-bag,
+ .explore-world:not(.helpers-open):not(.shark-nearby) .island-goal{display:none}
+ .helpers-open .explore-menu{max-width:calc(100% - 24px)}
+ .explore-location{max-width:calc(100vw - 84px)}
+}

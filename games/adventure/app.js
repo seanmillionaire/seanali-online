@@ -1,9 +1,9 @@
-import {earnCoins,syncWallet} from './explore-state.js?v=21';
-import {createExplore} from './explore.js?v=21';
-import {createEntrance} from './entrance.js?v=21';
-import {createDelight,burst,livingWorld,foxPortrait} from './delight.js?v=21';
+import {earnCoins,syncWallet} from './explore-state.js?v=22';
+import {createExplore} from './explore.js?v=22';
+import {createEntrance} from './entrance.js?v=22';
+import {createDelight,burst,livingWorld,foxPortrait} from './delight.js?v=22';
 import {regions,quests,challenges,ui,text} from './content.js';
-import {SAVE_KEY,fresh,normalize,completedCount,lightCount,totalStars,unlocked,award} from './state.js?v=21';
+import {SAVE_KEY,fresh,normalize,completedCount,lightCount,totalStars,unlocked,award} from './state.js?v=22';
 const $=s=>document.querySelector(s),app=$('#app'),dialog=$('#dialog');
 let storageOK=true,state;try{state=normalize(JSON.parse(localStorage.getItem(SAVE_KEY)));if(!localStorage.getItem(SAVE_KEY)){state.lang=localStorage.getItem('seanGameLang')==='en'?'en':'es';}}catch{state=fresh();}
 let islandQuestId=null,islandWelcome=null,introPending=false;
@@ -41,7 +41,7 @@ function welcome(){
  let entering=false;
  function arrive(){if(entering)return;entering=true;enter.disabled=true;section.classList.add('arriving');document.body.classList.add('arriving-world');skip.hidden=false;travel.hidden=false;skip.focus({preventScroll:true});joy.effect('arrival');introPending=true;entrance.flyIn(()=>{document.body.classList.remove('arriving-world');state.started=true;save();screen='explore';render();chime();});}
 }
-function exploreView(){const host=el('main','explore-world');app.append(host);exploration=createExplore(host,{state,save,joy,speak,paused:()=>screen==='islandQuest',welcomeMessage:islandWelcome,openLessons,openNext:id=>{const q=quests.find(q=>q.id===id);if(q)startIslandQuest(q);},motion:motionOn,openBook:()=>{screen='map';render();},openHome:()=>{screen='home';render();}});islandWelcome=null;if(introPending&&screen==='explore'){introPending=false;speak(text('¡Hola, Angelique! Toca el suelo para caminar. El botón dorado te lleva a jugar. Toca Llévame para ir a tu siguiente aventura.','Hi, Angelique! Tap the ground to walk. The gold button takes you to play. Tap Take me there to reach your next adventure.'),{manual:true});}}
+function exploreView(){const host=el('main','explore-world');app.append(host);exploration=createExplore(host,{state,save,joy,speak,paused:()=>screen==='islandQuest',welcomeMessage:islandWelcome,openLessons,openNext:id=>{const q=quests.find(q=>q.id===id);if(q)startIslandQuest(q);},motion:motionOn,openBook:()=>{screen='map';render();},openHome:()=>{screen='home';render();}});islandWelcome=null;if(introPending&&screen==='explore'){introPending=false;speak(text('¡Hola, Angelique! Toca el suelo para caminar. Abre el menú para ver tu siguiente aventura. El botón dorado te lleva allí.','Hi, Angelique! Tap the ground to walk. Open the menu to find your next adventure. The gold button takes you there.'),{manual:true});}}
 function openLessons(ri){const body=el('div'),done=Object.assign({},state.completed,state.islandLessons.completed);body.append(el('p','',text('Elige una aventura. Todas están abiertas. Puedes volver a jugar o continuar donde paraste.','Pick an adventure. They’re all open. Replay a favorite or carry on where you stopped.')));const list=el('div','quest-list');for(const q of quests.filter(q=>q.region===ri)){const a=state.islandLessons.attempts[q.id];const b=button('','quest-row',()=>{dialog.close();startIslandQuest(q);});b.append(el('span','',a?'↻':done[q.id]?'✓':'✦'),el('span','',q.name),el('small','',a?`${a.stage+1}/3`:done[q.id]?'★'.repeat(done[q.id]):'→'));list.append(b);}body.append(list);modal(regions[ri].name,body,[[text('Seguir explorando','Keep exploring'),null,'soft']],['🐢','🦜','🪶','🦀','🌸','✦'][ri]);speak(text('Angelique, elige una aventura. Puedes jugar en cualquier orden.','Angelique, choose an adventure. You can play in any order.'));}
 function startIslandQuest(q){islandQuestId=q.id;state.islandLessons.attempts[q.id]??={id:q.id,stage:0,mistakes:0};save();screen='islandQuest';render();speak(challenges(q)[currentAttempt().stage].prompt);}
 function currentAttempt(){return screen==='islandQuest'?state.islandLessons.attempts[islandQuestId]:state.active;}

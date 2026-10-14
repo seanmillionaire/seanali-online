@@ -1,5 +1,5 @@
-import {buildIsland} from './entrance.js?v=21';
-import {explorePlaces,exploreItems,normalizeExplore,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=21';
+import {buildIsland} from './entrance.js?v=22';
+import {explorePlaces,exploreItems,normalizeExplore,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=22';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);syncWallet(state);
  let disposed=false,engine=null,control=null,near=null,ride=s.flight?1:0,flightY=s.flight||0,flightTarget=s.flight||0,flightVX=0,flightVZ=0,route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;
@@ -23,6 +23,9 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  const actions=makeEl('div','explore-actions'),act=btn(say('Saludar','Say hello'),'world-action',interact),jump=btn(say('Saltar ⤴','Jump ⤴'),'world-jump',hop);
  const descend=btn(say('↓ Bajar','↓ Lower'),'world-jump',()=>{if(ride)flightTarget=Math.max(0,flightTarget-5);});descend.hidden=true;
  const menu=makeEl('div','explore-menu');menu.append(btn('☷ '+say('Descubrir','Discover'),'world-small',showDiscover),btn('▤ '+say('Historias','Stories'),'world-small',openBook),btn('⌂','world-small',openHome));menu.lastChild.setAttribute('aria-label',say('Mi casita','My cottage'));menu.append(btn(say('? Ayuda','? Help'),'world-small',listen));
+ const helperToggle=btn('☰','world-small helper-toggle',()=>setHelpers(!host.classList.contains('helpers-open')));menu.id='island-helper-menu';goalCard.id='island-helper-goal';helperToggle.setAttribute('aria-controls','island-helper-menu island-helper-goal');
+ function setHelpers(open){host.classList.toggle('helpers-open',open);helperToggle.textContent=open?'×':'☰';helperToggle.setAttribute('aria-expanded',String(open));helperToggle.setAttribute('aria-label',open?say('Ocultar ayuda','Hide helpers'):say('Mostrar ayuda','Show helpers'));}setHelpers(false);
+ goalButton.addEventListener('click',()=>setHelpers(false));
  const walletButton=btn('','world-small wallet-button',showShop);menu.append(walletButton);
  const foodButton=btn('🥥 🍌','world-small food-button',showFood);foodButton.setAttribute('aria-label',say('Mi comida','My food'));menu.append(foodButton);
  const catchButton=btn('🦋','world-catch catch-action',()=>control?.catchNearest());catchButton.hidden=true;actions.append(catchButton);
@@ -30,7 +33,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  const directions=makeEl('div','world-arrows');for(const [label,k]of [['↑','ArrowUp'],['←','ArrowLeft'],['↓','ArrowDown'],['→','ArrowRight']]){const b=btn(label,'',()=>{});b.setAttribute('aria-label',say('Mover ','Move ')+({ArrowUp:say('norte','north'),ArrowDown:say('sur','south'),ArrowLeft:say('oeste','west'),ArrowRight:say('este','east')}[k]));b.onpointerdown=e=>{b.setPointerCapture(e.pointerId);keys.add(k);targetPoint=null;joy.gesture();};b.onpointerup=b.onpointercancel=()=>keys.delete(k);directions.append(b);}
  const instructions=makeEl('div','explore-controls',say('Toca el suelo para ir · Flechas / WASD · Espacio para saltar','Tap ground to walk · Arrows / WASD · Space to jump'));
  const panel=makeEl('section','explore-panel');panel.hidden=true;panel.setAttribute('aria-label',say('Descubrimientos','Discoveries'));
- hud.append(title,bag);actions.append(lesson,act,jump,descend);host.append(canvas,hud,quest,goalCard,menu,pad,directions,actions,instructions,message,panel);refresh();
+ hud.append(title,bag);actions.append(lesson,act,jump,descend);host.append(canvas,hud,quest,goalCard,menu,helperToggle,pad,directions,actions,instructions,message,panel);refresh();
  function setText(e,t){if(e.textContent!==t)e.textContent=t;}
  function refresh(){walletButton.textContent='🪙 '+coinBalance(state);walletButton.setAttribute('aria-label',say('Mis monedas y tienda: ','My coins and shop: ')+coinBalance(state));const lessonCount=Object.keys({...state.completed,...state.islandLessons?.completed}).length;bag.textContent=`${lessonCount?`✦ ${lessonCount}/48 · `:''}🐚 ${countExplore(s,'shell')}/12   🥭 ${countExplore(s,'fruit')}/5   ✦ ${s.badges.length}/8`;}
  function tell(a,b,force=true){guide(say(a,b),force);message.textContent=say(a,b);message.classList.add('show');messageTime=4.5;}
