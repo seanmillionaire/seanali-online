@@ -1,11 +1,11 @@
-import {buildIsland} from './entrance.js?v=9';
-import {explorePlaces,exploreItems,normalizeExplore,collectExplore,badgeExplore,countExplore,islandPath,walkable} from './explore-state.js?v=9';
+import {buildIsland} from './entrance.js?v=10';
+import {explorePlaces,exploreItems,normalizeExplore,collectExplore,badgeExplore,countExplore,islandPath,walkable} from './explore-state.js?v=10';
 export function createExplore(host,{state,save,joy,motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);
  let disposed=false,engine=null,control=null,near=null,ride=0,rideType='',route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;
  const makeEl=(tag,cls,txt)=>{const e=document.createElement(tag);e.className=cls;if(txt)e.textContent=txt;return e;};
  const btn=(txt,cls,fn)=>{const b=makeEl('button',cls,txt);b.type='button';b.onclick=()=>{joy.gesture();fn();};return b;};
- const canvas=makeEl('canvas','explore-canvas');canvas.setAttribute('aria-label',say('Isla para explorar. Usa flechas o WASD, o toca el suelo.','Island to explore. Use arrows or WASD, or tap the ground.'));canvas.tabIndex=0;
+ let canvas=makeEl('canvas','explore-canvas');canvas.setAttribute('aria-label',say('Isla para explorar. Usa flechas o WASD, o toca el suelo.','Island to explore. Use arrows or WASD, or tap the ground.'));canvas.tabIndex=0;
  const hud=makeEl('div','explore-hud'),title=makeEl('div','explore-location',say('Bahía de Pip','Pip’s bay')),bag=makeEl('div','explore-bag'),quest=makeEl('div','explore-hint',say('¡Tu isla, tus reglas! Busca a Pip o explora a tu aire.','Your island, your rules! Find Pip or wander anywhere.'));
  const message=makeEl('div','explore-message');message.setAttribute('role','status');message.setAttribute('aria-live','polite');
  const actions=makeEl('div','explore-actions'),act=btn(say('Saludar','Say hello'),'world-action',interact),jump=btn(say('Saltar ⤴','Jump ⤴'),'world-jump',hop);
@@ -39,10 +39,19 @@ export function createExplore(host,{state,save,joy,motion,openBook,openHome,load
  document.addEventListener('keydown',keydown);document.addEventListener('keyup',keyup);window.addEventListener('blur',blur);document.addEventListener('visibilitychange',blur);
  function joystick(e){const r=pad.getBoundingClientRect(),x=(e.clientX-r.left-r.width/2)/40,z=(e.clientY-r.top-r.height/2)/40,l=Math.max(1,Math.hypot(x,z));stick={x:x/l,z:z/l};knob.style.transform=`translate(${stick.x*32}px,${stick.z*32}px)`;targetPoint=null;}
  pad.onpointerdown=e=>{pad.setPointerCapture(e.pointerId);joy.gesture();joystick(e);};pad.onpointermove=e=>{if(pad.hasPointerCapture(e.pointerId))joystick(e);};pad.onpointerup=pad.onpointercancel=blur;
- const fallback=()=>{if(disposed)return;engine?.dispose();engine=null;canvas.remove();host.classList.add('explore-fallback');quest.textContent=say('Tu dispositivo no puede dibujar el mundo 3D. Las historias y actividades siguen disponibles.','Your device cannot draw the 3D world. Stories and activities are still available.');pad.hidden=actions.hidden=directions.hidden=true;menu.firstChild.hidden=true;};
- const contextLost=e=>{e.preventDefault();fallback();};canvas.addEventListener('webglcontextlost',contextLost);
- if(!window.WebGL2RenderingContext){fallback();return {dispose};}
- load().then(T=>{if(disposed)return;try{engine=buildIsland(T,canvas,motion,setup);host.classList.add('explore-ready');}catch(e){console.warn('Island exploration unavailable',e.message);fallback();}}).catch(fallback);
+ // Keep the canvas alive during a temporary GPU reset so Chrome can restore it.
+ let recovering=false,attempt=0,recoveryTimer=0,startTimer=0,generation=0;
+ const retry=btn(say('Volver a abrir la isla','Reopen the island'),'world-small',()=>start(true));retry.hidden=true;menu.append(retry);
+ function ready(){if(disposed)return;recovering=false;clearTimeout(recoveryTimer);host.classList.remove('explore-fallback');host.classList.add('explore-ready');pad.hidden=actions.hidden=directions.hidden=false;menu.firstChild.hidden=false;retry.hidden=true;}
+ function failed(error){if(disposed)return;console.warn('Island exploration unavailable',error?.message||'Graphics context unavailable');recovering=false;clearTimeout(recoveryTimer);engine?.dispose();engine=null;host.classList.remove('explore-ready');host.classList.add('explore-fallback');quest.textContent=say('La isla no terminó de cargar. Vuelve a abrirla; tu progreso está guardado.','The island did not finish loading. Reopen it; your progress is saved.');pad.hidden=actions.hidden=directions.hidden=true;menu.firstChild.hidden=true;retry.hidden=false;}
+ function start(light=false){if(disposed)return;const current=++generation;clearTimeout(startTimer);clearTimeout(recoveryTimer);recovering=true;blur();canvas.removeEventListener('webglcontextlost',contextLost);canvas.removeEventListener('webglcontextrestored',contextRestored);engine?.dispose();engine=null;control=null;const next=canvas.cloneNode(false);canvas.replaceWith(next);canvas=next;canvas.addEventListener('webglcontextlost',contextLost);canvas.addEventListener('webglcontextrestored',contextRestored);attempt=light?1:0;retry.hidden=true;host.classList.remove('explore-ready','explore-fallback');quest.textContent=say('Abriendo tu isla…','Opening your island…');
+  // Give the previous entrance/world context time to release before allocating another.
+  startTimer=setTimeout(()=>{Promise.resolve().then(()=>load()).then(T=>{if(disposed||current!==generation)return;try{engine=buildIsland(T,canvas,motion,setup,{light,onError:failed});ready();}catch(error){if(!light)start(true);else failed(error);}}).catch(error=>{if(disposed||current!==generation)return;if(!light)start(true);else failed(error);});},light?250:0);
+ }
+ const contextLost=e=>{e.preventDefault();if(disposed||recovering)return;recovering=true;blur();save();quest.textContent=say('Reconectando con tu isla…','Reconnecting to your island…');recoveryTimer=setTimeout(()=>{if(attempt===0)start(true);else failed(new Error('Graphics context could not be restored'));},4000);};
+ const contextRestored=()=>{if(disposed||!engine)return;ready();engine.resume?.();};
+ canvas.addEventListener('webglcontextlost',contextLost);canvas.addEventListener('webglcontextrestored',contextRestored);
+ start();
  function setup({T,scene,camera,target,height,make,geometry,mat,ball,cone,cylinder,box,tropical}){
   const gold=mat('#ffd46b'),pink=mat('#ed91b6'),orange=mat('#ef9955'),cream=mat('#fff2d3'),ink=mat('#254550'),purple=mat('#a895ed'),green=mat('#68bd7d');
   const avatar=new T.Group();scene.add(avatar);const skin=mat('#bd8e68'),shirt=mat('#e6dfc5'),shorts=mat('#345e57'),hair=mat('#44352a');
@@ -106,6 +115,6 @@ export function createExplore(host,{state,save,joy,motion,openBook,openHome,load
   }
   return {update,dispose(){canvas.removeEventListener('pointerdown',walkTo);control=null;}};
  }
- function dispose(){if(disposed)return;disposed=true;canvas.removeEventListener('webglcontextlost',contextLost);save();engine?.dispose();engine=null;document.removeEventListener('keydown',keydown);document.removeEventListener('keyup',keyup);window.removeEventListener('blur',blur);document.removeEventListener('visibilitychange',blur);keys.clear();}
+ function dispose(){if(disposed)return;disposed=true;generation++;clearTimeout(startTimer);clearTimeout(recoveryTimer);canvas.removeEventListener('webglcontextlost',contextLost);canvas.removeEventListener('webglcontextrestored',contextRestored);save();engine?.dispose();engine=null;document.removeEventListener('keydown',keydown);document.removeEventListener('keyup',keyup);window.removeEventListener('blur',blur);document.removeEventListener('visibilitychange',blur);keys.clear();}
  return {dispose};
 }

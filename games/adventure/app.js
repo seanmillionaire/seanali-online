@@ -1,8 +1,8 @@
-import {createExplore} from './explore.js?v=9';
-import {createEntrance} from './entrance.js?v=9';
+import {createExplore} from './explore.js?v=10';
+import {createEntrance} from './entrance.js?v=10';
 import {createDelight,burst,livingWorld,foxPortrait} from './delight.js?v=2';
 import {regions,quests,challenges,ui,text} from './content.js';
-import {SAVE_KEY,fresh,normalize,completedCount,lightCount,totalStars,unlocked,award} from './state.js?v=9';
+import {SAVE_KEY,fresh,normalize,completedCount,lightCount,totalStars,unlocked,award} from './state.js?v=10';
 const $=s=>document.querySelector(s),app=$('#app'),dialog=$('#dialog');
 let storageOK=true,state;try{state=normalize(JSON.parse(localStorage.getItem(SAVE_KEY)));if(!localStorage.getItem(SAVE_KEY)){state.lang=localStorage.getItem('seanGameLang')==='en'?'en':'es';}}catch{state=fresh();}
 let screen='entry',entrance=null,exploration=null,timers=[],audioContext,run=0,solved=false,currentTask=null,playing=false,returnFocus=null;

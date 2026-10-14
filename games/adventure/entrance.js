@@ -1,4 +1,4 @@
-import {createTropical} from './tropical.js?v=9';
+import {createTropical} from './tropical.js?v=10';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
 export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import('./vendor/three.module.min.js')}={}) {
   let disposed=false,world=null,pending=null;
@@ -8,15 +8,17 @@ export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import(
   if(!window.WebGL2RenderingContext){fallback();}else load().then(THREE=>{if(disposed)return;try{world=buildIsland(THREE,canvas,motion||(()=>true));host.classList.add('world-ready');onMode('3d');if(pending)world.flyIn(finish);}catch{fallback();}}).catch(fallback);
   function finish(){if(!pending||disposed)return;const done=pending;pending=null;done();}
   return {
+    resume(){renderer.shadowMap.needsUpdate=true;wake();},
     flyIn(done){if(disposed||pending)return;pending=done;if(!world||!motion?.()){finish();return;}world.flyIn(finish);},
     skip(){finish();},
     dispose(){if(disposed)return;disposed=true;pending=null;canvas.removeEventListener('webglcontextlost',lost);world?.dispose();world=null;canvas.remove();}
   };
+  function dispose(){if(disposed)return;disposed=true;cancelAnimationFrame(frame);finish=null;explorer?.dispose();tropical.dispose();observer.disconnect();bodyObserver.disconnect();document.removeEventListener('visibilitychange',visibility);canvas.parentElement?.removeEventListener('pointermove',pointer);geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());sun.shadow.map?.dispose();renderer.dispose();renderer.forceContextLoss();}
 }
-export function buildIsland(T,canvas,motion,setup) {
-  const renderer=new T.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:'low-power'});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=.94;
-  renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
+export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={}) {
+  const renderer=new T.WebGLRenderer({canvas,antialias:false,alpha:false,powerPreference:'default'});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,light?1:1.5));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=.94;
+  renderer.shadowMap.enabled=!light;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
   const scene=new T.Scene();scene.background=new T.Color('#a4c9de');scene.fog=new T.FogExp2('#b0d1dc',.004);
   const camera=new T.PerspectiveCamera(42,1,.2,300),sun=new T.DirectionalLight('#fff2d8',2.7);sun.position.set(-22,38,18);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-30;sun.shadow.camera.right=30;sun.shadow.camera.top=30;sun.shadow.camera.bottom=-30;sun.shadow.normalBias=.1;scene.add(sun,new T.HemisphereLight('#d8ecff','#68714e',1.7));
   const geometries=new Set(),materials=new Set(),clouds=[],bobbing=[];let seed=4107;
@@ -61,22 +63,25 @@ export function buildIsland(T,canvas,motion,setup) {
   const target=new T.Vector3(),startCam=new T.Vector3(),startLook=new T.Vector3(),endCam=new T.Vector3(7,6.5,24),endLook=new T.Vector3(2,3.7,4);
   function resize(){const r=canvas.parentElement.getBoundingClientRect();width=Math.max(1,r.width);heightPx=Math.max(1,r.height);renderer.setSize(width,heightPx,false);camera.aspect=width/heightPx;camera.setViewOffset(width,heightPx,width>780?-width*.17:0,width>780?0:heightPx*.13,width,heightPx);if(setup)camera.clearViewOffset();camera.updateProjectionMatrix();if(!motion())draw();}
   function pose(){const phone=width<780;camera.position.set(phone?39:35,phone?34:25,phone?66:51);target.set(0,3,0);}
-  function draw(){renderer.render(scene,camera);}
-  function tick(stamp){frame=0;if(disposed||document.hidden)return;if(lastDraw&&stamp-lastDraw<1000/30){frame=requestAnimationFrame(tick);return;}lastDraw=stamp;const elapsed=last?(stamp-last)/1000:0,dt=Math.min(elapsed,.05);last=stamp;const moving=motion();if(moving)time+=dt;
+  function draw(){if(renderer.getContext?.().isContextLost())return;renderer.render(scene,camera);}
+  function tick(stamp){frame=0;if(disposed||document.hidden||renderer.getContext?.().isContextLost())return;if(lastDraw&&stamp-lastDraw<1000/30){frame=requestAnimationFrame(tick);return;}lastDraw=stamp;const elapsed=last?(stamp-last)/1000:0,dt=Math.min(elapsed,.05);last=stamp;const moving=motion();if(moving)time+=dt;
     if(flight!==null){flight+=elapsed;const p=moving?Math.min(flight/3.2,1):1,e=p*p*(3-2*p);camera.position.lerpVectors(startCam,endCam,e);target.lerpVectors(startLook,endLook,e);camera.clearViewOffset();camera.updateProjectionMatrix();canvas.parentElement.style.setProperty('--arrival',String(p));if(p===1){const done=finish;finish=null;flight=null;done?.();if(disposed)return;}}
     else if(!explorer){pose();if(moving){camera.position.x+=Math.sin(time*.13)*1.3+px*1.2;camera.position.y+=Math.sin(time*.24)*.4-py*.5;}}
     if(explorer)explorer.update(dt,time);camera.lookAt(target);tropical.update(time);waterMaterial.uniforms.time.value=time;crystal.rotation.y=time*.35;beam.rotation.y=time*.22;
     clouds.forEach(c=>{c.g.position.x=c.x+Math.sin(time*.03+c.z)*3;});bobbing.forEach((b,i)=>{b.g.position.y=b.y+Math.sin(time*1.2+i)*.12;b.g.rotation.z=Math.sin(time+i)*.025;});sailboat.position.x=-18+Math.sin(time*.04)*4;motes.rotation.y=Math.sin(time*.1)*.03;
-    draw();if(explorer||moving||flight!==null)frame=requestAnimationFrame(tick);
+    try{draw();}catch(error){onError(error);return;}if(explorer||moving||flight!==null)frame=requestAnimationFrame(tick);
   }
   function wake(){if(!disposed&&!document.hidden&&!frame){last=0;frame=requestAnimationFrame(tick);}}
   function visibility(){if(document.hidden){cancelAnimationFrame(frame);frame=0;last=0;}else wake();}
   function pointer(e){if(!motion()||flight!==null)return;const r=canvas.getBoundingClientRect();px=(e.clientX-r.left)/r.width-.5;py=(e.clientY-r.top)/r.height-.5;}
   const observer=new ResizeObserver(resize),bodyObserver=new MutationObserver(wake);observer.observe(canvas.parentElement);bodyObserver.observe(document.body,{attributes:true,attributeFilter:['class']});document.addEventListener('visibilitychange',visibility);canvas.parentElement.addEventListener('pointermove',pointer,{passive:true});
-  const explorer=setup?.({T,scene,camera,target,height,make,geometry,mat,ball,cone,cylinder,box,renderer,tropical});
-  pose();camera.lookAt(target);resize();if(explorer){camera.clearViewOffset();camera.updateProjectionMatrix();explorer.update(0,0);}draw();wake();
+  let explorer;
+  try{explorer=setup?.({T,scene,camera,target,height,make,geometry,mat,ball,cone,cylinder,box,renderer,tropical});
+  pose();camera.lookAt(target);resize();if(explorer){camera.clearViewOffset();camera.updateProjectionMatrix();explorer.update(0,0);}draw();wake();}catch(error){dispose();throw error;}
   return {
+    resume(){renderer.shadowMap.needsUpdate=true;wake();},
     flyIn(done){if(disposed)return;startCam.copy(camera.position);startLook.copy(target);flight=0;finish=done;wake();},
-    dispose(){if(disposed)return;disposed=true;cancelAnimationFrame(frame);finish=null;explorer?.dispose();tropical.dispose();observer.disconnect();bodyObserver.disconnect();document.removeEventListener('visibilitychange',visibility);canvas.parentElement?.removeEventListener('pointermove',pointer);geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());renderer.dispose();renderer.forceContextLoss();}
+    dispose
   };
+  function dispose(){if(disposed)return;disposed=true;cancelAnimationFrame(frame);finish=null;explorer?.dispose();tropical.dispose();observer.disconnect();bodyObserver.disconnect();document.removeEventListener('visibilitychange',visibility);canvas.parentElement?.removeEventListener('pointermove',pointer);geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());sun.shadow.map?.dispose();renderer.dispose();renderer.forceContextLoss();}
 }
