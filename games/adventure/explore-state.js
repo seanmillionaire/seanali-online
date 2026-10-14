@@ -1,9 +1,9 @@
 // Exploration is independent of lesson order. Every place is open from the start.
 export const explorePlaces=[
- {id:'pip',x:4,z:9,icon:'🦊',es:'Pip · el puerto',en:'Pip · the harbor',kind:'friend'},
- {id:'mila',x:-8,z:5,icon:'🐰',es:'Mila · picnic',en:'Mila · picnic',kind:'friend'},
- {id:'ollie',x:-9,z:-7,icon:'🦉',es:'Ollie · bosque brillante',en:'Ollie · glow grove',kind:'friend'},
- {id:'luna',x:7,z:1,icon:'🐱',es:'Luna · música',en:'Luna · music',kind:'friend'},
+ {id:'pip',x:4,z:9,icon:'🐢',es:'Pip · la tortuga',en:'Pip · the sea turtle',kind:'friend'},
+ {id:'mila',x:-8,z:5,icon:'🦜',es:'Mila · picnic tropical',en:'Mila · tropical picnic',kind:'friend'},
+ {id:'ollie',x:-9,z:-7,icon:'🪶',es:'Ollie · bosque brillante',en:'Ollie · glow grove',kind:'friend'},
+ {id:'luna',x:7,z:1,icon:'🦀',es:'Luna · música',en:'Luna · music',kind:'friend'},
  {id:'garden',x:11,z:7,icon:'🌸',es:'Jardín de mariposas',en:'Butterfly garden',kind:'garden'},
  {id:'beacon',x:-1,z:-2.5,icon:'✦',es:'El faro de los deseos',en:'Wishing lighthouse',kind:'beacon'},
  {id:'bounce',x:-4,z:6,icon:'🍄',es:'Seta saltarina',en:'Bouncy mushroom',kind:'bounce'},
@@ -13,7 +13,7 @@ export const explorePlaces=[
  {id:'chest',x:-15,z:-1,icon:'🎁',es:'Cofre escondido',en:'Hidden chest',kind:'chest'}
 ];
 export const exploreItems=[
- ...[[-12,-2],[-10,-2],[-8,-2],[-12,0],[-8,0]].map(([x,z],i)=>({id:'fruit'+i,x,z,kind:'fruit',es:'naranja',en:'orange'})),
+ ...[[-12,-2],[-10,-2],[-8,-2],[-12,0],[-8,0]].map(([x,z],i)=>({id:'fruit'+i,x,z,kind:'fruit',tile:[5,4,6,7,5][i],es:['mango','coco','piña','plátanos','mango'][i],en:['mango','coconut','pineapple','bananas','mango'][i]})),
  ...[[-12,-6],[-10,-9],[-6,-8],[-5,-5],[-13,-4]].map(([x,z],i)=>({id:'glow'+i,x,z,kind:'glow',es:'luciérnaga',en:'firefly'})),
  ...[[2,11],[-3,11],[-9,9],[-15,5],[-17,0],[-14,-7],[-7,-11],[2,-11],[10,-9],[15,-4],[17,2],[14,8]].map(([x,z],i)=>({id:'shell'+i,x,z,kind:'shell',es:'concha',en:'shell'}))
 ];

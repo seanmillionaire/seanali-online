@@ -1,5 +1,5 @@
-import {buildIsland} from './entrance.js?v=7';
-import {explorePlaces,exploreItems,normalizeExplore,collectExplore,badgeExplore,countExplore,islandPath,walkable} from './explore-state.js?v=7';
+import {buildIsland} from './entrance.js?v=8';
+import {explorePlaces,exploreItems,normalizeExplore,collectExplore,badgeExplore,countExplore,islandPath,walkable} from './explore-state.js?v=8';
 export function createExplore(host,{state,save,joy,motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);
  let disposed=false,engine=null,control=null,near=null,ride=0,rideType='',route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;
@@ -16,13 +16,13 @@ export function createExplore(host,{state,save,joy,motion,openBook,openHome,load
  const panel=makeEl('section','explore-panel');panel.hidden=true;panel.setAttribute('aria-label',say('Descubrimientos','Discoveries'));
  hud.append(title,bag);actions.append(act,jump);host.append(canvas,hud,quest,menu,pad,directions,actions,instructions,message,panel);refresh();
  function setText(e,t){if(e.textContent!==t)e.textContent=t;}
- function refresh(){bag.textContent=`🐚 ${countExplore(s,'shell')}/12   🍊 ${countExplore(s,'fruit')}/5   ✦ ${s.badges.length}/8`;}
+ function refresh(){bag.textContent=`🐚 ${countExplore(s,'shell')}/12   🥭 ${countExplore(s,'fruit')}/5   ✦ ${s.badges.length}/8`;}
  function tell(a,b){message.textContent=say(a,b);message.classList.add('show');messageTime=4.5;}
  function reward(id,a,b){if(badgeExplore(s,id)){joy.effect('finish');control?.spark(s.x,s.z,22);save();refresh();}tell(a,b);}
  function hop(){if(!control||ride||panel.hidden===false)return;control.hop();joy.effect('tap');}
  function interact(){if(!near||ride||!panel.hidden)return;joy.effect('friend');const k=near.id;
   if(k==='pip'){s.pet=!s.pet;save();tell(s.pet?'¡Pip viene contigo! Salta, busca conchas, ayuda a tus amigos.':'Pip te espera en el puerto.',s.pet?'Pip is coming with you! Jump, find shells, help your friends.':'Pip will wait at the harbor.');}
-  if(k==='mila'){if(countExplore(s,'fruit')===5)reward('picnic','¡Cinco naranjas! Picnic preparado. ¡Sombrero de fiesta desbloqueado!','Five oranges! Picnic ready. Party hat unlocked!');else tell(`¿Un picnic? Busca naranjas en el huerto: ${countExplore(s,'fruit')}/5.`,`Picnic time? Find oranges in the orchard: ${countExplore(s,'fruit')}/5.`);}
+  if(k==='mila'){if(countExplore(s,'fruit')===5)reward('picnic','¡Cinco frutas tropicales! Picnic preparado. ¡Sombrero de fiesta desbloqueado!','Five tropical fruits! Picnic ready. Party hat unlocked!');else tell(`¿Un picnic? Busca mangos, cocos, piñas y plátanos: ${countExplore(s,'fruit')}/5.`,`Picnic time? Find mangoes, coconuts, pineapple, and bananas: ${countExplore(s,'fruit')}/5.`);}
   if(k==='ollie'){if(countExplore(s,'glow')===5)reward('glow','¡La selva brilla! Tus luciérnagas te siguen.','The grove is glowing! Your fireflies follow you.');else tell('¡Las luciérnagas juegan al escondite! Encuentra las cinco luces del bosque.','The fireflies are playing hide-and-seek! Find five lights in the grove.');}
   if(k==='luna'){music=[];tell('¡Haz bailar el arcoíris! Pisa las notas: rosa, dorada, azul.','Make the rainbow dance! Step on pink, gold, blue.');control?.demo();}
   if(k==='garden'){s.flowers=Math.min(6,s.flowers+1);control?.bloom(s.flowers);save();joy.effect('correct');if(s.flowers===6)reward('garden','¡Un jardín para las mariposas!','A garden for the butterflies!');else tell('¡Una flor! Vuelve a tocar para hacer crecer otra.','A flower! Tap again to grow another.');}
@@ -43,27 +43,32 @@ export function createExplore(host,{state,save,joy,motion,openBook,openHome,load
  const contextLost=e=>{e.preventDefault();fallback();};canvas.addEventListener('webglcontextlost',contextLost);
  if(!window.WebGL2RenderingContext){fallback();return {dispose};}
  load().then(T=>{if(disposed)return;try{engine=buildIsland(T,canvas,motion,setup);host.classList.add('explore-ready');}catch(e){console.warn('Island exploration unavailable',e.message);fallback();}}).catch(fallback);
- function setup({T,scene,camera,target,height,make,geometry,mat,ball,cone,cylinder,box}){
+ function setup({T,scene,camera,target,height,make,geometry,mat,ball,cone,cylinder,box,tropical}){
   const gold=mat('#ffd46b'),pink=mat('#ed91b6'),orange=mat('#ef9955'),cream=mat('#fff2d3'),ink=mat('#254550'),purple=mat('#a895ed'),green=mat('#68bd7d');
-  const avatar=new T.Group();scene.add(avatar);make(ball,purple,0,.7,0,.47,.63,.38,avatar);make(ball,cream,0,1.45,0,.4,.4,.38,avatar);make(ball,ink,0,1.66,-.1,.43,.26,.35,avatar);for(const x of [-.14,.14])make(ball,ink,x,1.49,.34,.045,.05,.03,avatar);const legs=[-.22,.22].map(x=>make(ball,ink,x,.16,0,.16,.27,.24,avatar));const hat=make(cone,gold,0,2,0,.5,.75,.5,avatar);
-  avatar.traverse(o=>{o.castShadow=false;if(o.isMesh){o.material=mat(o.material.color,{depthTest:false});o.renderOrder=20;}});const shadow=make(geometry(new T.CircleGeometry(.55,20)),mat('#264e4c',{transparent:true,opacity:.2,depthWrite:false}),0,0,0);shadow.rotation.x=-Math.PI/2;shadow.castShadow=false;
-  const pet=new T.Group();scene.add(pet);make(ball,orange,0,.4,0,.32,.4,.48,pet);make(ball,orange,0,.8,.25,.36,.32,.32,pet);for(const x of [-.23,.23])make(cone,orange,x,1.1,.2,.19,.4,.19,pet);make(ball,cream,0,.72,.5,.22,.15,.17,pet);
+  const avatar=new T.Group();scene.add(avatar);const skin=mat('#bd8e68'),shirt=mat('#e6dfc5'),shorts=mat('#345e57'),hair=mat('#44352a');
+  make(geometry(new T.CylinderGeometry(.24,.20,.58,12)),shirt,0,1.06,0,1,1,1,avatar);make(ball,skin,0,1.58,0,.22,.27,.21,avatar);make(ball,hair,0,1.73,-.03,.23,.15,.21,avatar);for(const x of [-.08,.08])make(ball,ink,x,1.6,.2,.018,.02,.01,avatar);
+  const legs=[-.13,.13].map(x=>{const leg=new T.Group();leg.position.set(x,.7,0);avatar.add(leg);make(cylinder,shorts,0,-.12,0,.12,.3,.12,leg);make(cylinder,skin,0,-.4,0,.075,.35,.075,leg);make(ball,woodMaterial(),0,-.6,.06,.1,.07,.18,leg);return leg;});
+  for(const x of [-.31,.31]){const arm=make(cylinder,skin,x,1.02,0,.065,.56,.065,avatar);arm.rotation.z=x>0?-.13:.13;}
+  const hat=new T.Group();hat.position.y=1.86;avatar.add(hat);make(cylinder,gold,0,0,0,.35,.04,.35,hat);make(cylinder,gold,0,.1,0,.22,.17,.22,hat);
+  function woodMaterial(){return mat('#554835');}
+  avatar.traverse(o=>{o.castShadow=false;if(o.isMesh){o.material=mat(o.material.color,{depthTest:false,map:o.material.map});o.renderOrder=20;}});const shadow=make(geometry(new T.CircleGeometry(.35,20)),mat('#264e4c',{transparent:true,opacity:.2,depthWrite:false}),0,0,0);shadow.rotation.x=-Math.PI/2;shadow.castShadow=false;
+  const pet=new T.Group();scene.add(pet);tropical.card(8,0,0,0,.9,.65,pet);
   const circle=geometry(new T.TorusGeometry(.55,.06,6,24));const marker=make(circle,gold,s.x,height(s.x,s.z)+.1,s.z);marker.rotation.x=-Math.PI/2;marker.visible=false;
   let jumpY=0,velocity=0,step=0,lastPad=-1,petX=s.x-1,petZ=s.z+1;
   const entityMeshes=[],collectibles=[],particles=[],blooms=[],pads=[],bubbles=[];let popped=0;const bubbleMaterial=mat('#a8eaf1',{transparent:true,opacity:.45,roughness:.08,metalness:.2,depthWrite:false});
   function sign(p){const g=new T.Group();g.position.set(p.x,height(p.x,p.z),p.z);scene.add(g);const ring=make(circle,gold,0,.12,0,1.5,1,1.5,g);ring.rotation.x=-Math.PI/2;
-   if(p.kind==='friend'){make(ball,p.id==='mila'?pink:p.id==='ollie'?purple:p.id==='luna'?cream:orange,0,.65,0,.55,.65,.5,g);make(ball,cream,0,1.25,0,.4,.38,.4,g);for(const x of [-.16,.16])make(ball,ink,x,1.3,.36,.05,.06,.04,g);if(p.id==='mila')for(const x of [-.21,.21])make(ball,pink,x,1.8,0,.15,.5,.16,g);else for(const x of [-.27,.27])make(cone,orange,x,1.6,0,.18,.4,.18,g);}
-   if(p.kind==='bounce'){make(cylinder,cream,0,.5,0,.25,1,.25,g);make(ball,pink,0,1,0,1.05,.3,1.05,g);for(let i=0;i<5;i++)make(ball,cream,Math.sin(i*2)*.6,1.25,Math.cos(i*2)*.6,.12,.04,.12,g);}
+   if(p.kind==='friend')tropical.card(({pip:8,mila:11,ollie:10,luna:9})[p.id],0,.04,0,p.id==='ollie'?1.1:1.25,p.id==='ollie'?1.8:.95,g);
+   if(p.kind==='bounce'){make(cylinder,cream,0,.5,0,.25,1,.25,g);make(ball,mat('#96764d',{map:tropical.grain}),0,1,0,1.05,.3,1.05,g);for(let i=0;i<5;i++)make(ball,cream,Math.sin(i*2)*.6,1.25,Math.cos(i*2)*.6,.12,.04,.12,g);}
    if(p.kind==='balloon'){make(box,gold,0,.5,0,.8,.6,.8,g);make(ball,pink,0,3,0,1.3,1.65,1.3,g);for(const x of [-.4,.4])make(cylinder,cream,x,1.5,0,.025,1.6,.025,g);}
    if(p.kind==='chest'){make(box,gold,0,.4,0,1.1,.7,.8,g);make(box,ink,0,.45,.42,.15,.3,.05,g);}
    if(p.kind==='wardrobe')make(cone,purple,0,1,0,.7,1.5,.7,g);
    entityMeshes.push({p,g,ring});}
   explorePlaces.forEach(sign);
-  for(const item of exploreItems){if(s.collected.includes(item.id))continue;const m=make(item.kind==='shell'?geometry(new T.OctahedronGeometry(.3)):ball,item.kind==='fruit'?orange:item.kind==='glow'?gold:cream,item.x,height(item.x,item.z)+.6,item.z,.32,.32,.32);if(item.kind==='shell')m.scale.set(1,.7,1);collectibles.push({item,m});}
+  for(const item of exploreItems){if(s.collected.includes(item.id))continue;const m=item.kind==='fruit'?tropical.card(item.tile,item.x,height(item.x,item.z)+.12,item.z,.9,1):make(item.kind==='shell'?geometry(new T.SphereGeometry(.3,12,8)):ball,item.kind==='glow'?gold:cream,item.x,height(item.x,item.z)+.3,item.z,.32,.2,.32);collectibles.push({item,m});}
   const padColors=[pink,gold,mat('#76cbe1')];for(let i=0;i<3;i++){const x=6+i*2,z=4,m=make(cylinder,padColors[i],x,height(x,z)+.12,z,.75,.22,.75);pads.push({x,z,m});}
   const rideBalloon=new T.Group();scene.add(rideBalloon);make(ball,pink,0,4,0,1.8,2.2,1.8,rideBalloon);for(const x of [-.6,.6])make(cylinder,cream,x,1.8,0,.025,2.8,.025,rideBalloon);rideBalloon.visible=false;
   const rideBoat=new T.Group();scene.add(rideBoat);make(ball,orange,0,0,0,1.4,.4,2,rideBoat);rideBoat.visible=false;
-  const picnic=new T.Group();scene.add(picnic);picnic.position.set(-6,height(-6,5)+.08,5);make(box,pink,0,0,0,2,.04,1.6,picnic);for(let i=0;i<5;i++)make(ball,orange,(i%3)*.4-.4,.2,Math.floor(i/3)*.4-.2,.16,.16,.16,picnic);
+  const picnic=new T.Group();scene.add(picnic);picnic.position.set(-6,height(-6,5)+.08,5);make(box,pink,0,0,0,2,.04,1.6,picnic);for(let i=0;i<5;i++)tropical.card(4+i%4,(i%3)*.5-.5,.12,Math.floor(i/3)*.5-.25,.4,.45,picnic);
   const rainbow=new T.Group();rainbow.position.set(9,height(9,4)+2,3);scene.add(rainbow);['#f58da6','#f7b875','#f6de7e','#a3d49b','#8bcbd9','#b6a0e1'].forEach((c,i)=>make(geometry(new T.TorusGeometry(3-i*.16,.1,6,40,Math.PI)),mat(c),0,0,0,1,1,1,rainbow));
   const wish=new T.Group();scene.add(wish);wish.position.set(-1,height(-1,-5)+10,-5);for(let i=0;i<8;i++){const a=i/8*Math.PI*2;make(ball,gold,Math.sin(a)*2,Math.cos(a)*2,0,.15,.15,.15,wish);}wish.visible=false;
   const butterflies=[];for(let i=0;i<8;i++){const g=new T.Group();scene.add(g);const wings=[-.15,.15].map(x=>make(ball,i%2?pink:gold,x,0,0,.2,.035,.25,g));butterflies.push({g,wings});}
@@ -75,8 +80,8 @@ export function createExplore(host,{state,save,joy,motion,openBook,openHome,load
   function spark(x,z,n=12){for(let i=0;i<n&&particles.length<70;i++){const m=make(ball,i%2?gold:pink,x,height(x,z)+.7,z,.09);particles.push({m,vx:(Math.random()-.5)*4,vz:(Math.random()-.5)*4,vy:2+Math.random()*3,life:1.4});}}
   function popBubble(i){if(i<0)return;const b=bubbles.splice(i,1)[0];scene.remove(b.m);joy.note((popped++)%5,.2);spark(b.m.position.x,b.m.position.z,5);tell('¡Pop! '+popped,'Pop! '+popped);}
   function blowBubbles(){for(let i=0;i<10&&bubbles.length<20;i++){const x=s.x+(Math.random()-.5)*4,z=s.z+(Math.random()-.5)*4,m=make(ball,bubbleMaterial,x,height(x,z)+1+Math.random()*2,z,.3+Math.random()*.25);bubbles.push({m,life:18});}}
-  function bloom(n){while(blooms.length<n){const i=blooms.length,x=11+Math.sin(i*2.4)*1.8,z=7+Math.cos(i*2.4)*1.8;const g=new T.Group();g.position.set(x,height(x,z),z);scene.add(g);make(cylinder,green,0,.4,0,.04,.8,.04,g);for(let j=0;j<5;j++)make(ball,pink,Math.sin(j*1.26)*.22,.85,Math.cos(j*1.26)*.22,.18,.12,.18,g);make(ball,gold,0,.87,0,.12,.13,.12,g);blooms.push(g);}}
-  function dress(){hat.visible=s.hat>0;hat.material=[gold,gold,pink,purple][s.hat];hat.scale.set(s.hat===2?.65:.5,s.hat===2?.4:.75,.5);}
+  function bloom(n){while(blooms.length<n){const i=blooms.length,x=11+Math.sin(i*2.4)*1.8,z=7+Math.cos(i*2.4)*1.8;blooms.push(tropical.card(15,x,height(x,z),z,1,1));}}
+  function dress(){hat.visible=s.hat>0;hat.traverse(o=>{if(o.isMesh)o.material.color.set(['#b9a474','#b9a474','#a57252','#687b54'][s.hat]);});}
   camera.fov=48;camera.updateProjectionMatrix();
   control={bubbles:blowBubbles,hop:(v=5)=>{if(jumpY<.1)velocity=v;},spark,bloom,dress,demo:()=>{music=[];spark(6,4,8);}};bloom(s.flowers);dress();
   function update(dt,time){if(disposed)return;dt=Math.min(dt,.05);if(messageTime>0){messageTime-=dt;if(messageTime<=0)message.classList.remove('show');}
@@ -91,7 +96,7 @@ export function createExplore(host,{state,save,joy,motion,openBook,openHome,load
    const phone=canvas.clientWidth<780;desired.set(ax,ay+(phone?19:15),az+(phone?23:19));camera.position.lerp(desired,dt===0?1:1-Math.exp(-dt*4));target.set(ax,ay+.7,az);
    near=null;let distance=2.6;for(const e of entityMeshes){const d=Math.hypot(s.x-e.p.x,s.z-e.p.z);if(d<distance){near=e.p;distance=d;}e.ring.material=d<2.6?pink:gold;e.ring.position.y=.14+(motion()?Math.sin(time*2)*.04:0);}
    act.hidden=!near||!!ride;setText(act,near?near.icon+' '+(es?near.es:near.en)+' · '+say('Jugar','Play'):'');jump.disabled=!!ride;setText(title,near?(es?near.es:near.en):say('Isla libre · explora a tu aire','Free island · wander anywhere'));
-   for(let i=collectibles.length-1;i>=0;i--){const c=collectibles[i];if(motion()){c.m.position.y=height(c.item.x,c.item.z)+.6+Math.sin(time*2+i)*.15;c.m.rotation.y=time;}if(!ride&&Math.hypot(s.x-c.item.x,s.z-c.item.z)<.9){if(collectExplore(s,c.item.id)){scene.remove(c.m);collectibles.splice(i,1);spark(s.x,s.z);joy.note(countExplore(s,c.item.kind)%5,.18);tell(`${countExplore(s,c.item.kind)} · ${c.item.es} / ${c.item.en}  ✦`,`${countExplore(s,c.item.kind)} · ${c.item.en} / ${c.item.es}  ✦`);save();refresh();}}}
+   for(let i=collectibles.length-1;i>=0;i--){const c=collectibles[i];if(motion()&&c.item.kind==='glow'){c.m.position.y=height(c.item.x,c.item.z)+.6+Math.sin(time*2+i)*.15;}if(!ride&&Math.hypot(s.x-c.item.x,s.z-c.item.z)<.9){if(collectExplore(s,c.item.id)){scene.remove(c.m);collectibles.splice(i,1);spark(s.x,s.z);joy.note(countExplore(s,c.item.kind)%5,.18);tell(`${countExplore(s,c.item.kind)} · ${c.item.es} / ${c.item.en}  ✦`,`${countExplore(s,c.item.kind)} · ${c.item.en} / ${c.item.es}  ✦`);save();refresh();}}}
    let padIndex=pads.findIndex(p=>Math.hypot(s.x-p.x,s.z-p.z)<.75);if(padIndex!==lastPad&&padIndex>=0&&!ride){joy.note([0,2,4][padIndex],.4);spark(pads[padIndex].x,4,8);music.push(padIndex);music=music.slice(-3);if(music.join(',')==='0,1,2')reward('song','¡Inventaste la canción del arcoíris!','You made the rainbow song!');}lastPad=padIndex;
    butterflies.forEach((b,i)=>{b.g.visible=s.flowers>i||s.badges.includes('glow');const cx=s.badges.includes('glow')?s.x:11,cz=s.badges.includes('glow')?s.z:7;b.g.position.set(cx+Math.sin(time+i)*1.8,height(cx,cz)+1.8+Math.cos(time+i)*.4,cz+Math.cos(time+i)*1.8);b.wings.forEach((w,j)=>w.rotation.z=motion()?Math.sin(time*10)*(j?1:-1):0);});
    if(!ride&&Math.hypot(s.x+4,s.z-6)<.75&&jumpY===0&&velocity===0){velocity=10;joy.effect('tap');}

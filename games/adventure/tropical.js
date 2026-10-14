@@ -1,0 +1,24 @@
+/* One shared photographic atlas; textured cutouts keep the natural detail inexpensive on phones. */
+export function createTropical({T,scene,camera,height,geometry,mat,make,ball,renderer}){
+ const temp=new T.Vector3();let loaded=false;const textures=[],cards=[],wildlife=[],atlas=new T.TextureLoader().load('/games/adventure/tropical-atlas.png',()=>{loaded=true;cards.forEach(c=>c.visible=true);if(renderer)renderer.shadowMap.needsUpdate=true;});textures.push(atlas);atlas.colorSpace=T.SRGBColorSpace;atlas.anisotropy=4;
+ const tileGeometries=[],tileMaterials=[];
+ for(let tile=0;tile<16;tile++){
+  const g=geometry(new T.PlaneGeometry(1,1));g.translate(0,.5,0);const uv=g.attributes.uv,col=tile%4,row=Math.floor(tile/4);for(let i=0;i<uv.count;i++)uv.setXY(i,(col+.012+uv.getX(i)*.976)/4,(3-row+.012+uv.getY(i)*.976)/4);tileGeometries.push(g);tileMaterials.push(mat('#ffffff',{map:atlas,alphaTest:.25,side:T.DoubleSide,roughness:.9}));
+ }
+ function card(tile,x,y,z,w,h,parent=scene){const g=new T.Group();g.position.set(x,y,z);parent.add(g);const m=make(tileGeometries[tile],tileMaterials[tile],0,0,0,w,h,1,g);g.visible=loaded;cards.push(g);return g;}
+ // Fine mineral grain, weathering, and broad tonal variation share a small procedural texture.
+ const size=256,data=new Uint8Array(size*size*4);let seed=17;for(let y=0;y<size;y++)for(let x=0;x<size;x++){seed=(seed*1664525+1013904223)>>>0;const grain=(seed/4294967296-.5)*40,broad=Math.sin(x*.037+Math.sin(y*.03))*18+Math.sin(y*.13+x*.07)*8,v=Math.max(50,Math.min(255,188+grain+broad)),i=(y*size+x)*4;data[i]=v;data[i+1]=v;data[i+2]=v;data[i+3]=255;}
+ const grain=new T.DataTexture(data,size,size,T.RGBAFormat);grain.wrapS=grain.wrapT=T.RepeatWrapping;grain.needsUpdate=true;textures.push(grain);
+ let randomSeed=91;const random=()=>{randomSeed=(randomSeed*1664525+1013904223)>>>0;return randomSeed/4294967296;};
+ // Open sight lines, coconut groves, banana plants, coastal ferns, and exposed limestone.
+ for(let i=0;i<31;i++){let x=(random()-.5)*34,z=(random()-.5)*21;if((x/18)**2+(z/12)**2>.9||(x>0&&x<9&&z>-4)||Math.hypot(x-11,z-7)<3||Math.hypot(x+1,z+5)<3)continue;const scale=.8+random()*.5;card(0,x,height(x,z)-.06,z,6*scale,7*scale);}
+ for(let i=0;i<18;i++){const a=i*2.4,r=7+random()*7,x=Math.sin(a)*r,z=Math.cos(a)*r*.6;if((x>1&&x<9&&z>-2)||Math.hypot(x-11,z-7)<3)continue;card(i%3===0?1:2,x,height(x,z)-.03,z,i%3===0?3.6:1.8,i%3===0?4.2:1.4);}
+ for(let i=0;i<14;i++){const a=i/14*Math.PI*2,x=Math.cos(a)*18,z=Math.sin(a)*12;card(3,x,height(x,z)-.08,z,1.2+random()*1.4,.7+random());}
+ for(let i=0;i<7;i++){const a=i*2.4,x=11+Math.sin(a)*2,z=7+Math.cos(a)*2;card(15,x,height(x,z),z,1.4,1.2);}
+ for(let i=0;i<5;i++){const x=-12+(i%3)*2,z=-2+Math.floor(i/3)*2;card(1,x,height(x,z),z,3.2,3.8);}
+ for(const [tile,x,z,w,h] of [[8,-5,11,1.2,.8],[9,14,8,.7,.5],[10,-15,5,1.2,1.7],[11,-10,-6,1.1,1.1],[9,8,11,.6,.4],[8,-13,8,1,.7]]){const g=card(tile,x,height(x,z)+.02,z,w,h);wildlife.push({g,x,z,tile,phase:random()*6});}
+ // Fish remain visible just below the transparent shallows; reef patches anchor them.
+ for(let i=0;i<12;i++){const x=8+(i%4)*2.1,z=14+Math.floor(i/4)*2,g=card(i%2?12:13,x,-.32,z,.65,.4);wildlife.push({g,x,z,tile:12,phase:i});}
+ for(let i=0;i<7;i++)card(14,-6+i*2,-.9,15+(i%2)*2,1.3,1);
+ return {card,grain,update(time){for(const g of cards){const p=g.getWorldPosition(temp);g.rotation.y=Math.atan2(camera.position.x-p.x,camera.position.z-p.z)-(g.parent?.rotation.y||0);}for(const a of wildlife){const swimming=a.tile===12,speed=swimming?.6:.08;a.g.position.x=a.x+Math.sin(time*speed+a.phase)*(swimming?1.2:.35);a.g.position.z=a.z+Math.cos(time*speed+a.phase)*(swimming?.5:.2);if(!swimming)a.g.position.y=height(a.g.position.x,a.g.position.z)+.02;}},dispose(){textures.forEach(t=>t.dispose());}};
+}

@@ -1,8 +1,8 @@
-import {createExplore} from './explore.js?v=7';
-import {createEntrance} from './entrance.js?v=7';
+import {createExplore} from './explore.js?v=8';
+import {createEntrance} from './entrance.js?v=8';
 import {createDelight,burst,livingWorld,foxPortrait} from './delight.js?v=2';
 import {regions,quests,challenges,ui,text} from './content.js';
-import {SAVE_KEY,fresh,normalize,completedCount,lightCount,totalStars,unlocked,award} from './state.js?v=7';
+import {SAVE_KEY,fresh,normalize,completedCount,lightCount,totalStars,unlocked,award} from './state.js?v=8';
 const $=s=>document.querySelector(s),app=$('#app'),dialog=$('#dialog');
 let storageOK=true,state;try{state=normalize(JSON.parse(localStorage.getItem(SAVE_KEY)));if(!localStorage.getItem(SAVE_KEY)){state.lang=localStorage.getItem('seanGameLang')==='en'?'en':'es';}}catch{state=fresh();}
 let screen='entry',entrance=null,exploration=null,timers=[],audioContext,run=0,solved=false,currentTask=null,playing=false,returnFocus=null;
@@ -31,7 +31,7 @@ function welcome(){
  const h=el('h1','',t('title'));h.append(el('em','',t('subtitle')));copy.append(h,el('p','',returning?text('Pip guardó tu lugar. Las luces, tus amigos y una nueva aventura te esperan.','Pip saved your place. The lights, your friends, and a new adventure are waiting.'):text('Sigue la luz. Cruza el mar. Hay un mundo entero esperando conocerte.','Follow the light. Cross the sea. A whole world is waiting to meet you.')));
  const enter=button(returning?text('Volver a mi isla','Return to my island'):text('Entrar en la aventura','Enter the adventure'),'primary enter-world',arrive);
  copy.append(enter,el('p','welcome-foot',text('Un toque. Y ya estás en otro mundo.','One tap. A whole new world.')));
- const guide=el('div','arrival-guide');guide.append(foxPortrait(),el('span','',text('¡Por aquí!','This way!')));section.append(copy,guide);
+ const guide=el('div','arrival-guide');guide.append(el('div','arrival-turtle'),el('span','',text('¡Por aquí!','This way!')));section.append(copy,guide);
  const travel=el('div','arrival-caption');travel.hidden=true;travel.setAttribute('role','status');travel.append(el('span','arrival-orbit','✦'),el('p','',text('El puerto está cerca…','The harbor is just ahead…')));section.append(travel);
  const skip=button(text('Saltar llegada','Skip arrival'),'skip-arrival',()=>entrance?.skip());skip.hidden=true;section.append(skip);app.append(section);
  entrance=createEntrance(section,{motion:motionOn,label:tr(text('Una isla tridimensional con mar, nubes, casas, barcos y un faro.','A three-dimensional island with an ocean, clouds, cottages, boats, and a lighthouse.'))});

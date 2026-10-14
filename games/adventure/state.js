@@ -1,4 +1,4 @@
-import {normalizeExplore} from './explore-state.js?v=7';
+import {normalizeExplore} from './explore-state.js?v=8';
 import {quests} from './content.js';
 export const SAVE_KEY='isla-adventure-v1';
 export function fresh(){return {version:1,started:false,lang:'es',sound:true,motion:true,completed:{},active:null,discovered:[],palette:0,song:Array(24).fill(false),seen:[],world:normalizeExplore(null)};}

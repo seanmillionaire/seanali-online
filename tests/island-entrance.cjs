@@ -1,5 +1,5 @@
 const {JSDOM}=require('jsdom'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
-const source=fs.readFileSync(path.resolve(__dirname,'../games/adventure/entrance.js'),'utf8').replace(/\bexport /g,'');
+const source=fs.readFileSync(path.resolve(__dirname,'../games/adventure/entrance.js'),'utf8').replace(/^import .*;\n/gm,'').replace(/\bexport /g,'');
 function setup(){const dom=new JSDOM('<main></main>',{runScripts:'outside-only'});dom.window.eval(source+'\nwindow.createEntrance=createEntrance;');return dom;}
 (async()=>{
  let dom=setup(),w=dom.window,host=w.document.querySelector('main'),calls=0,loaded=false;
