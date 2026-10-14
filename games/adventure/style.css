@@ -38,3 +38,5 @@ body[data-scene="islandQuest"] .tools button{color:#284e48}
 
 /* Context replaces the existing goal card instead of adding another HUD panel. */
 .shark-nearby .island-goal{border:3px solid #e87d44;background:#fff2d9}.shark-nearby .goal-next{background:#ffd262}.inside-lighthouse .explore-hud .explore-bag{display:none}.inside-lighthouse .explore-menu{opacity:.92}
+
+.world-jump[hidden]{display:none}
