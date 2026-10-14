@@ -35,6 +35,8 @@
   };
 
   const getFirstName = () => {
+    const finalName = document.querySelector("[data-first-name]")?.getAttribute("data-first-name");
+    if (finalName) return finalName;
     const currentInput = document.querySelector("#guided-name");
     if (currentInput instanceof HTMLInputElement && currentInput.value) {
       rememberName(currentInput.value);
@@ -74,7 +76,6 @@
 
   const buildReport = () => {
     document.getElementById(REPORT_ID)?.remove();
-    if (document.querySelector(".gps-downloads-locked")) return;
 
     const finalPlan = document.querySelector(".guided-final-plan");
     if (!finalPlan) return;
@@ -91,7 +92,7 @@
     );
     const dream = textFrom(
       ".guided-clarity-narrative p",
-      textFrom(".guided-vision-scene > p")
+      textFrom(".gps-future-words")
     );
     const focus = textFrom(
       ".guided-final-context > div:first-child b",
@@ -152,7 +153,7 @@
     const snapshot = createElement("div", "gps-print-snapshot");
     addLabeledCopy(snapshot, "WHY THIS MATTERS", why);
     addLabeledCopy(snapshot, "YOUR DREAM-LIFE PICTURE", dream);
-    addLabeledCopy(snapshot, "WHAT SUCCESS MEANS TO ME", textFrom(".guided-vision-scene > p"));
+    addLabeledCopy(snapshot, "WHAT SUCCESS MEANS TO ME", textFrom(".gps-dream-quote"));
     report.append(snapshot);
 
     const resultSection = createElement("section", "gps-print-result");

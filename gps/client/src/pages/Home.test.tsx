@@ -64,40 +64,21 @@ describe("final screen", () => {
     expect(sidebar).not.toContain("More family time");
   });
 
-  it("shows the compass, attribution and clear plan while gating downloads", () => {
+  it("shows the complete summary and downloads without email signup", () => {
     const html = finalScreen(false);
-    expect(html).toContain('>Dream Life GPS</b></a>');
-    expect(html).toContain("Alex, this is your North Star.");
-    expect(html).toContain('src="/assets/north-star-compass-sean-ali.png"');
-    expect(html).toContain("Created by Sean Ali");
-    expect(html).toContain("Your goal this week");
-    expect(html).toContain("Three user tests");
-    expect(html).toContain("Start here");
-    expect(html).toContain("Evenings with family");
-    expect(html).toContain("Time matters");
-    expect(html).toContain("Get Your Free Dream Life Map");
-    expect(html.indexOf("Evenings with family")).toBeLessThan(html.indexOf('id="gps-download-gate"'));
-    expect(html).toContain("Get My Free Dream Life Map");
-    expect(html).toContain('placeholder="Enter your email address"');
-    expect(html.match(/type="email"/g)).toHaveLength(1);
-    expect(html).toContain("Unsubscribe anytime.");
-    expect(html).toContain("Want some help taking the next step?");
-    expect(html).toContain('href="https://seanali.online/work-with-me/" target="_blank" rel="noopener noreferrer"');
-    expect(html.indexOf('id="gps-work-with-sean-title"')).toBeGreaterThan(html.indexOf('id="gps-download-gate"'));
+    for (const text of ["Alex, this is your North Star.", "Three user tests", "Evenings with family", "Time matters", "Your three-step plan", "Print / save my summary", "Download my North Star", "with or without email signup", "Want emails from Sean? (Optional)"]) expect(html).toContain(text);
     expect(html).toContain('name="listname" value="awlist6946418"');
-    expect(html).not.toContain('aria-label="Your downloads"');
-    expect(html).not.toContain("Save SVG");
-    expect(html).not.toContain("Dream Life Emblem");
-    expect(html).toContain('id="final-section-plan" class="guided-final-section-body" aria-hidden="true"');
-  });
-
-  it("offers just PDF and compass image downloads after a restored signup", () => {
-    const html = finalScreen(true);
-    expect(html).toContain("Your downloads are ready.");
-    expect(html).toContain("Save my plan as PDF");
-    expect(html).toContain("Save compass image");
-    expect(html).toContain("Work with Sean (opens in a new tab)");
+    expect(html).toContain('aria-label="Your downloads"');
     expect(html).not.toContain("gps-downloads-locked");
-    expect(html).not.toContain("Get My Free Dream Life Map");
+    expect(html).not.toContain("Add more detail");
+    expect(html).not.toContain("Work with Sean");
+    expect(html).not.toContain('aria-hidden="true"><section class="guided-final-plan"');
+  });
+  it("preserves the summary after returning from optional signup", () => {
+    const html = finalScreen(true);
+    expect(html).toContain("Your email signup is complete.");
+    expect(html).toContain("Print / save my summary");
+    expect(html).toContain("Download my North Star");
+    expect(html).not.toContain('type="email"');
   });
 });

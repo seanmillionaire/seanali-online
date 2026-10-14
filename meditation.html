@@ -147,14 +147,50 @@
   .sub-headline { max-width:100%; white-space:nowrap; font-size:clamp(11px,3.5vw,18px); letter-spacing:-.035em; }
 </style>
 <link rel="stylesheet" href="/assets/sean-optin-hmfree-template.css?v=20261013b" />
+<style>
+  /* Compact eyebrow above the meditation headline on desktop and mobile */
+  body[data-optin-reference="hm-free"] .meditation-eyebrow {
+    display:table;
+    width:fit-content;
+    max-width:100%;
+    margin:0 auto 8px;
+    padding:6px 12px;
+    border:1px solid #fed7aa;
+    border-radius:999px;
+    background:#fff7ed;
+    color:#9a3412;
+    font:800 12px/1.25 Inter,system-ui,sans-serif;
+    letter-spacing:.045em;
+    text-align:center;
+    text-transform:uppercase;
+  }
+  @media (max-width: 620px) {
+    body[data-optin-reference="hm-free"] .meditation-eyebrow {
+      font-size:11px;
+      margin-bottom:7px;
+      padding:5px 10px;
+    }
+  }
+  /* Keep the main headline compact on desktop */
+  @media (min-width: 768px) {
+    body[data-optin-reference="hm-free"] #headline {
+      max-width: 680px !important;
+      font-size: 35px !important;
+      line-height: 1.12 !important;
+      letter-spacing: -.045em !important;
+      margin: 7px auto 10px !important;
+    }
+  }
+</style>
 </head>
 <body data-optin-reference="hm-free">
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N3NV5TNP" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="sticky-value-bar" role="note"><span>🔥 Get Your $27 MoneyWave Audio FREE Today</span></div>
 <main class="wrap"><section class="hero" aria-labelledby="headline">
-<h1 id="headline">💰 Want More Money &amp; Abundance? Listen to This <span class="accent">7-Minute Bedtime Meditation</span> Tonight</h1>
+<p class="meditation-eyebrow">💰 Want to Manifest More Money?</p>
+<h1 id="headline">Listen to This <span class="accent">7-Minute Bedtime Meditation</span> Tonight</h1>
 </section>
-<figure class="sean-hm-hero-image sean-optin-creator-image"><img src="https://hypnoticmeditations.b-cdn.net/images/seanwave.png" alt="MoneyWave money manifestation meditation audio on a phone" loading="eager" decoding="async"><figcaption>7 minutes to focus on the money and life you want</figcaption></figure><section class="optin-card" aria-label="Send me MoneyWave">
+<figure class="sean-hm-hero-image sean-optin-creator-image"><img src="https://hypnoticmeditations.b-cdn.net/images/seanwave.png" alt="MoneyWave money manifestation meditation audio on a phone" loading="eager" decoding="async"></figure><section class="optin-card" aria-label="Send me MoneyWave">
 <div class="form-heading"><h2>Get Your Free MoneyWave Audio 👇</h2></div>
 <form method="post" id="aweberForm" action="https://www.aweber.com/scripts/addlead.pl" novalidate>
 <input type="hidden" name="meta_web_form_id" value="749155955">

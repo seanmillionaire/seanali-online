@@ -1,12 +1,12 @@
 /** A simple, locked path: get clear on the life you want, then take one useful step. */
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Check, ChevronDown, Compass, Download, MapPin, Mic, MicOff, Printer, Sparkles, Target, Volume2, VolumeX, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Compass, Download, MapPin, Mic, MicOff, Printer, Sparkles, Target, Volume2, VolumeX, X } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { findStatedMonthlyIncome } from "@/lib/incomePlan";
 import { canAdvanceStep, commitments, createFinalChecklist, createNextAction, getRoleName, getWeeklyNumbers, roles, type CommitmentId, type RoleId } from "@/lib/guidedJourney";
 import { mergeVoiceTranscript } from "@/lib/voiceTranscript";
 import { canPlayProgressiveSound, cueForAdvance, soundCues, type SoundCue } from "@/lib/progressiveSound";
-import { buildClarityPrintoutFallback, dreamDayScenes, type ClarityPrintout, type DreamDaySceneId } from "@shared/clarityPrintout";
+import { buildClarityPrintoutFallback, type ClarityPrintout, type DreamDaySceneId } from "@shared/clarityPrintout";
 import "../personalization.css";
 import "../guided-flow.css";
 import "../guided-flow-fix.css";
@@ -15,14 +15,13 @@ import "../guided-sound.css";
 import "../dream-life-emblem.css";
 import "../friendly-quiz.css";
 import "../final-screen.css";
-import { compassImageUrl, downloadCompassImage } from "@/lib/compassDownload";
+import { compassImageUrl, createPersonalizedCompass, downloadCompassImage } from "@/lib/compassDownload";
 import { DownloadGate } from "@/components/DownloadGate";
 import { clearDownloadSession, readDownloadSession, saveDownloadSession, signupReturnParam } from "@/lib/downloadGate";
 
 type Step = "name" | "location" | "success" | "benefits" | "future" | "whyNow" | "summary" | "role" | "responsibility" | "commitment" | "action";
 type BenefitId = "family" | "health" | "calm" | "time" | "freedom" | "work" | "giving" | "growth";
 type VoiceField = "name" | "location" | "otherRole" | "success" | "future" | "whyNow" | "responsibility" | "weeklyResult" | "dreamDetail";
-type FinalSectionId = "vision" | "dream" | "plan";
 
 type SpeechResultEvent = { resultIndex: number; results: ArrayLike<ArrayLike<{ transcript: string }>> };
 type SpeechRecognitionLike = { lang: string; continuous: boolean; interimResults: boolean; onresult: ((event: SpeechResultEvent) => void) | null; onerror: ((event: { error: string }) => void) | null; onend: (() => void) | null; start: () => void; abort: () => void };
@@ -73,28 +72,6 @@ function PersonalizingIndicator() {
   </div>;
 }
 
-function DreamDaySceneSelector({ value, onChange }: { value: DreamDaySceneId; onChange: (scene: DreamDaySceneId) => void }) {
-  return <fieldset className="guided-dream-scene-selector">
-    <legend>CHOOSE THE KIND OF DAY YOU WANT TO STEP INTO</legend>
-    <p>Your choice and details shape your Dream Life Map.</p>
-    <div className="guided-dream-scene-grid">
-      {dreamDayScenes.map((scene) => <button type="button" key={scene.id} data-dream-scene={scene.id} className={value === scene.id ? "picked" : ""} onClick={() => onChange(scene.id)} aria-pressed={value === scene.id}>
-        <span aria-hidden="true">{scene.emoji}</span><div><b>{scene.title}</b><small>{scene.line}</small></div>{value === scene.id && <i><Check size={18} /></i>}
-      </button>)}
-    </div>
-  </fieldset>;
-}
-
-function FinalScreenSection({ sectionId, eyebrow, title, summary, open, onToggle, children }: { sectionId: FinalSectionId; eyebrow: string; title: string; summary: string; open: boolean; onToggle: () => void; children: React.ReactNode }) {
-  const contentId = `final-section-${sectionId}`;
-  return <section className={`guided-final-section ${open ? "open" : ""}`} data-final-section={sectionId}>
-    <button type="button" className="guided-final-section-toggle" onClick={onToggle} aria-expanded={open} aria-controls={contentId}>
-      <span>{eyebrow}</span><h2>{title}</h2><p>{summary}</p><ChevronDown size={23} aria-hidden="true" />
-    </button>
-    <div id={contentId} className="guided-final-section-body" aria-hidden={!open}>{children}</div>
-  </section>;
-}
-
 export default function Home() {
   const [resumed] = useState(() => {
     try { return readDownloadSession(window.sessionStorage, window.location.href); }
@@ -127,25 +104,29 @@ export default function Home() {
   const [dreamScene, setDreamScene] = useState<DreamDaySceneId>(draft?.dreamScene ?? "celebration");
   const [dreamDetail, setDreamDetail] = useState(draft?.dreamDetail ?? "");
   const [clarityPrintout, setClarityPrintout] = useState<ClarityPrintout | null>(draft?.clarityPrintout ?? null);
-  const [clarityError, setClarityError] = useState("");
-  const [openFinalSections, setOpenFinalSections] = useState<Record<FinalSectionId, boolean>>({ vision: false, dream: false, plan: false });
   const [soundEnabled, setSoundEnabled] = useState(() => window.localStorage.getItem("dream-life-gps-sound") !== "off");
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   const [activeVoice, setActiveVoice] = useState<VoiceField | null>(null);
   const [voiceNote, setVoiceNote] = useState("Tap the microphone to speak your answer.");
   const [compassSaving, setCompassSaving] = useState(false);
   const [compassError, setCompassError] = useState("");
-  const focusDownloadGate = () => {
-    document.getElementById("gps-download-gate")?.scrollIntoView({ block: "center" });
-    document.getElementById("gps-download-email")?.focus({ preventScroll: true });
-  };
+  const [personalCompass, setPersonalCompass] = useState("");
+  useEffect(() => {
+    if (step !== "action") return;
+    let cancelled = false;
+    setPersonalCompass("");
+    setCompassError("");
+    void createPersonalizedCompass(userName, success).then((image) => {
+      if (!cancelled) setPersonalCompass(image);
+    }).catch(() => { if (!cancelled) setCompassError("Your image couldn't load. You can still print your plan, or go back and try again."); });
+    return () => { cancelled = true; };
+  }, [step, userName, success]);
   const saveCompass = async () => {
-    if (!downloadsUnlocked) { focusDownloadGate(); return; }
     if (compassSaving) return;
     setCompassSaving(true);
     setCompassError("");
     try {
-      await downloadCompassImage();
+      await downloadCompassImage(personalCompass);
     } catch {
       setCompassError("The compass could not be saved. Please try again.");
     } finally { setCompassSaving(false); }
@@ -155,7 +136,6 @@ export default function Home() {
   const keepListening = useRef(false);
   const capturedVoice = useRef<{ field: VoiceField; value: string } | null>(null);
   const cleanAnswer = trpc.cleanAnswer.useMutation();
-  const createClarityPrintout = trpc.createClarityPrintout.useMutation();
 
   const stepIndex = steps.indexOf(step);
   useEffect(() => { setFurthestStep((previous) => Math.max(previous, stepIndex)); }, [stepIndex]);
@@ -297,23 +277,11 @@ export default function Home() {
     if (step === "action") { playSound("back"); reset(); return; }
     if (position < steps.length - 1) { setStep(steps[position + 1]); playSound(cueForAdvance(position, position + 1)); }
   };
-  const reset = () => { stopVoice(); setStep("name"); setUserName(""); setLocation(""); setSuccess(""); setCleanSuccess(""); setSelectedBenefits([]); setFuture(""); setCleanFuture(""); setWhyNow(""); setCleanWhyNow(""); setRole(null); setOtherRole(""); setResponsibility(""); setCleanResponsibility(""); setWeeklyResult(""); setCleanWeeklyResult(""); setCommitment("solid"); setDreamScene("celebration"); setDreamDetail(""); setClarityPrintout(null); setClarityError(""); setCompassError(""); setOpenFinalSections({ vision: false, dream: false, plan: false }); setHelpOpen(false); };
+  const reset = () => { stopVoice(); setStep("name"); setUserName(""); setLocation(""); setSuccess(""); setCleanSuccess(""); setSelectedBenefits([]); setFuture(""); setCleanFuture(""); setWhyNow(""); setCleanWhyNow(""); setRole(null); setOtherRole(""); setResponsibility(""); setCleanResponsibility(""); setWeeklyResult(""); setCleanWeeklyResult(""); setCommitment("solid"); setDreamScene("celebration"); setDreamDetail(""); setClarityPrintout(null); setCompassError(""); setHelpOpen(false); };
   const printFinalPlan = () => {
-    if (!downloadsUnlocked) { focusDownloadGate(); return; }
-    setOpenFinalSections({ vision: true, dream: true, plan: true });
     window.requestAnimationFrame(() => window.requestAnimationFrame(() => window.print()));
   };
-  const writeClarityPrintout = () => {
-    if (createClarityPrintout.isPending) return;
-    setClarityError("");
-    void createClarityPrintout.mutateAsync(clarityInput).then((printout) => { setClarityPrintout(printout); playSound("payoff"); }).catch(() => {
-      setClarityPrintout(clarityFallback);
-      setClarityError("Your Dream Life Map is already here in your own words. You can add more detail and try again when you want.");
-      playSound("error");
-    });
-  };
   const toggleBenefit = (id: BenefitId) => { setSelectedBenefits((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]); playSound("select"); };
-  const toggleFinalSection = (sectionId: FinalSectionId) => { setOpenFinalSections((current) => ({ ...current, [sectionId]: !current[sectionId] })); playSound("select"); };
   const handleGuidedInputKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
     if (event.key !== "Enter" || event.nativeEvent.isComposing || !(event.target instanceof HTMLInputElement)) return;
     event.preventDefault();
@@ -352,7 +320,7 @@ export default function Home() {
         <p className="gps-payoff-intro">Not someone else's idea of success. The life you said you want.</p>
         <blockquote className={success.length > 180 ? "gps-dream-quote long" : "gps-dream-quote"}>{success}</blockquote>
         <figure className="gps-north-star">
-          <img src={compassImageUrl} width={1024} height={1024} data-north-star-compass alt="A gold North Star above a forest-green compass, pointing toward your chosen direction." />
+          <img src={personalCompass || compassImageUrl} width={1254} height={1374} data-north-star-compass data-first-name={userName.trim().split(/\s+/)[0]} alt={`A North Star personalized for ${userName.trim().split(/\s+/)[0]}: ${success}`} />
           <figcaption><h2>Your North Star Compass</h2><p>When life gets noisy, remember what you're moving toward.</p><small>Created by Sean Ali</small></figcaption>
         </figure>
       </header>
@@ -369,25 +337,9 @@ export default function Home() {
         <div className="gps-first-step"><span>Start here</span><p>{finalChecklist[0]?.action}</p></div>
         <div><span>Your goal this week</span><p>{actionPlan.weeklyResult}</p></div>
       </section>
-      <DownloadGate name={userName} unlocked={downloadsUnlocked} onSignup={saveDraftForSignup} />
-      {downloadsUnlocked && <div className="gps-final-downloads" aria-label="Your downloads">
-        <button type="button" onClick={printFinalPlan}><Printer size={20} /> Save my plan as PDF</button>
-        <button type="button" className="secondary" onClick={() => void saveCompass()} disabled={compassSaving}><Download size={20} />{compassSaving ? "Saving..." : "Save compass image"}</button>
-        {compassError && <p role="alert">{compassError}</p>}
-      </div>}
-      <FinalScreenSection sectionId="vision" eyebrow="YOUR BIGGER PICTURE" title="The life you're working toward" summary="Your answers, brought together." open={openFinalSections.vision} onToggle={() => toggleFinalSection("vision")}>
-        <div className="guided-vision-scene"><span>A DAY I AM BUILDING</span><p>{currentClarityPrintout.opening}</p><div><Compass size={21} /><b>{currentClarityPrintout.anchor}</b></div></div>
-      </FinalScreenSection>
-      <FinalScreenSection sectionId="dream" eyebrow="OPTIONAL" title="Add more detail to your dream day" summary="What would a good day look and feel like?" open={openFinalSections.dream} onToggle={() => toggleFinalSection("dream")}>
-        <section className="guided-clarity-writer" aria-labelledby="clarity-writer-title">
-          <header><span><Sparkles size={17} /> MY DREAM DAY</span><h2 id="clarity-writer-title">What kind of day am I moving toward?</h2><p>Pick what feels closest. Then add one small detail that makes it mine.</p></header>
-          <DreamDaySceneSelector value={dreamScene} onChange={(scene) => { setDreamScene(scene); setClarityPrintout(null); playSound("select"); }} />
-          <VoiceField id="dreamDetail" label="ONE DETAIL I CAN SEE, HEAR, OR FEEL" value={dreamDetail} setValue={(value) => { setDreamDetail(value); setClarityPrintout(null); }} multiline active={activeVoice} note={voiceNote} start={startVoice} stop={stopVoice} />
-          <div className="guided-clarity-writer-action"><button type="button" onClick={writeClarityPrintout} disabled={createClarityPrintout.isPending} aria-busy={createClarityPrintout.isPending}>{createClarityPrintout.isPending ? "Refining My Dream Life Map…" : "Refine My Dream Life Map"}</button><small>It uses my words and the details I choose. It does not make a fake story about my life.</small>{clarityError && <p role="status">{clarityError}</p>}</div>
-          <article className="guided-clarity-narrative" aria-live="polite"><span>{currentClarityPrintout.source === "ai" ? "MY WORDS, MADE CLEARER" : "MY WORDS"}</span><p>{currentClarityPrintout.scene}</p></article>
-        </section>
-      </FinalScreenSection>
-      <FinalScreenSection sectionId="plan" eyebrow="YOUR NEXT STEPS" title="Your three-step plan" summary="What to do today, this week, and at your next check-in." open={openFinalSections.plan} onToggle={() => toggleFinalSection("plan")}>
+      <section className="guided-final-section open" data-final-section="plan">
+        <header className="guided-final-section-toggle"><span>YOUR NEXT STEPS</span><h2>Your three-step plan</h2><p>What to do today, this week, and at your next check-in.</p></header>
+        <div id="final-section-plan" className="guided-final-section-body">
         <section className="guided-final-plan">
           <div className="guided-print-meta"><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><span>Dream Life GPS</span><b>Created by Sean Ali</b></div>
           <header className="guided-final-result"><span>MY GOAL THIS WEEK</span><h2>{actionPlan.weeklyResult}</h2><p>This moves me toward: <b>{actionPlan.clearPicture}</b></p></header>
@@ -396,11 +348,18 @@ export default function Home() {
           <div className="guided-simple-checklist">{finalChecklist.map((item, index) => <article key={item.label}><i aria-hidden="true">{index + 1}</i><div><span>{item.label}</span><h2>{item.title}</h2><p>{item.action}</p></div></article>)}</div>
           <div className="guided-final-close"><Check size={20} /><p>At my next check-in, I look at what moved. I keep what worked. Then I choose the next useful result.</p></div>
         </section>
-      </FinalScreenSection>
-      <section className="gps-work-with-sean" aria-labelledby="gps-work-with-sean-title">
-        <h2 id="gps-work-with-sean-title">Want some help taking the next step?</h2>
-        <p>See the ways we can work together, and find what feels right for you.</p>
-        <a href="https://seanali.online/work-with-me/" target="_blank" rel="noopener noreferrer" aria-label="Work with Sean (opens in a new tab)">Work with Sean <ArrowRight size={18} aria-hidden="true" /></a>
+        </div>
+      </section>
+      <section className="gps-save-summary" aria-labelledby="gps-save-title">
+        <h2 id="gps-save-title">Your map is ready. Keep it close.</h2>
+        <p>Print your summary or save it as a PDF. Download your personal North Star image. It's all free, with or without email signup.</p>
+        <div className="gps-final-downloads" aria-label="Your downloads">
+          <button type="button" onClick={printFinalPlan}><Printer size={20} /> Print / save my summary</button>
+          <button type="button" className="secondary" onClick={() => void saveCompass()} disabled={compassSaving || !personalCompass}><Download size={20} />{compassSaving ? "Saving..." : "Download my North Star"}</button>
+          {compassError && <p role="alert">{compassError}</p>}
+        </div>
+        <DownloadGate name={userName} unlocked={downloadsUnlocked} onSignup={saveDraftForSignup} />
+        <p className="gps-complete-note">You're done for today. Take your first step, then come back to your plan in seven days.</p>
       </section>
     </>;
   };
@@ -422,7 +381,7 @@ export default function Home() {
     try { clearDownloadSession(window.sessionStorage); } catch { /* Reset the current journey even if storage is unavailable. */ }
     setDownloadsUnlocked(false); reset(); setWelcome(true); setStartingPoint(""); setFurthestStep(0);
   };
-  return <div className={`simple-gps guided-shell${downloadsUnlocked ? "" : " gps-downloads-locked"}`}>
+  return <div className="simple-gps guided-shell">
     <aside className="simple-rail guided-rail" aria-label="Your Dream Life journey">
       <a className="simple-brand" href="/"><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><b>Dream Life GPS</b></a>
       <div className="quiz-rail-welcome"><h2>{userName.trim() && !welcome ? `This is your space, ${userName.trim()}.` : "A little clarity. A step forward."}</h2><p>You don't have to have it all figured out to begin.</p></div>

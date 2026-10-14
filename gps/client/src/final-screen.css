@@ -75,3 +75,9 @@
 @keyframes gps-payoff-arrive { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes gps-compass-arrive { from { opacity: .3; transform: scale(.94) rotate(-4deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
 @media print { .gps-final-downloads, .gps-work-with-sean { display: none !important; } }
+
+.gps-north-star img { max-width: 460px; aspect-ratio: auto; }
+.gps-save-summary { border-top: 1px solid #c8d7cf; padding: 28px 0 0; }
+.gps-save-summary h2 { font: 400 30px/1.3 Georgia, serif; color: #243e38; }
+.gps-save-summary > p { margin: 14px 0 22px; font-size: 18px; line-height: 1.65; color: #243e38; }
+.gps-complete-note { border-top: 1px solid #c8d7cf; padding-top: 24px; }
