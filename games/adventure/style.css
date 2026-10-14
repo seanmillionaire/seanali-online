@@ -35,3 +35,6 @@ body[data-scene="islandQuest"] .tools button{color:#284e48}
 .island-goal{position:absolute;right:24px;top:88px;width:270px;padding:16px;border:2px solid #ffdf8a;border-radius:18px;background:#fff8e9f5;box-shadow:0 6px 24px #153d4540;color:#234b47}.island-goal strong{font-size:12px;letter-spacing:.06em}.island-goal p{font-size:17px;line-height:1.35;margin:10px 0}.goal-next{width:100%;border:0;border-radius:12px;padding:14px;background:#f4c862;color:#203e37;font-weight:800;font-size:16px;min-height:48px}.goal-next:focus-visible{outline:3px solid #244e49;outline-offset:3px}
 @media(max-width:780px){.island-goal{top:auto;bottom:250px;left:12px;right:auto;width:min(260px,calc(100vw - 24px));padding:10px}.island-goal p{font-size:14px;margin:6px 0}.goal-next{min-height:44px;padding:10px;font-size:14px}.explore-message{top:29%}}
 @media(max-height:550px){.island-goal{top:76px;bottom:auto;left:auto;right:12px;width:230px}.island-goal p{font-size:13px}}
+
+/* Context replaces the existing goal card instead of adding another HUD panel. */
+.shark-nearby .island-goal{border:3px solid #e87d44;background:#fff2d9}.shark-nearby .goal-next{background:#ffd262}.inside-lighthouse .explore-hud .explore-bag{display:none}.inside-lighthouse .explore-menu{opacity:.92}
