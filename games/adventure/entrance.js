@@ -1,4 +1,4 @@
-import {createTropical} from './tropical.js?v=18';
+import {createTropical} from './tropical.js?v=19';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
 export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import('./vendor/three.module.min.js')}={}) {
   let disposed=false,world=null,pending=null;
@@ -66,7 +66,7 @@ void main(){
   // The dock, moored boat, and a moving sailboat out on the water.
   for(let i=0;i<15;i++){make(box,wood,4,.42,12+i*.36,2,.16,.28);if(i%4===0)for(const dx of [-.9,.9])make(cylinder,wood,4+dx,.23,12+i*.36,.1,1.25,.1);}
   function boat(x,z,s){const g=new T.Group();g.position.set(x,.25,z);scene.add(g);make(ball,wood,0,0,0,1.8*s,.35*s,.7*s,g);make(cylinder,cream,0,1.7*s,0,.055*s,3.3*s,.055*s,g);const shape=new T.Shape();shape.moveTo(0,0);shape.lineTo(0,2.8*s);shape.lineTo(-1.5*s,.15*s);shape.closePath();make(geometry(new T.ShapeGeometry(shape)),mat('#ffe7b5',{side:T.DoubleSide}),.07,.3*s,0,1,1,1,g);g.rotation.y=-.3;bobbing.push({g,y:.25,z});return g;}
-  boat(6.5,16,.75);const sailboat=boat(-18,21,1.2);
+  const dockBoat=boat(6.5,16,.75);dockBoat.name='Dock boat';const sailboat=boat(-18,21,1.2);
   // Distant islets and glowing motes give the approach a sense of depth.
   for(let i=0;i<5;i++){const x=-70+i*32,z=-50-rand()*25;make(ball,stone,x,-.3,z,8+rand()*6,.8+rand()*.6,7);}
   const motePositions=[];for(let i=0;i<60;i++)motePositions.push((rand()-.5)*40,1+rand()*10,(rand()-.5)*30);const motesGeo=geometry(new T.BufferGeometry());motesGeo.setAttribute('position',new T.Float32BufferAttribute(motePositions,3));const moteMat=new T.PointsMaterial({color:'#fff0ab',size:.12,transparent:true,opacity:.8,depthWrite:false});materials.add(moteMat);const motes=new T.Points(motesGeo,moteMat);scene.add(motes);
@@ -87,7 +87,7 @@ void main(){
   function pointer(e){if(!motion()||flight!==null)return;const r=canvas.getBoundingClientRect();px=(e.clientX-r.left)/r.width-.5;py=(e.clientY-r.top)/r.height-.5;}
   const observer=new ResizeObserver(resize),bodyObserver=new MutationObserver(wake);observer.observe(canvas.parentElement);bodyObserver.observe(document.body,{attributes:true,attributeFilter:['class']});document.addEventListener('visibilitychange',visibility);canvas.parentElement.addEventListener('pointermove',pointer,{passive:true});
   let explorer;
-  try{explorer=setup?.({T,scene,camera,target,height,make,geometry,mat,ball,cone,cylinder,box,renderer,tropical,tower,beam,crystal});
+  try{explorer=setup?.({T,scene,camera,target,height,make,geometry,mat,ball,cone,cylinder,box,renderer,tropical,tower,beam,crystal,dockBoat});
   pose();camera.lookAt(target);resize();if(explorer){camera.clearViewOffset();camera.updateProjectionMatrix();explorer.update(0,0);}draw();wake();}catch(error){dispose();throw error;}
   return {
     resume(){renderer.shadowMap.needsUpdate=true;wake();},
