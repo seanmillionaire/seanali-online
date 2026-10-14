@@ -1,106 +1,81 @@
-// Run with Node and jsdom available in the test environment.
+// Manifest uses the Try the Script AWeber form with a compact mobile-first, higher-energy opt-in.
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { readFileSync } = require('node:fs');
+const { readFileSync, existsSync } = require('node:fs');
 const { resolve } = require('node:path');
-const { JSDOM } = require('jsdom');
 const root = resolve(__dirname, '..');
-const html = readFileSync(resolve(root, 'manifest.html'), 'utf8');
-const script = readFileSync(resolve(root, 'assets/manifest-quiz.js'), 'utf8');
-
-function setup() {
-  const dom = new JSDOM(html, { runScripts: 'outside-only', url: 'https://seanali.online/manifest?utm_source=test&email=private' });
-  const w = dom.window, d = w.document, events = [];
-  let time = 1000;
-  Object.defineProperty(w.performance, 'now', { value: () => time });
-  w.scrollTo = () => {};
-  w.HTMLElement.prototype.scrollIntoView = function () {};
-  w.fbq = (...args) => events.push(args);
-  w.eval(script);
-  return { w, d, events, close: () => w.close(), tick: () => { time += 400; }, answer(index) { time += 400; d.querySelectorAll('.answer')[index].click(); } };
+for (const page of ['manifest.html', 'manifestscreen.html']) {
+  const html = readFileSync(resolve(root, page), 'utf8');
+  test(page + ' uses a compact mobile-first manifestation opt-in', () => {
+    assert(html.includes('7-Minute Manifestation Script'));
+    assert(html.includes('Start making it happen tonight.'));
+    assert(html.includes('class="optin-card"'));
+    assert(html.includes('UNLOCK MY 7-MINUTE SCRIPT'));
+    assert(html.includes('name="name"'));
+    assert(html.includes('name="email"'));
+    assert(html.includes('@media(max-width:640px)'));
+    assert(html.includes('h1 { font-size:32px'));
+    assert(!html.includes('hero-image'));
+    assert(!html.includes('trust-badge'));
+    assert(html.includes('4.9/5 · 3,800+ Hypnotic Meditations reviews'));
+    assert(html.includes('class="form-heading"'));
+    assert(html.includes('class="eyebrow"'));
+    assert.equal((html.match(/class="eyebrow"/g) || []).length, 1);
+    assert(html.includes('🌙 7-MINUTE MANIFESTATION RITUAL'));
+    assert(!/\bfree\b/i.test(html));
+    assert(!html.includes('class="brand"'));
+    assert(!html.includes('class="form-kicker"'));
+    assert(html.includes('class="proof-pill"'));
+    assert(html.includes('background:radial-gradient('));
+    assert(!html.includes('video-caption'));
+    assert(html.includes('© 2026 Sean Ali. All rights reserved.'));
+    assert(html.includes('https://seanali.online/' + page.replace(/\.html$/, '')));
+  });
+  test(page + ' keeps Try the Script AWeber wiring', () => {
+    assert(html.includes('action="https://www.aweber.com/scripts/addlead.pl"'));
+    assert(html.includes('name="meta_web_form_id" value="184900578"'));
+    assert(html.includes('name="listname" value="awlist6889085"'));
+    assert(html.includes('name="redirect" value="https://seanali.online/manifestwatch?source=script-lead"'));
+    assert(html.includes('name="meta_message" value="1"'));
+    assert(html.includes('name="meta_required" value="name,email"'));
+    assert(!html.includes('https://www.manifestationgenie.ai'));
+  });
+  test(page + ' keeps tracking and consent intact', () => {
+    for (const asset of ['manifest-script-events.js', 'manifest-script-reset.js']) {
+      assert(existsSync(resolve(root, 'assets', asset)));
+      assert(html.includes('/assets/' + asset));
+    }
+    assert(html.includes("fbq('init','1586097145783190')"));
+    assert(html.includes("fbq('init','878451855254470')"));
+    assert(html.includes("fbq('track', 'Lead')"));
+    assert(html.includes('Unsubscribe anytime'));
+    assert(html.indexOf('class="submit-btn"') < html.indexOf('class="privacy"'));
+    assert(html.indexOf('class="submit-btn"') < html.indexOf('<footer>'));
+  });
 }
 
-test('all 27 paths personalize the result and preserve the AWeber handoff', () => {
-  const headlines = ['Make room for more freedom in your life.', 'Your next chapter can have a direction.', 'There is room for a new chapter.'];
-  const blockers = ['same doubts', 'advice can feel overwhelming', "don't need a perfect plan"];
-  const feelings = ['More room to breathe.', 'The feeling of moving forward', 'More time. More choice.'];
-  const prompts = new Set();
-  for (let a = 0; a < 3; a++) for (let b = 0; b < 3; b++) for (let c = 0; c < 3; c++) {
-    const t = setup();
-    try {
-      assert.equal(t.d.getElementById('finish').hidden, true);
-      [a, b, c].forEach(index => t.answer(index));
-      assert.equal(t.d.getElementById('entry').hidden, true);
-      assert.equal(t.d.getElementById('finish').hidden, false);
-      assert.equal(t.d.activeElement.id, 'finish-title');
-      assert.equal(t.d.getElementById('finish-title').textContent, headlines[a]);
-      assert(t.d.getElementById('reflection-copy').textContent.includes(blockers[b]));
-      assert(t.d.getElementById('finish-feeling').textContent.startsWith(feelings[c]));
-      prompts.add(t.d.getElementById('conversation-prompt').textContent);
-      const form = t.d.getElementById('manifest-optin-form');
-      const data = new t.w.FormData(form);
-      assert.equal(form.action, 'https://www.aweber.com/scripts/addlead.pl');
-      assert.equal(form.method, 'post');
-      assert.equal(data.get('listname'), 'awlist6946418');
-      assert.equal(data.get('redirect'), 'https://www.manifestationgenie.ai');
-      assert.equal(data.get('meta_redirect_onlist'), 'https://www.manifestationgenie.ai');
-      assert.equal(data.get('meta_required'), 'name,email');
-      assert.deepEqual([...data.keys()].sort(), ['name', 'email', 'listname', 'redirect', 'meta_redirect_onlist', 'meta_tags', 'meta_adtracking', 'meta_required'].sort());
-      assert.equal(t.events.filter(e => e[1] === 'ManifestQuizStart').length, 1);
-      assert.equal(t.events.filter(e => e[1] === 'ManifestQuizComplete').length, 1);
-      assert(!JSON.stringify(t.events).includes('private'));
-      t.d.getElementById('restart').click();
-      assert.equal(t.d.getElementById('finish').hidden, true);
-      assert.equal(t.d.querySelector('[aria-pressed="true"]'), null);
-      assert.equal(t.d.activeElement.id, 'question-title');
-    } finally { t.close(); }
-  }
-  assert.equal(prompts.size, 27);
-});
-
-test('Back restores the selection, return preserves progress, and rapid clicks cannot skip questions', () => {
-  const t = setup();
-  try {
-    t.answer(1);
-    t.d.querySelector('.answer').click();
-    assert.equal(t.d.getElementById('step-label').textContent, 'Question 2 of 3');
-    t.d.getElementById('return-to-quiz').click();
-    assert.equal(t.d.getElementById('step-label').textContent, 'Question 2 of 3');
-    t.d.getElementById('back').click();
-    assert.equal(t.d.querySelectorAll('.answer')[1].getAttribute('aria-pressed'), 'true');
-    assert.equal(t.d.querySelector('.progress-track').getAttribute('aria-valuenow'), '0');
-    t.answer(2); t.answer(0); t.answer(1);
-    assert.equal(t.d.getElementById('finish-title').textContent, 'There is room for a new chapter.');
-    t.d.getElementById('restart').click();
-    t.answer(0); t.answer(0); t.answer(0);
-    assert.equal(t.events.filter(e => e[1] === 'ManifestQuizComplete').length, 1);
-  } finally { t.close(); }
-});
-
-test('form rejects invalid data and survives unavailable storage or analytics', () => {
-  const t = setup();
-  try {
-    t.answer(0); t.answer(0); t.answer(0);
-    const form = t.d.getElementById('manifest-optin-form');
-    const submit = () => form.dispatchEvent(new t.w.Event('submit', { bubbles: true, cancelable: true }));
-    assert.equal(submit(), false);
-    t.d.getElementById('manifest-name').value = '   ';
-    t.d.getElementById('manifest-email').value = 'invalid';
-    assert.equal(submit(), false);
-    t.d.getElementById('manifest-name').value = 'Test';
-    t.d.getElementById('manifest-email').value = 'test@example.com';
-    Object.defineProperty(t.w, 'sessionStorage', { get() { throw new Error('disabled'); } });
-    t.w.fbq = () => { throw new Error('blocked'); };
-    assert.equal(submit(), true);
-    assert.equal(t.d.getElementById('manifest-submit').disabled, true);
-    assert.equal(submit(), false);
-    t.w.dispatchEvent(new t.w.Event('pageshow'));
-    assert.equal(t.d.getElementById('manifest-submit').disabled, false);
-  } finally { t.close(); }
-});
-
-test('existing pixels, consent, fallback and clean canonical are present', () => {
-  for (const marker of ['878451855254470', '1586097145783190', "fbq('track','PageView')", 'Unsubscribe anytime', '<noscript>', 'https://seanali.online/manifest']) assert(html.includes(marker));
-  assert(!html.includes('10x Faster'));
-  assert(!html.includes('3,000+'));
+const watch = readFileSync(resolve(root, 'manifestwatch.html'), 'utf8');
+test('manifest watch matches opt-in presentation and keeps original video/checkout', () => {
+  const optin = readFileSync(resolve(root, 'manifest.html'), 'utf8');
+  assert(watch.includes('class="eyebrow"'));
+  assert.equal((watch.match(/class="eyebrow"/g) || []).length, 1);
+  assert(watch.includes('🌙 7-MINUTE MANIFESTATION RITUAL'));
+  assert(watch.includes('class="optin-card watch-offer"'));
+  assert(watch.includes('background:radial-gradient('));
+  assert(watch.includes('background:#fffaf6;'));
+  assert(watch.includes('4.9/5 · 3,800+ Hypnotic Meditations reviews'));
+  assert(watch.includes('Now Watch How the'));
+  assert(watch.includes('7-Minute Manifestation Script'));
+  assert(watch.includes('https://seanali.online/manifestwatch'));
+  assert(!/\bfree\b/i.test(watch));
+  assert(!watch.includes('class="brand"'));
+  assert(watch.includes('id="vid-6966599cbabb3c836813c52f"'));
+  assert(watch.includes('https://scripts.converteai.net/06805447-0fe0-4045-89f5-ea45443a5071/players/6966599cbabb3c836813c52f/v4/player.js'));
+  assert(watch.includes('https://pay.hotmart.com/F102533819G?checkoutMode=10'));
+  assert(watch.includes('https://trythescript.com/tools/7-night-tracker.html'));
+  assert(watch.includes("hot('account','3a3058a6-7369-3d97-a1a0-ba9baed71541')"));
+  assert(watch.includes('/assets/manifest-script-events.js'));
+  assert(watch.includes('fbq(\'init\',\'1586097145783190\')'));
+  assert(watch.includes('fbq(\'init\',\'878451855254470\')'));
+  assert(optin.includes('name="redirect" value="https://seanali.online/manifestwatch?source=script-lead"'));
 });

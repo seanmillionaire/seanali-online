@@ -58,8 +58,8 @@
     const desire = questions[0].options[selections[0]];
     const blocker = questions[1].options[selections[1]];
     const feeling = questions[2].options[selections[2]];
-    byId('finish-title').textContent = desire.headline;
-    byId('finish-intro').textContent = desire.intro;
+    byId('finish-title').textContent = 'Turn What You Want Into a Clear Next Step.';
+    byId('finish-intro').textContent = `You said you want ${desire.desire}. Manifestation Genie helps you work through what's stopping you and find a practical place to start.`;
     byId('finish-feeling').textContent = feeling.feeling;
     byId('reflection-copy').textContent = blocker.reflection;
     byId('conversation-prompt').textContent = `"I want ${desire.desire}. ${blocker.blocker}. I want to ${feeling.prompt}. Can you help me find one practical next step?"`;
@@ -91,7 +91,7 @@
   });
   const form = byId('manifest-optin-form'), submit = byId('manifest-submit');
   let submitting = false;
-  function resetSubmit() { submitting = false; submit.disabled = false; submit.textContent = 'Take me to the Genie \u2192'; }
+  function resetSubmit() { submitting = false; submit.disabled = false; submit.textContent = 'UNLOCK MY FREE GENIE ACCESS \u2192'; }
   form.addEventListener('submit', event => {
     const name = byId('manifest-name');
     name.setCustomValidity(name.value.trim() ? '' : 'Please enter your first name.');

@@ -5,6 +5,11 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/money",
+      "destination": "/meditation",
+      "permanent": true
+    },
+    {
       "source": "/games/:legacy(math-dissector|math-race|piano|tongue-twister|isla-aventura|family|beats|food-groups|elements|money|family-gems|selva|traffic-town|mirror)",
       "destination": "/games",
       "permanent": false
