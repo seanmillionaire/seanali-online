@@ -230,3 +230,31 @@ body[data-optin-reference="hm-free"] .fold .divider {background:#e2e8f0!importan
  body[data-optin-reference="hm-free"] .submit,
  body[data-optin-reference="hm-free"] .cta-btn {transition:none!important;animation:none!important;}
 }
+
+/* 2026-10-13b: carry the same original Sean/MoneyWave visual through the Sean opt-ins. */
+body[data-optin-reference="hm-free"] .sean-optin-creator-image {
+  display:flex!important;flex-direction:column!important;align-items:center!important;
+  max-width:420px!important;margin:13px auto 18px!important;
+  padding:0!important;text-align:center!important;
+}
+body[data-optin-reference="hm-free"] .sean-optin-creator-image>img,
+body[data-optin-reference="hm-free"] .hero-image.sean-optin-creator-image>img,
+body[data-optin-reference="hm-free"] .sean-hm-hero-image.sean-optin-creator-image>img {
+  display:block!important;width:auto!important;max-width:min(190px,72vw)!important;
+  max-height:210px!important;height:auto!important;object-fit:contain!important;
+  border-radius:20px!important;
+  box-shadow:0 15px 32px rgba(15,23,42,.14)!important;
+}
+body[data-optin-reference="hm-free"] .sean-optin-creator-image figcaption {
+  color:#475569!important;font:700 12px/1.4 Inter,system-ui,sans-serif!important;
+  margin-top:10px!important;
+}
+body[data-optin-reference="hm-free"] .optin-card .form-heading {margin:0 0 10px!important;}
+body[data-optin-reference="hm-free"] .hero-image.sean-optin-creator-image {margin-bottom:15px!important;}
+@media(max-width:620px) {
+ body[data-optin-reference="hm-free"] .sean-optin-creator-image {margin:10px auto 14px!important;}
+ body[data-optin-reference="hm-free"] .sean-optin-creator-image>img,
+ body[data-optin-reference="hm-free"] .hero-image.sean-optin-creator-image>img,
+ body[data-optin-reference="hm-free"] .sean-hm-hero-image.sean-optin-creator-image>img {max-width:min(148px,48vw)!important;max-height:162px!important;}
+ body[data-optin-reference="hm-free"] .sean-optin-creator-image figcaption {font-size:11px!important;margin-top:6px!important;}
+}
