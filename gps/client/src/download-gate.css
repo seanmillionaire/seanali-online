@@ -21,6 +21,4 @@
 .gps-download-locked-note { font-size: 16px; color: #52675f; }
 @media print {
   .gps-download-gate { display: none !important; }
-  .gps-downloads-locked .guided-card > * { display: none !important; }
-  .gps-downloads-locked .guided-card::after { display: block; content: 'Unlock your downloads with your email on the final screen to print your Dream Life Map.'; font: 18px/1.5 sans-serif; color: #243e38; }
 }
