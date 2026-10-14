@@ -1,8 +1,8 @@
-import {createExplore} from './explore.js?v=10';
-import {createEntrance} from './entrance.js?v=10';
+import {createExplore} from './explore.js?v=11';
+import {createEntrance} from './entrance.js?v=11';
 import {createDelight,burst,livingWorld,foxPortrait} from './delight.js?v=2';
 import {regions,quests,challenges,ui,text} from './content.js';
-import {SAVE_KEY,fresh,normalize,completedCount,lightCount,totalStars,unlocked,award} from './state.js?v=10';
+import {SAVE_KEY,fresh,normalize,completedCount,lightCount,totalStars,unlocked,award} from './state.js?v=11';
 const $=s=>document.querySelector(s),app=$('#app'),dialog=$('#dialog');
 let storageOK=true,state;try{state=normalize(JSON.parse(localStorage.getItem(SAVE_KEY)));if(!localStorage.getItem(SAVE_KEY)){state.lang=localStorage.getItem('seanGameLang')==='en'?'en':'es';}}catch{state=fresh();}
 let screen='entry',entrance=null,exploration=null,timers=[],audioContext,run=0,solved=false,currentTask=null,playing=false,returnFocus=null;
@@ -15,7 +15,8 @@ const joy=createDelight({soundEnabled:()=>state.sound,motionEnabled:motionOn});
 function save(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(state));localStorage.setItem('seanGameLang',state.lang);storageOK=true;}catch{storageOK=false;}}
 function later(fn,ms){const r=run;const id=setTimeout(()=>{if(r===run)fn();},ms);timers.push(id);return id;}
 function clean(){exploration?.dispose();exploration=null;document.body.classList.remove('arriving-world');entrance?.dispose();entrance=null;run++;timers.forEach(clearTimeout);timers=[];playing=false;try{speechSynthesis.cancel();}catch{}solved=false;currentTask=null;}
-function speak(message){if(!state.sound||!('speechSynthesis'in window))return;try{speechSynthesis.cancel();joy.duck();const u=new SpeechSynthesisUtterance(tr(message));u.lang=state.lang==='es'?'es-ES':'en-US';u.rate=.9;speechSynthesis.speak(u);}catch{}}
+function speak(message,{interrupt=true}={}){if(!state.sound||document.hidden||!('speechSynthesis'in window))return false;try{if(!interrupt&&(speechSynthesis.speaking||speechSynthesis.pending))return false;if(interrupt)speechSynthesis.cancel();joy.duck();const u=new SpeechSynthesisUtterance(tr(message));u.lang=state.lang==='es'?'es-ES':'en-US';const voices=speechSynthesis.getVoices();u.voice=voices.find(v=>v.lang===u.lang&&v.localService)||voices.find(v=>v.lang.startsWith(state.lang))||null;u.rate=.92;speechSynthesis.speak(u);return true;}catch{return false;}}
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&'speechSynthesis'in window)speechSynthesis.cancel();});
 function tone(note=0,length=.2,kind='sine'){joy.note(note,length,kind);}
 function chime(){joy.effect('correct');}
 function confetti(){if(!motionOn())return;for(let i=0;i<30;i++){const c=el('i','confetti');c.style.left=`${Math.random()*100}%`;c.style.background=['#f6cb74','#8cae90','#d7a1a8','#b5a7d3'][i%4];c.style.animationDelay=`${Math.random()*.5}s`;document.body.append(c);setTimeout(()=>c.remove(),3200);}}
@@ -28,7 +29,7 @@ function render(){clean();document.documentElement.lang=state.lang;document.body
 function welcome(){
  const returning=state.started,section=el('main','welcome world-entry'),copy=el('div','welcome-copy');
  copy.append(el('div','eyebrow',returning?text('Tu isla te estaba esperando','Your island has been waiting'):text('Al otro lado del mar, empieza tu historia','Across the sea, your story begins')));
- const h=el('h1','',t('title'));h.append(el('em','',t('subtitle')));copy.append(h,el('p','',returning?text('Pip guardó tu lugar. Las luces, tus amigos y una nueva aventura te esperan.','Pip saved your place. The lights, your friends, and a new adventure are waiting.'):text('Sigue la luz. Cruza el mar. Hay un mundo entero esperando conocerte.','Follow the light. Cross the sea. A whole world is waiting to meet you.')));
+ const h=el('h1','',t('title'));h.append(el('em','',t('subtitle')));copy.append(h,el('p','',returning?text('Angelique, Pip guardó tu lugar. Tus amigos y una nueva aventura te esperan.','Angelique, Pip saved your place. Your friends and a new adventure are waiting.'):text('Sigue la luz. Cruza el mar. Hay un mundo entero esperando conocerte.','Follow the light. Cross the sea. A whole world is waiting to meet you.')));
  const enter=button(returning?text('Volver a mi isla','Return to my island'):text('Entrar en la aventura','Enter the adventure'),'primary enter-world',arrive);
  copy.append(enter,el('p','welcome-foot',text('Un toque. Y ya estás en otro mundo.','One tap. A whole new world.')));
  const guide=el('div','arrival-guide');guide.append(el('div','arrival-turtle'),el('span','',text('¡Por aquí!','This way!')));section.append(copy,guide);
@@ -36,9 +37,9 @@ function welcome(){
  const skip=button(text('Saltar llegada','Skip arrival'),'skip-arrival',()=>entrance?.skip());skip.hidden=true;section.append(skip);app.append(section);
  entrance=createEntrance(section,{motion:motionOn,label:tr(text('Una isla tropical con palmeras, fauna, mar, casas, barcos y un faro.','A tropical island with palms, wildlife, ocean, cottages, boats, and a lighthouse.'))});
  let entering=false;
- function arrive(){if(entering)return;entering=true;enter.disabled=true;section.classList.add('arriving');document.body.classList.add('arriving-world');skip.hidden=false;travel.hidden=false;skip.focus({preventScroll:true});joy.effect('arrival');entrance.flyIn(()=>{document.body.classList.remove('arriving-world');state.started=true;save();screen='explore';render();chime();});}
+ function arrive(){if(entering)return;entering=true;enter.disabled=true;section.classList.add('arriving');document.body.classList.add('arriving-world');skip.hidden=false;travel.hidden=false;skip.focus({preventScroll:true});joy.effect('arrival');speak(text('¡Bienvenida, Angelique! Tu isla te espera.','Welcome, Angelique! Your island is waiting.'));entrance.flyIn(()=>{document.body.classList.remove('arriving-world');state.started=true;save();screen='explore';render();chime();});}
 }
-function exploreView(){const host=el('main','explore-world');app.append(host);exploration=createExplore(host,{state,save,joy,motion:motionOn,openBook:()=>{screen='map';render();},openHome:()=>{screen='home';render();}});}
+function exploreView(){const host=el('main','explore-world');app.append(host);exploration=createExplore(host,{state,save,joy,speak,motion:motionOn,openBook:()=>{screen='map';render();},openHome:()=>{screen='home';render();}});}
 function story(ri,go){joy.effect('friend');state.seen.push(ri);save();const r=regions[ri];modal(r.name,r.intro,[[text('¡Vamos!','Let’s go!'),go]],r.animal);speak(r.intro);}
 function nextQuest(){return quests[completedCount(state)]||quests[0];}
 function continueQuest(){if(state.active){screen='quest';render();return;}const q=nextQuest();if(!state.seen.includes(q.region))story(q.region,()=>startQuest(q));else startQuest(q);}

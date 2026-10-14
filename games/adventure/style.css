@@ -19,3 +19,5 @@ body[data-scene="explore"]{overflow:hidden;background:#96cbd2}body[data-scene="e
 body[data-scene="explore"] .tools button{color:#264e49}body[data-scene="explore"] .tools .lang{background:#fff5d8}body[data-scene="explore"] .lang button.active{background:#e0bb70;color:#244a45}
 /* Natural island palette: quiet surfaces leave the wildlife and landscape in focus. */
 body[data-scene="explore"] .explore-location,body[data-scene="explore"] .world-small{background:#f4f0e5e8;border-radius:10px;box-shadow:0 2px 8px #173d4020}.explore-bag{background:#f4f0e5e8}.explore-hint{background:#193c38d9}.world-action{background:#e8d4a6;border-radius:14px}.world-jump{border-radius:14px}.arrival-turtle{width:95px;height:95px;background-image:url('./tropical-atlas.png');background-size:400% 400%;background-position:0 66.6667%;filter:drop-shadow(0 4px 5px #173d4055)}@media(max-width:780px){.arrival-turtle{width:65px;height:65px}}
+
+.explore-menu{flex-wrap:wrap;max-width:calc(100% - 24px)}
