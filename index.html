@@ -95,48 +95,79 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 <link rel="stylesheet" href="/assets/journey-hub.css?v=20261013a">
 
 <style id="homepage-seo-styles">
-.opener-top{min-height:100svh;display:flex;flex-direction:column;flex-shrink:0}
-.seo-content{background:#fff;color:var(--ink);width:100%;font-family:Inter,Arial,sans-serif}
-.seo-inner{max-width:1080px;margin:0 auto;padding:0 24px}
-.seo-section{padding:76px 0;border-top:1px solid #ece9e5}
-.seo-eyebrow{color:#b13d2b;font-size:11px;font-weight:800;letter-spacing:1.7px;text-transform:uppercase;margin:0 0 13px}
-.seo-section h2{font-size:clamp(28px,4vw,42px);letter-spacing:-1.4px;line-height:1.12;margin:0 0 20px;max-width:750px}
-.seo-section p{font-size:16px;line-height:1.75;color:#53585f;margin:0 0 17px}
-.seo-section a{color:#b33222;text-underline-offset:4px;font-weight:750}
-.seo-intro{background:#fcfaf7}
-.seo-intro .seo-inner{max-width:890px}
-.seo-intro .seo-lede{font-size:18px;line-height:1.7;color:#363c42}
-.seo-keylinks{display:flex;gap:11px;flex-wrap:wrap;margin-top:25px}
-.seo-keylinks a{display:inline-flex;align-items:center;border:1px solid #e8dbd4;background:#fff;border-radius:100px;padding:11px 17px;text-decoration:none;font-size:13px}
-.seo-topics .seo-subtitle{max-width:640px}
-.seo-topic-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:30px}
-.seo-topic{border:1px solid #eae5df;border-radius:18px;padding:27px;background:#fff;box-shadow:0 4px 20px #32271c05}
-.seo-topic.featured{background:#fff9f5;border-color:#edd3c7}
-.seo-topic-icon{display:flex;align-items:center;justify-content:center;width:42px;height:42px;background:#f5f1eb;border-radius:12px;font-size:23px;margin-bottom:16px}
-.seo-topic.featured .seo-topic-icon{background:#ffe9dd}
-.seo-topic h3{font-size:22px;letter-spacing:-.65px;line-height:1.2;margin:0 0 10px}
-.seo-topic p{font-size:15px;line-height:1.65;margin:0 0 15px}
-.seo-topic a{font-size:14px;text-decoration:none}
-.seo-topic a:hover,.seo-keylinks a:hover,.seo-reading-card a:hover{text-decoration:underline}
-.seo-story{background:#faf8f5}
-.seo-story-grid{display:grid;grid-template-columns:1.65fr 1fr;gap:55px;align-items:center}
-.seo-story-image{max-width:300px;width:100%;aspect-ratio:1/1;object-fit:cover;object-position:center 20%;border-radius:22px;box-shadow:16px 16px 0 #f0e7dd}
-.seo-story p{max-width:630px}
-.seo-reading-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:26px}
-.seo-reading-card{border:1px solid #eae5df;border-radius:17px;padding:24px;background:#fff}
-.seo-reading-card h3{font-size:18px;letter-spacing:-.4px;line-height:1.35;margin:0 0 12px}
-.seo-reading-card p{font-size:14px;line-height:1.65}
-.seo-reading-card a{font-size:13px;text-decoration:none}
-.seo-faq{background:#fcfaf7}
-.seo-faq-list{max-width:850px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 36px;margin-top:25px}
-.seo-faq-item h3{font-size:18px;line-height:1.35;margin:0 0 9px}
-.seo-faq-item p{font-size:14px;line-height:1.75;margin:0}
-.seo-bottom{text-align:center;background:#fff;padding:55px 0 68px}
-.seo-bottom h2{margin:0 auto 13px;font-size:clamp(27px,4vw,37px)}
-.seo-bottom p{margin:0 auto 21px;max-width:540px}
-.seo-bottom .seo-button{display:inline-flex;align-items:center;justify-content:center;padding:16px 28px;min-height:52px;color:#fff;background:#e84d2e;border-radius:11px;text-decoration:none;font-size:15px;font-weight:800;box-shadow:0 6px 18px #e84d2e26}
-.seo-bottom .seo-button:hover{background:#ca3621}
-@media(max-width:750px){.seo-section{padding:52px 0}.seo-inner{padding:0 20px}.seo-topic-grid,.seo-faq-list{grid-template-columns:1fr}.seo-topic{padding:23px}.seo-story-grid{grid-template-columns:1fr;gap:26px}.seo-story-image{max-width:220px}.seo-reading-grid{grid-template-columns:1fr}.seo-reading-card{padding:21px}.seo-intro .seo-lede{font-size:16px}.seo-keylinks a{font-size:12px}.seo-bottom{padding:48px 0 56px}}
+/* A real-photo visual story beneath the intentionally compact welcome screen. */
+.life-site{background:#fff;color:#151719;font-family:Inter,Arial,sans-serif;width:100%;overflow:hidden}
+.life-site *{box-sizing:border-box}
+.life-wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+.life-site a{color:inherit}
+.life-site a:focus-visible,.life-site summary:focus-visible{outline:3px solid #2556d8;outline-offset:4px}
+.life-section{padding:78px 0}
+.life-kicker{display:block;font-size:11px;line-height:1.4;letter-spacing:1.8px;font-weight:900;text-transform:uppercase;color:#ad3a2a;margin:0 0 13px}
+.life-site h2{font-size:clamp(31px,4vw,51px);line-height:1.07;letter-spacing:-1.9px;font-weight:900;margin:0 0 19px;text-wrap:balance}
+.life-site p{color:#595e63;font-size:16px;line-height:1.62}
+.life-showcase{background:#fcfaf7;padding:84px 0 80px}
+.life-showcase-grid{display:grid;grid-template-columns:minmax(260px,.77fr) minmax(0,1.23fr);align-items:center;gap:50px}
+.life-intro h2{max-width:480px}
+.life-intro p{max-width:400px;margin:0 0 22px}
+.life-intro .life-link{display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:800;text-decoration:none;color:#d33d27;border-bottom:2px solid #df4b32;padding-bottom:5px}
+.life-intro .life-link:hover{color:#982b1b}
+.life-mosaic{display:grid;grid-template-columns:1.13fr .87fr;grid-template-rows:repeat(2,190px);gap:12px;min-width:0}
+.life-photo{position:relative;display:block;overflow:hidden;isolation:isolate;background:#e5e1da;border-radius:20px;color:#fff;text-decoration:none}
+.life-photo::after{content:"";position:absolute;inset:35% 0 0;background:linear-gradient(180deg,transparent,#0009);pointer-events:none;z-index:1}
+.life-photo img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
+.life-photo:hover img{transform:scale(1.045)}
+.life-photo span{position:absolute;left:18px;bottom:17px;z-index:2;font-size:12px;font-weight:800;text-shadow:0 2px 10px #0009;letter-spacing:.1px}
+.life-photo-main{grid-row:span 2}
+.life-photo-main img{object-position:50% 50%}
+.life-photo-small img{object-position:center}
+.life-section-head{display:flex;gap:24px;align-items:end;justify-content:space-between;margin-bottom:25px}
+.life-section-head h2{margin-bottom:0;max-width:680px}
+.life-section-head>p{font-size:14px;max-width:320px;margin:0 0 3px}
+.life-chapters{background:#fff}
+.life-chapter-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.life-chapter{position:relative;display:block;overflow:hidden;isolation:isolate;min-height:375px;border-radius:20px;background:#e7e1d9;text-decoration:none;color:#fff}
+.life-chapter img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
+.life-chapter:first-child img{object-position:50% 30%}
+.life-chapter:nth-child(2) img{object-position:55% 42%}
+.life-chapter::after{content:"";position:absolute;inset:25% 0 0;background:linear-gradient(180deg,transparent 3%,#000c 100%)}
+.life-chapter:hover img{transform:scale(1.045)}
+.life-chapter-body{position:absolute;bottom:0;left:0;right:0;z-index:2;padding:25px 21px}
+.life-chapter-number{display:block;color:#ffe0bd;font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px}
+.life-chapter strong{display:block;color:#fff;font-size:22px;letter-spacing:-.8px;line-height:1.13;max-width:210px}
+.life-chapter em{display:block;color:#fffdebdc;font-style:normal;font-size:12px;font-weight:600;line-height:1.4;margin-top:9px}
+.life-paths{background:#f8f6f2}
+.life-paths .life-section-head{margin-bottom:30px}
+.life-topic-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.life-topic{display:flex;flex-direction:column;text-decoration:none;color:#151719!important;overflow:hidden;border-radius:19px;background:#fff;border:1px solid #e8e2db;box-shadow:0 5px 22px #14121007;transition:transform .2s ease,box-shadow .2s ease}
+.life-topic:hover{transform:translateY(-3px);box-shadow:0 10px 28px #14121014}
+.life-topic img{width:100%;aspect-ratio:1.46/1;object-fit:cover;display:block;background:#eae5db}
+.life-topic-body{display:flex;flex-direction:column;flex:1;padding:23px 23px 25px}
+.life-topic-tag{font-size:10px;font-weight:900;letter-spacing:1.4px;text-transform:uppercase;color:#b43825;margin:0 0 9px}
+.life-topic h3{font-size:24px;line-height:1.15;letter-spacing:-.65px;margin:0 0 9px;color:#181a1c}
+.life-topic p{font-size:14px;color:#555c62;line-height:1.55;margin:0 0 21px;flex:1}
+.life-topic .life-go{color:#c13821;font-weight:850;font-size:14px}
+.life-quick{background:#fff;padding:57px 0 61px;border-bottom:1px solid #eee9e4}
+.life-quick-grid{display:grid;grid-template-columns:.7fr 1.3fr;gap:55px;align-items:start}
+.life-quick h2{font-size:clamp(27px,3vw,36px);margin:0}
+.life-answers{border-top:1px solid #e9e5e0}
+.life-answers details{border-bottom:1px solid #e9e5e0;padding:0}
+.life-answers summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:15px;cursor:pointer;padding:17px 2px;font-size:15px;font-weight:800}
+.life-answers summary::-webkit-details-marker{display:none}
+.life-answers summary::after{content:"+";font-size:23px;line-height:1;color:#c64029;font-weight:500}
+.life-answers details[open] summary::after{content:"−"}
+.life-answers p{font-size:14px;line-height:1.7;margin:0 3px 17px;max-width:680px}
+.life-answers p a{font-weight:800;color:#bc3524;text-decoration:underline}
+.life-next{position:relative;min-height:320px;display:flex;align-items:center;text-align:center;isolation:isolate;overflow:hidden;background:#242e2d}
+.life-next>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 54%;z-index:-2}
+.life-next::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#0b1b18bb,#091615a6);z-index:-1}
+.life-next .life-wrap{padding-top:58px;padding-bottom:58px}
+.life-next h2{margin:0 auto 12px;max-width:700px;color:#fff;font-size:clamp(32px,4vw,47px)}
+.life-next p{color:#fffde5e5;margin:0 auto 22px;max-width:490px;font-size:15px}
+.life-next .life-button{display:inline-flex;padding:17px 27px;min-height:55px;align-items:center;justify-content:center;border-radius:11px;background:#ec482b;color:#fff;text-decoration:none;font-weight:850;font-size:15px;box-shadow:0 7px 28px #0003}
+.life-next .life-button:hover{background:#d23921}
+@media(max-width:920px){.life-showcase-grid{gap:28px}.life-mosaic{grid-template-rows:repeat(2,160px)}.life-chapter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.life-chapter{min-height:340px}.life-section-head{align-items:start;flex-direction:column;gap:9px}}
+@media(max-width:640px){.life-section{padding:55px 0}.life-wrap{padding:0 17px}.life-site h2{font-size:clamp(30px,9vw,39px);letter-spacing:-1.25px}.life-showcase{padding:57px 0 53px}.life-showcase-grid{grid-template-columns:1fr;gap:25px}.life-intro p{font-size:15px;line-height:1.58}.life-mosaic{grid-template-rows:repeat(2,145px);gap:9px}.life-photo{border-radius:13px}.life-photo span{left:11px;bottom:11px;font-size:11px}.life-section-head{margin-bottom:22px}.life-chapter-grid{gap:9px}.life-chapter{min-height:250px;border-radius:13px}.life-chapter-body{padding:17px 12px}.life-chapter strong{font-size:17px;letter-spacing:-.4px}.life-chapter-number{font-size:9px;margin-bottom:8px}.life-chapter em{font-size:11px}.life-topic-grid{grid-template-columns:1fr;gap:15px}.life-topic{display:grid;grid-template-columns:42% 58%;min-height:162px;align-items:stretch;border-radius:13px}.life-topic img{aspect-ratio:auto;height:100%;min-height:162px}.life-topic-body{padding:17px 14px}.life-topic h3{font-size:20px;margin-bottom:8px}.life-topic p{font-size:12px;margin-bottom:12px}.life-topic-tag{font-size:9px;margin-bottom:5px}.life-topic .life-go{font-size:12px}.life-quick{padding:45px 0}.life-quick-grid{grid-template-columns:1fr;gap:20px}.life-answers summary{font-size:14px}.life-next{min-height:300px}.life-next .life-wrap{padding-top:50px;padding-bottom:50px}}
+@media(prefers-reduced-motion:reduce){.life-photo img,.life-chapter img,.life-topic{transition:none!important}}
 </style>
 </head><body class="opener"><div class="opener-top"><a class="skip" href="#main">Skip to content</a>
 <header class="opener-header"><a class="brand" href="/" aria-label="Sean Ali home">SEAN <span>ALI</span></a><nav aria-label="Main navigation"><a href="/feed" style="display:inline-block;margin-top:12px;font-size:12px;font-weight:600;text-decoration:none;color:#62666c">News &amp; Updates</a></nav></header>
@@ -149,122 +180,102 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 <a class="main-cta" href="/start-here/">Start My Journey <span aria-hidden="true">→</span></a>
 <p class="cta-note">Choose what you want to work on. Start with a free tool.</p>
 </main></div>
-<div class="seo-content" id="explore">
-  <section class="seo-section seo-intro" aria-labelledby="seo-intro-title">
-    <div class="seo-inner">
-      <p class="seo-eyebrow">Mindset • Money • Meditation • AI</p>
-      <h2 id="seo-intro-title">The Tools I Use To Change My Mind And Build More Freedom</h2>
-      <p class="seo-lede">I'm Sean Ali. For more than 15 years, I've worked in online business and marketing while also exploring meditation, visualization, and the habits behind the decisions we make. I used to think the answer was always another strategy. Over time, I learned that how I think, what I do each day, and the tools I use all matter.</p>
-      <p>This website brings those ideas together: practical ways to work on your money mindset, understand subconscious patterns, explore manifestation without skipping real-world action, and use AI to build useful things online.</p>
-      <div class="seo-keylinks" aria-label="Explore popular topics">
-        <a href="/how-to-reprogram-your-subconscious-mind">Subconscious Mind Guide ↗</a>
-        <a href="/what-are-money-blocks">What Are Money Blocks? ↗</a>
-        <a href="/blog/">Read My Lessons ↗</a>
+<div class="life-site" id="explore">
+  <section class="life-section life-showcase" aria-labelledby="life-intro-title">
+    <div class="life-wrap life-showcase-grid">
+      <div class="life-intro">
+        <span class="life-kicker">The life behind the lessons</span>
+        <h2 id="life-intro-title">From Canada to Panama. Still learning. Still building.</h2>
+        <p>I'm Sean. I've spent 15+ years building online businesses and learning how much my mindset shapes the choices I make.</p>
+        <p>This is what that journey looks like beyond the screen.</p>
+        <a class="life-link" href="/story">Get to know my story <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="life-mosaic" aria-label="Photos from Sean Ali's life">
+        <a class="life-photo life-photo-main" href="/story" aria-label="Read Sean's story in Panama">
+          <img src="/assets/sean-life/sean-beach-arms-open.jpg" alt="Sean enjoying the beach in Panama" loading="lazy" decoding="async">
+          <span>🌴 Life in Panama</span>
+        </a>
+        <a class="life-photo life-photo-small" href="/work-with-me/" aria-label="See Sean's online business work">
+          <img src="/assets/sean-life/sean-laptop-ocean-view.jpg" alt="Sean working from his laptop near the ocean" loading="lazy" decoding="async">
+          <span>💻 Work &amp; freedom</span>
+        </a>
+        <a class="life-photo life-photo-small" href="/blog/universal-laws/visualization-life-im-building/" aria-label="Read what family and freedom mean to Sean">
+          <img src="/assets/sean-life/family-beach-boat.jpg" alt="A family moment by the water" loading="lazy" decoding="async">
+          <span>❤️ What matters most</span>
+        </a>
       </div>
     </div>
   </section>
 
-  <section class="seo-section seo-topics" aria-labelledby="seo-topics-title">
-    <div class="seo-inner">
-      <p class="seo-eyebrow">Choose where to begin</p>
-      <h2 id="seo-topics-title">Mindset, Money Manifestation And Building Income With AI</h2>
-      <p class="seo-subtitle">These are the topics I keep coming back to. You don't need to do everything at once. Start with the one that fits your life right now.</p>
-      <div class="seo-topic-grid">
-        <article class="seo-topic featured">
-          <span class="seo-topic-icon" aria-hidden="true">💰</span>
-          <h3>Money Mindset &amp; Money Flow</h3>
-          <p>When I talk about money blocks, I mean the beliefs and familiar reactions that can get in the way of seeing opportunities or taking action. Money Flow is a short guided money meditation you can use as part of a daily routine for more focus, confidence, and abundance-minded thinking.</p>
-          <a href="https://hypnoticmeditations.ai/products/money-flow/">Explore the Money Flow Meditation →</a>
-        </article>
-        <article class="seo-topic">
-          <span class="seo-topic-icon" aria-hidden="true">🧠</span>
-          <h3>Subconscious Reprogramming</h3>
-          <p>I used to repeat the same thoughts without noticing how much they shaped my choices. Learning to spot those patterns was a starting point. Explore simple ways to question limiting beliefs, practice different responses, and follow them with consistent action.</p>
-          <a href="/how-to-reprogram-your-subconscious-mind">How To Reprogram Your Subconscious Mind →</a>
-        </article>
-        <article class="seo-topic">
-          <span class="seo-topic-icon" aria-hidden="true">✨</span>
-          <h3>Manifestation &amp; Visualization</h3>
-          <p>For me, manifestation isn't about sitting still and expecting money to appear. I use visualization to get clearer on the life I'm working toward, then decide what I can do next. Meditation and the Manifestation Genie app are tools I use to support that process.</p>
-          <a href="https://www.manifestationgenie.ai/">Explore Manifestation Genie →</a>
-        </article>
-        <article class="seo-topic">
-          <span class="seo-topic-icon" aria-hidden="true">🤖</span>
-          <h3>AI Tools &amp; Online Business</h3>
-          <p>I've spent years building offers, ads, pages, and sales systems. AI can make parts of that work faster, but it doesn't replace finding something people actually want. I share prompts and practical workflows for turning useful skills into simple online offers.</p>
-          <a href="/system">Explore the AI Freedom System →</a>
-        </article>
+  <section class="life-section life-chapters" aria-labelledby="life-chapters-title">
+    <div class="life-wrap">
+      <div class="life-section-head">
+        <div><span class="life-kicker">Four moments • One journey</span><h2 id="life-chapters-title">Get to know the real Sean.</h2></div>
+        <p>The early days, the work, and the life I'm building now. Pick a chapter.</p>
+      </div>
+      <div class="life-chapter-grid">
+        <a class="life-chapter" href="/story" aria-label="Read Sean Ali's early story in Canada">
+          <img src="/assets/sean-life/sean-childhood-photo.jpg" alt="Sean Ali as a child" loading="lazy" decoding="async">
+          <span class="life-chapter-body"><span class="life-chapter-number">01 · The beginning</span><strong>A kid with big dreams.</strong><em>Where it all started ↗</em></span>
+        </a>
+        <a class="life-chapter" href="/work-with-me/" aria-label="Explore Sean's marketing and business experience">
+          <img src="/assets/sean-life/sean-teaching-workshop.jpg" alt="Sean speaking at an online business workshop" loading="lazy" decoding="async">
+          <span class="life-chapter-body"><span class="life-chapter-number">02 · The work</span><strong>Years behind the scenes.</strong><em>See what I've built ↗</em></span>
+        </a>
+        <a class="life-chapter" href="/blog/money/how-to-stop-waiting-for-financial-freedom-panama/" aria-label="Read Sean's Panama and financial freedom story">
+          <img src="/assets/sean-life/sean-city-balcony.jpg" alt="Sean enjoying a view from a city balcony" loading="lazy" decoding="async">
+          <span class="life-chapter-body"><span class="life-chapter-number">03 · The move</span><strong>Making a life in Panama.</strong><em>Why I made the move ↗</em></span>
+        </a>
+        <a class="life-chapter" href="/blog/universal-laws/visualization-life-im-building/" aria-label="Read Sean's thoughts on building a life with freedom">
+          <img src="/assets/sean-life/sean-atv-adventure.jpg" alt="Sean on an outdoor adventure" loading="lazy" decoding="async">
+          <span class="life-chapter-body"><span class="life-chapter-number">04 · The purpose</span><strong>More life. Not just more money.</strong><em>What freedom means to me ↗</em></span>
+        </a>
       </div>
     </div>
   </section>
 
-  <section class="seo-section seo-story" aria-labelledby="seo-story-title">
-    <div class="seo-inner seo-story-grid">
-      <div>
-        <p class="seo-eyebrow">Why I share this</p>
-        <h2 id="seo-story-title">I'm Not Writing From The Sidelines</h2>
-        <p>I've managed millions of dollars in advertising, built digital products, and tested funnels and online businesses. Alongside that work, meditation and visualization have been part of my own practice.</p>
-        <p>I grew up in Canada and eventually built a life in Panama. I share the lessons, mistakes, and tools that have helped me make better decisions—not promises of instant wealth or a perfect life.</p>
-        <p><a href="/story">Read My Story →</a> &nbsp; <a href="/work-with-me/">Work With Me →</a></p>
+  <section class="life-section life-paths" aria-labelledby="life-paths-title">
+    <div class="life-wrap">
+      <div class="life-section-head">
+        <div><span class="life-kicker">Explore what I'm sharing</span><h2 id="life-paths-title">What do you want to change?</h2></div>
+        <p>Start with the part of my world that's useful to you.</p>
       </div>
-      <img class="seo-story-image" src="/assets/sean-life/sean-couch-portrait.png" loading="lazy" width="300" height="300" alt="Sean Ali sharing his mindset and online business journey">
-    </div>
-  </section>
-
-  <section class="seo-section seo-reading" aria-labelledby="seo-reading-title">
-    <div class="seo-inner">
-      <p class="seo-eyebrow">From my journal</p>
-      <h2 id="seo-reading-title">Real Lessons On Visualization, Manifestation And Money Meditation</h2>
-      <div class="seo-reading-grid">
-        <article class="seo-reading-card">
-          <h3>Visualization: How I Picture The Life I'm Building</h3>
-          <p>Why I picture the future I want—and what still needs to happen when I open my eyes.</p>
-          <a href="/blog/universal-laws/visualization-life-im-building/">Read the visualization lesson →</a>
-        </article>
-        <article class="seo-reading-card">
-          <h3>Why I Built A Manifestation App</h3>
-          <p>Positive thinking wasn't enough. I wanted a way to turn a big wish into a clear next move.</p>
-          <a href="/blog/universal-laws/manifestation-app-positive-thinking/">Read the manifestation lesson →</a>
-        </article>
-        <article class="seo-reading-card">
-          <h3>Money Meditation: What Changed For Me</h3>
-          <p>What one quiet practice helped me see differently—and what it didn't do for me.</p>
-          <a href="/blog/mind-shifts/money-meditation/">Read the money meditation lesson →</a>
-        </article>
+      <div class="life-topic-grid">
+        <a class="life-topic" href="https://hypnoticmeditations.ai/products/money-flow/" aria-label="Explore Money Flow guided meditation">
+          <img src="/assets/sean-life/sean-mountain-view.jpg" alt="Sean in a peaceful outdoor mountain setting" loading="lazy" decoding="async">
+          <span class="life-topic-body"><span class="life-topic-tag">Money mindset</span><h3>Think differently about money.</h3><p>Explore money blocks and the Money Flow meditation I created.</p><span class="life-go">Explore Money Flow →</span></span>
+        </a>
+        <a class="life-topic" href="/how-to-reprogram-your-subconscious-mind" aria-label="Read Sean's guide to subconscious mind reprogramming">
+          <img src="/assets/sean-life/sean-coconut-beach.jpg" alt="Sean spending time at the beach" loading="lazy" decoding="async">
+          <span class="life-topic-body"><span class="life-topic-tag">Manifestation &amp; meditation</span><h3>Work on your inner world.</h3><p>My take on visualization, habits, and subconscious patterns.</p><span class="life-go">Start with the guide →</span></span>
+        </a>
+        <a class="life-topic" href="/system" aria-label="Explore Sean's AI Freedom System">
+          <img src="/assets/sean-life/sean-business-dinner.jpg" alt="Sean at a business dinner" loading="lazy" decoding="async">
+          <span class="life-topic-body"><span class="life-topic-tag">AI &amp; online business</span><h3>Build something of your own.</h3><p>Lessons from online marketing and the AI tools I use today.</p><span class="life-go">Explore my AI system →</span></span>
+        </a>
       </div>
     </div>
   </section>
 
-  <section class="seo-section seo-faq" aria-labelledby="seo-faq-title">
-    <div class="seo-inner">
-      <p class="seo-eyebrow">Quick answers</p>
-      <h2 id="seo-faq-title">Questions About Sean Ali, Mindset And AI</h2>
-      <div class="seo-faq-list">
-        <div class="seo-faq-item">
-          <h3>Who is Sean Ali?</h3>
-          <p>I'm an online marketer and digital-product creator who shares what I've learned about mindset, meditation, manifestation, online business, and AI. You can <a href="/about-sean-ali/">learn more about me here</a>.</p>
-        </div>
-        <div class="seo-faq-item">
-          <h3>What are subconscious money blocks?</h3>
-          <p>They're a way of describing learned beliefs or automatic reactions around money. You can start by noticing the pattern, questioning it, and taking a different action. <a href="/what-are-money-blocks">Read my guide to money blocks</a>.</p>
-        </div>
-        <div class="seo-faq-item">
-          <h3>Can meditation help me manifest more money?</h3>
-          <p>It can be a useful practice for focus, self-awareness, and keeping your goals in mind, but it can't guarantee financial results. I pair visualization with real decisions and action. Explore <a href="https://hypnoticmeditations.ai/">Hypnotic Meditations</a>.</p>
-        </div>
-        <div class="seo-faq-item">
-          <h3>How do I start an online business using AI?</h3>
-          <p>Start with a problem people have, test a simple offer, and use AI to help with research, writing, and repetitive work. There's no guaranteed income. My <a href="/prompts">free AI guide</a> is a starting point.</p>
-        </div>
+  <section class="life-quick" aria-labelledby="life-quick-title">
+    <div class="life-wrap life-quick-grid">
+      <div><span class="life-kicker">Curious? Start here.</span><h2 id="life-quick-title">A few things people ask me.</h2></div>
+      <div class="life-answers">
+        <details><summary>Who is Sean Ali?</summary><p>I'm an online marketer and founder who writes about money mindset, meditation, manifestation, AI, and creating a freer life. <a href="/about-sean-ali/">Here's more about me.</a></p></details>
+        <details><summary>What are money blocks?</summary><p>It's a name for beliefs and familiar reactions around money. Learning to notice them can help you make different decisions. <a href="/what-are-money-blocks">Read the money blocks guide.</a></p></details>
+        <details><summary>Can meditation or manifestation make me money?</summary><p>Meditation and visualization can help with focus and your relationship with goals, but they don't guarantee income. Real choices and action still matter. <a href="https://www.manifestationgenie.ai/">Explore Manifestation Genie.</a></p></details>
+        <details><summary>Can I use AI to start an online business?</summary><p>AI can help with ideas, writing, and workflows. First, you still need an offer people want. <a href="/prompts">See my free AI prompts.</a></p></details>
       </div>
     </div>
   </section>
 
-  <section class="seo-section seo-bottom" aria-labelledby="seo-bottom-title">
-    <div class="seo-inner">
-      <h2 id="seo-bottom-title">Choose One Step. Start Today.</h2>
-      <p>Whether it's your mindset, your relationship with money, or building something online, start with a tool you can actually use.</p>
-      <a class="seo-button" href="/start-here/">Find My First Step →</a>
+  <section class="life-next" aria-labelledby="life-next-title">
+    <img src="/assets/sean-life/sean-tropical-beach.jpg" alt="Sean enjoying tropical life in Panama" loading="lazy" decoding="async">
+    <div class="life-wrap">
+      <span class="life-kicker" style="color:#ffe2c7">Your story starts here</span>
+      <h2 id="life-next-title">Don't just look at my life. Build yours.</h2>
+      <p>Choose one thing you want to work on. I'll help you find a simple place to begin.</p>
+      <a class="life-button" href="/start-here/">Start My Journey →</a>
     </div>
   </section>
 </div><footer class="quiet-footer"><span>© 2026 Sean Ali</span><nav aria-label="Footer"><a href="/feed">Updates</a><a href="/about-sean-ali/">About</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/contact.html">Contact</a></nav></footer></body></html>
