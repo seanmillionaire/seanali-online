@@ -2,6 +2,7 @@
 export function createDelight({soundEnabled,motionEnabled}) {
   let context,master,ambience,scene='quiet',unlocked=false,ambientTimer=null,phrase=0;
   const voices=new Set();
+  let boatRequested=false,boatPosition=0,boatBus=null,boatNodes=[],boatMotor=null,boatHarmonic=null;
   function ready(){
     if(!soundEnabled()||document.hidden)return false;
     try {
@@ -25,6 +26,22 @@ export function createDelight({soundEnabled,motionEnabled}) {
     g.gain.setValueAtTime(.0001,at);g.gain.linearRampToValueAtTime(volume,at+Math.min(duration/3,.6));g.gain.exponentialRampToValueAtTime(.0001,at+duration);
     o.connect(f).connect(g).connect(ambient?ambience:master);o.start();voices.add(o);o.onended=()=>{voices.delete(o);o.disconnect();f.disconnect();g.disconnect();};
   }
+  // A small procedural soundscape: outboard harmonics, hull wash and gull calls.
+  // One looping mono buffer is shared by the water layer; no large sound downloads.
+  function stopBoat(){for(const n of boatNodes){try{n.stop?.();}catch{}n.disconnect();}boatNodes=[];boatMotor=boatHarmonic=null;if(boatBus){boatBus.disconnect();boatBus=null;}}
+  function startBoat(){if(boatBus||!boatRequested||!unlocked||!ready())return;const at=context.currentTime;boatBus=context.createGain();boatBus.gain.value=.72;boatBus.connect(master);
+    const attach=n=>{boatNodes.push(n);return n;};
+    const motorGain=attach(context.createGain()),low=attach(context.createBiquadFilter());low.type='lowpass';low.frequency.value=420;motorGain.gain.value=.032;low.connect(motorGain).connect(boatBus);
+    boatMotor=attach(context.createOscillator());boatMotor.type='sawtooth';boatMotor.connect(low);boatMotor.start();
+    const harmonicGain=attach(context.createGain());harmonicGain.gain.value=.018;harmonicGain.connect(boatBus);boatHarmonic=attach(context.createOscillator());boatHarmonic.type='sine';boatHarmonic.connect(harmonicGain);boatHarmonic.start();
+    const buffer=context.createBuffer(1,Math.ceil(context.sampleRate*2),context.sampleRate),data=buffer.getChannelData(0);let brown=0;for(let i=0;i<data.length;i++){const white=Math.random()*2-1;brown=(brown+.025*white)/1.025;data[i]=(brown*3+white*.18)*(.65+.25*Math.sin(i/context.sampleRate*Math.PI*2));}
+    const water=attach(context.createBufferSource()),wash=attach(context.createBiquadFilter()),waterGain=attach(context.createGain());water.buffer=buffer;water.loop=true;wash.type='lowpass';wash.frequency.value=1900;waterGain.gain.value=.24;water.connect(wash).connect(waterGain).connect(boatBus);water.start();
+    // Uneven two-part gull cries, with a quieter overtone, away from the motor.
+    for(const offset of [.6,3.4,6.8]){if(offset<boatPosition*9)continue;const when=at+offset-boatPosition*9;for(const harmonic of [1,2]){const bird=attach(context.createOscillator()),gain=attach(context.createGain());bird.type='sine';bird.frequency.setValueAtTime(950*harmonic,when);bird.frequency.exponentialRampToValueAtTime(1450*harmonic,when+.15);bird.frequency.exponentialRampToValueAtTime(780*harmonic,when+.55);bird.frequency.exponentialRampToValueAtTime(1100*harmonic,when+.7);bird.frequency.exponentialRampToValueAtTime(650*harmonic,when+1);gain.gain.setValueAtTime(.0001,when);gain.gain.linearRampToValueAtTime(harmonic===1?.024:.004,when+.1);gain.gain.exponentialRampToValueAtTime(.0001,when+1);bird.connect(gain).connect(boatBus);bird.start(when);bird.stop(when+1.05);}}
+    tuneBoat();
+  }
+  function tuneBoat(){if(!boatMotor||!context)return;const speed=Math.sin(Math.PI*Math.min(1,Math.max(0,boatPosition))),at=context.currentTime;boatMotor.frequency.setTargetAtTime(42+speed*48,at,.18);boatHarmonic.frequency.setTargetAtTime(84+speed*96,at,.18);}
+  function boat(active,position=0){boatRequested=active;boatPosition=position;if(!active){stopBoat();return;}if(!soundEnabled()||document.hidden)return;startBoat();tuneBoat();}
   const scale=[261.63,293.66,329.63,392,440,523.25,659.25];
   function note(n=0,duration=.3,kind='sine'){
     const f=scale[((n%7)+7)%7];voice(f,duration,{volume:.15,type:kind});voice(f*2,duration*.55,{volume:.034});voice(f*3,duration*.32,{volume:.013});
@@ -32,6 +49,7 @@ export function createDelight({soundEnabled,motionEnabled}) {
   function drum(n){if(n%3===0)voice(140,.22,{end:45,volume:.26});else if(n%3===1){noise(.14,.13,'highpass',1800);voice(185,.1,{type:'triangle',volume:.06});}else noise(.065,.095,'highpass',6500);}
   function effect(name){
     if(name==='arrival'){noise(2.8,.055,'lowpass',1200);[0,2,4,5,6].forEach((n,i)=>voice(scale[n],1.1,{delay:i*.42,volume:.09}));return;}
+    if(name==='coin'){voice(1260,.12,{volume:.07});voice(1880,.22,{delay:.07,volume:.055});return;}
     if(name==='tap'){voice(570,.065,{end:820,volume:.045});return;}
     if(name==='correct'){[0,2,4].forEach((n,i)=>voice(scale[n]*2,.42,{delay:i*.085,volume:.09}));voice(523.25,.6,{volume:.04});return;}
     if(name==='treasure'||name==='finish'){[0,2,4,5,6].forEach((n,i)=>{voice(scale[n]*2,.65,{delay:i*.11,volume:.085});voice(scale[n],.75,{delay:i*.11,volume:.035});});return;}
@@ -52,14 +70,14 @@ export function createDelight({soundEnabled,motionEnabled}) {
     ambientTimer=setTimeout(ambientPhrase,6500);
   }
   function sync(){
-    if(!soundEnabled()||document.hidden){stopAmbient();if(context){for(const o of voices){try{o.stop();}catch{}}context.suspend().catch(()=>{});}return;}
-    if(unlocked&&ready()){master.gain.setValueAtTime(.65,context.currentTime);ambientPhrase();}
+    if(!soundEnabled()||document.hidden){stopBoat();stopAmbient();if(context){for(const o of voices){try{o.stop();}catch{}}context.suspend().catch(()=>{});}return;}
+    if(unlocked&&ready()){master.gain.setValueAtTime(.65,context.currentTime);ambientPhrase();if(boatRequested)startBoat();}
   }
   function gesture(){if(!unlocked){unlocked=true;sync();}}
-  function setScene(next){scene=next;stopAmbient();if(ambience&&context){ambience.gain.cancelScheduledValues(context.currentTime);ambience.gain.setTargetAtTime(['map','home','welcome'].includes(scene)?.24:.0001,context.currentTime,.12);}if(unlocked)ambientPhrase();}
-  function duck(){if(!ambience||!context)return;const at=context.currentTime;ambience.gain.cancelScheduledValues(at);ambience.gain.setTargetAtTime(.025,at,.08);if(['map','home','welcome'].includes(scene))ambience.gain.setTargetAtTime(.24,at+4,.7);}
+  function setScene(next){if(next!=='explore'){boatRequested=false;stopBoat();}scene=next;stopAmbient();if(ambience&&context){ambience.gain.cancelScheduledValues(context.currentTime);ambience.gain.setTargetAtTime(['map','home','welcome'].includes(scene)?.24:.0001,context.currentTime,.12);}if(unlocked)ambientPhrase();}
+  function duck(){if(!ambience||!context)return;const at=context.currentTime;if(boatBus){boatBus.gain.cancelScheduledValues(at);boatBus.gain.setTargetAtTime(.18,at,.08);boatBus.gain.setTargetAtTime(.72,at+4,.4);}ambience.gain.cancelScheduledValues(at);ambience.gain.setTargetAtTime(.025,at,.08);if(['map','home','welcome'].includes(scene))ambience.gain.setTargetAtTime(.24,at+4,.7);}
   const visibility=()=>{if(document.hidden)window.speechSynthesis?.cancel();sync();};document.addEventListener('visibilitychange',visibility);
-  return {note,drum,effect,gesture,sync,setScene,duck,get voiceCount(){return voices.size;},get ambientScheduled(){return ambientTimer!==null;},destroy(){stopAmbient();document.removeEventListener('visibilitychange',visibility);context?.close();}};
+  return {boat,get boatActive(){return !!boatBus;},note,drum,effect,gesture,sync,setScene,duck,get voiceCount(){return voices.size;},get ambientScheduled(){return ambientTimer!==null;},destroy(){boatRequested=false;stopBoat();stopAmbient();document.removeEventListener('visibilitychange',visibility);context?.close();}};
 }
 export function burst(target,{motion=true,big=false}={}){
   if(!motion||!target?.isConnected)return;
