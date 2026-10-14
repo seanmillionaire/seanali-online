@@ -213,8 +213,8 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 }
 </style>
 
-<style id="life-next-uncropped-photo">
-/* Single-column closing story section: entire image visible at its native aspect ratio. */
+<style id="life-next-centered-cta">
+/* Closing CTA: no background photo or image, just centered content. */
 .life-site .life-next{
   display:flex;
   flex-direction:column;
@@ -222,30 +222,14 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
   justify-content:center;
   text-align:center;
   min-height:0;
-  padding:54px 24px 62px;
-  overflow:hidden;
+  padding:76px 24px 82px;
   background:#22302e;
+  overflow:hidden;
 }
 .life-site .life-next::before{display:none}
-.life-site .life-next>img{
-  position:static;
-  inset:auto;
-  display:block;
-  width:min(920px,100%);
-  max-width:100%;
-  height:auto;
-  max-height:none;
-  object-fit:contain;
-  object-position:center center;
-  flex:none;
-  margin:0 auto 31px;
-  border-radius:18px;
-  background:#182522;
-  z-index:auto;
-}
 .life-site .life-next>.life-wrap{
   width:100%;
-  max-width:780px;
+  max-width:760px;
   min-width:0;
   margin:0 auto;
   padding:0;
@@ -253,30 +237,17 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
   text-align:center;
 }
 .life-site .life-next h2{
-  max-width:660px;
+  max-width:680px;
   margin:0 auto 14px;
   font-size:clamp(32px,4vw,47px);
 }
 .life-site .life-next p{
-  max-width:520px;
-  margin:0 auto 23px;
+  max-width:540px;
+  margin:0 auto 24px;
 }
 @media(max-width:760px){
-  .life-site .life-next{padding:28px 15px 42px}
-  .life-site .life-next>img{
-    width:100%;
-    height:auto;
-    max-height:none;
-    object-fit:contain;
-    border-radius:12px;
-    margin-bottom:25px;
-  }
-  .life-site .life-next>.life-wrap{
-    width:100%;
-    max-width:620px;
-    padding:0;
-    margin:0 auto;
-  }
+  .life-site .life-next{padding:56px 20px 62px}
+  .life-site .life-next>.life-wrap{max-width:620px;padding:0}
   .life-site .life-next h2{margin:0 auto 13px}
   .life-site .life-next p{margin:0 auto 20px}
 }
@@ -384,7 +355,6 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
   </section>
 
   <section class="life-next" aria-labelledby="life-next-title">
-    <img src="/assets/sean-life/sean-tropical-beach.jpg" alt="Sean enjoying tropical life in Panama" loading="lazy" decoding="async">
     <div class="life-wrap">
       <span class="life-kicker" style="color:#ffe2c7">Your story starts here</span>
       <h2 id="life-next-title">Don't just look at my life. Build yours.</h2>
