@@ -210,19 +210,71 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 </style>
 
 <style id="life-next-uncropped-photo">
-/* Display the entire original Panama photo beside the CTA instead of cropping it behind the text. */
-.life-site .life-next{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);align-items:stretch;min-height:0;text-align:left;overflow:hidden;background:#22302e}
-.life-site .life-next>img{position:static;inset:auto;display:block;width:100%;height:clamp(330px,36vw,500px);max-height:none;object-fit:contain;object-position:center;background:#182522;z-index:auto}
+/* Single-column closing story section: entire image visible at its native aspect ratio. */
+.life-site .life-next{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  min-height:0;
+  padding:54px 24px 62px;
+  overflow:hidden;
+  background:#22302e;
+}
 .life-site .life-next::before{display:none}
-.life-site .life-next>.life-wrap{width:100%;max-width:570px;min-width:0;margin:0;align-self:center;padding:50px 38px}
-.life-site .life-next h2{margin:0 0 14px;max-width:490px;font-size:clamp(30px,3.5vw,44px)}
-.life-site .life-next p{margin:0 0 22px;max-width:430px}
+.life-site .life-next>img{
+  position:static;
+  inset:auto;
+  display:block;
+  width:min(920px,100%);
+  max-width:100%;
+  height:auto;
+  max-height:none;
+  object-fit:contain;
+  object-position:center center;
+  flex:none;
+  margin:0 auto 31px;
+  border-radius:18px;
+  background:#182522;
+  z-index:auto;
+}
+.life-site .life-next>.life-wrap{
+  width:100%;
+  max-width:780px;
+  min-width:0;
+  margin:0 auto;
+  padding:0;
+  align-self:center;
+  text-align:center;
+}
+.life-site .life-next h2{
+  max-width:660px;
+  margin:0 auto 14px;
+  font-size:clamp(32px,4vw,47px);
+}
+.life-site .life-next p{
+  max-width:520px;
+  margin:0 auto 23px;
+}
 @media(max-width:760px){
-.life-site .life-next{display:flex;flex-direction:column;text-align:center}
-.life-site .life-next>img{width:100%;height:auto;max-height:480px;object-fit:contain;background:#182522}
-.life-site .life-next>.life-wrap{max-width:620px;padding:35px 22px 43px}
-.life-site .life-next h2{margin:0 auto 13px}
-.life-site .life-next p{margin:0 auto 20px}
+  .life-site .life-next{padding:28px 15px 42px}
+  .life-site .life-next>img{
+    width:100%;
+    height:auto;
+    max-height:none;
+    object-fit:contain;
+    border-radius:12px;
+    margin-bottom:25px;
+  }
+  .life-site .life-next>.life-wrap{
+    width:100%;
+    max-width:620px;
+    padding:0;
+    margin:0 auto;
+  }
+  .life-site .life-next h2{margin:0 auto 13px}
+  .life-site .life-next p{margin:0 auto 20px}
 }
 </style>
 </head><body class="opener"><div class="opener-top"><a class="skip" href="#main">Skip to content</a>
