@@ -8,12 +8,10 @@ export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import(
   if(!window.WebGL2RenderingContext){fallback();}else load().then(THREE=>{if(disposed)return;try{world=buildIsland(THREE,canvas,motion||(()=>true));host.classList.add('world-ready');onMode('3d');if(pending)world.flyIn(finish);}catch{fallback();}}).catch(fallback);
   function finish(){if(!pending||disposed)return;const done=pending;pending=null;done();}
   return {
-    resume(){renderer.shadowMap.needsUpdate=true;wake();},
     flyIn(done){if(disposed||pending)return;pending=done;if(!world||!motion?.()){finish();return;}world.flyIn(finish);},
     skip(){finish();},
     dispose(){if(disposed)return;disposed=true;pending=null;canvas.removeEventListener('webglcontextlost',lost);world?.dispose();world=null;canvas.remove();}
   };
-  function dispose(){if(disposed)return;disposed=true;cancelAnimationFrame(frame);finish=null;explorer?.dispose();tropical.dispose();observer.disconnect();bodyObserver.disconnect();document.removeEventListener('visibilitychange',visibility);canvas.parentElement?.removeEventListener('pointermove',pointer);geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());sun.shadow.map?.dispose();renderer.dispose();renderer.forceContextLoss();}
 }
 export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={}) {
   const renderer=new T.WebGLRenderer({canvas,antialias:false,alpha:false,powerPreference:'default'});
