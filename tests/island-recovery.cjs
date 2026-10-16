@@ -1,5 +1,5 @@
 const {JSDOM}=require('jsdom'),fs=require('node:fs'),assert=require('node:assert/strict');
-const source=['explore-state.js','explore.js'].map(f=>fs.readFileSync(`${__dirname}/../games/adventure/${f}`,'utf8').replace(/^import .*;\n/gm,'').replace(/\bexport /g,'')).join('\n');
+const source=['world-story.js','explore-state.js','explore.js'].map(f=>fs.readFileSync(`${__dirname}/../games/adventure/${f}`,'utf8').replace(/^import .*;\n/gm,'').replace(/\bexport /g,'')).join('\n');
 async function boot(failures=0){
  const dom=new JSDOM('<main></main>',{runScripts:'outside-only'}),w=dom.window;let builds=0,freed=0,resumes=0,loads=0,options=[];
  // No WebGL2 constructor check: actual renderer creation determines support.

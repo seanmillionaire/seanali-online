@@ -91,3 +91,9 @@ body[data-scene="islandQuest"] .tools button{color:#284e48}
 .explore-world.snack-moment .explore-actions,.explore-world.snack-moment .helper-toggle,.explore-world.snack-moment .island-goal,.explore-world.snack-moment .explore-hud{visibility:hidden;pointer-events:none}
 @media(max-width:780px){.explore-actions{max-width:182px;bottom:18px}.explore-stick{bottom:18px}.explore-menu{top:132px}.explore-hud{max-width:calc(100% - 80px)}}
 @media(max-height:550px){.explore-actions{max-width:250px;bottom:12px}.explore-message,.explore-message.show{top:76px;max-width:55%;font-size:12px}.explore-stick{bottom:12px}}
+
+/* Story cues appear only near a playable world task, never as a blocking modal. */
+.world-story{position:absolute;top:76px;left:12px;max-width:calc(100% - 84px);padding:8px 11px;background:#fff8e8ed;border-radius:16px;color:#284c43;pointer-events:none;z-index:12;box-shadow:0 3px 10px #183d3820}
+.world-story[hidden]{display:none}.world-story strong{display:block;font-size:12px}.world-story small{display:block;font-size:11px;margin-top:3px}.story-sequence{display:flex;gap:7px;margin-top:4px;align-items:center}.story-sequence span{font-size:19px;opacity:.4;padding:2px;border-bottom:3px solid transparent}.story-sequence .story-done{opacity:.65;border-color:#6cac72}.story-sequence .story-next{opacity:1;border-color:#d18d29;background:#ffe7ad;border-radius:5px}
+.story-more{pointer-events:auto;border:0;background:#e1edcf;color:#244b3e;border-radius:10px;min-height:44px;padding:7px 12px;font-size:12px;font-weight:800;margin-top:5px}.story-more[hidden]{display:none}.story-nearby .explore-hud{visibility:hidden}.story-nearby .explore-message{top:210px}.snack-moment .world-story{display:none}
+@media(max-height:550px){.world-story{top:65px;padding:6px 10px}.world-story small{display:none}.story-sequence span{font-size:16px}}

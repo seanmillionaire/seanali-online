@@ -1,0 +1,37 @@
+// Tiny, physical story puzzles. These never gate movement or mark a lesson complete.
+export const islandStories=[
+ {id:'shells',region:'harbor',x:2,z:7,friend:'🐢',es:'Un camino para Pip',en:'A path for Pip',hintEs:'Pisa las conchas en orden',hintEn:'Step on shells in order',icons:['1 🐚','2 🐚','3 🐚'],order:[0,1,2],color:'#f4cc78',winEs:'¡Pip tiene un camino!',winEn:'Pip has a path!'},
+ {id:'picnic',region:'market',x:-6,z:3,friend:'🦜',es:'El picnic de Mila',en:'Mila’s picnic',hintEs:'Sigue la receta',hintEn:'Follow the recipe',icons:['🍌','🥥','🥭'],order:[0,1,0,2],color:'#eeaa70',winEs:'¡Picnic listo! +3 plátanos',winEn:'Picnic ready! +3 bananas'},
+ {id:'seed',region:'jungle',x:-8,z:-5,friend:'🪶',es:'Despierta el bosque',en:'Wake the forest',hintEs:'Semilla, agua, sol',hintEn:'Seed, water, sun',icons:['🌱','💧','☀️'],order:[0,1,2],color:'#91cd8e',winEs:'¡Nació una flor!',winEn:'A flower has grown!'},
+ {id:'song',region:'music',x:6,z:2,friend:'🦀',es:'La canción de Luna',en:'Luna’s song',hintEs:'Sigue los colores',hintEn:'Follow the colors',icons:['🩷 ♪','💛 ♪','💙 ♪'],order:[0,2,1,0],color:'#bca4ea',winEs:'¡La isla tiene una canción!',winEn:'The island has a song!'},
+ {id:'care',region:'garden',x:12,z:5,friend:'🦋',es:'Un hogar para mariposas',en:'A butterfly home',hintEs:'¿Qué ayuda a una flor?',hintEn:'What helps a flower?',icons:['💧','🗑️','☀️'],order:[0,2],color:'#efa6c3',winEs:'¡Más flores y mariposas!',winEn:'More flowers and butterflies!'},
+ {id:'light',region:'summit',x:-3,z:-1,friend:'🗼',es:'La luz perdida',en:'The lost light',hintEs:'Repite las luces',hintEn:'Repeat the lights',icons:['🔴','🟡','🔵'],order:[2,0,1,2],color:'#88cfe0',winEs:'¡Una luz vuelve a casa!',winEn:'A light has come home!'}
+];
+export function stepStory(progress,id,choice){const q=islandStories.find(q=>q.id===id);if(!q)return 'ignore';const n=progress[id]||0;if(n>=q.order.length)return 'done';if(choice!==q.order[n])return 'retry';progress[id]=n+1;return n+1===q.order.length?'complete':'next';}
+export function createWorldStory({T,scene,host,state,height,save,joy,spark,refresh,openNext,active,motion}){
+ const s=state.world,es=state.lang==='es',pick=(a,b)=>es?a:b,progress=s.story;
+ const group=new T.Group();group.name='Living story trails';scene.add(group);
+ const card=document.createElement('section');card.className='world-story';card.hidden=true;card.setAttribute('aria-label',pick('Historia de la isla','Island story'));
+ const heading=document.createElement('strong'),sequence=document.createElement('div'),hint=document.createElement('small'),more=document.createElement('button');sequence.className='story-sequence';more.type='button';more.className='story-more';card.append(heading,sequence,hint,more);host.append(card);
+ const textures=[],materials=[],geometry=new T.CylinderGeometry(.6,.66,.12,20),orbGeometry=new T.IcosahedronGeometry(.25,1),stations=[];
+ function symbol(words){const canvas=document.createElement('canvas');canvas.width=256;canvas.height=128;const ctx=typeof window.CanvasRenderingContext2D==='function'?canvas.getContext('2d'):null;let texture;
+  if(ctx){ctx.fillStyle='#fff8e8';ctx.beginPath();ctx.roundRect(4,4,248,120,28);ctx.fill();ctx.fillStyle='#274b43';ctx.font='bold 58px system-ui, "Apple Color Emoji"';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(words,128,66);texture=new T.CanvasTexture(canvas);texture.colorSpace=T.SRGBColorSpace;textures.push(texture);}
+  const material=new T.SpriteMaterial({map:texture||null,color:texture?'#ffffff':'#fff0b0',depthTest:false});materials.push(material);const sprite=new T.Sprite(material);sprite.scale.set(1.65,.83,1);sprite.renderOrder=19;return sprite;
+ }
+ for(const q of islandStories){const g=new T.Group();g.name='Story '+q.id;group.add(g);const tiles=q.icons.map((icon,i)=>{const x=q.x+(i-1)*1.8,z=q.z,material=new T.MeshStandardMaterial({color:q.color,emissive:q.color,emissiveIntensity:.12});materials.push(material);const mesh=new T.Mesh(geometry,material);mesh.position.set(x,height(x,z)+.12,z);g.add(mesh);const label=symbol(icon);label.position.set(x,height(x,z)+2.6,z);g.add(label);return {x,z,mesh,label};});const light=new T.Mesh(orbGeometry,new T.MeshStandardMaterial({color:q.color,emissive:q.color,emissiveIntensity:1}));materials.push(light.material);light.position.set(q.x,height(q.x,q.z)+2.5,q.z-1.1);g.add(light);stations.push({q,g,tiles,light});}
+ let current=null,lastTile='',lastView='';
+ function nextLesson(q){const completed={...state.completed,...state.islandLessons?.completed};return Array.from({length:8},(_,i)=>q.region+'-'+i).find(id=>!completed[id]);}
+ more.onclick=()=>{if(current){const id=nextLesson(current.q);if(id){joy.gesture();openNext(id);}}};
+ function draw(st){const q=st.q,n=progress[q.id],done=n===q.order.length;const lights=islandStories.filter(task=>progress[task.id]===task.order.length).length;heading.textContent=q.friend+' '+pick(q.es,q.en)+' · '+lights+'/6 ✨';sequence.replaceChildren();for(let i=0;i<q.order.length;i++){const item=document.createElement('span');item.textContent=q.icons[q.order[i]];item.className=i<n?'story-done':i===n?'story-next':'';sequence.append(item);}
+  hint.textContent=done?(lights===6?pick('¡Las seis luces están en casa!','All six lights are home!'):pick(q.winEs,q.winEn)):pick(q.hintEs,q.hintEn);more.hidden=!done||!nextLesson(q);more.textContent=pick('✨ Sigue la historia','✨ Continue the story');more.setAttribute('aria-label',pick('Una aventura más con este amigo','Another adventure with this friend'));
+ }
+ return {hit(raycaster){const tiles=stations.flatMap(st=>st.tiles).filter(t=>t.label.visible);const hit=raycaster.intersectObjects(tiles.flatMap(t=>[t.label,t.mesh]),false)[0];return hit?tiles.find(t=>hit.object===t.label||hit.object===t.mesh):null;},update(dt,time){
+  const nearby=stations.filter(st=>Math.hypot(s.x-st.q.x,s.z-st.q.z)<5.5).sort((a,b)=>Math.hypot(s.x-a.q.x,s.z-a.q.z)-Math.hypot(s.x-b.q.x,s.z-b.q.z))[0];
+  const visible=active()&&!host.classList.contains('helpers-open')&&!host.classList.contains('snack-moment');current=nearby||null;card.hidden=!visible||!current;host.classList.toggle('story-nearby',!card.hidden);
+  for(const st of stations){const done=progress[st.q.id]===st.q.order.length;st.light.visible=done;st.tiles.forEach(t=>{t.label.visible=!done&&st===nearby&&visible;t.mesh.material.emissiveIntensity=done?.55:.12;t.label.position.y=height(t.x,t.z)+2.6+(motion()?Math.sin(time*2)*.06:0);});}
+  if(card.hidden){lastTile='';return;}
+  const q=current.q,n=progress[q.id],tile=current.tiles.findIndex(t=>Math.hypot(s.x-t.x,s.z-t.z)<.65),key=tile<0?'':q.id+':'+tile;
+  if(key&&key!==lastTile&&n<q.order.length){const result=stepStory(progress,q.id,tile);if(result==='retry'){joy.effect('tap');hint.textContent=pick('Busca ','Find ')+q.icons[q.order[n]];}else{joy.note?.(q.order[n]*2,.25);spark(s.x,s.z,result==='complete'?24:8);save();lastView='';if(result==='complete'){joy.effect('finish');if(q.id==='picnic')s.food.banana=Math.min(99,s.food.banana+3);if(q.id==='seed'||q.id==='care')s.flowers=Math.min(6,s.flowers+1);refresh(q.id);save();}}}
+  lastTile=key;const view=q.id+':'+progress[q.id]+':'+(nextLesson(q)||'done');if(view!==lastView){draw(current);lastView=view;}
+ },dispose(){host.classList.remove('story-nearby');card.remove();scene.remove(group);geometry.dispose();orbGeometry.dispose();materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());}};
+}
