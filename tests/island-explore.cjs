@@ -9,6 +9,24 @@ const source=['explore-state.js','explore.js'].map(f=>fs.readFileSync(path.join(
   w.eval(source+'\nwindow.api={createExplore,normalizeExplore,exploreItems,explorePlaces,inWater,walkable,islandPath};');const state={lang,world:raw};const game=w.api.createExplore(w.document.querySelector('main'),{state,openNext:id=>opened.push(id),speak:(words,options)=>{spoken.push({words,options});return true;},save:()=>saves++,joy:{boat:(active,p)=>boatEvents.push({active,p}),gesture(){},effect(){},note(){}},motion:()=>true,openBook(){},openHome(){},load:()=>Promise.resolve(T)});
   return {w,d:w.document,state,game,spoken,opened,boatEvents,get scene(){return scene},async ready(){await new Promise(r=>setTimeout(r,20));},step(n=1){for(let i=0;i<n;i++)tick(1/30,i/30);},get saves(){return saves},get disposed(){return disposed},close(){game.dispose();dom.window.close();}};
  }
+ // Food growth persists, visibly exceeds palm height, and remains reversible.
+ for(const lang of ['en','es']){
+  const g=boot({x:-6,z:0,food:{coconut:6,banana:6}},lang);await g.ready();g.step();
+  const girl=g.scene.getObjectByName('Angelique');assert.equal(girl.scale.x,1);
+  for(let i=0;i<12;i++){
+   g.d.querySelector('.food-button').click();
+   const eat=[...g.d.querySelectorAll('.explore-panel .discover-place')].find(b=>!b.disabled&&b.textContent.includes(i<6?'🥥':'🍌'));
+   eat.click();g.step(90);
+   assert(Math.abs(girl.scale.x-g.state.world.growth)<.01,'visible scale follows every meal');
+  }
+  assert.equal(g.state.world.growth,6);assert(girl.scale.y*1.9>10,'Angelique towers above the tallest palms');
+  assert.equal(g.state.world.food.coconut+g.state.world.food.banana,0);
+  const saved=g.w.api.normalizeExplore(g.state.world);assert.equal(saved.growth,6);
+  for(const bad of [NaN,Infinity,'6',null])assert.equal(g.w.api.normalizeExplore({growth:bad}).growth,1);
+  assert.equal(g.w.api.normalizeExplore({growth:900}).growth,6);
+  const reload=boot(saved,lang);await reload.ready();reload.step();assert.equal(reload.scene.getObjectByName('Angelique').scale.x,6);reload.close();
+  g.d.querySelector('.food-button').click();const choices=[...g.d.querySelectorAll('.explore-panel .discover-place')];assert(choices[0].disabled&&choices[1].disabled,'empty fruit cannot grow her');choices.at(-1).click();g.step(120);assert(girl.scale.x<1.001);assert.equal(g.state.world.growth,1);g.close();
+ }
  let guided=boot();await guided.ready();guided.state.completed={'harbor-0':3};guided.step();assert(guided.d.querySelector('.island-goal p').textContent.includes('Mila'));guided.d.querySelector('.goal-next').click();guided.step(700);assert(guided.d.querySelector('.goal-next').textContent.includes('Start adventure'));guided.d.querySelector('.goal-next').click();assert.equal(guided.opened[0],'market-0');guided.close();
  function key(c,key,pressed){c.d.dispatchEvent(new c.w.KeyboardEvent(pressed?'keydown':'keyup',{key,bubbles:true}));}
  let cruise=boot({x:4,z:16});await cruise.ready();cruise.step();assert(!cruise.d.querySelector('.is-swimming'),'dock is walkable');cruise.d.querySelector('.world-action:not(.world-lesson)').click();assert(cruise.boatEvents.some(e=>e.active));key(cruise,'ArrowRight',true);cruise.step(45);key(cruise,'ArrowRight',false);cruise.step(300);assert(cruise.boatEvents.at(-1).active,'boat stays boarded beyond old ride timer');assert(cruise.state.world.x>10,'direct steering drives actual dock boat');const boat=cruise.scene.getObjectByName('Dock boat');assert.equal(boat.position.x,cruise.state.world.boat.x);const beforePause=boat.position.x;Object.defineProperty(cruise.w.document,'hidden',{value:true,configurable:true});cruise.step(90);assert.equal(boat.position.x,beforePause);Object.defineProperty(cruise.w.document,'hidden',{value:false,configurable:true});cruise.d.querySelector('.world-jump').click();cruise.step();assert(!cruise.boatEvents.at(-1).active);assert(cruise.d.querySelector('.is-swimming'));cruise.d.querySelector('.world-action:not(.world-lesson)').click();cruise.step();assert(cruise.boatEvents.at(-1).active,'can reboard offshore');cruise.close();
