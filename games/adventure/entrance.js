@@ -1,5 +1,5 @@
-import {isletHeight} from './explore-state.js?v=29';
-import {createTropical} from './tropical.js?v=29';
+import {worldIslands,isletHeight} from './explore-state.js?v=30';
+import {createTropical} from './tropical.js?v=30';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
 export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import('./vendor/three.module.min.js')}={}) {
   let disposed=false,world=null,pending=null;
@@ -36,7 +36,24 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   for(let j=0;j<rings;j++)for(let i=0;i<segments;i++){const a=j*(segments+1)+i,b=a+segments+1;indices.push(a,a+1,b,b,a+1,b+1);}
   const terrain=geometry(new T.BufferGeometry());terrain.setAttribute('position',new T.Float32BufferAttribute(positions,3));terrain.setAttribute('color',new T.Float32BufferAttribute(colors,3));terrain.setAttribute('uv',new T.Float32BufferAttribute(uvs,2));terrain.setIndex(indices);terrain.computeVertexNormals();make(terrain,mat('#ffffff',{vertexColors:true,map:tropical.grain,bumpMap:tropical.grain,bumpScale:.16,roughness:.98}));
   // A reachable offshore island, sharing the same shoreline used by movement and boats.
-  const iv=[],ic=[],ii=[],iu=[];for(let ring=0;ring<=12;ring++)for(let j=0;j<=48;j++){const a=j/48*Math.PI*2,r=ring/12,x=24+Math.cos(a)*4*r,z=-8+Math.sin(a)*3*r;iv.push(x,isletHeight(x,z),z);iu.push(x*.18,z*.18);const c=new T.Color(r>.72?'#eddbac':'#72a65c');ic.push(c.r,c.g,c.b);if(ring<12&&j<48){const n=ring*49+j;ii.push(n,n+1,n+49,n+49,n+1,n+50);}}const ig=geometry(new T.BufferGeometry());ig.setAttribute('position',new T.Float32BufferAttribute(iv,3));ig.setAttribute('color',new T.Float32BufferAttribute(ic,3));ig.setAttribute('uv',new T.Float32BufferAttribute(iu,2));ig.setIndex(ii);ig.computeVertexNormals();const islet=make(ig,mat('#ffffff',{vertexColors:true,map:tropical.grain}));islet.name='Butterfly Island';tropical.palm(24.6,-8.6,.85);tropical.palm(22.8,-7.4,.65);for(let i=0;i<7;i++){const x=24+Math.sin(i*2.4)*1.6,z=-8+Math.cos(i*2.4)*1.1;tropical.card(15,x,height(x,z),z,.9,1);}
+  for(const land of worldIslands){
+   const iv=[],ic=[],ii=[],iu=[];for(let ring=0;ring<=16;ring++)for(let j=0;j<=64;j++){
+    const a=j/64*Math.PI*2,r=ring/16,x=land.x+Math.cos(a)*land.rx*r,z=land.z+Math.sin(a)*land.rz*r;
+    iv.push(x,isletHeight(x,z),z);iu.push(x*.18,z*.18);const c=new T.Color(r>.78?'#eddbac':land.id==='wilds'?'#4d8455':'#72a65c');ic.push(c.r,c.g,c.b);
+    if(ring<16&&j<64){const n=ring*65+j;ii.push(n,n+1,n+65,n+65,n+1,n+66);}
+   }
+   const ig=geometry(new T.BufferGeometry());ig.setAttribute('position',new T.Float32BufferAttribute(iv,3));ig.setAttribute('color',new T.Float32BufferAttribute(ic,3));ig.setAttribute('uv',new T.Float32BufferAttribute(iu,2));ig.setIndex(ii);ig.computeVertexNormals();const island=make(ig,mat('#ffffff',{vertexColors:true,map:tropical.grain}));island.name=land.en;
+   const small=land.id==='islet';
+   for(let i=0;i<(small?2:12);i++){const a=i*2.4,r=.3+(i%3)*.22,x=land.x+Math.sin(a)*land.rx*r,z=land.z+Math.cos(a)*land.rz*r;tropical.palm(x,z,.75+(i%3)*.2);}
+   for(let i=0;i<(small?7:16);i++){const x=land.x+Math.sin(i*2.4)*land.rx*.6,z=land.z+Math.cos(i*2.4)*land.rz*.6;tropical.card(i%4===0?1:15,x,height(x,z),z,i%4===0?2.2:.9,i%4===0?2.8:1);}
+   if(!small){
+    // A walk-through stone arch marks each island's central bubble clearing.
+    for(const side of [-1,1])make(box,stone,land.x+side*2,height(land.x+side*2,land.z)+1.8,land.z,.8,3.6,1);
+    make(box,stone,land.x,height(land.x,land.z)+3.5,land.z,4.8,.7,1);
+    for(let i=0;i<3;i++){const x=land.x-4+i*2,z=land.z+5;const fruits=[];tropical.card(1,x,height(x,z),z,3.2,3.8);for(let j=0;j<6;j++)fruits.push(tropical.card(7,x+(j%3-1)*.23,height(x,z)+2.1-Math.floor(j/3)*.3,z+.2,.5,.65));tropical.foodTrees.push({id:'banana'+(5+(worldIslands.indexOf(land)-1)*3+i),kind:'banana',x,z,fruits});}
+    for(let i=0;i<4;i++)tropical.card(i%2?8:9,land.x+(i-1.5)*3,height(land.x+(i-1.5)*3,land.z-4),land.z-4,1.1,.8);
+   }
+  }
   // Transparent lagoon, a visible sandy seabed, and small irregular wave highlights.
   const waterMaterial=new T.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{time:{value:0}},vertexShader:`uniform float time;varying vec3 pos;void main(){vec3 p=position;p.z+=sin(p.x*.5+time*.6)*.025+cos(p.y*.7+time*.5)*.025;pos=p;gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.);}`,fragmentShader:`uniform float time;varying vec3 pos;
 float swell(vec2 p){return sin(p.x*1.7+p.y*.8+time*.8)*.45+sin(p.x*-.9+p.y*2.2-time*.65)*.3+sin(p.x*4.8+p.y*3.1+time)*.12;}
@@ -53,7 +70,7 @@ void main(){
  #include <colorspace_fragment>
 }`});
   materials.add(waterMaterial);const water=make(geometry(new T.PlaneGeometry(500,500,64,64)),waterMaterial,0,-.12,0);water.rotation.x=-Math.PI/2;water.castShadow=false;water.receiveShadow=false;water.renderOrder=2;
-  const bedGeometry=geometry(new T.PlaneGeometry(140,140));const bedUV=bedGeometry.attributes.uv;for(let i=0;i<bedUV.count;i++)bedUV.setXY(i,bedUV.getX(i)*16,bedUV.getY(i)*16);const seabed=make(bedGeometry,mat('#b3c8b0',{map:tropical.grain,roughness:1}),0,-1.4,0);seabed.rotation.x=-Math.PI/2;seabed.castShadow=false;
+  const bedGeometry=geometry(new T.PlaneGeometry(220,180));const bedUV=bedGeometry.attributes.uv;for(let i=0;i<bedUV.count;i++)bedUV.setXY(i,bedUV.getX(i)*16,bedUV.getY(i)*16);const seabed=make(bedGeometry,mat('#b3c8b0',{map:tropical.grain,roughness:1}),0,-1.4,0);seabed.rotation.x=-Math.PI/2;seabed.castShadow=false;
   // A sandy path winding from the landing cove to the lighthouse.
   const pathPoints=[new T.Vector3(4,.4,12),new T.Vector3(3,height(3,8)+.07,8),new T.Vector3(7,height(7,4)+.08,4),new T.Vector3(4,height(4,0)+.08,0),new T.Vector3(0,height(0,-3)+.08,-3),new T.Vector3(-1,height(-1,-5)+.08,-5)];
   const pathCurve=new T.CatmullRomCurve3(pathPoints),pathVertices=[],pathUV=[],pathIndex=[];
@@ -71,7 +88,6 @@ void main(){
   function boat(x,z,s){const g=new T.Group();g.position.set(x,.25,z);scene.add(g);make(ball,wood,0,0,0,1.8*s,.35*s,.7*s,g);make(cylinder,cream,0,1.7*s,0,.055*s,3.3*s,.055*s,g);const shape=new T.Shape();shape.moveTo(0,0);shape.lineTo(0,2.8*s);shape.lineTo(-1.5*s,.15*s);shape.closePath();make(geometry(new T.ShapeGeometry(shape)),mat('#ffe7b5',{side:T.DoubleSide}),.07,.3*s,0,1,1,1,g);g.rotation.y=-.3;bobbing.push({g,y:.25,z});return g;}
   const dockBoat=boat(6.5,16,.75);dockBoat.name='Dock boat';const sailboat=boat(-18,21,1.2);
   // Distant islets and glowing motes give the approach a sense of depth.
-  for(let i=0;i<5;i++){const x=-70+i*32,z=-50-rand()*25;make(ball,stone,x,-.3,z,8+rand()*6,.8+rand()*.6,7);}
   const motePositions=[];for(let i=0;i<60;i++)motePositions.push((rand()-.5)*40,1+rand()*10,(rand()-.5)*30);const motesGeo=geometry(new T.BufferGeometry());motesGeo.setAttribute('position',new T.Float32BufferAttribute(motePositions,3));const moteMat=new T.PointsMaterial({color:'#fff0ab',size:.12,transparent:true,opacity:.8,depthWrite:false});materials.add(moteMat);const motes=new T.Points(motesGeo,moteMat);scene.add(motes);
   let frame=0,last=0,lastDraw=0,time=0,disposed=false,flight=null,finish=null,width=1,heightPx=1,px=0,py=0;
   const target=new T.Vector3(),startCam=new T.Vector3(),startLook=new T.Vector3(),endCam=new T.Vector3(7,6.5,24),endLook=new T.Vector3(2,3.7,4);
