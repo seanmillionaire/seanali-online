@@ -9,15 +9,7 @@
     padding: 32px 22px max(36px, env(safe-area-inset-bottom));
   }
   .simple-gps .guided-card.quiz-welcome { max-width: 460px; }
-  .simple-gps .quiz-welcome > .guided-kicker {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin: 0 0 18px;
-    color: #6c8277;
-    font-size: 11px;
-    letter-spacing: 1.8px;
-  }
+  .simple-gps .quiz-welcome > .guided-kicker { display: none; }
   .simple-gps .quiz-welcome h1 {
     max-width: 360px;
     margin: 0 auto;
