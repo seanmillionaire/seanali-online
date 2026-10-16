@@ -1,5 +1,5 @@
-import {worldIslands,isletHeight} from './explore-state.js?v=30';
-import {createTropical} from './tropical.js?v=30';
+import {worldIslands,isletHeight} from './explore-state.js?v=31';
+import {createTropical} from './tropical.js?v=31';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
 export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import('./vendor/three.module.min.js')}={}) {
   let disposed=false,world=null,pending=null;
@@ -46,6 +46,12 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
    const small=land.id==='islet';
    for(let i=0;i<(small?2:12);i++){const a=i*2.4,r=.3+(i%3)*.22,x=land.x+Math.sin(a)*land.rx*r,z=land.z+Math.cos(a)*land.rz*r;tropical.palm(x,z,.75+(i%3)*.2);}
    for(let i=0;i<(small?7:16);i++){const x=land.x+Math.sin(i*2.4)*land.rx*.6,z=land.z+Math.cos(i*2.4)*land.rz*.6;tropical.card(i%4===0?1:15,x,height(x,z),z,i%4===0?2.2:.9,i%4===0?2.8:1);}
+   if(land.vehicleOnly){
+    const crystalMat=mat('#78e6e0',{emissive:'#259dba',emissiveIntensity:.35,roughness:.22,metalness:.12});
+    for(let i=0;i<7;i++){const a=i*Math.PI*2/7,x=land.x+Math.sin(a)*6,z=land.z+Math.cos(a)*5;const crystal=make(geometry(new T.ConeGeometry(.7,3,5)),crystalMat,x,height(x,z)+1.1,z,1,1+(i%3)*.3,1);crystal.rotation.z=Math.sin(a)*.2;}
+    // Buoys outline the strong-current area, well outside the beach and landing zone.
+    for(let i=0;i<16;i++){const a=i*Math.PI/8,x=land.x+Math.sin(a)*land.rx*1.6,z=land.z+Math.cos(a)*land.rz*1.6;make(ball,gold,x,0,z,.16,.25,.16);}
+   }
    if(!small){
     // A walk-through stone arch marks each island's central bubble clearing.
     for(const side of [-1,1])make(box,stone,land.x+side*2,height(land.x+side*2,land.z)+1.8,land.z,.8,3.6,1);

@@ -3,11 +3,15 @@ export const worldIslands=[
  {id:'islet',x:24,z:-8,rx:4,rz:3,h:1.5,en:'Butterfly Island',es:'Islita Mariposa'},
  {id:'wilds',x:0,z:-30,rx:19,rz:20,h:4,en:'Northern Wilds',es:'Selva del Norte'},
  {id:'coconutCoast',x:47,z:6,rx:17,rz:14,h:3,en:'Coconut Coast',es:'Costa de Cocos'},
- {id:'sunset',x:-42,z:8,rx:18,rz:15,h:3.5,en:'Sunset Island',es:'Isla del Atardecer'}
+ {id:'sunset',x:-42,z:8,rx:18,rz:15,h:3.5,en:'Sunset Island',es:'Isla del Atardecer'},
+ {id:'crystalCove',x:0,z:48,rx:13,rz:10,h:3,en:'Crystal Cove',es:'Cala Cristal',vehicleOnly:true}
 ];
+// Strong offshore currents require a vehicle to cross; walking remains free after arrival.
+export function remoteAccess(from,to){const p=worldIslands.find(i=>i.vehicleOnly),radius=q=>Math.hypot((q.x-p.x)/p.rx,(q.z-p.z)/p.rz);return radius(to)>=1.6||radius(from)<1.6;}
 export function isletHeight(x,z){let h=0;for(const island of worldIslands){const r=Math.hypot((x-island.x)/island.rx,(z-island.z)/island.rz);if(r<=1)h=Math.max(h,.08+(1-r*r)*island.h);}return h;}
 export const explorePlaces=[
  ...worldIslands.slice(1).map(p=>({id:p.id,x:p.x,z:p.z,icon:'🏝',es:p.es,en:p.en,kind:'islet'})),
+ {id:'coveBalloon',x:5,z:48,icon:'🎈',es:'Globo de regreso',en:'Return balloon',kind:'balloon'},
  {id:'islet',x:24,z:-8,icon:'🏝',es:'Islita Mariposa',en:'Butterfly Island',kind:'islet'},
  {id:'pip',x:4,z:9,icon:'🐢',es:'Pip · la tortuga',en:'Pip · the sea turtle',kind:'friend'},
  {id:'mila',x:-8,z:5,icon:'🦜',es:'Mila · picnic tropical',en:'Mila · tropical picnic',kind:'friend'},
@@ -59,6 +63,7 @@ export function sharkStep(x,z,tx,tz,dt,speed,side=1){
 }
 export function traversable(x,z){return Math.hypot(x/90,z/70)<=1&&worldObstacles.every(([a,b,r])=>Math.hypot(x-a,z-b)>r+.3);}
 export function islandPath(from,to){
+ if(!remoteAccess(from,to))return [];
  const ocean=Math.abs(from.x)>18||Math.abs(to.x)>18||Math.abs(from.z)>12||Math.abs(to.z)>12||!walkable(from.x,from.z)||!walkable(to.x,to.z),allowed=ocean?traversable:walkable;
  const minX=ocean?Math.max(-90,Math.floor(Math.min(from.x,to.x))-5):-18,maxX=ocean?Math.min(90,Math.ceil(Math.max(from.x,to.x))+5):18,minZ=ocean?Math.max(-70,Math.floor(Math.min(from.z,to.z))-5):-12,maxZ=ocean?Math.min(70,Math.ceil(Math.max(from.z,to.z))+5):12;
  const nodes=[];for(let z=minZ;z<=maxZ;z++)for(let x=minX;x<=maxX;x++)if(allowed(x,z))nodes.push({x,z,key:x+','+z});
