@@ -94,8 +94,8 @@ footer.footer a{text-underline-offset:3px}
 @media(max-width:600px){
  .wrap{width:calc(100% - 26px)}
  .site-head{height:53px}
- .topbar{font-size:10px;padding:8px 12px}
- .guide-shell{padding:20px 0 30px}
+ .topbar{font-size:10px;padding:calc(24px + env(safe-area-inset-top, 0px)) 12px 12px}
+ .guide-shell{padding:40px 0 30px}
  .progress-outer{margin-bottom:23px}
  h1{font-size:clamp(31px,8.7vw,40px);margin-bottom:13px}
  h2{font-size:clamp(28px,7.7vw,35px);margin-bottom:13px}
