@@ -1,5 +1,5 @@
-import {worldIslands,isletHeight} from './explore-state.js?v=37';
-import {createTropical} from './tropical.js?v=37';
+import {worldIslands,isletHeight} from './explore-state.js?v=38';
+import {createTropical} from './tropical.js?v=38';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
 export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import('./vendor/three.module.min.js')}={}) {
   let disposed=false,world=null,pending=null;
