@@ -1,5 +1,5 @@
-import {worldIslands,isletHeight} from './explore-state.js?v=34';
-import {createTropical} from './tropical.js?v=34';
+import {worldIslands,isletHeight} from './explore-state.js?v=35';
+import {createTropical} from './tropical.js?v=35';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
 export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import('./vendor/three.module.min.js')}={}) {
   let disposed=false,world=null,pending=null;
@@ -19,7 +19,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,light?1:1.5));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.02;
   renderer.shadowMap.enabled=!light;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
   const scene=new T.Scene();scene.background=new T.Color('#a4c9de');scene.fog=new T.FogExp2('#b0d1dc',.004);
-  const camera=new T.PerspectiveCamera(42,1,.2,300),sun=new T.DirectionalLight('#fff0d2',3.0);sun.position.set(-22,38,18);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-30;sun.shadow.camera.right=30;sun.shadow.camera.top=30;sun.shadow.camera.bottom=-30;sun.shadow.normalBias=.1;scene.add(sun,new T.HemisphereLight('#c9edff','#58623c',1.45));
+  const camera=new T.PerspectiveCamera(42,1,.2,300),sun=new T.DirectionalLight('#fff0d2',3.0);sun.position.set(-22,38,18);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-30;sun.shadow.camera.right=30;sun.shadow.camera.top=30;sun.shadow.camera.bottom=-30;sun.shadow.normalBias=.1;const ambient=new T.HemisphereLight('#c9edff','#58623c',1.45);scene.add(sun,ambient);
   const geometries=new Set(),materials=new Set(),clouds=[],bobbing=[];let seed=4107;
   const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
   const geometry=g=>{geometries.add(g);return g;};
@@ -61,7 +61,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
    }
   }
   // Transparent lagoon, a visible sandy seabed, and small irregular wave highlights.
-  const waterMaterial=new T.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{time:{value:0}},vertexShader:`uniform float time;varying vec3 pos;void main(){vec3 p=position;p.z+=sin(p.x*.5+time*.6)*.025+cos(p.y*.7+time*.5)*.025;pos=p;gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.);}`,fragmentShader:`uniform float time;varying vec3 pos;
+  const waterMaterial=new T.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{time:{value:0},daylight:{value:1}},vertexShader:`uniform float time;varying vec3 pos;void main(){vec3 p=position;p.z+=sin(p.x*.5+time*.6)*.025+cos(p.y*.7+time*.5)*.025;pos=p;gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.);}`,fragmentShader:`uniform float time;uniform float daylight;varying vec3 pos;
 float swell(vec2 p){return sin(p.x*1.7+p.y*.8+time*.8)*.45+sin(p.x*-.9+p.y*2.2-time*.65)*.3+sin(p.x*4.8+p.y*3.1+time)*.12;}
 void main(){
  vec2 p=pos.xy;float coast=min(length(p/vec2(20.,14.)),length((p-vec2(24.,8.))/vec2(4.,3.)));float depth=smoothstep(.95,2.9,coast);
@@ -71,7 +71,7 @@ void main(){
  vec3 halfSun=normalize(normalize(vec3(-.5,1.,.45))+view);float spec=pow(max(dot(n,halfSun),0.),180.);c+=vec3(1.,.88,.61)*spec*.65*(1.-smoothstep(25.,65.,length(p)));
  float caustic=pow(max(0.,sin(p.x*2.4+sin(p.y*1.5)+time*.6)*sin(p.y*2.6+sin(p.x*1.8)-time*.4)),9.);c+=vec3(.12,.22,.13)*caustic*(1.-depth);
  float edge=exp(-pow((coast-1.025)/.055,2.));float foam=smoothstep(.55,.95,sin(coast*110.-time*1.1+sin(p.x*.8)*.6));c=mix(c,vec3(.83,.95,.88),edge*foam*.45);
- gl_FragColor=vec4(c,mix(.42,.98,smoothstep(1.,2.2,coast)));
+ c*=mix(vec3(.28,.42,.68),vec3(1.),daylight);gl_FragColor=vec4(c,mix(.42,.98,smoothstep(1.,2.2,coast)));
  #include <tonemapping_fragment>
  #include <colorspace_fragment>
 }`});
@@ -112,7 +112,7 @@ void main(){
   function pointer(e){if(!motion()||flight!==null)return;const r=canvas.getBoundingClientRect();px=(e.clientX-r.left)/r.width-.5;py=(e.clientY-r.top)/r.height-.5;}
   const observer=new ResizeObserver(resize),bodyObserver=new MutationObserver(wake);observer.observe(canvas.parentElement);bodyObserver.observe(document.body,{attributes:true,attributeFilter:['class']});document.addEventListener('visibilitychange',visibility);canvas.parentElement.addEventListener('pointermove',pointer,{passive:true});
   let explorer;
-  try{explorer=setup?.({T,scene,camera,target,height,make,geometry,mat,ball,cone,cylinder,box,renderer,tropical,tower,beam,crystal,dockBoat});
+  try{explorer=setup?.({T,scene,camera,target,height,make,geometry,mat,ball,cone,cylinder,box,renderer,tropical,tower,beam,crystal,dockBoat,sun,ambient,waterMaterial});
   pose();camera.lookAt(target);resize();if(explorer){camera.clearViewOffset();camera.updateProjectionMatrix();explorer.update(0,0);}draw();wake();}catch(error){dispose();throw error;}
   return {
     resume(){renderer.shadowMap.needsUpdate=true;wake();},

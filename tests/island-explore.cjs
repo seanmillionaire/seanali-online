@@ -1,6 +1,6 @@
 const {JSDOM}=require('jsdom');const fs=require('node:fs');const path=require('node:path');const assert=require('node:assert/strict');const {pathToFileURL}=require('node:url');
 const root=path.resolve(__dirname,'../games/adventure');
-const source=['world-story.js','explore-state.js','explore.js'].map(f=>fs.readFileSync(path.join(root,f),'utf8').replace(/^import .*;\n/gm,'').replace(/\bexport /g,'')).join('\n');
+const source=['island-life.js','world-story.js','explore-state.js','explore.js'].map(f=>fs.readFileSync(path.join(root,f),'utf8').replace(/^import .*;\n/gm,'').replace(/\bexport /g,'')).join('\n');
 (async()=>{
  const T=await import(pathToFileURL(path.join(root,'vendor/three.module.min.js')));
  function boot(raw,lang='en',moving=true){

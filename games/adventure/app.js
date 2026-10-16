@@ -1,9 +1,9 @@
-import {earnCoins,syncWallet} from './explore-state.js?v=34';
-import {createExplore} from './explore.js?v=34';
-import {createEntrance} from './entrance.js?v=34';
-import {createDelight,burst,livingWorld,foxPortrait} from './delight.js?v=34';
+import {earnCoins,syncWallet} from './explore-state.js?v=35';
+import {createExplore} from './explore.js?v=35';
+import {createEntrance} from './entrance.js?v=35';
+import {createDelight,burst,livingWorld,foxPortrait} from './delight.js?v=35';
 import {regions,quests,challenges,ui,text} from './content.js';
-import {SAVE_KEY,fresh,normalize,completedCount,lightCount,totalStars,unlocked,award} from './state.js?v=34';
+import {SAVE_KEY,fresh,normalize,completedCount,lightCount,totalStars,unlocked,award} from './state.js?v=35';
 const $=s=>document.querySelector(s),app=$('#app'),dialog=$('#dialog');
 let storageOK=true,state;try{state=normalize(JSON.parse(localStorage.getItem(SAVE_KEY)));if(!localStorage.getItem(SAVE_KEY)){state.lang=localStorage.getItem('seanGameLang')==='en'?'en':'es';}}catch{state=fresh();}
 let islandQuestId=null,islandWelcome=null,introPending=false;

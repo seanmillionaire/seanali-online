@@ -1,6 +1,7 @@
-import {createWorldStory} from './world-story.js?v=34';
-import {buildIsland} from './entrance.js?v=34';
-import {remoteAccess,worldIslands,explorePlaces,exploreItems,normalizeExplore,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=34';
+import {createIslandLife} from './island-life.js?v=35';
+import {createWorldStory} from './world-story.js?v=35';
+import {buildIsland} from './entrance.js?v=35';
+import {remoteAccess,worldIslands,explorePlaces,exploreItems,normalizeExplore,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,sharkPatrol,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=35';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);syncWallet(state);
  let disposed=false,engine=null,control=null,near=null,ride=s.flight?1:0,flightY=s.flight||0,flightTarget=s.flight||0,flightVX=0,flightVZ=0,route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;
@@ -102,7 +103,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  const contextRestored=()=>{if(disposed||!engine)return;ready();engine.resume?.();};
  canvas.addEventListener('webglcontextlost',contextLost);canvas.addEventListener('webglcontextrestored',contextRestored);
  start();
- function setup({T,scene,camera,target,height,make,geometry,mat,ball,cone,cylinder,box,tropical,tower,beam,crystal,dockBoat}){
+ function setup({T,scene,camera,target,height,make,geometry,mat,ball,cone,cylinder,box,tropical,tower,beam,crystal,dockBoat,sun,ambient,waterMaterial}){
   const gold=mat('#ffd46b'),pink=mat('#ed91b6'),orange=mat('#ef9955'),cream=mat('#fff2d3'),ink=mat('#254550'),purple=mat('#a895ed'),green=mat('#68bd7d');
   const avatar=new T.Group();avatar.name='Angelique';scene.add(avatar);const skin=mat('#bd8e68'),shirt=mat('#b8a6d7'),shorts=mat('#437c80'),hair=mat('#44352a');
   make(geometry(new T.CylinderGeometry(.24,.20,.58,12)),shirt,0,1.06,0,1,1,1,avatar);make(ball,skin,0,1.58,0,.22,.27,.21,avatar);make(ball,hair,0,1.73,-.03,.23,.15,.21,avatar);
@@ -183,7 +184,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   make(cylinder,stairMaterial,0,6.4,0,1.7,.15,1.7,interior);const lantern=make(ball,gold,0,7.3,0,.35,.5,.35,interior);
   const beamCopy=make(geometry(new T.ConeGeometry(1.5,14,20,1,true)),mat('#ffed9d',{transparent:true,opacity:.16,depthWrite:false,side:T.DoubleSide}),0,7.3,-7,1,1,1,interior);beamCopy.rotation.x=Math.PI/2;beamCopy.visible=false;beamCopy.castShadow=false;
   const seaLife=[],sharkMaterial=mat('#557982',{roughness:.6}),belly=mat('#c1d4ce'),finGeometry=geometry(new T.ConeGeometry(.38,.8,3));
-  for(let i=0;i<3;i++){const g=new T.Group();g.name='Reef shark '+(i+1);scene.add(g);make(ball,sharkMaterial,0,-.25,0,.38,.28,1.25,g);make(ball,belly,0,-.36,.05,.3,.14,1.1,g);make(finGeometry,sharkMaterial,0,.16,-.15,.65,1,1,g);for(const side of [-1,1]){const fin=make(finGeometry,sharkMaterial,side*.4,-.3,0,.65,1,1,g);fin.rotation.z=side*-1.1;fin.rotation.x=-.4;}const tail=make(finGeometry,sharkMaterial,0,-.1,-1.2,.65,1.1,1,g);tail.rotation.z=Math.PI/2;for(const x of [-.23,.23])make(ball,ink,x,-.14,.8,.045,.045,.045,g);const a=i/3*Math.PI*2;g.position.set(Math.cos(a)*25,0,Math.sin(a)*20);seaLife.push({g,tail,a});}
+  for(let i=0;i<3;i++){const g=new T.Group();g.name='Reef shark '+(i+1);scene.add(g);make(ball,sharkMaterial,0,-.25,0,.38,.28,1.25,g);make(ball,belly,0,-.36,.05,.3,.14,1.1,g);make(finGeometry,sharkMaterial,0,.16,-.15,.65,1,1,g);for(const side of [-1,1]){const fin=make(finGeometry,sharkMaterial,side*.4,-.3,0,.65,1,1,g);fin.rotation.z=side*-1.1;fin.rotation.x=-.4;}const tail=make(finGeometry,sharkMaterial,0,-.1,-1.2,.65,1.1,1,g);tail.rotation.z=Math.PI/2;for(const x of [-.23,.23])make(ball,ink,x,-.14,.8,.045,.045,.045,g);const a=i/3*Math.PI*2;g.position.set(Math.cos(a)*25,0,Math.sin(a)*20);const spawn=recoverShark(g.position.x,g.position.z);g.position.set(spawn.x,0,spawn.z);seaLife.push({g,tail,a,nav:{...spawn,waypoint:i*8}});}
   const ripple=make(geometry(new T.TorusGeometry(.65,.025,5,28)),mat('#e2fffa',{transparent:true,opacity:.65,depthWrite:false}),0,-.03,0);ripple.rotation.x=-Math.PI/2;ripple.castShadow=false;ripple.visible=false;
   if(s.badges.includes('beacon')){if(beam)beam.material.opacity=.22;if(crystal)crystal.material.emissiveIntensity=1.1;beamCopy.visible=true;}
   function enterTower(){inside=true;swimming=false;stair=0;stairAngle=0;towerY=.22;towerV=0;airborne=false;targetPoint=null;route=[];blur();s.x=-1;s.z=-4.1;interior.visible=true;if(tower)tower.visible=false;host.classList.add('inside-lighthouse');tell('👣 Sigue los escalones · ⤴ Salta','👣 Follow the steps · ⤴ Jump');save();}
@@ -201,6 +202,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   function dress(){hat.visible=s.hat>0;hat.traverse(o=>{if(o.isMesh)o.material.color.set(['#b9a474','#b9a474','#a57252','#687b54','#db8b85','#4c9fa8','#edbe4d'][s.hat]);});}
   camera.fov=48;camera.updateProjectionMatrix();
   control={catchNearest,falling:()=>airborne,boardBalloon,popBalloon,board,disembark,boatNear,harvest,snack:(kind)=>{coconutSnack.visible=kind==='coconut';bananaSnack.visible=kind==='banana';spark(s.x,s.z,16,avatar.position.y+bodyScale*1.4);},enterTower,leaveTower,lightBeacon,bubbles:blowBubbles,hop:(v=5)=>{if(inside){if(towerV===0)towerV=v;}else if(!airborne&&jumpY<.1)velocity=v+(s.growth>=2?Math.min(4,s.growth-1):0);},spark,bloom,dress,demo:()=>{music=[];spark(6,4,8);}};bloom(s.flowers);dress();
+  const life=createIslandLife({T,scene,camera,state,make,mat,geometry,ball,cone,box,sun,ambient,waterMaterial,inWater,sharkStep});
   const story=createWorldStory({T,scene,host,state,height,save,joy,spark,openNext,motion,refresh:id=>{earnCoins(state,'story-'+id);bloom(s.flowers);refresh();},active:()=>!paused()&&!document.hidden&&panel.hidden&&!inside&&!swimming&&!boating&&!ride&&!airborne&&!document.querySelector('dialog[open]')});
   function update(dt,time){if(disposed)return;dt=Math.min(dt,.05);if(messageTime>0){messageTime-=dt;if(messageTime<=0)message.classList.remove('show');}
    const down=(...ks)=>ks.some(k=>keys.has(k));let dx=stick.x+(down('ArrowRight','d','D')?1:0)-(down('ArrowLeft','a','A')?1:0),dz=stick.z+(down('ArrowDown','s','S')?1:0)-(down('ArrowUp','w','W')?1:0);
@@ -235,8 +237,8 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    if(boating){ax-=Math.sin(s.boat.heading)*.45;az-=Math.cos(s.boat.heading)*.45;}
    if(inside)ay=height(-1,-5)+towerY;
    if(airborne){const floor=inWater(ax,az)?-.95:onDock(ax,az)?.58:height(ax,az);if(active){towerV-=12*dt;towerY+=towerV*dt;}ay=towerY;if(ay<=floor){landed=active;airborne=false;towerV=0;clearLanding();ax=s.x;az=s.z;ay=inWater(ax,az)?-.95:onDock(ax,az)?.58:height(ax,az);jumpY=0;velocity=0;}}
-   danger=false;for(const shark of seaLife){const g=shark.g;const dist=Math.hypot(g.position.x-s.x,g.position.z-s.z);const chase=swimming&&dist<8&&rescueCooldown===0;let tx=Math.cos(time*.2+shark.a)*25,tz=Math.sin(time*.2+shark.a)*20;
-    if(chase){tx=s.x;tz=s.z;}const pace=chase?12:5;if(active){const next=sharkStep(g.position.x,g.position.z,tx,tz,dt,pace,shark.a>3?-1:1),mx=next.x-g.position.x,mz=next.z-g.position.z;if(Math.hypot(mx,mz)>.00001)g.rotation.y=Math.atan2(mx,mz);g.position.x=next.x;g.position.z=next.z;}shark.tail.rotation.y=motion()?Math.sin(time*(chase?16:8)+shark.a)*.38:0;
+   danger=false;for(const shark of seaLife){const g=shark.g;const dist=Math.hypot(g.position.x-s.x,g.position.z-s.z);const chase=swimming&&dist<8&&rescueCooldown===0;
+    if(active){shark.nav.x=g.position.x;shark.nav.z=g.position.z;shark.nav.detour=Math.max(0,(shark.nav.detour||0)-dt);const next=sharkPatrol(shark.nav,dt,chase&&!shark.nav.detour?{x:s.x,z:s.z}:null),mx=next.x-g.position.x,mz=next.z-g.position.z;if(Math.hypot(mx,mz)>.00001)g.rotation.y=Math.atan2(mx,mz);g.position.x=next.x;g.position.z=next.z;}shark.tail.rotation.y=motion()?Math.sin(time*(chase?16:8)+shark.a)*.38:0;
     if(chase)danger=true;if(chase&&dist<1.25&&active){s.x=lastShore.x;s.z=lastShore.z;ax=s.x;az=s.z;ay=height(ax,az);swimming=false;danger=false;rescueCooldown=8;s.growth=1;bodyScale=1;eating=0;energy=0;targetPoint=null;route=[];blur();tell('🐢 Pip te llevó a la playa. ¡Pequeña y a salvo!','🐢 Pip brought you to shore. Small again. Safe!');save();}}
    host.classList.toggle('shark-nearby',danger);ripple.visible=swimming;ripple.position.set(ax,-.03,az);ripple.scale.setScalar(1+(motion()?Math.sin(time*4)*.12:0));arms.forEach((arm,i)=>{arm.rotation.x=swimming&&motion()?Math.sin(time*7+i*Math.PI)*.9:0;});
 
@@ -282,10 +284,10 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    else {setText(jump,say('Saltar ⤴','Jump ⤴'));setText(instructions,say('Toca el suelo para ir · Flechas / WASD · Espacio para saltar','Tap ground to walk · Arrows / WASD · Space to jump'));}
    if(!inside&&!boating&&!ride&&boatNear()){act.hidden=false;setText(act,say('⛵ Subir al barco','⛵ Board boat'));}else if(foodNear){act.hidden=false;setText(act,foodNear.kind==='coconut'?say('🥥 Recoger coco','🥥 Pick coconut'):say('🍌 Recoger plátano','🍌 Pick banana'));}guideBeacon.visible=guideBeacon.visible&&!inside&&!boating&&!ride;
    goalCard.hidden=boating||inside||!!ride||airborne||near?.kind==='islet'||netTime>0;quest.hidden=true;
-   story.update(dt,time);if(host.classList.contains("story-nearby")){lesson.hidden=true;guideBeacon.visible=false;}
+   life.update(dt,active,motion());story.update(dt,time);if(host.classList.contains("story-nearby")){lesson.hidden=true;guideBeacon.visible=false;}
    for(const [button,words] of buttonUpdates)paintButton(button,words);buttonUpdates.clear();
   }
-  return {update,dispose(){story.dispose();canvas.removeEventListener('pointerdown',walkTo);control=null;}};
+  return {update,dispose(){life.dispose();story.dispose();canvas.removeEventListener('pointerdown',walkTo);control=null;}};
  }
  function dispose(){if(disposed)return;host.classList.remove('inside-lighthouse','is-swimming','shark-nearby');joy.boat?.(false);disposed=true;generation++;clearTimeout(startTimer);clearTimeout(recoveryTimer);canvas.removeEventListener('webglcontextlost',contextLost);canvas.removeEventListener('webglcontextrestored',contextRestored);save();engine?.dispose();engine=null;document.removeEventListener('keydown',keydown);document.removeEventListener('keyup',keyup);window.removeEventListener('blur',blur);document.removeEventListener('visibilitychange',blur);keys.clear();}
  return {dispose};
