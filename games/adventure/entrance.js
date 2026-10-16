@@ -1,5 +1,5 @@
-import {worldIslands,isletHeight} from './explore-state.js?v=36';
-import {createTropical} from './tropical.js?v=36';
+import {worldIslands,isletHeight} from './explore-state.js?v=37';
+import {createTropical} from './tropical.js?v=37';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
 export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import('./vendor/three.module.min.js')}={}) {
   let disposed=false,world=null,pending=null;
@@ -18,8 +18,8 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   const renderer=new T.WebGLRenderer({canvas,antialias:!light,alpha:false,powerPreference:'default'});
   renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,light?1:1.5));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.02;
   renderer.shadowMap.enabled=!light;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
-  const scene=new T.Scene();scene.background=new T.Color('#a4c9de');scene.fog=new T.FogExp2('#b0d1dc',.004);
-  const camera=new T.PerspectiveCamera(42,1,.2,300),sun=new T.DirectionalLight('#fff0d2',3.0);sun.position.set(-22,38,18);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-30;sun.shadow.camera.right=30;sun.shadow.camera.top=30;sun.shadow.camera.bottom=-30;sun.shadow.normalBias=.1;const ambient=new T.HemisphereLight('#c9edff','#58623c',1.45);scene.add(sun,ambient);
+  const scene=new T.Scene();scene.background=new T.Color('#a4c9de');scene.fog=new T.FogExp2('#b0d1dc',.0025);
+  const camera=new T.PerspectiveCamera(42,1,.2,550),sun=new T.DirectionalLight('#fff0d2',3.0);sun.position.set(-22,38,18);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-30;sun.shadow.camera.right=30;sun.shadow.camera.top=30;sun.shadow.camera.bottom=-30;sun.shadow.normalBias=.1;const ambient=new T.HemisphereLight('#c9edff','#58623c',1.45);scene.add(sun,ambient);
   const geometries=new Set(),materials=new Set(),clouds=[],bobbing=[];let seed=4107;
   const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
   const geometry=g=>{geometries.add(g);return g;};
@@ -46,6 +46,12 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
    const small=land.id==='islet';
    for(let i=0;i<(small?0:land.id==='coconutCoast'?18:4);i++){const a=i*2.4,r=.3+(i%3)*.22,x=land.x+Math.sin(a)*land.rx*r,z=land.z+Math.cos(a)*land.rz*r;tropical.palm(x,z,.75+(i%3)*.2,land.id==='coconutCoast');}
    for(let i=0;i<(small?7:16);i++){const x=land.x+Math.sin(i*2.4)*land.rx*.6,z=land.z+Math.cos(i*2.4)*land.rz*.6;tropical.card(small?15:land.id==='wilds'?1:land.id==='crystalCove'?3:2,x,height(x,z),z,small?1.2:2.2,small?1.3:2.8);}
+   if(land.id==='sunset'){
+    for(let i=0;i<9;i++){const x=land.x+Math.sin(i*2.4)*land.rx*.55,z=land.z+Math.cos(i*2.4)*land.rz*.55;tropical.palm(x,z,1.15+(i%3)*.15);tropical.card(2,x+1,height(x+1,z),z,3,3.5);}
+    const x=land.x-8,z=land.z-7,y=height(x,z);for(let j=0;j<7;j++){const rock=make(geometry(new T.DodecahedronGeometry(1,0)),stone,x+Math.sin(j*2.4)*2,y+1.5+(j%3)*1.6,z+Math.cos(j*2.4),2.1,2.4,1.5);rock.rotation.y=j;}const falls=make(box,mat('#b0eeef',{transparent:true,opacity:.55,roughness:.15}),x,y+2.3,z+1.9,1.4,4.6,.1);falls.name='Forest waterfall';make(cylinder,blue,x,y+.03,z+3,3,.06,2);for(let j=0;j<8;j++){const foam=make(ball,cream,x+Math.sin(j)*1.3,y+.15,z+2.6+Math.cos(j)*.5,.12,.05,.15);bobbing.push({g:foam,y:y+.15,z:z+3});}
+   }
+   if(land.id==='islet'){for(let i=0;i<36;i++){const x=land.x+Math.sin(i*2.4)*land.rx*.7,z=land.z+Math.cos(i*2.4)*land.rz*.7;tropical.card(15,x,height(x,z),z,1.2,1.4);}}
+   if(land.id==='wilds'||land.id==='coconutCoast'){for(let i=0;i<3;i++)make(box,wood,land.x-5+i*1.6,height(land.x-5+i*1.6,land.z+4)+.35,land.z+4,1.2,.7,1);}
    if(land.vehicleOnly){
     const crystalMat=mat('#78e6e0',{emissive:'#259dba',emissiveIntensity:.35,roughness:.22,metalness:.12});
     for(let i=0;i<7;i++){const a=i*Math.PI*2/7,x=land.x+Math.sin(a)*6,z=land.z+Math.cos(a)*5;const crystal=make(geometry(new T.ConeGeometry(.7,3,5)),crystalMat,x,height(x,z)+1.1,z,1,1+(i%3)*.3,1);crystal.rotation.z=Math.sin(a)*.2;}
@@ -63,7 +69,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   const waterMaterial=new T.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{time:{value:0},daylight:{value:1}},vertexShader:`uniform float time;varying vec3 pos;void main(){vec3 p=position;p.z+=sin(p.x*.5+time*.6)*.025+cos(p.y*.7+time*.5)*.025;pos=p;gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.);}`,fragmentShader:`uniform float time;uniform float daylight;varying vec3 pos;
 float swell(vec2 p){return sin(p.x*1.7+p.y*.8+time*.8)*.45+sin(p.x*-.9+p.y*2.2-time*.65)*.3+sin(p.x*4.8+p.y*3.1+time)*.12;}
 void main(){
- vec2 p=pos.xy;float coast=min(length(p/vec2(20.,14.)),length((p-vec2(24.,8.))/vec2(4.,3.)));float depth=smoothstep(.95,2.9,coast);
+ vec2 p=pos.xy;float coast=length(p/vec2(20.,14.));${worldIslands.map(i=>`coast=min(coast,length((p-vec2(${i.x.toFixed(1)},${(-i.z).toFixed(1)}))/vec2(${i.rx.toFixed(1)},${i.rz.toFixed(1)})));`).join('')}float depth=smoothstep(.95,2.9,coast);
  float h=swell(p),hx=swell(p+vec2(.04,0.)),hy=swell(p+vec2(0.,.04));vec3 n=normalize(vec3((h-hx)*1.5,1.,(h-hy)*1.5));
  vec3 view=normalize(cameraPosition-vec3(p.x,-.12,-p.y));float fresnel=pow(1.-max(dot(n,view),0.),4.);
  vec3 c=mix(vec3(.12,.68,.59),vec3(.015,.19,.30),depth);c=mix(c,vec3(.55,.78,.88),fresnel*.65);
@@ -74,8 +80,8 @@ void main(){
  #include <tonemapping_fragment>
  #include <colorspace_fragment>
 }`});
-  materials.add(waterMaterial);const water=make(geometry(new T.PlaneGeometry(500,500,64,64)),waterMaterial,0,-.12,0);water.rotation.x=-Math.PI/2;water.castShadow=false;water.receiveShadow=false;water.renderOrder=2;
-  const bedGeometry=geometry(new T.PlaneGeometry(220,180));const bedUV=bedGeometry.attributes.uv;for(let i=0;i<bedUV.count;i++)bedUV.setXY(i,bedUV.getX(i)*16,bedUV.getY(i)*16);const seabed=make(bedGeometry,mat('#b3c8b0',{map:tropical.grain,roughness:1}),0,-1.4,0);seabed.rotation.x=-Math.PI/2;seabed.castShadow=false;
+  materials.add(waterMaterial);const water=make(geometry(new T.PlaneGeometry(750,650,64,64)),waterMaterial,0,-.12,0);water.rotation.x=-Math.PI/2;water.castShadow=false;water.receiveShadow=false;water.renderOrder=2;
+  const bedGeometry=geometry(new T.PlaneGeometry(400,340));const bedUV=bedGeometry.attributes.uv;for(let i=0;i<bedUV.count;i++)bedUV.setXY(i,bedUV.getX(i)*16,bedUV.getY(i)*16);const seabed=make(bedGeometry,mat('#b3c8b0',{map:tropical.grain,roughness:1}),0,-1.4,0);seabed.rotation.x=-Math.PI/2;seabed.castShadow=false;
   // A sandy path winding from the landing cove to the lighthouse.
   const pathPoints=[new T.Vector3(4,.4,12),new T.Vector3(3,height(3,8)+.07,8),new T.Vector3(7,height(7,4)+.08,4),new T.Vector3(4,height(4,0)+.08,0),new T.Vector3(0,height(0,-3)+.08,-3),new T.Vector3(-1,height(-1,-5)+.08,-5)];
   const pathCurve=new T.CatmullRomCurve3(pathPoints),pathVertices=[],pathUV=[],pathIndex=[];

@@ -1,11 +1,12 @@
 // Exploration is independent of lesson order. Every place is open from the start.
 export const worldIslands=[
- {id:'islet',x:24,z:-8,rx:4,rz:3,h:1.5,en:'Butterfly Island',es:'Islita Mariposa'},
- {id:'wilds',x:0,z:-30,rx:19,rz:20,h:4,en:'Banana Island',es:'Isla de Plátanos'},
- {id:'coconutCoast',x:47,z:6,rx:17,rz:14,h:3,en:'Coconut Island',es:'Isla de Cocos'},
- {id:'sunset',x:-42,z:8,rx:18,rz:15,h:3.5,en:'Firefly Forest',es:'Bosque de Luciérnagas'},
- {id:'crystalCove',x:0,z:48,rx:13,rz:10,h:3,en:'Crystal Cove',es:'Cala Cristal',vehicleOnly:true}
+ {id:'islet',x:60,z:-60,rx:12,rz:10,h:2.5,ox:24,oz:-8,spread:2.4,en:'Butterfly Island',es:'Islita Mariposa'},
+ {id:'wilds',x:-30,z:-85,rx:24,rz:25,h:5,ox:0,oz:-30,spread:1.25,en:'Banana Island',es:'Isla de Plátanos'},
+ {id:'coconutCoast',x:105,z:10,rx:23,rz:19,h:4,ox:47,oz:6,spread:1.35,en:'Coconut Island',es:'Isla de Cocos'},
+ {id:'sunset',x:-100,z:30,rx:25,rz:22,h:6,ox:-42,oz:8,spread:1.35,en:'Firefly Forest',es:'Bosque de Luciérnagas'},
+ {id:'crystalCove',x:10,z:100,rx:20,rz:16,h:5,ox:0,oz:48,spread:1.5,en:'Crystal Cove',es:'Cala Cristal',vehicleOnly:true}
 ];
+export function islandPoint(id,x,z){const p=worldIslands.find(p=>p.id===id);return {x:p.x+(x-p.ox)*p.spread,z:p.z+(z-p.oz)*p.spread};}
 // Strong offshore currents require a vehicle to cross; walking remains free after arrival.
 export function remoteAccess(from,to){const p=worldIslands.find(i=>i.vehicleOnly),radius=q=>Math.hypot((q.x-p.x)/p.rx,(q.z-p.z)/p.rz);return radius(to)>=1.6||radius(from)<1.6;}
 export function isletHeight(x,z){let h=0;for(const island of worldIslands){const r=Math.hypot((x-island.x)/island.rx,(z-island.z)/island.rz);if(r<=1)h=Math.max(h,.08+(1-r*r)*island.h);}return h;}
@@ -26,6 +27,7 @@ export const explorePlaces=[
  {id:'wardrobe',x:-15,z:3,icon:'🎩',es:'Mi estilo',en:'My style',kind:'wardrobe'},
  {id:'chest',x:-15,z:-1,icon:'🎁',es:'Cofre escondido',en:'Hidden chest',kind:'chest'}
 ];
+for(const [id,land] of Object.entries({coveBalloon:'crystalCove',islet:'islet',mila:'wilds',ollie:'sunset',luna:'crystalCove',garden:'islet'})){const p=explorePlaces.find(p=>p.id===id);Object.assign(p,islandPoint(land,p.x,p.z));}
 export const exploreItems=[
  ...worldIslands.slice(1).flatMap((p,j)=>Array.from({length:5},(_,i)=>({id:'wildGem'+j+'-'+i,x:Math.sin((j*5+i)*2.4)*(4+j*1.7),z:48+Math.cos((j*5+i)*2.4)*(3+j*1.2),kind:'islandTreasure',es:'tesoro de la isla',en:'island treasure'}))),
  ...[[24,0],[-23,5],[0,20],[17,16]].map(([x,z],i)=>({id:'sea'+i,x,z,kind:'seaTreasure',es:'tesoro del arrecife',en:'reef treasure'})),
@@ -33,9 +35,10 @@ export const exploreItems=[
  ...[[-48,4],[-45,1],[-39,2],[-36,5],[-49,8]].map(([x,z],i)=>({id:'glow'+i,x,z,kind:'glow',es:'luciérnaga',en:'firefly'})),
  ...[[2,11],[-3,11],[-9,9],[-15,5],[-17,0],[-14,-7],[-7,-11],[2,-11],[10,-9],[15,-4],[17,2],[14,8]].map(([x,z],i)=>({id:'shell'+i,x,z,kind:'shell',es:'concha',en:'shell'}))
 ];
+for(const p of exploreItems){const land={fruit:'wilds',glow:'sunset',islandTreasure:'crystalCove'}[p.kind];if(land)Object.assign(p,islandPoint(land,p.x,p.z));}
 export function normalizeStory(raw){return Object.fromEntries(Object.entries({shells:3,picnic:4,seed:3,song:4,care:2,light:4}).map(([id,length])=>[id,Number.isInteger(raw?.[id])?Math.max(0,Math.min(length,raw[id])):0]));}
-export function freshExplore(){return {x:4,z:10,dayTime:40,story:normalizeStory(null),collected:[],badges:[],hat:0,pet:false,flowers:0,catches:0,pops:0,flight:0,growth:1,food:{coconut:0,banana:0},harvested:{},boat:{x:6.5,z:16,heading:0}};}
-export function normalizeExplore(raw){const s=freshExplore();if(!raw||typeof raw!=='object')return s;s.dayTime=Number.isFinite(raw.dayTime)?((raw.dayTime%240)+240)%240:40;s.story=normalizeStory(raw.story);const ids=new Set(exploreItems.map(x=>x.id));s.collected=[...new Set(Array.isArray(raw.collected)?raw.collected.filter(x=>ids.has(x)):[])];s.badges=[...new Set(Array.isArray(raw.badges)?raw.badges.filter(x=>['picnic','glow','song','garden','treasure','beacon','balloon','boat'].includes(x)):[])];if(Number.isFinite(raw.x)&&Number.isFinite(raw.z)&&(raw.x/90)**2+(raw.z/70)**2<=1){s.x=raw.x;s.z=raw.z;}s.hat=Number.isInteger(raw.hat)?Math.max(0,Math.min(6,raw.hat)):0;s.pet=raw.pet===true;s.flowers=Math.max(0,Math.min(6,Math.floor(Number(raw.flowers)||0)));for(const k of ['catches','pops'])s[k]=Math.max(0,Math.min(9999,Math.floor(Number(raw[k])||0)));s.growth=Number.isFinite(raw.growth)?Math.max(1,Math.min(6,raw.growth)):1;s.flight=Number.isFinite(raw.flight)?Math.max(0,Math.min(40,raw.flight)):0;for(const kind of ['coconut','banana'])s.food[kind]=Math.max(0,Math.min(99,Math.floor(Number(raw.food?.[kind])||0)));for(const [id,n] of Object.entries(raw.harvested||{})){if(/^(coconut|banana)\d+$/.test(id))s.harvested[id]=Math.max(0,Math.min(6,Math.floor(Number(n)||0)));}if(Number.isFinite(raw.boat?.x)&&Number.isFinite(raw.boat?.z)&&Math.hypot(raw.boat.x/90,raw.boat.z/70)<1&&inWater(raw.boat.x,raw.boat.z)){s.boat={x:raw.boat.x,z:raw.boat.z,heading:Number.isFinite(raw.boat.heading)?raw.boat.heading:0};}Object.assign(s.boat,recoverBoat(s.boat.x,s.boat.z));return s;}
+export function freshExplore(){return {worldVersion:2,journey:{visited:[],meals:0,swim:0,fly:0,rings:[]},x:4,z:10,dayTime:40,story:normalizeStory(null),collected:[],badges:[],hat:0,pet:false,flowers:0,catches:0,pops:0,flight:0,growth:1,food:{coconut:0,banana:0},harvested:{},boat:{x:6.5,z:16,heading:0}};}
+export function normalizeExplore(raw){const s=freshExplore();if(!raw||typeof raw!=='object')return s;const j=raw.journey||{};s.journey={visited:[...new Set((Array.isArray(j.visited)?j.visited:[]).filter(id=>worldIslands.some(p=>p.id===id)))],meals:Math.max(0,Math.min(999,Number(j.meals)||0)),swim:Math.max(0,Math.min(100000,Number(j.swim)||0)),fly:Math.max(0,Math.min(100000,Number(j.fly)||0)),rings:[...new Set((Array.isArray(j.rings)?j.rings:[]).filter(id=>/^(swim|fly)-[0-9]+$/.test(id)))]};s.dayTime=Number.isFinite(raw.dayTime)?((raw.dayTime%240)+240)%240:40;s.story=normalizeStory(raw.story);const ids=new Set(exploreItems.map(x=>x.id));s.collected=[...new Set(Array.isArray(raw.collected)?raw.collected.filter(x=>ids.has(x)):[])];s.badges=[...new Set(Array.isArray(raw.badges)?raw.badges.filter(x=>['picnic','glow','song','garden','treasure','beacon','balloon','boat'].includes(x)):[])];if(Number.isFinite(raw.x)&&Number.isFinite(raw.z)&&(raw.x/170)**2+(raw.z/145)**2<=1){s.x=raw.x;s.z=raw.z;if(raw.worldVersion!==2&&!raw.flight){const old=worldIslands.find(p=>Math.hypot((s.x-p.ox)/(p.rx/p.spread),(s.z-p.oz)/(p.rz/p.spread))<1);if(old)Object.assign(s,islandPoint(old.id,s.x,s.z));}}s.hat=Number.isInteger(raw.hat)?Math.max(0,Math.min(6,raw.hat)):0;s.pet=raw.pet===true;s.flowers=Math.max(0,Math.min(6,Math.floor(Number(raw.flowers)||0)));for(const k of ['catches','pops'])s[k]=Math.max(0,Math.min(9999,Math.floor(Number(raw[k])||0)));s.growth=Number.isFinite(raw.growth)?Math.max(1,Math.min(6,raw.growth)):1;s.flight=Number.isFinite(raw.flight)?Math.max(0,Math.min(40,raw.flight)):0;for(const kind of ['coconut','banana'])s.food[kind]=Math.max(0,Math.min(99,Math.floor(Number(raw.food?.[kind])||0)));for(const [id,n] of Object.entries(raw.harvested||{})){if(/^(coconut|banana)\d+$/.test(id))s.harvested[id]=Math.max(0,Math.min(6,Math.floor(Number(n)||0)));}if(Number.isFinite(raw.boat?.x)&&Number.isFinite(raw.boat?.z)&&Math.hypot(raw.boat.x/170,raw.boat.z/145)<1&&inWater(raw.boat.x,raw.boat.z)){s.boat={x:raw.boat.x,z:raw.boat.z,heading:Number.isFinite(raw.boat.heading)?raw.boat.heading:0};}Object.assign(s.boat,recoverBoat(s.boat.x,s.boat.z));return s;}
 export function collectExplore(s,id){if(!exploreItems.some(x=>x.id===id)||s.collected.includes(id))return false;s.collected.push(id);return true;}
 export function badgeExplore(s,id){if(s.badges.includes(id))return false;s.badges.push(id);return true;}
 export function countExplore(s,kind){return s.collected.filter(id=>exploreItems.find(x=>x.id===id)?.kind===kind).length;}
@@ -46,7 +49,7 @@ export function walkable(x,z){return (isletHeight(x,z)>0||(x/18.7)**2+(z/12.5)**
 export function onDock(x,z){return x>=3&&x<=5&&z>=11.8&&z<=17.4;}
 export function inWater(x,z){if(onDock(x,z)||isletHeight(x,z)>0)return false;const a=Math.atan2(z/14,x/20),shore=1+.035*Math.sin(a*7)+.03*Math.cos(a*5);return Math.hypot(x/20,z/14)>shore;}
 // Keep the hull clear, including saved boats that overlap a shore or world boundary.
-export function boatClear(x,z){if(Math.hypot(x/89,z/69)>=1||!inWater(x,z))return false;for(let i=0;i<8;i++){const a=i*Math.PI/4;if(!inWater(x+Math.sin(a)*1.1,z+Math.cos(a)*1.1))return false;}return true;}
+export function boatClear(x,z){if(Math.hypot(x/169,z/144)>=1||!inWater(x,z))return false;for(let i=0;i<8;i++){const a=i*Math.PI/4;if(!inWater(x+Math.sin(a)*1.1,z+Math.cos(a)*1.1))return false;}return true;}
 export function recoverBoat(x,z){if(boatClear(x,z))return {x,z};for(let r=.15;r<=6;r+=.15)for(let i=0;i<32;i++){const a=i*Math.PI/16,nx=x+Math.sin(a)*r,nz=z+Math.cos(a)*r;if(boatClear(nx,nz))return {x:nx,z:nz};}return {x:6.5,z:16};}
 export function boatStep(x,z,dx,dz){const start=recoverBoat(x,z);x=start.x;z=start.z;const steps=Math.max(1,Math.ceil(Math.hypot(dx,dz)/.15));dx/=steps;dz/=steps;
  for(let i=0;i<steps;i++){const candidates=[[dx,dz],...(Math.abs(dx)>=Math.abs(dz)?[[dx,0],[0,dz]]:[[0,dz],[dx,0]])];for(const a of [Math.PI/6,-Math.PI/6,Math.PI/3,-Math.PI/3,Math.PI/2,-Math.PI/2])candidates.push([dx*Math.cos(a)-dz*Math.sin(a),dx*Math.sin(a)+dz*Math.cos(a)]);for(const [mx,mz] of candidates){if(Math.hypot(mx,mz)>.00001&&boatClear(x+mx,z+mz)){x+=mx;z+=mz;break;}}}return {x,z};}
@@ -62,11 +65,11 @@ export function sharkStep(x,z,tx,tz,dt,speed,side=1){
  }
  return escape||{x,z};
 }
-export function traversable(x,z){return Math.hypot(x/90,z/70)<=1&&worldObstacles.every(([a,b,r])=>Math.hypot(x-a,z-b)>r+.3);}
+export function traversable(x,z){return Math.hypot(x/170,z/145)<=1&&worldObstacles.every(([a,b,r])=>Math.hypot(x-a,z-b)>r+.3);}
 export function islandPath(from,to){
  if(!remoteAccess(from,to))return [];
  const ocean=Math.abs(from.x)>18||Math.abs(to.x)>18||Math.abs(from.z)>12||Math.abs(to.z)>12||!walkable(from.x,from.z)||!walkable(to.x,to.z),allowed=ocean?traversable:walkable;
- const minX=ocean?Math.max(-90,Math.floor(Math.min(from.x,to.x))-5):-18,maxX=ocean?Math.min(90,Math.ceil(Math.max(from.x,to.x))+5):18,minZ=ocean?Math.max(-70,Math.floor(Math.min(from.z,to.z))-5):-12,maxZ=ocean?Math.min(70,Math.ceil(Math.max(from.z,to.z))+5):12;
+ const minX=ocean?Math.max(-170,Math.floor(Math.min(from.x,to.x))-5):-18,maxX=ocean?Math.min(170,Math.ceil(Math.max(from.x,to.x))+5):18,minZ=ocean?Math.max(-145,Math.floor(Math.min(from.z,to.z))-5):-12,maxZ=ocean?Math.min(145,Math.ceil(Math.max(from.z,to.z))+5):12;
  const nodes=[];for(let z=minZ;z<=maxZ;z++)for(let x=minX;x<=maxX;x++)if(allowed(x,z))nodes.push({x,z,key:x+','+z});
  const nearest=p=>nodes.reduce((a,b)=>Math.hypot(a.x-p.x,a.z-p.z)<Math.hypot(b.x-p.x,b.z-p.z)?a:b);
  const start=nearest(from),goal=nearest(to),map=new Map(nodes.map(n=>[n.key,n])),open=[start.key],cost=new Map([[start.key,0]]),came=new Map(),closed=new Set();
@@ -82,7 +85,7 @@ export function nextIslandAdventure(state){
 }
 // Fixed rewards keep the wallet explainable and prevent repeat-click farming.
 export const islandShop=[{id:'coral',cost:15,hat:4,es:'Sombrero coral',en:'Coral hat'},{id:'ocean',cost:30,hat:5,es:'Sombrero océano',en:'Ocean hat'},{id:'sunshine',cost:45,hat:6,es:'Sombrero sol',en:'Sunshine hat'}];
-export function coinValue(id){if(/^story-(shells|picnic|seed|song|care|light)$/.test(id))return 10;if(/^(harbor|market|jungle|music|garden|summit)-[0-7]$/.test(id))return 10;if(/^flower-[1-6]$/.test(id))return 2;if(['picnic','glow','song'].includes(id))return 15;if(id==='beacon')return 25;if(id==='pet')return 3;if(exploreItems.some(i=>i.id===id))return 1;return 0;}
+export function coinValue(id){if(/^journey-(explore|food|learn|swim|fly)$/.test(id))return 20;if(/^ring-(swim|fly)-([0-9]|1[0-9])$/.test(id))return 2;if(/^story-(shells|picnic|seed|song|care|light)$/.test(id))return 10;if(/^(harbor|market|jungle|music|garden|summit)-[0-7]$/.test(id))return 10;if(/^flower-[1-6]$/.test(id))return 2;if(['picnic','glow','song'].includes(id))return 15;if(id==='beacon')return 25;if(id==='pet')return 3;if(exploreItems.some(i=>i.id===id))return 1;return 0;}
 export function normalizeWallet(raw){const rewards=[...new Set(Array.isArray(raw?.rewards)?raw.rewards.filter(id=>typeof id==='string'&&coinValue(id)>0):[])];let balance=rewards.reduce((n,id)=>n+coinValue(id),0);const items=[];for(const id of Array.isArray(raw?.items)?raw.items:[]){const item=islandShop.find(x=>x.id===id);if(item&&!items.includes(id)&&balance>=item.cost){items.push(id);balance-=item.cost;}}return {rewards,items};}
 export function coinBalance(state){const w=state.wallet||{rewards:[],items:[]};return w.rewards.reduce((n,id)=>n+coinValue(id),0)-w.items.reduce((n,id)=>n+(islandShop.find(x=>x.id===id)?.cost||0),0);}
 export function earnCoins(state,id){state.wallet??=normalizeWallet(null);const amount=coinValue(id);if(!amount||state.wallet.rewards.includes(id))return 0;state.wallet.rewards.push(id);return amount;}
@@ -95,9 +98,9 @@ export function sharkPatrol(p,dt,target=null){
  if(dt<=0)return {x:p.x,z:p.z};
  if(!inWater(p.x,p.z))Object.assign(p,recoverShark(p.x,p.z));
  p.waypoint??=0;p.watch??=0;p.anchor??={x:p.x,z:p.z};
- function destination(){for(let i=0;i<24;i++){const a=p.waypoint/24*Math.PI*2,x=Math.cos(a)*28,z=Math.sin(a)*24;if(sharkClearance(x,z)===13)return {x,z};p.waypoint=(p.waypoint+1)%24;}return {x:25,z:0};}
- let dest=target||destination();if(!target&&Math.hypot(dest.x-p.x,dest.z-p.z)<2){p.waypoint=(p.waypoint+1)%24;dest=destination();}
+ function destination(){const cx=p.cx||0,cz=p.cz||0,rx=p.rx||32,rz=p.rz||26;for(let i=0;i<24;i++){const a=p.waypoint/24*Math.PI*2,x=cx+Math.cos(a)*rx,z=cz+Math.sin(a)*rz;if(sharkClearance(x,z)===13)return {x,z};p.waypoint=(p.waypoint+(p.direction||1)+24)%24;}return recoverShark(cx+rx,cz);}
+ let dest=target||destination();if(!target&&Math.hypot(dest.x-p.x,dest.z-p.z)<2){p.waypoint=(p.waypoint+(p.direction||1)+24)%24;dest=destination();}
  const next=sharkStep(p.x,p.z,dest.x,dest.z,Math.min(dt,.05),target?12:5,p.side||1);p.watch+=dt;
- if(p.watch>=2){if(Math.hypot(next.x-p.anchor.x,next.z-p.anchor.z)<1.2){p.waypoint=(p.waypoint+4)%24;p.side=-(p.side||1);p.detour=2;}p.watch=0;p.anchor={...next};}
+ if(p.watch>=2){if(Math.hypot(next.x-p.anchor.x,next.z-p.anchor.z)<1.2){p.waypoint=(p.waypoint+6)%24;p.side=-(p.side||1);p.detour=4;}p.watch=0;p.anchor={...next};}
  return next;
 }

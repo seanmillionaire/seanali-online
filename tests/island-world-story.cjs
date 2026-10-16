@@ -1,7 +1,7 @@
 const {JSDOM}=require('jsdom'),fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),{pathToFileURL}=require('node:url');
 (async()=>{
  const root=path.resolve(__dirname,'../games/adventure'),T=await import(pathToFileURL(path.join(root,'vendor/three.module.min.js')));
- const source=['world-story.js','explore-state.js'].map(f=>fs.readFileSync(path.join(root,f),'utf8').replace(/\bexport /g,'')).join('\n');
+ const source=['explore-state.js','world-story.js'].map(f=>fs.readFileSync(path.join(root,f),'utf8').replace(/^import .*;\n/gm,'').replace(/\bexport /g,'')).join('\n');
  for(const lang of ['en','es']){
   const dom=new JSDOM('<main></main>',{runScripts:'outside-only'}),w=dom.window;w.eval(source+'\nwindow.api={islandStories,normalizeExplore,normalizeStory,stepStory,createWorldStory,earnCoins,coinBalance,syncWallet};');const a=w.api,host=w.document.querySelector('main'),state={lang,world:a.normalizeExplore(null)},scene=new T.Scene();let enabled=true,saved=0,opened=[];a.syncWallet(state);
   const story=a.createWorldStory({T,scene,host,state,height:()=>0,save:()=>saved++,joy:{effect(){},note(){},gesture(){}},spark(){},refresh:id=>a.earnCoins(state,'story-'+id),openNext:id=>opened.push(id),active:()=>enabled,motion:()=>false});
