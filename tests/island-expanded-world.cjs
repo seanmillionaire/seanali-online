@@ -11,3 +11,5 @@ const gems=a.exploreItems.filter(i=>i.kind==='islandTreasure');assert.equal(gems
 assert.equal(a.normalizeExplore({x:1000,z:1000}).x,4);console.log('PASS expanded destinations, walking routes, northern connection, far boat travel, saves and unique treasure rewards.');
 
 assert(!a.remoteAccess({x:0,z:31.9},{x:0,z:32.1}),'swimmers cannot cross current boundary');assert(a.remoteAccess({x:0,z:60},{x:0,z:48}),'boat passengers can walk ashore');assert.equal(a.islandPath({x:4,z:10},{x:0,z:48}).length,0,'walking route cannot bypass vehicle requirement');assert(a.islandPath({x:0,z:48},{x:5,z:48}).length>0,'return balloon is walkable');assert(a.boatClear(0,60),'arrival point leaves the boat afloat');assert(a.walkable(0,48));assert.equal(a.normalizeExplore({x:0,z:48}).z,48);
+
+for(const item of a.exploreItems){if(item.kind==='fruit')assert(Math.hypot(item.x/19,(item.z+30)/20)<1,'picnic food belongs on Banana Island');if(item.kind==='glow')assert(Math.hypot((item.x+42)/18,(item.z-8)/15)<1,'fireflies belong in their forest');if(item.kind==='islandTreasure')assert(Math.hypot(item.x/13,(item.z-48)/10)<1,'crystal treasure belongs in Crystal Cove');}

@@ -1,5 +1,5 @@
-import {worldIslands,isletHeight} from './explore-state.js?v=35';
-import {createTropical} from './tropical.js?v=35';
+import {worldIslands,isletHeight} from './explore-state.js?v=36';
+import {createTropical} from './tropical.js?v=36';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
 export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import('./vendor/three.module.min.js')}={}) {
   let disposed=false,world=null,pending=null;
@@ -44,20 +44,19 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
    }
    const ig=geometry(new T.BufferGeometry());ig.setAttribute('position',new T.Float32BufferAttribute(iv,3));ig.setAttribute('color',new T.Float32BufferAttribute(ic,3));ig.setAttribute('uv',new T.Float32BufferAttribute(iu,2));ig.setIndex(ii);ig.computeVertexNormals();const island=make(ig,mat('#ffffff',{vertexColors:true,map:tropical.grain}));island.name=land.en;
    const small=land.id==='islet';
-   for(let i=0;i<(small?2:12);i++){const a=i*2.4,r=.3+(i%3)*.22,x=land.x+Math.sin(a)*land.rx*r,z=land.z+Math.cos(a)*land.rz*r;tropical.palm(x,z,.75+(i%3)*.2);}
-   for(let i=0;i<(small?7:16);i++){const x=land.x+Math.sin(i*2.4)*land.rx*.6,z=land.z+Math.cos(i*2.4)*land.rz*.6;tropical.card(i%4===0?1:15,x,height(x,z),z,i%4===0?2.2:.9,i%4===0?2.8:1);}
+   for(let i=0;i<(small?0:land.id==='coconutCoast'?18:4);i++){const a=i*2.4,r=.3+(i%3)*.22,x=land.x+Math.sin(a)*land.rx*r,z=land.z+Math.cos(a)*land.rz*r;tropical.palm(x,z,.75+(i%3)*.2,land.id==='coconutCoast');}
+   for(let i=0;i<(small?7:16);i++){const x=land.x+Math.sin(i*2.4)*land.rx*.6,z=land.z+Math.cos(i*2.4)*land.rz*.6;tropical.card(small?15:land.id==='wilds'?1:land.id==='crystalCove'?3:2,x,height(x,z),z,small?1.2:2.2,small?1.3:2.8);}
    if(land.vehicleOnly){
     const crystalMat=mat('#78e6e0',{emissive:'#259dba',emissiveIntensity:.35,roughness:.22,metalness:.12});
     for(let i=0;i<7;i++){const a=i*Math.PI*2/7,x=land.x+Math.sin(a)*6,z=land.z+Math.cos(a)*5;const crystal=make(geometry(new T.ConeGeometry(.7,3,5)),crystalMat,x,height(x,z)+1.1,z,1,1+(i%3)*.3,1);crystal.rotation.z=Math.sin(a)*.2;}
     // Buoys outline the strong-current area, well outside the beach and landing zone.
     for(let i=0;i<16;i++){const a=i*Math.PI/8,x=land.x+Math.sin(a)*land.rx*1.6,z=land.z+Math.cos(a)*land.rz*1.6;make(ball,gold,x,0,z,.16,.25,.16);}
    }
-   if(!small){
+   if(land.vehicleOnly){
     // A walk-through stone arch marks each island's central bubble clearing.
     for(const side of [-1,1])make(box,stone,land.x+side*2,height(land.x+side*2,land.z)+1.8,land.z,.8,3.6,1);
     make(box,stone,land.x,height(land.x,land.z)+3.5,land.z,4.8,.7,1);
-    for(let i=0;i<3;i++){const x=land.x-4+i*2,z=land.z+5;const fruits=[];tropical.card(1,x,height(x,z),z,3.2,3.8);for(let j=0;j<6;j++)fruits.push(tropical.card(7,x+(j%3-1)*.23,height(x,z)+2.1-Math.floor(j/3)*.3,z+.2,.5,.65));tropical.foodTrees.push({id:'banana'+(5+(worldIslands.indexOf(land)-1)*3+i),kind:'banana',x,z,fruits});}
-    for(let i=0;i<4;i++)tropical.card(i%2?8:9,land.x+(i-1.5)*3,height(land.x+(i-1.5)*3,land.z-4),land.z-4,1.1,.8);
+
    }
   }
   // Transparent lagoon, a visible sandy seabed, and small irregular wave highlights.

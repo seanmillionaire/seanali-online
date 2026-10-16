@@ -1,23 +1,23 @@
 // Exploration is independent of lesson order. Every place is open from the start.
 export const worldIslands=[
  {id:'islet',x:24,z:-8,rx:4,rz:3,h:1.5,en:'Butterfly Island',es:'Islita Mariposa'},
- {id:'wilds',x:0,z:-30,rx:19,rz:20,h:4,en:'Northern Wilds',es:'Selva del Norte'},
- {id:'coconutCoast',x:47,z:6,rx:17,rz:14,h:3,en:'Coconut Coast',es:'Costa de Cocos'},
- {id:'sunset',x:-42,z:8,rx:18,rz:15,h:3.5,en:'Sunset Island',es:'Isla del Atardecer'},
+ {id:'wilds',x:0,z:-30,rx:19,rz:20,h:4,en:'Banana Island',es:'Isla de Plátanos'},
+ {id:'coconutCoast',x:47,z:6,rx:17,rz:14,h:3,en:'Coconut Island',es:'Isla de Cocos'},
+ {id:'sunset',x:-42,z:8,rx:18,rz:15,h:3.5,en:'Firefly Forest',es:'Bosque de Luciérnagas'},
  {id:'crystalCove',x:0,z:48,rx:13,rz:10,h:3,en:'Crystal Cove',es:'Cala Cristal',vehicleOnly:true}
 ];
 // Strong offshore currents require a vehicle to cross; walking remains free after arrival.
 export function remoteAccess(from,to){const p=worldIslands.find(i=>i.vehicleOnly),radius=q=>Math.hypot((q.x-p.x)/p.rx,(q.z-p.z)/p.rz);return radius(to)>=1.6||radius(from)<1.6;}
 export function isletHeight(x,z){let h=0;for(const island of worldIslands){const r=Math.hypot((x-island.x)/island.rx,(z-island.z)/island.rz);if(r<=1)h=Math.max(h,.08+(1-r*r)*island.h);}return h;}
 export const explorePlaces=[
- ...worldIslands.slice(1).map(p=>({id:p.id,x:p.x,z:p.z,icon:'🏝',es:p.es,en:p.en,kind:'islet'})),
+ ...worldIslands.slice(1).map(p=>({id:p.id,x:p.x,z:p.z,icon:({wilds:'🍌',coconutCoast:'🥥',sunset:'✨',crystalCove:'💎'})[p.id],es:p.es,en:p.en,kind:'islet'})),
  {id:'coveBalloon',x:5,z:48,icon:'🎈',es:'Globo de regreso',en:'Return balloon',kind:'balloon'},
- {id:'islet',x:24,z:-8,icon:'🏝',es:'Islita Mariposa',en:'Butterfly Island',kind:'islet'},
+ {id:'islet',x:24,z:-8,icon:'🦋',es:'Islita Mariposa',en:'Butterfly Island',kind:'islet'},
  {id:'pip',x:4,z:9,icon:'🐢',es:'Pip · la tortuga',en:'Pip · the sea turtle',kind:'friend'},
- {id:'mila',x:-8,z:5,icon:'🦜',es:'Mila · picnic tropical',en:'Mila · tropical picnic',kind:'friend'},
- {id:'ollie',x:-9,z:-7,icon:'🪶',es:'Ollie · bosque brillante',en:'Ollie · glow grove',kind:'friend'},
- {id:'luna',x:7,z:1,icon:'🦀',es:'Luna · música',en:'Luna · music',kind:'friend'},
- {id:'garden',x:11,z:7,icon:'🌸',es:'Jardín de mariposas',en:'Butterfly garden',kind:'garden'},
+ {id:'mila',x:0,z:-26,icon:'🦜',es:'Mila · picnic tropical',en:'Mila · tropical picnic',kind:'friend'},
+ {id:'ollie',x:-42,z:12,icon:'🪶',es:'Ollie · bosque brillante',en:'Ollie · glow grove',kind:'friend'},
+ {id:'luna',x:0,z:43,icon:'🦀',es:'Luna · música',en:'Luna · music',kind:'friend'},
+ {id:'garden',x:24,z:-9.5,icon:'🌸',es:'Jardín de mariposas',en:'Butterfly garden',kind:'garden'},
  {id:'beacon',x:-1,z:-2.5,icon:'✦',es:'El faro de los deseos',en:'Wishing lighthouse',kind:'beacon'},
  {id:'bounce',x:-4,z:6,icon:'🍄',es:'Seta saltarina',en:'Bouncy mushroom',kind:'bounce'},
  {id:'balloon',x:5,z:-7,icon:'🎈',es:'Viaje en globo',en:'Balloon ride',kind:'balloon'},
@@ -27,10 +27,10 @@ export const explorePlaces=[
  {id:'chest',x:-15,z:-1,icon:'🎁',es:'Cofre escondido',en:'Hidden chest',kind:'chest'}
 ];
 export const exploreItems=[
- ...worldIslands.slice(1).flatMap((p,j)=>Array.from({length:5},(_,i)=>({id:'wildGem'+j+'-'+i,x:p.x+Math.sin(i*2.4)*p.rx*.55,z:p.z+Math.cos(i*2.4)*p.rz*.55,kind:'islandTreasure',es:'tesoro de la isla',en:'island treasure'}))),
+ ...worldIslands.slice(1).flatMap((p,j)=>Array.from({length:5},(_,i)=>({id:'wildGem'+j+'-'+i,x:Math.sin((j*5+i)*2.4)*(4+j*1.7),z:48+Math.cos((j*5+i)*2.4)*(3+j*1.2),kind:'islandTreasure',es:'tesoro de la isla',en:'island treasure'}))),
  ...[[24,0],[-23,5],[0,20],[17,16]].map(([x,z],i)=>({id:'sea'+i,x,z,kind:'seaTreasure',es:'tesoro del arrecife',en:'reef treasure'})),
- ...[[-12,-2],[-10,-2],[-8,-2],[-12,0],[-8,0]].map(([x,z],i)=>({id:'fruit'+i,x,z,kind:'fruit',tile:[5,4,6,7,5][i],es:['mango','coco','piña','plátanos','mango'][i],en:['mango','coconut','pineapple','bananas','mango'][i]})),
- ...[[-12,-6],[-10,-9],[-6,-8],[-5,-5],[-13,-4]].map(([x,z],i)=>({id:'glow'+i,x,z,kind:'glow',es:'luciérnaga',en:'firefly'})),
+ ...[[-7,-33],[-3,-35],[3,-35],[7,-33],[0,-38]].map(([x,z],i)=>({id:'fruit'+i,x,z,kind:'fruit',tile:7,es:'plátanos',en:'bananas'})),
+ ...[[-48,4],[-45,1],[-39,2],[-36,5],[-49,8]].map(([x,z],i)=>({id:'glow'+i,x,z,kind:'glow',es:'luciérnaga',en:'firefly'})),
  ...[[2,11],[-3,11],[-9,9],[-15,5],[-17,0],[-14,-7],[-7,-11],[2,-11],[10,-9],[15,-4],[17,2],[14,8]].map(([x,z],i)=>({id:'shell'+i,x,z,kind:'shell',es:'concha',en:'shell'}))
 ];
 export function normalizeStory(raw){return Object.fromEntries(Object.entries({shells:3,picnic:4,seed:3,song:4,care:2,light:4}).map(([id,length])=>[id,Number.isInteger(raw?.[id])?Math.max(0,Math.min(length,raw[id])):0]));}
