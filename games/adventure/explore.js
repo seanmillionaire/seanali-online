@@ -1,5 +1,5 @@
-import {buildIsland} from './entrance.js?v=27';
-import {explorePlaces,exploreItems,normalizeExplore,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=27';
+import {buildIsland} from './entrance.js?v=28';
+import {explorePlaces,exploreItems,normalizeExplore,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=28';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);syncWallet(state);
  let disposed=false,engine=null,control=null,near=null,ride=s.flight?1:0,flightY=s.flight||0,flightTarget=s.flight||0,flightVX=0,flightVZ=0,route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;
@@ -39,7 +39,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  function tell(a,b,force=true){guide(say(a,b),force);message.textContent=say(a,b);message.classList.add('show');messageTime=4.5;}
  function reward(id,a,b){if(badgeExplore(s,id)){const coins=earnCoins(state,id);if(coins){joy.effect('coin');a+=` +${coins} monedas.`;b+=` +${coins} coins.`;}joy.effect('finish');control?.spark(s.x,s.z,22);save();refresh();}tell(a,b);}
  function hop(){if(!control||panel.hidden===false||paused())return;if(ride){flightTarget=Math.min(40,flightTarget+5);return;}if(boating){control.disembark();return;}if(swimming){swimBoost=3;return;}control.hop();joy.effect('tap');}
- function interact(){if(paused()||!panel.hidden)return;if(ride){control?.popBalloon();return;}if(boating){control?.disembark();return;}if(inside){if(stair>=.97)control?.lightBeacon();else if(Math.hypot(s.x+1,s.z+4.1)<.7)control?.leaveTower();return;}if(control?.falling())return;if(control?.boatNear()){control.board();return;}if(foodNear){control?.harvest();return;}if(swimming){followGoal();return;}if(!near)return;joy.effect('friend');const k=near.id;
+ function interact(){if(paused()||!panel.hidden)return;if(ride){control?.popBalloon();return;}if(boating){control?.disembark();return;}if(inside){if(stair>=.97)control?.lightBeacon();else if(stair<.03&&Math.hypot(s.x+1,s.z+4.1)<.7)control?.leaveTower();return;}if(control?.falling())return;if(control?.boatNear()){control.board();return;}if(foodNear){control?.harvest();return;}if(swimming){followGoal();return;}if(!near)return;joy.effect('friend');const k=near.id;
   if(k==='pip'){s.pet=!s.pet;const coins=s.pet?earnCoins(state,'pet'):0;refresh();save();tell(s.pet?`¡Pip viene contigo!${coins?' +3 monedas por cuidarlo.':''}`:'Pip te espera en el puerto.',s.pet?`Pip is coming with you!${coins?' +3 coins for caring for Pip.':''}`:'Pip will wait at the harbor.');}
   if(k==='mila'){if(countExplore(s,'fruit')===5)reward('picnic','¡Cinco frutas tropicales! Picnic preparado. ¡Sombrero de fiesta desbloqueado!','Five tropical fruits! Picnic ready. Party hat unlocked!');else tell(`¿Un picnic? Busca mangos, cocos, piñas y plátanos: ${countExplore(s,'fruit')}/5.`,`Picnic time? Find mangoes, coconuts, pineapple, and bananas: ${countExplore(s,'fruit')}/5.`);}
   if(k==='ollie'){if(countExplore(s,'glow')===5)reward('glow','¡La selva brilla! Tus luciérnagas te siguen.','The grove is glowing! Your fireflies follow you.');else tell('¡Las luciérnagas juegan al escondite! Encuentra las cinco luces del bosque.','The fireflies are playing hide-and-seek! Find five lights in the grove.');}
@@ -135,6 +135,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   make(geometry(new T.CylinderGeometry(1.6,1.6,6.4,32,1,true,Math.PI*.5,Math.PI)),wallMaterial,0,3.2,0,1,1,1,interior);
   make(cylinder,stairMaterial,0,.04,0,1.6,.12,1.6,interior);make(cylinder,railMaterial,0,3.2,0,.12,6.4,.12,interior);
   for(let i=0;i<40;i++){const a=i/39*Math.PI*4,y=.15+i/39*6.1;const tread=make(box,stairMaterial,Math.sin(a)*.9,y,Math.cos(a)*.9,.95,.12,.52,interior);tread.rotation.y=a;make(cylinder,railMaterial,Math.sin(a)*1.4,y+.35,Math.cos(a)*1.4,.025,.7,.025,interior);}
+  for(const radius of [.45,1.4]){const points=[];for(let i=0;i<=80;i++){const a=i/80*Math.PI*4;points.push(new T.Vector3(Math.sin(a)*radius,.85+i/80*6.1,Math.cos(a)*radius));}make(geometry(new T.TubeGeometry(new T.CatmullRomCurve3(points),80,.035,5,false)),railMaterial,0,0,0,1,1,1,interior);}
   make(cylinder,stairMaterial,0,6.4,0,1.7,.15,1.7,interior);const lantern=make(ball,gold,0,7.3,0,.35,.5,.35,interior);
   const beamCopy=make(geometry(new T.ConeGeometry(1.5,14,20,1,true)),mat('#ffed9d',{transparent:true,opacity:.16,depthWrite:false,side:T.DoubleSide}),0,7.3,-7,1,1,1,interior);beamCopy.rotation.x=Math.PI/2;beamCopy.visible=false;beamCopy.castShadow=false;
   const seaLife=[],sharkMaterial=mat('#557982',{roughness:.6}),belly=mat('#c1d4ce'),finGeometry=geometry(new T.ConeGeometry(.38,.8,3));
@@ -165,7 +166,26 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    host.classList.toggle('is-swimming',swimming);if(swimming&&!wasSwimming)tell('🏊 Nada · 🦈 ¡Cuidado con las aletas!','🏊 Swim · 🦈 Watch for fins!');
    if(active){energy=Math.max(0,energy-dt);eating=Math.max(0,eating-dt);}
    if(boating){if(active){const input=Math.min(1,len),desiredHeading=len?Math.atan2(dx,dz):s.boat.heading;const delta=Math.atan2(Math.sin(desiredHeading-s.boat.heading),Math.cos(desiredHeading-s.boat.heading));s.boat.heading+=delta*Math.min(1,dt*3);boatSpeed+=(input*8-boatSpeed)*Math.min(1,dt*2);const moveX=len?dx/len:Math.sin(s.boat.heading),moveZ=len?dz/len:Math.cos(s.boat.heading);const next=boatStep(s.boat.x,s.boat.z,moveX*boatSpeed*dt,moveZ*boatSpeed*dt);if(Math.hypot(next.x-s.boat.x,next.z-s.boat.z)<.00001)boatSpeed=0;s.boat.x=next.x;s.boat.z=next.z;s.x=s.boat.x;s.z=s.boat.z;autosave+=dt;if(autosave>2){save();autosave=0;}}joy.boat?.(active,boatSpeed/16);rideBoat.position.set(s.boat.x,.25,s.boat.z);rideBoat.rotation.y=s.boat.heading-Math.PI/2;avatar.rotation.y=s.boat.heading;}
-   if(inside&&active){const oldAngle=Math.atan2(s.x+1,s.z+5);let nx=s.x+dx/Math.max(1,len)*speed*dt,nz=s.z+dz/Math.max(1,len)*speed*dt;const radius=Math.hypot(nx+1,nz+5);if(radius>.3){const angle=Math.atan2(nx+1,nz+5),delta=Math.atan2(Math.sin(angle-oldAngle),Math.cos(angle-oldAngle));if(stair<.97&&radius<1.55){stairAngle=Math.max(0,Math.min(Math.PI*4,stairAngle+delta));stair=stairAngle/(Math.PI*4);}s.x=nx;s.z=nz;}const support=stair>=.97?6.48:.22+stair*6.1;if(towerV!==0||towerY>support+.03){towerV-=12*dt;towerY+=towerV*dt;if(towerY<=support){towerY=support;towerV=0;}}else towerY=support;if(len){avatar.rotation.y=Math.atan2(dx,dz);step+=dt*10;}if(radius>1.75){if(towerY>.6)leaveTower(true);else leaveTower();}}
+   if(inside&&active){
+    const oldAngle=Math.atan2(s.x+1,s.z+5),onStairs=stair<.97;
+    let nx=s.x+dx/Math.max(1,len)*speed*dt,nz=s.z+dz/Math.max(1,len)*speed*dt;
+    let radius=Math.hypot(nx+1,nz+5);
+    if(onStairs){
+     // Solid inner and outer rails keep imperfect joystick movement on the treads.
+     const angle=radius>.001?Math.atan2(nx+1,nz+5):oldAngle;
+     radius=Math.max(.65,Math.min(1.15,radius));
+     const delta=Math.atan2(Math.sin(angle-oldAngle),Math.cos(angle-oldAngle));
+     const next=Math.max(0,Math.min(Math.PI*4,stairAngle+delta));
+     stairAngle=next;stair=next/(Math.PI*4);
+     nx=-1+Math.sin(next)*radius;nz=-5+Math.cos(next)*radius;
+    }
+    s.x=nx;s.z=nz;
+    const support=stair>=.97?6.48:.22+stair*6.1;
+    if(towerV!==0||towerY>support+.03){towerV-=12*dt;towerY+=towerV*dt;if(towerY<=support){towerY=support;towerV=0;}}else towerY=support;
+    if(len){avatar.rotation.y=Math.atan2(dx,dz);step+=dt*10;}
+    // The open lookout still allows deliberate walking and jumping off the edge.
+    if(!onStairs&&radius>1.75)leaveTower(true);
+   }
    let ax=s.x,az=s.z,ay=boating?.45:swimming?-.95+(motion()?Math.sin(time*3)*.04:0):onDock(ax,az)?.58+jumpY:height(ax,az)+jumpY;
    if(boating){ax-=Math.sin(s.boat.heading)*.45;az-=Math.cos(s.boat.heading)*.45;}
    if(inside)ay=height(-1,-5)+towerY;
@@ -208,7 +228,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    descend.hidden=!ride;for(const e of entityMeshes)if(e.p.id==='balloon')e.g.visible=!ride;
    if(ride){setText(title,say('🎈 Angelique, piloto','🎈 Pilot Angelique'));act.hidden=false;setText(act,say('💥 Reventar globo','💥 Pop balloon'));setText(jump,say('↑ Más alto','↑ Higher'));setText(instructions,say('Flechas para volar · Espacio ↑ · Q ↓ · E 💥','Arrows to fly · Space ↑ · Q ↓ · E 💥'));}
    else if(boating){setText(title,say('⛵ Angelique, capitana','⛵ Captain Angelique'));setText(goalTitle,say('NAVEGA A TU AIRE','SAIL ANYWHERE'));setText(goalText,say('Palanca / flechas para conducir.','Joystick / arrows to drive.'));setText(goalButton,say('⛵ Cómo navegar','⛵ Steering help'));act.hidden=false;setText(act,say('🏊 Salir del barco','🏊 Get out'));setText(jump,say('⤴ Saltar al agua','⤴ Jump out'));setText(instructions,say('Suelta para frenar · Explora toda la laguna','Release to slow down · Explore the lagoon'));}
-   else if(inside){setText(title,say('Dentro del faro','Inside the lighthouse'));setText(goalTitle,stair>=.97?say('EL MIRADOR','THE LOOKOUT'):say('SIGUE LOS ESCALONES','FOLLOW THE STEPS'));setText(goalText,stair>=.97?say('Camina, salta y explora.','Walk, jump and explore.'):say('Muévete alrededor de la escalera dorada.','Walk around the golden staircase.'));setText(goalButton,stair>=.97?say('✨ Encender luz','✨ Light beacon'):say('👣 Ayuda','👣 Help'));act.hidden=stair<.97&&Math.hypot(s.x+1,s.z+4.1)>=.7;setText(act,stair>=.97?say('✨ Encender luz','✨ Light beacon'):say('🚪 Salir','🚪 Exit'));setText(jump,say('Saltar ⤴','Jump ⤴'));setText(instructions,say('Flechas / palanca para caminar · Espacio para saltar','Arrows / joystick to walk · Space to jump'));}
+   else if(inside){setText(title,say('Dentro del faro','Inside the lighthouse'));setText(goalTitle,stair>=.97?say('EL MIRADOR','THE LOOKOUT'):say('SIGUE LOS ESCALONES','FOLLOW THE STEPS'));setText(goalText,stair>=.97?say('Camina, salta y explora.','Walk, jump and explore.'):say('Muévete alrededor de la escalera dorada.','Walk around the golden staircase.'));setText(goalButton,stair>=.97?say('✨ Encender luz','✨ Light beacon'):say('👣 Ayuda','👣 Help'));act.hidden=stair<.97&&(stair>=.03||Math.hypot(s.x+1,s.z+4.1)>=.7);setText(act,stair>=.97?say('✨ Encender luz','✨ Light beacon'):say('🚪 Salir','🚪 Exit'));setText(jump,say('Saltar ⤴','Jump ⤴'));setText(instructions,say('Flechas / palanca para caminar · Espacio para saltar','Arrows / joystick to walk · Space to jump'));}
    else if(swimming){setText(title,say('🏊 Laguna','🏊 Lagoon'));setText(goalTitle,danger?say('🦈 ¡A LA PLAYA!','🦈 BACK TO SHORE!'):say('🏊 EXPLORA EL MAR','🏊 EXPLORE THE SEA'));setText(goalText,danger?say('Aléjate de la aleta.','Swim away from the fin.'):say('Mira las aletas. La playa está cerca.','Watch for fins. Shore is nearby.'));setText(goalButton,say('🏝 A la playa','🏝 Back to shore'));act.hidden=true;setText(jump,say('🏊 Nadar rápido','🏊 Swim fast'));setText(instructions,say('Palanca / flechas para nadar · Botón para ir más rápido','Joystick / arrows to swim · Tap Swim fast for a burst'));}
    else {setText(jump,say('Saltar ⤴','Jump ⤴'));setText(instructions,say('Toca el suelo para ir · Flechas / WASD · Espacio para saltar','Tap ground to walk · Arrows / WASD · Space to jump'));}
    if(!inside&&!boating&&!ride&&boatNear()){act.hidden=false;setText(act,say('⛵ Subir al barco','⛵ Board boat'));}else if(foodNear){act.hidden=false;setText(act,foodNear.kind==='coconut'?say('🥥 Recoger coco','🥥 Pick coconut'):say('🍌 Recoger plátano','🍌 Pick banana'));}guideBeacon.visible=guideBeacon.visible&&!inside&&!boating&&!ride;
