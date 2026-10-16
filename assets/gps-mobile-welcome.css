@@ -1,0 +1,78 @@
+/* Give the welcome its own mobile rhythm without compressing the quiz steps. */
+@media screen and (max-width: 900px) {
+  .simple-gps .guided-main:has(.quiz-welcome) .guided-topbar {
+    grid-template-rows: 44px;
+    padding: max(10px, env(safe-area-inset-top)) 20px 10px;
+  }
+  .simple-gps .guided-main:has(.quiz-welcome) .guided-top-progress { display: none; }
+  .simple-gps .guided-content:has(.quiz-welcome) {
+    padding: 32px 22px max(36px, env(safe-area-inset-bottom));
+  }
+  .simple-gps .guided-card.quiz-welcome { max-width: 460px; }
+  .simple-gps .quiz-welcome > .guided-kicker {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 0 0 18px;
+    color: #6c8277;
+    font-size: 11px;
+    letter-spacing: 1.8px;
+  }
+  .simple-gps .quiz-welcome h1 {
+    max-width: 360px;
+    margin: 0 auto;
+    text-align: center;
+    font-size: clamp(30px, 8.7vw, 38px);
+    line-height: 1.16;
+    letter-spacing: -.6px;
+    text-wrap: balance;
+  }
+  .simple-gps .quiz-welcome .guided-intro {
+    max-width: 330px;
+    margin: 18px auto 0;
+    text-align: center;
+    font-size: 17px;
+    line-height: 1.65;
+    color: #60746b;
+    text-wrap: pretty;
+  }
+  .quiz-welcome .quiz-start { margin-top: 32px; }
+  .quiz-welcome .quiz-start legend {
+    width: 100%;
+    margin-bottom: 2px;
+    padding: 0 4px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+  .quiz-welcome .quiz-start button {
+    min-height: 102px;
+    margin-top: 14px;
+    padding: 18px 20px;
+    gap: 16px;
+    border-width: 1px;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 3px 12px rgb(36 62 56 / 3%);
+  }
+  .quiz-welcome .quiz-start b { font-size: 17px; line-height: 1.45; }
+  .quiz-welcome .quiz-start small {
+    margin-top: 7px;
+    color: #657b70;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.45;
+  }
+  .quiz-welcome .quiz-start button > svg:last-child { width: 20px; height: 20px; stroke-width: 1.8; }
+  .quiz-welcome .quiz-reassurance {
+    justify-content: center;
+    max-width: 300px;
+    margin: 26px auto 0;
+    text-align: center;
+    color: #718378;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .quiz-welcome .quiz-reassurance svg { margin-top: 2px; }
+}
