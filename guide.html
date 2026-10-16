@@ -49,17 +49,22 @@ h1 span,.red{color:var(--red)}
 .gps-teaser img{width:78px;height:78px;object-fit:contain;flex:0 0 78px;border-radius:13px;background:#fcf7f5}
 .gps-teaser b{font:900 18px/1.2 'Sora',sans-serif;letter-spacing:-.045em;display:block;margin:0 0 4px}
 .gps-teaser p{font-size:12px;line-height:1.45;color:#66545f;font-weight:650;margin:0}
-.section{padding:47px 0}
+.section{padding:54px 0}
 .section .wrap{text-align:center}
 .stepno{display:inline-block;padding:7px 12px;border-radius:99px;color:#842943;background:#fff1f2;border:1px solid #f2dce1;font-size:10px;font-weight:900;letter-spacing:.09em;line-height:1.2;margin:0 auto 12px}
-h2{font-size:clamp(26px,4.25vw,39px);line-height:1.15;max-width:700px;margin:0 auto 14px}
-.section-lead{color:#5e525a;font-size:clamp(15px,2vw,17px);line-height:1.58;max-width:650px;margin:0 auto 18px}
-.one-thought{font-size:17px;line-height:1.5;max-width:620px;margin:0 auto 12px;font-weight:800}
-.example-row{background:#fff8f5;border:1px solid #f1e4dc;border-radius:13px;margin:20px auto 0;padding:18px;text-align:left;max-width:630px}
-.example-row strong{font-size:13px;color:#7a2644;display:block;margin-bottom:6px}
-.example-row p{font-size:14px;line-height:1.58;color:#584550;margin:0}
+h2{font-size:clamp(26px,4.25vw,39px);line-height:1.19;max-width:590px;margin:0 auto 16px;text-wrap:balance}
+.section-lead{color:#5e525a;font-size:clamp(15px,2vw,17px);line-height:1.65;max-width:515px;margin:0 auto 23px;text-wrap:pretty}
+.vision-tags{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;max-width:590px;margin:21px auto 27px}
+.vision-tags span{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:7px 13px;background:#f0faf3;border:1px solid #cae7d4;border-radius:100px;color:#1b7049;font-size:12px;font-weight:850;line-height:1.2}
+.vision-tags span:before{content:"✓";font-weight:900;margin-right:7px}
+.overview-shift{font-size:clamp(17px,2vw,20px);line-height:1.47;letter-spacing:-.013em;color:#4d3d48;font-weight:650;max-width:510px;margin:0 auto 28px;text-wrap:balance}
+.overview-shift strong{display:block;color:#a41d43;font-weight:900;margin-top:5px}
+.overview-prompt{max-width:575px;margin:0 auto;padding:24px 20px 26px;background:#fff7f4;border:1px solid #ebd4d0;border-radius:16px;box-shadow:0 7px 22px #4c24320c}
+.overview-prompt-label{display:block;margin:0 auto 11px;color:#8e1c3e;font-size:11px;line-height:1.4;letter-spacing:.11em;font-weight:900}
+.overview-prompt h3{font-size:clamp(21px,2.3vw,28px);line-height:1.25;font-weight:800;letter-spacing:-.04em;max-width:480px;margin:0 auto 12px;text-wrap:balance}
+.overview-prompt p{font-size:13px;line-height:1.5;color:#6d5762;font-weight:700;margin:0 auto;max-width:410px}
 .method{background:#fffaf7;border-block:1px solid #f0e2df}
-.method-list{display:grid;gap:12px;margin:24px auto 0;max-width:670px}
+.method-list{display:grid;gap:13px;margin:23px auto 0;max-width:600px}
 .method-step{display:flex;align-items:flex-start;text-align:left;gap:15px;border-radius:14px;border:1px solid #eadfdf;background:#fff;padding:17px 19px}
 .method-icon{display:grid;place-items:center;width:42px;height:42px;flex:0 0 42px;border-radius:10px;background:#fae8ed;color:#8c2443;font:900 19px/1 'Sora',sans-serif}
 .method-step h3{margin:0 0 4px;font-size:17px;line-height:1.25}
@@ -112,8 +117,14 @@ h2{font-size:clamp(26px,4.25vw,39px);line-height:1.15;max-width:700px;margin:0 a
  .gps-teaser img{width:60px;height:60px;flex-basis:60px}
  .gps-teaser b{font-size:16px}
  .gps-teaser p{font-size:11px}
- .section{padding:35px 0}
+ .section{padding:39px 0}
  h2{font-size:clamp(26px,6.5vw,33px)}
+ .vision-tags{gap:7px;margin:17px auto 22px}
+ .vision-tags span{font-size:11px;min-height:33px;padding:6px 11px}
+ .overview-shift{font-size:17px;line-height:1.5;margin-bottom:22px}
+ .overview-prompt{padding:20px 14px 22px}
+ .overview-prompt h3{font-size:22px}
+ .overview-prompt p{font-size:12px}
  .section-lead{font-size:14px}
  .one-thought{font-size:15px}
  .example-row{padding:14px}
@@ -151,25 +162,30 @@ h2{font-size:clamp(26px,4.25vw,39px);line-height:1.15;max-width:700px;margin:0 a
   </div>
  </div>
 </section>
-<section class="section" id="overview" aria-labelledby="overview-title">
+<section class="section overview" id="overview" aria-labelledby="overview-title">
  <div class="wrap">
   <span class="stepno">PART 1 · WHAT YOU WANT TO MANIFEST</span>
   <h2 id="overview-title">Manifest <span class="red">the Life You Actually Want</span></h2>
-  <p class="section-lead">More money, more freedom, better relationships, deeper peace — start with a clear vision of the life you want to manifest</p>
-  <p class="one-thought">The thoughts, images and habits you repeat shape what feels familiar and possible</p>
-  <p class="section-lead">Stop rehearsing the life you don't want and start practicing the vision you do want to live</p>
-  <div class="example-row"><strong>YOUR MANIFESTATION STARTS WITH ONE QUESTION</strong><p>Instead of replaying “Nothing ever changes,” ask “What would my dream life look and feel like if I started living it?” Give your mind a picture worth working toward</p></div>
+  <div class="vision-tags" aria-label="What your dream life might include">
+   <span>More money</span><span>More freedom</span><span>More love</span><span>More peace</span>
+  </div>
+  <p class="overview-shift">Your mind gets used to what you repeat <strong>Start picturing the life you want instead</strong></p>
+  <div class="overview-prompt">
+   <span class="overview-prompt-label">START WITH ONE QUESTION</span>
+   <h3>What Would Your Dream Life Look and Feel Like?</h3>
+   <p>Hold that picture in mind as you use Dream Life GPS</p>
+  </div>
  </div>
 </section>
 <section class="section method" id="method" aria-labelledby="method-title">
  <div class="wrap">
   <span class="stepno">PART 2 · THE MANIFESTATION METHOD</span>
   <h2 id="method-title">How to <span class="red">Reprogram Your Mind for Manifestation</span></h2>
-  <p class="section-lead">Make manifesting a simple daily practice instead of another wish you think about and forget</p>
+  <p class="section-lead">Make manifesting part of your daily routine with three simple steps</p>
   <div class="method-list">
-   <article class="method-step"><div class="method-icon" aria-hidden="true">1</div><div><h3>Choose What You Want to Manifest</h3><p>Be specific about your vision — the money, freedom, relationships or peace you want more of</p></div></article>
-   <article class="method-step"><div class="method-icon" aria-hidden="true">2</div><div><h3>Visualize Your Dream Life Daily</h3><p>See yourself living that life, connect with how it feels and notice the old thoughts holding you back</p></div></article>
-   <article class="method-step"><div class="method-icon" aria-hidden="true">3</div><div><h3>Take One Aligned Action</h3><p>Do one real thing today that moves you toward your vision, then repeat the practice</p></div></article>
+   <article class="method-step"><div class="method-icon" aria-hidden="true">1</div><div><h3>Choose What You Want to Manifest</h3><p>Know what your dream life looks and feels like</p></div></article>
+   <article class="method-step"><div class="method-icon" aria-hidden="true">2</div><div><h3>Visualize Your Dream Life Daily</h3><p>Rehearse that picture in your mind each day</p></div></article>
+   <article class="method-step"><div class="method-icon" aria-hidden="true">3</div><div><h3>Take One Aligned Action</h3><p>Make one move toward your vision today</p></div></article>
   </div>
   <p class="method-note">Real change takes practice and action. No tool can guarantee a particular life outcome.</p>
  </div>
@@ -178,7 +194,7 @@ h2{font-size:clamp(26px,4.25vw,39px);line-height:1.15;max-width:700px;margin:0 a
  <div class="wrap">
   <span class="stepno">PART 3 · YOUR MANIFESTATION GPS</span>
   <h2 id="gps-title">Manifest Your Dream Life With <span class="red">Dream Life GPS</span></h2>
-  <p class="section-lead">Dream Life GPS takes you from “I want a better life” to a clear manifestation vision, your deeper reason why and a practical first step</p>
+  <p class="section-lead">Turn a vague wish into a clear vision and your first real step</p>
   <div class="gps-preview">
     <div class="gps-preview-header">
       <img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" width="110" height="110" alt="Dream Life GPS visual" loading="lazy">
@@ -190,9 +206,9 @@ h2{font-size:clamp(26px,4.25vw,39px);line-height:1.15;max-width:700px;margin:0 a
     <div class="gps-delivery">✓ Finish with a personal summary + North Star image</div>
   </div>
   <ul class="gps-bullets">
-    <li>Build a clear picture of the life you want to manifest</li>
-    <li>Turn your manifestation vision into a personal summary</li>
-    <li>Keep your North Star image to revisit your intention daily</li>
+    <li>Get clear on what you want to manifest</li>
+    <li>Get your personal manifestation summary</li>
+    <li>Keep your North Star image as a daily reminder</li>
   </ul>
   <a href="/gps" class="cta" data-gps-cta data-cta-position="method">YES! HELP ME MANIFEST MY DREAM LIFE <span class="arrow" aria-hidden="true">→</span></a>
   <p class="gps-end">Free guided experience · Free downloads · Email signup optional</p>
@@ -203,7 +219,7 @@ h2{font-size:clamp(26px,4.25vw,39px);line-height:1.15;max-width:700px;margin:0 a
   <img class="sean-image" src="/assets/sean-life/sean-couch-portrait.png" width="96" height="96" alt="Sean Ali" loading="lazy" decoding="async">
   <p class="kicker" style="margin:0 auto 8px">A QUICK NOTE FROM SEAN</p>
   <h2 id="sean-title">You Can Start Manifesting Before You Have It All Figured Out</h2>
-  <p>I've spent years chasing goals and learning what matters most. I made this guide to help you get clear on the life you want to manifest, then take a real step toward it.</p>
+  <p>Manifesting starts with knowing what you want and taking action that matches it — that's why I made this guide</p>
  </div>
 </section>
 <section class="offer" aria-labelledby="offer-title">
@@ -211,7 +227,7 @@ h2{font-size:clamp(26px,4.25vw,39px);line-height:1.15;max-width:700px;margin:0 a
   <div class="offer-box">
    <span class="stepno">YOUR NEXT STEP IS RIGHT HERE</span>
    <h2 id="offer-title">Start <span class="red">Manifesting Your Dream Life</span> With Dream Life GPS</h2>
-   <p class="section-lead">Get your manifestation vision out of your head and into a plan you can see, revisit and act on</p>
+   <p class="section-lead">Turn your manifestation vision into a plan you can act on</p>
    <p class="offer-included">✓ Guided questions &nbsp; ✓ Personal summary &nbsp; ✓ North Star image</p>
    <a href="/gps" class="cta" data-gps-cta data-cta-position="final">START MANIFESTING WITH DREAM LIFE GPS <span class="arrow" aria-hidden="true">→</span></a>
    <p class="offer-fine">100% free · No payment or subscription · Email optional</p>
