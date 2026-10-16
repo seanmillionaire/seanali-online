@@ -17,14 +17,14 @@ const draft: DownloadDraft = {
   dreamScene: "family", dreamDetail: "", clarityPrintout: null,
 };
 
-function finalScreen(unlocked: boolean) {
+function finalScreen(unlocked: boolean, answers: Partial<DownloadDraft> = {}) {
   const values = new Map<string, string>();
   const storage = {
     getItem: (key: string) => values.get(key) ?? null,
     setItem: (key: string, value: string) => { values.set(key, value); },
     removeItem: (key: string) => { values.delete(key); },
   };
-  saveDownloadSession(storage, draft, "4c620104-f166-421e-a12d-91f3211b7361", unlocked);
+  saveDownloadSession(storage, { ...draft, ...answers }, "4c620104-f166-421e-a12d-91f3211b7361", unlocked);
   vi.stubGlobal("window", {
     location: { href: "https://seanali.online/gps" },
     sessionStorage: storage, localStorage: storage,
@@ -66,13 +66,29 @@ describe("final screen", () => {
 
   it("shows the complete summary and downloads without email signup", () => {
     const html = finalScreen(false);
-    for (const text of ["Alex, this is your North Star.", "Three user tests", "Evenings with family", "Time matters", "Your three-step plan", "Print / save my summary", "Download my North Star", "with or without email signup", "Want emails from Sean? (Optional)"]) expect(html).toContain(text);
+    for (const text of ["Alex, your tools are ready.", "Evenings with family", "Time matters", "Look at them every day.", "Print / save my summary", "Download my North Star", "with or without email signup", "Want emails from Sean? (Optional)"]) expect(html).toContain(text);
     expect(html).toContain('name="listname" value="awlist6946418"');
     expect(html).toContain('aria-label="Your downloads"');
     expect(html).not.toContain("gps-downloads-locked");
     expect(html).not.toContain("Add more detail");
     expect(html).not.toContain("Work with Sean");
+    expect(html).not.toContain("Three user tests");
+    expect(html).not.toContain("A clearer website");
+    expect(html).not.toContain("focus blocks");
     expect(html).not.toContain('aria-hidden="true"><section class="guided-final-plan"');
+  });
+  it.each([
+    { success: "Enjoy my retirement", future: "Read in my garden", whyNow: "This time is mine", personalStep: "Choose a book" },
+    { success: "Feel close to my family", future: "Share a quiet meal", whyNow: "Connection matters", personalStep: "Call my sister" },
+    { success: "Learn to paint", future: "Make time for a hobby", whyNow: "I enjoy creating", personalStep: "" },
+  ])("keeps personal answers without adding a job or a work schedule: $success", answers => {
+    const html = finalScreen(false, { ...answers, cleanSuccess: "Run profitable ads", cleanFuture: "Make more sales" });
+    for (const value of [answers.success, answers.future, answers.whyNow]) expect(html).toContain(value);
+    expect(html).not.toContain("Run profitable ads");
+    expect(html).not.toContain("Make more sales");
+    expect(html).not.toContain("focused hours");
+    if (answers.personalStep) expect(html).toContain(answers.personalStep);
+    else expect(html).not.toContain('data-summary="step"');
   });
   it("preserves the summary after returning from optional signup", () => {
     const html = finalScreen(true);

@@ -1,12 +1,8 @@
 /** A simple, locked path: get clear on the life you want, then take one useful step. */
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Check, Compass, Download, MapPin, Mic, MicOff, Printer, Sparkles, Target, Volume2, VolumeX, X } from "lucide-react";
-import { trpc } from "@/lib/trpc";
-import { findStatedMonthlyIncome } from "@/lib/incomePlan";
-import { canAdvanceStep, commitments, createFinalChecklist, createNextAction, getRoleName, getWeeklyNumbers, roles, type CommitmentId, type RoleId } from "@/lib/guidedJourney";
 import { mergeVoiceTranscript } from "@/lib/voiceTranscript";
 import { canPlayProgressiveSound, cueForAdvance, soundCues, type SoundCue } from "@/lib/progressiveSound";
-import { buildClarityPrintoutFallback, type ClarityPrintout, type DreamDaySceneId } from "@shared/clarityPrintout";
 import "../personalization.css";
 import "../guided-flow.css";
 import "../guided-flow-fix.css";
@@ -19,9 +15,9 @@ import { compassImageUrl, createPersonalizedCompass, downloadCompassImage } from
 import { DownloadGate } from "@/components/DownloadGate";
 import { clearDownloadSession, readDownloadSession, saveDownloadSession, signupReturnParam } from "@/lib/downloadGate";
 
-type Step = "name" | "location" | "success" | "benefits" | "future" | "whyNow" | "summary" | "role" | "responsibility" | "commitment" | "action";
-type BenefitId = "family" | "health" | "calm" | "time" | "freedom" | "work" | "giving" | "growth";
-type VoiceField = "name" | "location" | "otherRole" | "success" | "future" | "whyNow" | "responsibility" | "weeklyResult" | "dreamDetail";
+type Step = "name" | "location" | "success" | "benefits" | "future" | "whyNow" | "summary" | "responsibility" | "action";
+type BenefitId = "family" | "health" | "calm" | "time" | "freedom" | "work" | "giving" | "growth" | "other";
+type VoiceField = "name" | "location" | "success" | "future" | "whyNow" | "responsibility";
 
 type SpeechResultEvent = { resultIndex: number; results: ArrayLike<ArrayLike<{ transcript: string }>> };
 type SpeechRecognitionLike = { lang: string; continuous: boolean; interimResults: boolean; onresult: ((event: SpeechResultEvent) => void) | null; onerror: ((event: { error: string }) => void) | null; onend: (() => void) | null; start: () => void; abort: () => void };
@@ -29,12 +25,17 @@ type SpeechConstructor = new () => SpeechRecognitionLike;
 
 declare global { interface Window { SpeechRecognition?: SpeechConstructor; webkitSpeechRecognition?: SpeechConstructor } }
 
-const steps: Step[] = ["name", "location", "success", "benefits", "future", "whyNow", "summary", "role", "responsibility", "commitment", "action"];
-const benefits: { id: BenefitId; emoji: string; title: string; impact: string }[] = [
-  { id: "family", emoji: "❤️", title: "Give my family more", impact: "giving my family more" }, { id: "health", emoji: "💪", title: "A stronger body", impact: "a stronger body and more energy" },
-  { id: "calm", emoji: "🏆", title: "More respect", impact: "more respect" }, { id: "time", emoji: "✈️", title: "See more of the world", impact: "seeing more of the world" },
-  { id: "freedom", emoji: "🕊️", title: "Real freedom", impact: "real freedom with my time" }, { id: "work", emoji: "📈", title: "Bigger wins at work", impact: "bigger wins at work" },
-  { id: "giving", emoji: "💸", title: "More money", impact: "more money in my pocket" }, { id: "growth", emoji: "🚀", title: "Build something big", impact: "building something I am proud of" },
+const steps: Step[] = ["name", "location", "success", "benefits", "future", "whyNow", "summary", "responsibility", "action"];
+const benefits: { id: BenefitId; emoji: string; title: string }[] = [
+  { id: "family", emoji: "❤️", title: "Connection & loved ones" },
+  { id: "health", emoji: "🌿", title: "Health & energy" },
+  { id: "calm", emoji: "☀️", title: "Peace of mind" },
+  { id: "time", emoji: "☕", title: "Time for myself" },
+  { id: "freedom", emoji: "🕊️", title: "Freedom & adventure" },
+  { id: "work", emoji: "🎨", title: "Meaningful work or hobbies" },
+  { id: "giving", emoji: "🏡", title: "Financial peace" },
+  { id: "growth", emoji: "🌱", title: "Learning & growing" },
+  { id: "other", emoji: "✦", title: "Something else that matters to me" },
 ];
 
 const stepHelp: Record<Step, { title: string; message: string; next: string }> = {
@@ -43,15 +44,12 @@ const stepHelp: Record<Step, { title: string; message: string; next: string }> =
   success: { title: "Name the picture", message: "Success can mean money, work, family, freedom, health, or all of it together.", next: "Next" },
   benefits: { title: "Make it personal", message: "Pick the parts of life you want your success to improve.", next: "Next" },
   future: { title: "Picture it", message: "One honest answer is enough. Think about what a better day could feel like.", next: "Next" },
-  whyNow: { title: "Find your reason", message: "This will help you remember why the work matters when a day feels hard.", next: "Build my clear picture" },
+  whyNow: { title: "Find your reason", message: "This helps you remember what matters to you.", next: "Build my clear picture" },
   summary: { title: "Check your clear picture", message: "Read this. Go back if any part does not feel right yet.", next: "Take action" },
-  role: { title: "Your work matters", message: "Your role helps me give you a next action that fits real work.", next: "Next" },
-  responsibility: { title: "Name your work focus", message: "Pick the result you can help move right now.", next: "Next" },
-  commitment: { title: "Commit to one result", message: "Choose one visible result for the next seven days, then make room to create it.", next: "Make My Dream Life Map" },
-  action: { title: "See what you are building", message: "Read your near-future picture. Then keep the next useful move close.", next: "Start over" },
+  responsibility: { title: "One small step", message: "Choose something that fits your life. You can also leave this blank for now.", next: "Get my tools" },
+  action: { title: "Keep your tools close", message: "Print your summary, save your North Star, and look at them daily.", next: "Start over" },
 };
 
-function formatMoney(amount: number) { return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(amount); }
 
 function VoiceField({ id, label, value, setValue, multiline = false, autoFocus, active, note, start, stop }: { id: VoiceField; label: string; value: string; setValue: (value: string) => void; multiline?: boolean; autoFocus?: boolean; active: VoiceField | null; note: string; start: (field: VoiceField) => void; stop: () => void }) {
   const listening = active === id;
@@ -63,15 +61,6 @@ function ClarityChecklist({ title = "WHAT YOU ARE BUILDING", items }: { title?: 
   return <aside className="guided-checklist"><span>{title}</span><div>{items.map((item) => <p key={item}><Check size={18} />{item}</p>)}</div></aside>;
 }
 
-function PersonalizingIndicator() {
-  return <div className="guided-personalizing" role="status" aria-live="polite" aria-label="Making your answer clear and personal">
-    <div className="guided-personalizing-orbit" aria-hidden="true"><span /><span /><span /><Compass size={34} /></div>
-    <p>MAKING THIS CLEAR FOR YOU</p>
-    <b>I am turning your words into a clear picture.</b>
-    <small>This takes a moment. I am keeping what you meant and making the next step feel personal.</small>
-  </div>;
-}
-
 export default function Home() {
   const [resumed] = useState(() => {
     try { return readDownloadSession(window.sessionStorage, window.location.href); }
@@ -81,29 +70,16 @@ export default function Home() {
   const [downloadsUnlocked, setDownloadsUnlocked] = useState(resumed?.unlocked ?? false);
   const [welcome, setWelcome] = useState(!resumed);
   const [startingPoint, setStartingPoint] = useState(draft?.startingPoint ?? "");
-  const [furthestStep, setFurthestStep] = useState(resumed ? 10 : 0);
+  const [furthestStep, setFurthestStep] = useState(resumed ? steps.length - 1 : 0);
   const [step, setStep] = useState<Step>(resumed ? "action" : "name");
   const [userName, setUserName] = useState(() => draft?.userName ?? window.localStorage.getItem("dream-life-gps-name") ?? "");
   const [location, setLocation] = useState(draft?.location ?? "");
   const [success, setSuccess] = useState(draft?.success ?? "");
-  const [cleanSuccess, setCleanSuccess] = useState(draft?.cleanSuccess ?? "");
   const [selectedBenefits, setSelectedBenefits] = useState<BenefitId[]>(draft?.selectedBenefits ?? []);
   const [future, setFuture] = useState(draft?.future ?? "");
-  const [cleanFuture, setCleanFuture] = useState(draft?.cleanFuture ?? "");
   const [whyNow, setWhyNow] = useState(draft?.whyNow ?? "");
-  const [cleanWhyNow, setCleanWhyNow] = useState(draft?.cleanWhyNow ?? "");
-  const [role, setRole] = useState<RoleId | null>(draft?.role ?? null);
-  const [otherRole, setOtherRole] = useState(draft?.otherRole ?? "");
-  const [responsibility, setResponsibility] = useState(draft?.responsibility ?? "");
-  const [cleanResponsibility, setCleanResponsibility] = useState(draft?.cleanResponsibility ?? "");
-  const [weeklyResult, setWeeklyResult] = useState(draft?.weeklyResult ?? "");
-  const [cleanWeeklyResult, setCleanWeeklyResult] = useState(draft?.cleanWeeklyResult ?? "");
-  const [commitment, setCommitment] = useState<CommitmentId>(draft?.commitment ?? "solid");
+  const [responsibility, setResponsibility] = useState(draft?.personalStep ?? "");
   const [helpOpen, setHelpOpen] = useState(false);
-  const [isPersonalizing, setIsPersonalizing] = useState(false);
-  const [dreamScene, setDreamScene] = useState<DreamDaySceneId>(draft?.dreamScene ?? "celebration");
-  const [dreamDetail, setDreamDetail] = useState(draft?.dreamDetail ?? "");
-  const [clarityPrintout, setClarityPrintout] = useState<ClarityPrintout | null>(draft?.clarityPrintout ?? null);
   const [soundEnabled, setSoundEnabled] = useState(() => window.localStorage.getItem("dream-life-gps-sound") !== "off");
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   const [activeVoice, setActiveVoice] = useState<VoiceField | null>(null);
@@ -135,32 +111,25 @@ export default function Home() {
   const audioContext = useRef<AudioContext | null>(null);
   const keepListening = useRef(false);
   const capturedVoice = useRef<{ field: VoiceField; value: string } | null>(null);
-  const cleanAnswer = trpc.cleanAnswer.useMutation();
 
   const stepIndex = steps.indexOf(step);
   useEffect(() => { setFurthestStep((previous) => Math.max(previous, stepIndex)); }, [stepIndex]);
-  const isClearPhase = stepIndex <= steps.indexOf("summary");
   const pickedBenefits = benefits.filter((item) => selectedBenefits.includes(item.id));
-  const benefitNames = pickedBenefits.map((item) => item.impact);
-  const successText = cleanSuccess || success;
-  const futureText = cleanFuture || future;
-  const whyNowText = cleanWhyNow || whyNow;
-  const responsibilityText = cleanResponsibility || responsibility;
-  const weeklyResultText = cleanWeeklyResult || weeklyResult;
-  const suggestedTarget = findStatedMonthlyIncome([successText, futureText].join(" "));
-  const weekly = suggestedTarget !== null ? getWeeklyNumbers(suggestedTarget, commitment) : null;
-  const actionPlan = useMemo(() => role ? createNextAction({ role, otherRole, commitment, success: successText, responsibility: responsibilityText, weeklyResult: weeklyResultText, impactNames: benefitNames, whyNow: whyNowText }) : null, [role, otherRole, commitment, successText, responsibilityText, weeklyResultText, benefitNames.join("|"), whyNowText]);
-  const finalChecklist = actionPlan ? createFinalChecklist(actionPlan) : [];
-  const clarityInput = useMemo(() => ({ success: successText, benefits: pickedBenefits.map((benefit) => benefit.title), future: futureText, whyNow: whyNowText, responsibility: responsibilityText, nearTermResult: weeklyResultText, dreamScene, dreamDetail }), [successText, pickedBenefits.map((benefit) => benefit.title).join("|"), futureText, whyNowText, responsibilityText, weeklyResultText, dreamScene, dreamDetail]);
-  const clarityFallback = useMemo(() => buildClarityPrintoutFallback(clarityInput), [clarityInput]);
-  const currentClarityPrintout = clarityPrintout ?? clarityFallback;
+  const successText = success;
+  const futureText = future;
+  const whyNowText = whyNow;
   const greetingTime = new Date().getHours() < 12 ? "Good morning" : new Date().getHours() < 18 ? "Good afternoon" : "Good evening";
   const greeting = userName.trim() && location.trim() ? `${greetingTime}, ${userName.trim()} — building from ${location.trim()}` : "One step at a time";
   const currentHelp = stepHelp[step];
   const soundIsActive = canPlayProgressiveSound(soundEnabled, prefersReducedMotion);
   const saveDraftForSignup = (token: string) => {
-    if (!role) throw new Error("Finish your map first.");
-    saveDownloadSession(window.sessionStorage, { userName, location, startingPoint, success, cleanSuccess, selectedBenefits, future, cleanFuture, whyNow, cleanWhyNow, role, otherRole, responsibility, cleanResponsibility, weeklyResult, cleanWeeklyResult, commitment, dreamScene, dreamDetail, clarityPrintout }, token, downloadsUnlocked);
+    saveDownloadSession(window.sessionStorage, {
+      userName, location, startingPoint, success, cleanSuccess: "", selectedBenefits,
+      future, cleanFuture: "", whyNow, cleanWhyNow: "", personalStep: responsibility,
+      role: "other", otherRole: "", responsibility: "", cleanResponsibility: "",
+      weeklyResult: "", cleanWeeklyResult: "", commitment: "small",
+      dreamScene: "calm", dreamDetail: "", clarityPrintout: null,
+    }, token, downloadsUnlocked);
   };
   useEffect(() => {
     if (!resumed?.returned) return;
@@ -170,17 +139,10 @@ export default function Home() {
     window.history.replaceState(window.history.state, "", url.href);
   }, [resumed]);
 
-  const valueForVoice = (field: VoiceField) => ({ name: userName, location, otherRole, success, future, whyNow, responsibility, weeklyResult, dreamDetail }[field]);
+  const valueForVoice = (field: VoiceField) => ({ name: userName, location, success, future, whyNow, responsibility }[field]);
   const setVoiceValue = (field: VoiceField, value: string) => {
-    if (field === "name") setUserName(value);
-    if (field === "location") setLocation(value);
-    if (field === "otherRole") setOtherRole(value);
-    if (field === "success") { setSuccess(value); setCleanSuccess(""); }
-    if (field === "future") { setFuture(value); setCleanFuture(""); }
-    if (field === "whyNow") { setWhyNow(value); setCleanWhyNow(""); }
-    if (field === "responsibility") { setResponsibility(value); setCleanResponsibility(""); }
-    if (field === "weeklyResult") { setWeeklyResult(value); setCleanWeeklyResult(""); }
-    if (field === "dreamDetail") { setDreamDetail(value); setClarityPrintout(null); }
+    const setters = { name: setUserName, location: setLocation, success: setSuccess, future: setFuture, whyNow: setWhyNow, responsibility: setResponsibility };
+    setters[field](value);
   };
   const stopVoice = () => { keepListening.current = false; recognition.current?.abort(); recognition.current = null; capturedVoice.current = null; setActiveVoice(null); };
   const beginVoiceSegment = (field: VoiceField, base: string) => {
@@ -241,43 +203,18 @@ export default function Home() {
     });
   };
 
-  const canContinue = canAdvanceStep({ step, userName, location, role, otherRole, success, benefitCount: selectedBenefits.length, future, whyNow, responsibility, weeklyResult, isCleaning: isPersonalizing });
-  const cleanupDetails: Partial<Record<Step, { raw: string; question: string; apply: (value: string) => void }>> = {
-    success: { raw: success, question: "What does success look like for you?", apply: setCleanSuccess },
-    future: { raw: future, question: "If this worked, what would be better in your life?", apply: setCleanFuture },
-    whyNow: { raw: whyNow, question: "Why is this worth doing now?", apply: setCleanWhyNow },
-    responsibility: { raw: responsibility, question: "What result are you responsible for right now?", apply: setCleanResponsibility },
-    commitment: { raw: weeklyResult, question: "What result can you commit to in the next 7 days?", apply: setCleanWeeklyResult },
-  };
+  const requiredAnswers: Partial<Record<Step, string>> = { name: userName, success, future, whyNow };
+  const canContinue = step === "benefits" ? selectedBenefits.length > 0 : !(step in requiredAnswers) || Boolean(requiredAnswers[step]?.trim());
   const move = (direction: "next" | "back") => {
     const position = steps.indexOf(step); setHelpOpen(false); stopVoice();
     if (direction === "back") { if (position > 0) { setStep(steps[position - 1]); playSound("back"); } return; }
     if (!canContinue) return;
-    const cleanup = cleanupDetails[step];
-    const alreadyCleaned = (step === "success" && Boolean(cleanSuccess)) || (step === "future" && Boolean(cleanFuture)) || (step === "whyNow" && Boolean(cleanWhyNow)) || (step === "responsibility" && Boolean(cleanResponsibility)) || (step === "commitment" && Boolean(cleanWeeklyResult));
-    if (cleanup && alreadyCleaned) { setStep(steps[position + 1]); playSound(cueForAdvance(position, position + 1)); return; }
-    if (cleanup) {
-      setIsPersonalizing(true);
-      void (async () => {
-        let cleaned = cleanup.raw.trim();
-        try {
-          const response = await Promise.race([
-            cleanAnswer.mutateAsync({ rawAnswer: cleaned, question: cleanup.question }),
-            new Promise<null>((resolve) => window.setTimeout(() => resolve(null), 12_000)),
-          ]);
-          if (response) cleaned = response.cleanedAnswer;
-        } catch { /* Keep the person’s own words if cleanup cannot finish. */ }
-        cleanup.apply(cleaned);
-        setIsPersonalizing(false);
-        setStep(steps[position + 1]);
-        playSound(cueForAdvance(position, position + 1));
-      })();
-      return;
+    if (position < steps.length - 1) {
+      const next = steps[position + 1]; setStep(next);
+      playSound(next === "action" ? "finale" : cueForAdvance(position, position + 1));
     }
-    if (step === "action") { playSound("back"); reset(); return; }
-    if (position < steps.length - 1) { setStep(steps[position + 1]); playSound(cueForAdvance(position, position + 1)); }
   };
-  const reset = () => { stopVoice(); setStep("name"); setUserName(""); setLocation(""); setSuccess(""); setCleanSuccess(""); setSelectedBenefits([]); setFuture(""); setCleanFuture(""); setWhyNow(""); setCleanWhyNow(""); setRole(null); setOtherRole(""); setResponsibility(""); setCleanResponsibility(""); setWeeklyResult(""); setCleanWeeklyResult(""); setCommitment("solid"); setDreamScene("celebration"); setDreamDetail(""); setClarityPrintout(null); setCompassError(""); setHelpOpen(false); };
+  const reset = () => { stopVoice(); setStep("name"); setUserName(""); setLocation(""); setSuccess(""); setSelectedBenefits([]); setFuture(""); setWhyNow(""); setResponsibility(""); setCompassError(""); setHelpOpen(false); };
   const printFinalPlan = () => {
     window.requestAnimationFrame(() => window.requestAnimationFrame(() => window.print()));
   };
@@ -303,75 +240,59 @@ export default function Home() {
       <p className="quiz-reassurance"><Check size={17} /> No right or wrong answers. Just what feels true for you.</p>
     </>;
     if (step === "name") return <><p className="guided-kicker"><Compass size={18} /> LET'S GET TO KNOW YOU</p><h1>First, what should I call you?</h1><p className="guided-intro">{startingPoint === "I'm ready for a fresh start." ? "A fresh start can begin with one small step. I'm glad you're taking this one." : startingPoint === "I'm doing a lot, but I want a clearer direction." ? "Let's give all that effort a direction that feels right for you." : "You don't need to know every step yet. We'll start with the life you want."}</p><VoiceField id="name" label="Your first name" value={userName} setValue={setUserName} autoFocus active={activeVoice} note={voiceNote} start={startVoice} stop={stopVoice} /><p className="quiz-reassurance"><Check size={17} /> A first name is enough. We'll take this one question at a time.</p></>;
-    if (step === "location") return <><p className="guided-kicker"><MapPin size={18} /> STEP 2 OF 11 · START</p><h1>Where are you today?</h1><p className="guided-intro">A city or place is enough. This is only for your greeting.</p><VoiceField id="location" label="YOUR CITY OR PLACE" value={location} setValue={setLocation} autoFocus active={activeVoice} note={voiceNote} start={startVoice} stop={stopVoice} /><div className="guided-privacy-note"><MapPin size={20} /><span>I do not check your location. I only use the words you type here.</span></div></>;
-    if (step === "success") return <><p className="guided-kicker"><Target size={18} /> STEP 3 OF 11 · GET CLEAR</p><h1>What does success look like for you?</h1><p className="guided-intro">Say it your way. It can be about money, work, family, freedom, health, or all of it together.</p><VoiceField id="success" label="MY PICTURE OF SUCCESS" value={success} setValue={setSuccess} multiline autoFocus active={activeVoice} note={isPersonalizing ? "Making your words clear while keeping them yours..." : voiceNote} start={startVoice} stop={stopVoice} /><ClarityChecklist items={["You are giving your work a clear direction.", "You do not need the perfect words to begin."]} /></>;
-    if (step === "benefits") return <><p className="guided-kicker"><Sparkles size={18} /> STEP 4 OF 11 · GET CLEAR</p><h1>What do you want more of in your life?</h1><p className="guided-intro">Pick every benefit you want this success to create. Pick more than one if you want.</p><div className="guided-impact-grid">{benefits.map((item) => <button type="button" key={item.id} className={`guided-impact ${selectedBenefits.includes(item.id) ? "picked" : ""}`} onClick={() => toggleBenefit(item.id)} aria-pressed={selectedBenefits.includes(item.id)}><span>{item.emoji}</span><b>{item.title}</b>{selectedBenefits.includes(item.id) && <Check size={19} />}</button>)}</div><ClarityChecklist items={["You can see who and what this success helps.", "This gives your daily work a deeper reason."]} /></>;
-    if (step === "future") return <><p className="guided-kicker"><Sparkles size={18} /> STEP 5 OF 11 · GET CLEAR</p><h1>If this worked, what would be better in your life?</h1><p className="guided-intro">Picture a better day. Think about your time, your people, your health, or the work you want to do.</p><VoiceField id="future" label="THE BRIGHTER FUTURE I WANT" value={future} setValue={setFuture} multiline autoFocus active={activeVoice} note={isPersonalizing ? "Making your words clear while keeping them yours..." : voiceNote} start={startVoice} stop={stopVoice} /><ClarityChecklist items={["You are making the future easier to picture.", "A clear picture can help you stay steady on hard days."]} /></>;
-    if (step === "whyNow") return <><p className="guided-kicker"><Compass size={18} /> STEP 6 OF 11 · GET CLEAR</p><h1>Why is this worth doing now?</h1><p className="guided-intro">Keep it simple. What makes this important enough to work on today instead of someday?</p><VoiceField id="whyNow" label="MY REASON TO START NOW" value={whyNow} setValue={setWhyNow} multiline autoFocus active={activeVoice} note={isPersonalizing ? "Making your words clear while keeping them yours..." : voiceNote} start={startVoice} stop={stopVoice} /><ClarityChecklist items={["You are naming the reason this work matters.", "You will bring this reason with you into the action plan."]} /></>;
-    if (step === "summary") return <><p className="guided-kicker"><Check size={18} /> STEP 7 OF 11 · GET CLEAR</p><h1>Here is the life you are working toward.</h1><p className="guided-intro">Read this slowly. Go back if any part does not feel right yet.</p><div className="guided-summary"><article className="guided-summary-item"><span>WHAT SUCCESS LOOKS LIKE</span><b>{successText}</b>{cleanSuccess && cleanSuccess !== success && <small>Your words: “{success}”</small>}</article><article className="guided-summary-item"><span>WHAT YOU WANT MORE OF</span><b>{pickedBenefits.map((item) => `${item.emoji} ${item.title}`).join(" · ")}</b></article><article className="guided-summary-item"><span>WHAT GETS BETTER</span><b>{futureText}</b>{cleanFuture && cleanFuture !== future && <small>Your words: “{future}”</small>}</article><article className="guided-summary-item"><span>WHY NOW</span><b>{whyNowText}</b>{cleanWhyNow && cleanWhyNow !== whyNow && <small>Your words: “{whyNow}”</small>}</article></div><ClarityChecklist title="YOU ARE CLEARER NOW" items={["You know what success means to you.", "You can see what gets better when it works.", "You have a reason to keep going when work feels hard."]} /></>;
-    if (step === "role") return <><p className="guided-kicker"><Compass size={18} /> STEP 8 OF 11 · TAKE ACTION</p><h1>What kind of work do you do?</h1><p className="guided-intro">Pick the closest fit. I will use this to give you a useful next action.</p><div className="guided-roles">{roles.map((item) => <button type="button" key={item.id} className={`guided-choice ${role === item.id ? "picked" : ""}`} onClick={() => { setRole(item.id); playSound("select"); }} aria-pressed={role === item.id}><span className="guided-emoji">{item.emoji}</span><span><b>{item.title}</b><small>{item.line}</small></span>{role === item.id && <i><Check size={16} /></i>}</button>)}</div>{role === "other" && <VoiceField id="otherRole" label="TELL ME WHAT YOU DO" value={otherRole} setValue={setOtherRole} autoFocus active={activeVoice} note={voiceNote} start={startVoice} stop={stopVoice} />}</>;
-    if (step === "responsibility") return <><p className="guided-kicker"><Target size={18} /> STEP 9 OF 11 · TAKE ACTION</p><h1>What result are you responsible for right now?</h1><p className="guided-intro">Name the result you can help move. It might be leads, sales, clearer work, faster delivery, happier customers, or your own words.</p><VoiceField id="responsibility" label="THE RESULT I CAN HELP MOVE" value={responsibility} setValue={setResponsibility} multiline autoFocus active={activeVoice} note={isPersonalizing ? "Making your words clear while keeping them yours..." : voiceNote} start={startVoice} stop={stopVoice} /><ClarityChecklist items={["You are narrowing your attention to one useful result.", "Your plan will focus on work you can actually influence."]} /></>;
-    if (step === "commitment") return <><p className="guided-kicker"><Compass size={18} /> STEP 10 OF 11 · TAKE ACTION</p><h1>What result can I commit to in the next 7 days?</h1><p className="guided-intro">Make it real and easy to see. At my next check-in, what will be different because I did the work?</p><VoiceField id="weeklyResult" label="AT MY NEXT CHECK-IN, THIS IS TRUE" value={weeklyResult} setValue={setWeeklyResult} multiline autoFocus active={activeVoice} note={isPersonalizing ? "Making your result clear while keeping it yours..." : voiceNote} start={startVoice} stop={stopVoice} /><ClarityChecklist title="A GOOD SEVEN-DAY RESULT" items={["I can see proof that it happened.", "It connects to the work I can influence.", "It is small enough to move this week."]} /><div className="guided-result-anchor"><Target size={21} /><span>{suggestedTarget ? <>Your bigger picture is <b>{formatMoney(suggestedTarget)}</b> each month. This is the one result that moves it forward this week.</> : <>This is one visible result that moves your bigger picture forward this week.</>}</span></div><div className="guided-commitment-heading"><span>HOW MUCH ROOM WILL I MAKE FOR IT?</span><p>Pick the level that gives this result a real chance soon.</p></div><div className="guided-commitments">{commitments.map((item) => <button type="button" key={item.id} className={`guided-commitment ${commitment === item.id ? "picked" : ""}`} onClick={() => { setCommitment(item.id); playSound("select"); }} aria-pressed={commitment === item.id}><span>{item.id === "small" ? "01" : item.id === "solid" ? "02" : "03"}</span><div><b>{item.title}</b><small>{item.line}</small><em>{item.hours}</em></div>{commitment === item.id && <i><Check size={19} /></i>}</button>)}</div></>;
-    if (!actionPlan || !role) return null;
+    if (step === "location") return <><p className="guided-kicker"><MapPin size={18} /> STEP 2 OF 9 · START</p><h1>Where are you today?</h1><p className="guided-intro">A city or place is enough. This is only for your greeting, and you can skip it.</p><VoiceField id="location" label="YOUR CITY OR PLACE (OPTIONAL)" value={location} setValue={setLocation} autoFocus active={activeVoice} note={voiceNote} start={startVoice} stop={stopVoice} /><div className="guided-privacy-note"><MapPin size={20} /><span>I do not check your location. I only use the words you type here.</span></div></>;
+    if (step === "success") return <><p className="guided-kicker"><Target size={18} /> STEP 3 OF 9 · GET CLEAR</p><h1>What does success look like for you?</h1><p className="guided-intro">It might be feeling peaceful, spending time with people you love, enjoying retirement, learning something, or a dream of your own.</p><VoiceField id="success" label="MY PICTURE OF SUCCESS" value={success} setValue={setSuccess} multiline autoFocus active={activeVoice} note={voiceNote} start={startVoice} stop={stopVoice} /><ClarityChecklist items={["You are giving your life a direction that matters to you.", "You do not need the perfect words to begin."]} /></>;
+    if (step === "benefits") return <><p className="guided-kicker"><Sparkles size={18} /> STEP 4 OF 9 · GET CLEAR</p><h1>What do you want more of in your life?</h1><p className="guided-intro">Pick what matters to you. You can choose more than one, or choose something else.</p><div className="guided-impact-grid">{benefits.map((item) => <button type="button" key={item.id} className={`guided-impact ${selectedBenefits.includes(item.id) ? "picked" : ""}`} onClick={() => toggleBenefit(item.id)} aria-pressed={selectedBenefits.includes(item.id)}><span>{item.emoji}</span><b>{item.title}</b>{selectedBenefits.includes(item.id) && <Check size={19} />}</button>)}</div><ClarityChecklist items={["You can see who and what this success helps.", "There is no one right kind of dream."]} /></>;
+    if (step === "future") return <><p className="guided-kicker"><Sparkles size={18} /> STEP 5 OF 9 · GET CLEAR</p><h1>If this worked, what would be better in your life?</h1><p className="guided-intro">Picture a better day. Think about your time, your people, your health, or something you love doing.</p><VoiceField id="future" label="THE BRIGHTER FUTURE I WANT" value={future} setValue={setFuture} multiline autoFocus active={activeVoice} note={voiceNote} start={startVoice} stop={stopVoice} /><ClarityChecklist items={["You are making the future easier to picture.", "A clear picture can help you stay steady on hard days."]} /></>;
+    if (step === "whyNow") return <><p className="guided-kicker"><Compass size={18} /> STEP 6 OF 9 · GET CLEAR</p><h1>Why is this worth doing now?</h1><p className="guided-intro">Keep it simple. Why does this matter to you at this point in your life?</p><VoiceField id="whyNow" label="MY REASON TO START NOW" value={whyNow} setValue={setWhyNow} multiline autoFocus active={activeVoice} note={voiceNote} start={startVoice} stop={stopVoice} /><ClarityChecklist items={["You are naming what matters to you.", "Your summary will keep this reason close."]} /></>;
+    if (step === "summary") return <><p className="guided-kicker"><Check size={18} /> STEP 7 OF 9 · GET CLEAR</p><h1>Here is the life you are working toward.</h1><p className="guided-intro">Read this slowly. Go back if any part does not feel right yet.</p><div className="guided-summary"><article className="guided-summary-item"><span>WHAT SUCCESS LOOKS LIKE</span><b>{successText}</b></article><article className="guided-summary-item"><span>WHAT YOU WANT MORE OF</span><b>{pickedBenefits.map((item) => `${item.emoji} ${item.title}`).join(" · ")}</b></article><article className="guided-summary-item"><span>WHAT GETS BETTER</span><b>{futureText}</b></article><article className="guided-summary-item"><span>WHY NOW</span><b>{whyNowText}</b></article></div><ClarityChecklist title="YOU ARE CLEARER NOW" items={["You know what success means to you.", "You can see what gets better when it works.", "Your tools will remind you of what matters to you."]} /></>;
+    if (step === "responsibility") return <><p className="guided-kicker"><Target size={18} /> ONE SMALL STEP</p><h1>What's one small step you could take?</h1><p className="guided-intro">Something that fits your life: call someone, make time for a hobby, take a gentle walk, or choose your own step. It's okay if you're not sure yet.</p><VoiceField id="responsibility" label="MY NEXT SMALL STEP (OPTIONAL)" value={responsibility} setValue={setResponsibility} multiline autoFocus active={activeVoice} note={voiceNote} start={startVoice} stop={stopVoice} /><p className="quiz-reassurance"><Check size={17} /> Leave this blank if you want to decide later. Your tools are ready either way.</p></>;
     return <>
-      <header className="gps-payoff">
-        <p className="guided-kicker"><Sparkles size={18} /> YOUR DREAM LIFE GPS</p>
-        <h1>{userName.trim() ? `${userName.trim()}, this` : "This"} is your North Star.</h1>
-        <p className="gps-payoff-intro">Not someone else's idea of success. The life you said you want.</p>
-        <blockquote className={success.length > 180 ? "gps-dream-quote long" : "gps-dream-quote"}>{success}</blockquote>
-        <figure className="gps-north-star">
-          <img src={personalCompass || compassImageUrl} width={1254} height={1374} data-north-star-compass data-first-name={userName.trim().split(/\s+/)[0]} alt={`A North Star personalized for ${userName.trim().split(/\s+/)[0]}: ${success}`} />
-          <figcaption><h2>Your North Star Compass</h2><p>When life gets noisy, remember what you're moving toward.</p><small>Created by Sean Ali</small></figcaption>
-        </figure>
+      <header className="gps-tools-intro">
+        <h1>{userName.trim().split(/\s+/)[0]}, your tools are ready.</h1>
+        <p>I made these from your words. Save them, print them, and put them somewhere you'll see every day.</p>
       </header>
-      <section className="gps-dream-meaning" aria-labelledby="gps-meaning-title">
-        <span className="gps-payoff-label">MORE THAN A GOAL</span>
-        <h2 id="gps-meaning-title">This is what it makes room for.</h2>
-        <p className="gps-future-words">{future}</p>
-        <div className="gps-personal-reason"><span>And this is why it matters to you.</span><blockquote>{whyNow}</blockquote></div>
-      </section>
-      <div className="gps-sean-note"><p>You don't have to change your whole life today. You have a direction now. Let your next small choice point toward it.</p><span>I'm glad you took this time for yourself.</span><b>Sean Ali</b></div>
-      <section className="gps-plan-summary" aria-labelledby="gps-first-step-title">
-        <span className="gps-payoff-label"><Target size={17} /> BRING IT INTO TODAY</span>
-        <h2 id="gps-first-step-title">Every big change has a first step.</h2>
-        <div className="gps-first-step"><span>Start here</span><p>{finalChecklist[0]?.action}</p></div>
-        <div><span>Your goal this week</span><p>{actionPlan.weeklyResult}</p></div>
-      </section>
-      <section className="guided-final-section open" data-final-section="plan">
-        <header className="guided-final-section-toggle"><span>YOUR NEXT STEPS</span><h2>Your three-step plan</h2><p>What to do today, this week, and at your next check-in.</p></header>
-        <div id="final-section-plan" className="guided-final-section-body">
-        <section className="guided-final-plan">
-          <div className="guided-print-meta"><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><span>Dream Life GPS</span><b>Created by Sean Ali</b></div>
-          <header className="guided-final-result"><span>MY GOAL THIS WEEK</span><h2>{actionPlan.weeklyResult}</h2><p>This moves me toward: <b>{actionPlan.clearPicture}</b></p></header>
-          <section className="guided-printout-copy"><span>MY NEAR-FUTURE PICTURE</span><h2>{currentClarityPrintout.title}</h2><p>{currentClarityPrintout.opening}</p><p>{currentClarityPrintout.scene}</p></section>
-          <div className="guided-final-context"><div><span>MY WORK FOCUS</span><b>{responsibilityText}</b></div><div><span>WHY THIS MATTERS</span><b>{actionPlan.whyNow || actionPlan.impact}</b></div></div>
-          <div className="guided-simple-checklist">{finalChecklist.map((item, index) => <article key={item.label}><i aria-hidden="true">{index + 1}</i><div><span>{item.label}</span><h2>{item.title}</h2><p>{item.action}</p></div></article>)}</div>
-          <div className="guided-final-close"><Check size={20} /><p>At my next check-in, I look at what moved. I keep what worked. Then I choose the next useful result.</p></div>
+      <div className="gps-tools" aria-label="Your downloads">
+        <section className="gps-tool-card guided-final-plan" aria-labelledby="gps-summary-title">
+          <span className="gps-tool-number">01 · YOUR PERSONAL SUMMARY</span>
+          <h2 id="gps-summary-title">The life you want, in your words.</h2>
+          <div className="gps-final-downloads"><button type="button" onClick={printFinalPlan}><Printer size={20} /> Print / save my summary</button></div>
+          <dl className="gps-tool-summary">
+            <div><dt>What I want</dt><dd data-summary="goal">{success}</dd></div>
+            <div><dt>What a better day looks like</dt><dd data-summary="future">{future}</dd></div>
+            <div><dt>Why it matters to me</dt><dd data-summary="reason">{whyNow}</dd></div>
+            {responsibility.trim() && <div><dt>My next small step</dt><dd data-summary="step">{responsibility}</dd></div>}
+          </dl>
         </section>
-        </div>
-      </section>
-      <section className="gps-save-summary" aria-labelledby="gps-save-title">
-        <h2 id="gps-save-title">Your map is ready. Keep it close.</h2>
-        <p>Print your summary or save it as a PDF. Download your personal North Star image. It's all free, with or without email signup.</p>
-        <div className="gps-final-downloads" aria-label="Your downloads">
-          <button type="button" onClick={printFinalPlan}><Printer size={20} /> Print / save my summary</button>
-          <button type="button" className="secondary" onClick={() => void saveCompass()} disabled={compassSaving || !personalCompass}><Download size={20} />{compassSaving ? "Saving..." : "Download my North Star"}</button>
+        <section className="gps-tool-card" aria-labelledby="gps-compass-title">
+          <span className="gps-tool-number">02 · YOUR NORTH STAR</span>
+          <h2 id="gps-compass-title">A daily reminder of your direction.</h2>
+          <div className="gps-final-downloads"><button type="button" onClick={() => void saveCompass()} disabled={compassSaving || !personalCompass}><Download size={20} />{compassSaving ? "Saving..." : "Download my North Star"}</button></div>
+          <figure className="gps-north-star">
+            <img src={personalCompass || compassImageUrl} width={1254} height={1374} data-north-star-compass data-first-name={userName.trim().split(/\s+/)[0]} alt={`A North Star personalized for ${userName.trim().split(/\s+/)[0]}: ${success}`} />
+          </figure>
           {compassError && <p role="alert">{compassError}</p>}
-        </div>
-        <DownloadGate name={userName} unlocked={downloadsUnlocked} onSignup={saveDraftForSignup} />
-        <p className="gps-complete-note">You're done for today. Take your first step, then come back to your plan in seven days.</p>
+        </section>
+      </div>
+      <section className="gps-use-tools" aria-labelledby="gps-use-title">
+        <h2 id="gps-use-title">Here's what to do with your tools.</h2>
+        <ol><li><b>Print them or save them.</b> Put your summary on the fridge or beside your bed. Keep your North Star on your phone or somewhere you'll see it.</li><li><b>Look at them every day.</b> Take a quiet moment to read your words and remember what matters to you.</li><li><b>Choose one small step.</b> Ask yourself, “What's one thing I can do today in this direction?” Let it fit your energy and your life.</li></ol>
+        <p>That's enough for today. You can come back and update your tools whenever your life changes.</p>
       </section>
+      <p className="gps-free-note">Both tools are free, with or without email signup.</p>
+      <DownloadGate name={userName} unlocked={downloadsUnlocked} onSignup={saveDraftForSignup} />
+
     </>;
   };
 
-  const nextLabel = isPersonalizing ? "Making it clear..." : stepHelp[step].next;
+  const nextLabel = stepHelp[step].next;
   const progress = welcome ? 0 : Math.round((stepIndex / (steps.length - 1)) * 100);
   const milestones = [
     { title: "A little about you", note: "Your starting point", start: 0, end: 1 },
     { title: "The life you want", note: "What matters and why", start: 2, end: 5 },
     { title: "Your clear picture", note: "Bring your answers together", start: 6, end: 6 },
-    { title: "Your next steps", note: "One result you can work toward", start: 7, end: 9 },
-    { title: "Your plan & compass", note: "Something to keep with you", start: 10, end: 10 },
+    { title: "Your next steps", note: "Something that fits your life", start: 7, end: 7 },
+    { title: "Your two tools", note: "Something to keep with you", start: 8, end: 8 },
   ];
   const goBack = () => {
     if (stepIndex === 0) { stopVoice(); setWelcome(true); }
@@ -389,7 +310,7 @@ export default function Home() {
         {milestones.map((item, index) => {
           const current = stepIndex >= item.start && stepIndex <= item.end;
           const done = !welcome && stepIndex > item.end;
-          return <button type="button" key={item.title} className={current ? "current" : done ? "done" : ""} aria-current={current ? "step" : undefined} disabled={welcome || isPersonalizing || furthestStep < item.start} onClick={() => { stopVoice(); setStep(steps[item.start]); }}>
+          return <button type="button" key={item.title} className={current ? "current" : done ? "done" : ""} aria-current={current ? "step" : undefined} disabled={welcome || furthestStep < item.start} onClick={() => { stopVoice(); setStep(steps[item.start]); }}>
             <span>{done ? <Check size={17} /> : index + 1}</span><div><b>{item.title}</b><small>{item.note}</small></div>
           </button>;
         })}
@@ -399,16 +320,16 @@ export default function Home() {
     <main className="guided-main">
       <header className="guided-topbar">
         <div className="quiz-mobile-brand"><img src="/manus-storage/dream-life-gps-compass-logo_8c9f0a20.png" alt="" /><b>Dream Life GPS</b></div>
-        <div className="guided-top-progress"><span>{welcome ? "LET'S BEGIN" : step === "action" ? "YOUR PLAN IS READY" : `QUESTION ${stepIndex + 1} OF ${steps.length}`}</span><i role="progressbar" aria-label="Your journey" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress} style={{ "--step-progress": `${progress}%` } as React.CSSProperties} /></div>
+        <div className="guided-top-progress"><span>{welcome ? "LET'S BEGIN" : step === "action" ? "YOUR TOOLS ARE READY" : `STEP ${stepIndex + 1} OF ${steps.length}`}</span><i role="progressbar" aria-label="Your journey" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress} style={{ "--step-progress": `${progress}%` } as React.CSSProperties} /></div>
         <div className="top-message personal-greeting" aria-live="polite">{welcome ? "One small step is enough." : greeting}</div>
         <button type="button" className="guided-sound-toggle" onClick={() => setSoundEnabled((enabled) => !enabled)} aria-pressed={soundIsActive} aria-label={soundIsActive ? "Turn progress sounds off" : "Turn progress sounds on"} title={prefersReducedMotion ? "Progress sounds are off with reduced motion." : soundIsActive ? "Turn progress sounds off" : "Turn progress sounds on"} disabled={prefersReducedMotion}>{soundIsActive ? <Volume2 size={17} /> : <VolumeX size={17} />}</button>
         <button type="button" className="guided-help" onClick={() => setHelpOpen((open) => !open)} aria-expanded={helpOpen} aria-controls="quiz-help" aria-label={helpOpen ? "Close help" : "Need a hand?"} title={helpOpen ? "Close help" : "Need a hand?"}>{helpOpen ? <X size={19} /> : <Compass size={19} />} <span>{helpOpen ? "Close" : "Need a hand?"}</span></button>
       </header>
       {helpOpen && <aside id="quiz-help" className="guided-help-panel" aria-live="polite"><b>{welcome ? "Start wherever you are." : currentHelp.title}</b><p>{welcome ? "Choose the answer that feels closest today. You can go back and change your answers as we go." : currentHelp.message}</p></aside>}
-      <section className="guided-content" key={welcome ? "welcome" : step}><article className={`guided-card ${welcome ? "quiz-welcome" : step === "action" ? "gps-final-screen" : ""}`} onKeyDown={handleGuidedInputKeyDown}>{isPersonalizing ? <PersonalizingIndicator /> : renderStep()}</article></section>
+      <section className="guided-content" key={welcome ? "welcome" : step}><article className={`guided-card ${welcome ? "quiz-welcome" : step === "action" ? "gps-final-screen" : ""}`} onKeyDown={handleGuidedInputKeyDown}>{renderStep()}</article></section>
       <footer className="guided-footer">
-        {!welcome && <button type="button" className="guided-button secondary" onClick={goBack} disabled={isPersonalizing}><ArrowLeft size={20} /> Back</button>}
-        <span className="guided-footer-note">{welcome ? "A little space to think about you." : isPersonalizing ? "Taking a moment with your words." : step === "action" ? "Keep this picture close." : "Take your time. Your words are enough."}</span>
+        {!welcome && <button type="button" className="guided-button secondary" onClick={goBack} ><ArrowLeft size={20} /> Back</button>}
+        <span className="guided-footer-note">{welcome ? "A little space to think about you." : step === "action" ? "Keep this picture close." : "Take your time. Your words are enough."}</span>
         {!welcome && <button type="button" className={`guided-button${step === "action" ? " secondary" : ""}`} onClick={() => step === "action" ? startAgain() : move("next")} disabled={!canContinue}>{nextLabel}{step !== "action" && <ArrowRight size={20} />}</button>}
       </footer>
     </main>
