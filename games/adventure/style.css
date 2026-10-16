@@ -80,3 +80,14 @@ body[data-scene="islandQuest"] .tools button{color:#284e48}
 @media(max-height:550px){.explore-menu{top:76px;right:96px;width:280px}.explore-actions{flex-direction:row;bottom:18px}.explore-actions .picture-button{min-height:64px}.explore-stick{bottom:18px}.explore-actions .button-picture{font-size:27px}}
 @media(min-width:781px){.island-goal{right:104px}}
 @media(max-height:550px) and (max-width:599px){.explore-actions{display:grid;grid-template-columns:repeat(2,72px);right:10px;bottom:24px;gap:8px}.explore-actions .picture-button{width:72px;min-width:72px;max-width:72px;min-height:68px}.explore-menu{right:12px;top:156px;width:calc(100% - 24px);max-height:calc(100svh - 176px);overflow-y:auto}.explore-stick{bottom:24px}}
+
+/* Keep the character visible; large choices belong inside the opened menu. */
+.explore-actions{display:flex;flex-direction:row;flex-wrap:wrap;max-width:250px;right:12px;bottom:18px;gap:7px;align-items:flex-end}
+.explore-actions .picture-button{width:56px;min-width:56px;max-width:56px;min-height:58px;padding:5px 3px;gap:3px;border-radius:17px;background-color:#fff5dcdb}
+.explore-actions .button-picture{font-size:25px}.explore-actions .button-caption{font-size:10px}
+.helper-toggle.picture-button{width:48px;min-width:48px;min-height:48px;padding:5px;right:12px;border-radius:15px}
+.helper-toggle .button-picture{font-size:27px}.helper-toggle .button-caption{display:none}
+.explore-message,.explore-message.show{top:132px;max-width:calc(100% - 28px);padding:7px 12px;font-size:13px;transform:translateX(-50%)}
+.explore-world.snack-moment .explore-actions,.explore-world.snack-moment .helper-toggle,.explore-world.snack-moment .island-goal,.explore-world.snack-moment .explore-hud{visibility:hidden;pointer-events:none}
+@media(max-width:780px){.explore-actions{max-width:182px;bottom:18px}.explore-stick{bottom:18px}.explore-menu{top:132px}.explore-hud{max-width:calc(100% - 80px)}}
+@media(max-height:550px){.explore-actions{max-width:250px;bottom:12px}.explore-message,.explore-message.show{top:76px;max-width:55%;font-size:12px}.explore-stick{bottom:12px}}

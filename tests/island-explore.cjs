@@ -14,9 +14,13 @@ const source=['explore-state.js','explore.js'].map(f=>fs.readFileSync(path.join(
   const g=boot({x:-6,z:0,food:{coconut:6,banana:6}},lang);await g.ready();g.step();
   const girl=g.scene.getObjectByName('Angelique');assert.equal(girl.scale.x,1);
   for(let i=0;i<12;i++){
+   g.d.querySelector('.helper-toggle').click();
    g.d.querySelector('.food-button').click();
+   assert(!g.d.querySelector('.helpers-open'),'food closes the backpack so it cannot cover growth');
    const eat=[...g.d.querySelectorAll('.explore-panel .discover-place')].find(b=>!b.disabled&&b.textContent.includes(i<6?'🥥':'🍌'));
-   eat.click();g.step(90);
+   eat.click();assert(g.d.querySelector(".snack-moment"),"eating clears controls immediately");g.step(30);
+   assert(g.d.querySelector(".snack-moment"),"controls stay clear during the bite");g.step(60);
+   assert(!g.d.querySelector(".snack-moment"),"controls return after eating");
    assert(Math.abs(girl.scale.x-g.state.world.growth)<.01,'visible scale follows every meal');
   }
   assert.equal(g.state.world.growth,6);assert(girl.scale.y*1.9>10,'Angelique towers above the tallest palms');
