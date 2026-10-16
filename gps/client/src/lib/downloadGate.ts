@@ -6,9 +6,10 @@ const text = z.string().max(20000);
 const draftSchema = z.object({
   userName: text, location: text, startingPoint: text,
   success: text, cleanSuccess: text,
-  selectedBenefits: z.array(z.enum(["family", "health", "calm", "time", "freedom", "work", "giving", "growth"])).max(8),
+  selectedBenefits: z.array(z.enum(["family", "health", "calm", "time", "freedom", "work", "giving", "growth", "other"])).max(9),
   future: text, cleanFuture: text, whyNow: text, cleanWhyNow: text,
   role: z.enum(["mediaBuyer", "creativeStrategist", "copywriter", "designer", "productBuilder", "operations", "teamLead", "other"]),
+  personalStep: text.optional(),
   otherRole: text, responsibility: text, cleanResponsibility: text,
   weeklyResult: text, cleanWeeklyResult: text,
   commitment: z.enum(["small", "solid", "full"]),

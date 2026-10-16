@@ -46,6 +46,12 @@ describe("GPS email download gate", () => {
     expect(readDownloadSession(storage, "https://seanali.online/gps", now)).toBeNull();
     expect(() => saveDownloadSession(storage, { ...draft, role: null } as unknown as DownloadDraft, token, false, now)).toThrow();
   });
+  it("restores a custom life priority and optional personal step", () => {
+    saveDownloadSession(storage, { ...draft, selectedBenefits: ["other"], personalStep: "Call my sister" }, token, false, now);
+    const result = readDownloadSession(storage, "https://seanali.online/gps", now);
+    expect(result?.draft.personalStep).toBe("Call my sister");
+    expect(result?.draft.selectedBenefits).toEqual(["other"]);
+  });
   it("does not store an email address and clears access on start over", () => {
     saveDownloadSession(storage, { ...draft, email: "private@example.com" } as DownloadDraft, token, true, now);
     expect(storage.getItem(downloadSessionKey)).not.toContain("private@example.com");
