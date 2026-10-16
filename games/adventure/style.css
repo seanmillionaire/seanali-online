@@ -57,3 +57,26 @@ body[data-scene="islandQuest"] .tools button{color:#284e48}
  .helpers-open .explore-menu{max-width:calc(100% - 24px)}
  .explore-location{max-width:calc(100vw - 84px)}
 }
+
+/* Picture-first controls: the full action name remains available to assistive technology. */
+.picture-button{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-width:76px;min-height:76px;padding:9px 12px;text-align:center;line-height:1.15;touch-action:manipulation}
+.button-picture{font-family:"Apple Color Emoji","Segoe UI Emoji",sans-serif;font-size:34px;line-height:1.1;white-space:nowrap;pointer-events:none}
+.button-caption{font-size:12px;font-weight:800;line-height:1.2;pointer-events:none}
+.button-original{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.picture-button[hidden]{display:none!important}.picture-button:focus-visible{outline:4px solid #286fbc;outline-offset:3px}
+.explore-actions .picture-button{width:92px;max-width:92px;min-height:82px;border-radius:22px;padding:9px 6px}
+.world-jump.picture-button{background:#d9edff;border-color:#ffffff}.world-catch.picture-button{background:#e8e1ff;color:#30444c}
+.helper-toggle.picture-button{display:flex;position:absolute;right:14px;top:76px;z-index:24;width:72px;min-width:72px;min-height:72px;padding:7px;border-radius:21px;background:#fff5d8}
+.helper-toggle .button-picture{font-size:30px}.helper-toggle .button-caption{font-size:10px}
+.explore-world:not(.helpers-open):not(.explore-fallback) .explore-menu{display:none}
+.explore-world.helpers-open .island-goal{display:none}
+.explore-menu{position:absolute;left:auto;right:14px;top:157px;z-index:23;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:min(294px,calc(100% - 28px));gap:8px;padding:10px;background:#fff4ddeb;border:2px solid #fffbed;border-radius:24px;box-shadow:0 10px 30px #123b4933}
+.explore-menu .picture-button{min-width:0;width:100%;min-height:80px;padding:8px 4px;border-radius:16px;background:#fffaf0}
+.explore-menu .food-button{background:#ffead2}.explore-menu .wallet-button{background:#fff1a8}
+.explore-panel .discover-place.picture-button{min-height:108px;width:100%;margin-bottom:8px;background:#e5f0da}
+.explore-panel .discover-grid .discover-place{margin-bottom:0}.discover-place .button-picture{font-size:42px}.discover-place .button-caption{font-size:13px}
+.explore-panel>.discover-place{width:calc(50% - 8px)!important;margin-right:8px;vertical-align:top}
+@media(max-width:780px){.explore-actions{right:12px;bottom:48px;gap:9px}.explore-actions .picture-button{width:80px;max-width:80px;min-width:80px;min-height:76px}.explore-actions .button-picture{font-size:32px}.explore-actions .button-caption{font-size:11px}.explore-controls{display:none}.explore-stick{bottom:48px}.explore-panel{top:76px;max-height:calc(100svh - 88px)}.explore-panel h2{font-size:23px}.explore-panel>p{display:none}.explore-hud{max-width:calc(100% - 110px)}.explore-location{max-width:100%;white-space:normal}}
+@media(max-height:550px){.explore-menu{top:76px;right:96px;width:280px}.explore-actions{flex-direction:row;bottom:18px}.explore-actions .picture-button{min-height:64px}.explore-stick{bottom:18px}.explore-actions .button-picture{font-size:27px}}
+@media(min-width:781px){.island-goal{right:104px}}
+@media(max-height:550px) and (max-width:599px){.explore-actions{display:grid;grid-template-columns:repeat(2,72px);right:10px;bottom:24px;gap:8px}.explore-actions .picture-button{width:72px;min-width:72px;max-width:72px;min-height:68px}.explore-menu{right:12px;top:156px;width:calc(100% - 24px);max-height:calc(100svh - 176px);overflow-y:auto}.explore-stick{bottom:24px}}
