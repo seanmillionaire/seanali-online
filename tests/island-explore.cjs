@@ -3,11 +3,11 @@ const root=path.resolve(__dirname,'../games/adventure');
 const source=['explore-state.js','explore.js'].map(f=>fs.readFileSync(path.join(root,f),'utf8').replace(/^import .*;\n/gm,'').replace(/\bexport /g,'')).join('\n');
 (async()=>{
  const T=await import(pathToFileURL(path.join(root,'vendor/three.module.min.js')));
- function boot(raw,lang='en'){
-  const dom=new JSDOM('<main></main><dialog></dialog>',{runScripts:'outside-only',url:'https://example.com'}),w=dom.window;Object.defineProperty(w.document,'hidden',{value:false,configurable:true});w.WebGL2RenderingContext=function(){};let tick=null,saves=0,disposed=false,scene;const spoken=[],opened=[],boatEvents=[];
+ function boot(raw,lang='en',moving=true){
+  const dom=new JSDOM('<main></main><dialog></dialog>',{runScripts:'outside-only',url:'https://example.com'}),w=dom.window;Object.defineProperty(w.document,'hidden',{value:false,configurable:true});w.WebGL2RenderingContext=function(){};let tick=null,saves=0,disposed=false,scene;const spoken=[],opened=[],boatEvents=[],effects=[];
   w.buildIsland=(three,canvas,motion,setup)=>{scene=new T.Scene();const mat=(color,opts={})=>new T.MeshStandardMaterial({color,...opts});const make=(g,m,x=0,y=0,z=0,sx=1,sy=sx,sz=sx,parent=scene)=>{const mesh=new T.Mesh(g,m);mesh.position.set(x,y,z);mesh.scale.set(sx,sy,sz);parent.add(mesh);return mesh;};const world=setup({T,scene,camera:new T.PerspectiveCamera(),target:new T.Vector3(),height:()=>0,make,geometry:x=>x,mat,ball:new T.IcosahedronGeometry(1,1),cone:new T.ConeGeometry(1,1,8),cylinder:new T.CylinderGeometry(1,1,1,8),box:new T.BoxGeometry(),tropical:{foodTrees:[{id:'coconut0',kind:'coconut',x:-6,z:0,fruits:Array.from({length:6},()=>new T.Group())},{id:'banana0',kind:'banana',x:-8,z:0,fruits:Array.from({length:6},()=>new T.Group())}],card(tile,x,y,z,width,height,parent=scene){const g=new T.Group();g.position.set(x,y,z);parent.add(g);return g;}}});tick=world.update;return {dispose(){disposed=true;world.dispose();}};};
-  w.eval(source+'\nwindow.api={createExplore,normalizeExplore,exploreItems,explorePlaces,inWater,walkable,islandPath};');const state={lang,world:raw};const game=w.api.createExplore(w.document.querySelector('main'),{state,openNext:id=>opened.push(id),speak:(words,options)=>{spoken.push({words,options});return true;},save:()=>saves++,joy:{boat:(active,p)=>boatEvents.push({active,p}),gesture(){},effect(){},note(){}},motion:()=>true,openBook(){},openHome(){},load:()=>Promise.resolve(T)});
-  return {w,d:w.document,state,game,spoken,opened,boatEvents,get scene(){return scene},async ready(){await new Promise(r=>setTimeout(r,20));},step(n=1){for(let i=0;i<n;i++)tick(1/30,i/30);},get saves(){return saves},get disposed(){return disposed},close(){game.dispose();dom.window.close();}};
+  w.eval(source+'\nwindow.api={createExplore,normalizeExplore,exploreItems,explorePlaces,inWater,walkable,islandPath};');const state={lang,world:raw};const game=w.api.createExplore(w.document.querySelector('main'),{state,openNext:id=>opened.push(id),speak:(words,options)=>{spoken.push({words,options});return true;},save:()=>saves++,joy:{boat:(active,p)=>boatEvents.push({active,p}),gesture(){},effect(name){effects.push(name);},note(){}},motion:()=>moving,openBook(){},openHome(){},load:()=>Promise.resolve(T)});
+  return {w,d:w.document,state,game,spoken,opened,boatEvents,effects,get scene(){return scene},async ready(){await new Promise(r=>setTimeout(r,20));},step(n=1){for(let i=0;i<n;i++)tick(1/30,i/30);},get saves(){return saves},get disposed(){return disposed},close(){game.dispose();dom.window.close();}};
  }
  // Food growth persists, visibly exceeds palm height, and remains reversible.
  for(const lang of ['en','es']){
@@ -26,6 +26,20 @@ const source=['explore-state.js','explore.js'].map(f=>fs.readFileSync(path.join(
   assert.equal(g.w.api.normalizeExplore({growth:900}).growth,6);
   const reload=boot(saved,lang);await reload.ready();reload.step();assert.equal(reload.scene.getObjectByName('Angelique').scale.x,6);reload.close();
   g.d.querySelector('.food-button').click();const choices=[...g.d.querySelectorAll('.explore-panel .discover-place')];assert(choices[0].disabled&&choices[1].disabled,'empty fruit cannot grow her');choices.at(-1).click();g.step(120);assert(girl.scale.x<1.001);assert.equal(g.state.world.growth,1);g.close();
+ }
+ // Giant landings affect nearby fruit once; small jumps and reduced motion stay controlled.
+ for(const [growth,moving] of [[1,true],[6,true],[6,false]]){
+  const g=boot({x:-6,z:0,growth},'en',moving);await g.ready();g.step();
+  const wave=g.scene.getObjectByName('Giant impact wave');g.d.querySelector('.world-jump').click();
+  g.step(20);assert.equal(g.effects.filter(e=>e==='giant-stomp').length,0,'no impact before landing');
+  Object.defineProperty(g.w.document,'hidden',{value:true,configurable:true});g.step(90);assert.equal(g.state.world.food.coconut,0,'hidden tab cannot harvest');Object.defineProperty(g.w.document,'hidden',{value:false,configurable:true});
+  g.step(20);
+  assert.equal(g.effects.filter(e=>e==='giant-stomp').length,growth>=2?1:0);
+  assert.equal(g.state.world.food.coconut,growth>=2?1:0,'only giant landings shake down fruit');
+  assert.equal(wave.visible,growth>=2&&moving,'reduced motion suppresses the impact animation');
+  g.step(120);assert(!wave.visible,'impact settles');assert.equal(g.state.world.food.coconut,growth>=2?1:0,'standing still never repeats the reward');
+  if(growth>=2){assert.equal(g.w.api.normalizeExplore(g.state.world).harvested.coconut0,1);assert.equal(g.state.world.food.banana,0);}
+  g.close();
  }
  let guided=boot();await guided.ready();guided.state.completed={'harbor-0':3};guided.step();assert(guided.d.querySelector('.island-goal p').textContent.includes('Mila'));guided.d.querySelector('.goal-next').click();guided.step(700);assert(guided.d.querySelector('.goal-next').textContent.includes('Start adventure'));guided.d.querySelector('.goal-next').click();assert.equal(guided.opened[0],'market-0');guided.close();
  function key(c,key,pressed){c.d.dispatchEvent(new c.w.KeyboardEvent(pressed?'keydown':'keyup',{key,bubbles:true}));}

@@ -48,6 +48,7 @@ export function createDelight({soundEnabled,motionEnabled}) {
   }
   function drum(n){if(n%3===0)voice(140,.22,{end:45,volume:.26});else if(n%3===1){noise(.14,.13,'highpass',1800);voice(185,.1,{type:'triangle',volume:.06});}else noise(.065,.095,'highpass',6500);}
   function effect(name){
+    if(name==='giant-stomp'){noise(.28,.12,'lowpass',220);voice(90,.38,{end:28,volume:.14,type:'sine'});return;}
     if(name==='balloon-pop'){noise(.12,.13,'highpass',900);voice(160,.16,{end:45,volume:.1,type:'triangle'});return;}
     if(name==='arrival'){noise(2.8,.055,'lowpass',1200);[0,2,4,5,6].forEach((n,i)=>voice(scale[n],1.1,{delay:i*.42,volume:.09}));return;}
     if(name==='coin'){voice(1260,.12,{volume:.07});voice(1880,.22,{delay:.07,volume:.055});return;}
