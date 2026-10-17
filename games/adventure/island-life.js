@@ -1,4 +1,4 @@
-import {oceanModel} from './ocean-models.js?v=38';
+import {oceanModel} from './ocean-models.js?v=73';
 export function islandDaylight(seconds){const phase=((seconds%240)+240)%240/240,elevation=Math.sin(phase*Math.PI*2);return {phase,day:Math.max(0,Math.min(1,elevation*2+.15)),night:elevation<0};}
 export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,cone,box,sun,ambient,waterMaterial,inWater}){
  const s=state.world,animals=[],group=new T.Group();group.name='Ocean wildlife';scene.add(group);let ridden=null;

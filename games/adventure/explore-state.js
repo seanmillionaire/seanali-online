@@ -87,7 +87,7 @@ export const exploreItems=[
 ];
 for(const p of exploreItems){const land={fruit:'wilds',glow:'sunset'}[p.kind];if(land)Object.assign(p,islandPoint(land,p.x,p.z));}
 export function normalizeStory(raw){return Object.fromEntries(Object.entries({shells:3,picnic:4,seed:3,song:4,care:2,light:4}).map(([id,length])=>[id,Number.isInteger(raw?.[id])?Math.max(0,Math.min(length,raw[id])):0]));}
-export function freshExplore(){return {worldVersion:3,realms:{found:[],turtle:0,bird:0},journey:{visited:[],meals:0,swim:0,fly:0,rings:[]},x:4,z:10,dayTime:40,story:normalizeStory(null),collected:[],badges:[],hat:0,pet:false,flowers:0,catches:0,pops:0,flight:0,growth:1,food:{coconut:0,banana:0},harvested:{},boat:{x:6.5,z:16,heading:0},regionalProjects:{helped:[]},craft:{built:[],spent:{}},city:{bags:[],pizzas:0,car:{x:-106,z:-74,heading:0},activities:{deliveries:[],deliveryActive:false,rallyBest:0,rallyWins:0,soccerGoals:0,soccerShots:0,marketTrades:0,muralColors:0,museum:[],carWashes:0}},friends:{visits:[],completed:[],companion:null}};}
+export function freshExplore(){return {inventoryVersion:1,foodTotal:{banana:0,coconut:0},worldVersion:3,realms:{found:[],turtle:0,bird:0},journey:{visited:[],meals:0,swim:0,fly:0,rings:[]},x:4,z:10,dayTime:40,story:normalizeStory(null),collected:[],badges:[],hat:0,pet:false,flowers:0,catches:0,pops:0,flight:0,growth:1,food:{coconut:0,banana:0},harvested:{},boat:{x:6.5,z:16,heading:0},regionalProjects:{helped:[]},craft:{built:[],spent:{}},city:{bags:[],pizzas:0,car:{x:-106,z:-74,heading:0},activities:{deliveries:[],deliveryActive:false,rallyBest:0,rallyWins:0,soccerGoals:0,soccerShots:0,marketTrades:0,muralColors:0,museum:[],carWashes:0}},friends:{visits:[],completed:[],companion:null}};}
 export function normalizeExplore(raw){const s=freshExplore();if(!raw||typeof raw!=='object')return s;const rr=raw.realms||{};s.realms={found:[...new Set((Array.isArray(rr.found)?rr.found:[]).filter(id=>/^(reef-[0-5]|pearl-[0-4]|wind-[0-4]|star-[0-4]|seaChest-0|skyLight-0)$/.test(id)))],turtle:Math.max(0,Math.min(5,Math.floor(Number(rr.turtle)||0))),bird:Math.max(0,Math.min(4,Math.floor(Number(rr.bird)||0)))};const j=raw.journey||{};s.journey={visited:[...new Set((Array.isArray(j.visited)?j.visited:[]).filter(id=>worldIslands.some(p=>p.id===id)))],meals:Math.max(0,Math.min(999,Number(j.meals)||0)),swim:Math.max(0,Math.min(100000,Number(j.swim)||0)),fly:Math.max(0,Math.min(100000,Number(j.fly)||0)),rings:[...new Set((Array.isArray(j.rings)?j.rings:[]).filter(id=>/^(swim|fly)-[0-9]+$/.test(id)))]};// Preserve friendship, a chosen companion, and first-time play rewards across saves.
 const FRIEND_IDS=['pip','dori','mila','ollie','luna','kai'],savedFriends=raw.friends||{};
 s.friends={
@@ -126,8 +126,31 @@ s.dayTime=Number.isFinite(raw.dayTime)?((raw.dayTime%240)+240)%240:40;s.story=no
   const old=worldIslands.find(p=>Math.hypot((s.x-p.ox)/(p.rx/p.spread),(s.z-p.oz)/(p.rz/p.spread))<1);
   if(old)Object.assign(s,islandPoint(old.id,s.x,s.z));
  }
-}s.hat=Number.isInteger(raw.hat)?Math.max(0,Math.min(6,raw.hat)):0;s.pet=raw.pet===true;s.flowers=Math.max(0,Math.min(6,Math.floor(Number(raw.flowers)||0)));for(const k of ['catches','pops'])s[k]=Math.max(0,Math.min(9999,Math.floor(Number(raw[k])||0)));s.growth=Number.isFinite(raw.growth)?Math.max(1,Math.min(6,raw.growth)):1;s.flight=Number.isFinite(raw.flight)?Math.max(0,Math.min(40,raw.flight)):0;for(const kind of ['coconut','banana'])s.food[kind]=Math.max(0,Math.min(99,Math.floor(Number(raw.food?.[kind])||0)));for(const [id,n] of Object.entries(raw.harvested||{})){if(/^(coconut|banana)\d+$/.test(id))s.harvested[id]=Math.max(0,Math.min(6,Math.floor(Number(n)||0)));}if(Number.isFinite(raw.boat?.x)&&Number.isFinite(raw.boat?.z)&&Math.hypot(raw.boat.x/200,raw.boat.z/175)<1&&inWater(raw.boat.x,raw.boat.z)){s.boat={x:raw.boat.x,z:raw.boat.z,heading:Number.isFinite(raw.boat.heading)?raw.boat.heading:0};}Object.assign(s.boat,recoverBoat(s.boat.x,s.boat.z));return s;}
-export function collectExplore(s,id){if(!exploreItems.some(x=>x.id===id)||s.collected.includes(id))return false;s.collected.push(id);return true;}
+}s.hat=Number.isInteger(raw.hat)?Math.max(0,Math.min(6,raw.hat)):0;s.pet=raw.pet===true;s.flowers=Math.max(0,Math.min(6,Math.floor(Number(raw.flowers)||0)));for(const k of ['catches','pops'])s[k]=Math.max(0,Math.min(9999,Math.floor(Number(raw[k])||0)));s.growth=Number.isFinite(raw.growth)?Math.max(1,Math.min(6,raw.growth)):1;s.flight=Number.isFinite(raw.flight)?Math.max(0,Math.min(40,raw.flight)):0;for(const kind of ['coconut','banana'])s.food[kind]=Math.min(9999,inventoryCount(raw.food?.[kind]));for(const [id,n] of Object.entries(raw.harvested||{})){if(/^(coconut|banana)\d+$/.test(id))s.harvested[id]=Math.max(0,Math.min(6,Math.floor(Number(n)||0)));}if(Number.isFinite(raw.boat?.x)&&Number.isFinite(raw.boat?.z)&&Math.hypot(raw.boat.x/200,raw.boat.z/175)<1&&inWater(raw.boat.x,raw.boat.z)){s.boat={x:raw.boat.x,z:raw.boat.z,heading:Number.isFinite(raw.boat.heading)?raw.boat.heading:0};}Object.assign(s.boat,recoverBoat(s.boat.x,s.boat.z));
+// Legacy ground bananas and tree/reward food were independent stocks. Merge only
+// the unspent ground stock once; collected IDs remain discovery history.
+if(raw.inventoryVersion!==1)s.food.banana+=Math.max(0,countExplore(s,'fruit')-s.craft.spent.fruit);
+for(const kind of ['banana','coconut'])s.foodTotal[kind]=Math.max(s.food[kind]+(kind==='banana'?s.craft.spent.fruit:0),raw.inventoryVersion===1?inventoryCount(raw.foodTotal?.[kind]):0);
+return s;}
+// Food is the single spendable stock. Collection history never gets spent.
+function inventoryCount(value){const n=Number(value);return Number.isFinite(n)?Math.max(0,Math.min(1000000,Math.floor(n))):0;}
+export function addFood(world,kind,amount=1){
+ if(!['banana','coconut'].includes(kind)||!Number.isInteger(amount)||amount<=0)return false;
+ world.food??={banana:0,coconut:0};world.foodTotal??={...world.food};
+ if(world.food[kind]+amount>9999)return false;
+ world.food[kind]+=amount;world.foodTotal[kind]=inventoryCount(world.foodTotal[kind])+amount;return true;
+}
+export function spendFood(world,kind,amount=1){
+ if(!['banana','coconut'].includes(kind)||!Number.isInteger(amount)||amount<=0||(world.food?.[kind]||0)<amount)return false;
+ world.food[kind]-=amount;return true;
+}
+export function harvestFood(world,tree){
+ if(!tree||!['banana','coconut'].includes(tree.kind)||!new RegExp('^'+tree.kind+'\\d+$').test(tree.id))return false;
+ const n=world.harvested[tree.id]||0;
+ if(n>=tree.fruits.length||!addFood(world,tree.kind))return false;
+ world.harvested[tree.id]=n+1;return true;
+}
+export function collectExplore(s,id){if(!exploreItems.some(x=>x.id===id)||s.collected.includes(id))return false;if(exploreItems.find(x=>x.id===id).kind==='fruit'&&!addFood(s,'banana',1))return false;s.collected.push(id);return true;}
 export function badgeExplore(s,id){if(s.badges.includes(id))return false;s.badges.push(id);return true;}
 export function countExplore(s,kind){return s.collected.filter(id=>exploreItems.find(x=>x.id===id)?.kind===kind).length;}
 // Small navigation grid: a tap walks around cottages instead of through them.

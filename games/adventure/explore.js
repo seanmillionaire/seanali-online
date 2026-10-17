@@ -1,16 +1,16 @@
-import {createRealms} from './realms.js?v=72';
-import {createJourney} from './journey.js?v=72';
-import {oceanModel} from './ocean-models.js?v=38';
-import {createIslandLife} from './island-life.js?v=47';
-import {createWorldStory,islandStories} from './world-story.js?v=72';
-import {REGION_PROJECTS,regionForPosition,missionStatus,restoreRegions,createRegionProjectWorld} from './region-projects.js?v=72';
-import {createWorldMap} from './world-map.js?v=62';
-import {createWildlifeFriends} from './wildlife-friends.js?v=72';
-import {createHouseInteriors} from './house-interiors.js?v=60';
-import {createPizzaCity} from './pizza-city.js?v=68';
-import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=72';
-import {buildIsland} from './entrance.js?v=72';
-import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,sharkPatrol,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=72';
+import {createRealms} from './realms.js?v=73';
+import {createJourney} from './journey.js?v=73';
+import {oceanModel} from './ocean-models.js?v=73';
+import {createIslandLife} from './island-life.js?v=73';
+import {createWorldStory,islandStories} from './world-story.js?v=73';
+import {REGION_PROJECTS,regionForPosition,missionStatus,restoreRegions,createRegionProjectWorld} from './region-projects.js?v=73';
+import {createWorldMap} from './world-map.js?v=73';
+import {createWildlifeFriends} from './wildlife-friends.js?v=73';
+import {createHouseInteriors} from './house-interiors.js?v=73';
+import {createPizzaCity} from './pizza-city.js?v=73';
+import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=73';
+import {buildIsland} from './entrance.js?v=73';
+import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,sharkPatrol,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=73';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);syncWallet(state);
  let disposed=false,engine=null,control=null,friendSystem=null,houseSystem=null,wildLife=null,cityLife=null,workshop=null,regionWorld=null,carDriving=false,carSpeed=0,mountId=null,birdAltitude=0,birdTarget=0,birdLanding=false,near=null,ride=s.flight?1:0,flightY=s.flight||0,flightTarget=s.flight||0,flightVX=0,flightVZ=0,route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;
@@ -139,7 +139,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  refresh();
  const buttonUpdates=new Map();
  function setText(e,t){if(e.tagName==='BUTTON')buttonUpdates.set(e,t);else if(e.textContent!==t)e.textContent=t;}
- function refresh(){paintButton(craftButton,'🎒 '+say('Construir','Build')+' '+(s.craft?.built?.length||0)+'/7');paintButton(walletButton,'🪙 '+coinBalance(state));walletButton.setAttribute('aria-label',say('Mis monedas y tienda: ','My coins and shop: ')+coinBalance(state));const lessonCount=Object.keys({...state.completed,...state.islandLessons?.completed}).length;const available=workshop?.inventory().available;bag.textContent=`${lessonCount?`✦ ${lessonCount}/48 · `:''}🎒 🐚 ${available?.shell??countExplore(s,'shell')}   🍌 ${available?.fruit??countExplore(s,'fruit')}   💎 ${available?.islandTreasure??countExplore(s,'islandTreasure')}`;}
+ function refresh(){paintButton(craftButton,'🎒 '+say('Construir','Build')+' '+(s.craft?.built?.length||0)+'/7');paintButton(walletButton,'🪙 '+coinBalance(state));walletButton.setAttribute('aria-label',say('Mis monedas y tienda: ','My coins and shop: ')+coinBalance(state));const lessonCount=Object.keys({...state.completed,...state.islandLessons?.completed}).length;const available=workshop?.inventory().available;bag.textContent=`${lessonCount?`✦ ${lessonCount}/48 · `:''}🎒 🐚 ${available?.shell??countExplore(s,'shell')}   🍌 ${available?.fruit??s.food.banana}   💎 ${available?.islandTreasure??countExplore(s,'islandTreasure')}`;}
  function tell(a,b,force=true){guide(say(a,b),force);message.textContent=say(a,b);message.classList.add('show');messageTime=4.5;}
  function reward(id,a,b){if(badgeExplore(s,id)){const coins=earnCoins(state,id);if(coins){joy.effect('coin');a+=` +${coins} monedas.`;b+=` +${coins} coins.`;}joy.effect('finish');control?.spark(s.x,s.z,22);save();refresh();}tell(a,b);}
  function birdMount(){return mountId==='mila'||mountId==='ollie';}
@@ -180,7 +180,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  }
  if(!near)return;joy.effect('friend');const k=near.id;
   if(k==='pip'){s.pet=!s.pet;const coins=s.pet?earnCoins(state,'pet'):0;refresh();save();tell(s.pet?`¡Pip viene contigo!${coins?' +3 monedas por cuidarlo.':''}`:'Pip te espera en el puerto.',s.pet?`Pip is coming with you!${coins?' +3 coins for caring for Pip.':''}`:'Pip will wait at the harbor.');}
-  if(k==='mila'){if(countExplore(s,'fruit')===5)reward('picnic','¡Cinco racimos de plátanos! Picnic preparado. ¡Sombrero de fiesta desbloqueado!','Five bunches of bananas! Picnic ready. Party hat unlocked!');else tell(`¿Un picnic? Busca cinco racimos de plátanos: ${countExplore(s,'fruit')}/5.`,`Picnic time? Find five bunches of bananas: ${countExplore(s,'fruit')}/5.`);}
+  if(k==='mila'){if(s.foodTotal.banana>=5)reward('picnic','¡Cinco racimos de plátanos! Picnic preparado. ¡Sombrero de fiesta desbloqueado!','Five bunches of bananas! Picnic ready. Party hat unlocked!');else tell(`¿Un picnic? Busca cinco racimos de plátanos: ${s.foodTotal.banana}/5.`,`Picnic time? Find five bunches of bananas: ${s.foodTotal.banana}/5.`);}
   if(k==='ollie'){if(countExplore(s,'glow')===5)reward('glow','¡La selva brilla! Tus luciérnagas te siguen.','The grove is glowing! Your fireflies follow you.');else tell('¡Las luciérnagas juegan al escondite! Encuentra las cinco luces del bosque.','The fireflies are playing hide-and-seek! Find five lights in the grove.');}
   if(k==='luna'){music=[];tell('¡Haz bailar el arcoíris! Pisa las notas: rosa, dorada, azul.','Make the rainbow dance! Step on pink, gold, blue.');control?.demo();}
   if(k==='garden'){s.flowers=Math.min(6,s.flowers+1);const coins=earnCoins(state,'flower-'+s.flowers);refresh();control?.bloom(s.flowers);save();joy.effect('correct');if(s.flowers===6)reward('garden','¡Un jardín para las mariposas!','A garden for the butterflies!');else tell(`¡Una flor! +${coins} monedas por cuidarla.`,`A flower! +${coins} coins for caring for it.`);}
@@ -286,9 +286,10 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   panel.append(close,makeEl('h2','',say('🎒 Mi mochila de construir','🎒 My building bag')),
    makeEl('p','',say('Recoge materiales en las islas, construye cosas nuevas y vuelve a jugar con ellas.','Collect supplies across the islands, build things, and come back to play with them.')));
   if(!workshop){panel.append(makeEl('p','',say('Cargando talleres…','Loading workshops…')));return;}
+  panel.append(makeEl('p','',say('🍌 Comer, construir y vender usan los mismos plátanos','🍌 Eating, building and trading use the same bananas')));
   const inv=workshop.inventory(),stock=makeEl('div','craft-resource-list');
   for(const [kind,meta]of Object.entries(RESOURCE_INFO))stock.append(makeEl('span','craft-resource',meta.icon+' '+(es?meta.es:meta.en)+' '+inv.available[kind]+'/'+inv.total[kind]));
-  panel.append(stock,makeEl('h3','',say('🏗️ Construye en cada destino','🏗️ Build something on every island')));
+  panel.append(makeEl('h3','',say('🎒 Disponibles / recogidos','🎒 Available / collected')),stock,makeEl('h3','',say('🏗️ Construye en cada destino','🏗️ Build something on every island')));
   const cards=makeEl('div','craft-recipe-grid');
   for(const r of BUILD_RECIPES){
    const built=workshop.isBuilt(r.id),here=workshop.nearest(s.x,s.z,5)?.id===r.id;
@@ -311,7 +312,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   }
   panel.append(cards);
  }
- function showFood(){if(friendSystem?.isOpen())friendSystem.close();if(adventureMap.isOpen())adventureMap.close(false);setHelpers(false);panel.replaceChildren();panel.hidden=false;blur();targetPoint=null;panel.append(btn('×','panel-close',()=>{panel.hidden=true;}),makeEl('h2','',say('Mi comida','My food')),makeEl('p','',say('Come y crece','Eat and grow')+' · '+s.growth.toFixed(1)+'×'));for(const kind of ['coconut','banana']){const icon=kind==='coconut'?'🥥':'🍌',b=btn(icon+' × '+s.food[kind]+' · '+say('Comer','Eat'),'discover-place',()=>{if(!s.food[kind])return;s.food[kind]--;eating=2;host.classList.add("snack-moment");energy=30;s.journey.meals++;s.growth=Math.min(6,s.growth+.45);control?.snack(kind);save();panel.hidden=true;joy.effect('correct');tell(icon+' ¡Ñam! ↗ '+s.growth.toFixed(1)+'×',icon+' Yum! ↗ '+s.growth.toFixed(1)+'×');});b.disabled=!s.food[kind];panel.append(b);}if(s.growth>1)panel.append(btn(say('↘ Volver a pequeña','↘ Little again'),'discover-place',()=>{s.growth=1;save();panel.hidden=true;}));}
+ function showFood(){if(friendSystem?.isOpen())friendSystem.close();if(adventureMap.isOpen())adventureMap.close(false);setHelpers(false);panel.replaceChildren();panel.hidden=false;blur();targetPoint=null;panel.append(btn('×','panel-close',()=>{panel.hidden=true;}),makeEl('h2','',say('Mi comida','My food')),makeEl('p','',say('🍌 Comparte tus plátanos: comer · construir · mercado','🍌 Share your bananas: eat · build · market')),makeEl('p','',say('Come y crece','Eat and grow')+' · '+s.growth.toFixed(1)+'×'));for(const kind of ['coconut','banana']){const icon=kind==='coconut'?'🥥':'🍌',b=btn(icon+' × '+s.food[kind]+' · '+say('Comer','Eat'),'discover-place',()=>{if(!spendFood(s,kind))return;eating=2;host.classList.add("snack-moment");energy=30;s.journey.meals++;s.growth=Math.min(6,s.growth+.45);control?.snack(kind);save();refresh();panel.hidden=true;joy.effect('correct');tell(icon+' ¡Ñam! ↗ '+s.growth.toFixed(1)+'×',icon+' Yum! ↗ '+s.growth.toFixed(1)+'×');});b.disabled=!s.food[kind];panel.append(b);}if(s.growth>1)panel.append(btn(say('↘ Volver a pequeña','↘ Little again'),'discover-place',()=>{s.growth=1;save();panel.hidden=true;}));}
  function showShop(){if(friendSystem?.isOpen())friendSystem.close();if(adventureMap.isOpen())adventureMap.close(false);panel.replaceChildren();panel.hidden=false;blur();targetPoint=null;const close=btn('×','panel-close',()=>{panel.hidden=true;canvas.focus({preventScroll:true});});close.setAttribute('aria-label',say('Cerrar','Close'));panel.append(close,makeEl('h2','',say('Mis monedas','My coins')),makeEl('p','',say(`Tienes ${coinBalance(state)} monedas de la isla.`,`You have ${coinBalance(state)} island coins.`)),makeEl('p','',say('Ayuda a un amigo: 10. Cuida una flor: 2. Prepara el picnic, ilumina el bosque o crea música: 15. Cada buena acción da monedas una vez.','Help a friend: 10. Care for a flower: 2. Prepare the picnic, light the grove, or make music: 15. Each good deed earns coins once.')));const list=makeEl('div','discover-grid');for(const item of islandShop){const owned=state.wallet.items.includes(item.id);const buy=btn((es?item.es:item.en)+' · '+(owned?say('Poner','Wear'):item.cost+' 🪙'),'discover-place',()=>{if(!buyIslandItem(state,item.id))return;save();refresh();control?.dress();joy.effect('coin');showShop();});buy.disabled=!owned&&coinBalance(state)<item.cost;list.append(buy);}panel.append(list);close.focus();guide(say('Tus buenas acciones te dan monedas. Puedes ahorrar o elegir un sombrero.','Your good deeds earn coins. You can save them or choose a hat.'),true);}
  function travelTo(p){
   if(carDriving)exitCar();
@@ -402,18 +403,18 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    impactLeft=1.2;impactPower=Math.min(1,(s.growth-1)/5);impactX=s.x;impactZ=s.z;
    impactWave.position.set(s.x,height(s.x,s.z)+.12,s.z);joy.effect('giant-stomp');
    let gathered=0;
-   for(const tree of foodTrees){const n=s.harvested[tree.id]||0;if(tree.kind!=='coconut'||Math.hypot(tree.x-s.x,tree.z-s.z)>3+s.growth||n>=tree.fruits.length||s.food.coconut>=99||gathered>=4)continue;
-    const pos=tree.fruits[n].getWorldPosition(new T.Vector3());tree.fruits[n].visible=false;s.harvested[tree.id]=n+1;s.food.coconut++;gathered++;
+   for(const tree of foodTrees){const n=s.harvested[tree.id]||0;if(tree.kind!=='coconut'||Math.hypot(tree.x-s.x,tree.z-s.z)>3+s.growth||n>=tree.fruits.length||s.food.coconut>=9999||gathered>=4)continue;
+    const pos=tree.fruits[n].getWorldPosition(new T.Vector3());if(!harvestFood(s,tree))continue;tree.fruits[n].visible=false;gathered++;
     if(motion()&&particles.length<70){const m=make(ball,fallenCoconut,pos.x,pos.y,pos.z,.24);m.name='Shaken coconut';particles.push({m,vx:(tree.x-s.x)*.5,vz:(tree.z-s.z)*.5,vy:2,life:2,size:.2});}
    }
    if(motion())spark(s.x,s.z,22,height(s.x,s.z)+.3);
    tell(gathered?'💥 ¡BUM! 🥥 +'+gathered:'💥 ¡BUM!',gathered?'💥 BOOM! 🥥 +'+gathered:'💥 BOOM!');
-   if(gathered)save();
+   if(gathered){save();refresh();}
   }
   function boatNear(){return !inside&&!ride&&Math.hypot(s.x-s.boat.x,s.z-s.boat.z)<3.1;}
   function board(){if(!boatNear())return;bodyScale=1;Object.assign(s.boat,recoverBoat(s.boat.x,s.boat.z));boating=true;swimming=false;boatSpeed=0;s.x=s.boat.x;s.z=s.boat.z;targetPoint=null;route=[];blur();joy.boat?.(true,0);reward('boat','⛵ ¡Tú conduces!','⛵ You’re the captain!');}
   function disembark(){if(!boating)return;boating=false;boatSpeed=0;joy.boat?.(false);const dock=Math.hypot(s.boat.x-6.5,s.boat.z-16)<3;s.x=dock?4:s.boat.x+Math.cos(s.boat.heading)*1.5;s.z=dock?16:s.boat.z-Math.sin(s.boat.heading)*1.5;const edge=Math.max(1,Math.hypot(s.x/169.8,s.z/144.8));s.x/=edge;s.z/=edge;targetPoint=null;blur();save();}
-  function harvest(){if(!foodNear)return;const tree=foodNear,n=s.harvested[tree.id]||0;if(n>=tree.fruits.length||s.food[tree.kind]>=99)return;s.harvested[tree.id]=n+1;s.food[tree.kind]++;tree.fruits[n].visible=false;spark(s.x,s.z,8);joy.effect('correct');tell(tree.kind==='coconut'?'🥥 +1 · Toca 🥥 🍌 para comer':'🍌 +1 · Toca 🥥 🍌 para comer',tree.kind==='coconut'?'🥥 +1 · Tap 🥥 🍌 to eat':'🍌 +1 · Tap 🥥 🍌 to eat');save();}
+  function harvest(){if(!foodNear)return;const tree=foodNear,n=s.harvested[tree.id]||0;if(!harvestFood(s,tree))return;tree.fruits[n].visible=false;spark(s.x,s.z,8);joy.effect('correct');tell(tree.kind==='coconut'?'🥥 +1 · Toca 🥥 🍌 para comer':'🍌 +1 · Toca 🥥 🍌 para comer',tree.kind==='coconut'?'🥥 +1 · Tap 🥥 🍌 to eat':'🍌 +1 · Tap 🥥 🍌 to eat');save();refresh();}
   const picnic=new T.Group();scene.add(picnic);const picnicSpot=islandPoint('wilds',-6,-26);picnic.position.set(picnicSpot.x,height(picnicSpot.x,picnicSpot.z)+.08,picnicSpot.z);make(box,pink,0,0,0,2,.04,1.6,picnic);for(let i=0;i<5;i++)tropical.card(4+i%4,(i%3)*.5-.5,.12,Math.floor(i/3)*.5-.25,.4,.45,picnic);
   const rainbow=new T.Group();const rainbowSpot=islandPoint('crystalCove',9,48);rainbow.position.set(rainbowSpot.x,height(rainbowSpot.x,rainbowSpot.z)+2,rainbowSpot.z);scene.add(rainbow);['#f58da6','#f7b875','#f6de7e','#a3d49b','#8bcbd9','#b6a0e1'].forEach((c,i)=>make(geometry(new T.TorusGeometry(3-i*.16,.1,6,40,Math.PI)),mat(c),0,0,0,1,1,1,rainbow));
   const wish=new T.Group();scene.add(wish);wish.position.set(-1,height(-1,-5)+10,-5);for(let i=0;i<8;i++){const a=i/8*Math.PI*2;make(ball,gold,Math.sin(a)*2,Math.cos(a)*2,0,.15,.15,.15,wish);}wish.visible=false;
@@ -611,7 +612,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
     const icons={islet:'🦋',wilds:'🌴',coconutCoast:'🏖️',sunset:'🌋',crystalCove:'🐬',pizzaCity:'🏙️'};
     return land?(icons[land.id]+' '+(es?land.es:land.en)):'🌊 '+say('¡A explorar!','Explore!');
    })());const region=near?lessonRegions[near.id]:undefined;lesson.hidden=region===undefined||!!ride;setText(lesson,region===undefined?'':say('✦ Aventura con ','✦ Adventure with ')+({pip:'Pip',mila:'Mila',ollie:'Ollie',luna:'Luna',garden:say('el jardín','the garden'),beacon:say('el faro','the lighthouse')}[near.id]));ponytail.rotation.x=Math.sin(step)*Math.min(len,1)*.16;
-   for(let i=collectibles.length-1;i>=0;i--){const c=collectibles[i];if(motion()&&c.item.kind==='glow'){c.m.position.y=height(c.item.x,c.item.z)+.6+Math.sin(time*2+i)*.15;}if(!ride&&!inside&&!boating&&!airborne&&Math.hypot(s.x-c.item.x,s.z-c.item.z)<.9){if(collectExplore(s,c.item.id)){earnCoins(state,c.item.id);scene.remove(c.m);collectibles.splice(i,1);spark(s.x,s.z);joy.note(countExplore(s,c.item.kind)%5,.18);tell(`${countExplore(s,c.item.kind)} · ${c.item.es} / ${c.item.en}  ✦`,`${countExplore(s,c.item.kind)} · ${c.item.en} / ${c.item.es}  ✦`,false);save();refresh();}}}
+   for(let i=collectibles.length-1;i>=0;i--){const c=collectibles[i];if(motion()&&c.item.kind==='glow'){c.m.position.y=height(c.item.x,c.item.z)+.6+Math.sin(time*2+i)*.15;}if(!ride&&!inside&&!boating&&!airborne&&Math.hypot(s.x-c.item.x,s.z-c.item.z)<.9){if(collectExplore(s,c.item.id)){earnCoins(state,c.item.id);scene.remove(c.m);collectibles.splice(i,1);spark(s.x,s.z);joy.note(countExplore(s,c.item.kind)%5,.18);tell(`+1 · ${c.item.es} · 🎒 ${workshop.inventory().available[c.item.kind]}`,`+1 · ${c.item.en} · 🎒 ${workshop.inventory().available[c.item.kind]}`,false);save();refresh();}}}
    let padIndex=pads.findIndex(p=>Math.hypot(s.x-p.x,s.z-p.z)<.75);if(padIndex!==lastPad&&padIndex>=0&&!ride&&!inside){joy.note([0,2,4][padIndex],.4);spark(pads[padIndex].x,pads[padIndex].z,8);music.push(padIndex);music=music.slice(-3);if(music.join(',')==='0,1,2')reward('song','¡Inventaste la canción del arcoíris!','You made the rainbow song!');}lastPad=padIndex;
    butterflies.forEach((b,i)=>{if(active)b.cooldown=Math.max(0,b.cooldown-dt);b.g.visible=b.cooldown<6.5;const {x:cx,z:cz}=islandPoint('islet',24+Math.sin(i*2.4)*(i<5?.25:2.6),-8+Math.cos(i*2.4)*(i<5?.2:1.9));const t=motion()?time:0;b.g.position.set(cx+Math.sin(t*.6+i)*1.4,height(cx,cz)+1.5+Math.cos(t*.8+i)*.35,cz+Math.cos(t*.6+i)*1.1);b.wings.forEach((w,j)=>w.rotation.y=motion()?Math.sin(time*9)*(j?1:-1)*.8:0);});
    const closest=butterflies.filter(b=>b.g.visible&&b.cooldown===0&&Math.hypot(s.x-b.g.position.x,s.z-b.g.position.z)<3).sort((a,b)=>a.g.position.distanceTo(avatar.position)-b.g.position.distanceTo(avatar.position))[0];const nearbyBubble=bubbles.some(b=>Math.hypot(s.x-b.m.position.x,s.z-b.m.position.z)<3);catchButton.hidden=(!closest&&!nearbyBubble)||!!ride||inside||boating||swimming||airborne;setText(catchButton,closest?say('🦋 Atrapar','🦋 Catch'):say('🫧 ¡Pop!','🫧 Pop'));catchRing.visible=!!closest&&!catchButton.hidden;if(active)netTime=Math.max(0,netTime-dt);net.visible=netTime>0;net.rotation.z=Math.sin(netTime*5)*.6;if(catchRing.visible){catchRing.position.copy(closest.g.position);catchRing.lookAt(camera.position);catchRing.scale.setScalar(.9);}

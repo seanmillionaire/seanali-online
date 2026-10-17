@@ -1,4 +1,4 @@
-import {islandPoint} from './explore-state.js?v=72';
+import {addFood,islandPoint} from './explore-state.js?v=73';
 // Tiny, physical story puzzles. These never gate movement or mark a lesson complete.
 export const islandStories=[
  {id:'shells',region:'harbor',x:2,z:7,friend:'🐢',es:'Conchas de Playa Gorgona',en:'Gorgona Shell Trail',hintEs:'Pisa las conchas en orden',hintEn:'Step on shells in order',icons:['1 🐚','2 🐚','3 🐚'],order:[0,1,2],color:'#f4cc78',winEs:'¡Pip tiene un camino!',winEn:'Pip has a path!'},
@@ -33,7 +33,7 @@ export function createWorldStory({T,scene,host,state,height,save,joy,spark,refre
   for(const st of stations){const done=progress[st.q.id]===st.q.order.length;st.light.visible=done;st.tiles.forEach(t=>{t.label.visible=!done&&st===nearby&&visible;t.mesh.material.emissiveIntensity=done?.55:.12;t.label.position.y=height(t.x,t.z)+2.6+(motion()?Math.sin(time*2)*.06:0);});}
   if(card.hidden){lastTile='';return;}
   const q=current.q,n=progress[q.id],tile=current.tiles.findIndex(t=>Math.hypot(s.x-t.x,s.z-t.z)<.65),key=tile<0?'':q.id+':'+tile;
-  if(key&&key!==lastTile&&n<q.order.length){const result=stepStory(progress,q.id,tile);if(result==='retry'){joy.effect('tap');hint.textContent=pick('Busca ','Find ')+q.icons[q.order[n]];}else{joy.note?.(q.order[n]*2,.25);spark(s.x,s.z,result==='complete'?24:8);save();lastView='';if(result==='complete'){joy.effect('finish');if(q.id==='picnic')s.food.banana=Math.min(99,s.food.banana+3);if(q.id==='seed'||q.id==='care')s.flowers=Math.min(6,s.flowers+1);refresh(q.id);save();}}}
+  if(key&&key!==lastTile&&n<q.order.length){const result=stepStory(progress,q.id,tile);if(result==='retry'){joy.effect('tap');hint.textContent=pick('Busca ','Find ')+q.icons[q.order[n]];}else{joy.note?.(q.order[n]*2,.25);spark(s.x,s.z,result==='complete'?24:8);save();lastView='';if(result==='complete'){joy.effect('finish');if(q.id==='picnic')addFood(s,'banana',3);if(q.id==='seed'||q.id==='care')s.flowers=Math.min(6,s.flowers+1);refresh(q.id);save();}}}
   lastTile=key;const view=q.id+':'+progress[q.id]+':'+(nextLesson(q)||'done');if(view!==lastView){draw(current);lastView=view;}
  },dispose(){host.classList.remove('story-nearby');card.remove();scene.remove(group);geometry.dispose();orbGeometry.dispose();materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());}};
 }
