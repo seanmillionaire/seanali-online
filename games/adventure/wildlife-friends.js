@@ -243,5 +243,5 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
   directory.textContent='🫶 '+say('AMIGOS','FRIENDS')+' '+friends.completed.length+'/'+islandFriends.length;
  }
  function dispose(){close();directory.remove();labels.forEach(l=>l.remove());for(const n of nodes.values())scene.remove(n.g);}
- return {nearest,isNearby,open,openDirectory,update,hit,isOpen:()=>opened!==null,dispose,hasCompanion:id=>friends.companion===id};
+ return {nearest,isNearby,open,openDirectory,close,update,hit,isOpen:()=>opened!==null,dispose,hasCompanion:id=>friends.companion===id};
 }
