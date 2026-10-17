@@ -236,3 +236,31 @@ body[data-scene="islandQuest"] .friend-peek,body[data-scene="islandQuest"] .frie
 }
 @media(max-height:550px){.friend-peek{top:175px;right:12px}.friend-panel{top:66px;max-height:calc(100svh - 72px)}}
 @media(prefers-reduced-motion:reduce){.friend-hero-face,.friend-dance,.friend-wiggle,.friend-bounce{animation:none}.friend-beach-ball{transition:none}}
+
+
+/* House visit mode: visible entrance outside, uncluttered controls inside. */
+.house-door-action{
+ position:absolute;top:310px;right:12px;z-index:24;
+ border:2px solid #fff2ba;border-radius:17px;background:#ffe7a3;color:#315041;
+ padding:11px 14px;min-height:49px;max-width:170px;
+ box-shadow:0 5px 14px #0e4f4b60;font-size:15px;font-weight:900;line-height:1.2;
+ cursor:pointer;touch-action:manipulation;
+}
+.house-door-action[hidden]{display:none!important}
+.house-door-action:focus-visible{outline:4px solid #347eb2;outline-offset:3px}
+.inside-cottage .house-door-action,
+.inside-cottage .island-map-mini,
+.inside-cottage .friend-peek,
+.inside-cottage .friend-world-label,
+.inside-cottage .island-goal,
+.inside-cottage .explore-hint{
+ display:none!important
+}
+.inside-cottage .explore-location{
+ background:#fff1d2;color:#365344;border:2px solid #eecb8d;
+}
+@media(max-width:780px){
+ .house-door-action{top:294px;right:10px;font-size:13px;min-height:47px;max-width:152px;padding:9px}
+ .inside-cottage .explore-controls{max-width:65vw}
+}
+@media(max-height:550px){.house-door-action{top:218px;right:10px}}
