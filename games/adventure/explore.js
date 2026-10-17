@@ -1,14 +1,14 @@
-import {createRealms} from './realms.js?v=60';
-import {createJourney} from './journey.js?v=60';
+import {createRealms} from './realms.js?v=62';
+import {createJourney} from './journey.js?v=62';
 import {oceanModel} from './ocean-models.js?v=38';
 import {createIslandLife} from './island-life.js?v=47';
-import {createWorldStory} from './world-story.js?v=60';
-import {createWorldMap} from './world-map.js?v=60';
-import {createWildlifeFriends} from './wildlife-friends.js?v=60';
+import {createWorldStory} from './world-story.js?v=62';
+import {createWorldMap} from './world-map.js?v=62';
+import {createWildlifeFriends} from './wildlife-friends.js?v=62';
 import {createHouseInteriors} from './house-interiors.js?v=60';
 import {createPizzaCity} from './pizza-city.js?v=60';
-import {buildIsland} from './entrance.js?v=60';
-import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,sharkPatrol,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=60';
+import {buildIsland} from './entrance.js?v=62';
+import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,sharkPatrol,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=62';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);syncWallet(state);
  let disposed=false,engine=null,control=null,friendSystem=null,houseSystem=null,wildLife=null,cityLife=null,carDriving=false,carSpeed=0,mountId=null,birdAltitude=0,birdTarget=0,birdLanding=false,near=null,ride=s.flight?1:0,flightY=s.flight||0,flightTarget=s.flight||0,flightVX=0,flightVZ=0,route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;
