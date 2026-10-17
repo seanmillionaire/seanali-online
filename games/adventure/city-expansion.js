@@ -35,6 +35,27 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  const palette=['#e9b29c','#93c5b9','#e8d39e','#b7b4d8','#f2c1be','#a9cfbd'].map(c=>mat(c,{map:surfaces?.plaster}));
  const roof=mat('#bb745d',{map:surfaces?.roof});
  const makeObj=(geo,m,x,y,z,w,h,d,parent=group)=>make(geo,m,x,y,z,w,h,d,parent);
+ // Aggregate thousands of repeated wall/window/road-mark transforms into a
+ // handful of GPU instanced draws rather than one WebGL draw per object.
+ const batches=new Map();
+ function decorate(geo,m,x,y,z,w,h,d){
+  if(typeof T.InstancedMesh!=='function'||typeof T.Object3D!=='function'){
+   const obj=makeObj(geo,m,x,y,z,w,h,d);obj.castShadow=false;return;
+  }
+  let byMat=batches.get(geo);if(!byMat){byMat=new Map();batches.set(geo,byMat);}
+  let transforms=byMat.get(m);if(!transforms){transforms=[];byMat.set(m,transforms);}
+  transforms.push({x,y,z,w,h,d});
+ }
+ function flushDecor(){
+  if(typeof T.InstancedMesh!=='function'||typeof T.Object3D!=='function')return;
+  const dummy=new T.Object3D();
+  for(const [geo,byMat]of batches)for(const [material,positions]of byMat){
+   const instances=new T.InstancedMesh(geo,material,positions.length);
+   instances.name='Casco Viejo batched architecture';instances.castShadow=false;instances.receiveShadow=true;
+   positions.forEach((v,i)=>{dummy.position.set(v.x,v.y,v.z);dummy.scale.set(v.w,v.h,v.d);dummy.rotation.set(0,0,0);dummy.updateMatrix();instances.setMatrixAt(i,dummy.matrix);});
+   instances.instanceMatrix.needsUpdate=true;group.add(instances);
+  }
+ }
  const markers=[],sprites=[];
  function icon(parent,emoji,x,y,z,size=2.3){
   const canvas=document.createElement('canvas');canvas.width=canvas.height=128;
@@ -75,11 +96,11 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  // Painted lines and crossings: repeated street detail without large textures.
  for(const dx of xs)for(let k=-34;k<=34;k+=9){
   const x=-100+dx,z=-74+k;if((dx/58)**2+(k/48)**2>.78)continue;
-  const mark=makeObj(box,stripe,x,height(x,z)+.22,z,.11,.035,2.6);mark.castShadow=false;
+  decorate(box,stripe,x,height(x,z)+.22,z,.11,.035,2.6);
  }
  for(const dz of zs)for(let k=-43;k<=43;k+=10){
   const x=-100+k,z=-74+dz;if((k/58)**2+(dz/48)**2>.78)continue;
-  const mark=makeObj(box,stripe,x,height(x,z)+.22,z,2.6,.035,.11);mark.castShadow=false;
+  decorate(box,stripe,x,height(x,z)+.22,z,2.6,.035,.11);
  }
  // Seven neighborhoods, ~50 distinct buildings with color and height variation.
  let buildingCount=0;
@@ -94,27 +115,28 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
   const y=height(x,z),w=5.1+(buildingCount%3)*.6,d=5.4+(buildingCount%2)*.55,
    floors=2+(buildingCount%4),h=floors*2.15;
   const walls=palette[buildingCount%palette.length],top=buildingCount%4===0?roof:stone;
-  const body=makeObj(box,walls,x,y+h/2,z,w,h,d);body.name='Casco Viejo townhouse '+buildingCount;
-  makeObj(box,top,x,y+h+.19,z,w+.4,.38,d+.4);
+  decorate(box,walls,x,y+h/2,z,w,h,d);
+  decorate(box,top,x,y+h+.19,z,w+.4,.38,d+.4);
   for(let floor=0;floor<floors;floor++)for(const side of [-1,1]){
-   const win=makeObj(box,glass,x+side*w*.27,y+1.30+floor*2.15,z+d*.508,.78,1.05,.06);win.castShadow=false;
-   const trim=makeObj(box,wood,x+side*w*.27,y+.82+floor*2.15,z+d*.542,.92,.09,.10);trim.castShadow=false;
+   decorate(box,glass,x+side*w*.27,y+1.30+floor*2.15,z+d*.508,.78,1.05,.06);
+   decorate(box,wood,x+side*w*.27,y+.82+floor*2.15,z+d*.542,.92,.09,.10);
   }
-  makeObj(box,wood,x,y+.85,z+d*.55,1.15,1.7,.10);
-  if(buildingCount%3===0){const balcony=makeObj(box,stone,x,y+2.1,z+d*.72,w*.65,.14,.75);balcony.castShadow=false;}
+  decorate(box,wood,x,y+.85,z+d*.55,1.15,1.7,.10);
+  if(buildingCount%3===0)decorate(box,stone,x,y+2.1,z+d*.72,w*.65,.14,.75);
   buildingCount++;
  }
  // Seaside walkway, lamps and benches make the outskirts worth exploring.
  for(let i=0;i<30;i++){
   const theta=i*2*Math.PI/30,x=-100+Math.cos(theta)*50,z=-74+Math.sin(theta)*41;
   const y=height(x,z);
-  const lamp=makeObj(cylinder,dark,x,y+2,z,.10,4,.10);lamp.castShadow=false;
-  const glow=makeObj(ball,gold,x,y+4.20,z,.35,.40,.35);glow.castShadow=false;
+  decorate(cylinder,dark,x,y+2,z,.10,4,.10);
+  decorate(ball,gold,x,y+4.20,z,.35,.40,.35);
   if(i%3===0){
-   const seat=makeObj(box,wood,x,y+.63,z+.9,2.2,.22,.55);seat.castShadow=false;
-   for(const q of [-.8,.8])makeObj(cylinder,wood,x+q,y+.34,z+.9,.08,.65,.08);
+   decorate(box,wood,x,y+.63,z+.9,2.2,.22,.55);
+   for(const q of [-.8,.8])decorate(cylinder,wood,x+q,y+.34,z+.9,.08,.65,.08);
   }
  }
+ flushDecor();
  // Independence Plaza: fountain and animated centerpiece.
  const plaza=coord(1,12),fountain=new T.Group();fountain.position.set(plaza.x,height(plaza.x,plaza.z),plaza.z);group.add(fountain);
  makeObj(cylinder,stone,0,.38,0,3.8,.7,3.8,fountain);
@@ -329,6 +351,6 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
   return '🏁 '+a.rallyWins+'   ⚽ '+a.soccerGoals+'   🏛️ '+a.museum.length+'/3';
  }
  function goal(){if(race.active)return CITY_RALLY[race.index];if(a.deliveryActive)return CITY_DELIVERY.find((_,i)=>!a.deliveries.includes(i))||null;return null;}
- function dispose(){for(const b of sprites){b.tex.dispose();b.material.dispose();}}
+ function dispose(){for(const b of sprites){b.tex.dispose();b.material.dispose();}batches.clear();}
  return {near,activityPrompt,interactAt,beginDelivery,update,status,goal,dispose,roadCount:chunks.length,buildingCount};
 }
