@@ -1,4 +1,4 @@
-import {explorePlaces,earnCoins} from './explore-state.js?v=43';
+import {explorePlaces,earnCoins} from './explore-state.js?v=55';
 import {oceanModel} from './ocean-models.js?v=38';
 import {createAnimalDetails} from './animal-details.js?v=1';
 // Repeatable, optional play with six friends in the 3D world.
