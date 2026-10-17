@@ -6,16 +6,16 @@ export const MONEY_BAGS=Array.from({length:16},(_,i)=>{
  const r=i%4===0?.62:i%3===0?.43:.77;
  return {id:'bag-'+i,x:CITY.x+Math.cos(a)*30*r,z:CITY.z+Math.sin(a)*26*r};
 });
-export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,ball,box,cylinder,cone,joy,save,refresh,tell}){
+export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,ball,box,cylinder,cone,surfaces=null,joy,save,refresh,tell}){
  const s=state.world,city=s.city,es=state.lang==='es';
  const group=new T.Group();group.name='Pizza City buildings, roads and money bags';scene.add(group);
- const asphalt=mat('#343f53',{roughness:.98}),pavement=mat('#c7d4d4'),line=mat('#f7e4a3'),white=mat('#f8f6ec'),
-  grass=mat('#629d71'),pink=mat('#e9959f'),red=mat('#d75f55'),brick=mat('#e6b9a1'),roof=mat('#ba675d'),
-  blue=mat('#6dbac6'),gold=mat('#ffe381',{emissive:'#ffd063',emissiveIntensity:.28}),wood=mat('#886755'),
+ const asphalt=mat('#404956',{map:surfaces?.asphalt,bumpMap:surfaces?.asphalt,bumpScale:.045,roughness:1}),pavement=mat('#c7d4d4',{map:surfaces?.stone,bumpMap:surfaces?.stone,bumpScale:.05}),line=mat('#f7e4a3'),white=mat('#f8f6ec'),
+  grass=mat('#629d71',{map:surfaces?.grass}),pink=mat('#e9959f'),red=mat('#d75f55'),brick=mat('#e6b9a1',{map:surfaces?.stone,bumpMap:surfaces?.stone,bumpScale:.045}),roof=mat('#ba675d',{map:surfaces?.roof,bumpMap:surfaces?.roof,bumpScale:.075}),
+  blue=mat('#6dbac6'),gold=mat('#ffe381',{emissive:'#ffd063',emissiveIntensity:.28}),wood=mat('#886755',{map:surfaces?.wood,bumpMap:surfaces?.wood,bumpScale:.065}),
   tire=mat('#282e38'),glass=mat('#a4d9e8',{metalness:.18,roughness:.27}),bagFabric=mat('#d4aa63'),drawstring=mat('#78512f');
  const piece=(geo,m,x,y,z,sx,sy,sz,parent=group)=>make(geo,m,x,y,z,sx,sy,sz,parent);
  const colorFrom=arr=>arr.map(col=>mat(col));
- const shopColors=colorFrom(['#aad4bf','#ecab7e','#b7bedf','#eadba7']);
+ const shopColors=['#aad4bf','#ecab7e','#b7bedf','#eadba7'].map(c=>mat(c,{map:surfaces?.plaster,bumpMap:surfaces?.plaster,bumpScale:.035}));
  const road=((x,z,sz,sx,rotation=0)=>{const mesh=piece(box,asphalt,x,height(x,z)+.09,z,sx,.15,sz);mesh.rotation.y=rotation;mesh.castShadow=false;return mesh;});
  // Two intersecting paved streets plus a circular seaside boulevard.
  for(let t=-34;t<=34;t+=4){
@@ -83,7 +83,7 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
  }
  // The ONE drivable car in Isla Aventura.
  const car=new T.Group();car.name='Only drivable car — Pizza City';scene.add(car);
- const carBlue=mat('#66bada',{metalness:.18,roughness:.45}),carShade=mat('#397f9d'),frontLight=mat('#ffefb8',{emissive:'#e8d479',emissiveIntensity:.5});
+ const carBlue=mat('#66bada',{metalness:.4,roughness:.31}),carShade=mat('#397f9d',{metalness:.2,roughness:.39}),frontLight=mat('#ffefb8',{emissive:'#e8d479',emissiveIntensity:.5});
  piece(box,carBlue,0,.12,0,2.15,.75,3.6,car);
  piece(box,carShade,0,.66,-.35,1.85,.78,1.65,car);
  for(const side of [-1,1]){
