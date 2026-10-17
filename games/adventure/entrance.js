@@ -264,21 +264,92 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
    }
   }
   // Transparent lagoon, a visible sandy seabed, and small irregular wave highlights.
-  const waterMaterial=new T.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{time:{value:0},daylight:{value:1}},vertexShader:`uniform float time;varying vec3 pos;void main(){vec3 p=position;p.z+=sin(p.x*.5+time*.6)*.025+cos(p.y*.7+time*.5)*.025;pos=p;gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.);}`,fragmentShader:`uniform float time;uniform float daylight;varying vec3 pos;
-float swell(vec2 p){return sin(p.x*1.7+p.y*.8+time*.8)*.45+sin(p.x*-.9+p.y*2.2-time*.65)*.3+sin(p.x*4.8+p.y*3.1+time)*.12;}
-void main(){
- vec2 p=pos.xy;float coast=length(p/vec2(20.,14.));${worldIslands.map(i=>`coast=min(coast,length((p-vec2(${i.x.toFixed(1)},${(-i.z).toFixed(1)}))/vec2(${i.rx.toFixed(1)},${i.rz.toFixed(1)})));`).join('')}float depth=smoothstep(.95,2.9,coast);
- float h=swell(p),hx=swell(p+vec2(.04,0.)),hy=swell(p+vec2(0.,.04));vec3 n=normalize(vec3((h-hx)*1.5,1.,(h-hy)*1.5));
- vec3 view=normalize(cameraPosition-vec3(p.x,-.12,-p.y));float fresnel=pow(1.-max(dot(n,view),0.),4.);
- vec3 c=mix(vec3(.12,.68,.59),vec3(.015,.19,.30),depth);c=mix(c,vec3(.55,.78,.88),fresnel*.65);
- vec3 halfSun=normalize(normalize(vec3(-.5,1.,.45))+view);float spec=pow(max(dot(n,halfSun),0.),180.);c+=vec3(1.,.88,.61)*spec*.65*(1.-smoothstep(25.,65.,length(p)));
- float caustic=pow(max(0.,sin(p.x*2.4+sin(p.y*1.5)+time*.6)*sin(p.y*2.6+sin(p.x*1.8)-time*.4)),9.);c+=vec3(.12,.22,.13)*caustic*(1.-depth);
- float edge=exp(-pow((coast-1.025)/.055,2.));float foam=smoothstep(.55,.95,sin(coast*110.-time*1.1+sin(p.x*.8)*.6));c=mix(c,vec3(.83,.95,.88),edge*foam*.45);
- c*=mix(vec3(.28,.42,.68),vec3(1.),daylight);gl_FragColor=vec4(c,mix(.42,.98,smoothstep(1.,2.2,coast)));
- #include <tonemapping_fragment>
- #include <colorspace_fragment>
-}`});
-  materials.add(waterMaterial);const water=make(geometry(new T.PlaneGeometry(750,650,64,64)),waterMaterial,0,-.12,0);water.rotation.x=-Math.PI/2;water.castShadow=false;water.receiveShadow=false;water.renderOrder=2;
+  // Layered moving water: soft vertex swell + screen-space foam/caustics.
+  // Compact shader avoids reflection render passes and protects mobile FPS.
+  const waterMaterial=new T.ShaderMaterial({
+    transparent:true,depthWrite:false,
+    uniforms:{
+      time:{value:0},daylight:{value:1},
+      wakePosition:{value:new T.Vector2(-999,-999)},
+      wakeDirection:{value:new T.Vector2(0,1)},
+      wakeStrength:{value:0}
+    },
+    vertexShader:`
+      uniform float time;
+      varying vec3 pos;
+      void main(){
+        vec3 p=position;
+        p.z+=sin(p.x*.42+p.y*.22+time*1.1)*.042
+            +cos(p.y*.38-p.x*.14+time*.75)*.035
+            +sin(p.x*.16-p.y*.26-time*.85)*.045;
+        pos=p;
+        gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.);
+      }`,
+    fragmentShader:`
+      uniform float time;
+      uniform float daylight;
+      uniform vec2 wakePosition;
+      uniform vec2 wakeDirection;
+      uniform float wakeStrength;
+      varying vec3 pos;
+      float swells(vec2 p){
+        return sin(p.x*.91+p.y*.33+time*.96)*.24
+         +sin(p.x*-.43+p.y*1.31-time*.72)*.18
+         +sin(p.x*2.22-p.y*.84+time*1.31)*.07
+         +sin(p.x*5.8+p.y*4.4-time*1.8)*.02;
+      }
+      void main(){
+        vec2 p=pos.xy;
+        float coast=length(p/vec2(20.,14.));${worldIslands.map(i=>`coast=min(coast,length((p-vec2(${i.x.toFixed(1)},${(-i.z).toFixed(1)}))/vec2(${i.rx.toFixed(1)},${i.rz.toFixed(1)})));`).join('')}
+        float depth=smoothstep(.98,2.8,coast);
+        float swell=swells(p);
+        vec3 normal=normalize(vec3(
+          (swell-swells(p+vec2(.16,0.)))*2.6,
+          1.,
+          (swell-swells(p+vec2(0.,.16)))*2.6
+        ));
+        vec3 eye=normalize(cameraPosition-vec3(p.x,-.12,-p.y));
+        float fresnel=pow(1.-max(dot(normal,eye),0.),4.5);
+        vec3 water=mix(vec3(.12,.72,.64),vec3(.016,.21,.36),depth);
+        // Turquoise color ripples move across the sandy shallows.
+        float ripples=sin(p.x*1.2+p.y*.46+time*.8)*sin(p.y*1.24-p.x*.31-time*.9);
+        water+=vec3(.014,.044,.043)*ripples*(1.-depth);
+        // Small sun glints and broad, softened specular reflection.
+        vec3 sun=normalize(vec3(-.46,1.,.39));
+        float glare=pow(max(dot(normal,normalize(sun+eye)),0.),100.);
+        water+=vec3(.94,.87,.68)*glare*.38;
+        float sparkle=pow(max(0.,sin(p.x*5.6+time*1.8)*sin(p.y*6.4-time*1.1)),13.);
+        water+=vec3(.18,.25,.24)*sparkle*(.3+.7*(1.-depth));
+        // Moving caustics make the turquoise shallows look refractive.
+        float caustic=pow(max(0.,sin(p.x*2.1+sin(p.y*.93)+time*.64)*
+          sin(p.y*2.4+sin(p.x*1.15)-time*.52)),6.);
+        water+=vec3(.065,.13,.095)*caustic*(1.-depth);
+        // Two breathing foam lines break continuously along each shoreline.
+        float shoreDistance=abs(coast-1.02);
+        float foamBand=exp(-pow(shoreDistance/.078,2.));
+        float foamDetail=.58+.42*sin(p.x*2.3+sin(p.y*1.4)+time*1.9)*
+                               sin(p.y*2.1-time*1.24);
+        float shoreFoam=foamBand*smoothstep(.23,.82,foamDetail);
+        float incoming=exp(-pow((coast-1.075-.018*sin(time*1.18+p.x*.6))/.027,2.));
+        shoreFoam=clamp(shoreFoam*.65+incoming*.26,0.,.83);
+        // Triangular white wake stays BEHIND a moving boat and slowly fades.
+        vec2 delta=vec2(p.x,-p.y)-wakePosition;
+        float back=-dot(delta,wakeDirection);
+        float across=abs(dot(delta,vec2(-wakeDirection.y,wakeDirection.x)));
+        float trail=smoothstep(.0,2.3,back)*(1.-smoothstep(12.,21.,back));
+        float wakeWidth=.25+back*.20;
+        float foamWake=trail*(1.-smoothstep(wakeWidth,wakeWidth+.74,across));
+        float rippledWake=foamWake*(.7+.3*sin(back*4.3-across*7.+time*6.));
+        water=mix(water,vec3(.82,.97,.96),clamp(shoreFoam*.52+rippledWake*wakeStrength*.56,0.,.83));
+        water=mix(water,vec3(.51,.78,.89),fresnel*.52);
+        water*=mix(vec3(.34,.50,.71),vec3(1.),daylight);
+        float alpha=mix(.48,.95,smoothstep(1.,2.1,coast));
+        gl_FragColor=vec4(water,alpha);
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
+      }`
+  });
+  materials.add(waterMaterial);const water=make(geometry(new T.PlaneGeometry(750,650,112,96)),waterMaterial,0,-.12,0);water.rotation.x=-Math.PI/2;water.castShadow=false;water.receiveShadow=false;water.renderOrder=2;
   const bedGeometry=geometry(new T.PlaneGeometry(400,340));const bedUV=bedGeometry.attributes.uv;for(let i=0;i<bedUV.count;i++)bedUV.setXY(i,bedUV.getX(i)*16,bedUV.getY(i)*16);const seabed=make(bedGeometry,mat('#b3c8b0',{map:surfaces.sand,bumpMap:surfaces.sand,bumpScale:.05,roughness:1}),0,-1.4,0);seabed.rotation.x=-Math.PI/2;seabed.castShadow=false;
   // A sandy path winding from the landing cove to the lighthouse.
   const pathPoints=[new T.Vector3(4,.4,12),new T.Vector3(3,height(3,8)+.07,8),new T.Vector3(7,height(7,4)+.08,4),new T.Vector3(4,height(4,0)+.08,0),new T.Vector3(0,height(0,-3)+.08,-3),new T.Vector3(-1,height(-1,-5)+.08,-5)];
