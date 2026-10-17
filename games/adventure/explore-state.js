@@ -1,4 +1,4 @@
-import {normalizeEstate,estateCoinCost} from './estate.js?v=1';
+import {normalizeEstate,estateCoinCost} from './estate.js?v=2';
 // Exploration is independent of lesson order. Every place is open from the start.
 export const worldIslands=[
  {id:'islet',x:60,z:-60,rx:12,rz:10,h:2.5,ox:24,oz:-8,spread:2.4,en:'Taboga · Island of Flowers',es:'Isla Taboga · Isla de las Flores'},
