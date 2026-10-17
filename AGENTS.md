@@ -84,6 +84,23 @@ For ANY new or revised public-facing page (landing, sales, product, opt-in, than
 8. **Truth and working paths.** Confirm exact offer, included items, real component values, current price/currency, authenticated proof, product-specific claims, checkout links, active promotions and fulfillment. Never invent ratings, scarcity, expired countdowns, customer activity, scientific certainty, guaranteed wealth, or before/after results. Preserve approved copy, existing pixels/GA4, UTMs, forms, payment routing, audio, SEO and consent controls unless the task explicitly changes them.
 9. **Inspect before and after.** Read current repo code, site assets, shared styling and any production injection/Worker code before editing. Use the smallest scoped change. Test the *rendered* page at 320×568, 375×667, 390×844, 430px mobile, 768px tablet and desktop; fix clipping, overflow, unreadable text, weird heading wrapping, sticky overlap, inaccessible popups and wrong images. Click actual CTA, audio, and modal flows; check build/lint where applicable. Verify the final live deployed page before claiming 'pushed live'. A git commit alone is not live verification.
 
+
+### REQUIRED on public hub homepages: moving hero benefit slider (2026-10-17)
+
+**HUBS, NOT FUNNELS.** On every new or revised **public brand / discovery hub homepage**, the hero MUST include a visibly moving, horizontal, looping **benefit slider / marquee with meaningful icons or emojis** and short phrases. This is a high-priority visual identity rule: public hubs should feel alive, not static. It applies to main public hubs such as Hypnotic Meditations, SeanAli.online, Manifestation Genie and other branded discovery homepages, regardless of repo. Determine page type by its purpose, **not** the repository name.
+
+**Never add by default to focused sales funnels**, VSL pages, opt-ins, checkout/upsell/thank-you flows, SKU product landing pages, support articles, editorial posts or internal dashboards. Do not disturb an existing controlled sales page simply to add motion. A homepage that is an actual focused direct-product funnel follows its page-specific control unless Sean explicitly requests hub-style motion.
+
+**Placement:** inside the hero or directly under its primary content, while preserving the centered single-column reading layout, oversized readable headline, main real product visual and clear primary CTA. Do not let the marquee push the CTA off-screen or become the headline.
+
+**Content:** ~4–8 unique truthful icon/emoji + benefit items, ~2–6 words each, reflecting the specific hub (e.g. 🎧 Premium guided audio · ✨ Daily rituals · 📱 Listen on your phone · 🧘 Relax and reset, only where accurate). Use existing authentic assets/style. Avoid fake live viewer/order notices, inflated claims, filler emojis or offers that are not available.
+
+**Motion:** lightweight smooth seamless horizontally moving CSS ticker/marquee; default around 20–35 seconds per full cycle, adjusted for actual width/readability. Continuous but calm, no jumping on loop, flashing, excessive animations or performance-heavy libraries. High-contrast 16–18px+ labels on mobile; enough gap between icons/pills. Visually clip the slider band to prevent full-page horizontal scroll.
+
+**Accessibility:** `prefers-reduced-motion: reduce` must show a static/user-scrollable row. Pause motion on hover/focus when feasible. Support responsive 320/375/390/430px phones and desktop. Do not duplicate items for screen-reader output when duplicating them for an infinite loop, and do not hide essential one-time content only within animation.
+
+**QA gate:** For a public hub homepage edit, inspect the actual rendered hero: slider present, clearly moving under normal motion, smooth and legible, real truthful benefits, brand-consistent, no horizontal overflow or CTA obstruction, functional reduced-motion. If missing/broken on a hub, FAIL and repair before saying done. On a funnel, adding it without specific approval is itself a FAIL. Updating AGENTS.md alone does not authorize mass redesign or site deployment.
+
 ### Mandatory pass/fail at completion
 
 Before declaring a page task done, check: (a) centered one-column reading flow; (b) comfortable mobile text and short lines; (c) distinct visual section boundaries; (d) real assets/icons/demo instead of unnecessary prose; (e) clean headline → product → CTA hierarchy; (f) truthful price/proof/contents; (g) correct working forms/checkout/media; (h) no broken tracking; (i) rendered screenshots at phone + desktop sizes; (j) live production confirmation or an explicit statement that deployment was NOT verified. If a check fails, fix it or state exactly what remains.
