@@ -106,9 +106,7 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
   startPanel(f.icon+' '+f.name,tr(f.where));
   panel.append(el('div','friend-hero-face',f.icon),el('p','friend-greeting',tr(f.hello)));
   const actions=el('div','friend-choices');
-  if(f.id!=='kai')actions.append(btn('🐾 '+say('¡Montar y explorar!','Ride and explore!'),'friend-primary',()=>{
-    mounted=f.id;friends.companion=f.id;save();onMount(f.id,{...nodes.get(f.id).g.position});joy.effect('friend');close();
-   }));
+  if(f.id!=='kai')actions.append(btn('🐾 '+say('¡Montar y explorar!','Ride and explore!'),'friend-primary',()=>ride(f.id)));
   else actions.append(btn('🏐 '+tr(f.game),'friend-primary',()=>startGame(f.id)));
   const chosen=friends.companion===id;
   actions.append(btn(chosen?'🏡 '+say('Me quedo aquí','Stay here'):'🤝 '+say('Ven conmigo','Come with me'),'friend-secondary',()=>{
@@ -252,7 +250,15 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
   });
   directory.textContent='🫶 '+say('AMIGOS','FRIENDS')+' '+friends.completed.length+'/'+islandFriends.length;
  }
+ function ride(id,origin=null){
+  if(!['pip','dori','mila','ollie','luna'].includes(id))return false;
+  const p=origin||nodes.get(id)?.g.position;
+  if(!p)return false;
+  mounted=id;friends.companion=id;save();
+  onMount(id,{x:p.x,z:p.z});joy.effect('friend');close();
+  return true;
+ }
  function dismount(){const previous=mounted;mounted=null;if(previous){nodes.get(previous)?.g.scale.setScalar(1);onMount(null);save();}return previous;}
  function dispose(){close();directory.remove();labels.forEach(l=>l.remove());for(const n of nodes.values())scene.remove(n.g);}
- return {nearest,isNearby,open,openDirectory,close,update,hit,dismount,mounted:()=>mounted,isOpen:()=>opened!==null,dispose,hasCompanion:id=>friends.companion===id};
+ return {nearest,isNearby,open,openDirectory,close,update,hit,ride,dismount,mounted:()=>mounted,isOpen:()=>opened!==null,dispose,hasCompanion:id=>friends.companion===id};
 }
