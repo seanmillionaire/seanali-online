@@ -114,7 +114,7 @@ export function createAnimalDetails({T,id,root,make,mat,geometry,ball,cone,cylin
   });
  }
  if(id==='luna'){
-  const red=shades('#cb6385'),shell=shades('#e9a0ac'),sand=shades('#fbd8b1'),joint=shades('#a95b71');
+  const red=shades('#cb6385'),shell=shades('#e9a0ac'),sand=shades('#fbd8b1'),joint=shades('#a95b71'),walkingLegs=[];
   sphere(shell,0,.57,-.07,.71,.36,.62);
   for(let i=0;i<7;i++){
    const a=Math.PI*(i/8+.1);
@@ -125,7 +125,8 @@ export function createAnimalDetails({T,id,root,make,mat,geometry,ball,cone,cylin
    for(let i=0;i<4;i++){
     const thigh=sphere(joint,sign*(.60+i*.10),.21,.42-i*.30,.22,.10,.14);
     thigh.rotation.z=sign*.4;
-    sphere(red,sign*(.83+i*.1),.10,.42-i*.30,.19,.07,.08);
+    const shin=sphere(red,sign*(.83+i*.1),.10,.42-i*.30,.19,.07,.08);
+    walkingLegs.push({thigh,shin,sign,i});
    }
    sphere(shell,sign*1.1,.60,.38,.35,.23,.26);
    for(const side of [-1,1]){
@@ -136,8 +137,14 @@ export function createAnimalDetails({T,id,root,make,mat,geometry,ball,cone,cylin
    sphere(highlight,sign*.28,1.20,.567,.02,.026,.014);
   }
   animateParts.push((t,movement)=>{
-   if(movement)root.rotation.z=Math.sin(t*10)*.07;
-   else root.rotation.z=Math.sin(t*1.7)*.01;
+   const step=movement?10:1.7;
+   root.rotation.z=Math.sin(t*step)*(movement?.045:.008);
+   for(const leg of walkingLegs){
+    const stagger=leg.i%2?Math.PI:0;
+    const gait=Math.sin(t*step+stagger+(leg.sign>0?Math.PI:0));
+    leg.thigh.rotation.z=leg.sign*(.36+gait*(movement?.22:.035));
+    leg.shin.rotation.x=gait*(movement?.23:.025);
+   }
   });
  }
  return {animate:(t,{moving=false,flying=false}={})=>animateParts.forEach(fn=>fn(t,moving,flying))};
