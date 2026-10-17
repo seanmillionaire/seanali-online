@@ -288,8 +288,13 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
      const index=Number(p.id.slice(-1));
      if(!a.museum.includes(index)){
       a.museum.push(index);
-      success(p.icon+' ¡Sello del museo '+a.museum.length+'/3!',
-        p.icon+' Museum passport stamp '+a.museum.length+'/3!','city-museum-'+index);
+      const facts=[
+       ['Casco Viejo es el barrio histórico de la Ciudad de Panamá.','Casco Viejo is Panama City’s historic neighborhood.'],
+       ['Panamá tiene bosques tropicales, playas y una enorme variedad de animales.','Panama has tropical forests, beaches and incredible wildlife.'],
+       ['El Canal de Panamá conecta el océano Atlántico con el océano Pacífico.','The Panama Canal connects the Atlantic and Pacific oceans.']
+      ];
+      success(p.icon+' '+facts[index][0]+' Sello '+a.museum.length+'/3!',
+        p.icon+' '+facts[index][1]+' Stamp '+a.museum.length+'/3!','city-museum-'+index);
      }else tell('🏛️ ¡Ya tienes este sello! Busca las otras exposiciones.',
       '🏛️ Stamp collected! Discover the other museum exhibits.');
      return true;
