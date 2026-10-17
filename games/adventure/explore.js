@@ -24,26 +24,76 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
 
  const makeEl=(tag,cls,txt)=>{const e=document.createElement(tag);e.className=cls;if(txt)e.textContent=txt;return e;};
  function paintButton(b,text){
-  if(b.dataset.words===text)return;b.dataset.words=text;
-  if(!b.matches('.world-small,.world-action,.world-jump,.world-catch,.discover-place,.goal-next')){b.textContent=text;return;}
-  let icon=text.match(/^\S\uFE0F?/u)?.[0]||'⭐',label=text.replace(/^[^\p{L}\p{N}]+/u,'').trim();
+  // Every gameplay action keeps its full accessible label, while the visible
+  // button uses an unmistakable large emoji + a short readable caption.
+  if(b.dataset.words===text)return;
+  b.dataset.words=text;
+  if(!b.matches('.world-small,.world-action,.world-jump,.world-catch,.discover-place,.goal-next')){
+   b.textContent=text;return;
+  }
+  const emoji=/^[\p{Extended_Pictographic}\uFE0F\u200D]+/u.exec(text);
+  let icon=emoji?.[0]||'⭐';
+  let label=text.replace(/^[^\p{L}\p{N}]+/u,'').trim();
   const named=(symbol,caption)=>{icon=symbol;label=caption;};
-  if(b.classList.contains('food-button'))named('🥥🍌',say('Comida','Food'));
-  else if(b.classList.contains('wallet-button'))named('🪙',text.replace(/[^0-9]/g,'')||'0');
-  else if(b.classList.contains('helper-toggle'))named(text==='×'?'✕':'🎒',text==='×'?say('Cerrar','Close'):say('Mis cosas','My stuff'));
-  else if(/Descubrir|Discover/.test(text))named('🗺️',say('Explorar','Explore'));
+  if(b.classList.contains('food-button'))named('🥥',say('Comida','Food'));
+  else if(b.classList.contains('wallet-button'))named('🪙',text.replace(/\D/g,'')||'0');
+  else if(b.classList.contains('craft-bag-button'))named('🎒',say('Construir','Build')+(text.match(/\d+\/\d+/)?.[0]?' '+text.match(/\d+\/\d+/)[0]:''));
+  else if(b.classList.contains('city-guide-button'))named('🏙️',say('Ciudad','City'));
+  else if(b.classList.contains('helper-toggle'))named(text==='×'?'✕':'🧭',text==='×'?say('Cerrar','Close'):say('Menú','Menu'));
+  else if(/Descubrir|Discover|Explorar|Explore/.test(text))named('🗺️',say('Mapa','Map'));
   else if(/Historias|Stories/.test(text))named('📖',say('Historias','Stories'));
   else if(text==='⌂')named('🏡',say('Casa','Home'));
-  else if(/Ayuda|Help/.test(text))named('🐢',say('Ayuda','Help'));
-  else if(b.classList.contains('world-jump')){if(/alto|Higher/.test(text))named('🎈⬆️',say('Subir','Up'));else if(/Bajar|Lower/.test(text))named('🎈⬇️',say('Bajar','Down'));else if(/Salir|out/i.test(text))named('👣',say('Salir','Out'));else if(/nad|swim/i.test(text))named('🏊',say('Rápido','Fast'));else named('👧⬆️',say('Saltar','Jump'));}
-  else if(b.classList.contains('world-action')){if(/Reventar|Pop balloon/.test(text))named('💥',say('¡Pop!','Pop!'));else if(/Recoger|Pick/.test(text))label=say('Recoger','Pick');else if(/Board|Subir al/.test(text))label=say('Subir','Ride');else if(/Aventura|Adventure/.test(text))named('⭐',say('Jugar','Play'));else if(/Jugar|Play/.test(text)){label=/Pip|Mila|Ollie|Luna/.test(text)?say('Hola','Hello'):/globo|balloon/i.test(text)?say('Volar','Fly'):/faro|lighthouse/i.test(text)?say('Entrar','Enter'):say('Jugar','Play');}else if(/Burbujas|bubbles/.test(text))label=say('Burbujas','Bubbles');}
-  else if(b.classList.contains('goal-next'))named('👣',say('Vamos','Let’s go'));
-  else if(b.classList.contains('discover-place')){if(/Little again|Volver a pequeña/.test(text))named('👧',say('Pequeña','Small'));else if(/hat|Sombrero/.test(text))icon='🎩';else if(/×.*Comer|×.*Eat/.test(text))label=text.slice(text.indexOf('×'));else if(text==='⛵')label=say('Barco','Boat');else if(text==='🎈')label=say('Globo','Balloon');else if(text==='🏊')label=say('Nadar','Swim');else label=label.split(' · ')[0];}
-  if(/^[\p{L}\p{N}]$/u.test(icon))icon='⭐';
-  b.classList.add('picture-button');b.setAttribute('aria-label',text);b.title=text;
-  if(b.firstElementChild?.classList.contains('button-picture')){const [picture,caption,full]=b.children;if(picture.textContent!==icon)picture.textContent=icon;if(caption.textContent!==label)caption.textContent=label;full.textContent=text;return;}
+  else if(/Ayuda|Help/.test(text))named('💡',say('Ayuda','Help'));
+  else if(b.classList.contains('world-catch'))named('🦋',say('Atrapar','Catch'));
+  else if(b.classList.contains('world-jump')){
+   if(/alto|Higher|Subir(?! al)|Climb|Up/.test(text))named('⬆️',say('Subir','Up'));
+   else if(/Bajar|Lower|Descend/.test(text))named('⬇️',say('Bajar','Down'));
+   else if(/Salir|out|Exit/.test(text))named('👣',say('Salir','Exit'));
+   else if(/nad|swim/i.test(text))named('🏊',say('Rápido','Fast'));
+   else named('🦘',say('Saltar','Jump'));
+  }else if(b.classList.contains('world-action')){
+   if(/Reventar|Pop balloon/.test(text))named('🎈',say('¡Pop!','Pop!'));
+   else if(/Patear|Shoot|fútbol|Football/i.test(text))named('⚽',say('Patear','Kick'));
+   else if(/Carrera|Rally|rally|race/i.test(text))named('🏁',say('Carrera','Race'));
+   else if(/Pintar|Paint|mural/i.test(text))named('🎨',say('Pintar','Paint'));
+   else if(/Intercambiar|Trade|market|Mercado/i.test(text))named('🥭',say('Vender','Trade'));
+   else if(/Pizza|pizza|Pizzería|Pizzeria/i.test(text))named('🍕',say('Pizza','Pizza'));
+   else if(/Construir|Build/.test(text))named('🛠️',say('Construir','Build'));
+   else if(/Carro|auto|car|Drive/.test(text))named('🚙',/salir|out|exit/i.test(text)?say('Salir','Exit'):say('Conducir','Drive'));
+   else if(/Recoger|Pick/.test(text))named(/coco|coconut|🥥/i.test(text)?'🥥':/plátano|banana|🍌/i.test(text)?'🍌':'🐚',say('Recoger','Pick up'));
+   else if(/Board|Subir al|Ride/.test(text))named(/barco|boat|⛵/i.test(text)?'⛵':'🐢',say('Subir','Ride'));
+   else if(/Salir|Exit|Leave/.test(text))named('🚪',say('Salir','Leave'));
+   else if(/Aventura|Adventure/.test(text))named('⭐',say('Jugar','Play'));
+   else if(/Jugar|Play/.test(text))named('🎮',say('Jugar','Play'));
+   else if(/Burbujas|bubbles/.test(text))named('🫧',say('Burbujas','Bubbles'));
+   else if(/Entrar|Enter/.test(text))named('🚪',say('Entrar','Enter'));
+   else if(/Ver|Explore|Discover|Descubrir/.test(text))named('🔎',say('Explorar','Explore'));
+   else if(/Amigos|Friends|Saludar|hello/i.test(text))named('🐢',say('Amigos','Friends'));
+  }else if(b.classList.contains('goal-next'))named('👣',say('¡Vamos!','Let’s go!'));
+  else if(b.classList.contains('discover-place')){
+   if(/Little again|Volver a pequeña/.test(text))named('👧',say('Pequeña','Small'));
+   else if(/hat|Sombrero/.test(text))named('🎩',say('Sombrero','Hat'));
+   else if(/×.*Comer|×.*Eat/.test(text))label=text.slice(text.indexOf('×'));
+   else if(text==='⛵')named('⛵',say('Barco','Boat'));
+   else if(text==='🎈')named('🎈',say('Globo','Balloon'));
+   else if(text==='🏊')named('🏊',say('Nadar','Swim'));
+   else if(/Ir a construir|Go build/.test(text))named('🛠️',say('Ir a construir','Go build'));
+   else if(/Build now|Construir ahora/.test(text))named('🛠️',say('Construir','Build'));
+   else if(/Visitar|Visit/.test(text))named('📍',say('Visitar','Visit'));
+   else label=label.split(' · ')[0];
+  }
+  if(!label)label=say('Jugar','Play');
+  b.classList.add('picture-button');
+  b.setAttribute('aria-label',text);b.title=text;
+  if(b.firstElementChild?.classList.contains('button-picture')){
+   const [picture,caption,full]=b.children;
+   if(picture.textContent!==icon)picture.textContent=icon;
+   if(caption.textContent!==label)caption.textContent=label;
+   full.textContent=text;return;
+  }
   const picture=makeEl('span','button-picture',icon),caption=makeEl('span','button-caption',label),full=makeEl('span','button-original',text);
-  picture.setAttribute('aria-hidden','true');caption.setAttribute('aria-hidden','true');full.setAttribute('aria-hidden','true');b.replaceChildren(picture,caption,full);
+  picture.setAttribute('aria-hidden','true');caption.setAttribute('aria-hidden','true');full.setAttribute('aria-hidden','true');
+  b.replaceChildren(picture,caption,full);
  }
  const btn=(txt,cls,fn)=>{const b=makeEl('button',cls);b.type='button';paintButton(b,txt);b.onclick=()=>{joy.gesture();fn();};return b;};
  let canvas=makeEl('canvas','explore-canvas');canvas.setAttribute('aria-label',say('Explora con Angelique. Usa flechas o WASD, o toca el suelo.','Explore as Angelique. Use arrows or WASD, or tap the ground.'));canvas.tabIndex=0;
