@@ -34,7 +34,7 @@
  body[data-scene="explore"] .helper-toggle.picture-button{display:none!important}
  body[data-scene="explore"] .island-goal,
  body[data-scene="explore"] .region-help-status,
- body[data-scene="explore"] .explore-hint:not(.explore-fallback .explore-hint),
+ body[data-scene="explore"] .explore-world:not(.explore-fallback) .explore-hint,
  body[data-scene="explore"] .pizza-city-status,
  body[data-scene="explore"] .pizza-city-prompt,
  body[data-scene="explore"] .friend-peek,
