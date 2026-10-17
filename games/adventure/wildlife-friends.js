@@ -231,9 +231,9 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
    const bounce=n.cheer>0?Math.abs(Math.sin((2.5-n.cheer)*10))*.34:0;
    const footHeight=height(n.g.position.x,n.g.position.z);
    const sea=mode==='swim'||mode==='boat'||mode==='mount-water';
-   n.g.position.y=(id==='dori'&&(sea||!isRidden)?(sea||!isRidden?-.15:footHeight):footHeight+(id==='pip'?.36:0))
+   const aquatic=id==='dori'&&(sea||isRidden&&mode==='mount-water');
+   n.g.position.y=(aquatic?-.15:footHeight+(id==='pip'?.36:id==='dori'?.28:0))
     +bounce+(isRidden?Math.sin(time*5)*.09:id==='dori'?Math.max(0,Math.sin(time*1.7))*.65:Math.sin(time*2+n.home.z)*.055);
-   if(isRidden&&id==='dori'&&mode!=='mount-water')n.g.position.y=footHeight+.25;
    for(const [i,p]of n.moving.entries()){
     if(id==='dori')p.rotation.x=Math.sin(time*5)*.3;
     else p.rotation.z=Math.sin(time*(id==='luna'?4:3)+i)*.2;
