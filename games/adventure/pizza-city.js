@@ -113,23 +113,14 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
   bags.push({id:b.id,x:b.x,z:b.z,root,icon});
  }
  const status=document.createElement('div');status.className='pizza-city-status';status.hidden=true;
- status.setAttribute('aria-live','polite');scene.userData??={}; 
+ status.setAttribute('aria-live','polite'); 
  const sign=document.createElement('div');sign.className='pizza-city-prompt';sign.textContent='🍕 '+(es?'Pizzería':'Pizza Place');sign.hidden=true;
- const worldHost=camera.parent?.userData?.host||null;
  // Host is supplied by the caller to anchor UI on top of the WebGL canvas.
  function attach(host){if(host){host.append(status,sign);}}
  function isHere(x,z){return Math.hypot((x-CITY.x)/CITY.rx,(z-CITY.z)/CITY.rz)<1.0;}
  function nearCar(x,z){return Math.hypot(x-city.car.x,z-city.car.z)<4;}
  function canDrive(x,z){return Math.hypot((x-CITY.x)/CITY.rx,(z-CITY.z)/CITY.rz)<.87;}
- function orderPizza(){
-  city.pizzas=Math.min(999,city.pizzas+1);
-  const bonus=earnPizza();
-  save();refresh();joy.effect('correct');
-  tell(es?'🍕 ¡Pizza deliciosa! '+(bonus?'+3 🪙':''):'🍕 Delicious pizza! '+(bonus?'+3 🪙':''));
-  return city.pizzas;
- }
- function earnPizza(){return window.__islaPizzaEarn?.()||0;}
- // Caller owns the coin-award function; use explicit setter to avoid globals.
+ // Caller owns the coin-award function.
  let coinAward=()=>0;
  function setCoinAward(fn){coinAward=fn||(()=>0);}
  function order(){city.pizzas=Math.min(999,city.pizzas+1);const coins=coinAward('city-pizza');
@@ -145,7 +136,7 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
   for(let i=bags.length-1;i>=0;i--){
    const b=bags[i];b.icon.position.y=1.74+Math.sin(performance.now()*.003+i)*.16;
    if(Math.hypot(x-b.x,z-b.z)<(driving?2.6:1.6)&&!city.bags.includes(b.id)){
-    city.bags.push(b.id);group.remove(b.root);scene.remove(b.root);bags.splice(i,1);
+    city.bags.push(b.id);scene.remove(b.root);bags.splice(i,1);
     const coins=coinAward('city-'+b.id);
     save();refresh();joy.effect('coin');
     tell('💰 '+(es?'¡Bolsa de dinero!':'Money bag!')+' +'+coins+' 🪙');
