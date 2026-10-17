@@ -79,7 +79,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  refresh();
  const buttonUpdates=new Map();
  function setText(e,t){if(e.tagName==='BUTTON')buttonUpdates.set(e,t);else if(e.textContent!==t)e.textContent=t;}
- function refresh(){paintButton(craftButton,'🎒 '+say('Construir','Build')+' '+(s.craft?.built?.length||0)+'/7');paintButton(walletButton,'🪙 '+coinBalance(state));walletButton.setAttribute('aria-label',say('Mis monedas y tienda: ','My coins and shop: ')+coinBalance(state));const lessonCount=Object.keys({...state.completed,...state.islandLessons?.completed}).length;bag.textContent=`${lessonCount?`✦ ${lessonCount}/48 · `:''}🐚 ${countExplore(s,'shell')}/12   🍌 ${countExplore(s,'fruit')}/5   ✦ ${s.badges.length}/8`;}
+ function refresh(){paintButton(craftButton,'🎒 '+say('Construir','Build')+' '+(s.craft?.built?.length||0)+'/7');paintButton(walletButton,'🪙 '+coinBalance(state));walletButton.setAttribute('aria-label',say('Mis monedas y tienda: ','My coins and shop: ')+coinBalance(state));const lessonCount=Object.keys({...state.completed,...state.islandLessons?.completed}).length;const available=workshop?.inventory().available;bag.textContent=`${lessonCount?`✦ ${lessonCount}/48 · `:''}🎒 🐚 ${available?.shell??countExplore(s,'shell')}   🍌 ${available?.fruit??countExplore(s,'fruit')}   💎 ${available?.islandTreasure??countExplore(s,'islandTreasure')}`;}
  function tell(a,b,force=true){guide(say(a,b),force);message.textContent=say(a,b);message.classList.add('show');messageTime=4.5;}
  function reward(id,a,b){if(badgeExplore(s,id)){const coins=earnCoins(state,id);if(coins){joy.effect('coin');a+=` +${coins} monedas.`;b+=` +${coins} coins.`;}joy.effect('finish');control?.spark(s.x,s.z,22);save();refresh();}tell(a,b);}
  function birdMount(){return mountId==='mila'||mountId==='ollie';}
@@ -316,6 +316,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   cityLife=createPizzaCity({T,scene,camera,state,height,make,mat,geometry,ball,box,cylinder,cone,surfaces,joy,save,refresh,tell:(msg)=>tell(msg,msg)});
   cityLife.attach(host);cityLife.setCoinAward(id=>earnCoins(state,id));
   workshop=createIslandWorkshop({T,scene,state,make,mat,geometry,ball,box,cylinder,cone,height,joy,save,refresh,tell,spark,motion});
+  refresh();
   houseSystem=createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,height,surfaces,language:state.lang,companionId:()=>s.friends?.companion,onPizza:()=>cityLife?.order(),
     onEnter:()=>{if(carDriving)exitCar();if(mountId)friendSystem?.dismount();swimming=false;boating=false;ride=0;s.flight=0;blur();route=[];targetPoint=null;host.classList.add('inside-cottage');},
     onMessage:m=>tell(m,m)
