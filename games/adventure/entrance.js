@@ -1,4 +1,4 @@
-import {worldIslands,isletHeight} from './explore-state.js?v=55';
+import {worldIslands,isletHeight} from './explore-state.js?v=60';
 import {createTropical} from './tropical.js?v=59';
 import {createSurfaceTextures} from './surface-textures.js?v=2';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
