@@ -7,7 +7,7 @@ export const villageHouses=[
  {id:'art',x:12,z:-1,es:'Casa de Arte',en:'Art Studio',icon:'🎨',theme:'art'},
  {id:'cozy',x:9,z:-4,es:'Casita de Juegos',en:'Playhouse',icon:'🧸',theme:'play'}
 ];
-export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,language='en',onEnter=()=>{},onMessage}){
+export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,language='en',companionId=()=>null,onEnter=()=>{},onMessage}){
  const es=language==='es';
  const rooms=new Map(),originZ=280;
  const cssButton=document.createElement('button');
@@ -92,7 +92,7 @@ export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geomet
   lastSpot={x:cfg.x,z:cfg.z};active=rooms.get(cfg.id);localX=0;localZ=2.2;
   active.saved=new Map();
   for(const o of scene.children){
-   if(o===active.root||o===avatar||o.isLight||o===camera)continue;
+   if(o===active.root||o===avatar||o.isLight||o===camera||o.userData?.friendId===companionId())continue;
    active.saved.set(o,o.visible);o.visible=false;
   }
   active.root.visible=true;
