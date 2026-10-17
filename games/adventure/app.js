@@ -31,7 +31,7 @@ function render(){clean();document.documentElement.lang=state.lang;document.body
 function welcome(){
  const returning=state.started,section=el('main','welcome world-entry'),copy=el('div','welcome-copy');
  copy.append(el('div','eyebrow',returning?text('Panamá te estaba esperando','Panama has been waiting'):text('Tu gran aventura comienza en Panamá','Your Panama adventure begins here')));
- const h=el('h1','',t('title'));h.append(el('em','',t('subtitle')));copy.append(h,el('p','',returning?text('Angelique, Pip te espera en Playa Gorgona. ¡Tus amigos están por todo Panamá!','Angelique, Pip is waiting in Playa Gorgona. Your friends are all over Panama!'):text('Desde Gorgona hasta Bocas del Toro: descubre un Panamá lleno de aventuras.','From Gorgona to Bocas del Toro: discover a Panama full of adventures.')));
+ const h=el('h1','',t('title'));h.append(el('em','',t('subtitle')));copy.append(h,el('p','',returning?text('Angelique, Pip te espera en Playa Gorgona. ¡Tus amigos están por todo Panamá!','Angelique, Pip is waiting in Playa Gorgona. Your friends are all over Panama!'):text('Desde Gorgona hasta el Volcán Barú: descubre un Panamá lleno de aventuras.','From Gorgona to Volcán Barú: discover a Panama full of adventures.')));
  const enter=button(returning?text('Volver a Panamá','Return to Panama'):text('Explorar Panamá','Explore Panama'),'primary enter-world',arrive);
  copy.append(enter,el('p','welcome-foot',text('Un toque. Y ya estás en otro mundo.','One tap. A whole new world.')));
  const guide=el('div','arrival-guide');guide.append(el('div','arrival-turtle'),el('span','',text('¡Por aquí!','This way!')));section.append(copy,guide);
