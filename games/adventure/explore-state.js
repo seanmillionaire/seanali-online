@@ -9,7 +9,24 @@ export const worldIslands=[
 export function islandPoint(id,x,z){const p=worldIslands.find(p=>p.id===id);return {x:p.x+(x-p.ox)*p.spread,z:p.z+(z-p.oz)*p.spread};}
 // Strong offshore currents require a vehicle to cross; walking remains free after arrival.
 export function remoteAccess(from,to){const p=worldIslands.find(i=>i.vehicleOnly),radius=q=>Math.hypot((q.x-p.x)/p.rx,(q.z-p.z)/p.rz);return radius(to)>=1.6||radius(from)<1.6;}
-export function isletHeight(x,z){let h=0;for(const island of worldIslands){const r=Math.hypot((x-island.x)/island.rx,(z-island.z)/island.rz);if(r<=1)h=Math.max(h,.08+(1-r*r)*island.h);}return h;}
+// Different topography in every biome. Keep the same coastline/footprints so
+// navigation, saved positions, swim transitions and ocean shader stay aligned.
+export function isletHeight(x,z){
+ let h=0;
+ for(const land of worldIslands){
+  const u=(x-land.x)/land.rx,v=(z-land.z)/land.rz,r2=u*u+v*v;
+  if(r2>1)continue;
+  const core=1-r2,soft=core*core;
+  let elevation=.08+core*land.h;
+  if(land.id==='islet')elevation=.08+core*1.6+soft*(.45+.3*Math.sin(x*.55)*Math.cos(z*.45));
+  else if(land.id==='wilds')elevation+=soft*(2+1.6*Math.sin(x*.2)*Math.cos(z*.16));
+  else if(land.id==='coconutCoast')elevation=.08+core*1.85+soft*.55*(1+Math.sin(x*.32+z*.22));
+  else if(land.id==='sunset')elevation+=soft*(2.4+1.35*Math.sin(x*.22-z*.13));
+  else if(land.id==='crystalCove')elevation+=soft*(1.9+.7*Math.cos(x*.3+z*.24));
+  h=Math.max(h,elevation);
+ }
+ return h;
+}
 export const explorePlaces=[
  ...worldIslands.slice(1).map(p=>({id:p.id,x:p.x,z:p.z,icon:({wilds:'🍌',coconutCoast:'🥥',sunset:'✨',crystalCove:'💎'})[p.id],es:p.es,en:p.en,kind:'islet'})),
  {id:'coveBalloon',x:5,z:48,icon:'🎈',es:'Globo de regreso',en:'Return balloon',kind:'balloon'},
