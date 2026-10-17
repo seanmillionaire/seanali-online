@@ -283,8 +283,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
    football.position.x=soccerAnimation.scored?0:Math.sin(t*Math.PI)*2.4;
    if(soccerAnimation.time===0)football.position.set(0,.48,2.7);
   }
-  const glowPulse=1+Math.sin(performance.now()*.003)*.08;
-  fountain.children[1]?.scale.setScalar?.(glowPulse);
+  pool.rotation.y=Math.sin(performance.now()*.0003)*.012;
   ship.position.z=Math.sin(performance.now()*.0005)*.45;
   if(!active||indoors||flying)return;
   if(race.active&&driving){
