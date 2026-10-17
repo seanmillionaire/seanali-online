@@ -289,3 +289,19 @@ body[data-scene="islandQuest"] .friend-peek,body[data-scene="islandQuest"] .frie
  .pizza-city-status{top:130px;left:10px}
  .pizza-city-prompt{top:173px;left:10px}
 }
+
+/* Volcán Barú: readable hiking directions without hiding the world. */
+.volcano-hike-status{
+ position:absolute;top:193px;left:12px;z-index:19;
+ display:block;max-width:calc(100% - 150px);
+ border:2px solid #f3e0aa;border-radius:14px;
+ padding:9px 13px;background:#f2e3c8ed;
+ color:#544637;font-size:15px;line-height:1.25;font-weight:900;
+ box-shadow:0 4px 13px #26302546;pointer-events:none;
+}
+.volcano-hike-status[hidden],.inside-cottage .volcano-hike-status{display:none!important}
+@media(max-width:780px){
+ .volcano-hike-status{top:183px;left:10px;font-size:13px;
+  max-width:calc(100% - 130px);padding:8px 10px}
+}
+@media(max-height:550px){.volcano-hike-status{top:132px;left:10px}}
