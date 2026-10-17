@@ -46,7 +46,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  }
  const btn=(txt,cls,fn)=>{const b=makeEl('button',cls);b.type='button';paintButton(b,txt);b.onclick=()=>{joy.gesture();fn();};return b;};
  let canvas=makeEl('canvas','explore-canvas');canvas.setAttribute('aria-label',say('Explora con Angelique. Usa flechas o WASD, o toca el suelo.','Explore as Angelique. Use arrows or WASD, or tap the ground.'));canvas.tabIndex=0;
- const hud=makeEl('div','explore-hud'),title=makeEl('div','explore-location',say('Bahía de Pip','Pip’s bay')),bag=makeEl('div','explore-bag'),quest=makeEl('div','explore-hint',say('¡Tu isla, tus reglas! Busca a Pip o explora a tu aire.','Your island, your rules! Find Pip or wander anywhere.'));
+ const hud=makeEl('div','explore-hud'),title=makeEl('div','explore-location',say('Playa Gorgona','Playa Gorgona')),bag=makeEl('div','explore-bag'),quest=makeEl('div','explore-hint',say('¡Panamá te espera! Busca a Pip en Gorgona o explora a tu aire.','Panama awaits! Find Pip in Gorgona or explore anywhere.'));
  const goalCard=makeEl('section','island-goal'),goalTitle=makeEl('strong',''),goalText=makeEl('p',''),goalButton=btn('','goal-next',followGoal);goalCard.setAttribute('aria-label',say('Tu siguiente aventura','Your next adventure'));goalCard.append(goalTitle,goalText,goalButton);
  const message=makeEl('div','explore-message');message.setAttribute('role','status');message.setAttribute('aria-live','polite');
  const lessonRegions={pip:0,mila:1,ollie:2,luna:3,garden:4,beacon:5};
@@ -82,7 +82,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  function hop(){if(!control||panel.hidden===false||paused())return;if(carDriving){exitCar();return;}if(houseSystem?.isInside()){houseSystem.leave();host.classList.remove('inside-cottage');return;}if(birdMount()){birdLanding=false;birdTarget=Math.min(32,Math.max(birdAltitude,birdTarget)+4);return;}if(mountId){friendSystem?.dismount();return;}if(ride){flightTarget=Math.min(40,flightTarget+5);return;}if(boating){control.disembark();return;}if(swimming){swimBoost=3;return;}control.hop();joy.effect('tap');}
  function boardCar(){if(carDriving||!cityLife?.nearCar(s.x,s.z)||boating||ride||inside||houseSystem?.isInside()||mountId)return;
   carDriving=true;carSpeed=0;swimming=false;control?.normalizeRider?.();s.x=s.city.car.x;s.z=s.city.car.z;targetPoint=null;route=[];blur();joy.effect('friend');
-  tell('🚙 ¡Angelique conduce! Usa las flechas.','🚙 Angelique is driving! Use the arrows.');save();
+  tell('🚙 ¡Angelique conduce por Casco Viejo!','🚙 Angelique is driving around Casco Viejo!');save();
  }
  function exitCar(){if(!carDriving)return;carDriving=false;carSpeed=0;
   const a=s.city.car.heading;s.x=s.city.car.x+Math.cos(a)*2.6;s.z=s.city.car.z-Math.sin(a)*2.6;
@@ -413,7 +413,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    pad.classList.toggle('flight-stick',!!ride||birdMount());pad.classList.toggle('steering',(!!ride||birdMount())&&len>.05);setText(knob,ride?'🎈':birdMount()?'🪽':'✥');setText(stickReadout,ride?'↕ '+Math.round(flightY)+' m':birdMount()?'↕ '+Math.round(birdAltitude)+' m':'');pad.style.setProperty('--heading',Math.atan2(dx,-dz)+'rad');
    descend.hidden=!ride&&!birdMount();for(const e of entityMeshes)if(e.p.id==='balloon')e.g.visible=!ride;
    if(ride){setText(title,say('🎈 Angelique, piloto','🎈 Pilot Angelique'));act.hidden=false;setText(act,say('💥 Reventar globo','💥 Pop balloon'));setText(jump,say('↑ Más alto','↑ Higher'));setText(instructions,say('Flechas para volar · Espacio ↑ · Q ↓ · E 💥','Arrows to fly · Space ↑ · Q ↓ · E 💥'));}
-   else if(carDriving){setText(title,say('🚙 ¡Ciudad Pizza!','🚙 Pizza City Driver'));act.hidden=false;setText(act,say('👣 Salir del auto','👣 Get out of car'));setText(jump,say('👣 Bajar','👣 Exit car'));setText(instructions,say('🚙 Flechas para conducir · Espacio / E para salir','🚙 Arrows to drive · Space / E to exit'));}
+   else if(carDriving){setText(title,say('🚙 ¡Casco Viejo!','🚙 Casco Viejo Driver'));act.hidden=false;setText(act,say('👣 Salir del auto','👣 Get out of car'));setText(jump,say('👣 Bajar','👣 Exit car'));setText(instructions,say('🚙 Flechas para conducir · Espacio / E para salir','🚙 Arrows to drive · Space / E to exit'));}
    else if(mountId){setText(title,(birdMount()?'🪽 ':'🐾 ')+(birdMount()?say('Volando con ','Flying with '):say('Paseando con ','Riding with '))+(mountId==='dori'?'Dori':mountId==='pip'?'Pip':mountId==='luna'?'Luna':mountId==='mila'?'Mila':'Ollie'));
     setText(act,birdMount()?say('🛬 Aterrizar','🛬 Land'):say('👣 Bajar del animal','👣 Hop off'));act.hidden=false;
     setText(jump,birdMount()?say('🪽 Subir','🪽 Climb'):say('👣 Bajar','👣 Dismount'));
