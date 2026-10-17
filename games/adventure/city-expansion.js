@@ -175,7 +175,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  art.position.set(mural.x,height(mural.x,mural.z),mural.z);group.add(art);
  makeObj(box,brown,0,2.2,0,8,4.5,.6,art);
  const paintTiles=[];
- for(let i=0;i<5;i++)paintTiles.push(makeObj(box,palette[i],-3+i*1.5,2.2,.37,1.42,3.12,.09,art));
+ for(let i=0;i<5;i++)paintTiles.push(makeObj(box,palette[(i+a.muralColors)%palette.length],-3+i*1.5,2.2,.37,1.42,3.12,.09,art));
  icon(art,'🎨',0,5.9,0,2.3);
  const museum=CITY_SITES.find(q=>q.id==='museum0'),history=new T.Group();
  history.position.set(museum.x,height(museum.x,museum.z),museum.z);group.add(history);
@@ -222,6 +222,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  const near=(x,z,max=5.5)=>CITY_SITES.filter(q=>Math.hypot(x-q.x,z-q.z)<max)
    .sort((u,v)=>Math.hypot(x-u.x,z-u.z)-Math.hypot(x-v.x,z-v.z))[0]||null;
  const race={active:false,index:0,elapsed:0},soccerAnimation={time:0,scored:false},washCooldown={time:0};
+ let cityWaypoint=null;
  function earned(id){return coinAward(id)||0}
  function success(esText,enText,id=null){const coins=id?earned(id):0;joy.effect('correct');
   tell(esText+(coins?' +'+coins+' 🪙':''),enText+(coins?' +'+coins+' 🪙':''));save();refresh();}
@@ -307,6 +308,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
   }
   pool.rotation.y=Math.sin(performance.now()*.0003)*.012;
   ship.position.z=Math.sin(performance.now()*.0005)*.45;
+  if(cityWaypoint&&Math.hypot(x-cityWaypoint.x,z-cityWaypoint.z)<7.5)cityWaypoint=null;
   if(!active||indoors||flying)return;
   if(race.active&&driving){
    race.elapsed+=dt;
@@ -346,11 +348,19 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
   washCooldown.time=Math.max(0,washCooldown.time-dt);
  }
  function status(){
+  if(cityWaypoint)return '📍 '+(es?cityWaypoint.es:cityWaypoint.en);
   if(race.active)return '🏁 '+(race.index+1)+'/4  ·  '+Math.ceil(Math.max(0,120-race.elapsed))+'s';
   if(a.deliveryActive)return '🍕 '+a.deliveries.length+'/3  ·  📦';
   return '🏁 '+a.rallyWins+'   ⚽ '+a.soccerGoals+'   🏛️ '+a.museum.length+'/3';
  }
- function goal(){if(race.active)return CITY_RALLY[race.index];if(a.deliveryActive)return CITY_DELIVERY.find((_,i)=>!a.deliveries.includes(i))||null;return null;}
+ function goal(){if(race.active)return CITY_RALLY[race.index];
+  if(a.deliveryActive)return CITY_DELIVERY.find((_,i)=>!a.deliveries.includes(i))||null;
+  return cityWaypoint;
+ }
+ function setWaypoint(id){
+  cityWaypoint=CITY_SITES.find(p=>p.id===id)||null;return cityWaypoint;
+ }
+ function aimReady(){return Math.abs(Math.sin(performance.now()*.0035))<.76;}
  function dispose(){for(const b of sprites){b.tex.dispose();b.material.dispose();}batches.clear();}
- return {near,activityPrompt,interactAt,beginDelivery,update,status,goal,dispose,roadCount:chunks.length,buildingCount};
+ return {sites:CITY_SITES,near,activityPrompt,interactAt,beginDelivery,update,status,goal,setWaypoint,aimReady,dispose,roadCount:chunks.length,buildingCount};
 }
