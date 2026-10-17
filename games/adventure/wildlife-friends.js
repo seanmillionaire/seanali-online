@@ -56,9 +56,10 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
    sphere(g,hair,0,2.13,-.09,.36,.15,.32);
    for(const sign of [-1,1]){
     sphere(g,ink,sign*.15,1.9,.32,.045,.062,.045);
-    sphere(g,skin,sign*.53,1,0,.15,.5,.14);
+    const arm=sphere(g,skin,sign*.53,1,0,.15,.5,.14);
     sphere(g,shorts,sign*.23,.47,0,.18,.4,.2);
-    sphere(g,skin,sign*.23,.17,0,.12,.34,.12);
+    const leg=sphere(g,skin,sign*.23,.17,0,.12,.34,.12);
+    (other.walkers??=[]).push({arm,leg,sign});
    }
    other.ball=sphere(g,pink,.9,.6,.8,.35,.35,.35);
   }
@@ -238,6 +239,11 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
     else p.rotation.z=Math.sin(time*(id==='luna'?4:3)+i)*.2;
    }
    if(canFollow&&mode==='fly'&&s.flight>0)n.g.position.y=s.flight+(id==='dori'?-.5:.3);
+   if(n.other.walkers)for(const limb of n.other.walkers){
+    const swing=canFollow?Math.sin(time*9)*.48:Math.sin(time*1.4)*.08;
+    limb.leg.rotation.x=swing*limb.sign;
+    limb.arm.rotation.x=-swing*limb.sign;
+   }
    if(n.other.ball)n.other.ball.position.y=.6+Math.sin(time*2)*.12;
   }
   camera.updateMatrixWorld();
