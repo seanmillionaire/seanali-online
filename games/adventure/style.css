@@ -264,3 +264,28 @@ body[data-scene="islandQuest"] .friend-peek,body[data-scene="islandQuest"] .frie
  .inside-cottage .explore-controls{max-width:65vw}
 }
 @media(max-height:550px){.house-door-action{top:218px;right:10px}}
+
+/* Biggest island: Pizza City HUD and floating money bag counter. */
+.pizza-city-status{
+ position:absolute;top:193px;left:12px;z-index:18;
+ display:block;width:max-content;max-width:calc(100% - 155px);
+ padding:9px 13px;border-radius:16px;border:2px solid #fff0bb;
+ background:#ffedbded;color:#385242;font-size:16px;font-weight:900;
+ box-shadow:0 4px 13px #21483b43;pointer-events:none;
+}
+.pizza-city-prompt{
+ position:absolute;top:257px;left:12px;z-index:17;max-width:245px;
+ border-radius:15px;padding:9px 12px;background:#fbebe0ee;
+ color:#874e3c;font-size:17px;font-weight:900;
+ border:2px solid #fff8d1;pointer-events:none;
+}
+.pizza-city-status[hidden],.pizza-city-prompt[hidden]{display:none!important}
+.inside-cottage .pizza-city-status,.inside-cottage .pizza-city-prompt{display:none!important}
+@media(max-width:780px){
+ .pizza-city-status{top:185px;left:10px;max-width:calc(100% - 130px);font-size:13px;padding:8px 10px}
+ .pizza-city-prompt{top:237px;left:10px;font-size:14px;max-width:145px}
+}
+@media(max-height:550px){
+ .pizza-city-status{top:130px;left:10px}
+ .pizza-city-prompt{top:173px;left:10px}
+}
