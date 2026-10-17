@@ -7,8 +7,8 @@ export const villageHouses=[
  {id:'art',x:12,z:-1,es:'Casa de Arte',en:'Art Studio',icon:'🎨',theme:'art'},
  {id:'cozy',x:9,z:-4,es:'Casita de Juegos',en:'Playhouse',icon:'🧸',theme:'play'}
 ];
-export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,onMessage}){
- const es=host.closest?.('[lang="en"]')?false:true;
+export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,language='en',onEnter=()=>{},onMessage}){
+ const es=language==='es';
  const rooms=new Map(),originZ=280;
  const cssButton=document.createElement('button');
  cssButton.type='button';cssButton.className='house-door-action';cssButton.hidden=true;
@@ -97,6 +97,7 @@ export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geomet
   }
   active.root.visible=true;
   cssButton.hidden=true;
+  onEnter(cfg);
   onMessage?.(es?'🏠 ¡Puedes explorar la casa! Mira los muebles.':'🏠 Explore the house! Look at the furniture.');
   return true;
  }
