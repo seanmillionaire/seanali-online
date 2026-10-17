@@ -1,11 +1,11 @@
 // Exploration is independent of lesson order. Every place is open from the start.
 export const worldIslands=[
- {id:'islet',x:60,z:-60,rx:12,rz:10,h:2.5,ox:24,oz:-8,spread:2.4,en:'Butterfly Island',es:'Islita Mariposa'},
- {id:'wilds',x:-30,z:-85,rx:24,rz:25,h:5,ox:0,oz:-30,spread:1.25,en:'Banana Island',es:'Isla de Plátanos'},
- {id:'coconutCoast',x:105,z:10,rx:23,rz:19,h:4,ox:47,oz:6,spread:1.35,en:'Coconut Island',es:'Isla de Cocos'},
- {id:'sunset',x:-100,z:30,rx:25,rz:22,h:6,ox:-42,oz:8,spread:1.35,en:'Firefly Forest',es:'Bosque de Luciérnagas'},
- {id:'crystalCove',x:10,z:100,rx:20,rz:16,h:5,ox:0,oz:48,spread:1.5,en:'Crystal Cove',es:'Cala Cristal',vehicleOnly:true},
- {id:'pizzaCity',x:-100,z:-74,rx:45,rz:38,h:3.3,ox:-100,oz:-74,spread:1,en:'Pizza City Island',es:'Isla Ciudad Pizza'}
+ {id:'islet',x:60,z:-60,rx:12,rz:10,h:2.5,ox:24,oz:-8,spread:2.4,en:'Taboga · Island of Flowers',es:'Isla Taboga · Isla de las Flores'},
+ {id:'wilds',x:-30,z:-85,rx:24,rz:25,h:5,ox:0,oz:-30,spread:1.25,en:'Isla Bastimentos · Bocas del Toro',es:'Isla Bastimentos · Bocas del Toro'},
+ {id:'coconutCoast',x:105,z:10,rx:23,rz:19,h:4,ox:47,oz:6,spread:1.35,en:'Isla Contadora · Pearl Islands',es:'Isla Contadora · Las Perlas'},
+ {id:'sunset',x:-100,z:30,rx:25,rz:22,h:6,ox:-42,oz:8,spread:1.35,en:'Boquete · Cloud Forest',es:'Boquete · Bosque Nuboso'},
+ {id:'crystalCove',x:10,z:100,rx:20,rz:16,h:5,ox:0,oz:48,spread:1.5,en:'Guna Yala · San Blas',es:'Guna Yala · San Blas',vehicleOnly:true},
+ {id:'pizzaCity',x:-100,z:-74,rx:45,rz:38,h:3.3,ox:-100,oz:-74,spread:1,en:'Panama City · Casco Viejo',es:'Ciudad de Panamá · Casco Viejo'}
 ];
 export function islandPoint(id,x,z){const p=worldIslands.find(p=>p.id===id);return {x:p.x+(x-p.ox)*p.spread,z:p.z+(z-p.oz)*p.spread};}
 // Strong offshore currents require a vehicle to cross; walking remains free after arrival.
@@ -31,20 +31,20 @@ export function isletHeight(x,z){
 }
 export const explorePlaces=[
  ...worldIslands.slice(1).map(p=>({id:p.id,x:p.x,z:p.z,icon:({wilds:'🍌',coconutCoast:'🥥',sunset:'✨',crystalCove:'💎',pizzaCity:'🍕'})[p.id],es:p.es,en:p.en,kind:'islet'})),
- {id:'coveBalloon',x:5,z:48,icon:'🎈',es:'Globo de regreso',en:'Return balloon',kind:'balloon'},
- {id:'islet',x:24,z:-8,icon:'🦋',es:'Islita Mariposa',en:'Butterfly Island',kind:'islet'},
- {id:'pip',x:4,z:9,icon:'🐢',es:'Pip · la tortuga',en:'Pip · the sea turtle',kind:'friend'},
- {id:'mila',x:0,z:-26,icon:'🦜',es:'Mila · picnic tropical',en:'Mila · tropical picnic',kind:'friend'},
- {id:'ollie',x:-42,z:12,icon:'🪶',es:'Ollie · bosque brillante',en:'Ollie · glow grove',kind:'friend'},
- {id:'luna',x:0,z:43,icon:'🦀',es:'Luna · música',en:'Luna · music',kind:'friend'},
- {id:'garden',x:24,z:-9.5,icon:'🌸',es:'Jardín de mariposas',en:'Butterfly garden',kind:'garden'},
- {id:'beacon',x:-1,z:-2.5,icon:'✦',es:'El faro de los deseos',en:'Wishing lighthouse',kind:'beacon'},
- {id:'bounce',x:-4,z:6,icon:'🍄',es:'Seta saltarina',en:'Bouncy mushroom',kind:'bounce'},
- {id:'balloon',x:5,z:-7,icon:'🎈',es:'Viaje en globo',en:'Balloon ride',kind:'balloon'},
- {id:'boat',x:4,z:16,icon:'⛵',es:'Paseo en barco',en:'Dock boat',kind:'boat'},
- {id:'swim',x:10,z:10,icon:'🏊',es:'Playa para nadar',en:'Swimming beach',kind:'swim'},
- {id:'wardrobe',x:-15,z:3,icon:'🎩',es:'Mi estilo',en:'My style',kind:'wardrobe'},
- {id:'chest',x:-15,z:-1,icon:'🎁',es:'Cofre escondido',en:'Hidden chest',kind:'chest'}
+ {id:'coveBalloon',x:5,z:48,icon:'🎈',es:'Globo de Guna Yala',en:'Guna Yala return balloon',kind:'balloon'},
+ {id:'islet',x:24,z:-8,icon:'🦋',es:'Isla Taboga · Flores',en:'Taboga · Island of Flowers',kind:'islet'},
+ {id:'pip',x:4,z:9,icon:'🐢',es:'Pip · Playa Gorgona',en:'Pip · Playa Gorgona',kind:'friend'},
+ {id:'mila',x:0,z:-26,icon:'🦜',es:'Mila · Bocas del Toro',en:'Mila · Bocas del Toro',kind:'friend'},
+ {id:'ollie',x:-42,z:12,icon:'🪶',es:'Ollie · Boquete',en:'Ollie · Boquete',kind:'friend'},
+ {id:'luna',x:0,z:43,icon:'🦀',es:'Luna · Guna Yala',en:'Luna · Guna Yala',kind:'friend'},
+ {id:'garden',x:24,z:-9.5,icon:'🌸',es:'Jardín de Flores de Taboga',en:'Taboga Flower Garden',kind:'garden'},
+ {id:'beacon',x:-1,z:-2.5,icon:'✦',es:'Faro de la Aventura · Gorgona',en:'Gorgona Adventure Lighthouse',kind:'beacon'},
+ {id:'bounce',x:-4,z:6,icon:'🍄',es:'Honguito de Gorgona',en:'Gorgona Bouncy Mushroom',kind:'bounce'},
+ {id:'balloon',x:5,z:-7,icon:'🎈',es:'Globo de Panamá',en:'Panama Balloon Ride',kind:'balloon'},
+ {id:'boat',x:4,z:16,icon:'⛵',es:'Muelle de Gorgona',en:'Gorgona Boat Dock',kind:'boat'},
+ {id:'swim',x:10,z:10,icon:'🏊',es:'Playa Gorgona',en:'Playa Gorgona',kind:'swim'},
+ {id:'wardrobe',x:-15,z:3,icon:'🎩',es:'Mercadito de Gorgona',en:'Gorgona Market',kind:'wardrobe'},
+ {id:'chest',x:-15,z:-1,icon:'🎁',es:'Tesoro del Pacífico',en:'Pacific Treasure Chest',kind:'chest'}
 ];
 for(const [id,land] of Object.entries({coveBalloon:'crystalCove',islet:'islet',mila:'wilds',ollie:'sunset',luna:'crystalCove',garden:'islet'})){const p=explorePlaces.find(p=>p.id===id);Object.assign(p,islandPoint(land,p.x,p.z));}
 export const exploreItems=[
