@@ -62,7 +62,8 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
    wilds:['#3b8050','#3d6d41','#d0bd7c'],
    coconutCoast:['#f2dfad','#d9df99','#f5e8c7'],
    sunset:['#3a6670','#385a59','#a4aa9e'],
-   crystalCove:['#92c5d9','#7eabbf','#d6ecf3']
+   crystalCove:['#92c5d9','#7eabbf','#d6ecf3'],
+   pizzaCity:['#e2dfba','#87b07e','#ead7af']
   };
   function meadowFlower(x,z,n,scale=1){
    const y=height(x,z),petal=n%2?meadowPink:meadowLilac;
