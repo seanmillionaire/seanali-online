@@ -221,7 +221,9 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
   const following=friends.companion;
   for(const n of nodes.values()){
    const id=n.f.id,isRidden=mounted===id&&mount===id,canFollow=following===id&&!isRidden&&(!inside||mode==='house');
-   const px=isRidden?s.x:canFollow?(mode==='house'&&roomPosition?roomPosition.x-1.35:s.x-1.7):n.home.x,pz=isRidden?s.z:canFollow?(mode==='house'&&roomPosition?roomPosition.z+1.25:s.z+1.65):n.home.z;
+   const idleBird=(id==='mila'||id==='ollie')&&!isRidden&&!canFollow;
+   const px=isRidden?s.x:canFollow?(mode==='house'&&roomPosition?roomPosition.x-1.35:s.x-1.7):n.home.x+(idleBird?Math.sin(time*.7+n.home.z)*1.3:0),
+    pz=isRidden?s.z:canFollow?(mode==='house'&&roomPosition?roomPosition.z+1.25:s.z+1.65):n.home.z+(idleBird?Math.cos(time*.7+n.home.z)*1.15:0);
    if(isRidden){n.g.position.x=px;n.g.position.z=pz;}
    else if(canFollow&&Math.hypot(px-n.g.position.x,pz-n.g.position.z)>28){n.g.position.x=px;n.g.position.z=pz;}
    else{const factor=Math.min(1,dt*(canFollow?2.6:1.2));n.g.position.x+=(px-n.g.position.x)*factor;n.g.position.z+=(pz-n.g.position.z)*factor;}
@@ -241,8 +243,9 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
     else p.rotation.z=Math.sin(time*(id==='luna'?4:3)+i)*.2;
    }
    if(birdInFlight)n.g.position.y=(mode==='mount-water'?0:footHeight)+mountAltitude+Math.sin(time*6)*.08;
+   else if(isBird&&!indoors)n.g.position.y+= (canFollow?1.8:1.1)+Math.sin(time*3.1)*.22;
    if(canFollow&&mode==='fly'&&s.flight>0)n.g.position.y=s.flight+(id==='dori'?-.5:.3);
-   n.other.detail?.animate(time,{moving:isRidden||canFollow||moving,flying:birdInFlight||isBird&&canFollow&&mode==='fly'});
+   n.other.detail?.animate(time,{moving:isRidden||canFollow||moving||idleBird,flying:birdInFlight||isBird&&!indoors});
    if(n.other.walkers)for(const limb of n.other.walkers){
     const swing=canFollow?Math.sin(time*9)*.48:Math.sin(time*1.4)*.08;
     limb.leg.rotation.x=swing*limb.sign;
