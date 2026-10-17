@@ -5,9 +5,10 @@ export const villageHouses=[
  {id:'books',x:-13,z:2,es:'Biblioteca Secreta',en:'Storybook House',icon:'📚',theme:'books'},
  {id:'music',x:10,z:2,es:'Casa Musical',en:'Music Cottage',icon:'🎶',theme:'music'},
  {id:'art',x:12,z:-1,es:'Casa de Arte',en:'Art Studio',icon:'🎨',theme:'art'},
- {id:'cozy',x:9,z:-4,es:'Casita de Juegos',en:'Playhouse',icon:'🧸',theme:'play'}
+ {id:'cozy',x:9,z:-4,es:'Casita de Juegos',en:'Playhouse',icon:'🧸',theme:'play'},
+ {id:'pizzeria',x:-84,z:-60,es:'Pizzería de Angelique',en:'Angelique’s Pizza Place',icon:'🍕',theme:'pizza'}
 ];
-export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,language='en',companionId=()=>null,onEnter=()=>{},onMessage}){
+export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,language='en',companionId=()=>null,onEnter=()=>{},onPizza=()=>{},onMessage}){
  const es=language==='es';
  const rooms=new Map(),originZ=280;
  const cssButton=document.createElement('button');
@@ -21,7 +22,8 @@ export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geomet
  books:{floor:'#a27d5a',wall:'#eddfbf',back:'#c8b9d9',rug:'#aa7ca9',accent:'#e7c776',furniture:'#765a46'},
  music:{floor:'#dab985',wall:'#ffebcd',back:'#e3bddb',rug:'#bc99d8',accent:'#eabb75',furniture:'#9b6d51'},
  art:{floor:'#e7caac',wall:'#f8efd8',back:'#b1d9c4',rug:'#e6a4b2',accent:'#a0bdd9',furniture:'#ae8169'},
- play:{floor:'#efce8e',wall:'#fce9cf',back:'#f8c3bc',rug:'#83d0b7',accent:'#cfb0e4',furniture:'#a4825f'}
+ play:{floor:'#efce8e',wall:'#fce9cf',back:'#f8c3bc',rug:'#83d0b7',accent:'#cfb0e4',furniture:'#a4825f'},
+ pizza:{floor:'#c69a77',wall:'#f7dec0',back:'#ec9987',rug:'#d5756b',accent:'#e6b45d',furniture:'#85573f'}
  };
  function build(cfg){
   const root=new T.Group();root.name=cfg.en+' interior';root.position.set(0,0,originZ);scene.add(root);root.visible=false;
@@ -75,6 +77,23 @@ export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geomet
    prop(box,wood,.2,1.15,-2.25,2.6,2.1,.19);
    for(let i=0;i<5;i++)prop(ball,[accent,back,rug,cream,ink][i],-.65+i*.43,1.36,-2.08,.23,.25,.1);
    add('paint',.2,-2.25,'Pinturas brillantes','Paint supplies','¡Qué bonito arcoíris pintaste!','You painted a beautiful rainbow!');
+  }else if(cfg.theme==='pizza'){
+   // Pizza counter, brick oven, ovenside ingredients and circular pizza trays.
+   prop(box,wood,0,.75,-2.0,4,.86,1.1);
+   prop(box,back,0,2.5,-4.26,4.5,2.7,.38);
+   prop(box,cream,0,1.35,-4.00,2.0,1.55,.15);
+   for(let i=0;i<3;i++){
+    const x=-1.35+i*1.35;
+    prop(cylinder,accent,x,1.38,-1.85,.50,.10,.50);
+    prop(cylinder,rug,x,1.47,-1.85,.37,.04,.37);
+    for(let j=0;j<5;j++){const a=j*1.26;
+     prop(ball,i%2?back:accent,x+Math.cos(a)*.28,1.51,-1.85+Math.sin(a)*.28,.075,.042,.075);
+    }
+   }
+   prop(box,wood,-2.65,.65,1.0,1.8,.11,1.8);
+   prop(box,wood,2.65,.65,1.0,1.8,.11,1.8);
+   for(const x of [-2.65,2.65])prop(cylinder,wood,x,.35,1.0,.12,.6,.12);
+   add('pizza',0,-1.85,'🍕 Pedir pizza','🍕 Order a pizza','🍕 ¡Pizza recién hecha!','🍕 Fresh pizza!',onPizza);
   }else{
    for(let i=0;i<5;i++)prop(box,i%2?accent:rug,-1.8+i*.78,.38,-2.1,.64,.77,.65);
    prop(ball,accent,1,.9,-1.8,.65,.9,.54);
@@ -119,7 +138,7 @@ export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geomet
  }
  function inspect(){
   const p=nearbyProp();if(!p)return false;
-  onMessage?.(es?p.esMessage:p.enMessage);
+  if(p.fn)p.fn();else onMessage?.(es?p.esMessage:p.enMessage);
   return true;
  }
  function updateDoor(x,z,occupied){
