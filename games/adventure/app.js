@@ -1,5 +1,5 @@
 import {earnCoins,syncWallet} from './explore-state.js?v=43';
-import {createExplore} from './explore.js?v=44';
+import {createExplore} from './explore.js?v=47';
 import {createEntrance} from './entrance.js?v=43';
 import {createDelight,burst,livingWorld,foxPortrait} from './delight.js?v=39';
 import {regions,quests,challenges,ui,text} from './content.js';
