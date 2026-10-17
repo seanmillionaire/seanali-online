@@ -35,34 +35,224 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   for(let ring=0;ring<=rings;ring++)for(let i=0;i<=segments;i++){const a=i/segments*Math.PI*2,r=ring/rings,shore=1+.035*Math.sin(a*7)+.03*Math.cos(a*5),x=Math.cos(a)*20*r*shore,z=Math.sin(a)*14*r*shore,y=ring===rings?.08:height(x,z);positions.push(x,y,z);uvs.push(x*.18,z*.18);const smooth=(a,b,v)=>{const t=Math.max(0,Math.min(1,(v-a)/(b-a)));return t*t*(3-2*t);};const c=new T.Color('#527842').lerp(new T.Color('#789454'),smooth(.3,.77,r));c.lerp(new T.Color('#e5d5ad'),smooth(.75,.91,r));c.lerp(new T.Color('#969784'),smooth(4.5,7,y)*.7);c.multiplyScalar(.96+rand()*.08);colors.push(c.r,c.g,c.b);}
   for(let j=0;j<rings;j++)for(let i=0;i<segments;i++){const a=j*(segments+1)+i,b=a+segments+1;indices.push(a,a+1,b,b,a+1,b+1);}
   const terrain=geometry(new T.BufferGeometry());terrain.setAttribute('position',new T.Float32BufferAttribute(positions,3));terrain.setAttribute('color',new T.Float32BufferAttribute(colors,3));terrain.setAttribute('uv',new T.Float32BufferAttribute(uvs,2));terrain.setIndex(indices);terrain.computeVertexNormals();make(terrain,mat('#ffffff',{vertexColors:true,map:tropical.grain,bumpMap:tropical.grain,bumpScale:.16,roughness:.98}));
-  // A reachable offshore island, sharing the same shoreline used by movement and boats.
+  // Five deliberately different destinations: shape, silhouette, color and landmarks.
+  // All decorations use the same physical x/z coordinates as player navigation.
+  const rockGeo=geometry(new T.DodecahedronGeometry(1,0));
+  const crystalGeo=geometry(new T.ConeGeometry(1,1,5));
+  const ringGeo=geometry(new T.TorusGeometry(1,.12,8,24));
+  const barkDark=mat('#58462f',{map:tropical.grain});
+  const jungleLeaf=mat('#297c43',{side:T.DoubleSide});
+  const jungleLime=mat('#8dbd4e',{side:T.DoubleSide});
+  const meadowPink=mat('#ed8ebc'),meadowLilac=mat('#b5a1e9'),meadowCream=mat('#fff3ca');
+  const meadowStem=mat('#548d49'),meadowBud=mat('#f4cc55',{emissive:'#d8953d',emissiveIntensity:.22});
+  const beachWood=mat('#a5794b',{map:tropical.grain}),beachAwning=mat('#fff1bd');
+  const beachCoral=mat('#ffad82'),beachBlue=mat('#58b6cc'),beachShell=mat('#fff3d9');
+  const forestBark=mat('#504059'),forestPine=mat('#296556'),forestPineShade=mat('#2e5265');
+  const forestGlow=mat('#ffe99e',{emissive:'#ffcc51',emissiveIntensity:1.15});
+  const mushroomPink=mat('#d888bd',{emissive:'#7e427b',emissiveIntensity:.4});
+  const mushroomViolet=mat('#9875d2',{emissive:'#5642a5',emissiveIntensity:.45});
+  const crystalStone=mat('#617b9a'),crystalBlue=mat('#5bc9ec',{emissive:'#338cbf',emissiveIntensity:.6,roughness:.3,metalness:.18});
+  const crystalMint=mat('#9bebd8',{emissive:'#43bba8',emissiveIntensity:.55,roughness:.27});
+  const crystalLavender=mat('#b1a1e7',{emissive:'#7356c9',emissiveIntensity:.5});
+  const crystalWhite=mat('#e5f9ff',{emissive:'#8bd3eb',emissiveIntensity:.45});
+  const position=(land,u,v)=>({x:land.x+u*land.rx,z:land.z+v*land.rz});
+  const place=(land,u,v)=>{const p=position(land,u,v);return {...p,y:height(p.x,p.z)};};
+  const ellipseMats={
+   islet:['#c1dfa4','#80c990','#f5d2ad'],
+   wilds:['#3b8050','#3d6d41','#d0bd7c'],
+   coconutCoast:['#f2dfad','#d9df99','#f5e8c7'],
+   sunset:['#3a6670','#385a59','#a4aa9e'],
+   crystalCove:['#92c5d9','#7eabbf','#d6ecf3']
+  };
+  function meadowFlower(x,z,n,scale=1){
+   const y=height(x,z),petal=n%2?meadowPink:meadowLilac;
+   make(cylinder,meadowStem,x,y+.65*scale,z,.045,.95*scale,.045);
+   for(let k=0;k<6;k++){
+    const a=k*Math.PI/3;
+    const p=make(ball,petal,x+Math.cos(a)*.47*scale,y+1.25*scale+Math.sin(a)*.47*scale,z,.28*scale,.34*scale,.14*scale);
+    p.rotation.z=a-Math.PI/2;
+   }
+   make(ball,meadowBud,x,y+1.25*scale,z,.22*scale,.22*scale,.23*scale);
+  }
+  function meadowButterfly(x,z,i){
+   const y=height(x,z)+2.6+(i%3)*.36;
+   const hue=i%2?meadowLilac:meadowPink;
+   make(ball,barkDark,x,y,z,.06,.45,.08);
+   for(const side of [-1,1]){
+    const wing=make(ball,hue,x+side*.5,y+.23,z,.48,.67,.10);
+    wing.rotation.z=side*.35;
+    const lower=make(ball,meadowCream,x+side*.35,y-.33,z,.30,.35,.09);
+    lower.rotation.z=side*-.3;
+   }
+  }
+  function jungleTree(x,z,i){
+   const y=height(x,z),size=1+(i%3)*.18;
+   make(cylinder,barkDark,x,y+2.65*size,z,.27*size,5.3*size,.27*size);
+   for(let k=0;k<6;k++){
+    const a=k*Math.PI/3+(i%3)*.2;
+    const leaf=make(ball,k%2?jungleLeaf:jungleLime,x+Math.cos(a)*1.25*size,y+(4.7+(k%2)*.45)*size,z+Math.sin(a)*1.25*size,.52*size,.16*size,1.85*size);
+    leaf.rotation.y=-a+.3;leaf.rotation.x=k%2?.25:-.2;
+   }
+   make(ball,jungleLeaf,x,y+5.25*size,z,1.25*size,.43*size,1.2*size);
+  }
+  function beachShade(x,z,i){
+   const y=height(x,z);
+   const color=i%2?beachBlue:beachCoral;
+   make(cylinder,beachWood,x,y+1.22,z,.08,2.44,.08);
+   const canopy=make(cone,color,x,y+2.5,z,1.5,.53,1.5);
+   canopy.rotation.y=i*.45;
+   make(box,beachShell,x,y+.16,z,1.5,.14,.8);
+  }
+  function fireflyTree(x,z,i){
+   const y=height(x,z),s=1+(i%3)*.23;
+   make(cylinder,forestBark,x,y+2.5*s,z,.32*s,5*s,.32*s);
+   for(let k=0;k<3;k++)make(cone,k%2?forestPineShade:forestPine,x,y+(3+k*1.15)*s,z,(2.1-k*.38)*s,2.4*s,(2.1-k*.38)*s);
+   // A golden firefly glows in the treetop even with permanent daytime.
+   if(i%2===0)make(ball,forestGlow,x+1.1*s,y+5.7*s,z-.6*s,.18,.18,.18);
+  }
+  function glowMushroom(x,z,i){
+   const y=height(x,z),s=.7+(i%3)*.24;
+   make(cylinder,meadowCream,x,y+.4*s,z,.12*s,.8*s,.12*s);
+   make(ball,i%2?mushroomPink:mushroomViolet,x,y+.88*s,z,.55*s,.28*s,.55*s);
+  }
+  function crystalSpire(x,z,i,s=1){
+   const y=height(x,z),tall=(1.6+i%4*.75)*s;
+   const m=[crystalBlue,crystalMint,crystalLavender,crystalWhite][i%4];
+   const spike=make(crystalGeo,m,x,y+tall*.46,z,.55*s,tall,.55*s);
+   spike.rotation.z=(i%4-1.5)*.1;
+   if(i%3===0){
+    make(crystalGeo,crystalWhite,x+.5*s,y+.48*s,z-.35*s,.27*s,1*s,.27*s).rotation.z=.23;
+   }
+  }
   for(const land of worldIslands){
-   const iv=[],ic=[],ii=[],iu=[];for(let ring=0;ring<=16;ring++)for(let j=0;j<=64;j++){
-    const a=j/64*Math.PI*2,r=ring/16,x=land.x+Math.cos(a)*land.rx*r,z=land.z+Math.sin(a)*land.rz*r;
-    iv.push(x,isletHeight(x,z),z);iu.push(x*.18,z*.18);const c=new T.Color(r>.78?'#eddbac':land.id==='wilds'?'#4d8455':'#72a65c');ic.push(c.r,c.g,c.b);
-    if(ring<16&&j<64){const n=ring*65+j;ii.push(n,n+1,n+65,n+65,n+1,n+66);}
+   const shades=ellipseMats[land.id],iv=[],ic=[],ii=[],iu=[];
+   for(let ring=0;ring<=20;ring++)for(let j=0;j<=80;j++){
+    const a=j/80*Math.PI*2,r=ring/20;
+    const x=land.x+Math.cos(a)*land.rx*r,z=land.z+Math.sin(a)*land.rz*r,y=isletHeight(x,z);
+    iv.push(x,y,z);iu.push(x*.18,z*.18);
+    const base=new T.Color(r>.87?shades[2]:r>.52?shades[1]:shades[0]);
+    const noise=(.95+.08*rand())*(1+.04*Math.sin(a*7+r*23));
+    base.multiplyScalar(noise);ic.push(base.r,base.g,base.b);
+    if(ring<20&&j<80){const n=ring*81+j;ii.push(n,n+1,n+81,n+81,n+1,n+82);}
    }
-   const ig=geometry(new T.BufferGeometry());ig.setAttribute('position',new T.Float32BufferAttribute(iv,3));ig.setAttribute('color',new T.Float32BufferAttribute(ic,3));ig.setAttribute('uv',new T.Float32BufferAttribute(iu,2));ig.setIndex(ii);ig.computeVertexNormals();const island=make(ig,mat('#ffffff',{vertexColors:true,map:tropical.grain}));island.name=land.en;
-   const small=land.id==='islet';
-   for(let i=0;i<(small?0:land.id==='coconutCoast'?18:4);i++){const a=i*2.4,r=.3+(i%3)*.22,x=land.x+Math.sin(a)*land.rx*r,z=land.z+Math.cos(a)*land.rz*r;tropical.palm(x,z,.75+(i%3)*.2,land.id==='coconutCoast');}
-   for(let i=0;i<(small?7:16);i++){const x=land.x+Math.sin(i*2.4)*land.rx*.6,z=land.z+Math.cos(i*2.4)*land.rz*.6;tropical.card(small?15:land.id==='wilds'?1:land.id==='crystalCove'?3:2,x,height(x,z),z,small?1.2:2.2,small?1.3:2.8);}
-   if(land.id==='sunset'){
-    for(let i=0;i<9;i++){const x=land.x+Math.sin(i*2.4)*land.rx*.55,z=land.z+Math.cos(i*2.4)*land.rz*.55;tropical.palm(x,z,1.15+(i%3)*.15);tropical.card(2,x+1,height(x+1,z),z,3,3.5);}
-    const x=land.x-8,z=land.z-7,y=height(x,z);for(let j=0;j<7;j++){const rock=make(geometry(new T.DodecahedronGeometry(1,0)),stone,x+Math.sin(j*2.4)*2,y+1.5+(j%3)*1.6,z+Math.cos(j*2.4),2.1,2.4,1.5);rock.rotation.y=j;}const falls=make(box,mat('#b0eeef',{transparent:true,opacity:.55,roughness:.15}),x,y+2.3,z+1.9,1.4,4.6,.1);falls.name='Forest waterfall';make(cylinder,blue,x,y+.03,z+3,3,.06,2);for(let j=0;j<8;j++){const foam=make(ball,cream,x+Math.sin(j)*1.3,y+.15,z+2.6+Math.cos(j)*.5,.12,.05,.15);bobbing.push({g:foam,y:y+.15,z:z+3});}
-   }
-   if(land.id==='islet'){for(let i=0;i<36;i++){const x=land.x+Math.sin(i*2.4)*land.rx*.7,z=land.z+Math.cos(i*2.4)*land.rz*.7;tropical.card(15,x,height(x,z),z,1.2,1.4);}}
-   if(land.id==='wilds'||land.id==='coconutCoast'){for(let i=0;i<3;i++)make(box,wood,land.x-5+i*1.6,height(land.x-5+i*1.6,land.z+4)+.35,land.z+4,1.2,.7,1);}
-   if(land.vehicleOnly){
-    const crystalMat=mat('#78e6e0',{emissive:'#259dba',emissiveIntensity:.35,roughness:.22,metalness:.12});
-    for(let i=0;i<7;i++){const a=i*Math.PI*2/7,x=land.x+Math.sin(a)*6,z=land.z+Math.cos(a)*5;const crystal=make(geometry(new T.ConeGeometry(.7,3,5)),crystalMat,x,height(x,z)+1.1,z,1,1+(i%3)*.3,1);crystal.rotation.z=Math.sin(a)*.2;}
-    // Buoys outline the strong-current area, well outside the beach and landing zone.
-    for(let i=0;i<16;i++){const a=i*Math.PI/8,x=land.x+Math.sin(a)*land.rx*1.6,z=land.z+Math.cos(a)*land.rz*1.6;make(ball,gold,x,0,z,.16,.25,.16);}
-   }
-   if(land.vehicleOnly){
-    // A walk-through stone arch marks each island's central bubble clearing.
-    for(const side of [-1,1])make(box,stone,land.x+side*2,height(land.x+side*2,land.z)+1.8,land.z,.8,3.6,1);
-    make(box,stone,land.x,height(land.x,land.z)+3.5,land.z,4.8,.7,1);
+   const g=geometry(new T.BufferGeometry());
+   g.setAttribute('position',new T.Float32BufferAttribute(iv,3));
+   g.setAttribute('color',new T.Float32BufferAttribute(ic,3));
+   g.setAttribute('uv',new T.Float32BufferAttribute(iu,2));
+   g.setIndex(ii);g.computeVertexNormals();
+   const island=make(g,mat('#ffffff',{vertexColors:true,map:tropical.grain}));
+   island.name=land.en;
 
+   if(land.id==='islet'){
+    // Butterfly Meadow: low rolling pastel hills, oversized wildflowers,
+    // a ribbon of butterflies, and a flower garden rather than palm trees.
+    for(let i=0;i<9;i++){
+     const a=i*2.4,p=place(land,Math.sin(a)*.65,Math.cos(a)*.62);
+     meadowFlower(p.x,p.z,i,.82+(i%3)*.17);
+    }
+    for(let i=0;i<16;i++){
+     const a=i*2.4,p=place(land,Math.sin(a)*(.25+(i%3)*.19),Math.cos(a)*(.25+(i%3)*.19));
+     tropical.card(15,p.x,p.y,p.z,1.5,1.5);
+    }
+    for(let i=0;i<5;i++){
+     const a=i*2.5,p=place(land,Math.sin(a)*.3,Math.cos(a)*.35);
+     meadowButterfly(p.x,p.z,i);
+    }
+    const p=place(land,-.45,-.16);
+    make(ringGeo,meadowLilac,p.x,p.y+2.25,p.z,2.1,2.1,.65);
+   }else if(land.id==='wilds'){
+    // Banana Jungle: huge broad-leaf canopy, layered vines and fruit
+    // everywhere, with a little treehouse shelter in the dense green.
+    for(let i=0;i<11;i++){
+     const a=i*2.39996,r=.43+(i%3)*.12,p=place(land,Math.sin(a)*r,Math.cos(a)*r);
+     jungleTree(p.x,p.z,i);
+    }
+    for(let i=0;i<19;i++){
+     const a=i*2.4,r=.23+(i%4)*.17,p=place(land,Math.sin(a)*r,Math.cos(a)*r);
+     tropical.card(1,p.x,p.y,p.z,2.9+(i%3)*.5,3.2+(i%3)*.35);
+    }
+    const den=place(land,.22,.18);
+    make(box,beachWood,den.x,den.y+2.0,den.z,3.5,.3,3);
+    for(const u of [-1.5,1.5])for(const v of [-1.2,1.2])
+     make(cylinder,barkDark,den.x+u,den.y+1,den.z+v,.14,2,.14);
+    make(cone,jungleLime,den.x,den.y+3.45,den.z,3,1.3,2.9);
+    for(let i=0;i<5;i++){
+     const p=place(land,-.65+i*.22,.08);
+     tropical.card(7,p.x,p.y+.08,p.z,.75,1);
+    }
+   }else if(land.id==='coconutCoast'){
+    // Sunshine Beach: pale sand, a dense ring of palms, bright beach
+    // parasols and surfboards; deliberately flat and open for boating.
+    for(let i=0;i<22;i++){
+     const a=i*2.4,r=.37+(i%4)*.16,p=place(land,Math.sin(a)*r,Math.cos(a)*r);
+     tropical.palm(p.x,p.z,1.05+(i%3)*.23,true);
+    }
+    for(let i=0;i<5;i++){
+     const a=i*2.4,p=place(land,Math.sin(a)*.38,Math.cos(a)*.36);
+     beachShade(p.x,p.z,i);
+    }
+    for(let i=0;i<7;i++){
+     const a=i*2.4,p=place(land,Math.sin(a)*.75,Math.cos(a)*.68);
+     const board=make(box,i%2?beachBlue:beachCoral,p.x,p.y+.75,p.z,.24,1.48,.12);
+     board.rotation.z=Math.sin(a)*.25;
+     make(ball,beachShell,p.x+.38,p.y+.1,p.z+.2,.4,.19,.32);
+    }
+    for(let i=0;i<7;i++){
+     const a=i*2.4,p=place(land,Math.sin(a)*.60,Math.cos(a)*.63);
+     tropical.card(4,p.x,p.y,p.z,.7,.7);
+    }
+   }else if(land.id==='sunset'){
+    // Firefly Forest: blue-purple darkwood, conifers, giant luminous
+    // mushrooms, waterfall and golden firefly clouds. No palms here.
+    for(let i=0;i<13;i++){
+     const a=i*2.39996,r=.35+(i%4)*.14,p=place(land,Math.sin(a)*r,Math.cos(a)*r);
+     fireflyTree(p.x,p.z,i);
+    }
+    for(let i=0;i<15;i++){
+     const a=i*2.4,r=.22+(i%4)*.18,p=place(land,Math.sin(a)*r,Math.cos(a)*r);
+     glowMushroom(p.x,p.z,i);
+    }
+    for(let i=0;i<22;i++){
+     const a=i*2.4,r=.23+(i%4)*.16,p=place(land,Math.sin(a)*r,Math.cos(a)*r);
+     make(ball,forestGlow,p.x,p.y+1.45+(i%5)*.45,p.z,.07+(i%3)*.035,.07+(i%3)*.035,.07+(i%3)*.035);
+    }
+    const x=land.x-8,z=land.z-7,y=height(x,z);
+    for(let j=0;j<7;j++){
+     const rock=make(rockGeo,stone,x+Math.sin(j*2.4)*2,y+1.5+(j%3)*1.6,z+Math.cos(j*2.4),2.1,2.4,1.5);
+     rock.rotation.y=j;
+    }
+    const falls=make(box,mat('#b0eeef',{transparent:true,opacity:.55,roughness:.15}),x,y+2.3,z+1.9,1.4,4.6,.1);
+    falls.name='Forest waterfall';
+    make(cylinder,blue,x,y+.03,z+3,3,.06,2);
+    for(let j=0;j<8;j++){
+     const foam=make(ball,cream,x+Math.sin(j)*1.3,y+.15,z+2.6+Math.cos(j)*.5,.12,.05,.15);
+     bobbing.push({g:foam,y:y+.15,z:z+3});
+    }
+   }else if(land.id==='crystalCove'){
+    // Crystal Cove: cool blue stone, clustered glassy gem towers,
+    // arcing stone ruins, musical coral and luminous sea-glass.
+    for(let i=0;i<28;i++){
+     const a=i*2.39996,r=.35+(i%4)*.14,p=place(land,Math.sin(a)*r,Math.cos(a)*r);
+     crystalSpire(p.x,p.z,i,i%5===0?1.5:1);
+    }
+    const gate=place(land,-.40,-.26);
+    for(const side of [-1,1])make(box,crystalStone,gate.x+side*2,gate.y+1.8,gate.z,.8,3.6,1);
+    make(box,crystalStone,gate.x,gate.y+3.55,gate.z,4.8,.7,1);
+    for(let i=0;i<10;i++){
+     const a=i*2.4,r=.5,p=place(land,Math.sin(a)*r,Math.cos(a)*r);
+     tropical.card(14,p.x,p.y,p.z,1.15,1.15);
+    }
+    for(let i=0;i<7;i++){
+     const a=i*Math.PI*2/7,p=place(land,Math.sin(a)*.25,Math.cos(a)*.25);
+     make(ball,i%2?crystalBlue:crystalMint,p.x,p.y+.18,p.z,.45,.12,.4);
+    }
+   }
+   if(land.vehicleOnly){
+    // Keep the existing strong-current boundary visible without adding a wall.
+    for(let i=0;i<16;i++){
+     const a=i*Math.PI/8,x=land.x+Math.sin(a)*land.rx*1.6,z=land.z+Math.cos(a)*land.rz*1.6;
+     make(ball,gold,x,0,z,.16,.25,.16);
+    }
    }
   }
   // Transparent lagoon, a visible sandy seabed, and small irregular wave highlights.
