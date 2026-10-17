@@ -187,10 +187,15 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
   const here=isHere(x,z)&&!indoors;
   status.hidden=!here;
   expansion.update(dt,active,{x,z,driving,flying,indoors});
-  if(here)status.textContent='💰 '+city.bags.length+'/'+MONEY_BAGS.length+' · 🚙 🍕 '+city.pizzas+' · '+expansion.status();
+  if(here){const go=expansion.goal(),d=go?Math.round(Math.hypot(x-go.x,z-go.z)):0;
+   status.textContent='💰 '+city.bags.length+'/'+MONEY_BAGS.length+' · 🚙 🍕 '+city.pizzas+
+    ' · '+expansion.status()+(go?' · '+d+'m':'');
+  }
   const point=expansion.near(x,z,9),atRestaurant=Math.hypot(x-sx,z-sz)<16;
   sign.hidden=!here||(!atRestaurant&&!point);
-  if(!sign.hidden)sign.textContent=point?point.icon+' '+(es?point.es:point.en):
+  if(!sign.hidden)sign.textContent=point?.id==='soccer'
+    ?'⚽ '+(expansion.aimReady()?(es?'🟢 ¡Patea ahora!':'🟢 Shoot now!'):(es?'🟠 Espera el momento':'🟠 Wait for the timing'))
+    :point?point.icon+' '+(es?point.es:point.en):
     '🍕 '+(es?'Pizzería del Casco':'Casco Viejo Pizzeria');
   if(!active||flying||indoors)return;
   for(let i=bags.length-1;i>=0;i--){
@@ -204,5 +209,5 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
   }
  }
  function dispose(){expansion.dispose();status.remove();sign.remove();scene.remove(group,car,pizzaSign);for(const b of bags)scene.remove(b.root);spriteMaterial.dispose();texture.dispose();pizzaMaterial.dispose();pizzaTexture.dispose();}
- return {attach,update,nearCar,canDrive,hitCar,hitBag,updateCar,order,setCoinAward,isHere,car,activityPrompt:expansion.activityPrompt,interactActivity:expansion.interactAt,activityNear:expansion.near,activityGoal:expansion.goal,dispose};
+ return {attach,update,nearCar,canDrive,hitCar,hitBag,updateCar,order,setCoinAward,isHere,car,activityPrompt:expansion.activityPrompt,interactActivity:expansion.interactAt,activityNear:expansion.near,activityGoal:expansion.goal,activitySites:expansion.sites,setWaypoint:expansion.setWaypoint,dispose};
 }
