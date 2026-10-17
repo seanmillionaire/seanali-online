@@ -89,6 +89,7 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
   chrome=mat('#d8d9d0',{metalness:.6,roughness:.24}),
   seat=mat('#875b4f',{roughness:.95}),
   frontLight=mat('#ffefb8',{emissive:'#e8d479',emissiveIntensity:.5});
+ if(city.activities?.carWashes>0)carBlue.roughness=.20;
  const wheelRigs=[];
  // Bumper-height frame, distinct hood and raised passenger cabin.
  piece(box,carShade,0,-.05,0,2.16,.41,3.55,car);
@@ -158,7 +159,7 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
  }
  let coinAward=()=>0;
  const expansion=createCityExpansion({T,group,scene,state,make,mat,box,ball,cylinder,cone,height,surfaces,
-   save,refresh,joy,tell:(a,b)=>tell(a,b),coinAward:id=>coinAward(id)});
+   save,refresh,joy,tell:(a,b)=>tell(a,b),coinAward:id=>coinAward(id),onWash:()=>{carBlue.roughness=.16;carBlue.needsUpdate=true;}});
  const status=document.createElement('div');status.className='pizza-city-status';status.hidden=true;
  status.setAttribute('aria-live','polite'); 
  const sign=document.createElement('div');sign.className='pizza-city-prompt';sign.textContent='🍕 '+(es?'Pizzería del Casco':'Casco Viejo Pizzeria');sign.hidden=true;
