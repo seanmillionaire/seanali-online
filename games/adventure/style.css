@@ -160,3 +160,79 @@ body[data-scene="islandQuest"] .tools button{color:#284e48}
  .island-map-guide{font-size:13px!important}
 }
 @media(max-height:550px){.island-map-mini{top:78px;right:12px;width:95px;min-height:92px}.island-map-mini .island-map-art{height:62px}.island-map-frame .island-map-art{max-height:44svh;min-height:140px}}
+
+
+/* Island friends and repeatable play activities: big taps, picture-first mobile UI. */
+.friend-peek{
+ position:absolute;top:250px;right:12px;z-index:21;min-width:105px;min-height:49px;
+ border:2px solid #fff9df;border-radius:16px;padding:8px 12px;background:#ffebbc;
+ color:#264f49;font-size:13px;font-weight:900;letter-spacing:.03em;
+ box-shadow:0 4px 13px #103d4a50;cursor:pointer;touch-action:manipulation;
+}
+.friend-world-label{
+ position:absolute;z-index:11;transform:translate(-50%,-50%);
+ background:#fff8e5ee;color:#264a47;border:2px solid #ffdf9c;
+ border-radius:50px;padding:9px 13px;min-width:88px;min-height:41px;max-width:140px;
+ box-shadow:0 4px 18px #163f4b45;font-size:13px;font-weight:900;
+ text-align:center;white-space:nowrap;cursor:pointer;touch-action:manipulation;
+}
+.friend-peek:focus-visible,.friend-world-label:focus-visible,
+.friend-panel button:focus-visible,.friend-hello:focus-visible{
+ outline:4px solid #2d86bd;outline-offset:3px;
+}
+.friend-world-label[hidden],.friend-hello[hidden]{display:none!important}
+.friend-panel{width:min(590px,94vw);padding:22px 20px;max-height:calc(100svh - 100px)}
+.friend-panel .friend-title{font-size:28px;margin:0 45px 6px 0;line-height:1.2}
+.friend-panel .friend-intro{font-size:16px;margin:5px 0 10px;line-height:1.4}
+.friend-panel .friend-greeting{font-size:19px;line-height:1.45;font-weight:750;text-align:center;color:#32524b;margin:8px 0 16px}
+.friend-hero-face{font-size:75px;line-height:1.2;text-align:center;padding:10px 0;animation:friend-hello-float 2.1s ease-in-out infinite}
+.friend-directory{display:grid;grid-template-columns:1fr;gap:10px}
+.friend-directory-card{display:grid;grid-template-columns:68px minmax(0,1fr);gap:10px;align-items:center;border:1px solid #dce5cc;border-radius:17px;padding:12px;background:#fffdf0}
+.friend-avatar{font-size:46px;line-height:1.2;text-align:center}
+.friend-directory-copy{display:grid;gap:3px;min-width:0}
+.friend-directory-copy strong{font-size:19px;color:#214940}
+.friend-directory-copy small{font-size:14px;color:#4c6965}
+.friend-game-label{font-size:14px;font-weight:750;color:#5b7553}
+.friend-directory-actions{display:flex;grid-column:1/-1;gap:8px;flex-wrap:wrap}
+.friend-primary,.friend-secondary{border:0;border-radius:14px;min-height:49px;min-width:110px;font-size:16px;font-weight:850;padding:12px 16px;touch-action:manipulation;cursor:pointer}
+.friend-primary{background:#f3c965;color:#283f3b;box-shadow:0 3px 0 #ab8c45}
+.friend-secondary{background:#d9e8df;color:#23534b;border:1px solid #c7d8c9}
+.friend-choices{display:grid;grid-template-columns:1fr;gap:11px;margin:12px 0 3px}
+.friend-choices .friend-primary,.friend-choices .friend-secondary{width:100%}
+.friend-success-note{color:#315d46;font-size:15px!important;font-weight:800;margin:12px 0 0}
+.friend-game-goal{font-size:18px!important;font-weight:750;text-align:center;line-height:1.42!important;margin:12px 0}
+.friend-progress{font-size:18px!important;font-weight:900;letter-spacing:.03em;text-align:center;color:#386a4e;margin:8px 0}
+.friend-play-stage{display:grid;justify-items:center;gap:12px;margin:12px 0 18px}
+.friend-tap-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;width:100%}
+.friend-tap{background:#d9f0ec;border:2px solid #f8fcf3;border-radius:20px;min-height:78px;font-size:39px;cursor:pointer;touch-action:manipulation;box-shadow:0 4px 0 #88b2a9}
+.friend-popped{opacity:.3;transform:scale(.75);box-shadow:none;pointer-events:none;transition:transform .15s,opacity .15s}
+.friend-melody{letter-spacing:.15em;text-align:center;font-size:35px;padding:13px 4px}
+.friend-music-keys,.friend-dance-keys{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;width:100%}
+.friend-music-key,.friend-dance-key{background:#fcf3d7;border:2px solid #fff;border-radius:20px;font-size:38px;min-width:76px;min-height:82px;cursor:pointer;touch-action:manipulation}
+.friend-dance{font-size:57px;min-height:80px;animation:friend-hello-float 1.5s ease-in-out infinite}
+.friend-beach-ball{font-size:100px;border:0;background:transparent;min-height:160px;min-width:140px;cursor:pointer;touch-action:manipulation;transition:transform .18s ease}
+.friend-mini-tip{font-size:14px!important;text-align:center}
+.friend-stop{display:block;margin:15px auto 0;width:100%}
+.explore-actions .friend-hello.picture-button{background:#f7e4a8;color:#254d43;border-color:#fff5c5;box-shadow:0 5px 0 #8f803a70}
+.friend-wiggle{animation:friend-wiggle .32s ease-in-out}
+.friend-bounce{animation:friend-bounce .38s ease}
+@keyframes friend-wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-7deg)}75%{transform:rotate(7deg)}}
+@keyframes friend-bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.22)}}
+@keyframes friend-hello-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+body[data-scene="islandQuest"] .friend-peek,body[data-scene="islandQuest"] .friend-world-label{display:none!important}
+.helpers-open .friend-peek,.snack-moment .friend-peek{visibility:hidden;pointer-events:none}
+@media(max-width:780px){
+ .friend-peek{top:239px;right:12px;min-width:98px;min-height:48px;padding:7px 9px;font-size:12px}
+ .friend-world-label{font-size:12px;padding:7px 10px;min-height:42px}
+ .friend-panel{top:76px;max-height:calc(100svh - 84px);width:min(550px,96vw);padding:18px 14px}
+ .friend-panel .friend-title{font-size:24px}
+ .friend-panel .friend-intro{font-size:15px}
+ .friend-panel .friend-greeting{font-size:18px}
+ .friend-directory-card{padding:11px}
+ .friend-primary,.friend-secondary{font-size:16px;min-height:50px}
+ .friend-tap{font-size:32px;min-height:70px}
+ .friend-music-key,.friend-dance-key{font-size:34px;min-width:65px;min-height:70px}
+ .explore-actions .friend-hello.picture-button{min-width:61px;width:61px;max-width:61px;min-height:67px}
+}
+@media(max-height:550px){.friend-peek{top:175px;right:12px}.friend-panel{top:66px;max-height:calc(100svh - 72px)}}
+@media(prefers-reduced-motion:reduce){.friend-hero-face,.friend-dance,.friend-wiggle,.friend-bounce{animation:none}.friend-beach-ball{transition:none}}
