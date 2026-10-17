@@ -9,7 +9,7 @@ import {createWildlifeFriends} from './wildlife-friends.js?v=73';
 import {createHouseInteriors} from './house-interiors.js?v=73';
 import {createPizzaCity} from './pizza-city.js?v=73';
 import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=73';
-import {ESTATE_PLANS,findEstateSite,canBuildEstate,buildEstate,createEstateWorld} from './estate.js?v=1';
+import {ESTATE_PLANS,findEstateSite,canBuildEstate,buildEstate,canUpgradeEstate,upgradeEstate,estateBlocked,createEstateWorld} from './estate.js?v=2';
 import {buildIsland} from './entrance.js?v=73';
 import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,sharkPatrol,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=75';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
@@ -175,6 +175,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  const station=!ride&&!boating&&!inside&&!swimming&&!mountId&&!carDriving&&workshop?.nearest(s.x,s.z);
  if(station){if(workshop.isBuilt(station.id))workshop.use(station.id);else showBag(station.id);return;}
  if(!ride&&!boating&&!inside&&!mountId&&!carDriving&&!houseSystem?.isInside()&&cityLife?.interactActivity(s.x,s.z,false))return;
+ if(!ride&&!boating&&!inside&&!mountId&&!carDriving&&estateWorld?.nearest(s.x,s.z)){showEstate();return;}
  const wildAnimal=wildLife?.nearestRideable(s.x,s.z);
  if(wildAnimal&&!ride&&!boating&&!control?.boatNear()){wildLife.markRidden(wildAnimal);friendSystem?.ride(wildAnimal.kind==='Dolphin'?'dori':'pip',{x:wildAnimal.g.position.x,z:wildAnimal.g.position.z});return;}
  if(!ride&&!inside&&!foodNear&&!control?.boatNear()){const f=friendSystem?.nearest(boating?'boat':swimming?'swim':'walk');if(f){friendSystem.open(f.id);return;}}
@@ -341,20 +342,42 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    const costs=makeEl('div','estate-costs',`🍌 ${p.banana}  🥥 ${p.coconut}  🪙 ${p.coins}  🍀 ${p.charms}`);card.append(costs);
    if(owns<p.unlock)card.append(makeEl('p','estate-locked',say('🔒 Construye '+p.unlock+' antes','🔒 Build '+p.unlock+' other buildings first')));
    const action=btn(ok?say('✨ Construir aquí','✨ Build here'):say('🔎 Me faltan recursos','🔎 Collect more resources'),'estate-build-button',()=>{
-    if(!canBuildEstate(s,p.type,coinBalance(state))){showEstate();return;}
+    if(action.disabled||!canBuildEstate(s,p.type,coinBalance(state))){showEstate();return;}
+    action.disabled=true;
     if(boating||ride||swimming||inside||carDriving||mountId||houseSystem?.isInside()){
-      tell('🏡 Baja a tierra firme para construir.','🏡 Step onto land before building.');return;
+      action.disabled=false;tell('🏡 Baja a tierra firme para construir.','🏡 Step onto land before building.');return;
     }
     const site=findEstateSite(s,p.type,{x:s.x,z:s.z},{canStand:(x,z)=>walkable(x,z)&&!inWater(x,z),height:(x,z)=>isletHeight(x,z)>0?isletHeight(x,z):0});
-    if(!site){tell('🏝️ Necesitas un espacio plano cerca. Ve a otro lugar y prueba.','🏝️ Find some flat open land nearby and try again.');return;}
+    if(!site){action.disabled=false;tell('🏝️ Necesitas un espacio plano cerca. Ve a otro lugar y prueba.','🏝️ Find some flat open land nearby and try again.');return;}
     const entry=buildEstate(s,p.type,coinBalance(state),site);
-    if(!entry)return;
+    if(!entry){action.disabled=false;return;}
     estateWorld?.add(entry);save();refresh();panel.hidden=true;panel.classList.remove('estate-panel');
     joy.effect('finish');tell('🎉 ¡Lo construiste! Mira tu nueva creación.','🎉 You built it! Look at your new creation.');
     targetPoint=null;route=[];
    });action.disabled=!ok;card.append(action);plans.append(card);
   }
-  panel.append(plans,btn(say('🧰 Ver construcciones clásicas','🧰 See classic workshops'),'estate-legacy-link',()=>{panel.classList.remove('estate-panel');showBag();}));
+  panel.append(plans);
+  if(owns){
+   panel.append(makeEl('h3','estate-upgrade-heading',say('⭐ Mejora mis propiedades','⭐ Upgrade my properties')));
+   const upgrades=makeEl('div','estate-upgrades');
+   for(const b of s.estate.buildings.slice(-8).reverse()){
+    const p=ESTATE_PLANS.find(p=>p.type===b.type),row=makeEl('div','estate-upgrade-row');
+    row.append(makeEl('strong','',p.icon+' '+(es?p.es:p.en)+' · Lv '+b.level+'/3'));
+    const valid=canUpgradeEstate(s,b.id,coinBalance(state));
+    const nextCost=b.level===1?'🍌1 🥥1 🪙10':b.level===2?'🍌2 🥥2 🪙20 🍀1':'';
+    const btnUp=btn(b.level===3?say('✅ Al máximo','✅ Maxed out'):say('⬆️ Mejorar','⬆️ Upgrade')+' · '+nextCost,'estate-upgrade-button',()=>{
+      if(!canUpgradeEstate(s,b.id,coinBalance(state)))return;
+      btnUp.disabled=true;
+      if(!upgradeEstate(s,b.id,coinBalance(state))){btnUp.disabled=false;return;}
+      estateWorld?.upgrade(b.id);save();refresh();showEstate();
+      tell('✨ ¡Tu propiedad es más grande ahora!','✨ Your property just grew!');
+    });btnUp.disabled=!valid;row.append(btnUp);upgrades.append(row);
+   }
+   panel.append(upgrades);
+  }
+  panel.append(btn(say('🍌 🥥 ¿Dónde consigo recursos?','🍌 🥥 Where do I find supplies?'),'estate-find-link',()=>{panel.classList.remove('estate-panel');showDiscover();}),
+    btn(say('🧰 Ver construcciones clásicas','🧰 See classic workshops'),'estate-legacy-link',()=>{panel.classList.remove('estate-panel');showBag();}));
+
  }
  function showFood(){if(friendSystem?.isOpen())friendSystem.close();if(adventureMap.isOpen())adventureMap.close(false);setHelpers(false);panel.replaceChildren();panel.hidden=false;blur();targetPoint=null;panel.append(btn('×','panel-close',()=>{panel.hidden=true;}),makeEl('h2','',say('Mi comida','My food')),makeEl('p','',say('🍌 Comparte tus plátanos: comer · construir · mercado','🍌 Share your bananas: eat · build · market')),makeEl('p','',say('Come y crece','Eat and grow')+' · '+s.growth.toFixed(1)+'×'));for(const kind of ['coconut','banana']){const icon=kind==='coconut'?'🥥':'🍌',b=btn(icon+' × '+s.food[kind]+' · '+say('Comer','Eat'),'discover-place',()=>{if(!spendFood(s,kind))return;eating=2;host.classList.add("snack-moment");energy=30;s.journey.meals++;s.growth=Math.min(6,s.growth+.45);control?.snack(kind);save();refresh();panel.hidden=true;joy.effect('correct');tell(icon+' ¡Ñam! ↗ '+s.growth.toFixed(1)+'×',icon+' Yum! ↗ '+s.growth.toFixed(1)+'×');});b.disabled=!s.food[kind];panel.append(b);}if(s.growth>1)panel.append(btn(say('↘ Volver a pequeña','↘ Little again'),'discover-place',()=>{s.growth=1;save();panel.hidden=true;}));}
  function showShop(){if(friendSystem?.isOpen())friendSystem.close();if(adventureMap.isOpen())adventureMap.close(false);panel.replaceChildren();panel.hidden=false;blur();targetPoint=null;const close=btn('×','panel-close',()=>{panel.hidden=true;canvas.focus({preventScroll:true});});close.setAttribute('aria-label',say('Cerrar','Close'));panel.append(close,makeEl('h2','',say('Mis monedas','My coins')),makeEl('p','',say(`Tienes ${coinBalance(state)} monedas de la isla.`,`You have ${coinBalance(state)} island coins.`)),makeEl('p','',say('Ayuda a un amigo: 10. Cuida una flor: 2. Prepara el picnic, ilumina el bosque o crea música: 15. Cada buena acción da monedas una vez.','Help a friend: 10. Care for a flower: 2. Prepare the picnic, light the grove, or make music: 15. Each good deed earns coins once.')));const list=makeEl('div','discover-grid');for(const item of islandShop){const owned=state.wallet.items.includes(item.id);const buy=btn((es?item.es:item.en)+' · '+(owned?say('Poner','Wear'):item.cost+' 🪙'),'discover-place',()=>{if(!buyIslandItem(state,item.id))return;save();refresh();control?.dress();joy.effect('coin');showShop();});buy.disabled=!owned&&coinBalance(state)<item.cost;list.append(buy);}panel.append(list);close.focus();guide(say('Tus buenas acciones te dan monedas. Puedes ahorrar o elegir un sombrero.','Your good deeds earn coins. You can save them or choose a hat.'),true);}
@@ -540,7 +563,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    const down=(...ks)=>ks.some(k=>keys.has(k));let dx=stick.x+(down('ArrowRight','d','D')?1:0)-(down('ArrowLeft','a','A')?1:0),dz=stick.z+(down('ArrowDown','s','S')?1:0)-(down('ArrowUp','w','W')?1:0);
    if(targetPoint&&panel.hidden){const x=targetPoint.x-s.x,z=targetPoint.z-s.z,d=Math.hypot(x,z);if(d<.25){targetPoint=route.shift()||null;marker.visible=!!targetPoint;}else{dx=x/d;dz=z/d;}}
    if(paused()||journey.isOpen()||document.querySelector('dialog[open]')){keys.clear();stick.x=stick.z=0;dx=dz=0;}const active=!paused()&&!document.hidden&&panel.hidden&&!journey.isOpen()&&!document.querySelector('dialog[open]');if(active){currentHint=Math.max(0,currentHint-dt);swimBoost=Math.max(0,swimBoost-dt);rescueCooldown=Math.max(0,rescueCooldown-dt);}const speed=houseSystem?.isInside()?0:carDriving?0:mountId?(mountId==='dori'?10.5:8):inside?2:swimming?(swimBoost>0||down('Shift')?6:3.3):(down('Shift')||energy>0?7:4.7),len=Math.hypot(dx,dz);if(active&&houseSystem?.isInside()){const p=houseSystem.move(dx,dz,dt);if(len)avatar.rotation.y=Math.atan2(dx,dz);}
-   if(len>0&&active&&!carDriving&&!ride&&!inside&&!boating&&!houseSystem?.isInside()){dx/=Math.max(1,len);dz/=Math.max(1,len);let nx=s.x+dx*speed*dt,nz=s.z+dz*speed*dt;const edge=Math.sqrt((nx/200)**2+(nz/175)**2);if(edge>1){nx/=edge;nz/=edge;}if(!airborne&&!mountId&&!remoteAccess(s,{x:nx,z:nz})){nx=s.x;nz=s.z;if(currentHint===0){tell('🌊 Corrientes fuertes · ⛵ 🎈','🌊 Strong currents · ⛵ 🎈');currentHint=5;}}if(mountId||airborne||traversable(nx,nz)){s.x=nx;s.z=nz;}else if(traversable(nx,s.z))s.x=nx;else if(traversable(s.x,nz))s.z=nz;avatar.rotation.y=Math.atan2(dx,dz);step+=dt*12;autosave+=dt;if(autosave>2){save();autosave=0;}}
+   if(len>0&&active&&!carDriving&&!ride&&!inside&&!boating&&!houseSystem?.isInside()){dx/=Math.max(1,len);dz/=Math.max(1,len);let nx=s.x+dx*speed*dt,nz=s.z+dz*speed*dt;const edge=Math.sqrt((nx/200)**2+(nz/175)**2);if(edge>1){nx/=edge;nz/=edge;}if(!airborne&&!mountId&&!remoteAccess(s,{x:nx,z:nz})){nx=s.x;nz=s.z;if(currentHint===0){tell('🌊 Corrientes fuertes · ⛵ 🎈','🌊 Strong currents · ⛵ 🎈');currentHint=5;}}const canMove=(px,pz)=>traversable(px,pz)&&!estateBlocked(s,px,pz);if(mountId||airborne||canMove(nx,nz)){s.x=nx;s.z=nz;}else if(canMove(nx,s.z))s.x=nx;else if(canMove(s.x,nz))s.z=nz;avatar.rotation.y=Math.atan2(dx,dz);step+=dt*12;autosave+=dt;if(autosave>2){save();autosave=0;}}
    let landed=false;if(active&&dt>0&&(jumpY>0||velocity>0)){const aboveGround=jumpY>0;velocity-=15*dt;jumpY=Math.max(0,jumpY+velocity*dt);if(jumpY===0){velocity=0;landed=aboveGround;}}
    if(birdMount()&&active){
     const to=birdLanding?0:birdTarget,pace=birdLanding?5.8:6.4;
@@ -697,7 +720,9 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    else if(!inside&&!boating&&!swimming&&!ride&&!mountId&&!carDriving&&!houseSystem?.isInside()&&cityLife?.activityPrompt(s.x,s.z)){
     act.hidden=false;setText(act,cityLife.activityPrompt(s.x,s.z));
    }
-   else if(foodNear){act.hidden=false;setText(act,foodNear.kind==='coconut'?say('🥥 Recoger coco','🥥 Pick coconut'):say('🍌 Recoger plátano','🍌 Pick banana'));}guideBeacon.visible=guideBeacon.visible&&!inside&&!boating&&!ride;
+   else if(foodNear){act.hidden=false;setText(act,foodNear.kind==='coconut'?say('🥥 Recoger coco','🥥 Pick coconut'):say('🍌 Recoger plátano','🍌 Pick banana'));}
+   else if(!inside&&!boating&&!ride&&!mountId&&!carDriving&&!swimming&&estateWorld?.nearest(s.x,s.z)){act.hidden=false;setText(act,say('🏡 Ver mi propiedad','🏡 My property'));}
+   guideBeacon.visible=guideBeacon.visible&&!inside&&!boating&&!ride;
    houseSystem?.updateDoor(s.x,s.z,!!mountId||!!ride||boating||carDriving||inside||houseSystem?.isInside());
    const playful=mountId||carDriving||houseSystem?.isInside()?null:friendSystem?.nearest(ride?'fly':boating?'boat':swimming?'swim':'walk');
    friendMeet.hidden=!playful||!!ride||inside||airborne||!!mountId||houseSystem?.isInside()||!panel.hidden||!host.classList.contains('explore-ready');
