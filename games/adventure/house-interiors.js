@@ -83,13 +83,13 @@ export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geomet
   }
   const warm= new T.PointLight('#ffe2a4',2.5,24);
   warm.position.set(0,4,0);root.add(warm);
-  rooms.set(cfg.id,{root,props,cfg});
+  const room={root,props,cfg};rooms.set(cfg.id,room);return room;
  }
- for(const cfg of villageHouses)build(cfg);
+ // Lazy-build rooms to preserve frame rate on low-power phones.
  function near(x,z){if(active)return null;return villageHouses.filter(h=>Math.hypot(x-h.x,z-h.z)<4.6).sort((a,b)=>Math.hypot(x-a.x,z-a.z)-Math.hypot(x-b.x,z-b.z))[0]||null;}
  function enter(cfg){
   if(!cfg||active)return false;
-  lastSpot={x:cfg.x,z:cfg.z};active=rooms.get(cfg.id);localX=0;localZ=2.2;
+  lastSpot={x:cfg.x,z:cfg.z};active=rooms.get(cfg.id)||build(cfg);localX=0;localZ=2.2;
   active.saved=new Map();
   for(const o of scene.children){
    if(o===active.root||o===avatar||o.isLight||o===camera||o.userData?.friendId===companionId())continue;
