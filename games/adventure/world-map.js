@@ -2,7 +2,7 @@
    X is east/right and Z is south/down, matching ArrowUp (negative Z). */
 export function createWorldMap({host,panel,world,islands,places,language,onTravel,onOpen}){
  const es=language==='es',say=(a,b)=>es?a:b,ns='http://www.w3.org/2000/svg';
- const land=[{id:'home',x:0,z:0,rx:20,rz:14,es:'Bahía de Pip',en:"Pip's Bay",icon:'🏡'}]
+ const land=[{id:'home',x:0,z:0,rx:20,rz:14,es:'Playa Gorgona',en:'Playa Gorgona',icon:'🏡'}]
    .concat(islands.map(i=>({id:i.id,x:i.x,z:i.z,rx:i.rx,rz:i.rz,es:i.es,en:i.en,
      icon:({islet:'🦋',wilds:'🍌',coconutCoast:'🥥',sunset:'✨',crystalCove:'💎',pizzaCity:'🍕'})[i.id]||'🏝️'})));
  const point=(x,z)=>({x:Number(x)||0,z:Number(z)||0});
@@ -82,14 +82,14 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
   onOpen?.();
   opened=true;zoom=1;chosen=null;center=point(0,0);
   panel.replaceChildren();panel.hidden=false;panel.classList.add('island-map-open');
-  const title=elem('h2','island-map-heading','🗺️ '+say('Mapa de las islas','Island Adventure Map'));
+  const title=elem('h2','island-map-heading','🗺️ '+say('Mapa de Panamá Fantástico','Fantasy Panama Adventure Map'));
   const closeButton=elem('button','panel-close','×');closeButton.type='button';
   closeButton.setAttribute('aria-label',say('Cerrar mapa','Close map'));closeButton.addEventListener('click',()=>close());panel.append(title,closeButton);
   placeReadout=elem('p','island-map-you-are');panel.append(placeReadout);
   const frame=elem('div','island-map-frame');
   full=drawing(false);frame.append(full.svg);
   panel.append(frame,drawControls());
-  panel.append(elem('p','island-map-guide',say('📍 Tú eres la flecha naranja. Toca una isla para ir hacia ella.','📍 You are the orange arrow. Tap an island to head there.')));
+  panel.append(elem('p','island-map-guide',say('📍 Panamá de fantasía: toca un destino para explorar. Las posiciones son de juego, no un mapa real.','📍 Fantasy Panama: tap a destination to explore. Locations are playful, not geographically exact.')));
   const destinations=elem('div','island-map-destinations');
   for(const island of land){
     const destination=islandTarget(island.id);if(!destination)continue;
