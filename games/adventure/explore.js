@@ -218,6 +218,11 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   if(ride){targetPoint={x:p.x,z:p.z};route=[];panel.hidden=true;return;}
   if(boating&&land){const a=Math.atan2(s.x-land.x,s.z-land.z);let dest={x:land.x+Math.sin(a)*(land.rx+3),z:land.z+Math.cos(a)*(land.rz+3)};dest=recoverBoat(dest.x,dest.z);targetPoint=dest;route=[];panel.hidden=true;return;}
   if(land&&!here){panel.replaceChildren(btn('×','panel-close',()=>panel.hidden=true),makeEl('h2','',(es?land.es:land.en)),makeEl('p','',say('¿Cómo quieres explorar?','How will you explore?')));panel.hidden=false;
+   if(land.id==='pizzaCity')panel.append(btn(say('🏙️ ¡Visitar Ciudad de Panamá ahora!','🏙️ Visit Panama City now'),'discover-place',()=>{
+    s.x=s.city.car.x+3.2;s.z=s.city.car.z+1.1;swimming=false;targetPoint=null;route=[];
+    panel.hidden=true;blur();save();refresh();
+    tell('🏙️ ¡Bienvenida al Casco Viejo! 🚙 🏁 ⚽ 🍕','🏙️ Welcome to Casco Viejo! 🚙 🏁 ⚽ 🍕');
+   }));
    for(const [icon,dest] of [['⛵',s.boat],['🎈',explorePlaces.find(p=>p.id==='balloon')],...(remoteAccess(s,p)?[['🏊',p]]:[])])panel.append(btn(icon,'discover-place',()=>{route=islandPath(s,dest);targetPoint=route.shift()||null;panel.hidden=true;}));return;
   }
   if(boating)control?.disembark();const dest=p.id==='boat'?s.boat:p;route=islandPath(s,dest);targetPoint=route.shift()||null;panel.hidden=true;
