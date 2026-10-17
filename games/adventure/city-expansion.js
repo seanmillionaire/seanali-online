@@ -4,7 +4,7 @@
 export const CITY_SITES=[
  {id:'rally',x:-106,z:-88,icon:'🏁',en:'City driving rally',es:'Carrera por la ciudad'},
  {id:'soccer',x:-117,z:-43,icon:'⚽',en:'Football challenge',es:'Reto de fútbol'},
- {id:'market',x:-76,z:-86,icon:'🥭',en:'Mercado de Mariscos',es:'Mercado de Mariscos'},
+ {id:'market',x:-76,z:-86,icon:'🥭',en:'Panama Fruit Market',es:'Mercado de Frutas de Panamá'},
  {id:'mural',x:-132,z:-88,icon:'🎨',en:'Casco Viejo street art',es:'Murales del Casco Viejo'},
  {id:'museum0',x:-82,z:-102,icon:'🏛️',en:'History exhibit',es:'Exhibición de historia'},
  {id:'museum1',x:-71,z:-97,icon:'🦋',en:'Panama nature exhibit',es:'Exhibición de naturaleza'},
@@ -353,9 +353,9 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
   washCooldown.time=Math.max(0,washCooldown.time-dt);
  }
  function status(){
-  if(cityWaypoint)return '📍 '+(es?cityWaypoint.es:cityWaypoint.en);
   if(race.active)return '🏁 '+(race.index+1)+'/4  ·  '+Math.ceil(Math.max(0,120-race.elapsed))+'s';
   if(a.deliveryActive)return '🍕 '+a.deliveries.length+'/3  ·  📦';
+  if(cityWaypoint)return '📍 '+(es?cityWaypoint.es:cityWaypoint.en);
   return '🏁 '+a.rallyWins+'   ⚽ '+a.soccerGoals+'   🏛️ '+a.museum.length+'/3';
  }
  function goal(){if(race.active)return CITY_RALLY[race.index];
