@@ -3,12 +3,12 @@ import {oceanModel} from './ocean-models.js?v=38';
 import {createAnimalDetails} from './animal-details.js?v=2';
 // Repeatable, optional play with six friends in the 3D world.
 export const islandFriends=[
- {id:'pip',icon:'🐢',name:'Pip',where:['Bahía de Pip','Pip’s Bay'],game:['Búsqueda de conchas','Shell hunt'],hello:['¡Angelique! ¿Buscamos conchitas juntos?','Angelique! Shall we look for shells together?']},
- {id:'dori',icon:'🐬',name:'Dori',where:['Muelle de delfines','Dolphin Dock'],game:['Fiesta de burbujas','Bubble splash party'],hello:['¡Hola, Angelique! ¡Vamos a saltar y jugar!','Hi Angelique! Let’s splash and play!']},
- {id:'mila',icon:'🦜',name:'Mila',where:['Isla de Plátanos','Banana Island'],game:['Música de loro','Parrot music'],hello:['¡Pío, pío! ¡Hagamos una canción!','Squawk, squawk! Let’s make a song!']},
- {id:'ollie',icon:'🪶',name:'Ollie',where:['Bosque de Luciérnagas','Firefly Forest'],game:['Luces escondidas','Find the fireflies'],hello:['¡Mis luciérnagas se escondieron!','My firefly friends are hiding!']},
- {id:'luna',icon:'🦀',name:'Luna',where:['Cala Cristal','Crystal Cove'],game:['Baile de cangrejo','Crab dance party'],hello:['¡Angelique! ¡Baila como un cangrejo conmigo!','Angelique! Do the crab dance with me!']},
- {id:'kai',icon:'👦',name:'Kai',where:['Isla de Cocos','Coconut Island'],game:['Pelota de playa','Beach-ball toss'],hello:['¡Hola! ¡Te guardé la pelota de playa!','Hey! I saved the beach ball for you!']}
+ {id:'pip',icon:'🐢',name:'Pip',where:['Playa Gorgona','Playa Gorgona'],game:['Búsqueda de conchas','Shell hunt'],hello:['¡Angelique! ¿Buscamos conchitas juntos?','Angelique! Shall we look for shells together?']},
+ {id:'dori',icon:'🐬',name:'Dori',where:['Muelle de Gorgona','Gorgona Dock'],game:['Fiesta de burbujas','Bubble splash party'],hello:['¡Hola, Angelique! ¡Vamos a saltar y jugar!','Hi Angelique! Let’s splash and play!']},
+ {id:'mila',icon:'🦜',name:'Mila',where:['Bocas del Toro','Bocas del Toro'],game:['Música de loro','Parrot music'],hello:['¡Pío, pío! ¡Hagamos una canción!','Squawk, squawk! Let’s make a song!']},
+ {id:'ollie',icon:'🪶',name:'Ollie',where:['Boquete · Bosque Nuboso','Boquete · Cloud Forest'],game:['Luces escondidas','Find the fireflies'],hello:['¡Mis luciérnagas se escondieron!','My firefly friends are hiding!']},
+ {id:'luna',icon:'🦀',name:'Luna',where:['Guna Yala · San Blas','Guna Yala · San Blas'],game:['Baile de cangrejo','Crab dance party'],hello:['¡Angelique! ¡Baila como un cangrejo conmigo!','Angelique! Do the crab dance with me!']},
+ {id:'kai',icon:'👦',name:'Kai',where:['Isla Contadora','Isla Contadora'],game:['Pelota de playa','Beach-ball toss'],hello:['¡Hola! ¡Te guardé la pelota de playa!','Hey! I saved the beach ball for you!']}
 ];
 export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,geometry,ball,cone,cylinder,height,joy,save,refresh,onTravel,onOpen,onLessons,onMount=()=>{},motion}){
  const s=state.world,es=state.lang==='es',say=(a,b)=>es?a:b,tr=a=>a[es?0:1];
