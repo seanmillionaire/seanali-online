@@ -1,6 +1,6 @@
 import {islandPoint} from './explore-state.js?v=55';
 /* One shared photographic atlas; textured cutouts keep the natural detail inexpensive on phones. */
-export function createTropical({T,scene,camera,height,geometry,mat,make,ball,renderer}){
+export function createTropical({T,scene,camera,height,geometry,mat,make,ball,renderer,surfaces=null}){
  const temp=new T.Vector3();let loaded=false;const textures=[],cards=[],wildlife=[],atlas=new T.TextureLoader().load('/games/adventure/tropical-atlas.png',()=>{loaded=true;cards.forEach(c=>c.visible=true);if(renderer)renderer.shadowMap.needsUpdate=true;});textures.push(atlas);atlas.colorSpace=T.SRGBColorSpace;atlas.anisotropy=4;
  const tileGeometries=[],tileMaterials=[];
  for(let tile=0;tile<16;tile++){
@@ -12,7 +12,7 @@ export function createTropical({T,scene,camera,height,geometry,mat,make,ball,ren
  const grain=new T.DataTexture(data,size,size,T.RGBAFormat);grain.wrapS=grain.wrapT=T.RepeatWrapping;grain.magFilter=T.LinearFilter;grain.minFilter=T.LinearMipmapLinearFilter;grain.generateMipmaps=true;grain.needsUpdate=true;textures.push(grain);
  let randomSeed=91;const random=()=>{randomSeed=(randomSeed*1664525+1013904223)>>>0;return randomSeed/4294967296;};
  // Sculpted palms: curved trunks and individual tapered leaflets, sharing one canopy mesh.
- const foodTrees=[],palms=[],bark=mat('#807052',{map:grain,bumpMap:grain,bumpScale:.08}),frond=mat('#397b39',{side:T.DoubleSide,roughness:.78,vertexColors:true}),coconut=mat('#807347',{roughness:.95});
+ const foodTrees=[],palms=[],bark=mat('#807052',{map:surfaces?.wood||grain,bumpMap:surfaces?.wood||grain,bumpScale:.08}),frond=mat('#397b39',{side:T.DoubleSide,roughness:.78,vertexColors:true}),coconut=mat('#807347',{roughness:.95});
  const leafPoints=[],leafColors=[];
  const addTri=(a,b,c,tone)=>{for(const p of [a,b,c]){leafPoints.push(...p);leafColors.push(.65*tone,tone,.55*tone);}};
  for(let f=0;f<9;f++){
