@@ -147,7 +147,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  const contextRestored=()=>{if(disposed||!engine)return;ready();engine.resume?.();};
  canvas.addEventListener('webglcontextlost',contextLost);canvas.addEventListener('webglcontextrestored',contextRestored);
  start();
- function setup({T,scene,camera,target,height,make,geometry,mat,ball,cone,cylinder,box,tropical,tower,beam,crystal,dockBoat,sun,ambient,waterMaterial}){
+ function setup({T,scene,camera,target,height,make,geometry,mat,ball,cone,cylinder,box,tropical,tower,beam,crystal,dockBoat,sun,ambient,waterMaterial,surfaces}){
   const gold=mat('#ffd46b'),pink=mat('#ed91b6'),orange=mat('#ef9955'),cream=mat('#fff2d3'),ink=mat('#254550'),purple=mat('#a895ed'),green=mat('#68bd7d');
   const avatar=new T.Group();avatar.name='Angelique';scene.add(avatar);const skin=mat('#bd8e68'),shirt=mat('#b8a6d7'),shorts=mat('#437c80'),hair=mat('#44352a');
   make(geometry(new T.CylinderGeometry(.24,.20,.58,12)),shirt,0,1.06,0,1,1,1,avatar);make(ball,skin,0,1.58,0,.22,.27,.21,avatar);make(ball,hair,0,1.73,-.03,.23,.15,.21,avatar);
@@ -260,9 +260,9 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   camera.fov=60;camera.updateProjectionMatrix();
   control={catchNearest,falling:()=>airborne,normalizeRider:()=>{bodyScale=1;},boardBalloon,popBalloon,board,disembark,boatNear,harvest,snack:(kind)=>{coconutSnack.visible=kind==='coconut';bananaSnack.visible=kind==='banana';spark(s.x,s.z,16,avatar.position.y+bodyScale*1.4);},enterTower,leaveTower,lightBeacon,bubbles:blowBubbles,hop:(v=5)=>{if(inside){if(towerV===0)towerV=v;}else if(!airborne&&jumpY<.1)velocity=v+(s.growth>=2?Math.min(4,s.growth-1):0);},spark,bloom,dress,demo:()=>{music=[];spark(pads[1].x,pads[1].z,8);}};bloom(s.flowers);dress();
   const life=createIslandLife({T,scene,camera,state,make,mat,geometry,ball,cone,box,sun,ambient,waterMaterial,inWater,sharkStep});wildLife=life;
-  cityLife=createPizzaCity({T,scene,camera,state,height,make,mat,geometry,ball,box,cylinder,cone,joy,save,refresh,tell:(msg)=>tell(msg,msg)});
+  cityLife=createPizzaCity({T,scene,camera,state,height,make,mat,geometry,ball,box,cylinder,cone,surfaces,joy,save,refresh,tell:(msg)=>tell(msg,msg)});
   cityLife.attach(host);cityLife.setCoinAward(id=>earnCoins(state,id));
-  houseSystem=createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,height,language:state.lang,companionId:()=>s.friends?.companion,onPizza:()=>cityLife?.order(),
+  houseSystem=createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,height,surfaces,language:state.lang,companionId:()=>s.friends?.companion,onPizza:()=>cityLife?.order(),
     onEnter:()=>{if(carDriving)exitCar();if(mountId)friendSystem?.dismount();swimming=false;boating=false;ride=0;s.flight=0;blur();route=[];targetPoint=null;host.classList.add('inside-cottage');},
     onMessage:m=>tell(m,m)
   });
@@ -307,6 +307,14 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
      autosave+=dt;if(autosave>2){save();autosave=0;}
     }
     cityLife.updateCar();
+   }
+   // Moving white trail behind the boat, fading naturally after disembarking.
+   if(waterMaterial?.uniforms?.wakeStrength){
+    const uniforms=waterMaterial.uniforms;
+    uniforms.wakePosition.value.set(s.boat.x,s.boat.z);
+    uniforms.wakeDirection.value.set(Math.sin(s.boat.heading),Math.cos(s.boat.heading));
+    const force=boating?Math.min(1,boatSpeed/11):0;
+    uniforms.wakeStrength.value+=(force-uniforms.wakeStrength.value)*Math.min(1,dt*3.6);
    }
    if(boating){if(active){const input=Math.min(1,len),desiredHeading=len?Math.atan2(dx,dz):s.boat.heading;const delta=Math.atan2(Math.sin(desiredHeading-s.boat.heading),Math.cos(desiredHeading-s.boat.heading));s.boat.heading+=delta*Math.min(1,dt*3);boatSpeed+=(input*15-boatSpeed)*Math.min(1,dt*2);const moveX=len?dx/len:Math.sin(s.boat.heading),moveZ=len?dz/len:Math.cos(s.boat.heading);const next=boatStep(s.boat.x,s.boat.z,moveX*boatSpeed*dt,moveZ*boatSpeed*dt);if(Math.hypot(next.x-s.boat.x,next.z-s.boat.z)<.00001)boatSpeed=0;s.boat.x=next.x;s.boat.z=next.z;s.x=s.boat.x;s.z=s.boat.z;autosave+=dt;if(autosave>2){save();autosave=0;}}joy.boat?.(active,boatSpeed/16);rideBoat.position.set(s.boat.x,.25,s.boat.z);rideBoat.rotation.y=s.boat.heading-Math.PI/2;avatar.rotation.y=s.boat.heading;}
    if(inside&&active){
