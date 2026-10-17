@@ -1,5 +1,5 @@
-import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=68';
-import {createTropical} from './tropical.js?v=68';
+import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=72';
+import {createTropical} from './tropical.js?v=72';
 import {createSurfaceTextures} from './surface-textures.js?v=2';
 import {installPolyHavenMaterials} from './polyhaven-materials.js?v=1';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
