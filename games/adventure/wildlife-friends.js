@@ -1,5 +1,6 @@
 import {explorePlaces,earnCoins} from './explore-state.js?v=43';
 import {oceanModel} from './ocean-models.js?v=38';
+import {createAnimalDetails} from './animal-details.js?v=1';
 // Repeatable, optional play with six friends in the 3D world.
 export const islandFriends=[
  {id:'pip',icon:'🐢',name:'Pip',where:['Bahía de Pip','Pip’s Bay'],game:['Búsqueda de conchas','Shell hunt'],hello:['¡Angelique! ¿Buscamos conchitas juntos?','Angelique! Shall we look for shells together?']},
@@ -36,8 +37,7 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
    const beak=make(cone,yellow,0,parrot?1.55:1.92,.63,.24,.36,.26,g);beak.rotation.x=Math.PI/2;
    for(const sign of [-1,1]){
     sphere(g,ink,sign*.2,parrot?1.79:2.1,.55,.05,.07,.045);
-    const wing=sphere(g,wings,sign*.52,1.1,-.08,.29,.57,.14);
-    wing.rotation.z=sign*.32;moving.push(wing);
+    // Detailed articulated feather wings are supplied by createAnimalDetails.
     sphere(g,yellow,sign*.23,.18,.14,.07,.21,.07);
    }
    if(parrot)sphere(g,pink,0,1.85,-.32,.27,.16,.11);
@@ -63,6 +63,7 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
    }
    other.ball=sphere(g,pink,.9,.6,.8,.35,.35,.35);
   }
+  other.detail=friend.id==='kai'?null:createAnimalDetails({T,id:friend.id,root:g,make,mat,geometry,ball,cone,cylinder});
   g.position.set(p.x,friend.id==='dori'?-0.1:height(p.x,p.z)+(friend.id==='pip'?.36:0),p.z);
   const label=btn(friend.icon+' '+friend.name,'friend-world-label',()=>isNearby(friend.id)?open(friend.id):visit(friend.id));
   label.setAttribute('aria-label',say('Jugar con ','Play with ')+friend.name);host.append(label);labels.push(label);
@@ -214,7 +215,7 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
   }
   return null;
  }
- function update(dt,active,{mode='walk',inside=false,mount=null,heading=0,roomPosition=null}={}){
+ function update(dt,active,{mode='walk',inside=false,mount=null,heading=0,roomPosition=null,mountAltitude=0,moving=false}={}){
   if(document.hidden)return;
   if(motion())time+=Math.min(dt,.05);
   const following=friends.companion;
@@ -229,6 +230,7 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
    if(n.cheer>0)n.cheer=Math.max(0,n.cheer-dt);
    const bounce=n.cheer>0?Math.abs(Math.sin((2.5-n.cheer)*10))*.34:0;
    const indoors=canFollow&&mode==='house'&&roomPosition;
+   const isBird=id==='mila'||id==='ollie',birdInFlight=isBird&&isRidden&&mountAltitude>0;
    const footHeight=indoors?roomPosition.y:height(n.g.position.x,n.g.position.z);
    const sea=mode==='swim'||mode==='boat'||mode==='mount-water';
    const aquatic=id==='dori'&&(sea||isRidden&&mode==='mount-water');
@@ -238,7 +240,9 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
     if(id==='dori')p.rotation.x=Math.sin(time*5)*.3;
     else p.rotation.z=Math.sin(time*(id==='luna'?4:3)+i)*.2;
    }
+   if(birdInFlight)n.g.position.y=(mode==='mount-water'?0:footHeight)+mountAltitude+Math.sin(time*6)*.08;
    if(canFollow&&mode==='fly'&&s.flight>0)n.g.position.y=s.flight+(id==='dori'?-.5:.3);
+   n.other.detail?.animate(time,{moving:isRidden||canFollow||moving,flying:birdInFlight||isBird&&canFollow&&mode==='fly'});
    if(n.other.walkers)for(const limb of n.other.walkers){
     const swing=canFollow?Math.sin(time*9)*.48:Math.sin(time*1.4)*.08;
     limb.leg.rotation.x=swing*limb.sign;
