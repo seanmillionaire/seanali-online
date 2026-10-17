@@ -54,7 +54,7 @@ export function createSurfaceTextures(T){
     red=value+7;green=value-2;blue=value-7;
    }else if(kind==='plaster'){
     const grit=hash(x,y,seed+4)>.98?-23:0;
-    value=228+(large-.5)*14+(fine-.5)*14+grit;
+    value=226+(large-.5)*19+(fine-.5)*19+grit;
     red=value+2;green=value+1;blue=value;
    }
    put((y*size+x)*4,red,green,blue);
