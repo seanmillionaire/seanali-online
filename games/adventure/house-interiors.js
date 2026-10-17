@@ -8,7 +8,7 @@ export const villageHouses=[
  {id:'cozy',x:9,z:-4,es:'Casita de Juegos',en:'Playhouse',icon:'🧸',theme:'play'},
  {id:'pizzeria',x:-84,z:-60,es:'Pizzería de Angelique',en:'Angelique’s Pizza Place',icon:'🍕',theme:'pizza'}
 ];
-export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,language='en',companionId=()=>null,onEnter=()=>{},onPizza=()=>{},onMessage}){
+export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,surfaces=null,language='en',companionId=()=>null,onEnter=()=>{},onPizza=()=>{},onMessage}){
  const es=language==='es';
  const rooms=new Map(),originZ=280;
  const cssButton=document.createElement('button');
@@ -27,7 +27,13 @@ export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geomet
  };
  function build(cfg){
   const root=new T.Group();root.name=cfg.en+' interior';root.position.set(0,0,originZ);scene.add(root);root.visible=false;
-  const t=themes[cfg.theme],floor=mat(t.floor),walls=mat(t.wall),back=mat(t.back),rug=mat(t.rug),accent=mat(t.accent),wood=mat(t.furniture),cream=mat('#fff8e8'),ink=mat('#455868');
+  const t=themes[cfg.theme],
+   floor=mat(t.floor,{map:surfaces?.wood,bumpMap:surfaces?.wood,bumpScale:.045,roughness:.89}),
+   walls=mat(t.wall,{map:surfaces?.plaster,bumpMap:surfaces?.plaster,bumpScale:.029,roughness:.98}),
+   back=mat(t.back,{map:surfaces?.plaster,bumpMap:surfaces?.plaster,bumpScale:.03,roughness:.98}),
+   rug=mat(t.rug,{roughness:1}),accent=mat(t.accent,{roughness:.83}),
+   wood=mat(t.furniture,{map:surfaces?.wood,bumpMap:surfaces?.wood,bumpScale:.047,roughness:.87}),
+   cream=mat('#fff8e8',{map:surfaces?.plaster}),ink=mat('#455868');
   const prop=(geo,m,x,y,z,sx,sy,sz,parent=root)=>{const mesh=make(geo,m,x,y,z,sx,sy,sz,parent);mesh.castShadow=false;return mesh;};
   // Wide 10m x 9m dollhouse: a real space with an open front and no roof.
   prop(box,floor,0,-.28,0,10.2,.56,9.3);
