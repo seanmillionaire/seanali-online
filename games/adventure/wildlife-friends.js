@@ -238,9 +238,16 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
    const aquatic=id==='dori'&&(sea||isRidden&&mode==='mount-water');
    n.g.position.y=(indoors?footHeight+(id==='pip'?.36:.25):aquatic?-.15:footHeight+(id==='pip'?.36:id==='dori'?.28:0))
     +bounce+(isRidden?Math.sin(time*5)*.09:id==='dori'?Math.max(0,Math.sin(time*1.7))*.65:Math.sin(time*2+n.home.z)*.055);
+   // Each species has its own gait: turtle breaststroke, dolphin tail beat,
+   // crab pincers, and subtle feather articulation.
    for(const [i,p]of n.moving.entries()){
-    if(id==='dori')p.rotation.x=Math.sin(time*5)*.3;
-    else p.rotation.z=Math.sin(time*(id==='luna'?4:3)+i)*.2;
+    const phase=time*(isRidden||canFollow?7.0:3.4)+i*Math.PI*.66;
+    if(id==='dori')p.rotation.x=Math.sin(phase)*.36;
+    else if(id==='pip'){
+     p.rotation.x=Math.sin(phase)*.38;
+     p.rotation.z=Math.sin(phase+Math.PI*.5)*.13;
+    }else if(id==='luna')p.rotation.z=Math.sin(phase)*.28;
+    else p.rotation.z=Math.sin(phase)*.12;
    }
    if(birdInFlight)n.g.position.y=(mode==='mount-water'?0:footHeight)+mountAltitude+Math.sin(time*6)*.08;
    else if(isBird&&!indoors)n.g.position.y+= (canFollow?1.8:1.1)+Math.sin(time*3.1)*.22;
