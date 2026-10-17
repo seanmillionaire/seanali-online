@@ -22,7 +22,7 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
  const sphere=(g,m,x,y,z,a,b,c)=>make(ball,m,x,y,z,a,b,c,g);
  let time=0,opened=null,step=0,gameActive=false,mounted=null;
  function model(friend){
-  const g=new T.Group(),p=home(friend.id);g.name='Playable friend: '+friend.name;scene.add(g);
+  const g=new T.Group(),p=home(friend.id);g.name='Playable friend: '+friend.name;g.userData.friendId=friend.id;scene.add(g);
   const moving=[],other={};
   if(friend.id==='pip'||friend.id==='dori'){
    const aquatic=oceanModel(T,{geometry,mat,make,ball},friend.id==='pip'?'Sea turtle':'Dolphin');
@@ -215,13 +215,13 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
   }
   return null;
  }
- function update(dt,active,{mode='walk',inside=false,mount=null,heading=0}={}){
+ function update(dt,active,{mode='walk',inside=false,mount=null,heading=0,roomPosition=null}={}){
   if(document.hidden)return;
   if(motion())time+=Math.min(dt,.05);
   const following=friends.companion;
   for(const n of nodes.values()){
-   const id=n.f.id,isRidden=mounted===id&&mount===id,canFollow=following===id&&!isRidden&&!inside&&mode!=='house';
-   const px=isRidden?s.x:canFollow?s.x-1.7:n.home.x,pz=isRidden?s.z:canFollow?s.z+1.65:n.home.z;
+   const id=n.f.id,isRidden=mounted===id&&mount===id,canFollow=following===id&&!isRidden&&(!inside||mode==='house');
+   const px=isRidden?s.x:canFollow?(mode==='house'&&roomPosition?roomPosition.x-1.35:s.x-1.7):n.home.x,pz=isRidden?s.z:canFollow?(mode==='house'&&roomPosition?roomPosition.z+1.25:s.z+1.65):n.home.z;
    if(isRidden){n.g.position.x=px;n.g.position.z=pz;}
    else if(canFollow&&Math.hypot(px-n.g.position.x,pz-n.g.position.z)>28){n.g.position.x=px;n.g.position.z=pz;}
    else{const factor=Math.min(1,dt*(canFollow?2.6:1.2));n.g.position.x+=(px-n.g.position.x)*factor;n.g.position.z+=(pz-n.g.position.z)*factor;}
@@ -229,15 +229,17 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
    n.g.scale.setScalar(isRidden?(id==='pip'?2.2:id==='dori'?2.65:id==='luna'?2:1.65):1);
    if(n.cheer>0)n.cheer=Math.max(0,n.cheer-dt);
    const bounce=n.cheer>0?Math.abs(Math.sin((2.5-n.cheer)*10))*.34:0;
-   const footHeight=height(n.g.position.x,n.g.position.z);
+   const indoors=canFollow&&mode==='house'&&roomPosition;
+   const footHeight=indoors?roomPosition.y:height(n.g.position.x,n.g.position.z);
    const sea=mode==='swim'||mode==='boat'||mode==='mount-water';
    const aquatic=id==='dori'&&(sea||isRidden&&mode==='mount-water');
-   n.g.position.y=(aquatic?-.15:footHeight+(id==='pip'?.36:id==='dori'?.28:0))
+   n.g.position.y=(indoors?footHeight+(id==='pip'?.36:.25):aquatic?-.15:footHeight+(id==='pip'?.36:id==='dori'?.28:0))
     +bounce+(isRidden?Math.sin(time*5)*.09:id==='dori'?Math.max(0,Math.sin(time*1.7))*.65:Math.sin(time*2+n.home.z)*.055);
    for(const [i,p]of n.moving.entries()){
     if(id==='dori')p.rotation.x=Math.sin(time*5)*.3;
     else p.rotation.z=Math.sin(time*(id==='luna'?4:3)+i)*.2;
    }
+   if(canFollow&&mode==='fly'&&s.flight>0)n.g.position.y=s.flight+(id==='dori'?-.5:.3);
    if(n.other.ball)n.other.ball.position.y=.6+Math.sin(time*2)*.12;
   }
   camera.updateMatrixWorld();
