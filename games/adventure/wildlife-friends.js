@@ -9,7 +9,7 @@ export const islandFriends=[
  {id:'luna',icon:'🦀',name:'Luna',where:['Cala Cristal','Crystal Cove'],game:['Baile de cangrejo','Crab dance party'],hello:['¡Angelique! ¡Baila como un cangrejo conmigo!','Angelique! Do the crab dance with me!']},
  {id:'kai',icon:'👦',name:'Kai',where:['Isla de Cocos','Coconut Island'],game:['Pelota de playa','Beach-ball toss'],hello:['¡Hola! ¡Te guardé la pelota de playa!','Hey! I saved the beach ball for you!']}
 ];
-export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,geometry,ball,cone,cylinder,height,joy,save,refresh,onTravel,onOpen,onLessons,motion}){
+export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,geometry,ball,cone,cylinder,height,joy,save,refresh,onTravel,onOpen,onLessons,onMount=()=>{},motion}){
  const s=state.world,es=state.lang==='es',say=(a,b)=>es?a:b,tr=a=>a[es?0:1];
  s.friends??={visits:[],completed:[],companion:null};
  const friends=s.friends,nodes=new Map(),labels=[],temp=new T.Vector3();
@@ -20,7 +20,7 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
  const btn=(text,cls,callback)=>{const b=el('button',cls,text);b.type='button';b.addEventListener('click',()=>{joy.gesture();joy.effect('tap');callback();});return b;};
  const green=mat('#55a878'),cream=mat('#fff1ce'),ink=mat('#26454e'),pink=mat('#e998b9'),gold=mat('#ffd36c'),yellow=mat('#f1b75c');
  const sphere=(g,m,x,y,z,a,b,c)=>make(ball,m,x,y,z,a,b,c,g);
- let time=0,opened=null,step=0,gameActive=false;
+ let time=0,opened=null,step=0,gameActive=false,mounted=null;
  function model(friend){
   const g=new T.Group(),p=home(friend.id);g.name='Playable friend: '+friend.name;scene.add(g);
   const moving=[],other={};
@@ -89,7 +89,7 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
    const card=el('div','friend-directory-card');
    card.append(el('span','friend-avatar',f.icon));
    const text=el('div','friend-directory-copy');
-   text.append(el('strong','',f.name),el('small','',tr(f.where)),el('span','friend-game-label',tr(f.game)+(friends.completed.includes(f.id)?' ⭐':'')));
+   text.append(el('strong','',f.name),el('small','',tr(f.where)),el('span','friend-game-label',f.id==='kai'?tr(f.game):say('Montar · Pasear · Explorar','Ride · Follow · Explore')));
    card.append(text);
    const actions=el('div','friend-directory-actions');
    actions.append(btn('📍 '+say('Visitar','Visit'),'friend-secondary',()=>visit(f.id)));
@@ -106,7 +106,10 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
   startPanel(f.icon+' '+f.name,tr(f.where));
   panel.append(el('div','friend-hero-face',f.icon),el('p','friend-greeting',tr(f.hello)));
   const actions=el('div','friend-choices');
-  actions.append(btn('🎮 '+tr(f.game),'friend-primary',()=>startGame(f.id)));
+  if(f.id!=='kai')actions.append(btn('🐾 '+say('¡Montar y explorar!','Ride and explore!'),'friend-primary',()=>{
+    mounted=f.id;friends.companion=f.id;save();onMount(f.id,{...nodes.get(f.id).g.position});joy.effect('friend');close();
+   }));
+  else actions.append(btn('🏐 '+tr(f.game),'friend-primary',()=>startGame(f.id)));
   const chosen=friends.companion===id;
   actions.append(btn(chosen?'🏡 '+say('Me quedo aquí','Stay here'):'🤝 '+say('Ven conmigo','Come with me'),'friend-secondary',()=>{
    friends.companion=chosen?null:id;if(id==='pip')s.pet=false;save();joy.effect('friend');open(id);
@@ -212,20 +215,25 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
   }
   return null;
  }
- function update(dt,active,{mode='walk',inside=false}={}){
+ function update(dt,active,{mode='walk',inside=false,mount=null,heading=0}={}){
   if(document.hidden)return;
   if(motion())time+=Math.min(dt,.05);
   const following=friends.companion;
   for(const n of nodes.values()){
-   const id=n.f.id,canFollow=following===id&&!inside&&(id==='dori'?(mode==='swim'||mode==='boat'):mode==='walk');
-   const px=canFollow?s.x-1.7:n.home.x,pz=canFollow?s.z+1.65:n.home.z;
-   if(canFollow&&Math.hypot(px-n.g.position.x,pz-n.g.position.z)>28){n.g.position.x=px;n.g.position.z=pz;}
+   const id=n.f.id,isRidden=mounted===id&&mount===id,canFollow=following===id&&!isRidden&&!inside&&mode!=='house';
+   const px=isRidden?s.x:canFollow?s.x-1.7:n.home.x,pz=isRidden?s.z:canFollow?s.z+1.65:n.home.z;
+   if(isRidden){n.g.position.x=px;n.g.position.z=pz;}
+   else if(canFollow&&Math.hypot(px-n.g.position.x,pz-n.g.position.z)>28){n.g.position.x=px;n.g.position.z=pz;}
    else{const factor=Math.min(1,dt*(canFollow?2.6:1.2));n.g.position.x+=(px-n.g.position.x)*factor;n.g.position.z+=(pz-n.g.position.z)*factor;}
-   n.g.rotation.y=canFollow?Math.atan2(s.x-n.g.position.x,s.z-n.g.position.z):Math.sin(time*.6+n.home.x)*.27;
+   n.g.rotation.y=isRidden?heading:canFollow?Math.atan2(s.x-n.g.position.x,s.z-n.g.position.z):Math.sin(time*.6+n.home.x)*.27;
+   n.g.scale.setScalar(isRidden?(id==='pip'?2.2:id==='dori'?2.65:id==='luna'?2:1.65):1);
    if(n.cheer>0)n.cheer=Math.max(0,n.cheer-dt);
    const bounce=n.cheer>0?Math.abs(Math.sin((2.5-n.cheer)*10))*.34:0;
-   n.g.position.y=(id==='dori'?-0.15:height(n.g.position.x,n.g.position.z)+(id==='pip'?.36:0))
-    +bounce+(id==='dori'?Math.max(0,Math.sin(time*1.7))*.65:Math.sin(time*2+n.home.z)*.055);
+   const footHeight=height(n.g.position.x,n.g.position.z);
+   const sea=mode==='swim'||mode==='boat'||mode==='mount-water';
+   n.g.position.y=(id==='dori'&&(sea||!isRidden)?(sea||!isRidden?-.15:footHeight):footHeight+(id==='pip'?.36:0))
+    +bounce+(isRidden?Math.sin(time*5)*.09:id==='dori'?Math.max(0,Math.sin(time*1.7))*.65:Math.sin(time*2+n.home.z)*.055);
+   if(isRidden&&id==='dori'&&mode!=='mount-water')n.g.position.y=footHeight+.25;
    for(const [i,p]of n.moving.entries()){
     if(id==='dori')p.rotation.x=Math.sin(time*5)*.3;
     else p.rotation.z=Math.sin(time*(id==='luna'?4:3)+i)*.2;
@@ -235,13 +243,14 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
   camera.updateMatrixWorld();
   islandFriends.forEach((f,i)=>{
    const n=nodes.get(f.id),label=labels[i],dist=Math.hypot(s.x-n.g.position.x,s.z-n.g.position.z);
-   if(dist>24||opened||inside||mode==='fly'){label.hidden=true;return;}
+   if(dist>24||opened||inside||mode==='fly'||mounted===f.id||mode==='house'){label.hidden=true;return;}
    temp.set(n.g.position.x,n.g.position.y+(f.id==='dori'?1.6:3),n.g.position.z).project(camera);
    if(temp.z>1||temp.z< -1||Math.abs(temp.x)>1.05||Math.abs(temp.y)>1.05){label.hidden=true;return;}
    label.hidden=false;label.style.left=(temp.x*.5+.5)*100+'%';label.style.top=(-temp.y*.5+.5)*100+'%';
   });
   directory.textContent='🫶 '+say('AMIGOS','FRIENDS')+' '+friends.completed.length+'/'+islandFriends.length;
  }
+ function dismount(){const previous=mounted;mounted=null;if(previous){nodes.get(previous)?.g.scale.setScalar(1);onMount(null);save();}return previous;}
  function dispose(){close();directory.remove();labels.forEach(l=>l.remove());for(const n of nodes.values())scene.remove(n.g);}
- return {nearest,isNearby,open,openDirectory,close,update,hit,isOpen:()=>opened!==null,dispose,hasCompanion:id=>friends.companion===id};
+ return {nearest,isNearby,open,openDirectory,close,update,hit,dismount,mounted:()=>mounted,isOpen:()=>opened!==null,dispose,hasCompanion:id=>friends.companion===id};
 }
