@@ -32,7 +32,14 @@ function welcome(){
  const returning=state.started,section=el('main','welcome world-entry'),copy=el('div','welcome-copy');
  copy.append(el('div','eyebrow',returning?text('Panamá te estaba esperando','Panama has been waiting'):text('Tu gran aventura comienza en Panamá','Your Panama adventure begins here')));
  const h=el('h1','',t('title'));h.append(el('em','',t('subtitle')));copy.append(h,el('p','',returning?text('Angelique, Pip te espera en Playa Gorgona. ¡Tus amigos están por todo Panamá!','Angelique, Pip is waiting in Playa Gorgona. Your friends are all over Panama!'):text('Desde Gorgona hasta el Volcán Barú: descubre un Panamá lleno de aventuras.','From Gorgona to Volcán Barú: discover a Panama full of adventures.')));
- const enter=button(returning?text('Volver a Panamá','Return to Panama'):text('Explorar Panamá','Explore Panama'),'primary enter-world',arrive);
+ const features=el('div','welcome-feature-grid');
+ for(const [icon,es,en]of [['🌋','Explora','Explore'],['🚙','Conduce','Drive'],['🛠️','Construye','Build'],['🐬','Amigos','Friends']]){
+  const chip=el('div','welcome-feature');
+  chip.append(el('span','welcome-feature-icon',icon),el('span','welcome-feature-label',text(es,en)));
+  features.append(chip);
+ }
+ copy.append(features);
+ const enter=button('🎮 '+(returning?text('Volver a jugar','Keep Playing'):text('¡Vamos a jugar!','Let’s Play!')),'primary enter-world',arrive);
  copy.append(enter,el('p','welcome-foot',text('Un toque. Y ya estás en otro mundo.','One tap. A whole new world.')));
  const guide=el('div','arrival-guide');guide.append(el('div','arrival-turtle'),el('span','',text('¡Por aquí!','This way!')));section.append(copy,guide);
  const travel=el('div','arrival-caption');travel.hidden=true;travel.setAttribute('role','status');travel.append(el('span','arrival-orbit','✦'),el('p','',text('¡Llegamos a Playa Gorgona!','Playa Gorgona is just ahead!')));section.append(travel);
