@@ -229,7 +229,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   camera.fov=60;camera.updateProjectionMatrix();
   control={catchNearest,falling:()=>airborne,boardBalloon,popBalloon,board,disembark,boatNear,harvest,snack:(kind)=>{coconutSnack.visible=kind==='coconut';bananaSnack.visible=kind==='banana';spark(s.x,s.z,16,avatar.position.y+bodyScale*1.4);},enterTower,leaveTower,lightBeacon,bubbles:blowBubbles,hop:(v=5)=>{if(inside){if(towerV===0)towerV=v;}else if(!airborne&&jumpY<.1)velocity=v+(s.growth>=2?Math.min(4,s.growth-1):0);},spark,bloom,dress,demo:()=>{music=[];spark(pads[1].x,pads[1].z,8);}};bloom(s.flowers);dress();
   const life=createIslandLife({T,scene,camera,state,make,mat,geometry,ball,cone,box,sun,ambient,waterMaterial,inWater,sharkStep});
-  houseSystem=createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,height,language:state.lang,
+  houseSystem=createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,height,language:state.lang,companionId:()=>s.friends?.companion,
     onEnter:()=>{if(mountId)friendSystem?.dismount();swimming=false;boating=false;ride=0;s.flight=0;blur();route=[];targetPoint=null;host.classList.add('inside-cottage');},
     onMessage:m=>tell(m,m)
   });
@@ -343,7 +343,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    setText(goalText,goal?(arrived?say('¡Llegaste! Empecemos.','You’re here! Let’s begin.'):subjects[goal.region]):say('Todas las aventuras están completas. Puedes volver a jugar.','Every adventure is complete. You can play again.'));
    setText(goalButton,goal?(arrived?say('▶ Empezar aventura','▶ Start adventure'):say('➜ Llévame','➜ Take me there')):say('Explorar otra vez','Explore again'));goalButton.disabled=!!ride;
    const announcement=goal?goal.id+':'+arrived:'complete';if(goalAnnounced!==announcement&&!paused()&&!ride&&panel.hidden&&!document.querySelector('dialog[open]')&&guide(goalWords()))goalAnnounced=announcement;
-   foodNear=!inside&&!swimming&&!boating&&!ride&&!airborne?foodTrees.find(t=>Math.hypot(t.x-s.x,t.z-s.z)<2&&(s.harvested[t.id]||0)<t.fruits.length):null;
+   foodNear=!inside&&!swimming&&!boating&&!ride&&!airborne&&!mountId&&!houseSystem?.isInside()?foodTrees.find(t=>Math.hypot(t.x-s.x,t.z-s.z)<2&&(s.harvested[t.id]||0)<t.fruits.length):null;
    if(near?.kind==='balloon'){foodNear=null;}if(near?.kind==='islet')setText(act,({wilds:'🍌',coconutCoast:'🥥',sunset:'✨'})[near.id]||'🫧');
    if(near?.id==='beacon')setText(act,say('🚪 Entrar al faro','🚪 Enter lighthouse'));
    pad.classList.toggle('flight-stick',!!ride);pad.classList.toggle('steering',!!ride&&len>.05);setText(knob,ride?'🎈':'✥');setText(stickReadout,ride?'↕ '+Math.round(flightY)+' m':'');pad.style.setProperty('--heading',Math.atan2(dx,-dz)+'rad');
@@ -362,7 +362,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    if(playful){setText(friendMeet,playful.icon+' '+playful.name+' · '+say('Jugar','Play'));friendMeet.setAttribute('aria-label',say('Jugar con ','Play with ')+playful.name);}
    goalCard.hidden=boating||inside||!!ride||airborne||near?.kind==='islet'||netTime>0;quest.hidden=true;
    adventureMap.update(false,avatar.rotation.y);
-   friendSystem?.update(dt,active,{mode:houseSystem?.isInside()?'house':mountId?(inWater(s.x,s.z)?'mount-water':'mount'):ride?'fly':boating?'boat':swimming?'swim':'walk',inside:inside||houseSystem?.isInside(),mount:mountId,heading:avatar.rotation.y});
+   friendSystem?.update(dt,active,{mode:houseSystem?.isInside()?'house':mountId?(inWater(s.x,s.z)?'mount-water':'mount'):ride?'fly':boating?'boat':swimming?'swim':'walk',inside:inside||houseSystem?.isInside(),mount:mountId,heading:avatar.rotation.y,roomPosition:houseSystem?.position()});
    life.update(dt,active,motion());realms.update(dt,active,ride?'fly':swimming?'swim':boating?'boat':'walk',ay);journey.update(dt,active,ride?'fly':swimming?'swim':boating?'boat':'walk',ay);story.update(dt,time);if(host.classList.contains("story-nearby")){lesson.hidden=true;guideBeacon.visible=false;}
    for(const [button,words] of buttonUpdates)paintButton(button,words);buttonUpdates.clear();
   }
