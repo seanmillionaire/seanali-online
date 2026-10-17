@@ -21,7 +21,7 @@ export const CITY_DELIVERY=[
  {x:-116,z:-109,en:'Southern neighborhood',es:'Barrio del sur'},
  {x:-138,z:-48,en:'Volcano-view homes',es:'Casas con vista al volcán'}
 ];
-export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylinder,cone,height,surfaces=null,save,refresh,joy,tell,coinAward}){
+export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylinder,cone,height,surfaces=null,save,refresh,joy,tell,coinAward,onWash=()=>{}}){
  const city=state.world.city,a=city.activities,es=state.lang==='es',choose=(x,y)=>es?x:y;
  const coord=(dx,dz)=>({x:-100+dx,z:-74+dz});
  const asph=mat('#3c424c',{map:surfaces?.asphalt,bumpMap:surfaces?.asphalt,bumpScale:.035,roughness:1}),
@@ -190,6 +190,13 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  makeObj(box,blue,0,4.4,0,5.9,.5,5.6,carWash);
  for(const x of [-1.7,1.7])makeObj(cylinder,white,x,2.2,0,.35,3.6,.35,carWash);
  icon(carWash,'🫧',0,6.7,0,2.6);
+ const bubbleMat=mat('#d8f5ff',{transparent:true,opacity:.72,roughness:.1,depthWrite:false});
+ const washBubbles=[];
+ for(let i=0;i<15;i++){
+  const a=i*Math.PI*2/15,r=.65+(i%3)*.53;
+  const b=makeObj(ball,bubbleMat,Math.sin(a)*r,.6+i%4*.54,Math.cos(a)*r,.16+(i%3)*.07,.19+(i%3)*.08,.17,carWash);
+  b.visible=false;washBubbles.push({mesh:b,y:.6+i%4*.54,phase:a});
+ }
  // Rally gates + delivery doors are visible landmarks throughout the streets.
  const rally=CITY_SITES.find(q=>q.id==='rally');
  function gate(pos,i){
@@ -313,6 +320,10 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
   }
   pool.rotation.y=Math.sin(performance.now()*.0003)*.012;
   ship.position.z=Math.sin(performance.now()*.0005)*.45;
+  for(const b of washBubbles){
+   b.mesh.visible=washCooldown.time>9;
+   if(b.mesh.visible)b.mesh.position.y=b.y+Math.sin(performance.now()*.005+b.phase)*.23;
+  }
   if(cityWaypoint&&Math.hypot(x-cityWaypoint.x,z-cityWaypoint.z)<7.5)cityWaypoint=null;
   if(!active||indoors||flying)return;
   if(race.active&&driving){
@@ -346,7 +357,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
    }
   }
   if(driving&&washCooldown.time<=0&&Math.hypot(x-CITY_SITES[7].x,z-CITY_SITES[7].z)<3){
-   washCooldown.time=12;a.carWashes=Math.min(999,a.carWashes+1);
+   washCooldown.time=12;a.carWashes=Math.min(999,a.carWashes+1);onWash();
    success('🫧 ¡Carro limpio y brillante!','🫧 Your car is sparkling clean!',
     a.carWashes===1?'city-carwash':null);
   }
