@@ -103,6 +103,14 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
  const ctx=iconCanvas.getContext('2d');
  if(ctx){ctx.clearRect(0,0,128,128);ctx.font='94px "Apple Color Emoji","Segoe UI Emoji",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('💰',64,64);}
  const texture=new T.CanvasTexture(iconCanvas),spriteMaterial=new T.SpriteMaterial({map:texture,transparent:true,depthTest:false,depthWrite:false});
+ // A giant pizza emoji above the restaurant is readable from the road.
+ const pizzaCanvas=document.createElement('canvas');pizzaCanvas.width=128;pizzaCanvas.height=128;
+ const pizzaContext=pizzaCanvas.getContext('2d');
+ if(pizzaContext){pizzaContext.font='106px "Apple Color Emoji","Segoe UI Emoji",sans-serif';pizzaContext.textAlign='center';pizzaContext.textBaseline='middle';pizzaContext.fillText('🍕',64,64);}
+ const pizzaTexture=new T.CanvasTexture(pizzaCanvas);
+ const pizzaMaterial=new T.SpriteMaterial({map:pizzaTexture,transparent:true,depthTest:false,depthWrite:false});
+ const pizzaSign=new T.Sprite(pizzaMaterial);pizzaSign.position.set(sx,sy+8.4,sz+4);
+ pizzaSign.scale.set(5,5,1);pizzaSign.renderOrder=49;scene.add(pizzaSign);
  const bags=[];
  for(const b of MONEY_BAGS){
   if(city.bags.includes(b.id))continue;
@@ -143,6 +151,6 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
    }
   }
  }
- function dispose(){status.remove();sign.remove();scene.remove(group,car);for(const b of bags)scene.remove(b.root);spriteMaterial.dispose();texture.dispose();}
+ function dispose(){status.remove();sign.remove();scene.remove(group,car,pizzaSign);for(const b of bags)scene.remove(b.root);spriteMaterial.dispose();texture.dispose();pizzaMaterial.dispose();pizzaTexture.dispose();}
  return {attach,update,nearCar,canDrive,updateCar,order,setCoinAward,isHere,car,dispose};
 }
