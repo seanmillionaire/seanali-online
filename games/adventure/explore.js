@@ -67,6 +67,9 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  goalButton.addEventListener('click',()=>setHelpers(false));
  const walletButton=btn('','world-small wallet-button',showShop);menu.append(walletButton);
  const craftButton=btn('🎒 '+say('Mochila','Bag'),'world-small craft-bag-button',()=>showBag());craftButton.setAttribute('aria-label',say('Mochila para construir','Building and crafting bag'));menu.append(craftButton);
+ const cityGuideButton=btn('🏙️ '+say('Ciudad','City'),'world-small city-guide-button',showCityGuide);
+ cityGuideButton.setAttribute('aria-label',say('Explorar actividades de Ciudad de Panamá','Explore Panama City activities'));
+ cityGuideButton.hidden=true;menu.append(cityGuideButton);
  const foodButton=btn('🥥 🍌','world-small food-button',showFood);foodButton.setAttribute('aria-label',say('Mi comida','My food'));menu.append(foodButton);
  const catchButton=btn('🦋','world-catch catch-action',()=>control?.catchNearest());catchButton.hidden=true;actions.append(catchButton);
  const pad=makeEl('div','explore-stick');pad.setAttribute('aria-label',say('Palanca para moverte','Movement joystick'));const knob=makeEl('span','stick-knob');pad.append(knob);const compass=makeEl('span','stick-compass'),stickReadout=makeEl('span','stick-readout');for(const [cls,icon] of [['north','↑'],['east','→'],['south','↓'],['west','←']])compass.append(makeEl('span',cls,icon));compass.setAttribute('aria-hidden','true');pad.append(compass,stickReadout);knob.textContent='✥';
@@ -131,6 +134,43 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   if(k==='beacon')control?.enterTower();
   if(k==='swim'){route=islandPath(s,{x:15,z:15});targetPoint=route.shift()||null;tell('🏊 Nada · 🏝 Vuelve a la playa','🏊 Swim · 🏝 Return to shore');}
   if(k==='chest'||k==='beacon')control?.spark(near.x,near.z,30);
+ }
+ function showCityGuide(){
+  if(!cityLife)return;
+  if(adventureMap.isOpen())adventureMap.close(false);
+  if(friendSystem?.isOpen())friendSystem.close(false);
+  setHelpers(false);panel.replaceChildren();panel.hidden=false;blur();targetPoint=null;route=[];
+  const close=btn('×','panel-close',()=>{panel.hidden=true;canvas.focus({preventScroll:true});});
+  const a=s.city.activities||{},card=makeEl('div','city-guide-list');
+  panel.append(close,makeEl('h2','',say('🏙️ Explora Ciudad de Panamá','🏙️ Explore Panama City')),
+    makeEl('p','',say('Camina o conduce hasta las señales. Hay actividades de verdad con premios y progreso guardado.',
+      'Walk or drive to the signs. Play real activities, earn rewards, and save your progress.')));
+  const progress={
+   rally:'🏁 '+(a.rallyWins||0)+(a.rallyBest?' · '+a.rallyBest.toFixed(1)+'s':''),
+   soccer:'⚽ '+(a.soccerGoals||0)+' '+say('goles','goals'),
+   market:'🥭 '+(a.marketTrades||0)+' '+say('ventas','trades'),
+   mural:'🎨 '+(a.muralColors||0)+'/4',
+   museum0:'🏛️ '+(a.museum?.length||0)+'/3',
+   museum1:'🏛️ '+(a.museum?.length||0)+'/3',
+   museum2:'🏛️ '+(a.museum?.length||0)+'/3',
+   wash:'🫧 '+(a.carWashes||0),
+   plaza:'⛲',canal:'🚢'
+  };
+  for(const p of cityLife.activitySites||[]){
+   const item=makeEl('section','city-guide-card'),title=makeEl('strong','',p.icon+' '+(es?p.es:p.en));
+   item.append(title,makeEl('span','city-guide-progress',progress[p.id]||''));
+   const distance=Math.round(Math.hypot(s.x-p.x,s.z-p.z));
+   item.append(btn('📍 '+say('Ir al lugar','Go there')+' · '+distance+'m','discover-place',()=>{
+    panel.hidden=true;
+    cityLife.setWaypoint(p.id);
+    if(!carDriving&&!ride&&!boating&&!inside&&!houseSystem?.isInside()){
+     route=[];targetPoint={x:p.x,z:p.z};
+    }
+    tell('📍 '+p.es+' · '+distance+'m','📍 '+p.en+' · '+distance+'m');
+   }));
+   card.append(item);
+  }
+  panel.append(card);
  }
  function showBag(focusId=null){
   if(friendSystem?.isOpen())friendSystem.close();
@@ -524,6 +564,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    }
    workshop?.update(dt,time);
    cityLife?.update(dt,active,{x:s.x,z:s.z,driving:carDriving,flying:!!ride||birdAltitude>2,indoors:inside||houseSystem?.isInside()});
+   cityGuideButton.hidden=!cityLife?.isHere(s.x,s.z)||inside||houseSystem?.isInside();
    life.update(dt,active,motion());realms.update(dt,active,ride?'fly':swimming?'swim':boating?'boat':'walk',ay);journey.update(dt,active,ride?'fly':swimming?'swim':boating?'boat':'walk',ay);story.update(dt,time);if(host.classList.contains("story-nearby")){lesson.hidden=true;guideBeacon.visible=false;}
    for(const [button,words] of buttonUpdates)paintButton(button,words);buttonUpdates.clear();
   }
