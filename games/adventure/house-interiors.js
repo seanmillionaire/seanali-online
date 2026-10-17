@@ -1,12 +1,12 @@
 // Five real walkable, furnished interiors. Exterior coordinates are never
 // overwritten while inside, so old saves and world navigation remain safe.
 export const villageHouses=[
- {id:'seaside',x:-10,z:5,es:'Casa de las Conchas',en:'Seashell Cottage',icon:'🐚',theme:'sea'},
- {id:'books',x:-13,z:2,es:'Biblioteca Secreta',en:'Storybook House',icon:'📚',theme:'books'},
- {id:'music',x:10,z:2,es:'Casa Musical',en:'Music Cottage',icon:'🎶',theme:'music'},
- {id:'art',x:12,z:-1,es:'Casa de Arte',en:'Art Studio',icon:'🎨',theme:'art'},
- {id:'cozy',x:9,z:-4,es:'Casita de Juegos',en:'Playhouse',icon:'🧸',theme:'play'},
- {id:'pizzeria',x:-84,z:-60,es:'Pizzería de Angelique',en:'Angelique’s Pizza Place',icon:'🍕',theme:'pizza'}
+ {id:'seaside',x:-10,z:5,es:'Casita de Playa Gorgona',en:'Gorgona Beach Cottage',icon:'🐚',theme:'sea'},
+ {id:'books',x:-13,z:2,es:'Biblioteca de El Valle',en:'El Valle Storybook House',icon:'📚',theme:'books'},
+ {id:'music',x:10,z:2,es:'Casa del Tamborito',en:'Tamborito Music House',icon:'🎶',theme:'music'},
+ {id:'art',x:12,z:-1,es:'Taller de Arte Panameño',en:'Panamanian Art Studio',icon:'🎨',theme:'art'},
+ {id:'cozy',x:9,z:-4,es:'Casita de Juegos de Gorgona',en:'Gorgona Playhouse',icon:'🧸',theme:'play'},
+ {id:'pizzeria',x:-84,z:-60,es:'Pizzería de Angelique · Casco Viejo',en:'Angelique’s Pizzeria · Casco Viejo',icon:'🍕',theme:'pizza'}
 ];
 export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,surfaces=null,language='en',companionId=()=>null,onEnter=()=>{},onPizza=()=>{},onMessage}){
  const es=language==='es';
