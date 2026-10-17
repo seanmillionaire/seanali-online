@@ -124,3 +124,34 @@
  body[data-scene="explore"] .explore-actions .picture-button{min-height:60px!important}
  body[data-scene="explore"] .explore-world.helpers-open .explore-menu{bottom:147px;max-height:50svh}
 }
+
+/* Estate progression and visible leveling */
+.estate-upgrade-heading{text-align:center;font-size:21px;margin:22px 0 11px}
+.estate-upgrades{display:grid;gap:9px}
+.estate-upgrade-row{display:flex;align-items:center;justify-content:space-between;gap:9px;background:#fffaf0;border:1px solid #c9d5c3;border-radius:15px;padding:10px}
+.estate-upgrade-row strong{font-size:16px;line-height:1.3}
+.estate-upgrade-button{min-height:50px;border:0;border-radius:12px;background:#f0d48a;font-size:14px;font-weight:900;color:#244a42;padding:8px;max-width:56%}
+.estate-upgrade-button:disabled{background:#e5e7dd;color:#879087}
+.estate-find-link{display:block;width:min(100%,510px);min-height:52px;background:#d7edce;color:#285d43;border:1px solid #a7cbaa;border-radius:13px;margin:17px auto 2px;font-size:16px;font-weight:900}
+@media(max-width:780px){
+ body[data-scene="explore"] .friend-world-label,
+ body[data-scene="explore"] .house-door-action{display:none!important}
+ body[data-scene="explore"] .friend-panel,
+ body[data-scene="explore"] .journey-panel,
+ body[data-scene="explore"] .realm-panel{
+  position:absolute;top:auto;bottom:0;left:0;right:0;transform:none;z-index:35;
+  width:100%;max-width:none;max-height:min(82svh,calc(100svh - 55px));
+  border-radius:24px 24px 0 0;padding:20px 16px max(24px,env(safe-area-inset-bottom));
+  overflow-y:auto;overscroll-behavior:contain;
+ }
+ body[data-scene="explore"] .explore-world:has(.friend-panel:not([hidden])) .mobile-game-dock,
+ body[data-scene="explore"] .explore-world:has(.realm-panel:not([hidden])) .mobile-game-dock,
+ body[data-scene="explore"] .explore-world:has(.journey-panel:not([hidden])) .mobile-game-dock,
+ body[data-scene="explore"] .explore-world:has(.friend-panel:not([hidden])) .explore-actions,
+ body[data-scene="explore"] .explore-world:has(.realm-panel:not([hidden])) .explore-actions,
+ body[data-scene="explore"] .explore-world:has(.journey-panel:not([hidden])) .explore-actions{
+   visibility:hidden;pointer-events:none;
+ }
+ body[data-scene="explore"] .estate-upgrade-row{flex-direction:column;align-items:stretch}
+ body[data-scene="explore"] .estate-upgrade-button{max-width:none}
+}
