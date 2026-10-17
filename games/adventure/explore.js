@@ -337,7 +337,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    else {setText(jump,say('Saltar ⤴','Jump ⤴'));setText(instructions,say('Toca el suelo para ir · Flechas / WASD · Espacio para saltar','Tap ground to walk · Arrows / WASD · Space to jump'));}
    if(!inside&&!boating&&!ride&&boatNear()){act.hidden=false;setText(act,say('⛵ Subir al barco','⛵ Board boat'));}else if(foodNear){act.hidden=false;setText(act,foodNear.kind==='coconut'?say('🥥 Recoger coco','🥥 Pick coconut'):say('🍌 Recoger plátano','🍌 Pick banana'));}guideBeacon.visible=guideBeacon.visible&&!inside&&!boating&&!ride;
    const playful=friendSystem?.nearest(ride?'fly':boating?'boat':swimming?'swim':'walk');
-   friendMeet.hidden=!playful||!!ride||inside||airborne||!panel.hidden||!host.querySelector('.explore-ready');
+   friendMeet.hidden=!playful||!!ride||inside||airborne||!panel.hidden||!host.classList.contains('explore-ready');
    if(playful){setText(friendMeet,playful.icon+' '+playful.name+' · '+say('Jugar','Play'));friendMeet.setAttribute('aria-label',say('Jugar con ','Play with ')+playful.name);}
    goalCard.hidden=boating||inside||!!ride||airborne||near?.kind==='islet'||netTime>0;quest.hidden=true;
    adventureMap.update(false,avatar.rotation.y);
