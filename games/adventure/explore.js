@@ -306,7 +306,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
      s.x=car.x;s.z=car.z;avatar.rotation.y=car.heading;
      autosave+=dt;if(autosave>2){save();autosave=0;}
     }
-    cityLife.updateCar();
+    cityLife.updateCar(carSpeed,dt);
    }
    // Moving white trail behind the boat, fading naturally after disembarking.
    if(waterMaterial?.uniforms?.wakeStrength){
