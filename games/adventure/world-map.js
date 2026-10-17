@@ -4,7 +4,7 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
  const es=language==='es',say=(a,b)=>es?a:b,ns='http://www.w3.org/2000/svg';
  const land=[{id:'home',x:0,z:0,rx:20,rz:14,es:'Playa Gorgona',en:'Playa Gorgona',icon:'🏡'}]
    .concat(islands.map(i=>({id:i.id,x:i.x,z:i.z,rx:i.rx,rz:i.rz,es:i.es,en:i.en,
-     icon:({islet:'🦋',wilds:'🍌',coconutCoast:'🥥',sunset:'✨',crystalCove:'💎',pizzaCity:'🍕'})[i.id]||'🏝️'})));
+     icon:({islet:'🦋',wilds:'🍌',coconutCoast:'🥥',sunset:'🌋',crystalCove:'💎',pizzaCity:'🍕'})[i.id]||'🏝️'})));
  const point=(x,z)=>({x:Number(x)||0,z:Number(z)||0});
  const name=i=>es?i.es:i.en;
  const svgEl=(tag,attrs={},text)=>{const n=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,String(v));if(text!==undefined)n.textContent=text;return n;};
@@ -26,7 +26,7 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
       islet:['#f4d8b3','#92d39c','#eea9d0'],
       wilds:['#d3c18a','#338454','#73b95c'],
       coconutCoast:['#f1e7c5','#f8dea0','#7bdcc2'],
-      sunset:['#a8b1ac','#36576d','#b887d3'],
+      sunset:['#b1a58e','#615c53','#857764'],
       crystalCove:['#d8eafa','#79c2d9','#b0a4ed'],
       pizzaCity:['#eaddc4','#e6c18e','#86ba88']
     })[i.id]||['#e9d7a6','#62ab70','#93c988'];
