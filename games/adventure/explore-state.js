@@ -3,13 +3,33 @@ export const worldIslands=[
  {id:'islet',x:60,z:-60,rx:12,rz:10,h:2.5,ox:24,oz:-8,spread:2.4,en:'Taboga · Island of Flowers',es:'Isla Taboga · Isla de las Flores'},
  {id:'wilds',x:-30,z:-85,rx:24,rz:25,h:5,ox:0,oz:-30,spread:1.25,en:'Isla Bastimentos · Bocas del Toro',es:'Isla Bastimentos · Bocas del Toro'},
  {id:'coconutCoast',x:105,z:10,rx:23,rz:19,h:4,ox:47,oz:6,spread:1.35,en:'Isla Contadora · Pearl Islands',es:'Isla Contadora · Las Perlas'},
- {id:'sunset',x:-100,z:30,rx:25,rz:22,h:6,ox:-42,oz:8,spread:1.35,en:'Boquete · Cloud Forest',es:'Boquete · Bosque Nuboso'},
+ {id:'sunset',x:-100,z:30,rx:38,rz:34,h:46,ox:-42,oz:8,spread:1.35,en:'Volcán Barú · Chiriquí',es:'Volcán Barú · Chiriquí'},
  {id:'crystalCove',x:10,z:100,rx:20,rz:16,h:5,ox:0,oz:48,spread:1.5,en:'Guna Yala · San Blas',es:'Guna Yala · San Blas',vehicleOnly:true},
  {id:'pizzaCity',x:-100,z:-74,rx:45,rz:38,h:3.3,ox:-100,oz:-74,spread:1,en:'Panama City · Casco Viejo',es:'Ciudad de Panamá · Casco Viejo'}
 ];
 export function islandPoint(id,x,z){const p=worldIslands.find(p=>p.id===id);return {x:p.x+(x-p.ox)*p.spread,z:p.z+(z-p.oz)*p.spread};}
 // Strong offshore currents require a vehicle to cross; walking remains free after arrival.
 export function remoteAccess(from,to){const p=worldIslands.find(i=>i.vehicleOnly),radius=q=>Math.hypot((q.x-p.x)/p.rx,(q.z-p.z)/p.rz);return radius(to)>=1.6||radius(from)<1.6;}
+// A sculpted, safely walkable dormant volcano. The center dips to form a real
+// bowl-shaped crater; the highest rock is the circular rim around the summit.
+export function volcanoRelief(u,v){
+ const r=Math.hypot(u,v);
+ if(r>=1)return 0;
+ const angle=Math.atan2(v,u),core=Math.pow(1-r*r,2.02);
+ const slopes=45.0*core;
+ const rim=4.65*Math.exp(-Math.pow((r-.19)/.078,2));
+ const crater=11.0*Math.exp(-Math.pow(r/.128,4));
+ const folded=1.12*Math.sin(angle*8+r*25)*Math.pow(Math.max(0,1-r),2);
+ return Math.max(0,.08+slopes+rim-crater+folded);
+}
+// A spiral climbs from the south beach to the volcano's crater-rim lookout.
+// Both the walking path and 3D road meshes use precisely these coordinates.
+export function volcanoTrailPoint(progress){
+ const p=Math.max(0,Math.min(1,progress)),land=worldIslands.find(i=>i.id==='sunset');
+ const a=-Math.PI/2+p*3.4*Math.PI,r=.925-p*.73;
+ const x=land.x+Math.cos(a)*land.rx*r,z=land.z+Math.sin(a)*land.rz*r;
+ return {x,y:isletHeight(x,z),z,progress:p};
+}
 // Different topography in every biome. Keep the same coastline/footprints so
 // navigation, saved positions, swim transitions and ocean shader stay aligned.
 export function isletHeight(x,z){
@@ -22,7 +42,7 @@ export function isletHeight(x,z){
   if(land.id==='islet')elevation=.08+core*1.6+soft*(.45+.3*Math.sin(x*.55)*Math.cos(z*.45));
   else if(land.id==='wilds')elevation+=soft*(2+1.6*Math.sin(x*.2)*Math.cos(z*.16));
   else if(land.id==='coconutCoast')elevation=.08+core*1.85+soft*.55*(1+Math.sin(x*.32+z*.22));
-  else if(land.id==='sunset')elevation+=soft*(2.4+1.35*Math.sin(x*.22-z*.13));
+  else if(land.id==='sunset')elevation=volcanoRelief(u,v);
   else if(land.id==='crystalCove')elevation+=soft*(1.9+.7*Math.cos(x*.3+z*.24));
   else if(land.id==='pizzaCity')elevation=.08+core*2.25+soft*.12*Math.sin(x*.18+z*.13);
   h=Math.max(h,elevation);
@@ -30,7 +50,9 @@ export function isletHeight(x,z){
  return h;
 }
 export const explorePlaces=[
- ...worldIslands.slice(1).map(p=>({id:p.id,x:p.x,z:p.z,icon:({wilds:'🍌',coconutCoast:'🥥',sunset:'✨',crystalCove:'💎',pizzaCity:'🍕'})[p.id],es:p.es,en:p.en,kind:'islet'})),
+ ...worldIslands.slice(1).map(p=>({id:p.id,x:p.x,z:p.z,icon:({wilds:'🍌',coconutCoast:'🥥',sunset:'🌋',crystalCove:'💎',pizzaCity:'🍕'})[p.id],es:p.es,en:p.en,kind:'islet'})),
+ {id:'volcanoTrail',...volcanoTrailPoint(0),icon:'🥾',es:'Sendero del Volcán Barú',en:'Volcán Barú Hiking Trail',kind:'volcano'},
+ {id:'volcanoSummit',...volcanoTrailPoint(1),icon:'🌋',es:'Mirador de la Cima · Volcán Barú',en:'Volcán Barú Summit Lookout',kind:'volcano'},
  {id:'coveBalloon',x:5,z:48,icon:'🎈',es:'Globo de Guna Yala',en:'Guna Yala return balloon',kind:'balloon'},
  {id:'islet',x:24,z:-8,icon:'🦋',es:'Isla Taboga · Flores',en:'Taboga · Island of Flowers',kind:'islet'},
  {id:'pip',x:4,z:9,icon:'🐢',es:'Pip · Playa Gorgona',en:'Pip · Playa Gorgona',kind:'friend'},
