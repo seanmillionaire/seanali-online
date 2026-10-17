@@ -1,4 +1,4 @@
-import {worldIslands,isletHeight} from './explore-state.js?v=60';
+import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=61';
 import {createTropical} from './tropical.js?v=59';
 import {createSurfaceTextures} from './surface-textures.js?v=2';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
@@ -67,7 +67,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
    islet:['#c1dfa4','#80c990','#f5d2ad'],
    wilds:['#3b8050','#3d6d41','#d0bd7c'],
    coconutCoast:['#f2dfad','#d9df99','#f5e8c7'],
-   sunset:['#3a6670','#385a59','#a4aa9e'],
+   sunset:['#3c4a3e','#6e675b','#8f8a82'],
    crystalCove:['#92c5d9','#7eabbf','#d6ecf3'],
    pizzaCity:['#e2dfba','#87b07e','#ead7af']
   };
@@ -133,21 +133,24 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   }
   for(const land of worldIslands){
    const shades=ellipseMats[land.id],iv=[],ic=[],ii=[],iu=[];
-   for(let ring=0;ring<=20;ring++)for(let j=0;j<=80;j++){
-    const a=j/80*Math.PI*2,r=ring/20;
+   const rings=land.id==='sunset'?62:20,segments=land.id==='sunset'?144:80;
+   for(let ring=0;ring<=rings;ring++)for(let j=0;j<=segments;j++){
+    const a=j/segments*Math.PI*2,r=ring/rings;
     const x=land.x+Math.cos(a)*land.rx*r,z=land.z+Math.sin(a)*land.rz*r,y=isletHeight(x,z);
     iv.push(x,y,z);iu.push(x*.18,z*.18);
-    const base=new T.Color(r>.87?shades[2]:r>.52?shades[1]:shades[0]);
+    const base=new T.Color(land.id==='sunset'
+     ?r<.31?'#635a53':r<.64?'#777065':r<.84?'#63705c':'#aaa087'
+     :r>.87?shades[2]:r>.52?shades[1]:shades[0]);
     const noise=(.95+.08*rand())*(1+.04*Math.sin(a*7+r*23));
     base.multiplyScalar(noise);ic.push(base.r,base.g,base.b);
-    if(ring<20&&j<80){const n=ring*81+j;ii.push(n,n+1,n+81,n+81,n+1,n+82);}
+    if(ring<rings&&j<segments){const n=ring*(segments+1)+j;ii.push(n,n+1,n+segments+1,n+segments+1,n+1,n+segments+2);}
    }
    const g=geometry(new T.BufferGeometry());
    g.setAttribute('position',new T.Float32BufferAttribute(iv,3));
    g.setAttribute('color',new T.Float32BufferAttribute(ic,3));
    g.setAttribute('uv',new T.Float32BufferAttribute(iu,2));
    g.setIndex(ii);g.computeVertexNormals();
-   const islandTexture=land.id==='coconutCoast'?surfaces.sand:land.id==='crystalCove'?surfaces.stone:surfaces.grass;
+   const islandTexture=land.id==='coconutCoast'?surfaces.sand:land.id==='crystalCove'||land.id==='sunset'?surfaces.stone:surfaces.grass;
    const island=make(g,mat('#ffffff',{vertexColors:true,map:islandTexture,bumpMap:islandTexture,bumpScale:land.id==='crystalCove'?.14:.09,roughness:.96}));
    island.name=land.en;
 
@@ -210,32 +213,89 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
      tropical.card(4,p.x,p.y,p.z,.7,.7);
     }
    }else if(land.id==='sunset'){
-    // Boquete cloud forest (fantasy biome): blue-purple darkwood, conifers, giant luminous
-    // mushrooms, waterfall and golden firefly clouds. No palms here.
-    for(let i=0;i<13;i++){
-     const a=i*2.39996,r=.35+(i%4)*.14,p=place(land,Math.sin(a)*r,Math.cos(a)*r);
+    // Volcán Barú: the tallest mountain in this fantasy archipelago.
+    // Terrain is the real, walkable collision surface, not a decorative cone.
+    const basalt=mat('#645d56',{map:surfaces.stone,bumpMap:surfaces.stone,bumpScale:.20,roughness:1}),
+      gravel=mat('#bd9f79',{map:surfaces.sand,bumpMap:surfaces.sand,bumpScale:.10,roughness:1}),
+      signWood=mat('#866445',{map:surfaces.wood,bumpMap:surfaces.wood,bumpScale:.075}),
+      craterOrange=mat('#da764e',{emissive:'#f06827',emissiveIntensity:.75,roughness:.6}),
+      steam=mat('#ece4d4',{transparent:true,opacity:.15,depthWrite:false});
+    // A wide, continuous stone hiking path that sits exactly on the terrain.
+    const vertices=[],texcoords=[],triangles=[],steps=220;
+    for(let i=0;i<=steps;i++){
+      const t=i/steps,p=volcanoTrailPoint(t),prev=volcanoTrailPoint(Math.max(0,t-1/steps)),
+        next=volcanoTrailPoint(Math.min(1,t+1/steps));
+      const tx=next.x-prev.x,tz=next.z-prev.z,length=Math.max(.001,Math.hypot(tx,tz));
+      const normalX=tz/length,normalZ=-tx/length;
+      for(const side of [-1,1]){
+       const width=t>.92?1.00:1.32;
+       const x=p.x+normalX*width*side,z=p.z+normalZ*width*side;
+       vertices.push(x,isletHeight(x,z)+.16,z);
+       texcoords.push(side===1?1:0,t*26);
+      }
+      if(i<steps){const n=i*2;triangles.push(n,n+1,n+2,n+1,n+3,n+2);}
+    }
+    const pathGeo=geometry(new T.BufferGeometry());
+    pathGeo.setAttribute('position',new T.Float32BufferAttribute(vertices,3));
+    pathGeo.setAttribute('uv',new T.Float32BufferAttribute(texcoords,2));
+    pathGeo.setIndex(triangles);pathGeo.computeVertexNormals();
+    const trail=make(pathGeo,gravel);trail.name='Volcán Barú continuous walkable spiral hiking trail';
+    trail.castShadow=false;trail.receiveShadow=true;
+    // Painted stone waymarkers and short rail fences keep the trail readable.
+    for(let k=0;k<=20;k++){
+     const p=volcanoTrailPoint(k/20),h=isletHeight(p.x,p.z);
+     const marker=make(cylinder,signWood,p.x,h+.48,p.z,.10,.96,.10);
+     marker.name='Volcán Barú trail marker '+k;
+     make(ball,k%5===0?gold:cream,p.x,h+1.05,p.z,.18,.18,.18);
+     if(k>0&&k<20&&k%3===0){
+      const next=volcanoTrailPoint((k+.15)/20),dirX=next.x-p.x,dirZ=next.z-p.z;
+      const d=Math.max(.001,Math.hypot(dirX,dirZ));
+      const sideX=dirZ/d,sideZ=-dirX/d;
+      for(const sign of [-1,1]){
+       const x=p.x+sideX*1.8*sign,z=p.z+sideZ*1.8*sign,y=isletHeight(x,z);
+       make(cylinder,signWood,x,y+.60,z,.10,1.20,.10);
+       make(ball,gold,x,y+1.27,z,.15,.15,.15);
+      }
+     }
+    }
+    // Jagged basalt outcrops along the slope, but outside the hiking lane.
+    for(let i=0;i<56;i++){
+     const angle=i*2.3999632,r=.22+(i%9)*.079;
+     const x=land.x+Math.cos(angle)*land.rx*r,z=land.z+Math.sin(angle)*land.rz*r;
+     const y=isletHeight(x,z),size=.60+(i%5)*.30;
+     const rock=make(rockGeo,basalt,x,y+.43*size,z,size*.75,size,size*.65);
+     rock.rotation.y=angle;rock.rotation.z=Math.sin(i*7)*.15;
+    }
+    // Lower slopes are still Chiriquí cloud forest, with pines and ferns.
+    for(let i=0;i<19;i++){
+     const angle=i*2.4,r=.78+(i%3)*.043,p=place(land,Math.sin(angle)*r,Math.cos(angle)*r);
      fireflyTree(p.x,p.z,i);
     }
-    for(let i=0;i<15;i++){
-     const a=i*2.4,r=.22+(i%4)*.18,p=place(land,Math.sin(a)*r,Math.cos(a)*r);
-     glowMushroom(p.x,p.z,i);
+    // The open crater is a depression in the actual mountain surface.
+    // Only a soft amber glow is used: no dangerous lava hazards or damage.
+    const centerH=isletHeight(land.x,land.z);
+    const warmRock=make(ball,craterOrange,land.x,centerH+.11,land.z,3.25,.18,2.8);
+    warmRock.name='Warm volcanic crater at Volcán Barú';
+    warmRock.castShadow=false;
+    for(let i=0;i<7;i++){
+     const angle=i*Math.PI*2/7,x=land.x+Math.cos(angle)*2.6,z=land.z+Math.sin(angle)*2.2;
+     const puff=make(ball,steam,x,centerH+1.8+(i%3)*1.25,z,.8+(i%2)*.35,.65+(i%3)*.27,.7);
+     puff.castShadow=false;puff.renderOrder=2;
+     bobbing.push({g:puff,y:puff.position.y,z:puff.position.z});
     }
-    for(let i=0;i<22;i++){
-     const a=i*2.4,r=.23+(i%4)*.16,p=place(land,Math.sin(a)*r,Math.cos(a)*r);
-     make(ball,forestGlow,p.x,p.y+1.45+(i%5)*.45,p.z,.07+(i%3)*.035,.07+(i%3)*.035,.07+(i%3)*.035);
-    }
-    const x=land.x-8,z=land.z-7,y=height(x,z);
-    for(let j=0;j<7;j++){
-     const rock=make(rockGeo,stone,x+Math.sin(j*2.4)*2,y+1.5+(j%3)*1.6,z+Math.cos(j*2.4),2.1,2.4,1.5);
-     rock.rotation.y=j;
-    }
-    const falls=make(box,mat('#b0eeef',{transparent:true,opacity:.55,roughness:.15}),x,y+2.3,z+1.9,1.4,4.6,.1);
-    falls.name='Forest waterfall';
-    make(cylinder,blue,x,y+.03,z+3,3,.06,2);
-    for(let j=0;j<8;j++){
-     const foam=make(ball,cream,x+Math.sin(j)*1.3,y+.15,z+2.6+Math.cos(j)*.5,.12,.05,.15);
-     bobbing.push({g:foam,y:y+.15,z:z+3});
-    }
+    // Safe summit lookout at the end of the hiking trail.
+    const summit=volcanoTrailPoint(1);
+    const platform=make(cylinder,signWood,summit.x,summit.y+.13,summit.z,1.60,.24,1.60);
+    platform.name='Volcán Barú summit lookout';platform.castShadow=false;
+    const flagPost=make(cylinder,signWood,summit.x+.88,summit.y+1.62,summit.z,.075,3.0,.075);
+    flagPost.name='Volcán Barú summit flag';
+    const flag=make(box,red,summit.x+1.42,summit.y+2.57,summit.z,.96,.62,.065);
+    flag.name='Red summit flag of Volcán Barú';
+    make(ball,gold,summit.x+.88,summit.y+3.2,summit.z,.20,.20,.20);
+    const start=volcanoTrailPoint(0);
+    make(cylinder,signWood,start.x,start.y+.87,start.z,.17,1.7,.17);
+    const entranceSign=make(box,wood,start.x,start.y+1.82,start.z,3.2,1.12,.20);
+    entranceSign.name='🥾 Sendero al Volcán Barú · trail begins';
    }else if(land.id==='crystalCove'){
     // Guna Yala magical crystal cove (fantasy biome): cool blue stone, clustered glassy gem towers,
     // arcing stone ruins, musical coral and luminous sea-glass.
