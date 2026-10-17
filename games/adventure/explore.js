@@ -15,6 +15,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);syncWallet(state);
  let disposed=false,engine=null,control=null,friendSystem=null,houseSystem=null,wildLife=null,cityLife=null,workshop=null,regionWorld=null,carDriving=false,carSpeed=0,mountId=null,birdAltitude=0,birdTarget=0,birdLanding=false,near=null,ride=s.flight?1:0,flightY=s.flight||0,flightTarget=s.flight||0,flightVX=0,flightVZ=0,route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;
  let pendingRealm=null,waterLanding=null;let swimming=false,inside=false,stair=0,boating=false,boatSpeed=0,foodNear=null,eating=0,energy=0,swimBoost=0,rescueCooldown=0,danger=false,lastShore={x:4,z:10};
+ let regionFocusMode=false;
  let goal=nextIslandAdventure(state),goalAnnounced='',lastVoice=-Infinity,welcomed=false;
  function guide(){return false;}
  function goalPlace(){return goal?explorePlaces.find(p=>p.id===goal.place):null;}
@@ -99,7 +100,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  const btn=(txt,cls,fn)=>{const b=makeEl('button',cls);b.type='button';paintButton(b,txt);b.onclick=()=>{joy.gesture();fn();};return b;};
  let canvas=makeEl('canvas','explore-canvas');canvas.setAttribute('aria-label',say('Explora con Angelique. Usa flechas o WASD, o toca el suelo.','Explore as Angelique. Use arrows or WASD, or tap the ground.'));canvas.tabIndex=0;
  const hud=makeEl('div','explore-hud'),title=makeEl('div','explore-location','🏖️ '+say('Playa Gorgona','Playa Gorgona')),bag=makeEl('div','explore-bag'),quest=makeEl('div','explore-hint',say('¡Panamá te espera! Busca a Pip en Gorgona o explora a tu aire.','Panama awaits! Find Pip in Gorgona or explore anywhere.'));
- const goalCard=makeEl('section','island-goal'),goalTitle=makeEl('strong',''),goalText=makeEl('p',''),goalButton=btn('','goal-next',followGoal);goalCard.setAttribute('aria-label',say('Tu siguiente aventura','Your next adventure'));goalCard.append(goalTitle,goalText,goalButton);
+ const goalCard=makeEl('section','island-goal'),goalTitle=makeEl('strong',''),goalText=makeEl('p',''),goalButton=btn('','goal-next',()=>{if(regionFocusMode)showRegionProject();else followGoal();});goalCard.setAttribute('aria-label',say('Tu siguiente aventura','Your next adventure'));goalCard.append(goalTitle,goalText,goalButton);
  const regionStatus=makeEl('div','region-help-status');regionStatus.hidden=true;
  regionStatus.setAttribute('aria-live','off');regionStatus.setAttribute('aria-label',say('Progreso para ayudar la región','Regional restoration progress'));
  let lastMissionRegion='';
@@ -681,6 +682,38 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    cityLife?.update(dt,active,{x:s.x,z:s.z,driving:carDriving,flying:!!ride||birdAltitude>2,indoors:inside||houseSystem?.isInside()});
    cityGuideButton.hidden=!cityLife?.isHere(s.x,s.z)||inside||houseSystem?.isInside();
    life.update(dt,active,motion());realms.update(dt,active,ride?'fly':swimming?'swim':boating?'boat':'walk',ay);journey.update(dt,active,ride?'fly':swimming?'swim':boating?'boat':'walk',ay);story.update(dt,time);if(host.classList.contains("story-nearby")){lesson.hidden=true;guideBeacon.visible=false;}
+   // The previous small chapter lessons are still playable, but they now
+   // contribute to a single tangible project in each Panama location.
+   const regionId=regionForPosition(s.x,s.z),mission=missionStatus(s,state,regionId);
+   const newRestorations=restoreRegions(s,state);
+   if(newRestorations.length){
+    for(const id of newRestorations)earnCoins(state,'region-help-'+id);
+    regionWorld?.refresh();save();refresh();joy.effect('finish');
+    const local=newRestorations.find(id=>id===regionId);
+    if(local){
+     const win=missionStatus(s,state,local);
+     tell('🎉 '+win.resultEs+' +25 🪙','🎉 '+win.resultEn+' +25 🪙');
+    }
+   }
+   const moving=!!ride||!!boating||!!inside||!!carDriving||!!mountId||!!swimming||!!houseSystem?.isInside();
+   regionFocusMode=!moving;
+   regionStatus.hidden=inWater(s.x,s.z)||!!inside||!!houseSystem?.isInside();
+   regionStatus.textContent=mission.icon+' '+(mission.restored?say('¡Región restaurada!','Region restored!'):say('Ayudar la región','Help this region'))+' · '+mission.done+'/4';
+   if(lastMissionRegion!==regionId){
+    lastMissionRegion=regionId;
+    paintButton(regionButton,'🌍 '+(mission.restored?'✓':mission.done+'/4'));
+   }else if(regionButton.dataset.projectProgress!==(mission.done+':'+mission.restored)){
+    paintButton(regionButton,'🌍 '+(mission.restored?'✓':mission.done+'/4'));
+   }
+   regionButton.dataset.projectProgress=mission.done+':'+mission.restored;
+   if(regionFocusMode){
+    const remaining=mission.tasks.find(x=>!x.complete);
+    const copy=mission.restored?(es?mission.resultEs:mission.resultEn):(remaining?(es?remaining.es:remaining.en):say('¡Todo listo! Tu región está floreciendo.','All set! Your region is thriving.'));
+    setText(goalTitle,mission.icon+' '+say('TU MISIÓN EN ESTA REGIÓN','YOUR REGIONAL MISSION')+' · '+mission.done+'/4');
+    setText(goalText,copy);
+    setText(goalButton,mission.restored?say('🌍 Ver regiones','🌍 View regions'):say('🌱 Ver mi misión','🌱 See my mission'));
+    goalButton.disabled=false;
+   }
    act.classList.toggle('has-target',!act.hidden&&panel.hidden);
    for(const [button,words] of buttonUpdates)paintButton(button,words);buttonUpdates.clear();
   }
