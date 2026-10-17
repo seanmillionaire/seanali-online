@@ -650,3 +650,31 @@ body[data-scene="explore"] .city-guide-card .discover-place{
 body:not([data-scene="explore"]) .activity p,
 body:not([data-scene="explore"]) .progress-card p{font-size:16px;line-height:1.5}
 body:not([data-scene="explore"]) button.primary{min-height:60px;font-size:18px}
+
+
+/* Open dialogs take visual priority over the control pad and helper button. */
+body[data-scene="explore"] .explore-world:has(.explore-panel:not([hidden])) .helper-toggle.picture-button,
+body[data-scene="explore"] .explore-world:has(.explore-panel:not([hidden])) .explore-actions,
+body[data-scene="explore"] .explore-world:has(.explore-panel:not([hidden])) .island-map-mini,
+body[data-scene="explore"] .explore-world:has(.explore-panel:not([hidden])) .friend-peek{
+ visibility:hidden;pointer-events:none;
+}
+/* A visible focus and active state makes taps unmistakable. */
+body[data-scene="explore"] .picture-button:focus-visible,
+body[data-scene="explore"] .island-map-mini:focus-visible,
+body[data-scene="explore"] .discover-place:focus-visible{
+ outline:4px solid #1d72be;outline-offset:3px;
+}
+body[data-scene="explore"] .explore-actions .picture-button:active{
+ transform:translateY(4px) scale(.97);
+ box-shadow:0 2px 0 #46665b88;
+}
+body[data-scene="explore"] .world-arrows button{
+ min-width:52px;min-height:55px;font-size:25px;font-weight:900;
+ border-radius:16px;border:2px solid #fff8e5;
+}
+body[data-scene="explore"] .stick-compass{font-size:14px}
+body[data-scene="explore"] .stick-knob{font-size:29px}
+@media(max-width:380px){
+ body[data-scene="explore"] .explore-menu .button-caption{font-size:14px}
+}
