@@ -9,11 +9,12 @@ import {createWildlifeFriends} from './wildlife-friends.js?v=73';
 import {createHouseInteriors} from './house-interiors.js?v=73';
 import {createPizzaCity} from './pizza-city.js?v=73';
 import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=73';
+import {ESTATE_PLANS,findEstateSite,canBuildEstate,buildEstate,createEstateWorld} from './estate.js?v=1';
 import {buildIsland} from './entrance.js?v=73';
 import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,sharkPatrol,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=73';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);syncWallet(state);
- let disposed=false,engine=null,control=null,friendSystem=null,houseSystem=null,wildLife=null,cityLife=null,workshop=null,regionWorld=null,carDriving=false,carSpeed=0,mountId=null,birdAltitude=0,birdTarget=0,birdLanding=false,near=null,ride=s.flight?1:0,flightY=s.flight||0,flightTarget=s.flight||0,flightVX=0,flightVZ=0,route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;
+ let disposed=false,engine=null,control=null,friendSystem=null,houseSystem=null,wildLife=null,cityLife=null,workshop=null,estateWorld=null,regionWorld=null,carDriving=false,carSpeed=0,mountId=null,birdAltitude=0,birdTarget=0,birdLanding=false,near=null,ride=s.flight?1:0,flightY=s.flight||0,flightTarget=s.flight||0,flightVX=0,flightVZ=0,route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;
  let pendingRealm=null,waterLanding=null;let swimming=false,inside=false,stair=0,boating=false,boatSpeed=0,foodNear=null,eating=0,energy=0,swimBoost=0,rescueCooldown=0,danger=false,lastShore={x:4,z:10};
  let regionFocusMode=false;
  let goal=nextIslandAdventure(state),goalAnnounced='',lastVoice=-Infinity,welcomed=false;
@@ -128,18 +129,26 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  cityGuideButton.setAttribute('aria-label',say('Explorar actividades de Ciudad de Panamá','Explore Panama City activities'));
  cityGuideButton.hidden=true;menu.append(cityGuideButton);
  const foodButton=btn('🥥 🍌','world-small food-button',showFood);foodButton.setAttribute('aria-label',say('Mi comida','My food'));menu.append(foodButton);
+ const estateMenu=btn(say('🏗️ Mi pueblo','🏗️ My village'),'world-small estate-menu-button',showEstate);menu.prepend(estateMenu);
+ const mobileDock=makeEl('nav','mobile-game-dock');mobileDock.setAttribute('aria-label',say('Controles del mundo','World controls'));
+ const dockMap=btn(say('🗺️ Mapa','🗺️ Map'),'mobile-dock-map',()=>{setHelpers(false);showDiscover();});
+ const dockBuild=btn(say('🏰 Construir','🏰 Build'),'mobile-dock-build',showEstate);
+ const dockMore=btn(say('☰ Más','☰ More'),'mobile-dock-more',()=>setHelpers(!host.classList.contains('helpers-open')));
+ mobileDock.append(dockMap,dockBuild,dockMore);
+ const mobileShade=btn('×','mobile-menu-shade',()=>setHelpers(false));mobileShade.setAttribute('aria-label',say('Cerrar menú','Close menu'));
+ 
  const catchButton=btn('🦋','world-catch catch-action',()=>control?.catchNearest());catchButton.hidden=true;actions.append(catchButton);
  const pad=makeEl('div','explore-stick');pad.setAttribute('aria-label',say('Palanca para moverte','Movement joystick'));const knob=makeEl('span','stick-knob');pad.append(knob);const compass=makeEl('span','stick-compass'),stickReadout=makeEl('span','stick-readout');for(const [cls,icon] of [['north','↑'],['east','→'],['south','↓'],['west','←']])compass.append(makeEl('span',cls,icon));compass.setAttribute('aria-hidden','true');pad.append(compass,stickReadout);knob.textContent='🕹️';
  const directions=makeEl('div','world-arrows');for(const [label,k]of [['↑','ArrowUp'],['←','ArrowLeft'],['↓','ArrowDown'],['→','ArrowRight']]){const b=btn(label,'',()=>{});b.setAttribute('aria-label',say('Mover ','Move ')+({ArrowUp:say('norte','north'),ArrowDown:say('sur','south'),ArrowLeft:say('oeste','west'),ArrowRight:say('este','east')}[k]));b.onpointerdown=e=>{b.setPointerCapture(e.pointerId);keys.add(k);targetPoint=null;joy.gesture();};b.onpointerup=b.onpointercancel=()=>keys.delete(k);directions.append(b);}
  const instructions=makeEl('div','explore-controls',say('Toca el suelo para ir · Flechas / WASD · Espacio para saltar','Tap ground to walk · Arrows / WASD · Space to jump'));
  const panel=makeEl('section','explore-panel');panel.hidden=true;panel.setAttribute('aria-label',say('Descubrimientos','Discoveries'));
- hud.append(title,bag);actions.append(lesson,act,jump,descend,friendMeet);host.append(canvas,hud,volcanoStatus,regionStatus,quest,goalCard,menu,helperToggle,pad,directions,actions,instructions,message,panel);
+ hud.append(title,bag);actions.append(lesson,act,jump,descend,friendMeet);host.append(canvas,hud,volcanoStatus,regionStatus,quest,goalCard,mobileShade,menu,helperToggle,pad,directions,actions,instructions,message,panel,mobileDock);
  const adventureMap=createWorldMap({host,panel,world:s,islands:worldIslands,places:explorePlaces,language:state.lang,
    onTravel:travelTo,onOpen:()=>{setHelpers(false);blur();targetPoint=null;}});
  refresh();
  const buttonUpdates=new Map();
  function setText(e,t){if(e.tagName==='BUTTON')buttonUpdates.set(e,t);else if(e.textContent!==t)e.textContent=t;}
- function refresh(){paintButton(craftButton,'🎒 '+say('Construir','Build')+' '+(s.craft?.built?.length||0)+'/7');paintButton(walletButton,'🪙 '+coinBalance(state));walletButton.setAttribute('aria-label',say('Mis monedas y tienda: ','My coins and shop: ')+coinBalance(state));const lessonCount=Object.keys({...state.completed,...state.islandLessons?.completed}).length;const available=workshop?.inventory().available;bag.textContent=`${lessonCount?`✦ ${lessonCount}/48 · `:''}🎒 🐚 ${available?.shell??countExplore(s,'shell')}   🍌 ${available?.fruit??s.food.banana}   💎 ${available?.islandTreasure??countExplore(s,'islandTreasure')}`;}
+ function refresh(){paintButton(craftButton,'🎒 '+say('Construir','Build')+' '+(s.craft?.built?.length||0)+'/7');paintButton(walletButton,'🪙 '+coinBalance(state));walletButton.setAttribute('aria-label',say('Mis monedas y tienda: ','My coins and shop: ')+coinBalance(state));const total=s.estate?.buildings?.length||0;bag.textContent=`🍌 ${s.food.banana}   🥥 ${s.food.coconut}   🪙 ${coinBalance(state)}   🍀 ${s.estate?.charms||0}`;dockBuild.setAttribute('aria-label',say('Construir mi pueblo','Build my village')+' · '+total);}
  function tell(a,b,force=true){guide(say(a,b),force);message.textContent=say(a,b);message.classList.add('show');messageTime=4.5;}
  function reward(id,a,b){if(badgeExplore(s,id)){const coins=earnCoins(state,id);if(coins){joy.effect('coin');a+=` +${coins} monedas.`;b+=` +${coins} coins.`;}joy.effect('finish');control?.spark(s.x,s.z,22);save();refresh();}tell(a,b);}
  function birdMount(){return mountId==='mila'||mountId==='ollie';}
@@ -312,6 +321,41 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   }
   panel.append(cards);
  }
+ function showEstate(){
+  if(friendSystem?.isOpen())friendSystem.close();
+  if(adventureMap.isOpen())adventureMap.close(false);
+  setHelpers(false);panel.replaceChildren();panel.hidden=false;blur();targetPoint=null;route=[];
+  panel.classList.add('estate-panel');
+  panel.append(btn('×','panel-close',()=>{panel.hidden=true;panel.classList.remove('estate-panel');canvas.focus({preventScroll:true});}),
+    makeEl('div','estate-eyebrow',say('MI PROPIO MUNDO','MY OWN WORLD')),
+    makeEl('h2','',say('🏰 Construye tu imperio','🏰 Build your own empire')),
+    makeEl('p','estate-intro',say('¡Construye algo de verdad! Tu creación aparece aquí en 3D y seguirá allí cuando vuelvas.','Build something real! Your creation appears here in 3D and stays when you return.')));
+  const owns=s.estate?.buildings?.length||0;
+  const meter=makeEl('div','estate-progress');meter.append(makeEl('strong','',say('🏡 Mis construcciones','🏡 My buildings')),makeEl('b','',owns+'/32'));panel.append(meter);
+  const inv=makeEl('div','estate-wallet');for(const [icon,n,label]of [['🍌',s.food.banana,say('Plátanos','Bananas')],['🥥',s.food.coconut,say('Cocos','Coconuts')],['🪙',coinBalance(state),say('Monedas','Coins')],['🍀',s.estate.charms,say('Suerte','Lucky charms')]]){const e=makeEl('span','estate-currency',icon+' '+n);e.title=label;inv.append(e);}panel.append(inv);
+  const plans=makeEl('div','estate-plans');
+  for(const p of ESTATE_PLANS){
+   const ok=canBuildEstate(s,p.type,coinBalance(state));
+   const card=makeEl('section','estate-plan'+(ok?' estate-ready':'')),front=makeEl('div','estate-plan-head');
+   front.append(makeEl('span','estate-emoji',p.icon),makeEl('strong','',es?p.es:p.en));card.append(front);
+   const costs=makeEl('div','estate-costs',`🍌 ${p.banana}  🥥 ${p.coconut}  🪙 ${p.coins}  🍀 ${p.charms}`);card.append(costs);
+   if(owns<p.unlock)card.append(makeEl('p','estate-locked',say('🔒 Construye '+p.unlock+' antes','🔒 Build '+p.unlock+' other buildings first')));
+   const action=btn(ok?say('✨ Construir aquí','✨ Build here'):say('🔎 Me faltan recursos','🔎 Collect more resources'),'estate-build-button',()=>{
+    if(!canBuildEstate(s,p.type,coinBalance(state))){showEstate();return;}
+    if(boating||ride||swimming||inside||carDriving||mountId||houseSystem?.isInside()){
+      tell('🏡 Baja a tierra firme para construir.','🏡 Step onto land before building.');return;
+    }
+    const site=findEstateSite(s,p.type,{x:s.x,z:s.z},{canStand:(x,z)=>walkable(x,z)&&!inWater(x,z),height:(x,z)=>isletHeight(x,z)>0?isletHeight(x,z):0});
+    if(!site){tell('🏝️ Necesitas un espacio plano cerca. Ve a otro lugar y prueba.','🏝️ Find some flat open land nearby and try again.');return;}
+    const entry=buildEstate(s,p.type,coinBalance(state),site);
+    if(!entry)return;
+    estateWorld?.add(entry);save();refresh();panel.hidden=true;panel.classList.remove('estate-panel');
+    joy.effect('finish');tell('🎉 ¡Lo construiste! Mira tu nueva creación.','🎉 You built it! Look at your new creation.');
+    targetPoint=null;route=[];
+   });action.disabled=!ok;card.append(action);plans.append(card);
+  }
+  panel.append(plans,btn(say('🧰 Ver construcciones clásicas','🧰 See classic workshops'),'estate-legacy-link',()=>{panel.classList.remove('estate-panel');showBag();}));
+ }
  function showFood(){if(friendSystem?.isOpen())friendSystem.close();if(adventureMap.isOpen())adventureMap.close(false);setHelpers(false);panel.replaceChildren();panel.hidden=false;blur();targetPoint=null;panel.append(btn('×','panel-close',()=>{panel.hidden=true;}),makeEl('h2','',say('Mi comida','My food')),makeEl('p','',say('🍌 Comparte tus plátanos: comer · construir · mercado','🍌 Share your bananas: eat · build · market')),makeEl('p','',say('Come y crece','Eat and grow')+' · '+s.growth.toFixed(1)+'×'));for(const kind of ['coconut','banana']){const icon=kind==='coconut'?'🥥':'🍌',b=btn(icon+' × '+s.food[kind]+' · '+say('Comer','Eat'),'discover-place',()=>{if(!spendFood(s,kind))return;eating=2;host.classList.add("snack-moment");energy=30;s.journey.meals++;s.growth=Math.min(6,s.growth+.45);control?.snack(kind);save();refresh();panel.hidden=true;joy.effect('correct');tell(icon+' ¡Ñam! ↗ '+s.growth.toFixed(1)+'×',icon+' Yum! ↗ '+s.growth.toFixed(1)+'×');});b.disabled=!s.food[kind];panel.append(b);}if(s.growth>1)panel.append(btn(say('↘ Volver a pequeña','↘ Little again'),'discover-place',()=>{s.growth=1;save();panel.hidden=true;}));}
  function showShop(){if(friendSystem?.isOpen())friendSystem.close();if(adventureMap.isOpen())adventureMap.close(false);panel.replaceChildren();panel.hidden=false;blur();targetPoint=null;const close=btn('×','panel-close',()=>{panel.hidden=true;canvas.focus({preventScroll:true});});close.setAttribute('aria-label',say('Cerrar','Close'));panel.append(close,makeEl('h2','',say('Mis monedas','My coins')),makeEl('p','',say(`Tienes ${coinBalance(state)} monedas de la isla.`,`You have ${coinBalance(state)} island coins.`)),makeEl('p','',say('Ayuda a un amigo: 10. Cuida una flor: 2. Prepara el picnic, ilumina el bosque o crea música: 15. Cada buena acción da monedas una vez.','Help a friend: 10. Care for a flower: 2. Prepare the picnic, light the grove, or make music: 15. Each good deed earns coins once.')));const list=makeEl('div','discover-grid');for(const item of islandShop){const owned=state.wallet.items.includes(item.id);const buy=btn((es?item.es:item.en)+' · '+(owned?say('Poner','Wear'):item.cost+' 🪙'),'discover-place',()=>{if(!buyIslandItem(state,item.id))return;save();refresh();control?.dress();joy.effect('coin');showShop();});buy.disabled=!owned&&coinBalance(state)<item.cost;list.append(buy);}panel.append(list);close.focus();guide(say('Tus buenas acciones te dan monedas. Puedes ahorrar o elegir un sombrero.','Your good deeds earn coins. You can save them or choose a hat.'),true);}
  function travelTo(p){
@@ -469,6 +513,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   cityLife=createPizzaCity({T,scene,camera,state,height,make,mat,geometry,ball,box,cylinder,cone,surfaces,joy,save,refresh,tell:(msg)=>tell(msg,msg)});
   cityLife.attach(host);cityLife.setCoinAward(id=>earnCoins(state,id));
   workshop=createIslandWorkshop({T,scene,state,make,mat,geometry,ball,box,cylinder,cone,height,joy,save,refresh,tell,spark,motion});
+  estateWorld=createEstateWorld({T,scene,state,make,mat,geometry,ball,box,cylinder,cone,height,joy,save,refresh,tell,spark});
   regionWorld=createRegionProjectWorld({T,scene,state,make,mat,ball,box,cone,cylinder,height});
   refresh();
   houseSystem=createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,height,surfaces,language:state.lang,companionId:()=>s.friends?.companion,onPizza:()=>cityLife?.order(),
@@ -679,7 +724,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
        '🌋 You climbed Volcán Barú! What an incredible view!');
     }
    }
-   workshop?.update(dt,time);
+   workshop?.update(dt,time);estateWorld?.update(dt);
    cityLife?.update(dt,active,{x:s.x,z:s.z,driving:carDriving,flying:!!ride||birdAltitude>2,indoors:inside||houseSystem?.isInside()});
    cityGuideButton.hidden=!cityLife?.isHere(s.x,s.z)||inside||houseSystem?.isInside();
    life.update(dt,active,motion());realms.update(dt,active,ride?'fly':swimming?'swim':boating?'boat':'walk',ay);journey.update(dt,active,ride?'fly':swimming?'swim':boating?'boat':'walk',ay);story.update(dt,time);if(host.classList.contains("story-nearby")){lesson.hidden=true;guideBeacon.visible=false;}
@@ -718,7 +763,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    act.classList.toggle('has-target',!act.hidden&&panel.hidden);
    for(const [button,words] of buttonUpdates)paintButton(button,words);buttonUpdates.clear();
   }
-  return {update,dispose(){regionWorld?.dispose();regionWorld=null;workshop?.dispose();workshop=null;volcanoStatus.remove();cityLife?.dispose();cityLife=null;houseSystem?.dispose();houseSystem=null;friendSystem?.dispose();friendSystem=null;wildLife=null;realms.dispose();journey.dispose();life.dispose();story.dispose();canvas.removeEventListener('pointerdown',walkTo);control=null;}};
+  return {update,dispose(){estateWorld?.dispose();estateWorld=null;regionWorld?.dispose();regionWorld=null;workshop?.dispose();workshop=null;volcanoStatus.remove();cityLife?.dispose();cityLife=null;houseSystem?.dispose();houseSystem=null;friendSystem?.dispose();friendSystem=null;wildLife=null;realms.dispose();journey.dispose();life.dispose();story.dispose();canvas.removeEventListener('pointerdown',walkTo);control=null;}};
  }
  function dispose(){if(disposed)return;adventureMap.dispose();host.classList.remove('inside-lighthouse','is-swimming','shark-nearby');joy.boat?.(false);disposed=true;generation++;clearTimeout(startTimer);clearTimeout(recoveryTimer);canvas.removeEventListener('webglcontextlost',contextLost);canvas.removeEventListener('webglcontextrestored',contextRestored);save();engine?.dispose();engine=null;document.removeEventListener('keydown',keydown);document.removeEventListener('keyup',keyup);window.removeEventListener('blur',blur);document.removeEventListener('visibilitychange',blur);keys.clear();}
  return {dispose};
