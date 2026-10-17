@@ -1,4 +1,4 @@
-import {worldIslands,explorePlaces,earnCoins} from './explore-state.js?v=68';
+import {worldIslands,explorePlaces,earnCoins} from './explore-state.js?v=72';
 import {oceanModel} from './ocean-models.js?v=38';
 export const realmTasks={
  islands:[{id:'visit',icon:'🏝',en:'Find Panama destinations',es:'Descubre destinos de Panamá',target:5},{id:'fruit',icon:'🍌',en:'Eat and grow',es:'Come y crece',target:3},{id:'butterfly',icon:'🦋',en:'Catch and release',es:'Atrapa y libera',target:5},{id:'friends',icon:'🌱',en:'Help island friends',es:'Ayuda a tus amigos',target:3}],
