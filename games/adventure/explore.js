@@ -6,7 +6,7 @@ import {createWorldStory} from './world-story.js?v=55';
 import {createWorldMap} from './world-map.js?v=3';
 import {createWildlifeFriends} from './wildlife-friends.js?v=55';
 import {createHouseInteriors} from './house-interiors.js?v=55';
-import {createPizzaCity} from './pizza-city.js?v=1';
+import {createPizzaCity} from './pizza-city.js?v=2';
 import {buildIsland} from './entrance.js?v=55';
 import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,normalizeExplore,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,sharkPatrol,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=55';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
@@ -238,12 +238,20 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   function lightBeacon(){if(!inside||stair<.97)return;beamCopy.visible=true;if(beam)beam.material.opacity=.22;if(crystal)crystal.material.emissiveIntensity=1.1;reward('beacon','✨ ¡Luz para los barcos!','✨ A light for the boats!');}
   const desired=new T.Vector3();
   const raycaster=new T.Raycaster(),plane=new T.Plane(new T.Vector3(0,1,0),0),hit=new T.Vector3();
-  const walkTo=e=>{if(!panel.hidden||paused())return;const r=canvas.getBoundingClientRect();raycaster.setFromCamera(new T.Vector2((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1),camera);const buddy=friendSystem?.hit(raycaster);if(buddy){friendSystem.open(buddy.id);joy.gesture();return;}
+  const walkTo=e=>{if(!panel.hidden||paused())return;const r=canvas.getBoundingClientRect();raycaster.setFromCamera(new T.Vector2((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1),camera);
+  if(!carDriving&&!ride&&!boating&&!mountId&&!inside&&!houseSystem?.isInside()&&cityLife?.hitCar(raycaster,s.x,s.z)){
+   if(cityLife.nearCar(s.x,s.z))boardCar();
+   else{route=[];targetPoint={x:s.city.car.x,z:s.city.car.z};}
+   joy.gesture();return;
+  }
+  const moneyTarget=!ride&&!boating&&!inside&&!houseSystem?.isInside()?cityLife?.hitBag(raycaster,s.x,s.z):null;
+  if(moneyTarget){route=[];targetPoint={x:moneyTarget.x,z:moneyTarget.z};joy.gesture();return;}
+  const buddy=friendSystem?.hit(raycaster);if(buddy){friendSystem.open(buddy.id);joy.gesture();return;}
  const swimFriend=!mountId&&!boating&&!ride&&!houseSystem?.isInside()?wildLife?.hit(raycaster,s.x,s.z):null;
  if(swimFriend){wildLife.markRidden(swimFriend);friendSystem?.ride(swimFriend.kind==='Dolphin'?'dori':'pip',{x:swimFriend.g.position.x,z:swimFriend.g.position.z});joy.gesture();return;}
  const storyHit=!ride&&!boating&&!inside&&!airborne?story.hit(raycaster):null;if(storyHit){route=islandPath(s,storyHit);targetPoint=route.shift()||null;joy.gesture();canvas.focus({preventScroll:true});return;}const bubbleHit=raycaster.intersectObjects(bubbles.map(b=>b.hit),false)[0];if(bubbleHit){popBubble(bubbles.findIndex(b=>b.hit===bubbleHit.object));joy.gesture();return;}const butterflyHit=raycaster.intersectObjects(butterflies.filter(b=>b.g.visible&&b.cooldown===0).map(b=>b.hit),false)[0];if(butterflyHit){const b=butterflies.find(b=>b.hit===butterflyHit.object);if(!ride&&!boating&&!inside&&!airborne&&Math.hypot(s.x-b.g.position.x,s.z-b.g.position.z)>=3){route=islandPath(s,b.g.position);targetPoint=route.shift()||null;}else catchButterfly(b);joy.gesture();return;}if(inside){plane.constant=-(height(-1,-5)+towerY);if(raycaster.ray.intersectPlane(plane,hit)){targetPoint={x:hit.x,z:hit.z};route=[];}plane.constant=0;return;}if(raycaster.ray.intersectPlane(plane,hit)){// Refine the ground intersection for the raised island.
     for(let i=0;i<3;i++){plane.constant=inWater(hit.x,hit.z)?0:-height(hit.x,hit.z);raycaster.ray.intersectPlane(plane,hit);}plane.constant=0;
-    const radius=Math.sqrt((hit.x/170)**2+(hit.z/145)**2);const destination={x:hit.x/Math.max(1,radius),z:hit.z/Math.max(1,radius)};route=boating||ride?[]:islandPath(s,destination);targetPoint=boating||ride?destination:route.shift()||null;marker.position.set(destination.x,inWater(destination.x,destination.z)?.04:height(destination.x,destination.z)+.1,destination.z);marker.visible=!!targetPoint;joy.gesture();canvas.focus({preventScroll:true});}};canvas.addEventListener('pointerdown',walkTo);
+    const radius=Math.sqrt((hit.x/170)**2+(hit.z/145)**2);const destination={x:hit.x/Math.max(1,radius),z:hit.z/Math.max(1,radius)};route=boating||ride||carDriving?[]:islandPath(s,destination);targetPoint=boating||ride||carDriving?destination:route.shift()||null;marker.position.set(destination.x,inWater(destination.x,destination.z)?.04:height(destination.x,destination.z)+.1,destination.z);marker.visible=!!targetPoint;joy.gesture();canvas.focus({preventScroll:true});}};canvas.addEventListener('pointerdown',walkTo);
   function spark(x,z,n=12,y=height(x,z)+.7){for(let i=0;i<n&&particles.length<70;i++){const m=make(ball,i%2?gold:pink,x,y,z,.09);particles.push({m,vx:(Math.random()-.5)*4,vz:(Math.random()-.5)*4,vy:2+Math.random()*3,life:1.4});}}
   function popBubble(i){if(i<0||paused()||document.hidden||!panel.hidden)return;const b=bubbles.splice(i,1)[0];scene.remove(b.m);joy.note((popped++)%5,.2);s.pops=Math.min(9999,s.pops+1);spark(b.m.position.x,b.m.position.z,8,b.m.position.y);tell('🫧 '+s.pops+' · ¡Pop!','🫧 '+s.pops+' · Pop!',false);save();}
   function blowBubbles(){for(let i=0;i<10&&bubbles.length<20;i++){const x=s.x+(Math.random()-.5)*4,z=s.z+(Math.random()-.5)*4,m=make(ball,bubbleMaterial,x,height(x,z)+1+Math.random()*2,z,.3+Math.random()*.25);m.name='Catchable bubble';const rim=make(circle,bubbleRimMaterial,0,0,0,.95,.95,.95,m);make(ball,cream,-.28,.3,.7,.12,.22,.04,m);const hit=make(ball,pickMaterial,0,0,0,1.7,1.7,1.7,m);hit.castShadow=false;bubbles.push({m,hit,rim,life:24});}}
