@@ -128,6 +128,14 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
  function isHere(x,z){return Math.hypot((x-CITY.x)/CITY.rx,(z-CITY.z)/CITY.rz)<1.0;}
  function nearCar(x,z){return Math.hypot(x-city.car.x,z-city.car.z)<4;}
  function canDrive(x,z){return Math.hypot((x-CITY.x)/CITY.rx,(z-CITY.z)/CITY.rz)<.87;}
+ function hitCar(raycaster,x,z){return nearCar(x,z)||Math.hypot(x-city.car.x,z-city.car.z)<13&&raycaster.intersectObject(car,true).length>0;}
+ function hitBag(raycaster,x,z){
+  for(const bag of bags){
+   if(Math.hypot(bag.x-x,bag.z-z)>45)continue;
+   if(raycaster.intersectObject(bag.root,true).length)return {x:bag.x,z:bag.z,id:bag.id};
+  }
+  return null;
+ }
  // Caller owns the coin-award function.
  let coinAward=()=>0;
  function setCoinAward(fn){coinAward=fn||(()=>0);}
@@ -152,5 +160,5 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
   }
  }
  function dispose(){status.remove();sign.remove();scene.remove(group,car,pizzaSign);for(const b of bags)scene.remove(b.root);spriteMaterial.dispose();texture.dispose();pizzaMaterial.dispose();pizzaTexture.dispose();}
- return {attach,update,nearCar,canDrive,updateCar,order,setCoinAward,isHere,car,dispose};
+ return {attach,update,nearCar,canDrive,hitCar,hitBag,updateCar,order,setCoinAward,isHere,car,dispose};
 }
