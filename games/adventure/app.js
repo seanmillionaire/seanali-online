@@ -1,7 +1,7 @@
 import {earnCoins,syncWallet} from './explore-state.js?v=38';
-import {createExplore} from './explore.js?v=38';
+import {createExplore} from './explore.js?v=39';
 import {createEntrance} from './entrance.js?v=38';
-import {createDelight,burst,livingWorld,foxPortrait} from './delight.js?v=38';
+import {createDelight,burst,livingWorld,foxPortrait} from './delight.js?v=39';
 import {regions,quests,challenges,ui,text} from './content.js';
 import {SAVE_KEY,fresh,normalize,completedCount,lightCount,totalStars,unlocked,award} from './state.js?v=38';
 const $=s=>document.querySelector(s),app=$('#app'),dialog=$('#dialog');
