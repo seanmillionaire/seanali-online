@@ -5,12 +5,13 @@ import {createIslandLife} from './island-life.js?v=47';
 import {createWorldStory} from './world-story.js?v=43';
 import {createWorldMap} from './world-map.js?v=2';
 import {createWildlifeFriends} from './wildlife-friends.js?v=6';
-import {createHouseInteriors} from './house-interiors.js?v=2';
+import {createHouseInteriors} from './house-interiors.js?v=3';
+import {createPizzaCity} from './pizza-city.js?v=1';
 import {buildIsland} from './entrance.js?v=43';
 import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,normalizeExplore,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,sharkPatrol,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=43';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);syncWallet(state);
- let disposed=false,engine=null,control=null,friendSystem=null,houseSystem=null,wildLife=null,mountId=null,birdAltitude=0,birdTarget=0,birdLanding=false,near=null,ride=s.flight?1:0,flightY=s.flight||0,flightTarget=s.flight||0,flightVX=0,flightVZ=0,route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;
+ let disposed=false,engine=null,control=null,friendSystem=null,houseSystem=null,wildLife=null,cityLife=null,carDriving=false,carSpeed=0,mountId=null,birdAltitude=0,birdTarget=0,birdLanding=false,near=null,ride=s.flight?1:0,flightY=s.flight||0,flightTarget=s.flight||0,flightVX=0,flightVZ=0,route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;
  let pendingRealm=null,waterLanding=null;let swimming=false,inside=false,stair=0,boating=false,boatSpeed=0,foodNear=null,eating=0,energy=0,swimBoost=0,rescueCooldown=0,danger=false,lastShore={x:4,z:10};
  let goal=nextIslandAdventure(state),goalAnnounced='',lastVoice=-Infinity,welcomed=false;
  function guide(){return false;}
@@ -78,8 +79,19 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   if(birdAltitude>.6){birdLanding=true;birdTarget=0;tell('🪶 ¡Aterrizamos con cuidado!','🪶 Gliding down to land!');}
   else friendSystem?.dismount();
  }
- function hop(){if(!control||panel.hidden===false||paused())return;if(houseSystem?.isInside()){houseSystem.leave();host.classList.remove('inside-cottage');return;}if(birdMount()){birdLanding=false;birdTarget=Math.min(32,Math.max(birdAltitude,birdTarget)+4);return;}if(mountId){friendSystem?.dismount();return;}if(ride){flightTarget=Math.min(40,flightTarget+5);return;}if(boating){control.disembark();return;}if(swimming){swimBoost=3;return;}control.hop();joy.effect('tap');}
+ function hop(){if(!control||panel.hidden===false||paused())return;if(carDriving){exitCar();return;}if(houseSystem?.isInside()){houseSystem.leave();host.classList.remove('inside-cottage');return;}if(birdMount()){birdLanding=false;birdTarget=Math.min(32,Math.max(birdAltitude,birdTarget)+4);return;}if(mountId){friendSystem?.dismount();return;}if(ride){flightTarget=Math.min(40,flightTarget+5);return;}if(boating){control.disembark();return;}if(swimming){swimBoost=3;return;}control.hop();joy.effect('tap');}
+ function boardCar(){if(carDriving||!cityLife?.nearCar(s.x,s.z)||boating||ride||inside||houseSystem?.isInside()||mountId)return;
+  carDriving=true;carSpeed=0;swimming=false;bodyScale=1;s.x=s.city.car.x;s.z=s.city.car.z;targetPoint=null;route=[];blur();joy.effect('friend');
+  tell('🚙 ¡Angelique conduce! Usa las flechas.','🚙 Angelique is driving! Use the arrows.');save();
+ }
+ function exitCar(){if(!carDriving)return;carDriving=false;carSpeed=0;
+  const a=s.city.car.heading;s.x=s.city.car.x+Math.cos(a)*2.6;s.z=s.city.car.z-Math.sin(a)*2.6;
+  if(!cityLife?.canDrive(s.x,s.z)){s.x=s.city.car.x;s.z=s.city.car.z;}
+  targetPoint=null;route=[];blur();save();
+ }
  function interact(){if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.realm-panel:not([hidden])'))return;
+ if(carDriving){exitCar();return;}
+ if(!ride&&!boating&&!inside&&!mountId&&!houseSystem?.isInside()&&cityLife?.nearCar(s.x,s.z)){boardCar();return;}
  if(houseSystem?.isInside()){if(!houseSystem.inspect()){houseSystem.leave();host.classList.remove('inside-cottage');}return;}
  if(mountId){if(birdMount())landBird();else friendSystem?.dismount();return;}
  const doorway=houseSystem?.near(s.x,s.z);if(doorway){houseSystem.enter(doorway);return;}
@@ -103,6 +115,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  function showFood(){if(friendSystem?.isOpen())friendSystem.close();if(adventureMap.isOpen())adventureMap.close(false);setHelpers(false);panel.replaceChildren();panel.hidden=false;blur();targetPoint=null;panel.append(btn('×','panel-close',()=>{panel.hidden=true;}),makeEl('h2','',say('Mi comida','My food')),makeEl('p','',say('Come y crece','Eat and grow')+' · '+s.growth.toFixed(1)+'×'));for(const kind of ['coconut','banana']){const icon=kind==='coconut'?'🥥':'🍌',b=btn(icon+' × '+s.food[kind]+' · '+say('Comer','Eat'),'discover-place',()=>{if(!s.food[kind])return;s.food[kind]--;eating=2;host.classList.add("snack-moment");energy=30;s.journey.meals++;s.growth=Math.min(6,s.growth+.45);control?.snack(kind);save();panel.hidden=true;joy.effect('correct');tell(icon+' ¡Ñam! ↗ '+s.growth.toFixed(1)+'×',icon+' Yum! ↗ '+s.growth.toFixed(1)+'×');});b.disabled=!s.food[kind];panel.append(b);}if(s.growth>1)panel.append(btn(say('↘ Volver a pequeña','↘ Little again'),'discover-place',()=>{s.growth=1;save();panel.hidden=true;}));}
  function showShop(){if(friendSystem?.isOpen())friendSystem.close();if(adventureMap.isOpen())adventureMap.close(false);panel.replaceChildren();panel.hidden=false;blur();targetPoint=null;const close=btn('×','panel-close',()=>{panel.hidden=true;canvas.focus({preventScroll:true});});close.setAttribute('aria-label',say('Cerrar','Close'));panel.append(close,makeEl('h2','',say('Mis monedas','My coins')),makeEl('p','',say(`Tienes ${coinBalance(state)} monedas de la isla.`,`You have ${coinBalance(state)} island coins.`)),makeEl('p','',say('Ayuda a un amigo: 10. Cuida una flor: 2. Prepara el picnic, ilumina el bosque o crea música: 15. Cada buena acción da monedas una vez.','Help a friend: 10. Care for a flower: 2. Prepare the picnic, light the grove, or make music: 15. Each good deed earns coins once.')));const list=makeEl('div','discover-grid');for(const item of islandShop){const owned=state.wallet.items.includes(item.id);const buy=btn((es?item.es:item.en)+' · '+(owned?say('Poner','Wear'):item.cost+' 🪙'),'discover-place',()=>{if(!buyIslandItem(state,item.id))return;save();refresh();control?.dress();joy.effect('coin');showShop();});buy.disabled=!owned&&coinBalance(state)<item.cost;list.append(buy);}panel.append(list);close.focus();guide(say('Tus buenas acciones te dan monedas. Puedes ahorrar o elegir un sombrero.','Your good deeds earn coins. You can save them or choose a hat.'),true);}
  function travelTo(p){
+  if(carDriving)exitCar();
   if(houseSystem?.isInside()){houseSystem.leave();host.classList.remove('inside-cottage');}
   if(mountId)friendSystem?.dismount();
   if(friendSystem?.isOpen())friendSystem.close();
@@ -115,7 +128,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   }
   if(boating)control?.disembark();const dest=p.id==='boat'?s.boat:p;route=islandPath(s,dest);targetPoint=route.shift()||null;panel.hidden=true;
  }
- function showDiscover(){if(houseSystem?.isInside()){houseSystem.leave();host.classList.remove('inside-cottage');}if(mountId)friendSystem?.dismount();if(friendSystem?.isOpen())friendSystem.close();if(adventureMap.isOpen())adventureMap.close(false);if(inside)control?.leaveTower();guide(say('Elige un lugar y Angelique caminará hasta allí.','Choose a place and Angelique will walk there.'),true);panel.replaceChildren();panel.hidden=false;blur();targetPoint=null;const close=btn('×','panel-close',()=>{panel.hidden=true;canvas.focus({preventScroll:true});});close.setAttribute('aria-label',say('Cerrar','Close'));panel.append(close,makeEl('h2','',say('¿Qué te apetece?','What feels fun?')),makeEl('p','',say('Elige un lugar. 🚶 ⛵ 🎈','Pick a place. 🚶 ⛵ 🎈')));const list=makeEl('div','discover-grid');for(const p of explorePlaces)list.append(btn(`${({wilds:'🍌',coconutCoast:'🥥',sunset:'✨',islet:'🦋',crystalCove:'💎',beacon:'🗼'})[p.id]||p.icon} ${es?p.es:p.en}`,'discover-place',()=>travelTo(p)));panel.append(list);close.focus();}
+ function showDiscover(){if(carDriving)exitCar();if(houseSystem?.isInside()){houseSystem.leave();host.classList.remove('inside-cottage');}if(mountId)friendSystem?.dismount();if(friendSystem?.isOpen())friendSystem.close();if(adventureMap.isOpen())adventureMap.close(false);if(inside)control?.leaveTower();guide(say('Elige un lugar y Angelique caminará hasta allí.','Choose a place and Angelique will walk there.'),true);panel.replaceChildren();panel.hidden=false;blur();targetPoint=null;const close=btn('×','panel-close',()=>{panel.hidden=true;canvas.focus({preventScroll:true});});close.setAttribute('aria-label',say('Cerrar','Close'));panel.append(close,makeEl('h2','',say('¿Qué te apetece?','What feels fun?')),makeEl('p','',say('Elige un lugar. 🚶 ⛵ 🎈','Pick a place. 🚶 ⛵ 🎈')));const list=makeEl('div','discover-grid');for(const p of explorePlaces)list.append(btn(`${({wilds:'🍌',coconutCoast:'🥥',sunset:'✨',islet:'🦋',crystalCove:'💎',beacon:'🗼'})[p.id]||p.icon} ${es?p.es:p.en}`,'discover-place',()=>travelTo(p)));panel.append(list);close.focus();}
  function keydown(e){if(paused())return;if(!panel.hidden){if(e.key==='Escape'){if(friendSystem?.isOpen())friendSystem.close();else if(adventureMap.isOpen())adventureMap.close();else{panel.hidden=true;canvas.focus();}}return;}if((e.target.tagName==='BUTTON'&&(e.key===' '||e.key==='Enter'))||['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)||document.querySelector('dialog[open]'))return;const k=e.key.toLowerCase();if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d',' ','e','q','shift'].includes(k)){e.preventDefault();joy.gesture();keys.add(e.key);targetPoint=null;if(!e.repeat&&k===' ')hop();if(!e.repeat&&k==='e')interact();if(!e.repeat&&k==='q'){if(ride)flightTarget=Math.max(0,flightTarget-5);else if(birdMount()){birdLanding=false;birdTarget=Math.max(1.5,birdTarget-3);}}}}
  const keyup=e=>keys.delete(e.key),blur=()=>{keys.clear();stick.x=stick.z=0;knob.style.transform='';};
  document.addEventListener('keydown',keydown);document.addEventListener('keyup',keyup);window.addEventListener('blur',blur);document.addEventListener('visibilitychange',blur);
@@ -239,8 +252,10 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   camera.fov=60;camera.updateProjectionMatrix();
   control={catchNearest,falling:()=>airborne,boardBalloon,popBalloon,board,disembark,boatNear,harvest,snack:(kind)=>{coconutSnack.visible=kind==='coconut';bananaSnack.visible=kind==='banana';spark(s.x,s.z,16,avatar.position.y+bodyScale*1.4);},enterTower,leaveTower,lightBeacon,bubbles:blowBubbles,hop:(v=5)=>{if(inside){if(towerV===0)towerV=v;}else if(!airborne&&jumpY<.1)velocity=v+(s.growth>=2?Math.min(4,s.growth-1):0);},spark,bloom,dress,demo:()=>{music=[];spark(pads[1].x,pads[1].z,8);}};bloom(s.flowers);dress();
   const life=createIslandLife({T,scene,camera,state,make,mat,geometry,ball,cone,box,sun,ambient,waterMaterial,inWater,sharkStep});wildLife=life;
-  houseSystem=createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,height,language:state.lang,companionId:()=>s.friends?.companion,
-    onEnter:()=>{if(mountId)friendSystem?.dismount();swimming=false;boating=false;ride=0;s.flight=0;blur();route=[];targetPoint=null;host.classList.add('inside-cottage');},
+  cityLife=createPizzaCity({T,scene,camera,state,height,make,mat,geometry,ball,box,cylinder,cone,joy,save,refresh,tell:(msg)=>tell(msg,msg)});
+  cityLife.attach(host);cityLife.setCoinAward(id=>earnCoins(state,id));
+  houseSystem=createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,height,language:state.lang,companionId:()=>s.friends?.companion,onPizza:()=>cityLife?.order(),
+    onEnter:()=>{if(carDriving)exitCar();if(mountId)friendSystem?.dismount();swimming=false;boating=false;ride=0;s.flight=0;blur();route=[];targetPoint=null;host.classList.add('inside-cottage');},
     onMessage:m=>tell(m,m)
   });
   friendSystem=createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,geometry,ball,cone,cylinder,box,height,joy,save,refresh,motion,
@@ -262,17 +277,29 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   function update(dt,time){if(disposed)return;dt=Math.min(dt,.05);if(messageTime>0){messageTime-=dt;if(messageTime<=0)message.classList.remove('show');}
    const down=(...ks)=>ks.some(k=>keys.has(k));let dx=stick.x+(down('ArrowRight','d','D')?1:0)-(down('ArrowLeft','a','A')?1:0),dz=stick.z+(down('ArrowDown','s','S')?1:0)-(down('ArrowUp','w','W')?1:0);
    if(targetPoint&&panel.hidden){const x=targetPoint.x-s.x,z=targetPoint.z-s.z,d=Math.hypot(x,z);if(d<.25){targetPoint=route.shift()||null;marker.visible=!!targetPoint;}else{dx=x/d;dz=z/d;}}
-   if(paused()||journey.isOpen()||document.querySelector('dialog[open]')){keys.clear();stick.x=stick.z=0;dx=dz=0;}const active=!paused()&&!document.hidden&&panel.hidden&&!journey.isOpen()&&!document.querySelector('dialog[open]');if(active){currentHint=Math.max(0,currentHint-dt);swimBoost=Math.max(0,swimBoost-dt);rescueCooldown=Math.max(0,rescueCooldown-dt);}const speed=houseSystem?.isInside()?0:mountId?(mountId==='dori'?10.5:8):inside?2:swimming?(swimBoost>0||down('Shift')?6:3.3):(down('Shift')||energy>0?7:4.7),len=Math.hypot(dx,dz);if(active&&houseSystem?.isInside()){const p=houseSystem.move(dx,dz,dt);if(len)avatar.rotation.y=Math.atan2(dx,dz);}
-   if(len>0&&active&&!ride&&!inside&&!boating&&!houseSystem?.isInside()){dx/=Math.max(1,len);dz/=Math.max(1,len);let nx=s.x+dx*speed*dt,nz=s.z+dz*speed*dt;const edge=Math.sqrt((nx/170)**2+(nz/145)**2);if(edge>1){nx/=edge;nz/=edge;}if(!airborne&&!mountId&&!remoteAccess(s,{x:nx,z:nz})){nx=s.x;nz=s.z;if(currentHint===0){tell('🌊 Corrientes fuertes · ⛵ 🎈','🌊 Strong currents · ⛵ 🎈');currentHint=5;}}if(mountId||airborne||traversable(nx,nz)){s.x=nx;s.z=nz;}else if(traversable(nx,s.z))s.x=nx;else if(traversable(s.x,nz))s.z=nz;avatar.rotation.y=Math.atan2(dx,dz);step+=dt*12;autosave+=dt;if(autosave>2){save();autosave=0;}}
+   if(paused()||journey.isOpen()||document.querySelector('dialog[open]')){keys.clear();stick.x=stick.z=0;dx=dz=0;}const active=!paused()&&!document.hidden&&panel.hidden&&!journey.isOpen()&&!document.querySelector('dialog[open]');if(active){currentHint=Math.max(0,currentHint-dt);swimBoost=Math.max(0,swimBoost-dt);rescueCooldown=Math.max(0,rescueCooldown-dt);}const speed=houseSystem?.isInside()?0:carDriving?0:mountId?(mountId==='dori'?10.5:8):inside?2:swimming?(swimBoost>0||down('Shift')?6:3.3):(down('Shift')||energy>0?7:4.7),len=Math.hypot(dx,dz);if(active&&houseSystem?.isInside()){const p=houseSystem.move(dx,dz,dt);if(len)avatar.rotation.y=Math.atan2(dx,dz);}
+   if(len>0&&active&&!carDriving&&!ride&&!inside&&!boating&&!houseSystem?.isInside()){dx/=Math.max(1,len);dz/=Math.max(1,len);let nx=s.x+dx*speed*dt,nz=s.z+dz*speed*dt;const edge=Math.sqrt((nx/170)**2+(nz/145)**2);if(edge>1){nx/=edge;nz/=edge;}if(!airborne&&!mountId&&!remoteAccess(s,{x:nx,z:nz})){nx=s.x;nz=s.z;if(currentHint===0){tell('🌊 Corrientes fuertes · ⛵ 🎈','🌊 Strong currents · ⛵ 🎈');currentHint=5;}}if(mountId||airborne||traversable(nx,nz)){s.x=nx;s.z=nz;}else if(traversable(nx,s.z))s.x=nx;else if(traversable(s.x,nz))s.z=nz;avatar.rotation.y=Math.atan2(dx,dz);step+=dt*12;autosave+=dt;if(autosave>2){save();autosave=0;}}
    let landed=false;if(active&&dt>0&&(jumpY>0||velocity>0)){const aboveGround=jumpY>0;velocity-=15*dt;jumpY=Math.max(0,jumpY+velocity*dt);if(jumpY===0){velocity=0;landed=aboveGround;}}
    if(birdMount()&&active){
     const to=birdLanding?0:birdTarget,pace=birdLanding?5.8:6.4;
     birdAltitude+=Math.sign(to-birdAltitude)*Math.min(Math.abs(to-birdAltitude),dt*pace);
     if(birdLanding&&birdAltitude<=.35){friendSystem?.dismount();birdAltitude=0;}
    }
-   const wasSwimming=swimming;swimming=!inside&&!ride&&!boating&&!airborne&&!mountId&&!houseSystem?.isInside()&&inWater(s.x,s.z);if(!swimming&&!inside&&!ride&&walkable(s.x,s.z))lastShore={x:s.x,z:s.z};
+   const wasSwimming=swimming;swimming=!inside&&!ride&&!boating&&!carDriving&&!airborne&&!mountId&&!houseSystem?.isInside()&&inWater(s.x,s.z);if(!swimming&&!inside&&!ride&&walkable(s.x,s.z))lastShore={x:s.x,z:s.z};
    host.classList.toggle('is-swimming',swimming);if(swimming&&!wasSwimming)tell('🏊 Nada · 🦈 ¡Cuidado con las aletas!','🏊 Swim · 🦈 Watch for fins!');
    if(active){energy=Math.max(0,energy-dt);eating=Math.max(0,eating-dt);}host.classList.toggle("snack-moment",eating>0);
+   if(carDriving){
+    if(active){const car=s.city.car,desired=len?Math.atan2(dx,dz):car.heading;
+     const change=Math.atan2(Math.sin(desired-car.heading),Math.cos(desired-car.heading));
+     car.heading+=change*Math.min(1,dt*4.2);
+     carSpeed+=((len?19:0)-carSpeed)*Math.min(1,dt*(len?3.5:5));
+     const nx=car.x+Math.sin(car.heading)*carSpeed*dt,nz=car.z+Math.cos(car.heading)*carSpeed*dt;
+     if(cityLife.canDrive(nx,nz)){car.x=nx;car.z=nz;}else carSpeed=0;
+     s.x=car.x;s.z=car.z;avatar.rotation.y=car.heading;
+     autosave+=dt;if(autosave>2){save();autosave=0;}
+    }
+    cityLife.updateCar();
+   }
    if(boating){if(active){const input=Math.min(1,len),desiredHeading=len?Math.atan2(dx,dz):s.boat.heading;const delta=Math.atan2(Math.sin(desiredHeading-s.boat.heading),Math.cos(desiredHeading-s.boat.heading));s.boat.heading+=delta*Math.min(1,dt*3);boatSpeed+=(input*15-boatSpeed)*Math.min(1,dt*2);const moveX=len?dx/len:Math.sin(s.boat.heading),moveZ=len?dz/len:Math.cos(s.boat.heading);const next=boatStep(s.boat.x,s.boat.z,moveX*boatSpeed*dt,moveZ*boatSpeed*dt);if(Math.hypot(next.x-s.boat.x,next.z-s.boat.z)<.00001)boatSpeed=0;s.boat.x=next.x;s.boat.z=next.z;s.x=s.boat.x;s.z=s.boat.z;autosave+=dt;if(autosave>2){save();autosave=0;}}joy.boat?.(active,boatSpeed/16);rideBoat.position.set(s.boat.x,.25,s.boat.z);rideBoat.rotation.y=s.boat.heading-Math.PI/2;avatar.rotation.y=s.boat.heading;}
    if(inside&&active){
     const oldAngle=Math.atan2(s.x+1,s.z+5),onStairs=stair<.97;
@@ -296,6 +323,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    }
    let ax=s.x,az=s.z,ay=boating?.74:swimming?-.95+(motion()?Math.sin(time*3)*.04:0):onDock(ax,az)?.58+jumpY:height(ax,az)+jumpY;
    if(houseSystem?.isInside()){const p=houseSystem.position();ax=p.x;az=p.z;ay=p.y;}
+   if(carDriving){ay=height(s.city.car.x,s.city.car.z)+1.08;ax=s.x;az=s.z-.25;}
    if(mountId){ay=(inWater(s.x,s.z)?0:height(s.x,s.z))+birdAltitude+
       (mountId==='dori'?1.28:mountId==='pip'?.98:mountId==='luna'?1.4:birdMount()?2.0:2.25);}
    if(boating){ax-=Math.sin(s.boat.heading)*.45;az-=Math.cos(s.boat.heading)*.45;}
@@ -312,14 +340,14 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    impactWave.visible=impactStrength>0;impactWave.scale.setScalar(1+(1.2-impactLeft)*(5+impactPower*5));impactWave.material.opacity=impactStrength*.75;
    tropical.setImpact?.(impactX,impactZ,impactStrength,impactPhase);
    // Keep saved giant size on foot; fit seats and the narrow lighthouse while using them.
-   const sizeGoal=inside||boating||ride||mountId||houseSystem?.isInside()?1:s.growth;
+   const sizeGoal=inside||boating||ride||mountId||carDriving||houseSystem?.isInside()?1:s.growth;
    if(active||dt===0)bodyScale=motion()&&dt>0?bodyScale+(sizeGoal-bodyScale)*(1-Math.exp(-dt*2.8)):sizeGoal;
    avatar.scale.setScalar(bodyScale);shadow.scale.setScalar(bodyScale);
    if(giantDepth!==(bodyScale>1.05)){giantDepth=bodyScale>1.05;avatar.traverse(o=>{if(o.isMesh&&!riderOverlay)o.material.depthTest=giantDepth;});}
    // The sea is a transparent shader drawn after opaque geometry. During rides,
    // render Angelique in the LAST transparent layer so water, sails, and basket
    // cannot hide her when the camera or vehicle moves.
-   const riding=boating||!!ride||!!mountId;
+   const riding=boating||!!ride||!!mountId||carDriving;
    if(riderOverlay!==riding){
     riderOverlay=riding;
     avatar.traverse(o=>{if(!o.isMesh)return;
@@ -334,7 +362,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    }
    if(swimming)ay-=.95*(bodyScale-1);
    growthRing.visible=eating>0&&motion();growthRing.position.set(ax,ay+.08,az);growthRing.scale.setScalar(bodyScale*(1+(2-eating)*.55));growthRing.material.opacity=eating*.4;
-   avatar.position.set(ax,ay,az);shadow.position.set(ax,houseSystem?.isInside()?0:height(ax,az)+.05,az);shadow.visible=!ride&&!swimming&&!inside&&!boating&&!airborne&&!mountId&&!houseSystem?.isInside();legs.forEach((l,i)=>{l.visible=!swimming;l.rotation.x=mountId?-.65:len>0?Math.sin(step+i*Math.PI)*.55:0;});rideBalloon.visible=!!ride;rideBalloon.position.set(s.x,flightY,s.z);rideBalloon.rotation.z=motion()?Math.sin(time*1.2)*.035:0;snack.visible=eating>0;snack.position.y=1.45+(motion()?Math.sin(eating*10)*.08:0);snack.scale.setScalar(.55+.45*Math.min(1,eating/2));if(eating>0)arms[1].rotation.x=-1.4;
+   avatar.position.set(ax,ay,az);shadow.position.set(ax,houseSystem?.isInside()?0:height(ax,az)+.05,az);shadow.visible=!ride&&!swimming&&!inside&&!boating&&!airborne&&!mountId&&!carDriving&&!houseSystem?.isInside();legs.forEach((l,i)=>{l.visible=!swimming;l.rotation.x=carDriving?-.58:mountId?-.65:len>0?Math.sin(step+i*Math.PI)*.55:0;});rideBalloon.visible=!!ride;rideBalloon.position.set(s.x,flightY,s.z);rideBalloon.rotation.z=motion()?Math.sin(time*1.2)*.035:0;snack.visible=eating>0;snack.position.y=1.45+(motion()?Math.sin(eating*10)*.08:0);snack.scale.setScalar(.55+.45*Math.min(1,eating/2));if(eating>0)arms[1].rotation.x=-1.4;
    rainbow.visible=s.badges.includes('song');picnic.visible=s.badges.includes('picnic');wish.visible=s.badges.includes('beacon');wish.rotation.y=time*.2;pet.visible=s.pet&&!friendSystem?.hasCompanion('pip')&&!inside&&!boating&&!ride;petX+=(s.x-1-petX)*Math.min(1,dt*3);petZ+=(s.z+1-petZ)*Math.min(1,dt*3);pet.position.set(petX,inWater(petX,petZ)?-.05:height(petX,petZ)+Math.abs(Math.sin(step))*.1,petZ);pet.rotation.y=avatar.rotation.y;
    const phone=canvas.clientWidth<780;
    if(houseSystem?.isInside())desired.set(ax,ay+10,az+15);
@@ -343,13 +371,13 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    else if(riding){
     // A lower, wider ride camera keeps the whole girl, boat or balloon in shot.
     // Follow fast enough that she cannot slide off a narrow phone screen.
-    desired.set(ax,ay+(ride?14:mountId?15:12),az+(phone?35:32));
+    desired.set(ax,ay+(ride?14:mountId?15:carDriving?13:12),az+(phone?35:32));
    }else desired.set(ax,ay+(phone?24:20)+(bodyScale-1)*2,az+(phone?32:27)+(bodyScale-1)*2);
    camera.position.lerp(desired,houseSystem?.isInside()?1:dt===0?1:1-Math.exp(-dt*(riding?18:5)));
    if(riding)camera.position.x=ax;
    target.set(ax,ay+(houseSystem?.isInside()?1.0:riding?(ride?2.25:mountId?1.6:1.3):.7*bodyScale),az-(houseSystem?.isInside()?1.2:0));if(impactStrength>0){camera.position.x+=Math.sin(impactPhase*1.7)*impactStrength*.18;camera.position.y+=Math.cos(impactPhase*1.3)*impactStrength*.14;}
    near=null;let distance=2.6;for(const e of entityMeshes){const d=Math.hypot(s.x-e.p.x,s.z-e.p.z);if(d<distance){near=e.p;distance=d;}e.ring.material=d<2.6?pink:gold;e.ring.position.y=.14+(motion()?Math.sin(time*2)*.04:0);}
-   if(inside||swimming||boating||ride||airborne||mountId||houseSystem?.isInside())near=null;act.hidden=!near||!!ride;setText(act,near?near.icon+' '+(es?near.es:near.en)+' · '+say('Jugar','Play'):'');jump.disabled=false;setText(title,near?(es?near.es:near.en):(()=>{const land=worldIslands.find(p=>Math.hypot((s.x-p.x)/p.rx,(s.z-p.z)/p.rz)<1);return land?(es?land.es:land.en):say('Angelique · explora a tu aire','Angelique · wander anywhere');})());const region=near?lessonRegions[near.id]:undefined;lesson.hidden=region===undefined||!!ride;setText(lesson,region===undefined?'':say('✦ Aventura con ','✦ Adventure with ')+({pip:'Pip',mila:'Mila',ollie:'Ollie',luna:'Luna',garden:say('el jardín','the garden'),beacon:say('el faro','the lighthouse')}[near.id]));ponytail.rotation.x=Math.sin(step)*Math.min(len,1)*.16;
+   if(inside||swimming||boating||ride||carDriving||airborne||mountId||houseSystem?.isInside())near=null;act.hidden=!near||!!ride;setText(act,near?near.icon+' '+(es?near.es:near.en)+' · '+say('Jugar','Play'):'');jump.disabled=false;setText(title,near?(es?near.es:near.en):(()=>{const land=worldIslands.find(p=>Math.hypot((s.x-p.x)/p.rx,(s.z-p.z)/p.rz)<1);return land?(es?land.es:land.en):say('Angelique · explora a tu aire','Angelique · wander anywhere');})());const region=near?lessonRegions[near.id]:undefined;lesson.hidden=region===undefined||!!ride;setText(lesson,region===undefined?'':say('✦ Aventura con ','✦ Adventure with ')+({pip:'Pip',mila:'Mila',ollie:'Ollie',luna:'Luna',garden:say('el jardín','the garden'),beacon:say('el faro','the lighthouse')}[near.id]));ponytail.rotation.x=Math.sin(step)*Math.min(len,1)*.16;
    for(let i=collectibles.length-1;i>=0;i--){const c=collectibles[i];if(motion()&&c.item.kind==='glow'){c.m.position.y=height(c.item.x,c.item.z)+.6+Math.sin(time*2+i)*.15;}if(!ride&&!inside&&!boating&&!airborne&&Math.hypot(s.x-c.item.x,s.z-c.item.z)<.9){if(collectExplore(s,c.item.id)){earnCoins(state,c.item.id);scene.remove(c.m);collectibles.splice(i,1);spark(s.x,s.z);joy.note(countExplore(s,c.item.kind)%5,.18);tell(`${countExplore(s,c.item.kind)} · ${c.item.es} / ${c.item.en}  ✦`,`${countExplore(s,c.item.kind)} · ${c.item.en} / ${c.item.es}  ✦`,false);save();refresh();}}}
    let padIndex=pads.findIndex(p=>Math.hypot(s.x-p.x,s.z-p.z)<.75);if(padIndex!==lastPad&&padIndex>=0&&!ride&&!inside){joy.note([0,2,4][padIndex],.4);spark(pads[padIndex].x,pads[padIndex].z,8);music.push(padIndex);music=music.slice(-3);if(music.join(',')==='0,1,2')reward('song','¡Inventaste la canción del arcoíris!','You made the rainbow song!');}lastPad=padIndex;
    butterflies.forEach((b,i)=>{if(active)b.cooldown=Math.max(0,b.cooldown-dt);b.g.visible=b.cooldown<6.5;const {x:cx,z:cz}=islandPoint('islet',24+Math.sin(i*2.4)*(i<5?.25:2.6),-8+Math.cos(i*2.4)*(i<5?.2:1.9));const t=motion()?time:0;b.g.position.set(cx+Math.sin(t*.6+i)*1.4,height(cx,cz)+1.5+Math.cos(t*.8+i)*.35,cz+Math.cos(t*.6+i)*1.1);b.wings.forEach((w,j)=>w.rotation.y=motion()?Math.sin(time*9)*(j?1:-1)*.8:0);});
@@ -369,6 +397,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    pad.classList.toggle('flight-stick',!!ride||birdMount());pad.classList.toggle('steering',(!!ride||birdMount())&&len>.05);setText(knob,ride?'🎈':birdMount()?'🪽':'✥');setText(stickReadout,ride?'↕ '+Math.round(flightY)+' m':birdMount()?'↕ '+Math.round(birdAltitude)+' m':'');pad.style.setProperty('--heading',Math.atan2(dx,-dz)+'rad');
    descend.hidden=!ride&&!birdMount();for(const e of entityMeshes)if(e.p.id==='balloon')e.g.visible=!ride;
    if(ride){setText(title,say('🎈 Angelique, piloto','🎈 Pilot Angelique'));act.hidden=false;setText(act,say('💥 Reventar globo','💥 Pop balloon'));setText(jump,say('↑ Más alto','↑ Higher'));setText(instructions,say('Flechas para volar · Espacio ↑ · Q ↓ · E 💥','Arrows to fly · Space ↑ · Q ↓ · E 💥'));}
+   else if(carDriving){setText(title,say('🚙 ¡Ciudad Pizza!','🚙 Pizza City Driver'));act.hidden=false;setText(act,say('👣 Salir del auto','👣 Get out of car'));setText(jump,say('👣 Bajar','👣 Exit car'));setText(instructions,say('🚙 Flechas para conducir · Espacio / E para salir','🚙 Arrows to drive · Space / E to exit'));}
    else if(mountId){setText(title,(birdMount()?'🪽 ':'🐾 ')+(birdMount()?say('Volando con ','Flying with '):say('Paseando con ','Riding with '))+(mountId==='dori'?'Dori':mountId==='pip'?'Pip':mountId==='luna'?'Luna':mountId==='mila'?'Mila':'Ollie'));
     setText(act,birdMount()?say('🛬 Aterrizar','🛬 Land'):say('👣 Bajar del animal','👣 Hop off'));act.hidden=false;
     setText(jump,birdMount()?say('🪽 Subir','🪽 Climb'):say('👣 Bajar','👣 Dismount'));
@@ -378,21 +407,23 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    else if(inside){setText(title,say('Dentro del faro','Inside the lighthouse'));setText(goalTitle,stair>=.97?say('EL MIRADOR','THE LOOKOUT'):say('SIGUE LOS ESCALONES','FOLLOW THE STEPS'));setText(goalText,stair>=.97?say('Camina, salta y explora.','Walk, jump and explore.'):say('Muévete alrededor de la escalera dorada.','Walk around the golden staircase.'));setText(goalButton,stair>=.97?say('✨ Encender luz','✨ Light beacon'):say('👣 Ayuda','👣 Help'));act.hidden=stair<.97&&(stair>=.03||Math.hypot(s.x+1,s.z+4.1)>=.7);setText(act,stair>=.97?say('✨ Encender luz','✨ Light beacon'):say('🚪 Salir','🚪 Exit'));setText(jump,say('Saltar ⤴','Jump ⤴'));setText(instructions,say('Flechas / palanca para caminar · Espacio para saltar','Arrows / joystick to walk · Space to jump'));}
    else if(swimming){setText(title,say('🏊 Laguna','🏊 Lagoon'));setText(goalTitle,danger?say('🦈 ¡A LA PLAYA!','🦈 BACK TO SHORE!'):say('🏊 EXPLORA EL MAR','🏊 EXPLORE THE SEA'));setText(goalText,danger?say('Aléjate de la aleta.','Swim away from the fin.'):say('Mira las aletas. La playa está cerca.','Watch for fins. Shore is nearby.'));setText(goalButton,say('🏝 A la playa','🏝 Back to shore'));act.hidden=true;setText(jump,say('🏊 Nadar rápido','🏊 Swim fast'));setText(instructions,say('Palanca / flechas para nadar · Botón para ir más rápido','Joystick / arrows to swim · Tap Swim fast for a burst'));}
    else {setText(jump,say('Saltar ⤴','Jump ⤴'));setText(instructions,say('Toca el suelo para ir · Flechas / WASD · Espacio para saltar','Tap ground to walk · Arrows / WASD · Space to jump'));}
-   if(!inside&&!boating&&!ride&&!mountId&&!houseSystem?.isInside()&&boatNear()){act.hidden=false;setText(act,say('⛵ Subir al barco','⛵ Board boat'));}
+   if(!inside&&!boating&&!ride&&!mountId&&!carDriving&&!houseSystem?.isInside()&&cityLife?.nearCar(s.x,s.z)){act.hidden=false;setText(act,say('🚙 Subir al auto','🚙 Drive car'));}
+   else if(!inside&&!boating&&!ride&&!mountId&&!carDriving&&!houseSystem?.isInside()&&boatNear()){act.hidden=false;setText(act,say('⛵ Subir al barco','⛵ Board boat'));}
    else if(!inside&&!boating&&!ride&&!mountId&&!houseSystem?.isInside()&&houseSystem?.near(s.x,s.z)){const h=houseSystem.near(s.x,s.z);act.hidden=false;setText(act,h.icon+' '+say('Entrar a casa','Enter house'));}
    else if(!inside&&!boating&&!ride&&!mountId&&!houseSystem?.isInside()&&wildLife?.nearestRideable(s.x,s.z)){const a=wildLife.nearestRideable(s.x,s.z);act.hidden=false;setText(act,(a.kind==='Dolphin'?'🐬':'🐢')+' '+say('Montar animal','Ride animal'));}
    else if(foodNear){act.hidden=false;setText(act,foodNear.kind==='coconut'?say('🥥 Recoger coco','🥥 Pick coconut'):say('🍌 Recoger plátano','🍌 Pick banana'));}guideBeacon.visible=guideBeacon.visible&&!inside&&!boating&&!ride;
-   houseSystem?.updateDoor(s.x,s.z,!!mountId||!!ride||boating||inside||houseSystem?.isInside());
-   const playful=mountId||houseSystem?.isInside()?null:friendSystem?.nearest(ride?'fly':boating?'boat':swimming?'swim':'walk');
+   houseSystem?.updateDoor(s.x,s.z,!!mountId||!!ride||boating||carDriving||inside||houseSystem?.isInside());
+   const playful=mountId||carDriving||houseSystem?.isInside()?null:friendSystem?.nearest(ride?'fly':boating?'boat':swimming?'swim':'walk');
    friendMeet.hidden=!playful||!!ride||inside||airborne||!!mountId||houseSystem?.isInside()||!panel.hidden||!host.classList.contains('explore-ready');
    if(playful){setText(friendMeet,playful.icon+' '+playful.name+' · '+(playful.id==='kai'?say('Saludar','Say hi'):say('Montar','Ride')));friendMeet.setAttribute('aria-label',say('Jugar con ','Play with ')+playful.name);}
-   goalCard.hidden=boating||inside||!!ride||airborne||near?.kind==='islet'||netTime>0;quest.hidden=true;
+   goalCard.hidden=boating||carDriving||inside||!!ride||airborne||near?.kind==='islet'||netTime>0;quest.hidden=true;
    adventureMap.update(false,avatar.rotation.y);
    friendSystem?.update(dt,active,{mode:houseSystem?.isInside()?'house':mountId?(inWater(s.x,s.z)?'mount-water':'mount'):ride?'fly':boating?'boat':swimming?'swim':'walk',inside:inside||houseSystem?.isInside(),mount:mountId,heading:avatar.rotation.y,roomPosition:houseSystem?.position(),mountAltitude:birdAltitude,moving:len>.1});
+   cityLife?.update(dt,active,{x:s.x,z:s.z,driving:carDriving,flying:!!ride||birdAltitude>2,indoors:inside||houseSystem?.isInside()});
    life.update(dt,active,motion());realms.update(dt,active,ride?'fly':swimming?'swim':boating?'boat':'walk',ay);journey.update(dt,active,ride?'fly':swimming?'swim':boating?'boat':'walk',ay);story.update(dt,time);if(host.classList.contains("story-nearby")){lesson.hidden=true;guideBeacon.visible=false;}
    for(const [button,words] of buttonUpdates)paintButton(button,words);buttonUpdates.clear();
   }
-  return {update,dispose(){houseSystem?.dispose();houseSystem=null;friendSystem?.dispose();friendSystem=null;wildLife=null;realms.dispose();journey.dispose();life.dispose();story.dispose();canvas.removeEventListener('pointerdown',walkTo);control=null;}};
+  return {update,dispose(){cityLife?.dispose();cityLife=null;houseSystem?.dispose();houseSystem=null;friendSystem?.dispose();friendSystem=null;wildLife=null;realms.dispose();journey.dispose();life.dispose();story.dispose();canvas.removeEventListener('pointerdown',walkTo);control=null;}};
  }
  function dispose(){if(disposed)return;adventureMap.dispose();host.classList.remove('inside-lighthouse','is-swimming','shark-nearby');joy.boat?.(false);disposed=true;generation++;clearTimeout(startTimer);clearTimeout(recoveryTimer);canvas.removeEventListener('webglcontextlost',contextLost);canvas.removeEventListener('webglcontextrestored',contextRestored);save();engine?.dispose();engine=null;document.removeEventListener('keydown',keydown);document.removeEventListener('keyup',keyup);window.removeEventListener('blur',blur);document.removeEventListener('visibilitychange',blur);keys.clear();}
  return {dispose};
