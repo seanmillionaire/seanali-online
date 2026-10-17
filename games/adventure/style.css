@@ -595,3 +595,58 @@ body[data-scene="explore"] .city-guide-card .discover-place{
  body[data-scene="explore"] .explore-actions .picture-button,
  body[data-scene="explore"] .helper-toggle.picture-button{transition:none;animation:none}
 }
+
+
+/* The first screen teaches the game through recognizable pictures, not paragraphs. */
+.world-entry .welcome-feature-grid{
+ display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+ gap:8px;margin:16px 0 14px;max-width:470px;
+}
+.world-entry .welcome-feature{
+ display:grid;place-items:center;align-content:center;gap:4px;
+ min-height:95px;padding:9px 6px;text-align:center;
+ border:1px solid #fff7db99;border-radius:16px;
+ background:#153b48b8;box-shadow:0 5px 20px #082b3938;
+ color:#fff9e5;
+}
+.world-entry .welcome-feature-icon{
+ font-family:"Apple Color Emoji","Segoe UI Emoji",sans-serif;
+ font-size:40px;line-height:1.06;
+}
+.world-entry .welcome-feature-label{font-size:15px;line-height:1.2;font-weight:900}
+.world-entry .primary.enter-world{
+ display:flex;align-items:center;justify-content:center;gap:10px;
+ min-height:78px;width:min(100%,420px);
+ padding:17px 24px;font-size:23px;line-height:1.2;font-weight:900;
+ border-radius:20px;border:3px solid #fff5d7;
+ box-shadow:0 6px 0 #a7803e,0 10px 35px #f3d58944;
+}
+.world-entry .primary.enter-world:before{display:none}
+.world-entry .eyebrow{font-size:15px;line-height:1.3;letter-spacing:1.1px}
+.world-entry .welcome-foot{font-size:14px!important}
+@media(max-width:780px){
+ .world-entry .welcome-feature-grid{gap:7px;margin:10px 0 12px}
+ .world-entry .welcome-feature{min-height:78px;padding:8px 4px}
+ .world-entry .welcome-feature-icon{font-size:32px}
+ .world-entry .welcome-feature-label{font-size:14px}
+ .world-entry .primary.enter-world{min-height:72px;font-size:21px;margin:14px 0 10px}
+ .world-entry .eyebrow{font-size:14px;line-height:1.35}
+ .world-entry p{font-size:17px;line-height:1.45}
+}
+@media(max-width:380px){
+ .world-entry .welcome-feature{min-height:72px}
+ .world-entry .welcome-feature-icon{font-size:29px}
+ .world-entry .welcome-feature-label{font-size:12px}
+ .world-entry .primary.enter-world{min-height:68px;font-size:20px}
+ .world-entry .welcome-foot{font-size:13px!important}
+}
+@media(max-height:670px) and (max-width:780px){
+ .world-entry .welcome-feature-grid{gap:6px;margin:6px 0}
+ .world-entry .welcome-feature{min-height:64px;padding:5px 3px}
+ .world-entry .welcome-feature-icon{font-size:28px}
+ .world-entry .primary.enter-world{min-height:63px;margin:8px 0}
+}
+/* More legible story and quest text without widening any dialogs. */
+body:not([data-scene="explore"]) .activity p,
+body:not([data-scene="explore"]) .progress-card p{font-size:16px;line-height:1.5}
+body:not([data-scene="explore"]) button.primary{min-height:60px;font-size:18px}
