@@ -1,6 +1,6 @@
 // A single meaningful, persistent community project for each Panama destination.
 // Mini-games and collecting now feed into a clear physical outcome in their region.
-import {worldIslands,isletHeight,exploreItems} from './explore-state.js?v=71';
+import {worldIslands,isletHeight,exploreItems,volcanoTrailPoint} from './explore-state.js?v=71';
 import {BUILD_RECIPES} from './island-workshop.js?v=71';
 const where=id=>worldIslands.find(x=>x.id===id);
 const build=id=>BUILD_RECIPES.find(x=>x.id===id);
@@ -57,7 +57,7 @@ export const REGION_PROJECTS=[
   craft:'volcanoCamp',spot:{x:build('volcanoCamp').x,z:build('volcanoCamp').z},
   tasks:[
    {id:'lights',icon:'✨',es:'Encuentra 2 luciérnagas para iluminar la ruta',en:'Find 2 fireflies to light the trail',check:{kind:'collected',item:'glow',count:2},go:at('sunset')},
-   {id:'summit',icon:'🥾',es:'Sube a la cima del volcán caminando',en:'Hike to the volcano summit',check:{kind:'badge',id:'volcano-summit'},go:{x:-107,z:32}},
+   {id:'summit',icon:'🥾',es:'Sube a la cima del volcán caminando',en:'Hike to the volcano summit',check:{kind:'badge',id:'volcano-summit'},go:volcanoTrailPoint(0)},
    {id:'build',icon:'🏕️',es:'Construye el campamento del volcán',en:'Build the volcano campsite',check:{kind:'built',id:'volcanoCamp'},go:{x:build('volcanoCamp').x,z:build('volcanoCamp').z}},
    {id:'activate',icon:'🔥',es:'Enciende la fogata para excursionistas',en:'Light the hikers’ campfire',check:{kind:'used',id:'volcanoCamp'},go:{x:build('volcanoCamp').x,z:build('volcanoCamp').z}}
   ]},
