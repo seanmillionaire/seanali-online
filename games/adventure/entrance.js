@@ -1,5 +1,6 @@
 import {worldIslands,isletHeight} from './explore-state.js?v=55';
 import {createTropical} from './tropical.js?v=55';
+import {createSurfaceTextures} from './surface-textures.js?v=1';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
 export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import('./vendor/three.module.min.js')}={}) {
   let disposed=false,world=null,pending=null;
@@ -29,25 +30,30 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   const sand=mat('#e8c895'),green=mat('#568d58'),darkGreen=mat('#246b57'),leaf=mat('#79a05b'),trunk=mat('#855b42'),stone=mat('#84958c'),cream=mat('#fff0ca'),wood=mat('#986b44'),red=mat('#ce826c'),blue=mat('#579c9d'),violet=mat('#a99ac0'),gold=mat('#ffda83',{emissive:'#efb449',emissiveIntensity:.32});
   function height(x,z){if(isletHeight(x,z)>0)return isletHeight(x,z);const edge=Math.sqrt((x/20)**2+(z/14)**2);const hill=6*Math.exp(-((x+1)**2/30+(z+5)**2/22));return Math.max(.1,(1-edge*edge)*2.8)+hill;}
   // A sculpted, vertex-colored island; this is geometry, not a picture on a plane.
-  const tropical=createTropical({T,scene,camera,height,geometry,mat,make,ball,renderer});
-  sand.map=wood.map=stone.map=trunk.map=cream.map=tropical.grain;wood.bumpMap=stone.bumpMap=trunk.bumpMap=tropical.grain;wood.bumpScale=.035;stone.bumpScale=.12;trunk.bumpScale=.06;
+  const surfaces=createSurfaceTextures(T);
+  const tropical=createTropical({T,scene,camera,height,geometry,mat,make,ball,renderer,surfaces});
+  for(const [material,surface,bump] of [[sand,surfaces.sand,.07],[green,surfaces.grass,.10],
+    [darkGreen,surfaces.grass,.10],[leaf,surfaces.grass,.09],[trunk,surfaces.wood,.08],
+    [stone,surfaces.stone,.11],[cream,surfaces.plaster,.035],[wood,surfaces.wood,.065]]){
+    material.map=surface;material.bumpMap=surface;material.bumpScale=bump;material.needsUpdate=true;
+  }
   const positions=[],colors=[],uvs=[],indices=[],rings=48,segments=128;
   for(let ring=0;ring<=rings;ring++)for(let i=0;i<=segments;i++){const a=i/segments*Math.PI*2,r=ring/rings,shore=1+.035*Math.sin(a*7)+.03*Math.cos(a*5),x=Math.cos(a)*20*r*shore,z=Math.sin(a)*14*r*shore,y=ring===rings?.08:height(x,z);positions.push(x,y,z);uvs.push(x*.18,z*.18);const smooth=(a,b,v)=>{const t=Math.max(0,Math.min(1,(v-a)/(b-a)));return t*t*(3-2*t);};const c=new T.Color('#527842').lerp(new T.Color('#789454'),smooth(.3,.77,r));c.lerp(new T.Color('#e5d5ad'),smooth(.75,.91,r));c.lerp(new T.Color('#969784'),smooth(4.5,7,y)*.7);c.multiplyScalar(.96+rand()*.08);colors.push(c.r,c.g,c.b);}
   for(let j=0;j<rings;j++)for(let i=0;i<segments;i++){const a=j*(segments+1)+i,b=a+segments+1;indices.push(a,a+1,b,b,a+1,b+1);}
-  const terrain=geometry(new T.BufferGeometry());terrain.setAttribute('position',new T.Float32BufferAttribute(positions,3));terrain.setAttribute('color',new T.Float32BufferAttribute(colors,3));terrain.setAttribute('uv',new T.Float32BufferAttribute(uvs,2));terrain.setIndex(indices);terrain.computeVertexNormals();make(terrain,mat('#ffffff',{vertexColors:true,map:tropical.grain,bumpMap:tropical.grain,bumpScale:.16,roughness:.98}));
+  const terrain=geometry(new T.BufferGeometry());terrain.setAttribute('position',new T.Float32BufferAttribute(positions,3));terrain.setAttribute('color',new T.Float32BufferAttribute(colors,3));terrain.setAttribute('uv',new T.Float32BufferAttribute(uvs,2));terrain.setIndex(indices);terrain.computeVertexNormals();make(terrain,mat('#ffffff',{vertexColors:true,map:surfaces.grass,bumpMap:surfaces.grass,bumpScale:.13,roughness:.98}));
   // Five deliberately different destinations: shape, silhouette, color and landmarks.
   // All decorations use the same physical x/z coordinates as player navigation.
   const rockGeo=geometry(new T.DodecahedronGeometry(1,0));
   const crystalGeo=geometry(new T.ConeGeometry(1,1,5));
   const ringGeo=geometry(new T.TorusGeometry(1,.12,8,24));
-  const barkDark=mat('#58462f',{map:tropical.grain});
+  const barkDark=mat('#58462f',{map:surfaces.wood,bumpMap:surfaces.wood,bumpScale:.075});
   const jungleLeaf=mat('#297c43',{side:T.DoubleSide});
   const jungleLime=mat('#8dbd4e',{side:T.DoubleSide});
   const meadowPink=mat('#ed8ebc'),meadowLilac=mat('#b5a1e9'),meadowCream=mat('#fff3ca');
   const meadowStem=mat('#548d49'),meadowBud=mat('#f4cc55',{emissive:'#d8953d',emissiveIntensity:.22});
-  const beachWood=mat('#a5794b',{map:tropical.grain}),beachAwning=mat('#fff1bd');
+  const beachWood=mat('#a5794b',{map:surfaces.wood,bumpMap:surfaces.wood,bumpScale:.055}),beachAwning=mat('#fff1bd',{map:surfaces.plaster});
   const beachCoral=mat('#ffad82'),beachBlue=mat('#58b6cc'),beachShell=mat('#fff3d9');
-  const forestBark=mat('#504059'),forestPine=mat('#296556'),forestPineShade=mat('#2e5265');
+  const forestBark=mat('#504059',{map:surfaces.wood,bumpMap:surfaces.wood,bumpScale:.06}),forestPine=mat('#296556',{map:surfaces.grass}),forestPineShade=mat('#2e5265',{map:surfaces.grass});
   const forestGlow=mat('#ffe99e',{emissive:'#ffcc51',emissiveIntensity:1.15});
   const mushroomPink=mat('#d888bd',{emissive:'#7e427b',emissiveIntensity:.4});
   const mushroomViolet=mat('#9875d2',{emissive:'#5642a5',emissiveIntensity:.45});
@@ -141,7 +147,8 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
    g.setAttribute('color',new T.Float32BufferAttribute(ic,3));
    g.setAttribute('uv',new T.Float32BufferAttribute(iu,2));
    g.setIndex(ii);g.computeVertexNormals();
-   const island=make(g,mat('#ffffff',{vertexColors:true,map:tropical.grain}));
+   const islandTexture=land.id==='coconutCoast'?surfaces.sand:land.id==='crystalCove'?surfaces.stone:surfaces.grass;
+   const island=make(g,mat('#ffffff',{vertexColors:true,map:islandTexture,bumpMap:islandTexture,bumpScale:land.id==='crystalCove'?.14:.09,roughness:.96}));
    island.name=land.en;
 
    if(land.id==='islet'){
@@ -272,7 +279,7 @@ void main(){
  #include <colorspace_fragment>
 }`});
   materials.add(waterMaterial);const water=make(geometry(new T.PlaneGeometry(750,650,64,64)),waterMaterial,0,-.12,0);water.rotation.x=-Math.PI/2;water.castShadow=false;water.receiveShadow=false;water.renderOrder=2;
-  const bedGeometry=geometry(new T.PlaneGeometry(400,340));const bedUV=bedGeometry.attributes.uv;for(let i=0;i<bedUV.count;i++)bedUV.setXY(i,bedUV.getX(i)*16,bedUV.getY(i)*16);const seabed=make(bedGeometry,mat('#b3c8b0',{map:tropical.grain,roughness:1}),0,-1.4,0);seabed.rotation.x=-Math.PI/2;seabed.castShadow=false;
+  const bedGeometry=geometry(new T.PlaneGeometry(400,340));const bedUV=bedGeometry.attributes.uv;for(let i=0;i<bedUV.count;i++)bedUV.setXY(i,bedUV.getX(i)*16,bedUV.getY(i)*16);const seabed=make(bedGeometry,mat('#b3c8b0',{map:surfaces.sand,bumpMap:surfaces.sand,bumpScale:.05,roughness:1}),0,-1.4,0);seabed.rotation.x=-Math.PI/2;seabed.castShadow=false;
   // A sandy path winding from the landing cove to the lighthouse.
   const pathPoints=[new T.Vector3(4,.4,12),new T.Vector3(3,height(3,8)+.07,8),new T.Vector3(7,height(7,4)+.08,4),new T.Vector3(4,height(4,0)+.08,0),new T.Vector3(0,height(0,-3)+.08,-3),new T.Vector3(-1,height(-1,-5)+.08,-5)];
   const pathCurve=new T.CatmullRomCurve3(pathPoints),pathVertices=[],pathUV=[],pathIndex=[];
@@ -315,5 +322,5 @@ void main(){
     flyIn(done){if(disposed)return;startCam.copy(camera.position);startLook.copy(target);flight=0;finish=done;wake();},
     dispose
   };
-  function dispose(){if(disposed)return;disposed=true;cancelAnimationFrame(frame);finish=null;explorer?.dispose();tropical.dispose();observer.disconnect();bodyObserver.disconnect();document.removeEventListener('visibilitychange',visibility);canvas.parentElement?.removeEventListener('pointermove',pointer);geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());sun.shadow.map?.dispose();renderer.dispose();renderer.forceContextLoss();}
+  function dispose(){if(disposed)return;disposed=true;cancelAnimationFrame(frame);finish=null;explorer?.dispose();tropical.dispose();surfaces.dispose();observer.disconnect();bodyObserver.disconnect();document.removeEventListener('visibilitychange',visibility);canvas.parentElement?.removeEventListener('pointermove',pointer);geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());sun.shadow.map?.dispose();renderer.dispose();renderer.forceContextLoss();}
 }
