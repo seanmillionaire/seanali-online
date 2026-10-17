@@ -147,7 +147,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   function clearLanding(){if(traversable(s.x,s.z))return;for(let r=.25;r<=4;r+=.25)for(let i=0;i<24;i++){const a=i/24*Math.PI*2,x=s.x+Math.sin(a)*r,z=s.z+Math.cos(a)*r;if(traversable(x,z)){s.x=x;s.z=z;return;}}}
   function popBalloon(){if(!ride)return;ride=0;s.flight=0;airborne=true;towerY=flightY;towerV=1;targetPoint=null;route=[];blur();rideBalloon.visible=false;spark(s.x,s.z,26,flightY+4);joy.effect('balloon-pop');tell('💥 ¡Pop!','💥 Pop!');save();}
   const rideBoat=dockBoat||new T.Group();if(!dockBoat)scene.add(rideBoat);rideBoat.name='Dock boat';rideBoat.position.set(s.boat.x,.25,s.boat.z);rideBoat.rotation.y=s.boat.heading-Math.PI/2;
-  let bodyScale=s.growth,giantDepth=false;
+  let bodyScale=s.growth,giantDepth=false,riderOverlay=false;
   const snack=new T.Group();snack.name='Angelique snack';snack.position.set(.22,1.45,.3);avatar.add(snack);snack.visible=false;
   const coconutSnack=new T.Group(),bananaSnack=new T.Group();snack.add(coconutSnack,bananaSnack);
   make(ball,mat('#765035',{map:tropical.grain}),0,0,0,.16,.15,.13,coconutSnack);
@@ -268,12 +268,38 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    const sizeGoal=inside||boating||ride?1:s.growth;
    if(active||dt===0)bodyScale=motion()&&dt>0?bodyScale+(sizeGoal-bodyScale)*(1-Math.exp(-dt*2.8)):sizeGoal;
    avatar.scale.setScalar(bodyScale);shadow.scale.setScalar(bodyScale);
-   if(giantDepth!==(bodyScale>1.05)){giantDepth=bodyScale>1.05;avatar.traverse(o=>{if(o.isMesh)o.material.depthTest=giantDepth;});}
+   if(giantDepth!==(bodyScale>1.05)){giantDepth=bodyScale>1.05;avatar.traverse(o=>{if(o.isMesh&&!riderOverlay)o.material.depthTest=giantDepth;});}
+   // The sea is a transparent shader drawn after opaque geometry. During rides,
+   // render Angelique in the LAST transparent layer so water, sails, and basket
+   // cannot hide her when the camera or vehicle moves.
+   const riding=boating||!!ride;
+   if(riderOverlay!==riding){
+    riderOverlay=riding;
+    avatar.traverse(o=>{if(!o.isMesh)return;
+     const material=o.material;
+     material.transparent=riding;
+     material.depthWrite=!riding;
+     material.depthTest=riding?false:giantDepth;
+     material.needsUpdate=true;
+     o.renderOrder=riding?100:20;
+     o.frustumCulled=!riding;
+    });
+   }
    if(swimming)ay-=.95*(bodyScale-1);
    growthRing.visible=eating>0&&motion();growthRing.position.set(ax,ay+.08,az);growthRing.scale.setScalar(bodyScale*(1+(2-eating)*.55));growthRing.material.opacity=eating*.4;
    avatar.position.set(ax,ay,az);shadow.position.set(ax,height(ax,az)+.05,az);shadow.visible=!ride&&!swimming&&!inside&&!boating&&!airborne;legs.forEach((l,i)=>{l.visible=!swimming;l.rotation.x=len>0?Math.sin(step+i*Math.PI)*.55:0;});rideBalloon.visible=!!ride;rideBalloon.position.set(s.x,flightY,s.z);rideBalloon.rotation.z=motion()?Math.sin(time*1.2)*.035:0;snack.visible=eating>0;snack.position.y=1.45+(motion()?Math.sin(eating*10)*.08:0);snack.scale.setScalar(.55+.45*Math.min(1,eating/2));if(eating>0)arms[1].rotation.x=-1.4;
    rainbow.visible=s.badges.includes('song');picnic.visible=s.badges.includes('picnic');wish.visible=s.badges.includes('beacon');wish.rotation.y=time*.2;pet.visible=s.pet&&!inside&&!boating&&!ride;petX+=(s.x-1-petX)*Math.min(1,dt*3);petZ+=(s.z+1-petZ)*Math.min(1,dt*3);pet.position.set(petX,inWater(petX,petZ)?-.05:height(petX,petZ)+Math.abs(Math.sin(step))*.1,petZ);pet.rotation.y=avatar.rotation.y;
-   const phone=canvas.clientWidth<780;if(inside&&stair>=.97)desired.set(7,ay+7,10);else if(inside)desired.set(-1,ay+4.2,4);else desired.set(ax,ay+(phone?19:15)+(bodyScale-1)*2,az+(phone?23:19)+(bodyScale-1)*2);camera.position.lerp(desired,dt===0?1:1-Math.exp(-dt*4));target.set(ax,ay+.7*bodyScale,az);if(impactStrength>0){camera.position.x+=Math.sin(impactPhase*1.7)*impactStrength*.18;camera.position.y+=Math.cos(impactPhase*1.3)*impactStrength*.14;}
+   const phone=canvas.clientWidth<780;
+   if(inside&&stair>=.97)desired.set(7,ay+7,10);
+   else if(inside)desired.set(-1,ay+4.2,4);
+   else if(riding){
+    // A lower, wider ride camera keeps the whole girl, boat or balloon in shot.
+    // Follow fast enough that she cannot slide off a narrow phone screen.
+    desired.set(ax,ay+(ride?12:11),az+(phone?29:26));
+   }else desired.set(ax,ay+(phone?19:15)+(bodyScale-1)*2,az+(phone?23:19)+(bodyScale-1)*2);
+   camera.position.lerp(desired,dt===0?1:1-Math.exp(-dt*(riding?18:4)));
+   if(riding)camera.position.x=ax;
+   target.set(ax,ay+(riding?(ride?2.25:1.3):.7*bodyScale),az);if(impactStrength>0){camera.position.x+=Math.sin(impactPhase*1.7)*impactStrength*.18;camera.position.y+=Math.cos(impactPhase*1.3)*impactStrength*.14;}
    near=null;let distance=2.6;for(const e of entityMeshes){const d=Math.hypot(s.x-e.p.x,s.z-e.p.z);if(d<distance){near=e.p;distance=d;}e.ring.material=d<2.6?pink:gold;e.ring.position.y=.14+(motion()?Math.sin(time*2)*.04:0);}
    if(inside||swimming||boating||ride||airborne)near=null;act.hidden=!near||!!ride;setText(act,near?near.icon+' '+(es?near.es:near.en)+' · '+say('Jugar','Play'):'');jump.disabled=false;setText(title,near?(es?near.es:near.en):(()=>{const land=worldIslands.find(p=>Math.hypot((s.x-p.x)/p.rx,(s.z-p.z)/p.rz)<1);return land?(es?land.es:land.en):say('Angelique · explora a tu aire','Angelique · wander anywhere');})());const region=near?lessonRegions[near.id]:undefined;lesson.hidden=region===undefined||!!ride;setText(lesson,region===undefined?'':say('✦ Aventura con ','✦ Adventure with ')+({pip:'Pip',mila:'Mila',ollie:'Ollie',luna:'Luna',garden:say('el jardín','the garden'),beacon:say('el faro','the lighthouse')}[near.id]));ponytail.rotation.x=Math.sin(step)*Math.min(len,1)*.16;
    for(let i=collectibles.length-1;i>=0;i--){const c=collectibles[i];if(motion()&&c.item.kind==='glow'){c.m.position.y=height(c.item.x,c.item.z)+.6+Math.sin(time*2+i)*.15;}if(!ride&&!inside&&!boating&&!airborne&&Math.hypot(s.x-c.item.x,s.z-c.item.z)<.9){if(collectExplore(s,c.item.id)){earnCoins(state,c.item.id);scene.remove(c.m);collectibles.splice(i,1);spark(s.x,s.z);joy.note(countExplore(s,c.item.kind)%5,.18);tell(`${countExplore(s,c.item.kind)} · ${c.item.es} / ${c.item.en}  ✦`,`${countExplore(s,c.item.kind)} · ${c.item.en} / ${c.item.es}  ✦`,false);save();refresh();}}}
