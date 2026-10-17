@@ -1,11 +1,11 @@
 import {createRealms} from './realms.js?v=43';
 import {createJourney} from './journey.js?v=43';
 import {oceanModel} from './ocean-models.js?v=38';
-import {createIslandLife} from './island-life.js?v=38';
+import {createIslandLife} from './island-life.js?v=47';
 import {createWorldStory} from './world-story.js?v=43';
 import {createWorldMap} from './world-map.js?v=2';
-import {createWildlifeFriends} from './wildlife-friends.js?v=3';
-import {createHouseInteriors} from './house-interiors.js?v=1';
+import {createWildlifeFriends} from './wildlife-friends.js?v=4';
+import {createHouseInteriors} from './house-interiors.js?v=2';
 import {buildIsland} from './entrance.js?v=43';
 import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,normalizeExplore,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,sharkPatrol,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=43';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
