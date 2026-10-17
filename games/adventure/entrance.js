@@ -233,7 +233,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
        vertices.push(x,isletHeight(x,z)+.16,z);
        texcoords.push(side===1?1:0,t*26);
       }
-      if(i<steps){const n=i*2;triangles.push(n,n+1,n+2,n+1,n+3,n+2);}
+      if(i<steps){const n=i*2;triangles.push(n,n+2,n+1,n+1,n+2,n+3);}
     }
     const pathGeo=geometry(new T.BufferGeometry());
     pathGeo.setAttribute('position',new T.Float32BufferAttribute(vertices,3));
