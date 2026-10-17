@@ -20,9 +20,18 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
   svg.append(svgEl('rect',{x:-175,y:-155,width:350,height:310,fill:'url(#'+(mini?'ocean-mini':'ocean-big')+')'}));
   for(const i of land){
     const g=svgEl('g',{class:'island-map-land','data-island':i.id});
-    g.append(svgEl('ellipse',{cx:i.x,cy:i.z,rx:i.rx+2,ry:i.rz+2,fill:'#e9d7a6'}));
-    g.append(svgEl('ellipse',{cx:i.x,cy:i.z,rx:i.rx*.83,ry:i.rz*.82,fill:i.id==='sunset'?'#4c916d':'#62ab70'}));
-    g.append(svgEl('ellipse',{cx:i.x-i.rx*.18,cy:i.z-i.rz*.18,rx:i.rx*.36,ry:i.rz*.36,fill:'#93c988',opacity:'.6'}));
+    // Match the real island biome rather than painting every landmass green.
+    const palette=({
+      home:['#ead3aa','#6bae69','#a5cf82'],
+      islet:['#f4d8b3','#92d39c','#eea9d0'],
+      wilds:['#d3c18a','#338454','#73b95c'],
+      coconutCoast:['#f1e7c5','#f8dea0','#7bdcc2'],
+      sunset:['#a8b1ac','#36576d','#b887d3'],
+      crystalCove:['#d8eafa','#79c2d9','#b0a4ed']
+    })[i.id]||['#e9d7a6','#62ab70','#93c988'];
+    g.append(svgEl('ellipse',{cx:i.x,cy:i.z,rx:i.rx+2,ry:i.rz+2,fill:palette[0]}));
+    g.append(svgEl('ellipse',{cx:i.x,cy:i.z,rx:i.rx*.83,ry:i.rz*.82,fill:palette[1]}));
+    g.append(svgEl('ellipse',{cx:i.x-i.rx*.18,cy:i.z-i.rz*.18,rx:i.rx*.36,ry:i.rz*.36,fill:palette[2],opacity:'.6'}));
     if(!mini){
       const icon=svgEl('text',{x:i.x,y:i.z+2,'font-size':i.id==='home'?12:13,'text-anchor':'middle',
         'dominant-baseline':'central','pointer-events':'none'},i.icon);
