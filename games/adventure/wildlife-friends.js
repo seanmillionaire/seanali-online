@@ -1,6 +1,6 @@
 import {explorePlaces,earnCoins} from './explore-state.js?v=55';
 import {oceanModel} from './ocean-models.js?v=38';
-import {createAnimalDetails} from './animal-details.js?v=1';
+import {createAnimalDetails} from './animal-details.js?v=2';
 // Repeatable, optional play with six friends in the 3D world.
 export const islandFriends=[
  {id:'pip',icon:'🐢',name:'Pip',where:['Bahía de Pip','Pip’s Bay'],game:['Búsqueda de conchas','Shell hunt'],hello:['¡Angelique! ¿Buscamos conchitas juntos?','Angelique! Shall we look for shells together?']},
