@@ -14,7 +14,7 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
  const sunBody=new T.Mesh(ball,basic('#ffe39c')),moon=new T.Mesh(ball,basic('#e3f1ff'));sunBody.name='Sun';moon.name='Moon';sunBody.scale.setScalar(.25);moon.scale.setScalar(.22);sky.add(sunBody,moon);sunBody.renderOrder=30;moon.renderOrder=30;for(let i=0;i<10;i++){const a=i*Math.PI/5,ray=new T.Mesh(cone,basic('#ffd16e'));ray.position.set(Math.sin(a)*1.4,Math.cos(a)*1.4,0);ray.rotation.z=-a;ray.scale.set(.13,.45,.1);ray.renderOrder=30;sunBody.add(ray);}
  for(let i=0;i<4;i++){const crater=new T.Mesh(ball,basic('#a6bad1'));crater.scale.set(.2,.15,.025);crater.renderOrder=31;crater.position.set(Math.sin(i*2)*.55,Math.cos(i*2)*.5,.85);moon.add(crater);}
  const starMaterial=basic('#dceeff',{transparent:true,opacity:0}),stars=[];for(let i=0;i<22;i++){const star=new T.Mesh(ball,starMaterial);star.position.set(Math.sin(i*9.7)*2,1.8+(i%7)*.17,-10.8);star.scale.setScalar(.012+(i%3)*.005);sky.add(star);stars.push(star);}
- // Keep Isla Aventura in bright midday until the day/night feature is re-enabled.
+ // Keep Panamá Aventura in bright midday until the day/night feature is re-enabled.
  // Reset stored nighttime positions too, so returning players always see daylight.
  const PERMANENT_DAYTIME = 60;
  function nearestRideable(x,z,limit=6.8){
