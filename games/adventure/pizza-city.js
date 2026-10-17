@@ -81,23 +81,58 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
   piece(ball,gold,x,y+4.15,z,.48,.48,.48);
   piece(cylinder,grass,x,y+.12,z,1.12,.24,1.12);
  }
- // The ONE drivable car in Isla Aventura.
+ // The only drivable car: layered body panels, windows, lights and rolling wheels.
  const car=new T.Group();car.name='Only drivable car — Pizza City';scene.add(car);
- const carBlue=mat('#66bada',{metalness:.4,roughness:.31}),carShade=mat('#397f9d',{metalness:.2,roughness:.39}),frontLight=mat('#ffefb8',{emissive:'#e8d479',emissiveIntensity:.5});
- piece(box,carBlue,0,.12,0,2.15,.75,3.6,car);
- piece(box,carShade,0,.66,-.35,1.85,.78,1.65,car);
+ const carBlue=mat('#66bada',{metalness:.4,roughness:.31}),
+  carShade=mat('#397f9d',{metalness:.23,roughness:.38}),
+  chrome=mat('#d8d9d0',{metalness:.6,roughness:.24}),
+  seat=mat('#875b4f',{roughness:.95}),
+  frontLight=mat('#ffefb8',{emissive:'#e8d479',emissiveIntensity:.5});
+ const wheelRigs=[];
+ // Bumper-height frame, distinct hood and raised passenger cabin.
+ piece(box,carShade,0,-.05,0,2.16,.41,3.55,car);
+ piece(box,carBlue,0,.26,0,2.12,.66,3.52,car);
+ piece(box,carBlue,0,.58,1.10,2.03,.26,1.22,car); // bonnet
+ piece(box,carBlue,0,.77,-.69,1.8,.81,1.55,car); // cabin
+ piece(box,carBlue,0,1.19,-.64,1.87,.13,1.46,car); // roof
+ const windscreen=piece(box,glass,0,.86,.26,1.68,.52,.07,car);
+ windscreen.rotation.x=-.33;windscreen.castShadow=false;
+ const rearGlass=piece(box,glass,0,.81,-1.52,1.63,.46,.07,car);
+ rearGlass.rotation.x=.28;rearGlass.castShadow=false;
+ piece(box,seat,0,.42,-.54,1.37,.28,.55,car);
+ // Grille, license plate, chrome bumpers, and body seam accents.
+ piece(box,chrome,0,.19,1.87,1.62,.18,.11,car);
+ piece(box,carShade,0,.18,1.94,1.01,.27,.07,car);
+ for(let k=0;k<5;k++)piece(box,chrome,-.44+k*.22,.19,1.997,.035,.22,.018,car);
+ piece(box,chrome,0,-.13,-1.87,1.76,.15,.13,car);
+ piece(box,white,0,.09,-1.97,.85,.2,.027,car);
  for(const side of [-1,1]){
-  piece(box,glass,side*.94,.65,-.40,.05,.55,1.25,car);
-  for(const z of [-1.15,1.18]){
-   const wheel=piece(cylinder,tire,side*1.1,-.30,z,.42,.30,.42,car);
-   wheel.rotation.z=Math.PI/2;
-   const hub=piece(cylinder,pavement,side*1.31,-.30,z,.18,.31,.18,car);hub.rotation.z=Math.PI/2;
+  // Windows, handles, side mirrors and outline of each door.
+  piece(box,glass,side*.932,.82,-.72,.05,.44,1.05,car).castShadow=false;
+  piece(box,carShade,side*1.087,.30,-.45,.028,.38,.06,car);
+  piece(box,chrome,side*1.10,.41,-.56,.045,.045,.35,car);
+  piece(box,chrome,side*1.14,.73,.54,.27,.16,.22,car);
+  piece(ball,frontLight,side*.77,.39,1.86,.22,.15,.10,car);
+  piece(ball,red,side*.78,.25,-1.86,.20,.13,.08,car);
+  for(const z of [-1.16,1.18]){
+   const rig=new T.Group();rig.position.set(side*1.1,-.30,z);car.add(rig);wheelRigs.push(rig);
+   const rubber=piece(cylinder,tire,0,0,0,.45,.32,.45,rig);
+   rubber.rotation.z=Math.PI/2;
+   const hub=piece(cylinder,chrome,side*.25,0,0,.21,.058,.21,rig);hub.rotation.z=Math.PI/2;
+   for(let spoke=0;spoke<5;spoke++){
+    const a=spoke*Math.PI*2/5;
+    const ray=piece(box,carShade,side*.30,Math.cos(a)*.15,Math.sin(a)*.15,.035,.25,.044,rig);
+    ray.rotation.x=a;
+   }
   }
-  piece(ball,frontLight,side*.76,.13,1.84,.23,.18,.1,car);
-  piece(ball,red,side*.76,.12,-1.85,.19,.13,.09,car);
  }
- piece(box,wood,0,1.1,-.44,.42,.1,.35,car);
- const updateCar=()=>{const p=city.car;car.position.set(p.x,height(p.x,p.z)+.72,p.z);car.rotation.y=p.heading||0;};updateCar();
+ const updateCar=(speed=0,dt=0)=>{
+  const p=city.car;
+  car.position.set(p.x,height(p.x,p.z)+.72+Math.min(speed/20,1)*Math.sin(p.heading*4)*.012,p.z);
+  car.rotation.y=p.heading||0;
+  if(speed>0&&dt>0)for(const w of wheelRigs)w.rotation.x+=speed*dt/.45;
+ };
+ updateCar();
  // Unicode emoji billboards belong to collectible bags, not abstract gemstones.
  const iconCanvas=document.createElement('canvas');iconCanvas.width=128;iconCanvas.height=128;
  const ctx=iconCanvas.getContext('2d');
@@ -143,7 +178,7 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
   joy.effect('correct');save();refresh();
   tell((es?'🍕 ¡Pizza lista! ':'🍕 Fresh pizza! ')+(coins?' +3 🪙':''));return city.pizzas;}
  function update(dt,active,{x,z,driving=false,flying=false,indoors=false}={}){
-  if(driving)updateCar();
+  if(driving)car.rotation.y=city.car.heading;
   const here=isHere(x,z)&&!indoors;
   status.hidden=!here;
   if(here)status.textContent='💰 '+city.bags.length+'/'+MONEY_BAGS.length+'   🚙 '+(es?'Auto':'Car')+'   🍕 '+city.pizzas;
