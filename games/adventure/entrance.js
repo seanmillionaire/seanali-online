@@ -1,7 +1,7 @@
-import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=72';
-import {createTropical} from './tropical.js?v=72';
-import {createSurfaceTextures} from './surface-textures.js?v=2';
-import {installPolyHavenMaterials} from './polyhaven-materials.js?v=1';
+import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=73';
+import {createTropical} from './tropical.js?v=73';
+import {createSurfaceTextures} from './surface-textures.js?v=73';
+import {installPolyHavenMaterials} from './polyhaven-materials.js?v=73';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
 export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import('./vendor/three.module.min.js')}={}) {
   let disposed=false,world=null,pending=null;

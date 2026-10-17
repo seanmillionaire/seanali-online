@@ -1,6 +1,6 @@
 // Isla Aventura: collectible inventory -> visible, persistent structures.
 // All meshes are procedural and reuse the game's existing Three.js materials.
-import {worldIslands,volcanoTrailPoint,exploreItems,earnCoins} from './explore-state.js?v=72';
+import {worldIslands,volcanoTrailPoint,exploreItems,earnCoins,spendFood} from './explore-state.js?v=73';
 const at=(id)=>worldIslands.find(p=>p.id===id);
 export const RESOURCE_INFO={
  shell:{icon:'🐚',es:'Conchas',en:'Shells'},fruit:{icon:'🍌',es:'Plátanos',en:'Bananas'},
@@ -19,10 +19,11 @@ export const BUILD_RECIPES=[
  {id:'pizzaStand',island:'pizzaCity',x:at('pizzaCity').x+18,z:at('pizzaCity').z+6,icon:'🍕',es:'Puesto de pizza',en:'Pizza stand',need:{moneyBag:2,islandTreasure:2,fruit:1},actionEs:'Preparar una pizza',actionEn:'Make a pizza'}
 ];
 export function craftInventory(world){
- const collected=world.collected||[],spent=world.craft?.spent||{};
- const total=Object.fromEntries(Object.keys(RESOURCE_INFO).map(k=>[k,k==='moneyBag'?(world.city?.bags||[]).length:collected.filter(id=>exploreItems.some(item=>item.id===id&&item.kind===k)).length]));
+ const collected=[...new Set(world.collected||[])],spent=world.craft?.spent||{};
+ const total=Object.fromEntries(Object.keys(RESOURCE_INFO).map(k=>[k,k==='fruit'?(world.foodTotal?.banana??world.food?.banana??0):k==='moneyBag'?new Set(world.city?.bags||[]).size:collected.filter(id=>exploreItems.some(item=>item.id===id&&item.kind===k)).length]));
  const available=Object.fromEntries(Object.keys(total).map(k=>[k,Math.max(0,total[k]-(spent[k]||0))]));
- return {total,spent:{...spent},available};
+ available.fruit=world.food?.banana||0;
+ return {total,spent:{...spent,fruit:Math.max(0,total.fruit-available.fruit)},available};
 }
 export function craftAtSite(world,id,x,z,maxDistance=5){
  const r=BUILD_RECIPES.find(item=>item.id===id);
@@ -38,6 +39,7 @@ export function commitCraft(world,id,x,z){
  if(!craftAtSite(world,id,x,z)||!canCraft(world,id))return false;
  world.craft??={built:[],spent:{}};
  const r=BUILD_RECIPES.find(item=>item.id===id);
+ if(r.need.fruit&&!spendFood(world,'banana',r.need.fruit))return false;
  for(const [kind,n]of Object.entries(r.need))world.craft.spent[kind]=(world.craft.spent[kind]||0)+n;
  world.craft.built.push(id);
  return true;

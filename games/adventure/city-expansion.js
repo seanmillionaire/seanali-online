@@ -1,3 +1,4 @@
+import {spendFood} from './explore-state.js?v=73';
 /* Panama Adventure — substantial zero-dependency Casco Viejo city expansion.
    Roads and landmark buildings are genuine Three.js meshes; activities update
    game state only on meaningful user actions and persist in world.city. */
@@ -273,11 +274,11 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
     return true;
    }
    case 'market':
-    if((state.world.food?.banana||0)<1){
+    if(!spendFood(state.world,'banana')){
      tell('🥭 El mercado necesita 1 🍌. Busca plátanos en Bocas del Toro.',
       '🥭 Bring 1 🍌 banana from Bocas del Toro to trade at the market.');return true;
     }
-    state.world.food.banana--;a.marketTrades=Math.min(999,a.marketTrades+1);
+    a.marketTrades=Math.min(999,a.marketTrades+1);
     success('🥭 ¡Vendiste un plátano en el mercado!','🥭 You traded a banana at the market!',
       a.marketTrades<=3?'city-market-'+a.marketTrades:null);return true;
    case 'mural':
