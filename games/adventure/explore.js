@@ -8,7 +8,7 @@ import {createWildlifeFriends} from './wildlife-friends.js?v=60';
 import {createHouseInteriors} from './house-interiors.js?v=60';
 import {createPizzaCity} from './pizza-city.js?v=60';
 import {buildIsland} from './entrance.js?v=60';
-import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,normalizeExplore,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,sharkPatrol,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=60';
+import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,sharkPatrol,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=60';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);syncWallet(state);
  let disposed=false,engine=null,control=null,friendSystem=null,houseSystem=null,wildLife=null,cityLife=null,carDriving=false,carSpeed=0,mountId=null,birdAltitude=0,birdTarget=0,birdLanding=false,near=null,ride=s.flight?1:0,flightY=s.flight||0,flightTarget=s.flight||0,flightVX=0,flightVZ=0,route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;
@@ -49,6 +49,12 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  const hud=makeEl('div','explore-hud'),title=makeEl('div','explore-location',say('Playa Gorgona','Playa Gorgona')),bag=makeEl('div','explore-bag'),quest=makeEl('div','explore-hint',say('¡Panamá te espera! Busca a Pip en Gorgona o explora a tu aire.','Panama awaits! Find Pip in Gorgona or explore anywhere.'));
  const goalCard=makeEl('section','island-goal'),goalTitle=makeEl('strong',''),goalText=makeEl('p',''),goalButton=btn('','goal-next',followGoal);goalCard.setAttribute('aria-label',say('Tu siguiente aventura','Your next adventure'));goalCard.append(goalTitle,goalText,goalButton);
  const message=makeEl('div','explore-message');message.setAttribute('role','status');message.setAttribute('aria-live','polite');
+ const volcanoStatus=makeEl('div','volcano-hike-status');volcanoStatus.hidden=true;
+ volcanoStatus.setAttribute('role','status');volcanoStatus.setAttribute('aria-live','off');
+ const volcano=worldIslands.find(i=>i.id==='sunset');
+ const volcanoPath=Array.from({length:101},(_,i)=>volcanoTrailPoint(i/100));
+ const onVolcano=(x,z)=>Math.hypot((x-volcano.x)/volcano.rx,(z-volcano.z)/volcano.rz)<.99;
+ const summitGoal=volcanoTrailPoint(1);
  const lessonRegions={pip:0,mila:1,ollie:2,luna:3,garden:4,beacon:5};
  const lesson=btn(say('Una aventura','An adventure'),'world-action world-lesson',()=>{if(near&&lessonRegions[near.id]!==undefined)openLessons(lessonRegions[near.id]);});lesson.hidden=true;
  const actions=makeEl('div','explore-actions'),act=btn(say('Saludar','Say hello'),'world-action',interact),jump=btn(say('Saltar ⤴','Jump ⤴'),'world-jump',hop);
@@ -65,7 +71,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  const directions=makeEl('div','world-arrows');for(const [label,k]of [['↑','ArrowUp'],['←','ArrowLeft'],['↓','ArrowDown'],['→','ArrowRight']]){const b=btn(label,'',()=>{});b.setAttribute('aria-label',say('Mover ','Move ')+({ArrowUp:say('norte','north'),ArrowDown:say('sur','south'),ArrowLeft:say('oeste','west'),ArrowRight:say('este','east')}[k]));b.onpointerdown=e=>{b.setPointerCapture(e.pointerId);keys.add(k);targetPoint=null;joy.gesture();};b.onpointerup=b.onpointercancel=()=>keys.delete(k);directions.append(b);}
  const instructions=makeEl('div','explore-controls',say('Toca el suelo para ir · Flechas / WASD · Espacio para saltar','Tap ground to walk · Arrows / WASD · Space to jump'));
  const panel=makeEl('section','explore-panel');panel.hidden=true;panel.setAttribute('aria-label',say('Descubrimientos','Discoveries'));
- hud.append(title,bag);actions.append(lesson,act,jump,descend,friendMeet);host.append(canvas,hud,quest,goalCard,menu,helperToggle,pad,directions,actions,instructions,message,panel);
+ hud.append(title,bag);actions.append(lesson,act,jump,descend,friendMeet);host.append(canvas,hud,volcanoStatus,quest,goalCard,menu,helperToggle,pad,directions,actions,instructions,message,panel);
  const adventureMap=createWorldMap({host,panel,world:s,islands:worldIslands,places:explorePlaces,language:state.lang,
    onTravel:travelTo,onOpen:()=>{setHelpers(false);blur();targetPoint=null;}});
  refresh();
@@ -389,6 +395,11 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
     // Follow fast enough that she cannot slide off a narrow phone screen.
     desired.set(ax,ay+(ride?14:mountId?15:carDriving?13:12),az+(phone?35:32));
    }else desired.set(ax,ay+(phone?24:20)+(bodyScale-1)*2,az+(phone?32:27)+(bodyScale-1)*2);
+   if(onVolcano(s.x,s.z)&&!houseSystem?.isInside()){
+    // Keep the camera out of the 46-unit mountain while hiking steep slopes.
+    desired.y=Math.max(desired.y,height(desired.x,desired.z)+7);
+    if(!riding){desired.z=az+(phone?41:37);desired.y=Math.max(ay+23,height(desired.x,desired.z)+9);}
+   }
    camera.position.lerp(desired,houseSystem?.isInside()?1:dt===0?1:1-Math.exp(-dt*(riding?18:5)));
    if(riding)camera.position.x=ax;
    target.set(ax,ay+(houseSystem?.isInside()?1.0:riding?(ride?2.25:mountId?1.6:1.3):.7*bodyScale),az-(houseSystem?.isInside()?1.2:0));if(impactStrength>0){camera.position.x+=Math.sin(impactPhase*1.7)*impactStrength*.18;camera.position.y+=Math.cos(impactPhase*1.3)*impactStrength*.14;}
@@ -408,7 +419,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    setText(goalButton,goal?(arrived?say('▶ Empezar aventura','▶ Start adventure'):say('➜ Llévame','➜ Take me there')):say('Explorar otra vez','Explore again'));goalButton.disabled=!!ride;
    const announcement=goal?goal.id+':'+arrived:'complete';if(goalAnnounced!==announcement&&!paused()&&!ride&&panel.hidden&&!document.querySelector('dialog[open]')&&guide(goalWords()))goalAnnounced=announcement;
    foodNear=!inside&&!swimming&&!boating&&!ride&&!airborne&&!mountId&&!houseSystem?.isInside()?foodTrees.find(t=>Math.hypot(t.x-s.x,t.z-s.z)<2&&(s.harvested[t.id]||0)<t.fruits.length):null;
-   if(near?.kind==='balloon'){foodNear=null;}if(near?.kind==='islet')setText(act,({wilds:'🍌',coconutCoast:'🥥',sunset:'✨'})[near.id]||'🫧');
+   if(near?.kind==='balloon'){foodNear=null;}if(near?.kind==='islet')setText(act,({wilds:'🍌',coconutCoast:'🥥',sunset:'🌋'})[near.id]||'🫧');
    if(near?.id==='beacon')setText(act,say('🚪 Entrar al faro','🚪 Enter lighthouse'));
    pad.classList.toggle('flight-stick',!!ride||birdMount());pad.classList.toggle('steering',(!!ride||birdMount())&&len>.05);setText(knob,ride?'🎈':birdMount()?'🪽':'✥');setText(stickReadout,ride?'↕ '+Math.round(flightY)+' m':birdMount()?'↕ '+Math.round(birdAltitude)+' m':'');pad.style.setProperty('--heading',Math.atan2(dx,-dz)+'rad');
    descend.hidden=!ride&&!birdMount();for(const e of entityMeshes)if(e.p.id==='balloon')e.g.visible=!ride;
@@ -435,11 +446,30 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    goalCard.hidden=boating||carDriving||inside||!!ride||airborne||near?.kind==='islet'||netTime>0;quest.hidden=true;
    adventureMap.update(false,avatar.rotation.y);
    friendSystem?.update(dt,active,{mode:houseSystem?.isInside()?'house':mountId?(inWater(s.x,s.z)?'mount-water':'mount'):ride?'fly':boating?'boat':swimming?'swim':'walk',inside:inside||houseSystem?.isInside(),mount:mountId,heading:avatar.rotation.y,roomPosition:houseSystem?.position(),mountAltitude:birdAltitude,moving:len>.1});
+   // Hiking a physically climbable spiral earns a one-time summit keepsake.
+   const onMountain=onVolcano(s.x,s.z)&&!houseSystem?.isInside()&&!inside;
+   volcanoStatus.hidden=!onMountain;
+   if(onMountain){
+    let nearest=volcanoPath[0],distance=Infinity;
+    for(const point of volcanoPath){
+     const d=Math.hypot(s.x-point.x,s.z-point.z);
+     if(d<distance){distance=d;nearest=point;}
+    }
+    volcanoStatus.textContent=distance<4.7
+     ?'🌋 Volcán Barú · '+(es?'Sendero':'Hike')+' '+Math.round(nearest.progress*100)+'% 🥾'
+     :'🌋 Volcán Barú · '+(es?'Busca el sendero 🥾':'Find the trail 🥾');
+    const walking=active&&!ride&&!boating&&!carDriving&&!mountId&&!airborne;
+    if(walking&&Math.hypot(s.x-summitGoal.x,s.z-summitGoal.z)<3.2&&badgeExplore(s,'volcano-summit')){
+     save();refresh();joy.effect('finish');
+     tell('🌋 ¡Llegaste a la cima del Volcán Barú! ¡Qué vista tan increíble!',
+       '🌋 You climbed Volcán Barú! What an incredible view!');
+    }
+   }
    cityLife?.update(dt,active,{x:s.x,z:s.z,driving:carDriving,flying:!!ride||birdAltitude>2,indoors:inside||houseSystem?.isInside()});
    life.update(dt,active,motion());realms.update(dt,active,ride?'fly':swimming?'swim':boating?'boat':'walk',ay);journey.update(dt,active,ride?'fly':swimming?'swim':boating?'boat':'walk',ay);story.update(dt,time);if(host.classList.contains("story-nearby")){lesson.hidden=true;guideBeacon.visible=false;}
    for(const [button,words] of buttonUpdates)paintButton(button,words);buttonUpdates.clear();
   }
-  return {update,dispose(){cityLife?.dispose();cityLife=null;houseSystem?.dispose();houseSystem=null;friendSystem?.dispose();friendSystem=null;wildLife=null;realms.dispose();journey.dispose();life.dispose();story.dispose();canvas.removeEventListener('pointerdown',walkTo);control=null;}};
+  return {update,dispose(){volcanoStatus.remove();cityLife?.dispose();cityLife=null;houseSystem?.dispose();houseSystem=null;friendSystem?.dispose();friendSystem=null;wildLife=null;realms.dispose();journey.dispose();life.dispose();story.dispose();canvas.removeEventListener('pointerdown',walkTo);control=null;}};
  }
  function dispose(){if(disposed)return;adventureMap.dispose();host.classList.remove('inside-lighthouse','is-swimming','shark-nearby');joy.boat?.(false);disposed=true;generation++;clearTimeout(startTimer);clearTimeout(recoveryTimer);canvas.removeEventListener('webglcontextlost',contextLost);canvas.removeEventListener('webglcontextrestored',contextRestored);save();engine?.dispose();engine=null;document.removeEventListener('keydown',keydown);document.removeEventListener('keyup',keyup);window.removeEventListener('blur',blur);document.removeEventListener('visibilitychange',blur);keys.clear();}
  return {dispose};
