@@ -1,6 +1,7 @@
+import {createCityExpansion} from './city-expansion.js?v=1';
 /* Casco Viejo · Ciudad de Panamá — the largest fantasy island: real road grid, drivable mini car,
    walk-in pizzeria, and sixteen persistent 💰 money-bag pickups. */
-export const CITY={x:-100,z:-74,rx:45,rz:38,restaurant:{x:-84,z:-60}};
+export const CITY={x:-100,z:-74,rx:58,rz:48,restaurant:{x:-84,z:-60}};
 export const MONEY_BAGS=Array.from({length:16},(_,i)=>{
  const a=i/16*Math.PI*2;
  const r=i%4===0?.62:i%3===0?.43:.77;
@@ -155,6 +156,9 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
   const icon=new T.Sprite(spriteMaterial);icon.position.set(0,1.78,0);icon.scale.set(2.2,2.2,1);icon.renderOrder=48;root.add(icon);
   bags.push({id:b.id,x:b.x,z:b.z,root,icon});
  }
+ let coinAward=()=>0;
+ const expansion=createCityExpansion({T,group,scene,state,make,mat,box,ball,cylinder,cone,height,surfaces,
+   save,refresh,joy,tell:(a,b)=>tell(a,b),coinAward:id=>coinAward(id)});
  const status=document.createElement('div');status.className='pizza-city-status';status.hidden=true;
  status.setAttribute('aria-live','polite'); 
  const sign=document.createElement('div');sign.className='pizza-city-prompt';sign.textContent='🍕 '+(es?'Pizzería del Casco':'Casco Viejo Pizzeria');sign.hidden=true;
@@ -162,7 +166,7 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
  function attach(host){if(host){host.append(status,sign);}}
  function isHere(x,z){return Math.hypot((x-CITY.x)/CITY.rx,(z-CITY.z)/CITY.rz)<1.0;}
  function nearCar(x,z){return Math.hypot(x-city.car.x,z-city.car.z)<4;}
- function canDrive(x,z){return Math.hypot((x-CITY.x)/CITY.rx,(z-CITY.z)/CITY.rz)<.87;}
+ function canDrive(x,z){return Math.hypot((x-CITY.x)/CITY.rx,(z-CITY.z)/CITY.rz)<.91;}
  function hitCar(raycaster,x,z){return Math.hypot(x-city.car.x,z-city.car.z)<13&&raycaster.intersectObject(car,true).length>0;}
  function hitBag(raycaster,x,z){
   for(const bag of bags){
@@ -172,17 +176,22 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
   return null;
  }
  // Caller owns the coin-award function.
- let coinAward=()=>0;
  function setCoinAward(fn){coinAward=fn||(()=>0);}
  function order(){city.pizzas=Math.min(999,city.pizzas+1);const coins=coinAward('city-pizza');
   joy.effect('correct');save();refresh();
-  tell((es?'🍕 ¡Pizza lista! ':'🍕 Fresh pizza! ')+(coins?' +3 🪙':''));return city.pizzas;}
+  tell('🍕 ¡Pizza lista! '+(coins?'+3 🪙':'')+' ¡Hora de repartir!',
+    '🍕 Pizza is ready! '+(coins?'+3 🪙':'')+' Time to deliver!');
+  expansion.beginDelivery();return city.pizzas;}
  function update(dt,active,{x,z,driving=false,flying=false,indoors=false}={}){
   if(driving)car.rotation.y=city.car.heading;
   const here=isHere(x,z)&&!indoors;
   status.hidden=!here;
-  if(here)status.textContent='💰 '+city.bags.length+'/'+MONEY_BAGS.length+'   🚙 '+(es?'Auto':'Car')+'   🍕 '+city.pizzas;
-  sign.hidden=!here||Math.hypot(x-sx,z-sz)>16;
+  expansion.update(dt,active,{x,z,driving,flying,indoors});
+  if(here)status.textContent='💰 '+city.bags.length+'/'+MONEY_BAGS.length+' · 🚙 🍕 '+city.pizzas+' · '+expansion.status();
+  const point=expansion.near(x,z,9),atRestaurant=Math.hypot(x-sx,z-sz)<16;
+  sign.hidden=!here||(!atRestaurant&&!point);
+  if(!sign.hidden)sign.textContent=point?point.icon+' '+(es?point.es:point.en):
+    '🍕 '+(es?'Pizzería del Casco':'Casco Viejo Pizzeria');
   if(!active||flying||indoors)return;
   for(let i=bags.length-1;i>=0;i--){
    const b=bags[i];b.icon.position.y=1.74+Math.sin(performance.now()*.003+i)*.16;
@@ -190,10 +199,10 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
     city.bags.push(b.id);scene.remove(b.root);bags.splice(i,1);
     const coins=coinAward('city-'+b.id);
     save();refresh();joy.effect('coin');
-    tell('💰 '+(es?'¡Bolsa de dinero!':'Money bag!')+' +'+coins+' 🪙');
+    tell('💰 ¡Bolsa de dinero! +'+coins+' 🪙','💰 Money bag! +'+coins+' 🪙');
    }
   }
  }
- function dispose(){status.remove();sign.remove();scene.remove(group,car,pizzaSign);for(const b of bags)scene.remove(b.root);spriteMaterial.dispose();texture.dispose();pizzaMaterial.dispose();pizzaTexture.dispose();}
- return {attach,update,nearCar,canDrive,hitCar,hitBag,updateCar,order,setCoinAward,isHere,car,dispose};
+ function dispose(){expansion.dispose();status.remove();sign.remove();scene.remove(group,car,pizzaSign);for(const b of bags)scene.remove(b.root);spriteMaterial.dispose();texture.dispose();pizzaMaterial.dispose();pizzaTexture.dispose();}
+ return {attach,update,nearCar,canDrive,hitCar,hitBag,updateCar,order,setCoinAward,isHere,car,activityPrompt:expansion.activityPrompt,interactActivity:expansion.interactAt,activityNear:expansion.near,activityGoal:expansion.goal,dispose};
 }
