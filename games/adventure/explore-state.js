@@ -87,7 +87,7 @@ export const exploreItems=[
 ];
 for(const p of exploreItems){const land={fruit:'wilds',glow:'sunset'}[p.kind];if(land)Object.assign(p,islandPoint(land,p.x,p.z));}
 export function normalizeStory(raw){return Object.fromEntries(Object.entries({shells:3,picnic:4,seed:3,song:4,care:2,light:4}).map(([id,length])=>[id,Number.isInteger(raw?.[id])?Math.max(0,Math.min(length,raw[id])):0]));}
-export function freshExplore(){return {worldVersion:3,realms:{found:[],turtle:0,bird:0},journey:{visited:[],meals:0,swim:0,fly:0,rings:[]},x:4,z:10,dayTime:40,story:normalizeStory(null),collected:[],badges:[],hat:0,pet:false,flowers:0,catches:0,pops:0,flight:0,growth:1,food:{coconut:0,banana:0},harvested:{},boat:{x:6.5,z:16,heading:0},craft:{built:[],spent:{}},city:{bags:[],pizzas:0,car:{x:-106,z:-74,heading:0},activities:{deliveries:[],deliveryActive:false,rallyBest:0,rallyWins:0,soccerGoals:0,soccerShots:0,marketTrades:0,muralColors:0,museum:[],carWashes:0}},friends:{visits:[],completed:[],companion:null}};}
+export function freshExplore(){return {worldVersion:3,realms:{found:[],turtle:0,bird:0},journey:{visited:[],meals:0,swim:0,fly:0,rings:[]},x:4,z:10,dayTime:40,story:normalizeStory(null),collected:[],badges:[],hat:0,pet:false,flowers:0,catches:0,pops:0,flight:0,growth:1,food:{coconut:0,banana:0},harvested:{},boat:{x:6.5,z:16,heading:0},regionalProjects:{helped:[]},craft:{built:[],spent:{}},city:{bags:[],pizzas:0,car:{x:-106,z:-74,heading:0},activities:{deliveries:[],deliveryActive:false,rallyBest:0,rallyWins:0,soccerGoals:0,soccerShots:0,marketTrades:0,muralColors:0,museum:[],carWashes:0}},friends:{visits:[],completed:[],companion:null}};}
 export function normalizeExplore(raw){const s=freshExplore();if(!raw||typeof raw!=='object')return s;const rr=raw.realms||{};s.realms={found:[...new Set((Array.isArray(rr.found)?rr.found:[]).filter(id=>/^(reef-[0-5]|pearl-[0-4]|wind-[0-4]|star-[0-4]|seaChest-0|skyLight-0)$/.test(id)))],turtle:Math.max(0,Math.min(5,Math.floor(Number(rr.turtle)||0))),bird:Math.max(0,Math.min(4,Math.floor(Number(rr.bird)||0)))};const j=raw.journey||{};s.journey={visited:[...new Set((Array.isArray(j.visited)?j.visited:[]).filter(id=>worldIslands.some(p=>p.id===id)))],meals:Math.max(0,Math.min(999,Number(j.meals)||0)),swim:Math.max(0,Math.min(100000,Number(j.swim)||0)),fly:Math.max(0,Math.min(100000,Number(j.fly)||0)),rings:[...new Set((Array.isArray(j.rings)?j.rings:[]).filter(id=>/^(swim|fly)-[0-9]+$/.test(id)))]};// Preserve friendship, a chosen companion, and first-time play rewards across saves.
 const FRIEND_IDS=['pip','dori','mila','ollie','luna','kai'],savedFriends=raw.friends||{};
 s.friends={
@@ -111,6 +111,7 @@ s.city={bags:[...new Set((Array.isArray(savedCity.bags)?savedCity.bags:[]).filte
   museum:[...new Set((Array.isArray(savedCity.activities?.museum)?savedCity.activities.museum:[]).filter(n=>Number.isInteger(n)&&n>=0&&n<3))],
   carWashes:Math.max(0,Math.min(999,Math.floor(Number(savedCity.activities?.carWashes)||0)))
  }};
+s.regionalProjects={helped:[...new Set((Array.isArray(raw.regionalProjects?.helped)?raw.regionalProjects.helped:[]).filter(id=>['home','islet','wilds','coconutCoast','sunset','crystalCove','pizzaCity'].includes(id)))]};
 const savedCraft=raw.craft||{},allowedResource=['shell','fruit','glow','islandTreasure','seaTreasure','moneyBag'];
 s.craft={built:[...new Set((Array.isArray(savedCraft.built)?savedCraft.built:[]).filter(id=>['sandcastle','butterflyGarden','treehouse','beachCabana','volcanoCamp','coralNursery','pizzaStand'].includes(id)))],
  spent:Object.fromEntries(allowedResource.map(kind=>[kind,Math.max(0,Math.min(999,Math.floor(Number(savedCraft.spent?.[kind])||0)))]))};
@@ -172,7 +173,7 @@ export function nextIslandAdventure(state){
 }
 // Fixed rewards keep the wallet explainable and prevent repeat-click farming.
 export const islandShop=[{id:'coral',cost:15,hat:4,es:'Sombrero coral',en:'Coral hat'},{id:'ocean',cost:30,hat:5,es:'Sombrero océano',en:'Ocean hat'},{id:'sunshine',cost:45,hat:6,es:'Sombrero sol',en:'Sunshine hat'}];
-export function coinValue(id){
+export function coinValue(id){if(/^region-help-(home|islet|wilds|coconutCoast|sunset|crystalCove|pizzaCity)$/.test(id))return 25;
  if(/^city-(?:rally|soccer|mural|carwash|plaza|canal|delivery-finish)$/.test(id))return 12;
  if(/^city-delivery-[0-2]$/.test(id))return 7;
  if(/^city-market-[1-3]$/.test(id))return 5;
