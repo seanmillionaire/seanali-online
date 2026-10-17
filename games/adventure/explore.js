@@ -2,7 +2,8 @@ import {createRealms} from './realms.js?v=68';
 import {createJourney} from './journey.js?v=68';
 import {oceanModel} from './ocean-models.js?v=38';
 import {createIslandLife} from './island-life.js?v=47';
-import {createWorldStory} from './world-story.js?v=68';
+import {createWorldStory,islandStories} from './world-story.js?v=68';
+import {REGION_PROJECTS,regionForPosition,missionStatus,restoreRegions,createRegionProjectWorld} from './region-projects.js?v=71';
 import {createWorldMap} from './world-map.js?v=62';
 import {createWildlifeFriends} from './wildlife-friends.js?v=68';
 import {createHouseInteriors} from './house-interiors.js?v=60';
@@ -12,7 +13,7 @@ import {buildIsland} from './entrance.js?v=68';
 import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,sharkPatrol,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=68';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);syncWallet(state);
- let disposed=false,engine=null,control=null,friendSystem=null,houseSystem=null,wildLife=null,cityLife=null,workshop=null,carDriving=false,carSpeed=0,mountId=null,birdAltitude=0,birdTarget=0,birdLanding=false,near=null,ride=s.flight?1:0,flightY=s.flight||0,flightTarget=s.flight||0,flightVX=0,flightVZ=0,route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;
+ let disposed=false,engine=null,control=null,friendSystem=null,houseSystem=null,wildLife=null,cityLife=null,workshop=null,regionWorld=null,carDriving=false,carSpeed=0,mountId=null,birdAltitude=0,birdTarget=0,birdLanding=false,near=null,ride=s.flight?1:0,flightY=s.flight||0,flightTarget=s.flight||0,flightVX=0,flightVZ=0,route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;
  let pendingRealm=null,waterLanding=null;let swimming=false,inside=false,stair=0,boating=false,boatSpeed=0,foodNear=null,eating=0,energy=0,swimBoost=0,rescueCooldown=0,danger=false,lastShore={x:4,z:10};
  let goal=nextIslandAdventure(state),goalAnnounced='',lastVoice=-Infinity,welcomed=false;
  function guide(){return false;}
@@ -99,6 +100,9 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  let canvas=makeEl('canvas','explore-canvas');canvas.setAttribute('aria-label',say('Explora con Angelique. Usa flechas o WASD, o toca el suelo.','Explore as Angelique. Use arrows or WASD, or tap the ground.'));canvas.tabIndex=0;
  const hud=makeEl('div','explore-hud'),title=makeEl('div','explore-location','🏖️ '+say('Playa Gorgona','Playa Gorgona')),bag=makeEl('div','explore-bag'),quest=makeEl('div','explore-hint',say('¡Panamá te espera! Busca a Pip en Gorgona o explora a tu aire.','Panama awaits! Find Pip in Gorgona or explore anywhere.'));
  const goalCard=makeEl('section','island-goal'),goalTitle=makeEl('strong',''),goalText=makeEl('p',''),goalButton=btn('','goal-next',followGoal);goalCard.setAttribute('aria-label',say('Tu siguiente aventura','Your next adventure'));goalCard.append(goalTitle,goalText,goalButton);
+ const regionStatus=makeEl('div','region-help-status');regionStatus.hidden=true;
+ regionStatus.setAttribute('aria-live','off');regionStatus.setAttribute('aria-label',say('Progreso para ayudar la región','Regional restoration progress'));
+ let lastMissionRegion='';
  const message=makeEl('div','explore-message');message.setAttribute('role','status');message.setAttribute('aria-live','polite');
  const volcanoStatus=makeEl('div','volcano-hike-status');volcanoStatus.hidden=true;
  volcanoStatus.setAttribute('role','status');volcanoStatus.setAttribute('aria-live','off');
@@ -117,6 +121,8 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  goalButton.addEventListener('click',()=>setHelpers(false));
  const walletButton=btn('','world-small wallet-button',showShop);menu.append(walletButton);
  const craftButton=btn('🎒 '+say('Mochila','Bag'),'world-small craft-bag-button',()=>showBag());craftButton.setAttribute('aria-label',say('Mochila para construir','Building and crafting bag'));menu.append(craftButton);
+ const regionButton=btn('🌍 '+say('Ayudar','Help'),'world-small region-help-button',()=>showRegionProject());
+ regionButton.setAttribute('aria-label',say('Misión para ayudar esta región','Mission to help this region'));menu.append(regionButton);
  const cityGuideButton=btn('🏙️ '+say('Ciudad','City'),'world-small city-guide-button',showCityGuide);
  cityGuideButton.setAttribute('aria-label',say('Explorar actividades de Ciudad de Panamá','Explore Panama City activities'));
  cityGuideButton.hidden=true;menu.append(cityGuideButton);
@@ -126,7 +132,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  const directions=makeEl('div','world-arrows');for(const [label,k]of [['↑','ArrowUp'],['←','ArrowLeft'],['↓','ArrowDown'],['→','ArrowRight']]){const b=btn(label,'',()=>{});b.setAttribute('aria-label',say('Mover ','Move ')+({ArrowUp:say('norte','north'),ArrowDown:say('sur','south'),ArrowLeft:say('oeste','west'),ArrowRight:say('este','east')}[k]));b.onpointerdown=e=>{b.setPointerCapture(e.pointerId);keys.add(k);targetPoint=null;joy.gesture();};b.onpointerup=b.onpointercancel=()=>keys.delete(k);directions.append(b);}
  const instructions=makeEl('div','explore-controls',say('Toca el suelo para ir · Flechas / WASD · Espacio para saltar','Tap ground to walk · Arrows / WASD · Space to jump'));
  const panel=makeEl('section','explore-panel');panel.hidden=true;panel.setAttribute('aria-label',say('Descubrimientos','Discoveries'));
- hud.append(title,bag);actions.append(lesson,act,jump,descend,friendMeet);host.append(canvas,hud,volcanoStatus,quest,goalCard,menu,helperToggle,pad,directions,actions,instructions,message,panel);
+ hud.append(title,bag);actions.append(lesson,act,jump,descend,friendMeet);host.append(canvas,hud,volcanoStatus,regionStatus,quest,goalCard,menu,helperToggle,pad,directions,actions,instructions,message,panel);
  const adventureMap=createWorldMap({host,panel,world:s,islands:worldIslands,places:explorePlaces,language:state.lang,
    onTravel:travelTo,onOpen:()=>{setHelpers(false);blur();targetPoint=null;}});
  refresh();
@@ -222,6 +228,54 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   }
   panel.append(card);
  }
+ function showRegionProject(regionId=regionForPosition(s.x,s.z)){
+  if(friendSystem?.isOpen())friendSystem.close();
+  if(adventureMap.isOpen())adventureMap.close(false);
+  setHelpers(false);panel.replaceChildren();panel.hidden=false;blur();targetPoint=null;route=[];
+  const m=missionStatus(s,state,regionId);
+  if(!m){panel.hidden=true;return;}
+  const close=btn('×','panel-close',()=>{panel.hidden=true;canvas.focus({preventScroll:true});});
+  close.setAttribute('aria-label',say('Cerrar misión','Close mission'));
+  panel.append(close,makeEl('div','region-project-heading',m.icon+' '+say('UNA MISIÓN PARA ESTA REGIÓN','ONE MISSION TO HELP THIS PLACE')),
+   makeEl('h2','',es?m.es:m.en),makeEl('p','region-project-why',es?m.whyEs:m.whyEn));
+  const bar=makeEl('div','region-project-progress');
+  const fill=makeEl('span','region-project-progress-fill');fill.style.width=(m.done/4*100)+'%';bar.append(fill);
+  bar.setAttribute('role','progressbar');bar.setAttribute('aria-valuemin','0');bar.setAttribute('aria-valuemax','4');bar.setAttribute('aria-valuenow',String(m.done));
+  panel.append(bar,makeEl('p','region-project-count',m.done+'/4 · '+(m.restored?say('✅ Región restaurada','✅ Region restored'):say('Ayuda a esta región a recuperarse','Help this region recover'))));
+  if(m.restored)panel.append(makeEl('p','region-project-victory','🎉 '+(es?m.resultEs:m.resultEn)));
+  const steps=makeEl('div','region-project-steps');
+  for(const [i,step]of m.tasks.entries()){
+   const card=makeEl('section','region-project-step'+(step.complete?' done':''));
+   card.append(makeEl('div','region-project-step-title',(step.complete?'✅':step.icon)+' '+(i+1)+'. '+(es?step.es:step.en)));
+   card.append(makeEl('p','region-project-meter',step.current+'/'+step.required+' '+(step.complete?say('¡Listo!','Done!'):say('completado','completed'))));
+   if(!step.complete){
+    card.append(btn(say('📍 Ir a ayudar','📍 Take me there'),'discover-place region-project-action',()=>{
+     panel.hidden=true;
+     if(step.check.kind==='cityDelivery'){showCityGuide();return;}
+     const recipe=['built','used'].includes(step.check.kind)?BUILD_RECIPES.find(x=>x.id===step.check.id):null;
+     if(recipe&&Math.hypot(s.x-recipe.x,s.z-recipe.z)<5){
+      if(step.check.kind==='used'&&workshop?.isBuilt(recipe.id)){workshop.use(recipe.id);showRegionProject(m.id);return;}
+      showBag(recipe.id);return;
+     }
+     let p=step.go;
+     if(step.check.kind==='story')p=islandStories.find(x=>x.id===step.check.story)||p;
+     if(!p)return;
+     if(m.id==='pizzaCity'&&step.check.kind==='cityBags')p=explorePlaces.find(x=>x.id==='pizzaCity')||p;
+     travelTo(p);
+    }));
+   }
+   steps.append(card);
+  }
+  panel.append(steps,makeEl('p','region-project-reward',say('🎁 Completa todo: el paisaje se transforma y ganas 25 monedas. Los juegos anteriores siguen contando.',
+    '🎁 Complete the project: watch the landscape come alive and earn 25 coins. Your earlier activities still count.')));
+  const other=makeEl('div','region-project-other');
+  other.append(makeEl('h3','',say('Explora otra región','Choose another region')));
+  for(const r of REGION_PROJECTS){
+   const status=missionStatus(s,state,r.id);
+   other.append(btn(r.icon+' '+(r.id==='home'?'Gorgona':r.id==='islet'?'Taboga':r.id==='wilds'?'Bocas':r.id==='coconutCoast'?'Contadora':r.id==='sunset'?'Volcán Barú':r.id==='crystalCove'?'Guna Yala':'Casco Viejo')+' '+status.done+'/4','discover-place',()=>showRegionProject(r.id)));
+  }
+  panel.append(other);
+ }
  function showBag(focusId=null){
   if(friendSystem?.isOpen())friendSystem.close();
   if(adventureMap.isOpen())adventureMap.close(false);
@@ -277,7 +331,8 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   }
   if(boating)control?.disembark();const dest=p.id==='boat'?s.boat:p;route=islandPath(s,dest);targetPoint=route.shift()||null;panel.hidden=true;
  }
- function showDiscover(){if(carDriving)exitCar();if(houseSystem?.isInside()){houseSystem.leave();host.classList.remove('inside-cottage');}if(mountId)friendSystem?.dismount();if(friendSystem?.isOpen())friendSystem.close();if(adventureMap.isOpen())adventureMap.close(false);if(inside)control?.leaveTower();guide(say('Elige un lugar y Angelique caminará hasta allí.','Choose a place and Angelique will walk there.'),true);panel.replaceChildren();panel.hidden=false;blur();targetPoint=null;const close=btn('×','panel-close',()=>{panel.hidden=true;canvas.focus({preventScroll:true});});close.setAttribute('aria-label',say('Cerrar','Close'));panel.append(close,makeEl('h2','',say('¿Qué te apetece?','What feels fun?')),makeEl('p','',say('Elige un lugar. 🚶 ⛵ 🎈','Pick a place. 🚶 ⛵ 🎈')));const list=makeEl('div','discover-grid');for(const p of explorePlaces)list.append(btn(`${({wilds:'🍌',coconutCoast:'🥥',sunset:'✨',islet:'🦋',crystalCove:'💎',beacon:'🗼'})[p.id]||p.icon} ${es?p.es:p.en}`,'discover-place',()=>travelTo(p)));panel.append(list);close.focus();}
+ function showDiscover(){if(carDriving)exitCar();if(houseSystem?.isInside()){houseSystem.leave();host.classList.remove('inside-cottage');}if(mountId)friendSystem?.dismount();if(friendSystem?.isOpen())friendSystem.close();if(adventureMap.isOpen())adventureMap.close(false);if(inside)control?.leaveTower();guide(say('Elige un lugar y Angelique caminará hasta allí.','Choose a place and Angelique will walk there.'),true);panel.replaceChildren();panel.hidden=false;blur();targetPoint=null;const close=btn('×','panel-close',()=>{panel.hidden=true;canvas.focus({preventScroll:true});});close.setAttribute('aria-label',say('Cerrar','Close'));panel.append(close,makeEl('h2','',say('¿Qué te apetece?','What feels fun?')),makeEl('p','',say('Una misión principal por región · 🐢 🦋 🌋 🪸','One main mission per region · 🐢 🦋 🌋 🪸')));
+ panel.append(btn('🌍 '+say('Ayudar al lugar donde estoy','Help the region I’m visiting'),'discover-place',()=>showRegionProject()));const list=makeEl('div','discover-grid');for(const p of explorePlaces)list.append(btn(`${({wilds:'🍌',coconutCoast:'🥥',sunset:'✨',islet:'🦋',crystalCove:'💎',beacon:'🗼'})[p.id]||p.icon} ${es?p.es:p.en}`,'discover-place',()=>travelTo(p)));panel.append(list);close.focus();}
  function keydown(e){if(paused())return;if(!panel.hidden){if(e.key==='Escape'){if(friendSystem?.isOpen())friendSystem.close();else if(adventureMap.isOpen())adventureMap.close();else{panel.hidden=true;canvas.focus();}}return;}if((e.target.tagName==='BUTTON'&&(e.key===' '||e.key==='Enter'))||['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)||document.querySelector('dialog[open]'))return;const k=e.key.toLowerCase();if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d',' ','e','q','shift'].includes(k)){e.preventDefault();joy.gesture();keys.add(e.key);targetPoint=null;if(!e.repeat&&k===' ')hop();if(!e.repeat&&k==='e')interact();if(!e.repeat&&k==='q'){if(ride)flightTarget=Math.max(0,flightTarget-5);else if(birdMount()){birdLanding=false;birdTarget=Math.max(1.5,birdTarget-3);}}}}
  const keyup=e=>keys.delete(e.key),blur=()=>{keys.clear();stick.x=stick.z=0;knob.style.transform='';};
  document.addEventListener('keydown',keydown);document.addEventListener('keyup',keyup);window.addEventListener('blur',blur);document.addEventListener('visibilitychange',blur);
@@ -412,6 +467,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   cityLife=createPizzaCity({T,scene,camera,state,height,make,mat,geometry,ball,box,cylinder,cone,surfaces,joy,save,refresh,tell:(msg)=>tell(msg,msg)});
   cityLife.attach(host);cityLife.setCoinAward(id=>earnCoins(state,id));
   workshop=createIslandWorkshop({T,scene,state,make,mat,geometry,ball,box,cylinder,cone,height,joy,save,refresh,tell,spark,motion});
+  regionWorld=createRegionProjectWorld({T,scene,state,make,mat,ball,box,cone,cylinder,height});
   refresh();
   houseSystem=createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,height,surfaces,language:state.lang,companionId:()=>s.friends?.companion,onPizza:()=>cityLife?.order(),
     onEnter:()=>{if(carDriving)exitCar();if(mountId)friendSystem?.dismount();swimming=false;boating=false;ride=0;s.flight=0;blur();route=[];targetPoint=null;host.classList.add('inside-cottage');},
@@ -628,7 +684,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    act.classList.toggle('has-target',!act.hidden&&panel.hidden);
    for(const [button,words] of buttonUpdates)paintButton(button,words);buttonUpdates.clear();
   }
-  return {update,dispose(){workshop?.dispose();workshop=null;volcanoStatus.remove();cityLife?.dispose();cityLife=null;houseSystem?.dispose();houseSystem=null;friendSystem?.dispose();friendSystem=null;wildLife=null;realms.dispose();journey.dispose();life.dispose();story.dispose();canvas.removeEventListener('pointerdown',walkTo);control=null;}};
+  return {update,dispose(){regionWorld?.dispose();regionWorld=null;workshop?.dispose();workshop=null;volcanoStatus.remove();cityLife?.dispose();cityLife=null;houseSystem?.dispose();houseSystem=null;friendSystem?.dispose();friendSystem=null;wildLife=null;realms.dispose();journey.dispose();life.dispose();story.dispose();canvas.removeEventListener('pointerdown',walkTo);control=null;}};
  }
  function dispose(){if(disposed)return;adventureMap.dispose();host.classList.remove('inside-lighthouse','is-swimming','shark-nearby');joy.boat?.(false);disposed=true;generation++;clearTimeout(startTimer);clearTimeout(recoveryTimer);canvas.removeEventListener('webglcontextlost',contextLost);canvas.removeEventListener('webglcontextrestored',contextRestored);save();engine?.dispose();engine=null;document.removeEventListener('keydown',keydown);document.removeEventListener('keyup',keyup);window.removeEventListener('blur',blur);document.removeEventListener('visibilitychange',blur);keys.clear();}
  return {dispose};
