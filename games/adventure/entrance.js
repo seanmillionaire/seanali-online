@@ -4,7 +4,7 @@ import {createSurfaceTextures} from './surface-textures.js?v=2';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
 export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import('./vendor/three.module.min.js')}={}) {
   let disposed=false,world=null,pending=null;
-  const canvas=document.createElement('canvas');canvas.className='world-canvas';canvas.setAttribute('role','img');canvas.setAttribute('aria-label',label||'A magical island in a moving sea');host.prepend(canvas);
+  const canvas=document.createElement('canvas');canvas.className='world-canvas';canvas.setAttribute('role','img');canvas.setAttribute('aria-label',label||'Angelique’s fantasy Panama, from Gorgona to Taboga and Bocas del Toro');host.prepend(canvas);
   function fallback(){if(disposed)return;world?.dispose();world=null;canvas.remove();host.classList.remove('world-ready');host.classList.add('world-fallback');onMode('fallback');if(pending){const done=pending;pending=null;done();}}
   const lost=event=>{event.preventDefault();fallback();};canvas.addEventListener('webglcontextlost',lost);
   if(!window.WebGL2RenderingContext){fallback();}else load().then(THREE=>{if(disposed)return;try{world=buildIsland(THREE,canvas,motion||(()=>true));host.classList.add('world-ready');onMode('3d');if(pending)world.flyIn(finish);}catch{fallback();}}).catch(fallback);
@@ -210,7 +210,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
      tropical.card(4,p.x,p.y,p.z,.7,.7);
     }
    }else if(land.id==='sunset'){
-    // Firefly Forest: blue-purple darkwood, conifers, giant luminous
+    // Boquete cloud forest (fantasy biome): blue-purple darkwood, conifers, giant luminous
     // mushrooms, waterfall and golden firefly clouds. No palms here.
     for(let i=0;i<13;i++){
      const a=i*2.39996,r=.35+(i%4)*.14,p=place(land,Math.sin(a)*r,Math.cos(a)*r);
@@ -237,7 +237,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
      bobbing.push({g:foam,y:y+.15,z:z+3});
     }
    }else if(land.id==='crystalCove'){
-    // Crystal Cove: cool blue stone, clustered glassy gem towers,
+    // Guna Yala magical crystal cove (fantasy biome): cool blue stone, clustered glassy gem towers,
     // arcing stone ruins, musical coral and luminous sea-glass.
     for(let i=0;i<28;i++){
      const a=i*2.39996,r=.35+(i%4)*.14,p=place(land,Math.sin(a)*r,Math.cos(a)*r);
