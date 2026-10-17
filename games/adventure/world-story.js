@@ -1,19 +1,19 @@
 import {islandPoint} from './explore-state.js?v=55';
 // Tiny, physical story puzzles. These never gate movement or mark a lesson complete.
 export const islandStories=[
- {id:'shells',region:'harbor',x:2,z:7,friend:'🐢',es:'Un camino para Pip',en:'A path for Pip',hintEs:'Pisa las conchas en orden',hintEn:'Step on shells in order',icons:['1 🐚','2 🐚','3 🐚'],order:[0,1,2],color:'#f4cc78',winEs:'¡Pip tiene un camino!',winEn:'Pip has a path!'},
- {id:'picnic',region:'market',x:0,z:-31,friend:'🦜',es:'El picnic de Mila',en:'Mila’s picnic',hintEs:'Sigue la receta',hintEn:'Follow the recipe',icons:['🍌','🥣','🍯'],order:[0,1,0,2],color:'#eeaa70',winEs:'¡Picnic listo! +3 plátanos',winEn:'Picnic ready! +3 bananas'},
- {id:'seed',region:'jungle',x:-42,z:7,friend:'🪶',es:'Despierta el bosque',en:'Wake the forest',hintEs:'Semilla, agua, sol',hintEn:'Seed, water, sun',icons:['🌱','💧','☀️'],order:[0,1,2],color:'#91cd8e',winEs:'¡Nació una flor!',winEn:'A flower has grown!'},
- {id:'song',region:'music',x:0,z:46,friend:'🦀',es:'La canción de Luna',en:'Luna’s song',hintEs:'Sigue los colores',hintEn:'Follow the colors',icons:['🩷 ♪','💛 ♪','💙 ♪'],order:[0,2,1,0],color:'#bca4ea',winEs:'¡La isla tiene una canción!',winEn:'The island has a song!'},
- {id:'care',region:'garden',x:24,z:-7.5,friend:'🦋',es:'Un hogar para mariposas',en:'A butterfly home',hintEs:'¿Qué ayuda a una flor?',hintEn:'What helps a flower?',icons:['💧','🗑️','☀️'],order:[0,2],color:'#efa6c3',winEs:'¡Más flores y mariposas!',winEn:'More flowers and butterflies!'},
- {id:'light',region:'summit',x:47,z:6,friend:'🥥',es:'Comparte los cocos',en:'Share the coconuts',hintEs:'Cuenta los cocos',hintEn:'Count the coconuts',icons:['1 🥥','2 🥥','3 🥥'],order:[2,0,1,2],color:'#88cfe0',winEs:'¡Una luz vuelve a casa!',winEn:'A light has come home!'}
+ {id:'shells',region:'harbor',x:2,z:7,friend:'🐢',es:'Conchas de Playa Gorgona',en:'Gorgona Shell Trail',hintEs:'Pisa las conchas en orden',hintEn:'Step on shells in order',icons:['1 🐚','2 🐚','3 🐚'],order:[0,1,2],color:'#f4cc78',winEs:'¡Pip tiene un camino!',winEn:'Pip has a path!'},
+ {id:'picnic',region:'market',x:0,z:-31,friend:'🦜',es:'Merienda en Bocas del Toro',en:'Bocas del Toro Picnic',hintEs:'Sigue la receta',hintEn:'Follow the recipe',icons:['🍌','🥣','🍯'],order:[0,1,0,2],color:'#eeaa70',winEs:'¡Picnic listo! +3 plátanos',winEn:'Picnic ready! +3 bananas'},
+ {id:'seed',region:'jungle',x:-42,z:7,friend:'🪶',es:'Flores de Boquete',en:'Boquete Forest Flowers',hintEs:'Semilla, agua, sol',hintEn:'Seed, water, sun',icons:['🌱','💧','☀️'],order:[0,1,2],color:'#91cd8e',winEs:'¡Nació una flor!',winEn:'A flower has grown!'},
+ {id:'song',region:'music',x:0,z:46,friend:'🦀',es:'La canción de Luna · Guna Yala',en:'Luna’s Guna Yala Song',hintEs:'Sigue los colores',hintEn:'Follow the colors',icons:['🩷 ♪','💛 ♪','💙 ♪'],order:[0,2,1,0],color:'#bca4ea',winEs:'¡La isla tiene una canción!',winEn:'The island has a song!'},
+ {id:'care',region:'garden',x:24,z:-7.5,friend:'🦋',es:'Mariposas de Isla Taboga',en:'Taboga Butterfly Garden',hintEs:'¿Qué ayuda a una flor?',hintEn:'What helps a flower?',icons:['💧','🗑️','☀️'],order:[0,2],color:'#efa6c3',winEs:'¡Más flores y mariposas!',winEn:'More flowers and butterflies!'},
+ {id:'light',region:'summit',x:47,z:6,friend:'🥥',es:'Cocos de Isla Contadora',en:'Contadora Coconut Picnic',hintEs:'Cuenta los cocos',hintEn:'Count the coconuts',icons:['1 🥥','2 🥥','3 🥥'],order:[2,0,1,2],color:'#88cfe0',winEs:'¡Una luz vuelve a casa!',winEn:'A light has come home!'}
 ];
 for(const q of islandStories){const land={picnic:'wilds',seed:'sunset',song:'crystalCove',care:'islet',light:'coconutCoast'}[q.id];if(land)Object.assign(q,islandPoint(land,q.x,q.z));}
 export function stepStory(progress,id,choice){const q=islandStories.find(q=>q.id===id);if(!q)return 'ignore';const n=progress[id]||0;if(n>=q.order.length)return 'done';if(choice!==q.order[n])return 'retry';progress[id]=n+1;return n+1===q.order.length?'complete':'next';}
 export function createWorldStory({T,scene,host,state,height,save,joy,spark,refresh,openNext,active,motion}){
  const s=state.world,es=state.lang==='es',pick=(a,b)=>es?a:b,progress=s.story;
  const group=new T.Group();group.name='Living story trails';scene.add(group);
- const card=document.createElement('section');card.className='world-story';card.hidden=true;card.setAttribute('aria-label',pick('Historia de la isla','Island story'));
+ const card=document.createElement('section');card.className='world-story';card.hidden=true;card.setAttribute('aria-label',pick('Historias de Panamá','Panama adventure story'));
  const heading=document.createElement('strong'),sequence=document.createElement('div'),hint=document.createElement('small'),more=document.createElement('button');sequence.className='story-sequence';more.type='button';more.className='story-more';card.append(heading,sequence,hint,more);host.append(card);
  const textures=[],materials=[],geometry=new T.CylinderGeometry(.6,.66,.12,20),orbGeometry=new T.IcosahedronGeometry(.25,1),stations=[];
  function symbol(words){const canvas=document.createElement('canvas');canvas.width=256;canvas.height=128;const ctx=typeof window.CanvasRenderingContext2D==='function'?canvas.getContext('2d'):null;let texture;
