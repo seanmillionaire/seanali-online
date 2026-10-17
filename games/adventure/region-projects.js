@@ -67,7 +67,7 @@ export const REGION_PROJECTS=[
   resultEs:'¡El vivero marino de Guna Yala está vivo!',resultEn:'Guna Yala’s marine nursery is thriving!',
   craft:'coralNursery',spot:{x:build('coralNursery').x,z:build('coralNursery').z},
   tasks:[
-   {id:'reef',icon:'🪸',es:'Rescata 2 tesoros del arrecife',en:'Recover 2 reef treasures',check:{kind:'collected',item:'seaTreasure',count:2},go:{x:14,z:20}},
+   {id:'reef',icon:'🪸',es:'Rescata 2 tesoros del arrecife',en:'Recover 2 reef treasures',check:{kind:'collected',item:'seaTreasure',count:2},go:{x:32,z:100}},
    {id:'song',icon:'🎶',es:'Completa el juego de música de Luna',en:'Complete Luna’s sea-music puzzle',check:{kind:'story',story:'song',count:4},go:at('crystalCove')},
    {id:'build',icon:'🪸',es:'Construye el vivero de corales',en:'Build the coral nursery',check:{kind:'built',id:'coralNursery'},go:{x:build('coralNursery').x,z:build('coralNursery').z}},
    {id:'activate',icon:'🐠',es:'Cuida el vivero para los peces',en:'Care for the nursery and its fish',check:{kind:'used',id:'coralNursery'},go:{x:build('coralNursery').x,z:build('coralNursery').z}}
