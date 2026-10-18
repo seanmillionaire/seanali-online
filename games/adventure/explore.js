@@ -129,7 +129,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  cityGuideButton.setAttribute('aria-label',say('Explorar actividades de Ciudad de Panamá','Explore Panama City activities'));
  cityGuideButton.hidden=true;menu.append(cityGuideButton);
  const foodButton=btn('🥥 🍌','world-small food-button',showFood);foodButton.setAttribute('aria-label',say('Mi comida','My food'));menu.append(foodButton);
- const estateMenu=btn(say('🏗️ Mi pueblo','🏗️ My village'),'world-small estate-menu-button',showEstate);menu.prepend(estateMenu);
+ const estateMenu=btn(say('🏗️ Mi pueblo','🏗️ My village'),'world-small estate-menu-button',showEstate);menu.append(estateMenu);
  const mobileDock=makeEl('nav','mobile-game-dock');mobileDock.setAttribute('aria-label',say('Controles del mundo','World controls'));
  const dockMap=btn(say('🗺️ Mapa','🗺️ Map'),'mobile-dock-map',()=>{setHelpers(false);showDiscover();});
  const dockBuild=btn(say('🏰 Construir','🏰 Build'),'mobile-dock-build',showEstate);
