@@ -13,7 +13,7 @@ export const islandFriends=[
 export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,geometry,ball,cone,cylinder,height,joy,save,refresh,onTravel,onOpen,onLessons,onMount=()=>{},motion}){
  const s=state.world,es=state.lang==='es',say=(a,b)=>es?a:b,tr=a=>a[es?0:1];
  s.friends??={visits:[],completed:[],companion:null};
- const friends=s.friends,nodes=new Map(),labels=[],temp=new T.Vector3();
+ const friends=s.friends;friends.called=Array.isArray(friends.called)?friends.called.filter(id=>islandFriends.some(f=>f.id===id)):[];const nodes=new Map(),labels=[],temp=new T.Vector3();
  const place=id=>explorePlaces.find(p=>p.id===id);
  const destination=id=>id==='dori'?{x:4,z:16}:id==='kai'?{x:105,z:10}:place(id);
  const home=id=>id==='dori'?{x:8,z:20}:id==='kai'?{x:105,z:10}:place(id);
@@ -84,10 +84,10 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
   return Math.hypot(n.g.position.x-s.x,n.g.position.z-s.z)<(id==='dori'?9:4.6);
  }
  function sendHome(){
-  const previous=friends.companion||mounted;
+  const previous=friends.companion||mounted||friends.called.length;
   if(!previous)return false;
   if(mounted)dismount(); // restore normal foot controls
-  friends.companion=null;
+  friends.companion=null;friends.called=[];
   // The world's friend-update loop now walks the character to its home.
   save();refresh();joy.effect('friend');
   if(opened)openDirectory();
@@ -96,9 +96,8 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
  function callFriend(id){
   const friend=islandFriends.find(f=>f.id===id);if(!friend)return false;
   // Calling is an in-game invitation, not a real telephone connection.
-  if(friends.companion===id)return true;
-  if(mounted)dismount();
-  friends.companion=id;
+  if(friends.called.includes(id))return true;
+  friends.called.push(id);
   if(id==='pip')s.pet=false;
   const node=nodes.get(id);
   if(node){
@@ -250,10 +249,11 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
   if(motion())time+=Math.min(dt,.05);
   const following=friends.companion;
   for(const n of nodes.values()){
-   const id=n.f.id,isRidden=mounted===id&&mount===id,canFollow=following===id&&!isRidden&&(!inside||mode==='house');
+   const id=n.f.id,isRidden=mounted===id&&mount===id,canFollow=(following===id||friends.called.includes(id))&&!isRidden&&(!inside||mode==='house');
    const idleBird=(id==='mila'||id==='ollie')&&!isRidden&&!canFollow;
-   const px=isRidden?s.x:canFollow?(mode==='house'&&roomPosition?roomPosition.x-1.35:s.x-1.7):n.home.x+(idleBird?Math.sin(time*.7+n.home.z)*1.3:0),
-    pz=isRidden?s.z:canFollow?(mode==='house'&&roomPosition?roomPosition.z+1.25:s.z+1.65):n.home.z+(idleBird?Math.cos(time*.7+n.home.z)*1.15:0);
+   const formation=islandFriends.findIndex(f=>f.id===id),angle=formation*2.399963;
+   const px=isRidden?s.x:canFollow?(mode==='house'&&roomPosition?roomPosition.x+Math.sin(angle)*1.7:s.x+Math.sin(angle)*2.5):n.home.x+(idleBird?Math.sin(time*.7+n.home.z)*1.3:0),
+    pz=isRidden?s.z:canFollow?(mode==='house'&&roomPosition?roomPosition.z+Math.cos(angle)*1.7:s.z+Math.cos(angle)*2.5):n.home.z+(idleBird?Math.cos(time*.7+n.home.z)*1.15:0);
    if(isRidden){n.g.position.x=px;n.g.position.z=pz;}
    else if(canFollow&&Math.hypot(px-n.g.position.x,pz-n.g.position.z)>28){n.g.position.x=px;n.g.position.z=pz;}
    else{const factor=Math.min(1,dt*(canFollow?2.6:1.2));n.g.position.x+=(px-n.g.position.x)*factor;n.g.position.z+=(pz-n.g.position.z)*factor;}
@@ -310,5 +310,5 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
  }
  function dismount(){const previous=mounted;mounted=null;if(previous){nodes.get(previous)?.g.scale.setScalar(1);onMount(null);save();}return previous;}
  function dispose(){close();directory.remove();labels.forEach(l=>l.remove());for(const n of nodes.values())scene.remove(n.g);}
- return {nearest,isNearby,open,openDirectory,close,update,hit,ride,dismount,sendHome,callFriend,companion:()=>friends.companion,mounted:()=>mounted,isOpen:()=>opened!==null,dispose,hasCompanion:id=>friends.companion===id};
+ return {nearest,isNearby,open,openDirectory,close,update,hit,ride,dismount,sendHome,callFriend,called:()=>[...friends.called],sendFriendHome:(id)=>{if(!friends.called.includes(id))return false;friends.called=friends.called.filter(f=>f!==id);save();refresh();return true;},companion:()=>friends.companion,mounted:()=>mounted,isOpen:()=>opened!==null,dispose,hasCompanion:id=>friends.companion===id};
 }
