@@ -626,6 +626,11 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   regionWorld=createRegionProjectWorld({T,scene,state,make,mat,ball,box,cone,cylinder,height});
   refresh();
   houseSystem=createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,height,surfaces,language:state.lang,companionId:()=>s.friends?.companion,onPizza:()=>cityLife?.order(),
+    estateBuildings:()=>s.estate?.buildings||[],onUpgrade:id=>{
+     if(!canUpgradeEstate(s,id,coinBalance(state)))return false;
+     if(!upgradeEstate(s,id,coinBalance(state)))return false;
+     estateWorld?.upgrade(id);save();refresh();joy.effect('finish');return true;
+    },
     onEnter:()=>{if(carDriving)exitCar();if(mountId)friendSystem?.dismount();swimming=false;boating=false;ride=0;s.flight=0;blur();route=[];targetPoint=null;host.classList.add('inside-cottage');},
     onMessage:m=>tell(m,m)
   });
