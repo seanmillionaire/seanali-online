@@ -1,5 +1,5 @@
-import {PLANETS,FRAGMENT_SITES,planetById,screenMotion,collectFragment,grantPlanetWish} from './space-state.js?v=space4';
-import {createSpaceScene} from './space-scene.js?v=space4';
+import {PLANETS,FRAGMENT_SITES,planetById,screenMotion,collectFragment,grantPlanetWish} from './space-state.js?v=space5';
+import {createSpaceScene} from './space-scene.js?v=space5';
 const load=()=>import('/games/adventure/vendor/three.module.min.js');
 const node=(tag,cls,text)=>{const n=document.createElement(tag);n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 

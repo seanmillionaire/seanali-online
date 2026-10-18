@@ -1,6 +1,6 @@
-import {fresh,normalize,SAVE_KEY} from './space-state.js?v=space4';
-import {createExplore,createEntrance} from './space.js?v=space4';
-import {createDelight} from './delight.js?v=space4';
+import {fresh,normalize,SAVE_KEY} from './space-state.js?v=space5';
+import {createExplore,createEntrance} from './space.js?v=space5';
+import {createDelight} from './delight.js?v=space5';
 const app=document.querySelector('#app'),dialog=document.querySelector('#dialog');
 let state;try{state=normalize(JSON.parse(localStorage.getItem(SAVE_KEY)));}catch{state=fresh();}
 let screen='entry',world=null,entrance=null;

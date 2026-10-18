@@ -1,0 +1,6 @@
+Planetary imagery distributed in the Three.js examples texture library.
+Source files:
+https://threejs.org/examples/textures/planets/moon_1024.jpg
+https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg
+Three.js project: https://github.com/mrdoob/three.js (MIT license).
+Converted to WebP for this game.
