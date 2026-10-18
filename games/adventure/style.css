@@ -765,3 +765,9 @@ body[data-scene="explore"] .backpack-world-tile:focus-visible{outline:3px solid 
 body[data-scene="explore"] .backpack-workshops{scroll-margin-top:16px;margin-top:20px}
 body[data-scene="explore"] .backpack-return{display:block;position:sticky;bottom:0;margin:16px auto 5px;padding:12px 18px;min-height:54px;border-radius:14px;background:#fff0c2;font-weight:850;border:2px solid #d9ae65}
 @media(max-width:470px){body[data-scene="explore"] .backpack-world-hub{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}body[data-scene="explore"] .backpack-world-tile{font-size:16px;min-height:84px;padding:8px 2px}}
+
+/* Clear gameplay stage: NPCs and scenery take priority over decorative captions. */
+body[data-scene="explore"] .friend-world-label,
+body[data-scene="explore"] .builder-watch-card{font-size:12px!important;max-width:130px!important;padding:5px 7px!important;opacity:.85}
+body[data-scene="explore"] .explore-controls{opacity:.35;font-size:11px!important}
+body[data-scene="explore"] .explore-location{box-shadow:0 2px 8px #173d4020!important;max-width:290px!important}
