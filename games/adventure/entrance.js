@@ -1,4 +1,4 @@
-import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=73';
+import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=104';
 import {createTropical} from './tropical.js?v=73';
 import {createSurfaceTextures} from './surface-textures.js?v=73';
 import {installPolyHavenMaterials} from './polyhaven-materials.js?v=73';

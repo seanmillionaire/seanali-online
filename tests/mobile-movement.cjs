@@ -21,7 +21,7 @@ for(const [w,h] of [[320,568],[375,667],[390,844],[430,932],[568,320],[844,390],
  assert(h-(h<=520?62:79)-136>=0,'D-pad visible at '+w+'x'+h);
 }
 console.log('PASS pointer release/cancel/lost capture, multiple fingers, keyboard isolation, reset, eight viewport geometry models');
-const speedContext=vm.createContext({btn:button,paused:()=>false,panel:{hidden:true},joy:{gesture(){},effect(){}},directions:{append(){}},jump:button(),control:{hop(){}},swimming:true,swimBoost:0,carDriving:false,houseSystem:null,birdMount:()=>false,mountId:null,ride:0,boating:false});
+const speedContext=vm.createContext({cruiseLife:null,btn:button,paused:()=>false,panel:{hidden:true},joy:{gesture(){},effect(){}},directions:{append(){}},jump:button(),control:{hop(){}},swimming:true,swimBoost:0,carDriving:false,houseSystem:null,birdMount:()=>false,mountId:null,ride:0,boating:false});
 vm.runInContext(source.slice(source.indexOf(' // A speed toggle'),source.indexOf(' const instructions='))+source.slice(source.indexOf(' function hop(){'),source.indexOf(' function hop(){')+source.slice(source.indexOf(' function hop(){')).indexOf('\n')),speedContext);
 vm.runInContext('jump.onpointerdown({button:0,preventDefault(){},stopPropagation(){}})',speedContext);
 assert.equal(vm.runInContext('fastMode',speedContext),true,'swim fast starts on pointerdown');

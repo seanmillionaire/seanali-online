@@ -1,3 +1,4 @@
+import {normalizeCruise,CRUISE_FARE} from './cruise-route.js?v=104';
 import {normalizeEstate,estateCoinCost} from './estate.js?v=5';
 // Exploration is independent of lesson order. Every place is open from the start.
 export const worldIslands=[
@@ -34,6 +35,8 @@ export function volcanoTrailPoint(progress){
 // Different topography in every biome. Keep the same coastline/footprints so
 // navigation, saved positions, swim transitions and ocean shader stay aligned.
 export function isletHeight(x,z){
+ // A real sea-level canal cut through the eastern city waterfront.
+ if(x>-64&&x<-22&&Math.abs(z+74)<13)return 0;
  let h=0;
  for(const land of worldIslands){
   const u=(x-land.x)/land.rx,v=(z-land.z)/land.rz,r2=u*u+v*v;
@@ -88,7 +91,7 @@ export const exploreItems=[
 ];
 for(const p of exploreItems){const land={fruit:'wilds',glow:'sunset'}[p.kind];if(land)Object.assign(p,islandPoint(land,p.x,p.z));}
 export function normalizeStory(raw){return Object.fromEntries(Object.entries({shells:3,picnic:4,seed:3,song:4,care:2,light:4}).map(([id,length])=>[id,Number.isInteger(raw?.[id])?Math.max(0,Math.min(length,raw[id])):0]));}
-export function freshExplore(){return {estate:normalizeEstate(null),inventoryVersion:1,foodTotal:{banana:0,coconut:0},worldVersion:3,realms:{found:[],turtle:0,bird:0},journey:{visited:[],meals:0,swim:0,fly:0,rings:[]},x:4,z:10,dayTime:40,story:normalizeStory(null),collected:[],badges:[],hat:0,pet:false,flowers:0,catches:0,pops:0,flight:0,growth:1,food:{coconut:0,banana:0},harvested:{},boat:{x:6.5,z:16,heading:0},regionalProjects:{helped:[]},craft:{built:[],spent:{}},city:{bags:[],pizzas:0,car:{x:-106,z:-74,heading:0},activities:{deliveries:[],deliveryActive:false,rallyBest:0,rallyWins:0,soccerGoals:0,soccerShots:0,marketTrades:0,muralColors:0,museum:[],carWashes:0}},friends:{visits:[],completed:[],companion:null}};}
+export function freshExplore(){return {estate:normalizeEstate(null),inventoryVersion:1,foodTotal:{banana:0,coconut:0},worldVersion:3,realms:{found:[],turtle:0,bird:0},journey:{visited:[],meals:0,swim:0,fly:0,rings:[]},x:4,z:10,dayTime:40,story:normalizeStory(null),collected:[],badges:[],hat:0,pet:false,flowers:0,catches:0,pops:0,flight:0,growth:1,food:{coconut:0,banana:0},harvested:{},boat:{x:6.5,z:16,heading:0},regionalProjects:{helped:[]},craft:{built:[],spent:{}},city:{cruise:normalizeCruise(null),bags:[],pizzas:0,car:{x:-106,z:-74,heading:0},activities:{deliveries:[],deliveryActive:false,rallyBest:0,rallyWins:0,soccerGoals:0,soccerShots:0,marketTrades:0,muralColors:0,museum:[],carWashes:0}},friends:{visits:[],completed:[],companion:null}};}
 export function normalizeExplore(raw){const s=freshExplore();if(!raw||typeof raw!=='object')return s;const rr=raw.realms||{};s.realms={found:[...new Set((Array.isArray(rr.found)?rr.found:[]).filter(id=>/^(reef-[0-5]|pearl-[0-4]|wind-[0-4]|star-[0-4]|seaChest-0|skyLight-0)$/.test(id)))],turtle:Math.max(0,Math.min(5,Math.floor(Number(rr.turtle)||0))),bird:Math.max(0,Math.min(4,Math.floor(Number(rr.bird)||0)))};const j=raw.journey||{};s.journey={visited:[...new Set((Array.isArray(j.visited)?j.visited:[]).filter(id=>worldIslands.some(p=>p.id===id)))],meals:Math.max(0,Math.min(999,Number(j.meals)||0)),swim:Math.max(0,Math.min(100000,Number(j.swim)||0)),fly:Math.max(0,Math.min(100000,Number(j.fly)||0)),rings:[...new Set((Array.isArray(j.rings)?j.rings:[]).filter(id=>/^(swim|fly)-[0-9]+$/.test(id)))]};// Preserve friendship, a chosen companion, and first-time play rewards across saves.
 const FRIEND_IDS=['pip','dori','mila','ollie','luna','kai'],savedFriends=raw.friends||{};
 s.friends={
@@ -98,7 +101,7 @@ s.friends={
  called:[...new Set((Array.isArray(savedFriends.called)?savedFriends.called:[]).filter(id=>FRIEND_IDS.includes(id)))]
 };
 const savedCity=raw.city||{},car=savedCity.car||{},withinCity=(x,z)=>Number.isFinite(x)&&Number.isFinite(z)&&Math.hypot((x+100)/58,(z+74)/48)<.86;
-s.city={bags:[...new Set((Array.isArray(savedCity.bags)?savedCity.bags:[]).filter(id=>/^bag-(?:[0-9]|1[0-9]|2[0-3])$/.test(id)))],
+s.city={cruise:normalizeCruise(savedCity.cruise),bags:[...new Set((Array.isArray(savedCity.bags)?savedCity.bags:[]).filter(id=>/^bag-(?:[0-9]|1[0-9]|2[0-3])$/.test(id)))],
  pizzas:Math.max(0,Math.min(999,Math.floor(Number(savedCity.pizzas)||0))),
  car:withinCity(car.x,car.z)?{x:car.x,z:car.z,heading:Number.isFinite(car.heading)?car.heading:0}:{x:-106,z:-74,heading:0},
  activities:{
@@ -210,7 +213,7 @@ export function coinValue(id){if(/^region-help-(home|islet|wilds|coconutCoast|su
  if(/^city-museum-[0-2]$/.test(id))return 6;
  if(/^craft-build-(sandcastle|butterflyGarden|treehouse|beachCabana|volcanoCamp|coralNursery|pizzaStand)$/.test(id))return 10;if(/^craft-use-(sandcastle|butterflyGarden|treehouse|beachCabana|volcanoCamp|coralNursery|pizzaStand)$/.test(id))return 3;if(/^city-bag-(?:[0-9]|1[0-9]|2[0-3])$/.test(id))return 5;if(id==='city-pizza')return 3;if(/^friend-(pip|dori|mila|ollie|luna|kai)$/.test(id))return 12;if(/^realm-(islands|water|sky)$/.test(id))return 20;if(/^realm-(visit|fruit|butterfly|friends|reef|pearls|turtle|seaChest|wind|stars|bird|skyLight)$/.test(id))return 10;if(/^journey-(explore|food|learn|swim|fly)$/.test(id))return 20;if(/^ring-(swim|fly)-([0-9]|1[0-9])$/.test(id))return 2;if(/^story-(shells|picnic|seed|song|care|light)$/.test(id))return 10;if(/^(harbor|market|jungle|music|garden|summit)-[0-7]$/.test(id))return 10;if(/^flower-[1-6]$/.test(id))return 2;if(['picnic','glow','song'].includes(id))return 15;if(id==='beacon')return 25;if(id==='pet')return 3;if(exploreItems.some(i=>i.id===id))return 1;return 0;}
 export function normalizeWallet(raw){const rewards=[...new Set(Array.isArray(raw?.rewards)?raw.rewards.filter(id=>typeof id==='string'&&coinValue(id)>0):[])];let balance=rewards.reduce((n,id)=>n+coinValue(id),0);const items=[];for(const id of Array.isArray(raw?.items)?raw.items:[]){const item=islandShop.find(x=>x.id===id);if(item&&!items.includes(id)&&balance>=item.cost){items.push(id);balance-=item.cost;}}return {rewards,items};}
-export function coinBalance(state){const w=state.wallet||{rewards:[],items:[]};return w.rewards.reduce((n,id)=>n+coinValue(id),0)-w.items.reduce((n,id)=>n+(islandShop.find(x=>x.id===id)?.cost||0),0)-estateCoinCost(state.world);}
+export function coinBalance(state){const w=state.wallet||{rewards:[],items:[]};return w.rewards.reduce((n,id)=>n+coinValue(id),0)-w.items.reduce((n,id)=>n+(islandShop.find(x=>x.id===id)?.cost||0),0)-estateCoinCost(state.world)-(state.world?.city?.cruise?.tickets||0)*CRUISE_FARE;}
 export function earnCoins(state,id){state.wallet??=normalizeWallet(null);const amount=coinValue(id);if(!amount||state.wallet.rewards.includes(id))return 0;state.wallet.rewards.push(id);return amount;}
 export function syncWallet(state){state.wallet=normalizeWallet(state.wallet);for(const id of Object.keys({...state.completed,...state.islandLessons?.completed}))earnCoins(state,id);for(let i=1;i<=(state.world?.flowers||0);i++)earnCoins(state,'flower-'+i);for(const id of state.world?.badges||[])earnCoins(state,id);for(const id of state.world?.collected||[])earnCoins(state,id);for(const id of state.world?.city?.bags||[])earnCoins(state,'city-'+id);if(state.world?.city?.pizzas)earnCoins(state,'city-pizza');if(state.world?.pet)earnCoins(state,'pet');for(const id of state.world?.friends?.completed||[])earnCoins(state,'friend-'+id);for(const [id,n] of Object.entries(state.world?.story||{})){if(n>=({shells:3,picnic:4,seed:3,song:4,care:2,light:4})[id])earnCoins(state,"story-"+id);}return state.wallet;}
 export function buyIslandItem(state,id){const item=islandShop.find(x=>x.id===id);if(!item)return false;state.wallet??=normalizeWallet(null);if(state.wallet.items.includes(id)){state.world.hat=item.hat;return true;}if(coinBalance(state)<item.cost)return false;state.wallet.items.push(id);state.world.hat=item.hat;return true;}
@@ -227,3 +230,4 @@ export function sharkPatrol(p,dt,target=null){
  if(p.watch>=2){if(Math.hypot(next.x-p.anchor.x,next.z-p.anchor.z)<1.2){p.waypoint=(p.waypoint+6)%24;p.side=-(p.side||1);p.detour=4;}p.watch=0;p.anchor={...next};}
  return next;
 }
+

@@ -12,7 +12,7 @@ export const CITY_SITES=[
  {id:'museum2',x:-89,z:-105,icon:'🚢',en:'Canal exhibit',es:'Exhibición del Canal'},
  {id:'wash',x:-132,z:-64,icon:'🫧',en:'Drive-through car wash',es:'Lavado de autos'},
  {id:'plaza',x:-99,z:-62,icon:'⛲',en:'Plaza de la Independencia',es:'Plaza de la Independencia'},
- {id:'canal',x:-62,z:-74,icon:'🚢',en:'Panama Canal model',es:'Maqueta del Canal de Panamá'}
+ {id:'canal',x:-67,z:-56,icon:'🚢',en:'Panama Canal cruise terminal',es:'Terminal de cruceros del Canal de Panamá'}
 ];
 export const CITY_RALLY=[
  {x:-73,z:-91},{x:-113,z:-107},{x:-143,z:-82},{x:-106,z:-47}
@@ -144,15 +144,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  const pool=makeObj(cylinder,blue,0,.77,0,3.22,.09,3.22,fountain);pool.castShadow=false;
  makeObj(cylinder,white,0,1.1,0,.52,.85,.52,fountain);
  icon(fountain,'⛲',0,3,0,2.3);
- // Small Panama Canal landmark with a ship and functioning lock channels.
- const canal=coord(38,0),locks=new T.Group();locks.position.set(canal.x,height(canal.x,canal.z),canal.z);group.add(locks);
- makeObj(box,stone,0,.18,0,7,.35,5,locks);
- makeObj(box,blue,0,.4,0,6,.12,1.75,locks);
- for(const side of [-1,1])makeObj(box,wood,0,.85,side*1.23,6,1.3,.25,locks);
- for(const dx of [-1.65,1.65])makeObj(box,white,dx,.62,0,.15,.42,1.8,locks);
- const ship=new T.Group();ship.position.set(0,.68,0);locks.add(ship);
- makeObj(box,red,0,0,0,1.3,.38,.62,ship);makeObj(box,white,0,.40,-.1,.70,.52,.46,ship);
- icon(locks,'🚢',0,2.8,0,1.9);
+ // The full-size canal and its single ocean liner are owned by canal-cruise.js.
  // An inhabited city: people cross plazas and sidewalks on independent routes.
  const pedestrians=[];
  for(let i=0;i<8;i++){
@@ -380,7 +372,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
    }else if(Math.abs(football.position.z)>9.2){football.position.z=Math.sign(football.position.z)*9.2;soccerBall.vz*=-.5;}
   }
   pool.rotation.y=Math.sin(performance.now()*.0003)*.012;
-  ship.position.z=Math.sin(performance.now()*.0005)*.45;
+
   for(const b of washBubbles){
    b.mesh.visible=washCooldown.time>9;
    if(b.mesh.visible)b.mesh.position.y=b.y+Math.sin(performance.now()*.005+b.phase)*.23;
@@ -441,3 +433,4 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  function dispose(){for(const b of sprites){b.tex.dispose();b.material.dispose();}batches.clear();}
  return {sites:CITY_SITES,near,activityPrompt,interactAt,beginDelivery,update,status,goal,setWaypoint,aimReady,dispose,roadCount:chunks.length,buildingCount};
 }
+
