@@ -444,3 +444,10 @@ body[data-scene="explore"] .explore-stick[hidden]{display:none!important}
  body[data-scene="explore"] .island-goal{display:none!important}
  body[data-scene="explore"] .island-map-mini{display:none!important}
 }
+
+/* Five compact phone/map/build/friend/menu controls without overlap on small screens. */
+@media(max-width:760px){
+ body[data-scene="explore"] .mobile-game-dock{grid-template-columns:repeat(5,minmax(0,1fr))!important;}
+ body[data-scene="explore"] .mobile-game-dock button{min-width:0!important;}
+ body[data-scene="explore"] .mobile-dock-caption{font-size:clamp(9px,2.5vw,11px)!important;white-space:normal;text-align:center;}
+}
