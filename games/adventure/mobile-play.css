@@ -476,3 +476,9 @@ body[data-scene="explore"] .explore-stick[hidden]{display:none!important}
   font-size:13px!important;border-radius:13px!important;
  }
 }
+
+/* Single navigation source: remove legacy map/friend widgets and city counters. */
+body[data-scene="explore"] .island-map-mini,
+body[data-scene="explore"] .friend-peek,
+body[data-scene="explore"] .pizza-city-status,
+body[data-scene="explore"] .explore-bag{display:none!important;visibility:hidden!important;pointer-events:none!important}
