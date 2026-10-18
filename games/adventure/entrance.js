@@ -1,4 +1,4 @@
-import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=104';
+import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=105';
 import {createTropical} from './tropical.js?v=73';
 import {createSurfaceTextures} from './surface-textures.js?v=73';
 import {installPolyHavenMaterials} from './polyhaven-materials.js?v=73';
@@ -133,7 +133,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
    }
   }
   for(const land of worldIslands){
-   const shades=ellipseMats[land.id],iv=[],ic=[],ii=[],iu=[];
+   const shades=ellipseMats[land.id]||['#36804b','#549d55','#eadab1'],iv=[],ic=[],ii=[],iu=[];
    const rings=land.id==='sunset'?62:20,segments=land.id==='sunset'?144:80;
    for(let ring=0;ring<=rings;ring++)for(let j=0;j<=segments;j++){
     const a=j/segments*Math.PI*2,r=ring/rings;

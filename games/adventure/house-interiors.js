@@ -8,7 +8,7 @@ export const villageHouses=[
  {id:'cozy',x:9,z:-4,es:'Casita de Juegos de Gorgona',en:'Gorgona Playhouse',icon:'🧸',theme:'play'},
  {id:'pizzeria',x:-84,z:-60,es:'Pizzería de Angelique · Casco Viejo',en:'Angelique’s Pizzeria · Casco Viejo',icon:'🍕',theme:'pizza'}
 ];
-export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,surfaces=null,language='en',companionId=()=>null,onEnter=()=>{},onPizza=()=>{},onMessage,estateBuildings=()=>[],onUpgrade=()=>false,workshopBuildings=()=>[],onUseWorkshop=()=>false}){
+export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,surfaces=null,language='en',companionId=()=>null,onEnter=()=>{},onPizza=()=>{},onMessage,estateBuildings=()=>[],onUpgrade=()=>false,workshopBuildings=()=>[],onUseWorkshop=()=>false,extraHouses=()=>[],treehouseLevel=()=>1,onTreehouseUpgrade=()=>false}){
  const es=language==='es';
  const rooms=new Map(),originZ=280;
  const cssButton=document.createElement('button');
@@ -131,17 +131,17 @@ export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geomet
     onMessage?.((es?'🛠️ Paso ':'🛠️ Step ')+steps+' / 5 · '+(es?'¡Mira cómo cambia!':'Watch it change!'));if(steps>=5){steps=0;onMessage?.(es?'🎉 ¡Proyecto terminado! Puedes empezar otra vez.':'🎉 Project complete! You can build another.');}
    });
   if(cfg.workshopId){add('workshop-use',0,0,'🎮 Usar este taller','🎮 Use this workshop','¡A jugar!','Let’s play!',()=>onUseWorkshop(cfg.workshopId));}
-  if(cfg.estateId!==undefined){
+  if(cfg.colonTreehouse||cfg.estateId!==undefined){
    const extension=new T.Group();root.add(extension);
    const updateExtension=()=>{
     extension.clear();
-    const level=estateBuildings().find(b=>b.id===cfg.estateId)?.level||1;
+    const level=cfg.colonTreehouse?treehouseLevel():(estateBuildings().find(b=>b.id===cfg.estateId)?.level||1);
     if(level>=2){prop(box,wood,-3.8,1.0,2.0,1.45,1.9,1.5,extension);prop(box,accent,-3.8,2.08,2,1.8,.15,1.8,extension);}
     if(level>=3){prop(box,wood,3.0,.7,2.5,2.5,.18,1.6,extension);prop(ball,accent,3,1.2,2.5,.65,.5,.65,extension);}
    };
    updateExtension();
    add('extend',0,0,'🛠️ Ampliar esta casa','🛠️ Expand this building','¡Construye más!','Keep building!',()=>{
-    if(onUpgrade(cfg.estateId)){updateExtension();onMessage?.(es?'🏠 ¡Construiste una ampliación real!':'🏠 You added a real room upgrade!');}
+    if(cfg.colonTreehouse?onTreehouseUpgrade():onUpgrade(cfg.estateId)){updateExtension();onMessage?.(es?'🏠 ¡Construiste una ampliación real!':'🏠 You added a real room upgrade!');}
     else onMessage?.(es?'🎒 Nivel máximo o faltan materiales. Revisa la mochila.':'🎒 Max level or not enough materials. Check your backpack.');
    });
   }
@@ -158,7 +158,7 @@ export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geomet
  function near(x,z){if(active)return null;
   const owned=estateBuildings().map(b=>({id:'estate-'+b.id,estateId:b.id,x:b.x,z:b.z,es:({cottage:'Mi casita',market:'Mi mercado',villa:'Mi villa',castle:'Mi castillo'})[b.type]||'Mi edificio',en:({cottage:'My cottage',market:'My market',villa:'My villa',castle:'My castle'})[b.type]||'My building',icon:'🏠',theme:({cottage:'sea',market:'pizza',villa:'art',castle:'books'})[b.type]||'play'}));
   const workshops=workshopBuildings().map(b=>({id:'workshop-'+b.id,workshopId:b.id,x:b.x,z:b.z,es:b.es,en:b.en,icon:b.icon,theme:'play'}));
-  return [...villageHouses,...owned,...workshops].filter(h=>Math.hypot(x-h.x,z-h.z)<4.6).sort((a,b)=>Math.hypot(x-a.x,z-a.z)-Math.hypot(x-b.x,z-b.z))[0]||null;}
+  return [...villageHouses,...owned,...workshops,...extraHouses()].filter(h=>Math.hypot(x-h.x,z-h.z)<4.6).sort((a,b)=>Math.hypot(x-a.x,z-a.z)-Math.hypot(x-b.x,z-b.z))[0]||null;}
  function enter(cfg){
   if(!cfg||active)return false;
   lastSpot={x:cfg.x,z:cfg.z};active=rooms.get(cfg.id)||build(cfg);localX=0;localZ=2.2;
@@ -202,3 +202,4 @@ export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geomet
  function dispose(){leave();cssButton.remove();for(const r of rooms.values())scene.remove(r.root);}
  return {near,enter,leave,move,position,nearbyProp,inspect,updateDoor,isInside:()=>!!active,current:()=>active?.cfg||null,dispose};
 }
+

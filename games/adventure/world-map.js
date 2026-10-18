@@ -4,7 +4,7 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
  const es=language==='es',say=(a,b)=>es?a:b,ns='http://www.w3.org/2000/svg';
  const land=[{id:'home',x:0,z:0,rx:20,rz:14,es:'Playa Gorgona',en:'Playa Gorgona',icon:'🏡'}]
    .concat(islands.map(i=>({id:i.id,x:i.x,z:i.z,rx:i.rx,rz:i.rz,es:i.es,en:i.en,
-     icon:({islet:'🦋',wilds:'🍌',coconutCoast:'🥥',sunset:'🌋',crystalCove:'💎',pizzaCity:'🍕'})[i.id]||'🏝️'})));
+     icon:({islet:'🦋',wilds:'🍌',coconutCoast:'🥥',sunset:'🌋',crystalCove:'💎',pizzaCity:'🍕',colon:'🌧️',monkeyIslet:'🐒'})[i.id]||'🏝️'})));
  const point=(x,z)=>({x:Number(x)||0,z:Number(z)||0});
  const name=i=>es?i.es:i.en;
  const svgEl=(tag,attrs={},text)=>{const n=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,String(v));if(text!==undefined)n.textContent=text;return n;};
@@ -125,3 +125,4 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
  update(true);
  return {open,close,update,dispose,isOpen:()=>opened};
 }
+

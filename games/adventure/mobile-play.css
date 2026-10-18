@@ -506,6 +506,10 @@ body[data-scene="explore"] .animal-ride-quick:not([hidden]){
 .world-arrows .movement-speed{font-size:12px;font-weight:900;touch-action:none}
 .cruise-status{position:absolute;top:115px;left:50%;transform:translateX(-50%);z-index:29;width:max-content;max-width:calc(100% - 32px);padding:12px 16px;border:2px solid #fff3ce;border-radius:16px;background:#16364ef2;color:#fff8e5;text-align:center;font-size:16px;font-weight:800;pointer-events:none}
 .cruise-status[hidden]{display:none}
+.colon-status{position:absolute;top:138px;left:24px;z-index:17;max-width:calc(100% - 48px);padding:8px 12px;border-radius:12px;background:#173f36eb;color:#f8f1d9;font-size:15px;font-weight:800;pointer-events:none}
+.colon-status[hidden]{display:none}
+.inside-cottage .colon-status,.on-cruise .colon-status,.explore-world:has(.explore-panel:not([hidden]),.friend-panel:not([hidden]),.realm-panel:not([hidden]),.journey-panel:not([hidden])) .colon-status{visibility:hidden}
+@media(max-width:780px){.colon-status{top:106px;left:10px;max-width:calc(100% - 20px);font-size:13px;padding:7px 10px}}
 .on-cruise .world-arrows,.on-cruise .explore-stick,.on-cruise .explore-actions,.on-cruise .mobile-game-dock,.on-cruise .mobile-bag-shortcut,.on-cruise .explore-menu,.on-cruise .helper-toggle,.on-cruise .island-goal,.on-cruise .island-map-mini,.on-cruise .friend-peek,.on-cruise .world-story{visibility:hidden!important;pointer-events:none!important}
 @media(max-width:780px),(pointer:coarse){
  body[data-scene="explore"] .explore-world{

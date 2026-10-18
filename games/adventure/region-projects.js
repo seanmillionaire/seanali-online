@@ -1,6 +1,6 @@
 // A single meaningful, persistent community project for each Panama destination.
 // Mini-games and collecting now feed into a clear physical outcome in their region.
-import {worldIslands,isletHeight,exploreItems,volcanoTrailPoint} from './explore-state.js?v=73';
+import {worldIslands,isletHeight,exploreItems,volcanoTrailPoint} from './explore-state.js?v=105';
 import {BUILD_RECIPES} from './island-workshop.js?v=73';
 const where=id=>worldIslands.find(x=>x.id===id);
 const build=id=>BUILD_RECIPES.find(x=>x.id===id);
@@ -82,9 +82,21 @@ export const REGION_PROJECTS=[
    {id:'delivery',icon:'🍕',es:'Entrega una pizza a una familia del barrio',en:'Deliver a pizza to a neighborhood family',check:{kind:'cityDelivery',count:1},go:{x:-84,z:-60}},
    {id:'build',icon:'🏠',es:'Construye el puesto comunitario de pizza',en:'Build the community pizza stand',check:{kind:'built',id:'pizzaStand'},go:{x:build('pizzaStand').x,z:build('pizzaStand').z}},
    {id:'activate',icon:'🍕',es:'Prepara pizza y abre el puesto',en:'Make pizza and open your stand',check:{kind:'used',id:'pizzaStand'},go:{x:build('pizzaStand').x,z:build('pizzaStand').z}}
+  ]},
+ {id:'colon',icon:'🐒',es:'Restaurar el dosel de los monos',en:'Restore the Monkey Canopy',
+  whyEs:'Repara el cruce a la Isla de los Monos, recoge fruta y construye una casa entre los árboles.',
+  whyEn:'Repair the Monkey Island crossing, gather fruit and build a home in the trees.',
+  resultEs:'¡Colón tiene un puente, un jardín de lluvia, una casa del árbol y un mirador!',resultEn:'Colón has a bridge, a rain garden, a treehouse and a waterfall lookout!',
+  spot:{x:112,z:-70},tasks:[
+   {id:'bridge',icon:'🌉',es:'Repara el puente · 3 plátanos y 2 cocos',en:'Repair the bridge · 3 bananas and 2 coconuts',check:{kind:'colon',id:'bridge',count:1},go:{x:122,z:-39}},
+   {id:'garden',icon:'🌱',es:'Restaura el jardín · 2 plátanos y 1 coco',en:'Restore the rain garden · 2 bananas and 1 coconut',check:{kind:'colon',id:'garden',count:1},go:{x:108,z:-48}},
+   {id:'treehouse',icon:'🌳',es:'Construye la casa · 3 plátanos y 2 cocos',en:'Build the treehouse · 3 bananas and 2 coconuts',check:{kind:'colon',id:'treehouse',count:1},go:{x:101,z:-58}},
+   {id:'lookout',icon:'🌊',es:'Abre el mirador de la cascada',en:'Open the waterfall lookout',check:{kind:'colon',id:'lookout',count:1},go:{x:112,z:-70}}
   ]}
+
 ];
 export function regionForPosition(x,z){
+ if(Math.hypot((x-130)/10,(z+25)/9)<1.2)return 'colon';
  const near=REGION_PROJECTS.filter(r=>r.id!=='home').map(r=>{
   const l=where(r.id),ratio=Math.hypot((x-l.x)/l.rx,(z-l.z)/l.rz);
   return {r,ratio};
@@ -93,6 +105,7 @@ export function regionForPosition(x,z){
 }
 export function taskCount(world,task,state){
  const c=task.check;
+ if(c.kind==='colon')return world.colon?.[c.id]?1:0;
  if(c.kind==='collected'&&c.item==='fruit')return world.foodTotal?.banana||0;
  if(c.kind==='collected')return (world.collected||[]).filter(id=>exploreItems.some(item=>item.id===id&&item.kind===c.item)).length;
  if(c.kind==='collectedPrefix')return (world.collected||[]).filter(id=>id.startsWith(c.prefix)).length;
@@ -155,3 +168,4 @@ export function createRegionProjectWorld({T,scene,state,make,ball,box,cone,cylin
   dispose(){scene.remove(root);}
  };
 }
+
