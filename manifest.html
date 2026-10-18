@@ -435,6 +435,81 @@ body{background:#FFFAF3;color:var(--ink)}
 /* Cold Meta hero: readable second benefit line without adding a new sales section. */
 .hero .hero-routine{max-width:675px;margin:10px auto 0;font-size:clamp(13px,1.4vw,15px);font-weight:750;line-height:1.5;color:#713149;text-align:center}
 @media(max-width:470px){.hero .hero-routine{font-size:13px;margin-top:8px}}
+
+/* Manifest page: clear, mobile-friendly visual boundaries between major sections. */
+body > section.hero, body > section.hm-early-proof, body > section.tool-section,
+body > section.hm-coaching-bonus, body > section.ariella-story-section,
+body > section.mechanism-section, body > section.offer-section,
+body > section.review-section, body > section.hm-bonus-strip,
+body > section.faq-section {
+  position:relative;
+  isolation:isolate;
+}
+body > section.hm-early-proof,
+body > section.tool-section,
+body > section.hm-coaching-bonus,
+body > section.ariella-story-section,
+body > section.mechanism-section,
+body > section.offer-section,
+body > section.review-section,
+body > section.hm-bonus-strip,
+body > section.faq-section {
+  border-top:5px solid #e8cda9;
+}
+body > section.tool-section,
+body > section.ariella-story-section,
+body > section.review-section,
+body > section.faq-section {
+  background-color:#fffaf3;
+}
+body > section.hm-early-proof,
+body > section.hm-coaching-bonus,
+body > section.hm-bonus-strip {
+  background-color:#fff4e6;
+}
+body > section.hm-early-proof::before,
+body > section.tool-section::before,
+body > section.hm-coaching-bonus::before,
+body > section.ariella-story-section::before,
+body > section.mechanism-section::before,
+body > section.offer-section::before,
+body > section.review-section::before,
+body > section.hm-bonus-strip::before,
+body > section.faq-section::before {
+  content:"";
+  position:absolute;
+  top:-5px;
+  left:50%;
+  transform:translateX(-50%);
+  width:min(160px,32vw);
+  height:5px;
+  background:#a94c65;
+  border-radius:0 0 5px 5px;
+  pointer-events:none;
+}
+body > section.offer-section { border-top-color:#d5a14f; }
+body > section.offer-section::before { background:#f1d293; }
+@media(max-width:600px){
+  body > section.hm-early-proof,
+  body > section.tool-section,
+  body > section.hm-coaching-bonus,
+  body > section.ariella-story-section,
+  body > section.mechanism-section,
+  body > section.offer-section,
+  body > section.review-section,
+  body > section.hm-bonus-strip,
+  body > section.faq-section { border-top-width:4px; }
+  body > section.hm-early-proof::before,
+  body > section.tool-section::before,
+  body > section.hm-coaching-bonus::before,
+  body > section.ariella-story-section::before,
+  body > section.mechanism-section::before,
+  body > section.offer-section::before,
+  body > section.review-section::before,
+  body > section.hm-bonus-strip::before,
+  body > section.faq-section::before { top:-4px;height:4px;width:104px; }
+}
+
 </style><style id="hm-open-box-sales">.tool-section{padding-top:62px;padding-bottom:62px;background:#fff}.tool-section .section-heading{text-align:center;display:block;max-width:860px;margin:0 auto 34px}.tool-section .section-heading p{max-width:710px;margin:18px auto 0}.tool-card{border-color:#dbbd93;box-shadow:0 9px 28px #4b193312}.tool-media{background:#faefdc}.item-access{display:block;border-radius:7px;padding:12px 9px;margin-top:13px;background:#752741;color:white!important;font-size:10px;font-weight:800;text-align:center;box-shadow:0 3px 0 #4f172c}.format{font-size:11px!important;color:#752741!important;font-weight:700}@media(max-width:760px){.tool-section{padding-top:40px;padding-bottom:40px}.tool-section .section-heading{margin-bottom:25px}}</style><style id="hm-cta-upgrade-20261015">
 /* $8 campaign: larger checkout actions without changing checkout behavior. */
 .button.sales-cta,.offer-card .button.sales-cta,.hero .hero-actions .sales-cta{
