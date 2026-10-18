@@ -1,5 +1,13 @@
 import {oceanModel} from './ocean-models.js?v=73';
-export function islandDaylight(seconds){const phase=((seconds%240)+240)%240/240,elevation=Math.sin(phase*Math.PI*2);return {phase,day:Math.max(0,Math.min(1,elevation*2+.15)),night:elevation<0};}
+// Keep the four-minute clock and existing saved dayTime positions.
+ // Most of the cycle is now sunny: a short sunset, ~45-second night and sunrise.
+ export function islandDaylight(seconds){
+  const phase=((seconds%240)+240)%240/240;
+  const smooth=(a,b,v)=>{const t=Math.max(0,Math.min(1,(v-a)/(b-a)));return t*t*(3-2*t);};
+  const darkness=smooth(.69,.74,phase)*(1-smooth(.89,.96,phase));
+  const day=1-darkness;
+  return {phase,day,night:phase>=.72&&phase<.92,twilight:4*day*(1-day)};
+ }
 export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,cone,box,sun,ambient,waterMaterial,inWater}){
  const s=state.world,animals=[],group=new T.Group();group.name='Ocean wildlife';scene.add(group);let ridden=null;
  const nightSky=new T.Color('#172c50'),daySky=new T.Color('#a4c9de'),dusk=new T.Color('#ce9b96');
@@ -14,7 +22,7 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
  const sunBody=new T.Mesh(ball,basic('#ffe39c')),moon=new T.Mesh(ball,basic('#e3f1ff'));sunBody.name='Sun';moon.name='Moon';sunBody.scale.setScalar(.25);moon.scale.setScalar(.22);sky.add(sunBody,moon);sunBody.renderOrder=30;moon.renderOrder=30;for(let i=0;i<10;i++){const a=i*Math.PI/5,ray=new T.Mesh(cone,basic('#ffd16e'));ray.position.set(Math.sin(a)*1.4,Math.cos(a)*1.4,0);ray.rotation.z=-a;ray.scale.set(.13,.45,.1);ray.renderOrder=30;sunBody.add(ray);}
  for(let i=0;i<4;i++){const crater=new T.Mesh(ball,basic('#a6bad1'));crater.scale.set(.2,.15,.025);crater.renderOrder=31;crater.position.set(Math.sin(i*2)*.55,Math.cos(i*2)*.5,.85);moon.add(crater);}
  const starMaterial=basic('#dceeff',{transparent:true,opacity:0}),stars=[];for(let i=0;i<22;i++){const star=new T.Mesh(ball,starMaterial);star.position.set(Math.sin(i*9.7)*2,1.8+(i%7)*.17,-10.8);star.scale.setScalar(.012+(i%3)*.005);sky.add(star);stars.push(star);}
- // Advance the saved four-minute day/night cycle only during active play.
+ // Four-minute saved cycle: mostly daylight with a short nighttime for kid-friendly exploration.
  function nearestRideable(x,z,limit=6.8){
   return animals.filter(a=>(a.kind==='Dolphin'||a.kind==='Sea turtle')&&a!==ridden&&a.g.visible)
    .map(a=>({animal:a,distance:Math.hypot(a.g.position.x-x,a.g.position.z-z)}))
@@ -29,7 +37,7 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
  }
  function markRidden(a){ridden=a;if(a)a.g.visible=false;}
  function unmark(){ridden=null;}
- return {nearestRideable,hit,markRidden,unmark,update(dt,active,motion){if(active&&Number.isFinite(dt)&&dt>0)s.dayTime=(s.dayTime+dt)%240;const {phase,day,night}=islandDaylight(s.dayTime),sunset=1-Math.min(1,Math.abs(Math.sin(phase*Math.PI*2))*5);
+ return {nearestRideable,hit,markRidden,unmark,update(dt,active,motion){if(active&&Number.isFinite(dt)&&dt>0)s.dayTime=(s.dayTime+dt)%240;const {phase,day,night,twilight}=islandDaylight(s.dayTime),sunset=twilight;
   if(scene.background?.isColor)scene.background.copy(nightSky).lerp(daySky,day).lerp(dusk,sunset*.35);if(scene.fog)scene.fog.color.copy(scene.background);
   if(sun){sun.intensity=.5+day*2.5;sun.color.set(night?'#9fbcff':'#fff0d2');}if(ambient){ambient.intensity=.85+day*.6;ambient.color.set(night?'#99b8ed':'#c9edff');}if(waterMaterial?.uniforms.daylight)waterMaterial.uniforms.daylight.value=day;
   sunBody.visible=!night;moon.visible=night;const arc=(phase%.5)*2;for(const body of [sunBody,moon])body.position.set((arc-.5)*2.6,2.1+Math.sin(arc*Math.PI)*.4,-10);starMaterial.opacity=(1-day)*.8;
