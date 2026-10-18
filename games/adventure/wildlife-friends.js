@@ -126,7 +126,7 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
   else actions.append(btn('🏐 '+tr(f.game),'friend-primary',()=>startGame(f.id)));
   const chosen=friends.companion===id;
   actions.append(btn(chosen?'🏡 '+say('Me quedo aquí','Stay here'):'🤝 '+say('Ven conmigo','Come with me'),'friend-secondary',()=>{
-   if(chosen){sendHome();openDirectory();return;}
+   if(chosen){sendHome();return;}
    friends.companion=id;if(id==='pip')s.pet=false;save();refresh();joy.effect('friend');open(id);
   }));
   if(['pip','mila','ollie','luna'].includes(id))
