@@ -150,6 +150,16 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  });
  const dockMore=btn(say('☰ Más','☰ More'),'mobile-dock-more',()=>setHelpers(!host.classList.contains('helpers-open')));
  mobileDock.append(dockMap,dockBuild,dockFriend,dockMore);
+ const setDockLabel=(control,icon,label)=>{
+  const signature=icon+':'+label;
+  if(control.dataset.dockLabel===signature)return;
+  control.dataset.dockLabel=signature;
+  control.replaceChildren(makeEl('span','mobile-dock-icon',icon),makeEl('span','mobile-dock-caption',label));
+ };
+ setDockLabel(dockMap,'🗺️',say('Mapa','Map'));
+ setDockLabel(dockBuild,'🏰',say('Construir','Build'));
+ setDockLabel(dockFriend,'🫶',say('Amigos','Friends'));
+ setDockLabel(dockMore,'☰',say('Más','More'));
  const mobileShade=btn('×','mobile-menu-shade',()=>setHelpers(false));mobileShade.setAttribute('aria-label',say('Cerrar menú','Close menu'));
  
  const catchButton=btn('🦋','world-catch catch-action',()=>control?.catchNearest());catchButton.hidden=true;actions.append(catchButton);
@@ -166,7 +176,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  function refresh(){paintButton(craftButton,'🎒 '+say('Mochila','Bag')+' '+(s.craft?.built?.length||0)+'/7');paintButton(walletButton,'🪙 '+coinBalance(state));walletButton.setAttribute('aria-label',say('Mis monedas y tienda: ','My coins and shop: ')+coinBalance(state));const total=s.estate?.buildings?.length||0;bag.textContent=`🍌 ${s.food.banana}   🥥 ${s.food.coconut}   🪙 ${coinBalance(state)}   🍀 ${s.estate?.charms||0}`;dockBuild.setAttribute('aria-label',say('Construir mi pueblo','Build my village')+' · '+total);
  const companion=friendSystem?.companion?.()||s.friends?.companion;
  const names={pip:'Pip',dori:'Dori',mila:'Mila',ollie:'Ollie',luna:'Luna',kai:'Kai'};
- dockFriend.textContent=companion?'🏡 '+say('A casa','Go home'):'🫶 '+say('Amigos','Friends');
+ setDockLabel(dockFriend,companion?'🏡':'🫶',companion?say('A casa','Go home'):say('Amigos','Friends'));
  dockFriend.classList.toggle('has-companion',!!companion);
  dockFriend.setAttribute('aria-label',companion?say('Enviar a ','Send ')+(names[companion]||say('mi amigo','my friend'))+say(' a casa',' home'):say('Abrir mis amigos','Open my friends'));}
  function tell(a,b,force=true){guide(say(a,b),force);message.textContent=say(a,b);message.classList.add('show');messageTime=4.5;}
