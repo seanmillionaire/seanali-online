@@ -106,6 +106,35 @@ export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geomet
    prop(ball,cream,1,1.65,-1.8,.55,.5,.48);
    add('toys',1,-1.8,'Juguetes y osito','Toys and teddy bear','¡El osito quiere jugar contigo!','The teddy bear wants to play with you!');
   }
+  // Rooms contain repeatable mini-activities, with tangible changes in the room.
+  const activityItems=[];
+  const decorateActivity=(name,x,z,color)=>{
+   const g=new T.Group();g.position.set(x,.06,z);root.add(g);
+   const m=mat(color);
+   const pieces=[];
+   for(let i=0;i<4;i++)pieces.push(prop(box,i%2?m:accent,(i%2)*.47-.24,.18+Math.floor(i/2)*.33,(Math.floor(i/2)-.5)*.52,.42,.32,.42,g));
+   activityItems.push({name,g,pieces});
+   return g;
+  };
+  if(cfg.theme==='sea')decorateActivity('sandcastle',1.5,1.8,'#e9d6a3');
+  if(cfg.theme==='books')decorateActivity('library',1.5,1.8,'#a6bcdc');
+  if(cfg.theme==='music')decorateActivity('rhythm',1.5,1.8,'#db9ea9');
+  if(cfg.theme==='art')decorateActivity('sculpture',1.5,1.8,'#9ed4b4');
+  if(cfg.theme==='play')decorateActivity('blocks',1.5,1.8,'#efb86e');
+  if(cfg.theme==='pizza')decorateActivity('ingredients',1.5,1.8,'#dca370');
+  let steps=0;
+  add('activity',1.5,1.8,
+   ({sea:'Construir castillo de arena',books:'Ordenar biblioteca',music:'Practicar ritmo',art:'Crear escultura',play:'Construir con bloques',pizza:'Preparar ingredientes'})[cfg.theme],
+   ({sea:'Build a sandcastle',books:'Organize the library',music:'Practice rhythm',art:'Sculpt a statue',play:'Stack building blocks',pizza:'Prepare ingredients'})[cfg.theme],
+   '¡Tu proyecto ha cambiado de verdad!','Your project really changed!',
+   ()=>{steps++;const a=activityItems[0];if(a)a.pieces.forEach((part,i)=>{part.position.y=.18+Math.floor((i+steps)%4/2)*.33;part.rotation.y=steps*.22;});
+    onMessage?.((es?'🛠️ Paso ':'🛠️ Step ')+steps+' / 5 · '+(es?'¡Mira cómo cambia!':'Watch it change!'));if(steps>=5){steps=0;onMessage?.(es?'🎉 ¡Proyecto terminado! Puedes empezar otra vez.':'🎉 Project complete! You can build another.');}
+   });
+  // Additional practical household tasks with visible, reusable props.
+  const lamp=prop(cylinder,wood,-.2,1.22,2.6,.12,1.45,.12);
+  const glow=prop(ball,accent,-.2,2.02,2.6,.36,.36,.36);glow.material=mat(t.accent,{emissive:t.accent,emissiveIntensity:.0});
+  let lightsOn=false;
+  add('lamp',-.2,2.6,'Encender lámpara','Switch lamp','Luz encendida','Lamp switched on',()=>{lightsOn=!lightsOn;glow.material.emissiveIntensity=lightsOn?.8:0;onMessage?.(lightsOn?(es?'💡 Encendiste la lámpara.':'💡 You turned the lamp on.'):(es?'🌙 Apagaste la lámpara.':'🌙 You turned the lamp off.'));});
   const warm= new T.PointLight('#ffe2a4',2.5,24);
   warm.position.set(0,4,0);root.add(warm);
   const room={root,props,cfg};rooms.set(cfg.id,room);return room;
