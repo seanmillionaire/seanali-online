@@ -149,8 +149,35 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   if(friendSystem)friendSystem.openDirectory();
   else tell('🐢 Tus amigos están llegando…','🐢 Your friends are loading…');
  });
+ const dockPhone=btn(say('📱 Teléfono','📱 Phone'),'mobile-dock-phone',openPhone);
+ function openPhone(){
+  if(!friendSystem){tell('📱 Cargando contactos…','📱 Loading contacts…');return;}
+  if(adventureMap.isOpen())adventureMap.close(false);
+  if(friendSystem.isOpen())friendSystem.close();
+  setHelpers(false);blur();targetPoint=null;route=[];
+  panel.replaceChildren();panel.hidden=false;panel.classList.remove('friend-panel');
+  const close=btn('×','panel-close',()=>{panel.hidden=true;canvas.focus({preventScroll:true});});
+  close.setAttribute('aria-label',say('Cerrar teléfono','Close phone'));
+  panel.append(close,makeEl('h2','',say('📱 Teléfono de Angelique','📱 Angelique’s Phone')));
+  panel.append(makeEl('p','',say('Llama a tus amigos para jugar juntos. Puedes enviarlos a casa cuando quieras.','Call friends to join you. Send them home whenever you like.')));
+  const active=friendSystem.companion();
+  if(active)panel.append(btn('🏡 '+say('Enviar amigo a casa','Send friend home'),'discover-place',()=>{
+   if(friendSystem.sendHome())tell('🏡 ¡Tu amigo vuelve a casa!','🏡 Your friend is going home!');
+   openPhone();
+  }));
+  const contacts=[['pip','🐢','Pip'],['dori','🐬','Dori'],['mila','🦜','Mila'],['ollie','🪶','Ollie'],['luna','🦀','Luna'],['kai','👦','Kai']];
+  for(const [id,icon,name] of contacts){
+   const joined=active===id;
+   const b=btn(icon+' '+name+' · '+(joined?say('🏡 Enviar a casa','🏡 Send home'):say('📞 Llamar','📞 Call')),'discover-place',()=>{
+    if(joined){friendSystem.sendHome();tell('🏡 ¡Hasta luego, '+name+'!','🏡 See you later, '+name+'!');}
+    else {friendSystem.callFriend(id);tell('📞 ¡'+name+' viene a jugar!','📞 '+name+' is joining you!');}
+    openPhone();
+   });
+   panel.append(b);
+  }
+ }
  const dockMore=btn(say('☰ Más','☰ More'),'mobile-dock-more',()=>setHelpers(!host.classList.contains('helpers-open')));
- mobileDock.append(dockMap,dockBuild,dockFriend,dockMore);
+ mobileDock.append(dockMap,dockBuild,dockPhone,dockFriend,dockMore);
  const setDockLabel=(control,icon,label)=>{
   const signature=icon+':'+label;
   if(control.dataset.dockLabel===signature)return;
@@ -160,7 +187,9 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  setDockLabel(dockMap,'🗺️',say('Mapa','Map'));
  setDockLabel(dockBuild,'🏰',say('Construir','Build'));
  setDockLabel(dockFriend,'🫶',say('Amigos','Friends'));
+ setDockLabel(dockPhone,'📱',say('Teléfono','Phone'));
  setDockLabel(dockMore,'☰',say('Más','More'));
+ const phoneMenuButton=btn('📱 '+say('Teléfono','Phone'),'phone-menu-button',openPhone);menu.append(phoneMenuButton);
  const mobileShade=btn('×','mobile-menu-shade',()=>setHelpers(false));mobileShade.setAttribute('aria-label',say('Cerrar menú','Close menu'));
  
  const catchButton=btn('🦋','world-catch catch-action',()=>control?.catchNearest());catchButton.hidden=true;actions.append(catchButton);
