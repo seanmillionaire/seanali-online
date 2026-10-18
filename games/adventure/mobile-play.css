@@ -207,3 +207,46 @@
  body[data-scene="explore"] .mobile-game-dock button{font-size:12px;padding:7px 2px}
  body[data-scene="explore"] .mobile-game-dock .mobile-dock-build{font-size:13px;padding:7px 2px}
 }
+
+
+/* Restored gameplay essentials: one-tap backpack + return-your-friend-home.
+   Backpack lives in the upper-right, away from moving/jump/Map/Build controls. */
+.mobile-bag-shortcut{display:none}
+.backpack-main-resources{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;max-width:640px;margin:12px auto}
+.backpack-main-resource{display:block;min-width:0;text-align:center;background:#f0f8e9;border:1px solid #d0e3bd;border-radius:13px;padding:10px 3px;font-size:19px;font-weight:900;color:#265345;white-space:nowrap}
+.backpack-extra-treasures{margin:16px 0;border:1px solid #d3e2ca;border-radius:16px;overflow:hidden;background:#f5f9ed}
+.backpack-extra-treasures summary{cursor:pointer;list-style:revert;padding:14px 16px;min-height:50px;font-size:17px;font-weight:900;color:#2f5b4d}
+.backpack-extra-treasures .craft-resource-list{padding:6px 12px 14px}
+@media(max-width:780px){
+ body[data-scene="explore"] .mobile-bag-shortcut{
+  display:flex;position:absolute;z-index:21;top:65px;right:10px;width:63px;min-width:63px;height:67px;
+  flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  background:#fff6dcef;color:#285446;border:2px solid #fffdf1;border-radius:18px;
+  box-shadow:0 4px 14px #123e4950;font-size:29px;line-height:1;touch-action:manipulation;
+ }
+ body[data-scene="explore"] .mobile-bag-caption{font-size:11px;font-weight:900;line-height:1.05}
+ body[data-scene="explore"] .mobile-bag-shortcut:focus-visible{outline:4px solid #2777c0;outline-offset:2px}
+ body[data-scene="explore"] .explore-hud{max-width:calc(100% - 83px);right:83px}
+ body[data-scene="explore"] .explore-location,
+ body[data-scene="explore"] .explore-bag{max-width:calc(100vw - 105px)}
+ body[data-scene="explore"] .explore-menu .craft-bag-button{display:flex!important}
+ body[data-scene="explore"] .explore-world:has(.explore-panel:not([hidden])) .mobile-bag-shortcut,
+ body[data-scene="explore"] .explore-world:has(.friend-panel:not([hidden])) .mobile-bag-shortcut,
+ body[data-scene="explore"] .explore-world:has(.journey-panel:not([hidden])) .mobile-bag-shortcut,
+ body[data-scene="explore"] .explore-world:has(.realm-panel:not([hidden])) .mobile-bag-shortcut{
+  visibility:hidden;pointer-events:none;
+ }
+ body[data-scene="explore"] .explore-world.helpers-open .mobile-bag-shortcut{
+  visibility:hidden;pointer-events:none;
+ }
+ body[data-scene="explore"] .backpack-main-resources{gap:5px}
+ body[data-scene="explore"] .backpack-main-resource{padding:9px 2px;font-size:17px}
+ body[data-scene="explore"] .explore-panel .backpack-extra-treasures summary{font-size:16px}
+ body[data-scene="explore"] .mobile-dock-friend.has-companion{background:#d2efcd!important;color:#205740!important;border-color:#aad3a5!important}
+}
+@media(max-width:380px){
+ body[data-scene="explore"] .mobile-bag-shortcut{top:62px;right:7px;width:55px;min-width:55px;height:61px;font-size:25px}
+ body[data-scene="explore"] .mobile-bag-caption{font-size:10px}
+ body[data-scene="explore"] .explore-hud{max-width:calc(100% - 73px);right:73px}
+ body[data-scene="explore"] .explore-location,body[data-scene="explore"] .explore-bag{max-width:calc(100vw - 95px)}
+}
