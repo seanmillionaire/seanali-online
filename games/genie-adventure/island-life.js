@@ -1,8 +1,8 @@
-import {oceanModel} from './ocean-models.js?v=genie1';
+import {oceanModel} from './ocean-models.js?v=genie2';
 export function islandDaylight(seconds){const phase=((seconds%240)+240)%240/240,elevation=Math.sin(phase*Math.PI*2);return {phase,day:Math.max(0,Math.min(1,elevation*2+.15)),night:elevation<0};}
 export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,cone,box,sun,ambient,waterMaterial,inWater}){
  const s=state.world,animals=[],group=new T.Group();group.name='Ocean wildlife';scene.add(group);let ridden=null;
- const nightSky=new T.Color('#070a22'),daySky=new T.Color('#171039'),dusk=new T.Color('#251044');
+ const nightSky=new T.Color('#293c60'),daySky=new T.Color('#293c60'),dusk=new T.Color('#293c60');
  function animal(kind,x,z,i){const {g,moving}=oceanModel(T,{geometry,mat,make,ball},kind);g.name=kind+' '+(i+1);group.add(g);g.position.set(x,-.3,z);animals.push({g,moving,x,z,phase:kind==='Reef fish'?Math.floor(i/6)*1.7+(i%6)*.08:i*1.7,kind,t:0});}
  [[8,19],[-58,24],[77,-51],[113,37]].forEach(([x,z],i)=>animal('Sea turtle',x,z,i));
  [[13,28],[-35,-42],[45,58],[75,12]].forEach(([x,z],i)=>animal('Dolphin',x,z,i));
@@ -31,7 +31,7 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
  function unmark(){ridden=null;}
  return {nearestRideable,hit,markRidden,unmark,update(dt,active,motion){if(active&&Number.isFinite(dt)&&dt>0)s.dayTime=(s.dayTime+dt)%240;const {phase,day,night}=islandDaylight(s.dayTime),sunset=1-Math.min(1,Math.abs(Math.sin(phase*Math.PI*2))*5);
   if(scene.background?.isColor)scene.background.copy(nightSky).lerp(daySky,day).lerp(dusk,sunset*.35);if(scene.fog)scene.fog.color.copy(scene.background);
-  if(sun){sun.intensity=.5+day*2.5;sun.color.set(night?'#9fbcff':'#fff0d2');}if(ambient){ambient.intensity=.85+day*.6;ambient.color.set(night?'#99b8ed':'#c9edff');}if(waterMaterial?.uniforms.daylight)waterMaterial.uniforms.daylight.value=day;
+  if(sun){sun.intensity=3.1;sun.color.set('#fff4dd');}if(ambient){ambient.intensity=2.35+(s.wishes?.granted?.length||0)*.045;ambient.color.set('#eff5ff');ambient.groundColor.set('#b9b3ca');}if(waterMaterial?.uniforms.daylight)waterMaterial.uniforms.daylight.value=day;
   sunBody.visible=false;moon.visible=true;const arc=(phase%.5)*2;for(const body of [sunBody,moon])body.position.set((arc-.5)*2.6,2.1+Math.sin(arc*Math.PI)*.4,-10);starMaterial.opacity=.9;
   for(const a of animals){if(active)a.t+=dt;const t=a.t,x=a.x+Math.sin(t*.08+a.phase)*(a.kind==='Dolphin'?16:6),z=a.z+Math.cos(t*.08+a.phase)*(a.kind==='Dolphin'?12:5);
    if(active){const dx=x-a.g.position.x,dz=z-a.g.position.z,d=Math.hypot(dx,dz),step=Math.min(d,dt*(a.kind==='Dolphin'?4.5:a.kind==='Reef fish'?1.4:.8)),nx=a.g.position.x+dx/Math.max(d,.001)*step,nz=a.g.position.z+dz/Math.max(d,.001)*step,r=a.kind==='Reef fish'?.4:1.3;if([[0,0],[r,0],[-r,0],[0,r],[0,-r]].every(([ox,oz])=>inWater(nx+ox,nz+oz))){if(d>.001)a.g.rotation.y=Math.atan2(dx,dz);a.g.position.x=nx;a.g.position.z=nz;}else a.phase+=dt;}

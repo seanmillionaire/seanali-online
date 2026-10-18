@@ -1,4 +1,4 @@
-import {spendFood} from './explore-state.js?v=genie1';
+import {spendFood} from './explore-state.js?v=genie2';
 /* Genie Adventure — substantial zero-dependency Orión city expansion.
    Roads and landmark buildings are genuine Three.js meshes; activities update
    game state only on meaningful user actions and persist in world.city. */

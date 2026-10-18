@@ -1,19 +1,22 @@
-import {createRealms} from './realms.js?v=genie1';
-import {createJourney} from './journey.js?v=genie1';
-import {oceanModel} from './ocean-models.js?v=genie1';
-import {createIslandLife} from './island-life.js?v=genie1';
-import {createWorldStory,islandStories} from './world-story.js?v=genie1';
-import {REGION_PROJECTS,regionForPosition,missionStatus,restoreRegions,createRegionProjectWorld} from './region-projects.js?v=genie1';
-import {createWorldMap} from './world-map.js?v=genie1';
-import {createWildlifeFriends} from './wildlife-friends.js?v=genie1';
-import {createHouseInteriors} from './house-interiors.js?v=genie1';
-import {createPizzaCity} from './pizza-city.js?v=genie1';
-import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=genie1';
-import {ESTATE_PLANS,findEstateSite,canBuildEstate,buildEstate,createEstateWorld} from './estate.js?v=genie1';
-import {buildIsland} from './entrance.js?v=genie1';
-import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,sharkPatrol,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=genie1';
+import {createWishes} from './wishes.js?v=genie2';
+import {createRealms} from './realms.js?v=genie2';
+import {createJourney} from './journey.js?v=genie2';
+import {oceanModel} from './ocean-models.js?v=genie2';
+import {createIslandLife} from './island-life.js?v=genie2';
+import {createWorldStory,islandStories} from './world-story.js?v=genie2';
+import {REGION_PROJECTS,regionForPosition,missionStatus,restoreRegions,createRegionProjectWorld} from './region-projects.js?v=genie2';
+import {createWorldMap} from './world-map.js?v=genie2';
+import {createWildlifeFriends} from './wildlife-friends.js?v=genie2';
+import {createHouseInteriors} from './house-interiors.js?v=genie2';
+import {createPizzaCity} from './pizza-city.js?v=genie2';
+import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=genie2';
+import {ESTATE_PLANS,findEstateSite,canBuildEstate,buildEstate,createEstateWorld} from './estate.js?v=genie2';
+import {buildIsland} from './entrance.js?v=genie2';
+import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,sharkPatrol,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=genie2';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('/games/adventure/vendor/three.module.min.js')}){
+ host.classList.add('wish-led');
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);syncWallet(state);
+ let wishSystem=null;
  let disposed=false,engine=null,control=null,friendSystem=null,houseSystem=null,wildLife=null,cityLife=null,workshop=null,estateWorld=null,regionWorld=null,carDriving=false,carSpeed=0,mountId=null,birdAltitude=0,birdTarget=0,birdLanding=false,near=null,ride=s.flight?1:0,flightY=s.flight||0,flightTarget=s.flight||0,flightVX=0,flightVZ=0,route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;
  let cosmicDestination=null,pendingRealm=null,waterLanding=null;let swimming=false,inside=false,stair=0,boating=false,boatSpeed=0,foodNear=null,eating=0,energy=0,swimBoost=0,rescueCooldown=0,danger=false,lastShore={x:4,z:10};
  let regionFocusMode=false;
@@ -22,7 +25,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  function goalPlace(){return goal?explorePlaces.find(p=>p.id===goal.place):null;}
  function atGoal(){const p=goalPlace();return p&&Math.hypot(s.x-p.x,s.z-p.z)<2.6;}
  function goalWords(){if(!goal)return say('¡Completaste todas las aventuras! Elige un lugar en Descubrir para volver a jugar.','You completed every adventure! Choose a place in Discover to play again.');const names=[say('Pip en el puerto','Pip at the harbor'),say('Mila en el huerto','Mila at the orchard'),say('Ollie en el bosque','Ollie in the grove'),say('Luna junto a la música','Luna by the music notes'),say('el jardín','the garden'),say('el faro','the lighthouse')];return atGoal()?say('¡Aquí estamos, Kyro! Toca Empezar aventura para ayudar.','We’re here, Kyro! Tap Start adventure to help.'):say('Kyro, vamos a ayudar a ','Kyro, let’s help ')+names[goal.region]+say('. Toca Llévame y caminaré contigo.','. Tap Take me there and I’ll walk with you.');}
- function listen(){const words=goalWords();message.textContent=words;message.classList.add('show');messageTime=12;guide(words,true);}
+ function listen(){if(wishSystem){wishSystem.open();return;}const words=goalWords();message.textContent=words;message.classList.add('show');messageTime=12;guide(words,true);}
  function followGoal(){if(paused()||control?.falling())return;if(ride){if(goal)travelTo(goalPlace());return;}if(boating){tell('🚀 Flechas para navegar · ⤴ Salir','🚀 Arrows to steer · ⤴ Get out');return;}if(inside){if(stair>=.97)control?.lightBeacon();else tell('👣 Sigue los escalones dorados','👣 Follow the golden steps');return;}if(swimming){route=islandPath(s,lastShore);targetPoint=route.shift()||null;swimBoost=3;return;}if(!goal){showDiscover();return;}if(atGoal()){openNext(goal.id);return;}const p=goalPlace();if(!walkable((s.x+p.x)/2,(s.z+p.z)/2)||!remoteAccess(s,p)){travelTo(p);return;}route=islandPath(s,p);targetPoint=route.shift()||null;panel.hidden=true;guide(say('¡Sígueme! Kyro va al siguiente lugar. Al llegar, toca Empezar aventura.','Follow me! Kyro is walking to the next place. When we arrive, tap Start adventure.'),true);}
 
  const makeEl=(tag,cls,txt)=>{const e=document.createElement(tag);e.className=cls;if(txt)e.textContent=txt;return e;};
@@ -117,7 +120,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  const actions=makeEl('div','explore-actions'),act=btn(say('Saludar','Say hello'),'world-action',interact),jump=btn(say('Saltar ⤴','Jump ⤴'),'world-jump',hop);
  const descend=btn(say('↓ Bajar','↓ Lower'),'world-jump',()=>{if(ride)flightTarget=Math.max(0,flightTarget-5);else if(birdMount()){birdLanding=false;birdTarget=Math.max(1.5,birdTarget-3);}});descend.hidden=true;
  const friendMeet=btn('🐢 '+say('Amigos','Friends'),'world-action friend-hello',()=>{const f=friendSystem?.nearest(boating?'boat':swimming?'swim':'walk');if(f)friendSystem.open(f.id);});friendMeet.hidden=true;friendMeet.setAttribute('aria-label',say('Jugar con un amigo','Play with a friend'));
- const menu=makeEl('div','explore-menu');menu.append(btn('☷ '+say('Descubrir','Discover'),'world-small',showDiscover),btn('▤ '+say('Historias','Stories'),'world-small',openBook),btn('⌂','world-small',openHome));menu.lastChild.setAttribute('aria-label',say('Mi casita','My cottage'));menu.append(btn(say('? Ayuda','? Help'),'world-small',listen));
+ const menu=makeEl('div','explore-menu');menu.append(btn(say('✨ Deseos','✨ Wishes'),'world-small wish-menu-button',()=>wishSystem?.open()),btn('☷ '+say('Descubrir','Discover'),'world-small',showDiscover),btn('▤ '+say('Historias','Stories'),'world-small',openBook),btn('⌂','world-small',openHome));menu.lastChild.setAttribute('aria-label',say('Mi casita','My cottage'));menu.append(btn(say('? Ayuda','? Help'),'world-small',listen));
  const helperToggle=btn('☰','world-small helper-toggle',()=>setHelpers(!host.classList.contains('helpers-open')));menu.id='island-helper-menu';goalCard.id='island-helper-goal';helperToggle.setAttribute('aria-controls','island-helper-menu island-helper-goal');
  function setHelpers(open){host.classList.toggle('helpers-open',open);paintButton(helperToggle,open?'×':'☰');helperToggle.setAttribute('aria-expanded',String(open));helperToggle.setAttribute('aria-label',open?say('Ocultar ayuda','Hide helpers'):say('Mostrar ayuda','Show helpers'));}setHelpers(false);
  goalButton.addEventListener('click',()=>setHelpers(false));
@@ -325,7 +328,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   if(friendSystem?.isOpen())friendSystem.close();
   if(adventureMap.isOpen())adventureMap.close(false);
   setHelpers(false);panel.replaceChildren();panel.hidden=false;blur();targetPoint=null;route=[];
-  panel.classList.add('estate-panel');
+  panel.classList.remove('wish-panel');panel.classList.add('estate-panel');
   panel.append(btn('×','panel-close',()=>{panel.hidden=true;panel.classList.remove('estate-panel');canvas.focus({preventScroll:true});}),
     makeEl('div','estate-eyebrow',say('MI PROPIO MUNDO','MY OWN WORLD')),
     makeEl('h2','',say('🏰 Construye tu imperio','🏰 Build your own empire')),
@@ -538,6 +541,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   const story=createWorldStory({T,scene,host,state,height,save,joy,spark,openNext,motion,refresh:id=>{earnCoins(state,'story-'+id);bloom(s.flowers);refresh();},active:()=>!paused()&&!document.hidden&&panel.hidden&&!inside&&!swimming&&!boating&&!ride&&!airborne&&!document.querySelector('dialog[open]')});
   const realms=createRealms({T,scene,host,state,make,geometry,mat,ball,box,cylinder,height,save,joy,spark,refresh,tell,navigate:(realm,dest)=>{if(!dest)return;setHelpers(false);if(dest.action==='food'){if(s.food.banana+s.food.coconut)showFood();else travelTo(explorePlaces.find(p=>p.id==='wilds'));return;}if(dest.action==='learn'){followGoal();return;}if(realm==='sky'){if(boating)disembark();if(ride){targetPoint={x:dest.x,z:dest.z};route=[];flightTarget=dest.y||12;}else{pendingRealm=dest;const launch=explorePlaces.filter(p=>p.kind==='balloon').sort((a,b)=>Math.hypot(a.x-s.x,a.z-s.z)-Math.hypot(b.x-s.x,b.z-s.z))[0];route=islandPath(s,launch);targetPoint=route.shift()||null;tell('🧞 Vuela para explorar las estrellas','🧞 Use magic flight to explore the stars');}return;}if(realm==='islands'){travelTo(dest);return;}if(ride){waterLanding=dest;targetPoint={x:dest.x,z:dest.z};route=[];flightTarget=Math.max(8,flightY);return;}if(boating)disembark();route=islandPath(s,dest);targetPoint=route.shift()||null;tell('🌠 Sigue el brillo · Nada para descubrir','🌠 Follow the glow · Swim to discover');}});
   const journey=createJourney({T,scene,host,state,avatar,make,geometry,mat,height,save,joy,spark,refresh,realms,seek:kind=>{if(kind==='explore')showDiscover();else if(kind==='food'){if(s.food.banana+s.food.coconut)showFood();else travelTo(explorePlaces.find(p=>p.id==='wilds'));}else if(kind==='learn')followGoal();else{const dest=kind==='fly'?explorePlaces.find(p=>p.id==='balloon'):{x:11,z:20};route=islandPath(s,dest);targetPoint=route.shift()||null;}}});
+  wishSystem=createWishes({T,scene,host,panel,state,make,mat,geometry,ball,height,save,joy,spark,refresh,travel:travelTo,closeHelpers:()=>{setHelpers(false);blur();targetPoint=null;route=[];},grounded:()=>!ride&&!swimming&&!boating&&!inside&&!carDriving&&!mountId&&!houseSystem?.isInside()});
   function update(dt,time){if(disposed)return;if(control&&!ride&&!inside&&!boating&&!mountId&&!carDriving&&!houseSystem?.isInside()&&inWater(s.x,s.z)){control.boardBalloon();}dt=Math.min(dt,.05);if(messageTime>0){messageTime-=dt;if(messageTime<=0)message.classList.remove('show');}
    const down=(...ks)=>ks.some(k=>keys.has(k));let dx=stick.x+(down('ArrowRight','d','D')?1:0)-(down('ArrowLeft','a','A')?1:0),dz=stick.z+(down('ArrowDown','s','S')?1:0)-(down('ArrowUp','w','W')?1:0);
    if(targetPoint&&panel.hidden){const x=targetPoint.x-s.x,z=targetPoint.z-s.z,d=Math.hypot(x,z);if(d<.25){targetPoint=route.shift()||null;marker.visible=!!targetPoint;}else{dx=x/d;dz=z/d;}}
@@ -606,7 +610,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
     if(chase)danger=true;if(chase&&dist<1.25&&active){s.x=lastShore.x;s.z=lastShore.z;ax=s.x;az=s.z;ay=height(ax,az);swimming=false;danger=false;rescueCooldown=8;s.growth=1;bodyScale=1;eating=0;energy=0;targetPoint=null;route=[];blur();tell('🐢 Pip te llevó a la playa. ¡Pequeña y a salvo!','🐢 Pip brought you to shore. Small again. Safe!');save();}}
    host.classList.toggle('shark-nearby',danger);ripple.visible=swimming;ripple.position.set(ax,-.03,az);ripple.scale.setScalar(1+(motion()?Math.sin(time*4)*.12:0));arms.forEach((arm,i)=>{arm.rotation.x=mountId?-.7:swimming&&motion()?Math.sin(time*7+i*Math.PI)*.9:0;});
 
-   if(ride){if(active){const ease=1-Math.exp(-dt*6);flightVX+=(dx/Math.max(1,len)*18-flightVX)*ease;flightVZ+=(dz/Math.max(1,len)*18-flightVZ)*ease;let nx=s.x+flightVX*dt,nz=s.z+flightVZ*dt;const edge=Math.max(1,Math.hypot(nx/169.8,nz/144.8));s.x=nx/edge;s.z=nz/edge;if(len)avatar.rotation.y=Math.atan2(dx,dz);if(waterLanding&&Math.hypot(s.x-waterLanding.x,s.z-waterLanding.z)<3){flightTarget=.4;waterLanding=null;}if(cosmicDestination&&Math.hypot(s.x-cosmicDestination.x,s.z-cosmicDestination.z)<1.2){flightTarget=height(s.x,s.z)+.3;cosmicDestination=null;targetPoint=null;flightVX=flightVZ=0;}const floor=inWater(s.x,s.z)?.4:onDock(s.x,s.z)?.58:height(s.x,s.z);const clearance=Math.hypot(s.x+1,s.z+5)<2.5?height(-1,-5)+9:floor;const destination=Math.max(flightTarget,clearance+.5);flightY+=Math.sign(destination-flightY)*Math.min(Math.abs(destination-flightY),dt*4);s.flight=flightY;autosave+=dt;if(autosave>2){save();autosave=0;}if(!inWater(s.x,s.z)&&flightTarget<=floor+.5&&flightY<=floor+.6){ride=0;s.flight=0;clearLanding();swimming=inWater(s.x,s.z);tell('🧞 ¡Aterrizaste!','🧞 Landed!');save();}}ax=s.x;az=s.z;ay=flightY+.68;}
+   if(ride){if(active){const ease=1-Math.exp(-dt*6);flightVX+=(dx/Math.max(1,len)*18-flightVX)*ease;flightVZ+=(dz/Math.max(1,len)*18-flightVZ)*ease;let nx=s.x+flightVX*dt,nz=s.z+flightVZ*dt;const edge=Math.max(1,Math.hypot(nx/169.8,nz/144.8));s.x=nx/edge;s.z=nz/edge;if(len)avatar.rotation.y=Math.atan2(dx,dz);if(waterLanding&&Math.hypot(s.x-waterLanding.x,s.z-waterLanding.z)<3){flightTarget=.4;waterLanding=null;}if(cosmicDestination&&Math.hypot(s.x-cosmicDestination.x,s.z-cosmicDestination.z)<1.2){s.x=cosmicDestination.x;s.z=cosmicDestination.z;flightTarget=height(s.x,s.z)+.3;cosmicDestination=null;targetPoint=null;flightVX=flightVZ=0;}const floor=inWater(s.x,s.z)?.4:onDock(s.x,s.z)?.58:height(s.x,s.z);const clearance=Math.hypot(s.x+1,s.z+5)<2.5?height(-1,-5)+9:floor;const destination=Math.max(flightTarget,clearance+.5);flightY+=Math.sign(destination-flightY)*Math.min(Math.abs(destination-flightY),dt*4);s.flight=flightY;autosave+=dt;if(autosave>2){save();autosave=0;}if(!inWater(s.x,s.z)&&flightTarget<=floor+.5&&flightY<=floor+.6){ride=0;s.flight=0;clearLanding();swimming=inWater(s.x,s.z);tell('🧞 ¡Aterrizaste!','🧞 Landed!');save();}}ax=s.x;az=s.z;ay=flightY+.68;}
    if(active){impactLeft=Math.max(0,impactLeft-dt);if(landed)giantLanding();}
    const impactStrength=motion()?impactPower*impactLeft/1.2:0,impactPhase=(1.2-impactLeft)*22;
    impactWave.visible=impactStrength>0;impactWave.scale.setScalar(1+(1.2-impactLeft)*(5+impactPower*5));impactWave.material.opacity=impactStrength*.75;
@@ -729,7 +733,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    workshop?.update(dt,time);estateWorld?.update(dt);
    cityLife?.update(dt,active,{x:s.x,z:s.z,driving:carDriving,flying:!!ride||birdAltitude>2,indoors:inside||houseSystem?.isInside()});
    cityGuideButton.hidden=!cityLife?.isHere(s.x,s.z)||inside||houseSystem?.isInside();
-   life.update(dt,active,motion());realms.update(dt,active,ride?'fly':swimming?'swim':boating?'boat':'walk',ay);journey.update(dt,active,ride?'fly':swimming?'swim':boating?'boat':'walk',ay);story.update(dt,time);if(host.classList.contains("story-nearby")){lesson.hidden=true;guideBeacon.visible=false;}
+   life.update(dt,active,motion());wishSystem?.update(dt,time);realms.update(dt,active,ride?'fly':swimming?'swim':boating?'boat':'walk',ay);journey.update(dt,active,ride?'fly':swimming?'swim':boating?'boat':'walk',ay);story.update(dt,time);if(host.classList.contains("story-nearby")){lesson.hidden=true;guideBeacon.visible=false;}
    // The previous small chapter lessons are still playable, but they now
    // contribute to a single tangible project in each the cosmos location.
    const regionId=regionForPosition(s.x,s.z),mission=missionStatus(s,state,regionId);
@@ -765,7 +769,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    act.classList.toggle('has-target',!act.hidden&&panel.hidden);
    for(const [button,words] of buttonUpdates)paintButton(button,words);buttonUpdates.clear();
   }
-  return {update,dispose(){estateWorld?.dispose();estateWorld=null;regionWorld?.dispose();regionWorld=null;workshop?.dispose();workshop=null;volcanoStatus.remove();cityLife?.dispose();cityLife=null;houseSystem?.dispose();houseSystem=null;friendSystem?.dispose();friendSystem=null;wildLife=null;realms.dispose();journey.dispose();life.dispose();story.dispose();canvas.removeEventListener('pointerdown',walkTo);control=null;}};
+  return {update,dispose(){wishSystem?.dispose();wishSystem=null;estateWorld?.dispose();estateWorld=null;regionWorld?.dispose();regionWorld=null;workshop?.dispose();workshop=null;volcanoStatus.remove();cityLife?.dispose();cityLife=null;houseSystem?.dispose();houseSystem=null;friendSystem?.dispose();friendSystem=null;wildLife=null;realms.dispose();journey.dispose();life.dispose();story.dispose();canvas.removeEventListener('pointerdown',walkTo);control=null;}};
  }
  function dispose(){if(disposed)return;adventureMap.dispose();host.classList.remove('inside-lighthouse','is-swimming','shark-nearby');joy.boat?.(false);disposed=true;generation++;clearTimeout(startTimer);clearTimeout(recoveryTimer);canvas.removeEventListener('webglcontextlost',contextLost);canvas.removeEventListener('webglcontextrestored',contextRestored);save();engine?.dispose();engine=null;document.removeEventListener('keydown',keydown);document.removeEventListener('keyup',keyup);window.removeEventListener('blur',blur);document.removeEventListener('visibilitychange',blur);keys.clear();}
  return {dispose};

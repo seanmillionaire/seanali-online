@@ -1,4 +1,4 @@
-import {islandPoint} from './explore-state.js?v=genie1';
+import {islandPoint} from './explore-state.js?v=genie2';
 /* One shared photographic atlas; textured cutouts keep the natural detail inexpensive on phones. */
 export function createTropical({T,scene,camera,height,geometry,mat,make,ball,renderer,surfaces=null}){
  const temp=new T.Vector3();let loaded=false;const textures=[],cards=[],wildlife=[],atlas=new T.TextureLoader().load('/games/adventure/tropical-atlas.png',()=>{loaded=true;cards.forEach(c=>c.visible=true);if(renderer)renderer.shadowMap.needsUpdate=true;});textures.push(atlas);atlas.colorSpace=T.SRGBColorSpace;atlas.anisotropy=4;

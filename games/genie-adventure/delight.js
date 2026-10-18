@@ -7,7 +7,7 @@ export function createDelight({soundEnabled,motionEnabled}) {
     if(!soundEnabled()||document.hidden)return false;
     try {
       if(!context){const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)return false;context=new Audio();master=context.createGain();master.gain.value=.65;master.connect(context.destination);ambience=context.createGain();ambience.gain.value=.24;ambience.connect(master);
-        musicBus=context.createGain();musicBus.gain.value=.0001;musicBus.connect(master);
+        musicBus=context.createGain();musicBus.gain.value=.0001;const velvet=context.createBiquadFilter();velvet.type='lowpass';velvet.frequency.value=1600;musicBus.connect(velvet);velvet.connect(master);const reverb=context.createConvolver(),wet=context.createGain(),impulse=context.createBuffer(2,context.sampleRate*3,context.sampleRate);for(let ch=0;ch<2;ch++){const d=impulse.getChannelData(ch);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2.5)*.4;}reverb.buffer=impulse;wet.gain.value=.22;velvet.connect(reverb);reverb.connect(wet).connect(master);
         musicNoise=context.createBuffer(1,Math.ceil(context.sampleRate*.12),context.sampleRate);
         const noiseData=musicNoise.getChannelData(0);
         for(let i=0;i<noiseData.length;i++)noiseData[i]=Math.random()*2-1;}
@@ -65,79 +65,29 @@ export function createDelight({soundEnabled,motionEnabled}) {
     if(name==='friend'){voice(600,.12,{end:850,volume:.055});voice(740,.19,{end:1100,volume:.045,delay:.12});return;}
     if(name==='travel'){[0,2,5].forEach((n,i)=>voice(scale[n],.25,{delay:i*.07,volume:.06}));}
   }
-  // Light, upbeat island-adventure theme. Synthesized locally: no audio downloads,
-  // no licensing dependencies, and no music before a user gesture.
-  const THEME_BEAT=60/116;
-  const themeMelodies=[
-    [72,76,79,76,74,79,81,79],
-    [69,72,77,81,79,77,76,null],
-    [71,74,79,83,81,79,74,71],
-    [76,72,69,72,76,79,76,null],
-    [79,76,72,74,76,79,81,79],
-    [81,77,76,72,76,77,79,null],
-    [79,74,71,74,79,81,83,79],
-    [76,72,69,72,74,76,72,null]
-  ];
-  const themeHarmony=[
-    {bass:48,chord:[60,64,67]}, // C
-    {bass:41,chord:[60,65,69]}, // F
-    {bass:43,chord:[59,62,67]}, // G
-    {bass:45,chord:[60,64,69]}, // Am
-    {bass:48,chord:[60,64,67]},
-    {bass:41,chord:[60,65,69]},
-    {bass:43,chord:[59,62,67]},
-    {bass:48,chord:[60,64,67]}
-  ];
+  // Slow, beat-free cosmic meditation. Long sine pads and sparse glass bells;
+  // no island melody, bass pulse, hats, or percussion in the background score.
+  const THEME_BEAT=1.5;
+  const themeHarmony=[[48,55,62,64],[45,52,59,62],[41,48,55,60],[43,50,57,62]];
   let musicBus=null,musicNoise=null,musicTimer=null,nextMusicTime=0,musicBar=0;
   const musicNodes=new Set();
   const midi=n=>440*Math.pow(2,(n-69)/12);
-  function musicSound(freq,at,len,volume,type='sine',drop=1){
-    if(!context||!musicBus||musicNodes.size>110)return;
+  function musicSound(freq,at,len,volume,{bell=false,detune=0}={}){
+    if(!context||!musicBus||musicNodes.size>80)return;
     const oscillator=context.createOscillator(),gain=context.createGain();
-    oscillator.type=type;
-    oscillator.frequency.setValueAtTime(freq,at);
-    if(drop!==1)oscillator.frequency.exponentialRampToValueAtTime(Math.max(25,freq*drop),at+len);
+    oscillator.type='sine';oscillator.frequency.setValueAtTime(freq,at);oscillator.detune.value=detune;
     gain.gain.setValueAtTime(.0001,at);
-    gain.gain.exponentialRampToValueAtTime(volume,at+.008);
+    gain.gain.exponentialRampToValueAtTime(volume,at+(bell?.08:2.8));
+    if(!bell)gain.gain.setValueAtTime(volume*.8,at+len*.45);
     gain.gain.exponentialRampToValueAtTime(.0001,at+len);
-    oscillator.connect(gain).connect(musicBus);
-    oscillator.start(at);oscillator.stop(at+len+.02);
-    musicNodes.add(oscillator);
-    oscillator.onended=()=>{musicNodes.delete(oscillator);oscillator.disconnect();gain.disconnect();};
-  }
-  function musicHat(at,volume=.035){
-    if(!musicNoise||!musicBus||musicNodes.size>110)return;
-    const source=context.createBufferSource(),filter=context.createBiquadFilter(),gain=context.createGain(),duration=.075;
-    source.buffer=musicNoise;filter.type='highpass';filter.frequency.value=4700;
-    gain.gain.setValueAtTime(.0001,at);
-    gain.gain.linearRampToValueAtTime(volume,at+.003);
-    gain.gain.exponentialRampToValueAtTime(.0001,at+duration);
-    source.connect(filter).connect(gain).connect(musicBus);
-    source.start(at);source.stop(at+duration+.01);
-    musicNodes.add(source);
-    source.onended=()=>{musicNodes.delete(source);source.disconnect();filter.disconnect();gain.disconnect();};
+    oscillator.connect(gain).connect(musicBus);oscillator.start(at);oscillator.stop(at+len+.03);
+    musicNodes.add(oscillator);oscillator.onended=()=>{musicNodes.delete(oscillator);oscillator.disconnect();gain.disconnect();};
   }
   function scheduleTheme(at){
-    for(let offset=0;offset<2;offset++){
-      const bar=(musicBar+offset)%8,start=at+offset*4*THEME_BEAT;
-      const melody=themeMelodies[bar],harmony=themeHarmony[bar];
-      // Bright marimba/steelpan-like lead with deliberate gaps so effects stay audible.
-      melody.forEach((note,i)=>{
-        if(note===null)return;
-        musicSound(midi(note),start+i*THEME_BEAT/2,.22, i%2===0?.09:.07,'sine');
-        if(i===0||i===4)musicSound(midi(note+12),start+i*THEME_BEAT/2,.11,.016,'triangle');
-      });
-      // Off-beat island chords, warm bouncing bass and light hand percussion.
-      for(const point of [0.5,2.5])
-        for(const note of harmony.chord)musicSound(midi(note),start+point*THEME_BEAT,.24,.027,'triangle');
-      for(let beat=0;beat<4;beat++){
-        musicSound(midi(harmony.bass+(beat===2?7:0)),start+beat*THEME_BEAT,.34,beat===0?.115:.084,'sine');
-        if(beat%2===0)musicSound(125,start+beat*THEME_BEAT,.16,.08,'sine',.4);
-        else musicHat(start+beat*THEME_BEAT,.065);
-        musicHat(start+(beat+.5)*THEME_BEAT,beat===3?.055:.038);
-      }
-    }
-    musicBar=(musicBar+2)%8;
+    const chord=themeHarmony[musicBar%themeHarmony.length];
+    chord.forEach((n,i)=>{musicSound(midi(n),at+i*.18,17,.032,{detune:-3});musicSound(midi(n),at+i*.18,17,.022,{detune:3});});
+    const bell=chord[2]+12;musicSound(midi(bell),at+4.5,7,.036,{bell:true});
+    musicSound(midi(chord[3]+12),at+10,8,.025,{bell:true});musicBar++;
   }
   function stopTheme(){
     if(musicTimer!==null)clearTimeout(musicTimer);
@@ -151,41 +101,33 @@ export function createDelight({soundEnabled,motionEnabled}) {
   }
   function runTheme(){
     musicTimer=null;
-    if(!unlocked||!soundEnabled()||document.hidden||scene!=='explore'||!ready())return;
+    if(!unlocked||!soundEnabled()||document.hidden||!['explore','welcome','home','map'].includes(scene)||!ready())return;
     const now=context.currentTime;
     if(nextMusicTime<now-.4)nextMusicTime=now+.1;
     while(nextMusicTime<now+.7){
       scheduleTheme(nextMusicTime);
-      nextMusicTime+=8*THEME_BEAT;
+      nextMusicTime+=12;
     }
     musicTimer=setTimeout(runTheme,250);
   }
   function startTheme(){
-    if(!unlocked||scene!=='explore'||!ready())return;
+    if(!unlocked||!['explore','welcome','home','map'].includes(scene)||!ready())return;
     if(musicTimer!==null)return;
     const now=context.currentTime;
     musicBus.gain.cancelScheduledValues(now);
-    musicBus.gain.setTargetAtTime(.4,now,.15);
+    musicBus.gain.setTargetAtTime(.58,now,1.5);
     if(nextMusicTime===0)nextMusicTime=now+.15;
     runTheme();
   }
   function stopAmbient(){clearTimeout(ambientTimer);ambientTimer=null;}
-  function ambientPhrase(){
-    stopAmbient();if(!unlocked||!soundEnabled()||document.hidden||!['map','home','welcome'].includes(scene)||!ready())return;
-    // Quiet surf, a few distant birds, and a sparse five-note music-box phrase.
-    noise(3.8,.1,'lowpass',450,true);
-    const melody=[[0,2,4,2],[2,4,5,4],[0,4,2,0],[4,5,2,0]][phrase++%4];
-    melody.forEach((n,i)=>voice(scale[n],1.6,{volume:.035,delay:1+i*.65,ambient:true}));
-    voice(1700,.12,{end:2400,volume:.028,delay:.5,ambient:true});voice(2200,.16,{end:1600,volume:.02,delay:.7,ambient:true});
-    ambientTimer=setTimeout(ambientPhrase,6500);
-  }
+  function ambientPhrase(){stopAmbient();if(unlocked&&soundEnabled()&&!document.hidden)startTheme();}
   function sync(){
     if(!soundEnabled()||document.hidden){stopBoat();stopAmbient();stopTheme();if(context){for(const o of voices){try{o.stop();}catch{}}context.suspend().catch(()=>{});}return;}
     if(unlocked&&ready()){master.gain.setValueAtTime(.65,context.currentTime);if(scene==='explore')startTheme();else ambientPhrase();if(boatRequested)startBoat();}
   }
   function gesture(){if(!unlocked){unlocked=true;sync();}}
   function setScene(next){if(next!==scene)stopTheme();if(next!=='explore'){boatRequested=false;stopBoat();}scene=next;stopAmbient();if(ambience&&context){ambience.gain.cancelScheduledValues(context.currentTime);ambience.gain.setTargetAtTime(['map','home','welcome'].includes(scene)?.24:.0001,context.currentTime,.12);}if(unlocked){if(scene==='explore')startTheme();else ambientPhrase();}}
-  function duck(){if(!ambience||!context)return;const at=context.currentTime;if(boatBus){boatBus.gain.cancelScheduledValues(at);boatBus.gain.setTargetAtTime(.18,at,.08);boatBus.gain.setTargetAtTime(.72,at+4,.4);}ambience.gain.cancelScheduledValues(at);ambience.gain.setTargetAtTime(.025,at,.08);if(['map','home','welcome'].includes(scene))ambience.gain.setTargetAtTime(.24,at+4,.7);if(musicBus&&scene==='explore'){musicBus.gain.cancelScheduledValues(at);musicBus.gain.setTargetAtTime(.07,at,.08);musicBus.gain.setTargetAtTime(.4,at+5,.55);}}
+  function duck(){if(!ambience||!context)return;const at=context.currentTime;if(boatBus){boatBus.gain.cancelScheduledValues(at);boatBus.gain.setTargetAtTime(.18,at,.08);boatBus.gain.setTargetAtTime(.72,at+4,.4);}ambience.gain.cancelScheduledValues(at);ambience.gain.setTargetAtTime(.025,at,.08);if(['map','home','welcome'].includes(scene))ambience.gain.setTargetAtTime(.24,at+4,.7);if(musicBus&&scene==='explore'){musicBus.gain.cancelScheduledValues(at);musicBus.gain.setTargetAtTime(.07,at,.08);musicBus.gain.setTargetAtTime(.58,at+5,1.5);}}
   const visibility=()=>{if(document.hidden)window.speechSynthesis?.cancel();sync();};document.addEventListener('visibilitychange',visibility);
   return {boat,get boatActive(){return !!boatBus;},note,drum,effect,gesture,sync,setScene,duck,get voiceCount(){return voices.size;},get ambientScheduled(){return ambientTimer!==null;},destroy(){boatRequested=false;stopBoat();stopAmbient();stopTheme();document.removeEventListener('visibilitychange',visibility);context?.close();}};
 }

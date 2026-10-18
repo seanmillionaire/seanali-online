@@ -1,23 +1,23 @@
-import {worldIslands} from './explore-state.js?v=genie1';
+import {worldIslands} from './explore-state.js?v=genie2';
 
 // Dress the existing terrain and engine as floating realms. Coordinates and
 // collision geometry stay shared with the cloned quests and building system.
 export function dressCosmos(T,{scene,geometry,mat,make,ball,cone,motion}){
   const group=new T.Group();group.name='Cosmic orbits';scene.add(group);
-  scene.background=new T.Color('#090923');scene.fog=new T.FogExp2('#14102d',.0018);
+  scene.background=new T.Color('#293c60');scene.fog=new T.FogExp2('#293c60',.0013);
   const colors=['#8e70ce','#44b9c5','#cda65d','#bd617e','#629cde','#9366cd','#6b80b5'];
   const tinted=new Set();
   scene.traverse(o=>{
     if(/Ocean wildlife/i.test(o.name))o.visible=false;
     const colors=o.geometry?.attributes?.color;
-    if(colors&&!tinted.has(o.geometry)){tinted.add(o.geometry);const c=new T.Color(),h={};for(let i=0;i<colors.count;i++){c.fromBufferAttribute(colors,i);c.getHSL(h);c.setHSL(.64+(h.h*.25),Math.max(.22,h.s*.7),Math.max(.2,h.l));colors.setXYZ(i,c.r,c.g,c.b);}colors.needsUpdate=true;}
+    if(colors&&!tinted.has(o.geometry)){tinted.add(o.geometry);const c=new T.Color(),h={};for(let i=0;i<colors.count;i++){c.fromBufferAttribute(colors,i);c.getHSL(h);c.setHSL(.64+(h.h*.25),Math.max(.22,h.s*.7),Math.max(.46,h.l));colors.setXYZ(i,c.r,c.g,c.b);}colors.needsUpdate=true;}
     if(!o.isMesh||!o.material)return;
     for(const m of Array.isArray(o.material)?o.material:[o.material]){
       if(!m.color||m.userData.cosmic)continue;m.userData.cosmic=true;
       const hsl={};m.color.getHSL(hsl);
       if(hsl.h>.16&&hsl.h<.48){m.color.setHSL(.69+(hsl.h-.16)*.35,Math.max(.25,hsl.s),Math.max(.2,hsl.l));}
-      if(m.vertexColors)m.color.set('#b1a1ed');
-      if(m.emissive&&hsl.s>.22){m.emissive.copy(m.color);m.emissiveIntensity=.12;}
+      if(m.vertexColors)m.color.set('#f2edff');
+      if(m.emissive&&hsl.s>.22){m.emissive.copy(m.color);m.emissiveIntensity=.22;}
     }
     // The ocean shader and seabed become open space. The gameplay surface
     // boundaries are retained, with automatic magic flight at their edges.

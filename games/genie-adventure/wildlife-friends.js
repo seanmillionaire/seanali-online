@@ -1,6 +1,6 @@
-import {explorePlaces,earnCoins} from './explore-state.js?v=genie1';
-import {oceanModel} from './ocean-models.js?v=genie1';
-import {createAnimalDetails} from './animal-details.js?v=genie1';
+import {explorePlaces,earnCoins} from './explore-state.js?v=genie2';
+import {oceanModel} from './ocean-models.js?v=genie2';
+import {createAnimalDetails} from './animal-details.js?v=genie2';
 // Repeatable, optional play with six friends in the 3D world.
 export const islandFriends=[
  {id:'pip',icon:'🐢',name:'Pip',where:['Santuario del Genio','Santuario del Genio'],game:['Búsqueda de conchas','Shell hunt'],hello:['¡Kyro! ¿Buscamos conchitas juntos?','Kyro! Shall we look for shells together?']},

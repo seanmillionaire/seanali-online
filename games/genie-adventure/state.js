@@ -1,5 +1,5 @@
-import {normalizeExplore,normalizeWallet,syncWallet} from './explore-state.js?v=genie1';
-import {quests} from './content.js?v=genie1';
+import {normalizeExplore,normalizeWallet,syncWallet} from './explore-state.js?v=genie2';
+import {quests} from './content.js?v=genie2';
 export const SAVE_KEY='genie-adventure-v1';
 export function fresh(){return {version:1,started:false,lang:'en',sound:true,motion:true,completed:{},active:null,islandLessons:{completed:{},attempts:{}},discovered:[],palette:0,song:Array(24).fill(false),seen:[],wallet:normalizeWallet(null),world:normalizeExplore(null)};}
 export function normalize(raw){const s=fresh();if(!raw||raw.version!==1)return s;s.world=normalizeExplore(raw.world);s.wallet=normalizeWallet(raw.wallet);

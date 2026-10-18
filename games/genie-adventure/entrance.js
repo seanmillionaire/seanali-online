@@ -1,8 +1,8 @@
-import {dressCosmos} from './cosmos.js?v=genie1';
-import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=genie1';
-import {createTropical} from './tropical.js?v=genie1';
-import {createSurfaceTextures} from './surface-textures.js?v=genie1';
-import {installPolyHavenMaterials} from './polyhaven-materials.js?v=genie1';
+import {dressCosmos} from './cosmos.js?v=genie2';
+import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=genie2';
+import {createTropical} from './tropical.js?v=genie2';
+import {createSurfaceTextures} from './surface-textures.js?v=genie2';
+import {installPolyHavenMaterials} from './polyhaven-materials.js?v=genie2';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
 export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import('/games/adventure/vendor/three.module.min.js')}={}) {
   let disposed=false,world=null,pending=null;
@@ -19,10 +19,10 @@ export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import(
 }
 export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={}) {
   const renderer=new T.WebGLRenderer({canvas,antialias:!light,alpha:false,powerPreference:'default'});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,light?1:1.5));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.02;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,light?1:1.5));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.24;
   renderer.shadowMap.enabled=!light;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
-  const scene=new T.Scene();scene.background=new T.Color('#090923');scene.fog=new T.FogExp2('#b0d1dc',.0025);
-  const camera=new T.PerspectiveCamera(42,1,.2,550),sun=new T.DirectionalLight('#fff0d2',3.0);sun.position.set(-22,38,18);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-30;sun.shadow.camera.right=30;sun.shadow.camera.top=30;sun.shadow.camera.bottom=-30;sun.shadow.normalBias=.1;const ambient=new T.HemisphereLight('#c9edff','#58623c',1.45);scene.add(sun,ambient);
+  const scene=new T.Scene();scene.background=new T.Color('#293c60');scene.fog=new T.FogExp2('#293c60',.0013);
+  const camera=new T.PerspectiveCamera(42,1,.2,550),sun=new T.DirectionalLight('#fff0d2',3.0);sun.position.set(-22,38,18);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-30;sun.shadow.camera.right=30;sun.shadow.camera.top=30;sun.shadow.camera.bottom=-30;sun.shadow.normalBias=.1;const ambient=new T.HemisphereLight('#c9edff','#b9b3ca',2.35);scene.add(sun,ambient);
   const geometries=new Set(),materials=new Set(),clouds=[],bobbing=[];let seed=4107;
   const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
   const geometry=g=>{geometries.add(g);return g;};
