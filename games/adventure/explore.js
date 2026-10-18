@@ -626,7 +626,10 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   regionWorld=createRegionProjectWorld({T,scene,state,make,mat,ball,box,cone,cylinder,height});
   refresh();
   houseSystem=createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,height,surfaces,language:state.lang,companionId:()=>s.friends?.companion,onPizza:()=>cityLife?.order(),
-    estateBuildings:()=>s.estate?.buildings||[],onUpgrade:id=>{
+    estateBuildings:()=>s.estate?.buildings||[],
+    workshopBuildings:()=>workshop?.recipes?.filter(b=>workshop.isBuilt(b.id))||[],
+    onUseWorkshop:id=>{const r=workshop?.recipes?.find(r=>r.id===id);if(!r)return false;const result=workshop.use(id);if(!result)tell('🛠️ ¡Usa el taller!','🛠️ Use your workshop!');return result;},
+    onUpgrade:id=>{
      if(!canUpgradeEstate(s,id,coinBalance(state)))return false;
      if(!upgradeEstate(s,id,coinBalance(state)))return false;
      estateWorld?.upgrade(id);save();refresh();joy.effect('finish');return true;
