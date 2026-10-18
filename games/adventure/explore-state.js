@@ -94,7 +94,8 @@ const FRIEND_IDS=['pip','dori','mila','ollie','luna','kai'],savedFriends=raw.fri
 s.friends={
  visits:[...new Set((Array.isArray(savedFriends.visits)?savedFriends.visits:[]).filter(id=>FRIEND_IDS.includes(id)))],
  completed:[...new Set((Array.isArray(savedFriends.completed)?savedFriends.completed:[]).filter(id=>FRIEND_IDS.includes(id)))],
- companion:FRIEND_IDS.includes(savedFriends.companion)?savedFriends.companion:null
+ companion:FRIEND_IDS.includes(savedFriends.companion)?savedFriends.companion:null,
+ called:[...new Set((Array.isArray(savedFriends.called)?savedFriends.called:[]).filter(id=>FRIEND_IDS.includes(id)))]
 };
 const savedCity=raw.city||{},car=savedCity.car||{},withinCity=(x,z)=>Number.isFinite(x)&&Number.isFinite(z)&&Math.hypot((x+100)/58,(z+74)/48)<.86;
 s.city={bags:[...new Set((Array.isArray(savedCity.bags)?savedCity.bags:[]).filter(id=>/^bag-(?:[0-9]|1[0-9]|2[0-3])$/.test(id)))],
