@@ -5,11 +5,11 @@ import {createIslandLife} from './island-life.js?v=74';
 import {createWorldStory,islandStories} from './world-story.js?v=73';
 import {REGION_PROJECTS,regionForPosition,missionStatus,restoreRegions,createRegionProjectWorld} from './region-projects.js?v=73';
 import {createWorldMap} from './world-map.js?v=73';
-import {createWildlifeFriends} from './wildlife-friends.js?v=73';
+import {createWildlifeFriends} from './wildlife-friends.js?v=79';
 import {createHouseInteriors} from './house-interiors.js?v=73';
 import {createPizzaCity} from './pizza-city.js?v=73';
 import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=73';
-import {ESTATE_PLANS,findEstateSite,canBuildEstate,buildEstate,canUpgradeEstate,upgradeEstate,estateBlocked,createEstateWorld} from './estate.js?v=2';
+import {ESTATE_PLANS,estateCosts,estateMissing,findEstateSite,canBuildEstate,buildEstate,canUpgradeEstate,upgradeEstate,estateBlocked,createEstateWorld} from './estate.js?v=3';
 import {buildIsland} from './entrance.js?v=73';
 import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,sharkPatrol,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=76';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
@@ -133,8 +133,17 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  const mobileDock=makeEl('nav','mobile-game-dock');mobileDock.setAttribute('aria-label',say('Controles del mundo','World controls'));
  const dockMap=btn(say('🗺️ Mapa','🗺️ Map'),'mobile-dock-map',()=>{setHelpers(false);showDiscover();});
  const dockBuild=btn(say('🏰 Construir','🏰 Build'),'mobile-dock-build',showEstate);
+ const dockFriend=btn(say('🫶 Amigos','🫶 Friends'),'mobile-dock-friend',()=>{
+  if(friendSystem?.companion()){
+   const friendId=friendSystem.companion();
+   if(friendSystem.sendHome())tell('🏡 ¡Tu amigo vuelve a su hogar!','🏡 Your friend is heading home!');
+   return;
+  }
+  if(friendSystem)friendSystem.openDirectory();
+  else tell('🐢 Tus amigos están llegando…','🐢 Your friends are loading…');
+ });
  const dockMore=btn(say('☰ Más','☰ More'),'mobile-dock-more',()=>setHelpers(!host.classList.contains('helpers-open')));
- mobileDock.append(dockMap,dockBuild,dockMore);
+ mobileDock.append(dockMap,dockBuild,dockFriend,dockMore);
  const mobileShade=btn('×','mobile-menu-shade',()=>setHelpers(false));mobileShade.setAttribute('aria-label',say('Cerrar menú','Close menu'));
  
  const catchButton=btn('🦋','world-catch catch-action',()=>control?.catchNearest());catchButton.hidden=true;actions.append(catchButton);
@@ -148,7 +157,12 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  refresh();
  const buttonUpdates=new Map();
  function setText(e,t){if(e.tagName==='BUTTON')buttonUpdates.set(e,t);else if(e.textContent!==t)e.textContent=t;}
- function refresh(){paintButton(craftButton,'🎒 '+say('Construir','Build')+' '+(s.craft?.built?.length||0)+'/7');paintButton(walletButton,'🪙 '+coinBalance(state));walletButton.setAttribute('aria-label',say('Mis monedas y tienda: ','My coins and shop: ')+coinBalance(state));const total=s.estate?.buildings?.length||0;bag.textContent=`🍌 ${s.food.banana}   🥥 ${s.food.coconut}   🪙 ${coinBalance(state)}   🍀 ${s.estate?.charms||0}`;dockBuild.setAttribute('aria-label',say('Construir mi pueblo','Build my village')+' · '+total);}
+ function refresh(){paintButton(craftButton,'🎒 '+say('Construir','Build')+' '+(s.craft?.built?.length||0)+'/7');paintButton(walletButton,'🪙 '+coinBalance(state));walletButton.setAttribute('aria-label',say('Mis monedas y tienda: ','My coins and shop: ')+coinBalance(state));const total=s.estate?.buildings?.length||0;bag.textContent=`🍌 ${s.food.banana}   🥥 ${s.food.coconut}   🪙 ${coinBalance(state)}   🍀 ${s.estate?.charms||0}`;dockBuild.setAttribute('aria-label',say('Construir mi pueblo','Build my village')+' · '+total);
+ const companion=friendSystem?.companion?.()||s.friends?.companion;
+ const names={pip:'Pip',dori:'Dori',mila:'Mila',ollie:'Ollie',luna:'Luna',kai:'Kai'};
+ dockFriend.textContent=companion?'🏡 '+say('A casa','Go home'):'🫶 '+say('Amigos','Friends');
+ dockFriend.classList.toggle('has-companion',!!companion);
+ dockFriend.setAttribute('aria-label',companion?say('Enviar a ','Send ')+(names[companion]||say('mi amigo','my friend'))+say(' a casa',' home'):say('Abrir mis amigos','Open my friends'));}
  function tell(a,b,force=true){guide(say(a,b),force);message.textContent=say(a,b);message.classList.add('show');messageTime=4.5;}
  function reward(id,a,b){if(badgeExplore(s,id)){const coins=earnCoins(state,id);if(coins){joy.effect('coin');a+=` +${coins} monedas.`;b+=` +${coins} coins.`;}joy.effect('finish');control?.spark(s.x,s.z,22);save();refresh();}tell(a,b);}
  function birdMount(){return mountId==='mila'||mountId==='ollie';}
