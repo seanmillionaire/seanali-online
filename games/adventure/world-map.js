@@ -54,8 +54,9 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
   const target=svgEl('circle',{r:6,fill:'none',stroke:'#fff3a1','stroke-width':2,
     'stroke-dasharray':'3 2',visibility:'hidden'});
   svg.append(target);
-  const group=svgEl('g',{'aria-label':say('Estás aquí','You are here')});
-  group.append(svgEl('circle',{r:8,fill:'#fcf7e6',stroke:'#123d46','stroke-width':1.7}));
+  const group=svgEl('g',{class:'island-map-player','aria-label':say('Estás aquí','You are here')});
+  group.append(svgEl('circle',{r:mini?10:12,fill:'#fff4b4',stroke:'#144753','stroke-width':2.5}));
+  group.append(svgEl('circle',{r:mini?7:9,fill:'#fffdf4',stroke:'#ee7e44','stroke-width':1}));
   const arrow=svgEl('path',{d:'M0 -6 L5 5 L0 2 L-5 5 Z',fill:'#ed6b36',stroke:'#843b22','stroke-width':'.7'});
   group.append(arrow);
   svg.append(group);
@@ -89,7 +90,7 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
   const frame=elem('div','island-map-frame');
   full=drawing(false);frame.append(full.svg);
   panel.append(frame,drawControls());
-  panel.append(elem('p','island-map-guide',say('📍 Panamá de fantasía: toca un destino para explorar. Las posiciones son de juego, no un mapa real.','📍 Fantasy Panama: tap a destination to explore. Locations are playful, not geographically exact.')));
+  panel.append(elem('p','island-map-guide',say('🧭 La flecha naranja eres tú. Toca una isla para visitarla.','🧭 The orange arrow is you. Tap an island to visit it.')));
   const destinations=elem('div','island-map-destinations');
   for(const island of land){
     const destination=islandTarget(island.id);if(!destination)continue;
@@ -97,7 +98,10 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
     b.type='button';b.addEventListener('click',()=>choose(island.id));
     destinations.append(b);
   }
-  panel.append(destinations);
+  const placesToggle=elem('details','island-map-places');
+  const placesHeading=elem('summary','island-map-places-toggle',say('📍 Ver lista de destinos','📍 Show destination list'));
+  placesToggle.append(placesHeading,destinations);
+  panel.append(placesToggle);
   update(true);closeButton.focus({preventScroll:true});
  }
  mini.addEventListener('click',open);
