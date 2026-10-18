@@ -167,3 +167,43 @@
  body[data-scene="explore"] .explore-world:has(.realm-panel:not([hidden])) .explore-stick,
  body[data-scene="explore"] .explore-world:has(.journey-panel:not([hidden])) .explore-stick{visibility:hidden;pointer-events:none}
 }
+
+
+/* Gameplay-regression fix: protect useful actions on small screens. */
+.estate-feedback{min-height:0;margin:3px 0 0!important;color:#864427;font-size:15px!important;line-height:1.42!important;font-weight:800}
+.estate-feedback:empty{display:none}
+.estate-view-button{min-height:46px;border:1px solid #a9c7ab;background:#e7f5e5;color:#215846;border-radius:12px;font-size:16px;font-weight:900;padding:8px}
+.estate-plan:not(.estate-ready) .estate-build-button{background:#e9efe3;color:#315d4f}
+.estate-plan.estate-ready:first-child .estate-build-button{background:#f6ca5e}
+.estate-costs{white-space:normal}
+@media(max-width:780px){
+ body[data-scene="explore"] .topbar .tools>.sound-toggle{
+  display:inline-flex!important;align-items:center;justify-content:center;
+  width:32px;height:34px;min-height:34px;min-width:32px;
+  padding:3px;font-size:19px;border-radius:10px;
+ }
+ body[data-scene="explore"] .mobile-game-dock{
+  width:calc(100% - 16px);max-width:395px;gap:5px;
+  bottom:max(115px,calc(env(safe-area-inset-bottom) + 111px));
+ }
+ body[data-scene="explore"] .mobile-game-dock button,
+ body[data-scene="explore"] .mobile-game-dock .mobile-dock-build{
+  flex:1 1 0;min-width:0;max-width:none;
+  padding:8px 3px;font-size:13px;line-height:1.18;
+  min-height:57px;overflow:hidden;text-overflow:ellipsis;
+ }
+ body[data-scene="explore"] .mobile-game-dock .mobile-dock-build{
+  flex:1.22 1 0;font-size:15px;
+ }
+ body[data-scene="explore"] .mobile-game-dock .mobile-dock-friend.has-companion{
+  background:#d8f1d3;border-color:#b1d5b2;color:#235a3c;
+ }
+ body[data-scene="explore"] .estate-plan{scroll-margin-top:25px}
+ body[data-scene="explore"] .estate-feedback{font-size:16px!important;text-align:center;margin:6px 0!important}
+ body[data-scene="explore"] .estate-view-button{width:100%;font-size:16px}
+}
+@media(max-width:380px){
+ body[data-scene="explore"] .mobile-game-dock{width:calc(100% - 10px);gap:3px}
+ body[data-scene="explore"] .mobile-game-dock button{font-size:12px;padding:7px 2px}
+ body[data-scene="explore"] .mobile-game-dock .mobile-dock-build{font-size:13px;padding:7px 2px}
+}
