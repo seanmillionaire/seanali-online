@@ -1,5 +1,5 @@
 import {createColonAdventure} from './colon-adventure.js?v=106';
-import {createCanalCruise} from './canal-cruise.js?v=104';
+import {createCanalCruise} from './canal-cruise.js?v=107';
 import {createRealms} from './realms.js?v=104';
 import {createJourney} from './journey.js?v=104';
 import {oceanModel} from './ocean-models.js?v=73';
