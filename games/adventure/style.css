@@ -757,3 +757,11 @@ body[data-scene="explore"] .island-map-mini,
 body[data-scene="explore"] .friend-peek,
 body[data-scene="explore"] .pizza-city-status,
 body[data-scene="explore"] .explore-bag{display:none!important;visibility:hidden!important;pointer-events:none!important}
+
+/* Backpack world hub: large, readable touch-friendly tiles for all activities. */
+body[data-scene="explore"] .backpack-world-hub{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin:12px auto 20px;max-width:660px}
+body[data-scene="explore"] .backpack-world-tile{min-width:0;min-height:94px;border-radius:17px;border:2px solid #d4e5dc;background:#fff9e9;color:#244c46;font-size:20px;font-weight:850;line-height:1.35;padding:12px 6px;white-space:normal;overflow-wrap:anywhere;box-shadow:0 3px 0 #cbdfd0}
+body[data-scene="explore"] .backpack-world-tile:focus-visible{outline:3px solid #3279a5;outline-offset:3px}
+body[data-scene="explore"] .backpack-workshops{scroll-margin-top:16px;margin-top:20px}
+body[data-scene="explore"] .backpack-return{display:block;position:sticky;bottom:0;margin:16px auto 5px;padding:12px 18px;min-height:54px;border-radius:14px;background:#fff0c2;font-weight:850;border:2px solid #d9ae65}
+@media(max-width:470px){body[data-scene="explore"] .backpack-world-hub{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}body[data-scene="explore"] .backpack-world-tile{font-size:16px;min-height:84px;padding:8px 2px}}
