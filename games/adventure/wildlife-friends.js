@@ -93,6 +93,21 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
   if(opened)openDirectory();
   return true;
  }
+ function callFriend(id){
+  const friend=islandFriends.find(f=>f.id===id);if(!friend)return false;
+  // Calling is an in-game invitation, not a real telephone connection.
+  if(friends.companion===id)return true;
+  if(mounted)dismount();
+  friends.companion=id;
+  if(id==='pip')s.pet=false;
+  const node=nodes.get(id);
+  if(node){
+   node.g.position.set(s.x+1.3,node.f.id==='dori'?Math.max(.25,node.g.position.y):0,s.z+1.4);
+  }
+  save();refresh();joy.effect('friend');
+  if(opened)close();
+  return true;
+ }
  function openDirectory(){
   opened='directory';gameActive=false;
   startPanel('🫶 '+say('¡Mis amigos de la isla!','My island friends!'),say('¡Visítalos y juega con ellos!','Go visit your friends and play together!'));
@@ -295,5 +310,5 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
  }
  function dismount(){const previous=mounted;mounted=null;if(previous){nodes.get(previous)?.g.scale.setScalar(1);onMount(null);save();}return previous;}
  function dispose(){close();directory.remove();labels.forEach(l=>l.remove());for(const n of nodes.values())scene.remove(n.g);}
- return {nearest,isNearby,open,openDirectory,close,update,hit,ride,dismount,sendHome,companion:()=>friends.companion,mounted:()=>mounted,isOpen:()=>opened!==null,dispose,hasCompanion:id=>friends.companion===id};
+ return {nearest,isNearby,open,openDirectory,close,update,hit,ride,dismount,sendHome,callFriend,companion:()=>friends.companion,mounted:()=>mounted,isOpen:()=>opened!==null,dispose,hasCompanion:id=>friends.companion===id};
 }
