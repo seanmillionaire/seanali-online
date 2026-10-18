@@ -155,3 +155,12 @@
  body[data-scene="explore"] .estate-upgrade-row{flex-direction:column;align-items:stretch}
  body[data-scene="explore"] .estate-upgrade-button{max-width:none}
 }
+
+/* Story activities remain tappable in the world; the old floating explanation
+   must never hide the persistent four-resource bar. */
+@media(max-width:780px){
+ body[data-scene="explore"] .story-nearby .explore-hud{visibility:visible!important}
+ body[data-scene="explore"] .explore-world:has(.friend-panel:not([hidden])) .explore-stick,
+ body[data-scene="explore"] .explore-world:has(.realm-panel:not([hidden])) .explore-stick,
+ body[data-scene="explore"] .explore-world:has(.journey-panel:not([hidden])) .explore-stick{visibility:hidden;pointer-events:none}
+}
