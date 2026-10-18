@@ -10,8 +10,8 @@ import {REGION_PROJECTS,regionForPosition,missionStatus,restoreRegions,createReg
 import {createWorldMap} from './world-map.js?v=105';
 import {createWildlifeFriends} from './wildlife-friends.js?v=85';
 import {createVillageBuilders} from './village-builders.js?v=1';
-import {createHouseInteriors} from './house-interiors.js?v=105';
-import {createPizzaCity} from './pizza-city.js?v=104';
+import {createHouseInteriors} from './house-interiors.js?v=112';
+import {createPizzaCity} from './pizza-city.js?v=112';
 import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=73';
 import {ESTATE_PLANS,estateCosts,estateMissing,findEstateSite,canBuildEstate,buildEstate,canUpgradeEstate,upgradeEstate,estateBlocked,createEstateWorld} from './estate.js?v=5';
 import {buildIsland} from './entrance.js?v=111';

@@ -1,6 +1,7 @@
 // Five real walkable, furnished interiors. Exterior coordinates are never
 // overwritten while inside, so old saves and world navigation remain safe.
 export const villageHouses=[
+ {id:'purple-apartment',x:-122,z:-99.8,es:'Gran Torre Morada · Apartamentos',en:'Grand Purple Apartment Tower',icon:'🏢',theme:'play'},
  {id:'seaside',x:-10,z:5,es:'Casita de Playa Gorgona',en:'Gorgona Beach Cottage',icon:'🐚',theme:'sea'},
  {id:'books',x:-13,z:2,es:'Biblioteca de El Valle',en:'El Valle Storybook House',icon:'📚',theme:'books'},
  {id:'music',x:10,z:2,es:'Casa del Tamborito',en:'Tamborito Music House',icon:'🎶',theme:'music'},

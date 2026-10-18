@@ -1,3 +1,4 @@
+import {createPurpleApartment,PURPLE_APARTMENT} from './purple-apartment.js?v=112';
 import {spendFood} from './explore-state.js?v=73';
 /* Panama Adventure — substantial zero-dependency Casco Viejo city expansion.
    Roads and landmark buildings are genuine Three.js meshes; activities update
@@ -105,7 +106,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  }
  // Seven neighborhoods, ~50 distinct buildings with color and height variation.
  let buildingCount=0;
- const reserved=[...CITY_SITES,{x:-84,z:-60},{x:-106,z:-74},{x:-82,z:-68},{x:-97,z:-75},{x:-100,z:-62},
+ const reserved=[PURPLE_APARTMENT,...CITY_SITES,{x:-84,z:-60},{x:-106,z:-74},{x:-82,z:-68},{x:-97,z:-75},{x:-100,z:-62},
   ...CITY_DELIVERY,...CITY_RALLY,{x:-82,z:-68}];
  for(const dx of [-48,-37,-22,-8,8,22,36,48])for(const dz of [-40,-30,-18,-5,9,21,32,42]){
   if((dx/58)**2+(dz/48)**2>.76)continue;
@@ -138,6 +139,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
   }
  }
  flushDecor();
+ createPurpleApartment({T,group,make,mat,box,height});
  // Independence Plaza: fountain and animated centerpiece.
  const plaza=coord(1,12),fountain=new T.Group();fountain.position.set(plaza.x,height(plaza.x,plaza.z),plaza.z);group.add(fountain);
  makeObj(cylinder,stone,0,.38,0,3.8,.7,3.8,fountain);
