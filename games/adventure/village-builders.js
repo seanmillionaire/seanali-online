@@ -2,12 +2,12 @@
 export function createVillageBuilders({T,scene,host,state,make,mat,ball,box,cylinder,height,save,onTravel,language}){
  const es=language==='es',tr=(a,b)=>es?a:b;
  const specs=[
-  {id:'mateo',name:'Mateo',icon:'🔨',x:-10,z:-7,shirt:'#ed9b48',roof:'#da7953',project:['cabaña comunitaria','community cabin']},
-  {id:'sofia',name:'Sofía',icon:'⚙️',x:12,z:-6,shirt:'#9c85d8',roof:'#74bad0',project:['taller de inventos','invention workshop']}
+  {id:'mateo',name:'Mateo',icon:'🔨',x:-10,z:-7,away:{x:60,z:-60},shirt:'#ed9b48',roof:'#da7953',project:['cabaña comunitaria','community cabin']},
+  {id:'sofia',name:'Sofía',icon:'⚙️',x:12,z:-6,away:{x:105,z:10},shirt:'#9c85d8',roof:'#74bad0',project:['taller de inventos','invention workshop']}
  ];
  state.world.builders??={};
  const progress=state.world.builders,labels=[],nodes=[],skin=mat('#c78d69'),hair=mat('#362b30'),pants=mat('#3c6281'),timber=mat('#9b6b44'),stone=mat('#8d958d'),glass=mat('#bce8ed');
- const nearby=(node)=>Math.hypot(state.world.x-node.spec.x,state.world.z-node.spec.z)<5.5;
+ const nearby=(node)=>Math.hypot(state.world.x-node.g.position.x,state.world.z-node.g.position.z)<5.5;
  const el=(tag,cls,txt)=>{const v=document.createElement(tag);v.className=cls;v.textContent=txt;return v;};
  const button=(txt,action)=>{const v=el('button','friend-world-label',txt);v.type='button';v.addEventListener('click',action);host.append(v);labels.push(v);return v;};
  function build(spec){
@@ -90,8 +90,11 @@ export function createVillageBuilders({T,scene,host,state,make,mat,ball,box,cyli
    make(box,roof,0,1.67,0,2.85,.28,2.45,site);
    finishedSites.push(site);
   }
-  const label=button(spec.icon+' '+spec.name,()=>{if(nearby(node))show(node);else onTravel({x:spec.x,z:spec.z+2});});
-  const node={spec,g,arms,legs,tool,supplies,work,finished,finishedSites,base,supports,walls,roofParts,label,clock:0,saveClock:0,stage:-1,cycle:Math.max(0,Number(progress[spec.id]?.cycle)||0),elapsed:Math.max(0,Number(progress[spec.id]?.elapsed)||0)};
+  const ferry=new T.Group();scene.add(ferry);
+  make(box,mat('#af8253'),0,.24,0,1.7,.45,1.0,ferry);
+  make(box,mat('#f0e4c5'),0,.7,-.2,.7,.6,.55,ferry);
+  const label=button(spec.icon+' '+spec.name,()=>{if(nearby(node))show(node);else onTravel({x:node.g.position.x,z:node.g.position.z+2});});
+  const node={spec,g,arms,legs,tool,ferry,supplies,work,finished,finishedSites,base,supports,walls,roofParts,label,clock:0,saveClock:0,stage:-1,cycle:Math.max(0,Number(progress[spec.id]?.cycle)||0),elapsed:Math.max(0,Number(progress[spec.id]?.elapsed)||0),lifeClock:Math.max(0,Number(progress[spec.id]?.lifeClock)||0)};
   nodes.push(node);return node;
  }
  let watcher=null,watchCard=null;
@@ -113,8 +116,25 @@ export function createVillageBuilders({T,scene,host,state,make,mat,ball,box,cyli
  function update(dt,time,active=true){
   // Work proceeds independently even if Angelique moves away or a menu is open.
   for(const n of nodes){
-   if(active){n.elapsed+=Math.min(dt,.1);n.saveClock+=dt;}
+   if(active){n.elapsed+=Math.min(dt,.1);n.lifeClock+=Math.min(dt,.1);n.saveClock+=dt;}
    if(n.elapsed>=95){n.elapsed=0;n.cycle++;n.saveClock=5;}
+   // Autonomous daily circuit: Gorgona -> ferry -> another island -> ferry home.
+   const localTime=(n.lifeClock+(n.spec.id==='sofia'?75:0))%330;
+   const outbound=localTime>=135&&localTime<162,returning=localTime>=297&&localTime<324;
+   const travelling=outbound||returning,away=localTime>=162&&localTime<297;
+   const home={x:n.spec.x,z:n.spec.z},remote=n.spec.away;
+   const base=away||returning?remote:home;
+   const ferryProgress=travelling?(localTime-(outbound?135:297))/27:0;
+   const blend=ferryProgress*ferryProgress*(3-2*ferryProgress);
+   const start=outbound?home:remote,end=outbound?remote:home;
+   const sailX=start.x+(end.x-start.x)*blend,sailZ=start.z+(end.z-start.z)*blend;
+   n.g.userData.travelling=travelling;n.g.userData.away=away;
+   n.work.visible=n.supplies.visible=!travelling;
+   n.ferry.visible=travelling;
+   n.work.position.set(base.x+2,height(base.x+2,base.z)+.04,base.z);
+   n.supplies.position.set(base.x-1.6,height(base.x-1.6,base.z+2.1),base.z+2.1);
+   n.finishedSites.forEach((site,i)=>{const place=i===0?home:remote;site.position.set(place.x+(i%2)*4,height(place.x+(i%2)*4,place.z+5)+.04,place.z+5);});
+   if(travelling){n.ferry.position.set(sailX,.18+Math.sin(time*2)*.06,sailZ);n.ferry.rotation.y=Math.atan2(end.x-start.x,end.z-start.z);}
    const portion=n.elapsed/95,stage=portion<.16?0:portion<.36?1:portion<.72?2:3;
    n.finishedSites.forEach((site,i)=>site.visible=n.cycle>i);
    n.base.visible=true;
@@ -123,14 +143,14 @@ export function createVillageBuilders({T,scene,host,state,make,mat,ball,box,cyli
    n.roofParts.forEach((part,i)=>{part.visible=stage>=3&&portion>(.72+i*.04);});
    // Builders commute between their supply piles and active construction sites.
    const trip=Math.sin(time*.48+(n.spec.id==='mateo'?0:1.7)),walking=Math.abs(trip)>.24;
-   const x=n.spec.x+trip*1.12,z=n.spec.z+Math.cos(time*.48)*.45;
-   n.g.position.set(x,height(x,z),z);
-   n.g.rotation.y=Math.atan2(n.spec.x+2-x,n.spec.z-z);
+   const x=base.x+trip*1.12,z=base.z+Math.cos(time*.48)*.45;
+   if(travelling){n.g.position.set(sailX,n.ferry.position.y+.45,sailZ);n.g.rotation.y=n.ferry.rotation.y;}
+   else {n.g.position.set(x,height(x,z),z);n.g.rotation.y=Math.atan2(base.x+2-x,base.z-z);}
    const stride=walking?Math.sin(time*5):0;
-   n.legs.forEach((leg,i)=>leg.rotation.x=stride*(i?-.38:.38));
+   n.legs.forEach((leg,i)=>leg.rotation.x=travelling?0:stride*(i?-.38:.38));
    n.arms.forEach((arm,i)=>arm.rotation.x=Math.sin(time*(walking?5:8)+i*Math.PI)*(walking?.22:.52));
    n.tool.rotation.z=Math.sin(time*8)*.18;
-   if(n.saveClock>=5){progress[n.spec.id]={cycle:n.cycle,elapsed:n.elapsed};n.saveClock=0;save();}
+   if(n.saveClock>=5){progress[n.spec.id]={cycle:n.cycle,elapsed:n.elapsed,lifeClock:n.lifeClock};n.saveClock=0;save();}
    n.label.textContent=n.spec.icon+' '+n.spec.name+' · '+Math.round(portion*100)+'%';
    n.label.hidden=true; // screen-space position is set by projectLabels(camera)
   }
@@ -144,6 +164,6 @@ export function createVillageBuilders({T,scene,host,state,make,mat,ball,box,cyli
    if(onscreen){n.label.style.left=((pos.x+1)*50)+'%';n.label.style.top=((1-pos.y)*50)+'%';}
   }
  }
- function dispose(){for(const n of nodes){progress[n.spec.id]={cycle:n.cycle,elapsed:n.elapsed};scene.remove(n.g,n.work,n.finished,n.supplies);}labels.forEach(v=>v.remove());watchCard?.remove();save();}
+ function dispose(){for(const n of nodes){progress[n.spec.id]={cycle:n.cycle,elapsed:n.elapsed,lifeClock:n.lifeClock};scene.remove(n.g,n.work,n.finished,n.supplies,n.ferry);}labels.forEach(v=>v.remove());watchCard?.remove();save();}
  return {update,projectLabels,dispose};
 }
