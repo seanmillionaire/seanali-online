@@ -36,8 +36,19 @@ export function createVillageBuilders({T,scene,host,state,make,mat,ball,box,cyli
    const mast=make(cylinder,stone,0,3.0,0,.07,1.5,.07,work);
    const rotor=make(box,roof,0,3.7,0,2.0,.13,.15,work);roofParts.push(mast,rotor);
   }
+  // Completed work remains visibly in the village after each construction cycle.
+  const finished=new T.Group();scene.add(finished);
+  const finishedSites=[];
+  for(let i=0;i<3;i++){
+   const site=new T.Group();finished.add(site);
+   site.position.set(spec.x+(i-1)*5,height(spec.x+(i-1)*5,spec.z-7)+.04,spec.z-7);
+   make(box,timber,0,.12,0,2.5,.24,2.2,site);
+   for(const dx of [-.95,.95])for(const dz of [-.8,.8])make(box,timber,dx,.87,dz,.15,1.4,.15,site);
+   make(box,roof,0,1.67,0,2.85,.28,2.45,site);
+   finishedSites.push(site);
+  }
   const label=button(spec.icon+' '+spec.name,()=>{if(nearby(node))show(node);else onTravel({x:spec.x,z:spec.z+2});});
-  const node={spec,g,arms,tool,work,base,supports,walls,roofParts,label,clock:0,saveClock:0,stage:-1,cycle:Math.max(0,Number(progress[spec.id]?.cycle)||0),elapsed:Math.max(0,Number(progress[spec.id]?.elapsed)||0)};
+  const node={spec,g,arms,tool,work,finished,finishedSites,base,supports,walls,roofParts,label,clock:0,saveClock:0,stage:-1,cycle:Math.max(0,Number(progress[spec.id]?.cycle)||0),elapsed:Math.max(0,Number(progress[spec.id]?.elapsed)||0)};
   nodes.push(node);return node;
  }
  let watcher=null,watchCard=null;
@@ -62,6 +73,7 @@ export function createVillageBuilders({T,scene,host,state,make,mat,ball,box,cyli
    if(active){n.elapsed+=Math.min(dt,.1);n.saveClock+=dt;}
    if(n.elapsed>=95){n.elapsed=0;n.cycle++;n.saveClock=5;}
    const portion=n.elapsed/95,stage=portion<.16?0:portion<.36?1:portion<.72?2:3;
+   n.finishedSites.forEach((site,i)=>site.visible=n.cycle>i);
    n.base.visible=true;
    n.supports.forEach((part,i)=>{part.visible=stage>=1&&portion>(.16+i*.035);});
    n.walls.forEach((part,i)=>{part.visible=stage>=2&&portion>(.36+i*.10);});
@@ -87,6 +99,6 @@ export function createVillageBuilders({T,scene,host,state,make,mat,ball,box,cyli
    if(onscreen){n.label.style.left=((pos.x+1)*50)+'%';n.label.style.top=((1-pos.y)*50)+'%';}
   }
  }
- function dispose(){for(const n of nodes){progress[n.spec.id]={cycle:n.cycle,elapsed:n.elapsed};scene.remove(n.g,n.work);}labels.forEach(v=>v.remove());watchCard?.remove();save();}
+ function dispose(){for(const n of nodes){progress[n.spec.id]={cycle:n.cycle,elapsed:n.elapsed};scene.remove(n.g,n.work,n.finished);}labels.forEach(v=>v.remove());watchCard?.remove();save();}
  return {update,projectLabels,dispose};
 }
