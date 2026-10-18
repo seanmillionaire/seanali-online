@@ -298,7 +298,7 @@
    Bottom: persistent four-button nav.
    Above: joystick on the left, context/fly/jump actions on the right.
    Even when two action rows appear, they grow UP, never into the nav. */
-@media(max-width:780px){
+@media (max-width:780px), (pointer:coarse) and (max-height:520px){
  body[data-scene="explore"] .explore-world{
   --game-dock-bottom:max(7px,env(safe-area-inset-bottom));
   --game-dock-height:58px;
@@ -384,7 +384,7 @@
   z-index:28;
  }
 }
-@media(max-width:780px) and (max-height:520px){
+@media (max-width:780px) and (max-height:520px), (pointer:coarse) and (max-height:520px){
  body[data-scene="explore"] .explore-world{
   --game-dock-bottom:max(4px,env(safe-area-inset-bottom));
   --game-dock-height:49px;
@@ -416,4 +416,31 @@
     instantly accessible using the Map navigation button. */
  body[data-scene="explore"] .island-map-mini{display:none!important}
  body[data-scene="explore"] .explore-world.helpers-open .explore-menu{max-height:min(63svh,290px)}
+}
+
+/* Respect game-loading fallback even with mobile grid display overrides. */
+body[data-scene="explore"] .explore-actions[hidden],
+body[data-scene="explore"] .explore-stick[hidden]{display:none!important}
+/* Wide phone landscape (e.g. 844×390): keep the same usable bottom controls. */
+@media(min-width:781px) and (max-height:520px) and (pointer:coarse){
+ body[data-scene="explore"] .helper-toggle.picture-button{display:none!important}
+ body[data-scene="explore"] .explore-menu{display:none!important}
+ body[data-scene="explore"] .explore-world.helpers-open .explore-menu{
+  display:grid!important;position:absolute;left:10px;right:10px;top:auto!important;
+  width:auto;bottom:calc(var(--game-dock-bottom) + var(--game-dock-height) + 12px)!important;
+  grid-template-columns:repeat(4,minmax(0,1fr));max-height:min(63svh,290px);
+  overflow-y:auto;gap:6px;padding:10px;background:#fffaf1;border-radius:16px;z-index:28;
+ }
+ body[data-scene="explore"] .explore-menu .picture-button{width:100%;min-width:0;min-height:54px;padding:4px;border-radius:11px}
+ body[data-scene="explore"] .explore-menu .button-picture{font-size:23px}
+ body[data-scene="explore"] .explore-menu .button-caption{font-size:11px}
+ body[data-scene="explore"] .explore-world.helpers-open .mobile-menu-shade{
+  display:block;position:absolute;inset:0;z-index:22;
+  background:#071f2f84;border:0;min-width:100%;
+ }
+ body[data-scene="explore"] .explore-world.helpers-open .mobile-bag-shortcut{visibility:hidden;pointer-events:none}
+ body[data-scene="explore"] .explore-actions .friend-hello,
+ body[data-scene="explore"] .explore-actions .world-lesson,
+ body[data-scene="explore"] .island-goal{display:none!important}
+ body[data-scene="explore"] .island-map-mini{display:none!important}
 }
