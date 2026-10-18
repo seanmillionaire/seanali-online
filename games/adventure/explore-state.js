@@ -134,6 +134,7 @@ if(raw.inventoryVersion!==1)s.food.banana+=Math.max(0,countExplore(s,'fruit')-s.
 for(const kind of ['banana','coconut'])s.foodTotal[kind]=Math.max(s.food[kind]+(kind==='banana'?s.craft.spent.fruit:0),raw.inventoryVersion===1?inventoryCount(raw.foodTotal?.[kind]):0);
 s.estate=normalizeEstate(raw.estate,s.collected.filter(id=>['islandTreasure','seaTreasure','glow'].includes(exploreItems.find(item=>item.id===id)?.kind)).length);
 s.lighthouseOn=typeof raw.lighthouseOn==='boolean'?raw.lighthouseOn:(Array.isArray(raw.badges)&&raw.badges.includes('beacon'));
+s.gardenWatered=raw.gardenWatered===true;s.chestOpen=raw.chestOpen===true;
 // NPC projects persist across island re-entry and page reloads.
 s.builders=Object.fromEntries(['mateo','sofia'].map(id=>[id,{cycle:Math.max(0,Math.min(9999,Math.floor(Number(raw.builders?.[id]?.cycle)||0))),elapsed:Math.max(0,Math.min(95,Number(raw.builders?.[id]?.elapsed)||0)),lifeClock:Math.max(0,Math.min(1e7,Number(raw.builders?.[id]?.lifeClock)||0))}]));
 return s;}
