@@ -119,6 +119,13 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  const actions=makeEl('div','explore-actions'),act=btn(say('Saludar','Say hello'),'world-action',interact),jump=btn(say('Saltar ⤴','Jump ⤴'),'world-jump',hop);
  const descend=btn(say('↓ Bajar','↓ Lower'),'world-jump',()=>{if(ride)flightTarget=Math.max(0,flightTarget-5);else if(birdMount()){birdLanding=false;birdTarget=Math.max(1.5,birdTarget-3);}});descend.hidden=true;
  const friendMeet=btn('🐢 '+say('Amigos','Friends'),'world-action friend-hello',()=>{const f=friendSystem?.nearest(boating?'boat':swimming?'swim':'walk');if(f)friendSystem.open(f.id);});friendMeet.hidden=true;friendMeet.setAttribute('aria-label',say('Jugar con un amigo','Play with a friend'));
+ const rideQuick=btn('🐾 '+say('Montar','Ride'),'world-action animal-ride-quick',()=>{
+  if(mountId){friendSystem?.dismount();return;}
+  const f=friendSystem?.nearest(swimming?'swim':'walk');
+  if(f&&f.id!=='kai')friendSystem.ride(f.id);
+ });
+ rideQuick.hidden=true;
+ rideQuick.setAttribute('aria-label',say('Montar o bajar de un amigo animal','Ride or dismount an animal friend'));
  const menu=makeEl('div','explore-menu');menu.append(btn('☷ '+say('Lugares','Places'),'world-small',showDiscover),btn('▤ '+say('Historias','Stories'),'world-small',openBook),btn('⌂','world-small',openHome));menu.lastChild.setAttribute('aria-label',say('Mi casita','My cottage'));menu.append(btn(say('? Ayuda','? Help'),'world-small',listen));
  const helperToggle=btn('☰','world-small helper-toggle',()=>setHelpers(!host.classList.contains('helpers-open')));menu.id='island-helper-menu';goalCard.id='island-helper-goal';helperToggle.setAttribute('aria-controls','island-helper-menu island-helper-goal');
  function setHelpers(open){host.classList.toggle('helpers-open',open);paintButton(helperToggle,open?'×':'☰');helperToggle.setAttribute('aria-expanded',String(open));helperToggle.setAttribute('aria-label',open?say('Ocultar ayuda','Hide helpers'):say('Mostrar ayuda','Show helpers'));}setHelpers(false);
@@ -189,7 +196,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  const directions=makeEl('div','world-arrows');for(const [label,k]of [['↑','ArrowUp'],['←','ArrowLeft'],['↓','ArrowDown'],['→','ArrowRight']]){const b=btn(label,'',()=>{});b.setAttribute('aria-label',say('Mover ','Move ')+({ArrowUp:say('norte','north'),ArrowDown:say('sur','south'),ArrowLeft:say('oeste','west'),ArrowRight:say('este','east')}[k]));b.onpointerdown=e=>{b.setPointerCapture(e.pointerId);keys.add(k);targetPoint=null;joy.gesture();};b.onpointerup=b.onpointercancel=()=>keys.delete(k);directions.append(b);}
  const instructions=makeEl('div','explore-controls',say('Toca el suelo para ir · Flechas / WASD · Espacio para saltar','Tap ground to walk · Arrows / WASD · Space to jump'));
  const panel=makeEl('section','explore-panel');panel.hidden=true;panel.setAttribute('aria-label',say('Descubrimientos','Discoveries'));
- hud.append(title);actions.append(lesson,act,jump,descend,friendMeet);host.append(canvas,hud,volcanoStatus,regionStatus,quest,goalCard,mobileShade,menu,helperToggle,bagShortcut,pad,directions,actions,instructions,message,panel,mobileDock);
+ hud.append(title);actions.append(lesson,act,jump,descend,friendMeet,rideQuick);host.append(canvas,hud,volcanoStatus,regionStatus,quest,goalCard,mobileShade,menu,helperToggle,bagShortcut,pad,directions,actions,instructions,message,panel,mobileDock);
  const adventureMap=createWorldMap({host,panel,world:s,islands:worldIslands,places:explorePlaces,language:state.lang,
    onTravel:travelTo,onOpen:()=>{setHelpers(false);blur();targetPoint=null;}});
  refresh();
@@ -829,6 +836,10 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    houseSystem?.updateDoor(s.x,s.z,!!mountId||!!ride||boating||carDriving||inside||houseSystem?.isInside());
    const playful=mountId||carDriving||houseSystem?.isInside()?null:friendSystem?.nearest(ride?'fly':boating?'boat':swimming?'swim':'walk');
    friendMeet.hidden=!playful||!!ride||inside||airborne||!!mountId||houseSystem?.isInside()||!panel.hidden||!host.classList.contains('explore-ready');
+   const rideable=playful&&playful.id!=='kai'&&!inside&&!boating&&!ride&&!carDriving&&!houseSystem?.isInside()&&!airborne&&panel.hidden;
+   rideQuick.hidden=!(rideable||mountId);
+   if(mountId)setText(rideQuick,say('👣 Bajar','👣 Dismount'));
+   else if(rideable)setText(rideQuick,'🐾 '+say('Montar ','Ride ')+playful.name);
    if(playful){setText(friendMeet,playful.icon+' '+playful.name+' · '+(playful.id==='kai'?say('Saludar','Say hi'):say('Montar','Ride')));friendMeet.setAttribute('aria-label',say('Jugar con ','Play with ')+playful.name);}
    goalCard.hidden=boating||carDriving||inside||!!ride||airborne||near?.kind==='islet'||netTime>0;quest.hidden=true;
    adventureMap.update(false,avatar.rotation.y);
