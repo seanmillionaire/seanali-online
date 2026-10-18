@@ -717,3 +717,37 @@ body[data-scene="explore"] .stick-knob{font-size:29px}
  .region-project-other .discover-place{font-size:13px;line-height:1.3}
 }
 @media(max-height:550px){.region-help-status{top:176px}}
+
+/* Desktop parity: the mobile-style three-control navigation is the only primary toolbar. */
+@media(min-width:761px){
+ body[data-scene="explore"] .mobile-game-dock{
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  position:absolute!important;top:92px!important;right:18px!important;
+  left:auto!important;bottom:auto!important;transform:none!important;
+  width:276px!important;max-width:calc(100% - 36px)!important;
+  gap:8px!important;z-index:28!important;pointer-events:auto!important;
+ }
+ body[data-scene="explore"] .mobile-game-dock button{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  flex-direction:column!important;width:100%!important;height:76px!important;
+  min-height:76px!important;padding:6px!important;box-sizing:border-box!important;
+  border:2px solid #fff9e8!important;border-radius:16px!important;
+  background:#fffae9!important;color:#264d46!important;
+  font-size:15px!important;font-weight:900!important;box-shadow:0 4px 11px #123a4252;
+ }
+ body[data-scene="explore"] .mobile-game-dock .mobile-dock-icon{font-size:26px}
+ body[data-scene="explore"] .mobile-game-dock .mobile-dock-caption{font-size:13px}
+ body[data-scene="explore"] .explore-menu,
+ body[data-scene="explore"] .helper-toggle,
+ body[data-scene="explore"] .mobile-bag-shortcut,
+ body[data-scene="explore"] .explore-bag,
+ body[data-scene="explore"] .region-help-status,
+ body[data-scene="explore"] .volcano-hike-status,
+ body[data-scene="explore"] .island-goal,
+ body[data-scene="explore"] .explore-hint{display:none!important}
+ body[data-scene="explore"] .explore-hud{max-width:340px!important;pointer-events:none}
+ body[data-scene="explore"] .explore-location{white-space:normal;line-height:1.25;max-width:100%;font-size:17px}
+ body[data-scene="explore"] .explore-world:has(.explore-panel:not([hidden])) .mobile-game-dock{
+  visibility:hidden!important;pointer-events:none!important;
+ }
+}
