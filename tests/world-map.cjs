@@ -21,6 +21,12 @@ class FakeNode{
  const src=fs.readFileSync(filename,'utf8').replace(/^export\s+/gm,'');
  const scope={document:{createElement:tag=>new FakeNode(tag),createElementNS:(_,tag)=>new FakeNode(tag)},performance:{now:()=>Date.now()}};
  vm.runInNewContext(src+'\nthis.factory=createWorldMap;',scope);
+ // Guard against the mobile regression that pointed Map at the text-only list.
+ const explore=fs.readFileSync(path.join(__dirname,'../games/adventure/explore.js'),'utf8');
+ const styles=fs.readFileSync(path.join(__dirname,'../games/adventure/mobile-play.css'),'utf8');
+ assert.match(explore,/const dockMap=btn\([^\n]*adventureMap\.open\(\)/,'Map dock opens graphical map');
+ assert.doesNotMatch(explore,/const dockMap=btn\([^\n]*showDiscover\(\)/,'Map dock never routes to list');
+ assert.match(styles,/body\[data-scene="explore"\] \.island-map-mini\s*\{\s*display:grid!important/,'mobile mini-map visible');
  const host=new FakeNode('div'),panel=new FakeNode('section');
  const world={x:4,z:10},islands=[{id:'islet',x:72,z:30,rx:24,rz:19,es:'Isla Mariposa',en:'Butterfly Island'}];
  const places=[{id:'pip',x:4,z:10,kind:'friend'},{id:'islet',x:72,z:30,kind:'islet'}];
