@@ -1,5 +1,5 @@
-import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=105';
-import {createTropical} from './tropical.js?v=73';
+import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=106';
+import {createTropical} from './tropical.js?v=106';
 import {createSurfaceTextures} from './surface-textures.js?v=73';
 import {installPolyHavenMaterials} from './polyhaven-materials.js?v=73';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
@@ -93,16 +93,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
     lower.rotation.z=side*-.3;
    }
   }
-  function jungleTree(x,z,i){
-   const y=height(x,z),size=1+(i%3)*.18;
-   make(cylinder,barkDark,x,y+2.65*size,z,.27*size,5.3*size,.27*size);
-   for(let k=0;k<6;k++){
-    const a=k*Math.PI/3+(i%3)*.2;
-    const leaf=make(ball,k%2?jungleLeaf:jungleLime,x+Math.cos(a)*1.25*size,y+(4.7+(k%2)*.45)*size,z+Math.sin(a)*1.25*size,.52*size,.16*size,1.85*size);
-    leaf.rotation.y=-a+.3;leaf.rotation.x=k%2?.25:-.2;
-   }
-   make(ball,jungleLeaf,x,y+5.25*size,z,1.25*size,.43*size,1.2*size);
-  }
+  function jungleTree(x,z,i){tropical.forest.addTree(i%7===0?'pine':i%4===0?'natural':'palm',x,z,1+(i%3)*.13,i);}
   function beachShade(x,z,i){
    const y=height(x,z);
    const color=i%2?beachBlue:beachCoral;
@@ -112,11 +103,8 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
    make(box,beachShell,x,y+.16,z,1.5,.14,.8);
   }
   function fireflyTree(x,z,i){
-   const y=height(x,z),s=1+(i%3)*.23;
-   make(cylinder,forestBark,x,y+2.5*s,z,.32*s,5*s,.32*s);
-   for(let k=0;k<3;k++)make(cone,k%2?forestPineShade:forestPine,x,y+(3+k*1.15)*s,z,(2.1-k*.38)*s,2.4*s,(2.1-k*.38)*s);
-   // A golden firefly glows in the treetop even with permanent daytime.
-   if(i%2===0)make(ball,forestGlow,x+1.1*s,y+5.7*s,z-.6*s,.18,.18,.18);
+   tropical.forest.addTree('pine',x,z,1.08+(i%3)*.16,i);
+   if(i%2===0)make(ball,forestGlow,x+1,height(x,z)+8,z-.6,.15,.15,.15);
   }
   function glowMushroom(x,z,i){
    const y=height(x,z),s=.7+(i%3)*.24;
@@ -439,7 +427,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   function tick(stamp){frame=0;if(disposed||document.hidden||renderer.getContext?.().isContextLost())return;if(lastDraw&&stamp-lastDraw<1000/30){frame=requestAnimationFrame(tick);return;}lastDraw=stamp;const elapsed=last?(stamp-last)/1000:0,dt=Math.min(elapsed,.05);last=stamp;const moving=motion();if(moving)time+=dt;
     if(flight!==null){flight+=elapsed;const p=moving?Math.min(flight/3.2,1):1,e=p*p*(3-2*p);camera.position.lerpVectors(startCam,endCam,e);target.lerpVectors(startLook,endLook,e);camera.clearViewOffset();camera.updateProjectionMatrix();canvas.parentElement.style.setProperty('--arrival',String(p));if(p===1){const done=finish;finish=null;flight=null;done?.();if(disposed)return;}}
     else if(!explorer){pose();if(moving){camera.position.x+=Math.sin(time*.13)*1.3+px*1.2;camera.position.y+=Math.sin(time*.24)*.4-py*.5;}}
-    if(explorer)explorer.update(dt,time);camera.lookAt(target);tropical.update(time);waterMaterial.uniforms.time.value=time;crystal.rotation.y=time*.35;beam.rotation.y=time*.22;
+    if(explorer)explorer.update(dt,time);camera.lookAt(target);tropical.update(motion()?time:0);waterMaterial.uniforms.time.value=time;crystal.rotation.y=time*.35;beam.rotation.y=time*.22;
     clouds.forEach(c=>{c.g.position.x=c.x+Math.sin(time*.03+c.z)*3;});bobbing.forEach((b,i)=>{b.g.position.y=b.y+Math.sin(time*1.2+i)*.12;b.g.rotation.z=Math.sin(time+i)*.025;});sailboat.position.x=-18+Math.sin(time*.04)*4;motes.rotation.y=Math.sin(time*.1)*.03;
     try{draw();}catch(error){onError(error);return;}if(explorer||moving||flight!==null)frame=requestAnimationFrame(tick);
   }

@@ -1,4 +1,4 @@
-import {normalizeColon,bridgeDistance,COLON_BRIDGE} from './colon-state.js?v=105';
+import {normalizeColon,bridgeDistance,COLON_BRIDGE} from './colon-state.js?v=106';
 import {normalizeCruise,CRUISE_FARE} from './cruise-route.js?v=104';
 import {normalizeEstate,estateCoinCost} from './estate.js?v=5';
 // Exploration is independent of lesson order. Every place is open from the start.
@@ -211,7 +211,7 @@ export function nextIslandAdventure(state){
 }
 // Fixed rewards keep the wallet explainable and prevent repeat-click farming.
 export const islandShop=[{id:'coral',cost:15,hat:4,es:'Sombrero coral',en:'Coral hat'},{id:'ocean',cost:30,hat:5,es:'Sombrero océano',en:'Ocean hat'},{id:'sunshine',cost:45,hat:6,es:'Sombrero sol',en:'Sunshine hat'}];
-export function coinValue(id){if(/^region-help-(home|islet|wilds|coconutCoast|sunset|crystalCove|pizzaCity|colon)$/.test(id))return 25;
+export function coinValue(id){if(id==='colon-monkey-play')return 12;if(/^region-help-(home|islet|wilds|coconutCoast|sunset|crystalCove|pizzaCity|colon)$/.test(id))return 25;
  if(/^city-(?:rally|soccer|mural|carwash|plaza|canal|delivery-finish)$/.test(id))return 12;
  if(/^city-delivery-[0-2]$/.test(id))return 7;
  if(/^city-market-[1-3]$/.test(id))return 5;

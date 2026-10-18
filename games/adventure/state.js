@@ -1,4 +1,4 @@
-import {normalizeExplore,normalizeWallet,syncWallet} from './explore-state.js?v=105';
+import {normalizeExplore,normalizeWallet,syncWallet} from './explore-state.js?v=106';
 import {quests} from './content.js';
 export const SAVE_KEY='isla-adventure-v1';
 export function fresh(){return {version:1,started:false,lang:'es',sound:true,motion:true,completed:{},active:null,islandLessons:{completed:{},attempts:{}},discovered:[],palette:0,song:Array(24).fill(false),seen:[],wallet:normalizeWallet(null),world:normalizeExplore(null)};}

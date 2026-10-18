@@ -11,7 +11,7 @@ export function bridgeDistance(x,z){
 }
 export function normalizeColon(raw){
  const count=v=>Number.isFinite(v)?Math.max(0,Math.min(6,Math.floor(v))):0;
- const s={level:1,banana:Array.from({length:4},(_,i)=>count(raw?.banana?.[i])),coconut:Array.from({length:4},(_,i)=>count(raw?.coconut?.[i])),shells:[]};
+ const s={level:1,monkeyGames:Number.isFinite(raw?.monkeyGames)?Math.max(0,Math.min(9999,Math.floor(raw.monkeyGames))):0,banana:Array.from({length:4},(_,i)=>count(raw?.banana?.[i])),coconut:Array.from({length:4},(_,i)=>count(raw?.coconut?.[i])),shells:[]};
  for(let i=0;i<COLON_SITES.length;i++){const key=COLON_SITES[i].id;s[key]=raw?.[key]===true&&(i===0||s[COLON_SITES[i-1].id]);}
  s.level=s.treehouse&&Number.isFinite(raw?.level)?Math.max(1,Math.min(3,Math.floor(raw.level))):1;
  s.shells=[...new Set((Array.isArray(raw?.shells)?raw.shells:[]).filter(n=>Number.isInteger(n)&&n>=0&&n<5))];
