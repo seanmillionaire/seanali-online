@@ -451,3 +451,28 @@ body[data-scene="explore"] .explore-stick[hidden]{display:none!important}
  body[data-scene="explore"] .mobile-game-dock button{min-width:0!important;}
  body[data-scene="explore"] .mobile-dock-caption{font-size:clamp(9px,2.5vw,11px)!important;white-space:normal;text-align:center;}
 }
+
+/* Mobile HUD: location and nearby contextual action only. No stacked currencies or redundant chrome. */
+@media(max-width:760px){
+ body[data-scene="explore"] .explore-bag,
+ body[data-scene="explore"] .region-help-status,
+ body[data-scene="explore"] .volcano-hike-status,
+ body[data-scene="explore"] .island-goal,
+ body[data-scene="explore"] .explore-hint,
+ body[data-scene="explore"] .mobile-bag-shortcut,
+ body[data-scene="explore"] .helper-toggle{display:none!important}
+ body[data-scene="explore"] .explore-hud{max-width:min(68vw,310px);pointer-events:none}
+ body[data-scene="explore"] .explore-location{max-width:100%;white-space:normal;line-height:1.22;font-size:clamp(14px,3.8vw,17px);overflow-wrap:anywhere}
+ body[data-scene="explore"] .mobile-game-dock{
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  width:min(270px,calc(100% - 24px))!important;max-width:270px!important;
+  right:10px!important;left:auto!important;transform:none!important;
+  gap:6px!important;
+ }
+ body[data-scene="explore"] .mobile-game-dock button,
+ body[data-scene="explore"] .mobile-game-dock .mobile-dock-build{
+  width:100%!important;height:64px!important;min-height:64px!important;
+  max-width:none!important;flex:1 1 0!important;padding:5px 3px!important;
+  font-size:13px!important;border-radius:13px!important;
+ }
+}
