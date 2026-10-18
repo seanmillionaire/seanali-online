@@ -559,3 +559,17 @@ body[data-scene="explore"] .animal-ride-quick:not([hidden]){
 @media(max-height:520px) and (orientation:landscape){.campaign-hud{top:65px;left:10px;width:280px}.story-following .explore-hud{display:none}.story-following .explore-message{top:148px!important}}
 
 .explore-ready:has(.friend-panel:not([hidden]),.journey-panel:not([hidden]),.realm-panel:not([hidden])) .campaign-hud,.on-cruise .campaign-hud{display:none}
+
+/* Reserve the desktop title area, including over bright map labels. */
+@media(min-width:781px){
+ body[data-scene="entry"] .topbar .brand,
+ body[data-scene="explore"] .topbar .brand{
+  flex-shrink:0;isolation:isolate;background:#163e4b;padding:8px 12px;
+  border-radius:12px;line-height:1.15;
+ }
+ body[data-scene="entry"] .brand-mark,
+ body[data-scene="explore"] .brand-mark{flex-shrink:0}
+ body[data-scene="entry"] .world-entry{
+  height:auto;min-height:100svh;align-items:flex-start;padding-top:120px;padding-bottom:60px;
+ }
+}
