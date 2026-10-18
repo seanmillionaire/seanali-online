@@ -159,7 +159,8 @@ export function createVillageBuilders({T,scene,host,state,make,mat,ball,box,cyli
  function projectLabels(camera){
   for(const n of nodes){
    const pos=n.g.position.clone();pos.y+=2.15;pos.project(camera);
-   const onscreen=pos.z>-1&&pos.z<1&&Math.abs(pos.x)<1&&Math.abs(pos.y)<1;
+   const distance=Math.hypot(state.world.x-n.g.position.x,state.world.z-n.g.position.z);
+   const onscreen=distance<5.5&&pos.z>-1&&pos.z<1&&Math.abs(pos.x)<.82&&Math.abs(pos.y)<.80;
    n.label.hidden=!onscreen;
    if(onscreen){n.label.style.left=((pos.x+1)*50)+'%';n.label.style.top=((1-pos.y)*50)+'%';}
   }
