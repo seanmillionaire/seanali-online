@@ -598,3 +598,10 @@ body[data-scene="explore"] .animal-ride-quick:not([hidden]){
  .world-entry .welcome-feature-icon{font-size:25px}
  .world-entry .primary.enter-world{min-height:54px;margin-top:10px}
 }
+
+.camera-view-toggle{position:absolute;z-index:24;left:24px;top:158px;min-height:44px;padding:9px 13px;border:2px solid #fff5d5;border-radius:13px;background:#173f4bf2;color:#fff8e4;font-size:13px;font-weight:700;touch-action:manipulation}
+.explore-ready:has(.explore-panel:not([hidden]),.journey-panel:not([hidden]),.realm-panel:not([hidden])) .camera-view-toggle{display:none}
+@media(max-width:780px){.camera-view-toggle{left:auto;right:10px;top:178px;min-height:44px;max-width:150px;font-size:12px;padding:7px 10px}}
+@media(max-height:520px) and (orientation:landscape){.camera-view-toggle{left:auto;right:10px;top:145px;max-width:140px}}
+@media(min-width:781px){.explore-world:has(.world-story:not([hidden])) .camera-view-toggle{top:184px}}
+@media(max-width:780px){.explore-world .explore-message.show{top:235px!important}.explore-world .colon-status{top:235px!important}}

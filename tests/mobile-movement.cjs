@@ -2,7 +2,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('nod
 const source=fs.readFileSync(__dirname+'/../games/adventure/explore.js','utf8');
 const buttons=[];
 function button(){return {attrs:{},dataset:{},captures:new Set(),setAttribute(k,v){this.attrs[k]=v},setPointerCapture(id){this.captures.add(id)},hasPointerCapture(id){return this.captures.has(id)},releasePointerCapture(id){this.captures.delete(id);this.onlostpointercapture?.({pointerId:id})}}}
-const context=vm.createContext({makeEl:()=>({setAttribute(){},append(b){buttons.push(b)}}),btn:button,say:(es,en)=>en,paused:()=>false,panel:{hidden:true},joy:{gesture(){}},keys:new Set(),stick:{x:1,z:1},knob:{style:{}},pad:button(),targetPoint:{x:1},route:[1]});
+const context=vm.createContext({control:null,makeEl:()=>({setAttribute(){},append(b){buttons.push(b)}}),btn:button,say:(es,en)=>en,paused:()=>false,panel:{hidden:true},joy:{gesture(){}},keys:new Set(),stick:{x:1,z:1},knob:{style:{}},pad:button(),targetPoint:{x:1},route:[1]});
 vm.runInContext(source.slice(source.indexOf('const directionPointers='),source.indexOf(' // A speed toggle'))+'let fastMode=false;'+source.slice(source.indexOf('function releaseDirection(e)'),source.indexOf(" document.addEventListener('keydown'")),context);
 function event(id){return {pointerId:id,button:0,preventDefault(){},stopPropagation(){}}}
 const up=buttons[0],right=buttons[3];
