@@ -547,3 +547,15 @@ body[data-scene="explore"] .animal-ride-quick:not([hidden]){
  body[data-scene="explore"] .explore-actions .animal-ride-quick:not([hidden]){height:50px!important;min-height:50px!important;padding:3px 2px!important}
 }
 
+
+/* One saved story objective remains available while exploring. */
+.campaign-hud{position:absolute;z-index:24;top:82px;left:50%;transform:translateX(-50%);width:350px;max-width:calc(100% - 24px);padding:10px 14px;border:2px solid #e5c76e;border-radius:16px;background:#fff8e9f5;color:#274b43;text-align:left;box-shadow:0 3px 12px #102e3630;cursor:pointer;touch-action:manipulation}
+.campaign-hud strong,.campaign-hud span{display:block}.campaign-hud strong{font-size:14px}.campaign-hud span{font-size:13px;line-height:1.35;margin-top:4px}
+.explore-ready:has(.explore-panel:not([hidden])) .campaign-hud{display:none}
+.campaign-primary{display:block;width:100%;min-height:50px;margin:12px 0;padding:12px;border:0;border-radius:12px;background:#276653;color:white;font-weight:700}
+.campaign-choices{display:flex;gap:10px;flex-wrap:wrap}.campaign-choices button{min-width:64px;min-height:64px;border:2px solid #b6cfae;background:#fff8e9;border-radius:12px;font-size:28px;touch-action:manipulation}.campaign-task{font-size:15px;line-height:1.5}
+@media(max-width:1100px){.campaign-hud{left:12px;transform:none;top:106px;width:290px}.story-following .island-goal{display:none!important}}
+@media(max-width:600px){.campaign-hud{top:106px;left:10px;width:calc(100% - 20px);padding:8px 12px}.story-following .colon-status{top:205px!important}.story-following .explore-message{top:205px!important}.campaign-task{font-size:14px}.campaign-choices{gap:8px}}
+@media(max-height:520px) and (orientation:landscape){.campaign-hud{top:65px;left:10px;width:280px}.story-following .explore-hud{display:none}.story-following .explore-message{top:148px!important}}
+
+.explore-ready:has(.friend-panel:not([hidden]),.journey-panel:not([hidden]),.realm-panel:not([hidden])) .campaign-hud,.on-cruise .campaign-hud{display:none}

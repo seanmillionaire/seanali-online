@@ -1,4 +1,4 @@
-import {addFood,islandPoint} from './explore-state.js?v=73';
+import {addFood,islandPoint} from './explore-state.js?v=108';
 // Tiny, physical story puzzles. These never gate movement or mark a lesson complete.
 export const islandStories=[
  {id:'shells',region:'harbor',x:2,z:7,friend:'🐢',es:'Conchas de Playa Gorgona',en:'Gorgona Shell Trail',hintEs:'Pisa las conchas en orden',hintEn:'Step on shells in order',icons:['1 🐚','2 🐚','3 🐚'],order:[0,1,2],color:'#f4cc78',winEs:'¡Pip tiene un camino!',winEn:'Pip has a path!'},
@@ -10,7 +10,7 @@ export const islandStories=[
 ];
 for(const q of islandStories){const land={picnic:'wilds',seed:'sunset',song:'crystalCove',care:'islet',light:'coconutCoast'}[q.id];if(land)Object.assign(q,islandPoint(land,q.x,q.z));}
 export function stepStory(progress,id,choice){const q=islandStories.find(q=>q.id===id);if(!q)return 'ignore';const n=progress[id]||0;if(n>=q.order.length)return 'done';if(choice!==q.order[n])return 'retry';progress[id]=n+1;return n+1===q.order.length?'complete':'next';}
-export function createWorldStory({T,scene,host,state,height,save,joy,spark,refresh,openNext,active,motion}){
+export function createWorldStory({T,scene,host,state,height,save,joy,spark,refresh,openNext,active,motion,panel,preparePanel}){
  const s=state.world,es=state.lang==='es',pick=(a,b)=>es?a:b,progress=s.story;
  const group=new T.Group();group.name='Living story trails';scene.add(group);
  const card=document.createElement('section');card.className='world-story';card.hidden=true;card.setAttribute('aria-label',pick('Historias de Panamá','Panama adventure story'));
@@ -27,13 +27,17 @@ export function createWorldStory({T,scene,host,state,height,save,joy,spark,refre
  function draw(st){const q=st.q,n=progress[q.id],done=n===q.order.length;const lights=islandStories.filter(task=>progress[task.id]===task.order.length).length;heading.textContent=q.friend+' '+pick(q.es,q.en)+' · '+lights+'/6 ✨';sequence.replaceChildren();for(let i=0;i<q.order.length;i++){const item=document.createElement('span');item.textContent=q.icons[q.order[i]];item.className=i<n?'story-done':i===n?'story-next':'';sequence.append(item);}
   hint.textContent=done?(lights===6?pick('¡Las seis luces están en casa!','All six lights are home!'):pick(q.winEs,q.winEn)):pick(q.hintEs,q.hintEn);more.hidden=!done||!nextLesson(q);more.textContent=pick('✨ Sigue la historia','✨ Continue the story');more.setAttribute('aria-label',pick('Una aventura más con este amigo','Another adventure with this friend'));
  }
- return {hit(raycaster){const tiles=stations.flatMap(st=>st.tiles).filter(t=>t.label.visible);const hit=raycaster.intersectObjects(tiles.flatMap(t=>[t.label,t.mesh]),false)[0];return hit?tiles.find(t=>hit.object===t.label||hit.object===t.mesh):null;},update(dt,time){
+ function open(id){const q=islandStories.find(q=>q.id===id);if(!q||Math.hypot(s.x-q.x,s.z-q.z)>7)return false;
+  preparePanel();panel.hidden=false;
+  const draw=()=>{panel.replaceChildren();const close=document.createElement('button');close.className='panel-close';close.textContent='×';close.onclick=()=>panel.hidden=true;panel.append(close);const title=document.createElement('h2');title.textContent=q.friend+' '+pick(q.es,q.en);panel.append(title);const n=progress[id]||0,h=document.createElement('p');h.textContent=n===q.order.length?pick(q.winEs,q.winEn):pick(q.hintEs,q.hintEn)+' · '+(n+1)+'/'+q.order.length+' → '+q.icons[q.order[n]];panel.append(h);if(n===q.order.length)return;const choices=document.createElement('div');choices.className='campaign-choices';q.icons.forEach((icon,i)=>{const b=document.createElement('button');b.type='button';b.textContent=icon;b.onclick=()=>{const result=stepStory(progress,id,i);if(result==='retry'){h.textContent=pick('Prueba ','Try ')+q.icons[q.order[n]];return;}if(result==='complete'){if(id==='picnic')addFood(s,'banana',3);if(id==='seed'||id==='care')s.flowers=Math.min(6,s.flowers+1);joy.effect('finish');refresh(id);}save();draw();};choices.append(b);});panel.append(choices);};draw();return true;
+ }
+ return {open,hit(raycaster){const tiles=stations.flatMap(st=>st.tiles).filter(t=>t.label.visible);const hit=raycaster.intersectObjects(tiles.flatMap(t=>[t.label,t.mesh]),false)[0];return hit?tiles.find(t=>hit.object===t.label||hit.object===t.mesh):null;},update(dt,time){
   const nearby=stations.filter(st=>Math.hypot(s.x-st.q.x,s.z-st.q.z)<5.5).sort((a,b)=>Math.hypot(s.x-a.q.x,s.z-a.q.z)-Math.hypot(s.x-b.q.x,s.z-b.q.z))[0];
-  const visible=active()&&!host.classList.contains('helpers-open')&&!host.classList.contains('snack-moment');current=nearby||null;card.hidden=!visible||!current;host.classList.toggle('story-nearby',!card.hidden);
+  const visible=active()&&!host.classList.contains('helpers-open')&&!host.classList.contains('snack-moment');current=nearby||null;card.hidden=!visible||!current||s.campaign?.started;host.classList.toggle('story-nearby',!card.hidden);
   for(const st of stations){const done=progress[st.q.id]===st.q.order.length;st.light.visible=done;st.tiles.forEach(t=>{t.label.visible=!done&&st===nearby&&visible;t.mesh.material.emissiveIntensity=done?.55:.12;t.label.position.y=height(t.x,t.z)+2.6+(motion()?Math.sin(time*2)*.06:0);});}
   if(card.hidden){lastTile='';return;}
   const q=current.q,n=progress[q.id],tile=current.tiles.findIndex(t=>Math.hypot(s.x-t.x,s.z-t.z)<.65),key=tile<0?'':q.id+':'+tile;
-  if(key&&key!==lastTile&&n<q.order.length){const result=stepStory(progress,q.id,tile);if(result==='retry'){joy.effect('tap');hint.textContent=pick('Busca ','Find ')+q.icons[q.order[n]];}else{joy.note?.(q.order[n]*2,.25);spark(s.x,s.z,result==='complete'?24:8);save();lastView='';if(result==='complete'){joy.effect('finish');if(q.id==='picnic')addFood(s,'banana',3);if(q.id==='seed'||q.id==='care')s.flowers=Math.min(6,s.flowers+1);refresh(q.id);save();}}}
+  if(!s.campaign?.started&&key&&key!==lastTile&&n<q.order.length){const result=stepStory(progress,q.id,tile);if(result==='retry'){joy.effect('tap');hint.textContent=pick('Busca ','Find ')+q.icons[q.order[n]];}else{joy.note?.(q.order[n]*2,.25);spark(s.x,s.z,result==='complete'?24:8);save();lastView='';if(result==='complete'){joy.effect('finish');if(q.id==='picnic')addFood(s,'banana',3);if(q.id==='seed'||q.id==='care')s.flowers=Math.min(6,s.flowers+1);refresh(q.id);save();}}}
   lastTile=key;const view=q.id+':'+progress[q.id]+':'+(nextLesson(q)||'done');if(view!==lastView){draw(current);lastView=view;}
  },dispose(){host.classList.remove('story-nearby');card.remove();scene.remove(group);geometry.dispose();orbGeometry.dispose();materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());}};
 }

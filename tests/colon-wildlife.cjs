@@ -1,7 +1,7 @@
 const fs=require('fs'),vm=require('vm'),assert=require('node:assert/strict'),base=__dirname+'/../games/adventure/';
 const read=f=>fs.readFileSync(base+f,'utf8').replace(/^import .*$/gm,'').replaceAll('export ','');
 const ctx=vm.createContext({normalizeEstate:()=>({buildings:[]}),estateCoinCost:()=>0});
-vm.runInContext(['colon-state.js','cruise-route.js','explore-state.js','colon-wildlife.js'].map(read).join('\n'),ctx);
+vm.runInContext(['campaign-state.js','colon-state.js','cruise-route.js','explore-state.js','colon-wildlife.js'].map(read).join('\n'),ctx);
 const run=s=>vm.runInContext(s,ctx);
 assert.equal(run('BLACK_MONKEY_COUNT'),28);assert.equal(run('COAST_CROCODILE_COUNT'),8);
 const bad=run(`(()=>{

@@ -1,7 +1,7 @@
 const fs=require('fs'),vm=require('vm'),assert=require('node:assert/strict');
 const base=__dirname+'/../games/adventure/',ctx=vm.createContext({normalizeEstate:()=>({buildings:[]}),estateCoinCost:()=>0});
 const read=f=>fs.readFileSync(base+f,'utf8').replace(/^import .*$/gm,'').replaceAll('export ','');
-vm.runInContext(read('colon-state.js')+'\n'+read('cruise-route.js')+'\n'+read('explore-state.js'),ctx);
+vm.runInContext(read('campaign-state.js')+'\n'+read('colon-state.js')+'\n'+read('cruise-route.js')+'\n'+read('explore-state.js'),ctx);
 const run=s=>vm.runInContext(s,ctx);
 assert.equal(run("worldIslands.filter(p=>['colon','monkeyIslet'].includes(p.id)).length"),2);
 run('var w=freshExplore();w.food={banana:20,coconut:15};');

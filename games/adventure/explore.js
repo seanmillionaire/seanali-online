@@ -1,10 +1,11 @@
+import {createCampaign} from './campaign.js?v=108';
 import {createColonAdventure} from './colon-adventure.js?v=106';
 import {createCanalCruise} from './canal-cruise.js?v=107';
 import {createRealms} from './realms.js?v=104';
 import {createJourney} from './journey.js?v=104';
 import {oceanModel} from './ocean-models.js?v=73';
 import {createIslandLife} from './island-life.js?v=87';
-import {createWorldStory,islandStories} from './world-story.js?v=73';
+import {createWorldStory,islandStories} from './world-story.js?v=108';
 import {REGION_PROJECTS,regionForPosition,missionStatus,restoreRegions,createRegionProjectWorld} from './region-projects.js?v=105';
 import {createWorldMap} from './world-map.js?v=105';
 import {createWildlifeFriends} from './wildlife-friends.js?v=85';
@@ -14,7 +15,7 @@ import {createPizzaCity} from './pizza-city.js?v=104';
 import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=73';
 import {ESTATE_PLANS,estateCosts,estateMissing,findEstateSite,canBuildEstate,buildEstate,canUpgradeEstate,upgradeEstate,estateBlocked,createEstateWorld} from './estate.js?v=5';
 import {buildIsland} from './entrance.js?v=106';
-import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,sharkPatrol,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=106';
+import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,sharkPatrol,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=108';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);syncWallet(state);
  let disposed=false,engine=null,control=null,builderSystem=null,friendSystem=null,houseSystem=null,wildLife=null,cityLife=null,cruiseLife=null,colonLife=null,workshop=null,estateWorld=null,regionWorld=null,carDriving=false,carSpeed=0,mountId=null,birdAltitude=0,birdTarget=0,birdLanding=false,near=null,ride=s.flight?1:0,flightY=s.flight||0,flightTarget=s.flight||0,flightVX=0,flightVZ=0,route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;
@@ -25,7 +26,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  function goalPlace(){return goal?explorePlaces.find(p=>p.id===goal.place):null;}
  function atGoal(){const p=goalPlace();return p&&Math.hypot(s.x-p.x,s.z-p.z)<2.6;}
  function goalWords(){if(!goal)return say('¡Completaste todas las aventuras! Elige un lugar en Descubrir para volver a jugar.','You completed every adventure! Choose a place in Discover to play again.');const names=[say('Pip en el puerto','Pip at the harbor'),say('Mila en el huerto','Mila at the orchard'),say('Ollie en el bosque','Ollie in the grove'),say('Luna junto a la música','Luna by the music notes'),say('el jardín','the garden'),say('el faro','the lighthouse')];return atGoal()?say('¡Aquí estamos, Angelique! Toca Empezar aventura para ayudar.','We’re here, Angelique! Tap Start adventure to help.'):say('Angelique, vamos a ayudar a ','Angelique, let’s help ')+names[goal.region]+say('. Toca Llévame y caminaré contigo.','. Tap Take me there and I’ll walk with you.');}
- function listen(){const words=goalWords();message.textContent=words;message.classList.add('show');messageTime=12;guide(words,true);}
+ function listen(){campaign.open();}
  function followGoal(){if(cruiseLife?.isActive())return;if(paused()||ride||control?.falling())return;if(boating){tell('⛵ Flechas para navegar · ⤴ Salir','⛵ Arrows to steer · ⤴ Get out');return;}if(inside){if(stair>=.97)control?.lightBeacon();else tell('👣 Sigue los escalones dorados','👣 Follow the golden steps');return;}if(swimming){route=islandPath(s,lastShore);targetPoint=route.shift()||null;swimBoost=3;return;}if(!goal){showDiscover();return;}if(atGoal()){openNext(goal.id);return;}const p=goalPlace();if(!walkable((s.x+p.x)/2,(s.z+p.z)/2)||!remoteAccess(s,p)){travelTo(p);return;}route=islandPath(s,p);targetPoint=route.shift()||null;panel.hidden=true;guide(say('¡Sígueme! Angelique va al siguiente lugar. Al llegar, toca Empezar aventura.','Follow me! Angelique is walking to the next place. When we arrive, tap Start adventure.'),true);}
 
  const makeEl=(tag,cls,txt)=>{const e=document.createElement(tag);e.className=cls;if(txt)e.textContent=txt;return e;};
@@ -129,7 +130,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  });
  rideQuick.hidden=true;
  rideQuick.setAttribute('aria-label',say('Montar o bajar de un amigo animal','Ride or dismount an animal friend'));
- const menu=makeEl('div','explore-menu');menu.append(btn('☷ '+say('Lugares','Places'),'world-small',showDiscover),btn('▤ '+say('Historias','Stories'),'world-small',openBook),btn('⌂','world-small',openHome));menu.lastChild.setAttribute('aria-label',say('Mi casita','My cottage'));menu.append(btn(say('? Ayuda','? Help'),'world-small',listen));
+ const menu=makeEl('div','explore-menu');menu.append(btn('☷ '+say('Lugares','Places'),'world-small',showDiscover),btn('▤ '+say('Historias','Stories'),'world-small',()=>campaign.open()),btn('⌂','world-small',openHome));menu.lastChild.setAttribute('aria-label',say('Mi casita','My cottage'));menu.append(btn(say('? Ayuda','? Help'),'world-small',listen));
  const helperToggle=btn('☰','world-small helper-toggle',()=>setHelpers(!host.classList.contains('helpers-open')));menu.id='island-helper-menu';goalCard.id='island-helper-goal';helperToggle.setAttribute('aria-controls','island-helper-menu island-helper-goal');
  function setHelpers(open){host.classList.toggle('helpers-open',open);paintButton(helperToggle,open?'×':'☰');helperToggle.setAttribute('aria-expanded',String(open));helperToggle.setAttribute('aria-label',open?say('Ocultar ayuda','Hide helpers'):say('Mostrar ayuda','Show helpers'));}setHelpers(false);
  goalButton.addEventListener('click',()=>setHelpers(false));
@@ -216,6 +217,30 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  hud.append(title);actions.append(lesson,act,jump,descend,friendMeet,rideQuick);host.append(canvas,hud,volcanoStatus,regionStatus,quest,goalCard,mobileShade,menu,helperToggle,bagShortcut,pad,directions,actions,instructions,message,panel,mobileDock);
  const adventureMap=createWorldMap({host,panel,world:s,islands:worldIslands,places:explorePlaces,language:state.lang,
    onTravel:travelTo,onOpen:()=>{setHelpers(false);blur();targetPoint=null;}});
+ const prepareStory=()=>{if(adventureMap.isOpen())adventureMap.close(false);friendSystem?.close?.();setHelpers(false);blur();targetPoint=null;route=[];};
+ const campaign=createCampaign({host,panel,state,save,joy,prepare:prepareStory,onObjective:storyObjective,onFinish:()=>control?.spark(s.x,s.z,35)});
+ function useWorkshop(id){if(campaign.work(id,()=>workshop?.use(id)))return true;return workshop?.use(id);}
+ function storyObjective(task){
+  let p=task.go;const kind=task.check.kind;
+  if(kind==='built'){
+   const recipe=BUILD_RECIPES.find(r=>r.id===task.check.id),stock=workshop?.inventory?.().available||{};
+   const missing=recipe&&Object.entries(recipe.need).find(([key,n])=>(stock[key]||0)<n);
+   if(missing){const resource=missing[0],items=exploreItems.filter(i=>i.kind===resource&&!s.collected.includes(i.id));items.sort((a,b)=>Math.hypot(a.x-s.x,a.z-s.z)-Math.hypot(b.x-s.x,b.z-s.z));const point=items[0]||(resource==='fruit'?control?.foodPoint('banana'):null);if(point){travelTo(point);tell('🎒 Recoge materiales para construir: '+resource,'🎒 Gather building supplies: '+resource);return;}}
+  }
+  if(kind==='story')p=islandStories.find(q=>q.id===task.check.story)||p;
+  if(kind==='collected'||kind==='collectedPrefix'){const items=exploreItems.filter(i=>(kind==='collected'?i.kind===task.check.item:i.id.startsWith(task.check.prefix))&&!s.collected.includes(i.id));items.sort((a,b)=>Math.hypot(a.x-s.x,a.z-s.z)-Math.hypot(b.x-s.x,b.z-s.z));p=items[0]||p;}
+  if(p&&Math.hypot(s.x-p.x,s.z-p.z)>5){travelTo(p);tell('📍 Sigue la marca dorada. Abre la historia al llegar.','📍 Follow the golden marker. Open the story when you arrive.');return;}
+  if(kind==='foodTotal'){const point=control?.foodPoint(task.check.item||task.check.food||'banana');if(point)travelTo(point);else interact();return;}
+  if(kind==='handIn'){campaign.open();return;}
+  if(kind==='story'){control?.playStory(task.check.story);return;}
+  if(kind==='built'){showBag(task.check.id);return;}
+  if(kind==='used'){useWorkshop(task.check.id);return;}
+  if(kind==='colon'||kind==='festivalMonkeys'){colonLife?.interact(s.x,s.z);return;}
+  if(kind==='cityDelivery'){showCityGuide();return;}
+  if(kind==='festivalCruise'){cruiseLife?.board();return;}
+  if(kind==='festivalBeacon'){interact();return;}
+  tell('🎯 '+task.es+' · Explora y usa las acciones cercanas.','🎯 '+task.en+' · Explore and use nearby actions.');
+ }
  refresh();
  const buttonUpdates=new Map();
  function setText(e,t){if(e.tagName==='BUTTON')buttonUpdates.set(e,t);else if(e.textContent!==t)e.textContent=t;}
@@ -252,7 +277,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
  if(mountId){if(birdMount())landBird();else friendSystem?.dismount();return;}
  const doorway=houseSystem?.near(s.x,s.z);if(doorway){houseSystem.enter(doorway);return;}
  const station=!ride&&!boating&&!inside&&!swimming&&!mountId&&!carDriving&&workshop?.nearest(s.x,s.z);
- if(station){if(workshop.isBuilt(station.id))workshop.use(station.id);else showBag(station.id);return;}
+ if(station){if(workshop.isBuilt(station.id))useWorkshop(station.id);else showBag(station.id);return;}
  if(!ride&&!boating&&!inside&&!mountId&&!carDriving&&!houseSystem?.isInside()&&cityLife?.interactActivity(s.x,s.z,false))return;
  if(!ride&&!boating&&!inside&&!mountId&&!carDriving&&estateWorld?.nearest(s.x,s.z)){showEstate();return;}
  const wildAnimal=wildLife?.nearestRideable(s.x,s.z);
@@ -344,7 +369,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
      if(step.check.kind==='cityDelivery'){showCityGuide();return;}
      const recipe=['built','used'].includes(step.check.kind)?BUILD_RECIPES.find(x=>x.id===step.check.id):null;
      if(recipe&&Math.hypot(s.x-recipe.x,s.z-recipe.z)<5){
-      if(step.check.kind==='used'&&workshop?.isBuilt(recipe.id)){workshop.use(recipe.id);showRegionProject(m.id);return;}
+      if(step.check.kind==='used'&&workshop?.isBuilt(recipe.id)){useWorkshop(recipe.id);return;}
       showBag(recipe.id);return;
      }
      let p=step.go;
@@ -362,7 +387,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
   other.append(makeEl('h3','',say('Explora otra región','Choose another region')));
   for(const r of REGION_PROJECTS){
    const status=missionStatus(s,state,r.id);
-   other.append(btn(r.icon+' '+(r.id==='home'?'Gorgona':r.id==='islet'?'Taboga':r.id==='wilds'?'Bocas':r.id==='coconutCoast'?'Contadora':r.id==='sunset'?'Volcán Barú':r.id==='crystalCove'?'Guna Yala':'Casco Viejo')+' '+status.done+'/4','discover-place',()=>showRegionProject(r.id)));
+   other.append(btn(r.icon+' '+(r.id==='home'?'Gorgona':r.id==='islet'?'Taboga':r.id==='wilds'?'Bocas':r.id==='coconutCoast'?'Contadora':r.id==='sunset'?'Volcán Barú':r.id==='crystalCove'?'Guna Yala':r.id==='colon'?'Colón':'Casco Viejo')+' '+status.done+'/4','discover-place',()=>showRegionProject(r.id)));
   }
   panel.append(other);
  }
@@ -385,7 +410,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    ['🍌',say('Comida','Food'),showFood],['🏗️',say('Construir','Build'),showEstate],
    ['🛠️',say('Talleres','Workshops'),()=>document.querySelector('.backpack-workshops')?.scrollIntoView({block:'start',behavior:'smooth'})],
    ['🪙',say('Tienda','Shop'),showShop],['🌍',say('Misiones','Missions'),()=>showRegionProject()],
-   ['📍',say('Explorar','Explore'),showDiscover],['📖',say('Historias','Stories'),openBook],
+   ['📍',say('Explorar','Explore'),showDiscover],['📖',say('Historias','Stories'),()=>campaign.open()],
    ['🏠',say('Mi casa','Home'),openHome],['🏙️',say('Ciudad','City'),showCityGuide],['❔',say('Ayuda','Help'),listen]
   ])hub.append(btn(icon+' '+label,'backpack-world-tile',goFromBag(fn)));
   panel.append(mainSupplies,makeEl('h3','',say('✨ Mi mundo','✨ My world')),hub);
@@ -411,7 +436,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
     here?(workshop.canBuild(r.id)?say('🛠️ Construir ahora','🛠️ Build now'):say('🔎 Buscar materiales','🔎 Find supplies')):
     say('📍 Ir a construir','📍 Go build');
    card.append(btn(text,'discover-place craft-recipe-action',()=>{
-    if(built&&here){workshop.use(r.id);panel.hidden=true;return;}
+    if(built&&here){panel.hidden=true;useWorkshop(r.id);return;}
     if(!built&&here&&workshop.canBuild(r.id)){workshop.build(r.id,s.x,s.z);showBag(r.id);return;}
     if(!built&&here){tell('🎒 Recoge más materiales para construir aquí.','🎒 Find more supplies to build here.');return;}
     panel.hidden=true;travelTo({...r,kind:'workshop'});
@@ -539,7 +564,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
  // Keep the canvas alive during a temporary GPU reset so Chrome can restore it.
  let recovering=false,attempt=0,recoveryTimer=0,startTimer=0,generation=0;
  const retry=btn(say('Volver a abrir la isla','Reopen the island'),'world-small',()=>start(true));retry.hidden=true;menu.append(retry);
- function ready(){if(disposed)return;recovering=false;clearTimeout(recoveryTimer);host.classList.remove('explore-fallback');host.classList.add('explore-ready');pad.hidden=actions.hidden=directions.hidden=false;menu.firstChild.hidden=false;retry.hidden=true;if(!welcomed){welcomed=true;guide((welcomeMessage?welcomeMessage+' ':'')+goalWords(),true);}}
+ function ready(){if(disposed)return;recovering=false;clearTimeout(recoveryTimer);host.classList.remove('explore-fallback');host.classList.add('explore-ready');pad.hidden=actions.hidden=directions.hidden=false;menu.firstChild.hidden=false;retry.hidden=true;campaign.offerIntro();if(!welcomed){welcomed=true;guide((welcomeMessage?welcomeMessage+' ':'')+goalWords(),true);}}
  function failed(error){if(disposed)return;console.warn('Island exploration unavailable',error?.message||'Graphics context unavailable');recovering=false;clearTimeout(recoveryTimer);engine?.dispose();engine=null;host.classList.remove('explore-ready');host.classList.add('explore-fallback');quest.textContent=say('La isla no terminó de cargar. Vuelve a abrirla; tu progreso está guardado.','The island did not finish loading. Reopen it; your progress is saved.');pad.hidden=actions.hidden=directions.hidden=true;menu.firstChild.hidden=true;retry.hidden=false;}
  function start(light=false){if(disposed)return;const current=++generation;clearTimeout(startTimer);clearTimeout(recoveryTimer);recovering=true;blur();canvas.removeEventListener('webglcontextlost',contextLost);canvas.removeEventListener('webglcontextrestored',contextRestored);engine?.dispose();engine=null;control=null;const next=canvas.cloneNode(false);canvas.replaceWith(next);canvas=next;canvas.addEventListener('webglcontextlost',contextLost);canvas.addEventListener('webglcontextrestored',contextRestored);attempt=light?1:0;retry.hidden=true;host.classList.remove('explore-ready','explore-fallback');quest.textContent=say('Abriendo tu isla…','Opening your island…');
   // Give the previous entrance/world context time to release before allocating another.
@@ -675,7 +700,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
   houseSystem=createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,height,surfaces,language:state.lang,companionId:()=>s.friends?.companion,onPizza:()=>cityLife?.order(),
     extraHouses:()=>colonLife.houses(),treehouseLevel:()=>s.colon.level,onTreehouseUpgrade:()=>colonLife.expand(),estateBuildings:()=>s.estate?.buildings||[],
     workshopBuildings:()=>workshop?.recipes?.filter(b=>workshop.isBuilt(b.id))||[],
-    onUseWorkshop:id=>{const r=workshop?.recipes?.find(r=>r.id===id);if(!r)return false;const result=workshop.use(id);if(!result)tell('🛠️ ¡Usa el taller!','🛠️ Use your workshop!');return result;},
+    onUseWorkshop:id=>{const r=workshop?.recipes?.find(r=>r.id===id);if(!r)return false;const result=useWorkshop(id);if(!result)tell('🛠️ ¡Usa el taller!','🛠️ Use your workshop!');return result;},
     onUpgrade:id=>{
      if(!canUpgradeEstate(s,id,coinBalance(state)))return false;
      if(!upgradeEstate(s,id,coinBalance(state)))return false;
@@ -698,7 +723,13 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
     onOpen:()=>{if(adventureMap.isOpen())adventureMap.close(false);setHelpers(false);blur();targetPoint=null;},
     onLessons:id=>{if(lessonRegions[id]!==undefined)openLessons(lessonRegions[id]);}
   });
-  const story=createWorldStory({T,scene,host,state,height,save,joy,spark,openNext,motion,refresh:id=>{earnCoins(state,'story-'+id);bloom(s.flowers);refresh();},active:()=>!paused()&&!document.hidden&&panel.hidden&&!inside&&!swimming&&!boating&&!ride&&!airborne&&!document.querySelector('dialog[open]')});
+  const story=createWorldStory({T,scene,host,state,height,save,joy,spark,openNext,motion,panel,preparePanel:prepareStory,refresh:id=>{earnCoins(state,'story-'+id);bloom(s.flowers);refresh();},active:()=>!paused()&&!document.hidden&&panel.hidden&&!inside&&!swimming&&!boating&&!ride&&!airborne&&!document.querySelector('dialog[open]')});
+  control.playStory=id=>story.open(id);
+  control.foodPoint=kind=>foodTrees.filter(t=>t.kind===kind&&(s.harvested[t.id]||0)<t.fruits.length).sort((a,b)=>Math.hypot(a.x-s.x,a.z-s.z)-Math.hypot(b.x-s.x,b.z-s.z))[0];
+  const festival=new T.Group();festival.name='Panama Friendship Festival';scene.add(festival);const festivalParts=[];
+  for(let i=0;i<9;i++){const x=-5+i*1.4,z=11.5+Math.sin(i*.8),y=height(x,z);const part=new T.Group();festival.add(part);make(cylinder,mat('#79553a'),x,y+1.6,z,.07,3.2,.07,part);make(ball,mat(['#f7ce62','#f29a86','#85c6ad'][i%3]),x,y+3.1,z,.27,.36,.27,part);festivalParts.push(part);}
+  const festivalTable=new T.Group();festival.add(festivalTable);make(box,mat('#a87549'),1,height(1,12)+.9,12,3,.18,1.3,festivalTable);for(const x of [0,2])make(box,mat('#79553a'),x,height(1,12)+.4,12,.12,.8,.7,festivalTable);
+
   const realms=createRealms({T,scene,host,state,make,geometry,mat,ball,box,cylinder,height,save,joy,spark,refresh,tell,navigate:(realm,dest)=>{if(!dest)return;setHelpers(false);if(dest.action==='food'){if(s.food.banana+s.food.coconut)showFood();else travelTo(explorePlaces.find(p=>p.id==='wilds'));return;}if(dest.action==='learn'){followGoal();return;}if(realm==='sky'){if(boating)disembark();if(ride){targetPoint={x:dest.x,z:dest.z};route=[];flightTarget=dest.y||12;}else{pendingRealm=dest;const launch=explorePlaces.filter(p=>p.kind==='balloon').sort((a,b)=>Math.hypot(a.x-s.x,a.z-s.z)-Math.hypot(b.x-s.x,b.z-s.z))[0];route=islandPath(s,launch);targetPoint=route.shift()||null;tell('🎈 Sube al globo para explorar el cielo','🎈 Board the balloon to explore the sky');}return;}if(realm==='islands'){travelTo(dest);return;}if(ride){waterLanding=dest;targetPoint={x:dest.x,z:dest.z};route=[];flightTarget=Math.max(8,flightY);return;}if(boating)disembark();route=islandPath(s,dest);targetPoint=route.shift()||null;tell('🌊 Sigue el brillo · Nada para descubrir','🌊 Follow the glow · Swim to discover');}});
   const journey=createJourney({T,scene,host,state,avatar,make,geometry,mat,height,save,joy,spark,refresh,realms,seek:kind=>{if(kind==='explore')showDiscover();else if(kind==='food'){if(s.food.banana+s.food.coconut)showFood();else travelTo(explorePlaces.find(p=>p.id==='wilds'));}else if(kind==='learn')followGoal();else{const dest=kind==='fly'?explorePlaces.find(p=>p.id==='balloon'):{x:11,z:20};route=islandPath(s,dest);targetPoint=route.shift()||null;}}});
   function update(dt,time){if(disposed)return;dt=Math.min(dt,.05);if(messageTime>0){messageTime-=dt;if(messageTime<=0)message.classList.remove('show');}
@@ -842,7 +873,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    if(active&&!inside&&!boating&&!airborne&&!ride&&Math.hypot(s.x+4,s.z-6)<.75&&jumpY===0&&velocity===0){velocity=10;joy.effect('tap');}
    for(let i=bubbles.length-1;i>=0;i--){const b=bubbles[i];if(active)b.life-=dt;if(active&&motion())b.m.position.y+=dt*.08;b.rim.lookAt(camera.position);if(b.life<=0){scene.remove(b.m);bubbles.splice(i,1);}else if(active&&!ride&&!inside&&!boating&&Math.hypot(s.x-b.m.position.x,s.z-b.m.position.z)<1&&Math.abs(ay+1-b.m.position.y)<1)popBubble(i);}
    for(let i=particles.length-1;active&&i>=0;i--){const p=particles[i];p.life-=dt;if(p.life<=0){scene.remove(p.m);particles.splice(i,1);continue;}p.vy-=5*dt;p.m.position.x+=p.vx*dt;p.m.position.y+=p.vy*dt;p.m.position.z+=p.vz*dt;p.m.scale.setScalar(Math.max(.01,p.life*(p.size||.08)));}
-   goal=nextIslandAdventure(state);const destination=goalPlace(),arrived=atGoal();guideBeacon.visible=!!destination;if(destination)guideBeacon.position.set(destination.x,height(destination.x,destination.z)+3.5+(motion()?Math.sin(time*2)*.2:0),destination.z);
+   goal=nextIslandAdventure(state);const destination=campaign.waypoint()||goalPlace(),arrived=atGoal();guideBeacon.visible=!!destination;if(destination)guideBeacon.position.set(destination.x,height(destination.x,destination.z)+3.5+(motion()?Math.sin(time*2)*.2:0),destination.z);
    setText(goalTitle,goal?say(`TU SIGUIENTE PASO · ${Math.min(goal.done+1,48)}/48`,`YOUR NEXT STEP · ${Math.min(goal.done+1,48)}/48`):say('¡LO LOGRASTE!','YOU DID IT!'));
    const subjects=[say('Ayuda a Pip con los números.','Help Pip with numbers.'),say('Prepara comida con Mila.','Get food ready with Mila.'),say('Descubre la naturaleza con Ollie.','Discover nature with Ollie.'),say('Haz música con Luna.','Make music with Luna.'),say('Cuida el jardín de la amistad.','Care for the friendship garden.'),say('Lleva tus ideas al faro.','Bring your ideas to the lighthouse.')];
    setText(goalText,goal?(arrived?say('¡Llegaste! Empecemos.','You’re here! Let’s begin.'):subjects[goal.region]):say('Todas las aventuras están completas. Puedes volver a jugar.','Every adventure is complete. You can play again.'));
@@ -949,11 +980,13 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
     goalButton.disabled=false;
    }
    act.classList.toggle('has-target',!act.hidden&&panel.hidden);
+   festivalParts.forEach((p,i)=>p.visible=i<s.campaign.chapter);festivalTable.visible=s.campaign.chapter===9;
+   campaign.update();
    for(const [button,words] of buttonUpdates)paintButton(button,words);buttonUpdates.clear();
   }
-  return {update,dispose(){builderSystem?.dispose();builderSystem=null;estateWorld?.dispose();estateWorld=null;regionWorld?.dispose();regionWorld=null;workshop?.dispose();workshop=null;volcanoStatus.remove();colonLife?.dispose();colonLife=null;cruiseLife?.dispose();cruiseLife=null;cityLife?.dispose();cityLife=null;houseSystem?.dispose();houseSystem=null;friendSystem?.dispose();friendSystem=null;wildLife=null;realms.dispose();journey.dispose();life.dispose();story.dispose();canvas.removeEventListener('pointerdown',walkTo);control=null;}};
+  return {update,dispose(){scene.remove(festival);builderSystem?.dispose();builderSystem=null;estateWorld?.dispose();estateWorld=null;regionWorld?.dispose();regionWorld=null;workshop?.dispose();workshop=null;volcanoStatus.remove();colonLife?.dispose();colonLife=null;cruiseLife?.dispose();cruiseLife=null;cityLife?.dispose();cityLife=null;houseSystem?.dispose();houseSystem=null;friendSystem?.dispose();friendSystem=null;wildLife=null;realms.dispose();journey.dispose();life.dispose();story.dispose();canvas.removeEventListener('pointerdown',walkTo);control=null;}};
  }
- function dispose(){if(disposed)return;adventureMap.dispose();host.classList.remove('inside-lighthouse','is-swimming','shark-nearby');joy.boat?.(false);disposed=true;generation++;clearTimeout(startTimer);clearTimeout(recoveryTimer);canvas.removeEventListener('webglcontextlost',contextLost);canvas.removeEventListener('webglcontextrestored',contextRestored);save();engine?.dispose();engine=null;document.removeEventListener('keydown',keydown);document.removeEventListener('keyup',keyup);window.removeEventListener('blur',blur);document.removeEventListener('visibilitychange',blur);window.removeEventListener('pointerup',releaseDirection);window.removeEventListener('pointercancel',releaseDirection);window.removeEventListener('pagehide',blur);blur();}
+ function dispose(){if(disposed)return;campaign.dispose();adventureMap.dispose();host.classList.remove('inside-lighthouse','is-swimming','shark-nearby');joy.boat?.(false);disposed=true;generation++;clearTimeout(startTimer);clearTimeout(recoveryTimer);canvas.removeEventListener('webglcontextlost',contextLost);canvas.removeEventListener('webglcontextrestored',contextRestored);save();engine?.dispose();engine=null;document.removeEventListener('keydown',keydown);document.removeEventListener('keyup',keyup);window.removeEventListener('blur',blur);document.removeEventListener('visibilitychange',blur);window.removeEventListener('pointerup',releaseDirection);window.removeEventListener('pointercancel',releaseDirection);window.removeEventListener('pagehide',blur);blur();}
  return {dispose};
 }
 
