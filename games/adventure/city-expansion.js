@@ -156,14 +156,26 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  // Soccer: visible pitch, striped goal and ball that reacts to shooting.
  const soccer=CITY_SITES.find(q=>q.id==='soccer'),field=new T.Group();
  field.position.set(soccer.x,height(soccer.x,soccer.z),soccer.z);group.add(field);
- makeObj(box,green,0,.10,0,16,.15,11,field);
- for(const side of [-1,1])makeObj(box,white,side*7.65,.20,0,.11,.035,10.8,field);
- for(const side of [-1,1])makeObj(box,white,0,.20,side*5.3,15,.035,.12,field);
- makeObj(box,white,0,.20,0,.11,.04,10.6,field);
- for(const sx of [-2.4,2.4])makeObj(cylinder,white,sx,1.05,-5.35,.07,2,.07,field);
- makeObj(box,white,0,2.1,-5.35,5,.12,.12,field);
- const football=makeObj(ball,white,0,.48,2.7,.40,.40,.40,field);football.name='Kickable Panama football';
- icon(field,'⚽',-5.6,3,3.7,2.2);
+ makeObj(box,green,0,.10,0,27,.15,19,field);
+ for(const side of [-1,1])makeObj(box,white,side*13.2,.20,0,.11,.035,18.7,field);
+ for(const side of [-1,1])makeObj(box,white,0,.20,side*9.2,26.5,.035,.12,field);
+ makeObj(box,white,0,.20,0,26,.04,.11,field);
+ for(const sx of [-2.4,2.4])makeObj(cylinder,white,sx,1.05,-9.25,.07,2,.07,field);
+ makeObj(box,white,0,2.1,-9.25,5,.12,.12,field);
+ const football=makeObj(ball,white,0,.52,6.2,.52,.52,.52,field);football.name='Kickable Panama football';
+ icon(field,'⚽',-10,3,6,2.2);
+ // Animated teammate/opponent: a full world-scale friend, not an interface icon.
+ const teammate=new T.Group();teammate.name='Soccer friend Kai';field.add(teammate);
+ const tSkin=mat('#ba8768'),tShirt=mat('#50add0'),tShort=mat('#385d83'),tHair=mat('#49332c');
+ makeObj(cylinder,tShirt,0,1.08,0,.23,.58,.23,teammate);
+ makeObj(ball,tSkin,0,1.61,0,.23,.27,.23,teammate);
+ makeObj(ball,tHair,0,1.79,-.04,.235,.13,.21,teammate);
+ const teammateLegs=[-.13,.13].map(v=>{const g=new T.Group();g.position.set(v,.70,0);teammate.add(g);makeObj(cylinder,tShort,0,-.16,0,.13,.34,.13,g);makeObj(cylinder,tSkin,0,-.43,0,.075,.35,.075,g);return g;});
+ const teammateArms=[-.32,.32].map(v=>{const g=new T.Group();g.position.set(v,1.3,0);teammate.add(g);makeObj(cylinder,tSkin,0,-.23,0,.07,.48,.07,g);return g;});
+ for(const side of [-1,1]){makeObj(box,white,side*12,.23,0,.14,.04,18.3,field);makeObj(box,white,0,.23,side*9.1,26,.04,.12,field);}
+ makeObj(cylinder,white,0,.24,0,2,.04,2,field);
+ const soccerBall={vx:0,vz:0,vy:0,cooldown:0,owner:'free'};
+
  // Produce market, a mural, history museum, and drive-through wash.
  const market=CITY_SITES.find(q=>q.id==='market'),stall=new T.Group();
  stall.position.set(market.x,height(market.x,market.z),market.z);group.add(stall);
@@ -264,10 +276,10 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
      '🏁 Rally started! Drive through all four 🏁 gates in 120 seconds.');
     joy.effect('tap');return true;
    case 'soccer':{
-    if(soccerAnimation.time>0)return true;
+    if(soccerBall.cooldown>0)return true;
     const shot=Math.abs(Math.sin(performance.now()*.0035));const goal=shot<.76;
     a.soccerShots=Math.min(999,a.soccerShots+1);if(goal)a.soccerGoals=Math.min(999,a.soccerGoals+1);
-    soccerAnimation.time=1.35;soccerAnimation.scored=goal;football.position.set(0,.48,2.7);
+    soccerBall.cooldown=.65;soccerBall.vx=goal?0:(Math.random()-.5)*9;soccerBall.vz=-14;soccerBall.vy=4.3;football.position.z=Math.min(7,football.position.z);
     if(goal)success('⚽ ¡GOL! '+a.soccerGoals+' / 3','⚽ GOAL! '+a.soccerGoals+' / 3',
       a.soccerGoals===3?'city-soccer':null);
     else success('⚽ ¡Casi! Espera el momento y vuelve a patear.','⚽ So close! Time the next kick.');
@@ -311,13 +323,44 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
   return false;
  }
  function update(dt,active,{x,z,driving=false,flying=false,indoors=false}={}){
-  if(soccerAnimation.time>0){
-   soccerAnimation.time=Math.max(0,soccerAnimation.time-dt);
-   const t=1-soccerAnimation.time/1.35;
-   football.position.y=.48+Math.sin(t*Math.PI)*1.45;
-   football.position.z=2.7-(soccerAnimation.scored?7.8:4.2)*t;
-   football.position.x=soccerAnimation.scored?0:Math.sin(t*Math.PI)*2.4;
-   if(soccerAnimation.time===0)football.position.set(0,.48,2.7);
+  const nearField=Math.hypot(x-soccer.x,z-soccer.z)<28;
+  if(nearField&&active&&!driving&&!flying&&!indoors){
+   const px=x-soccer.x,pz=z-soccer.z;
+   const bx=football.position.x,bz=football.position.z;
+   // Angelique dribbles by walking into the ball; the field itself is playable.
+   if(Math.hypot(px-bx,pz-bz)<1.4&&soccerBall.cooldown<=0){
+    const dx=bx-px,dz=bz-pz,d=Math.max(.01,Math.hypot(dx,dz));
+    soccerBall.vx=dx/d*5.5;soccerBall.vz=dz/d*5.5;soccerBall.vy=1.5;
+    soccerBall.owner='angelique';soccerBall.cooldown=.45;
+   }
+  }
+  const goalX=football.position.x,goalZ=football.position.z;
+  // Kai runs after the live ball, stops beside it and occasionally passes it.
+  const tx=Math.max(-10,Math.min(10,goalX)),tz=Math.max(-7,Math.min(7,goalZ+1.4));
+  const diffX=tx-teammate.position.x,diffZ=tz-teammate.position.z,dist=Math.hypot(diffX,diffZ);
+  const step=Math.min(dist,dt*2.8);
+  if(dist>.2){teammate.position.x+=diffX/dist*step;teammate.position.z+=diffZ/dist*step;teammate.rotation.y=Math.atan2(diffX,diffZ);}
+  const swing=dist>.4?Math.sin(performance.now()*.010)*.55:0;
+  teammateLegs.forEach((l,i)=>l.rotation.x=swing*(i?1:-1));
+  teammateArms.forEach((a,i)=>a.rotation.x=swing*(i?-1:1)*.4);
+  soccerBall.cooldown=Math.max(0,soccerBall.cooldown-dt);
+  if(dist<1.1&&soccerBall.cooldown===0&&Math.abs(soccerBall.vz)+Math.abs(soccerBall.vx)<2.1){
+   soccerBall.vx=(x-soccer.x-football.position.x)*.7;
+   soccerBall.vz=(z-soccer.z-football.position.z)*.7;
+   soccerBall.vy=1.4;soccerBall.cooldown=1.2;soccerBall.owner='kai';
+  }
+  if(Math.abs(soccerBall.vx)+Math.abs(soccerBall.vz)+soccerBall.vy>.02){
+   football.position.x+=soccerBall.vx*dt;football.position.z+=soccerBall.vz*dt;
+   football.position.y=Math.max(.52,football.position.y+soccerBall.vy*dt);
+   soccerBall.vy-=dt*11;
+   if(football.position.y<=.52){soccerBall.vy=Math.max(0,-soccerBall.vy*.25);soccerBall.vx*=.93;soccerBall.vz*=.93;}
+   soccerBall.vx*=Math.pow(.91,dt*10);soccerBall.vz*=Math.pow(.91,dt*10);
+   football.rotation.x+=soccerBall.vz*dt/ .52;football.rotation.z-=soccerBall.vx*dt/.52;
+   if(Math.abs(football.position.x)>12.9){football.position.x=Math.sign(football.position.x)*12.9;soccerBall.vx*=-.55;}
+   if(football.position.z<-9.15&&Math.abs(football.position.x)<2.4&&football.position.y<2.05){
+     football.position.set(0,.52,6.2);soccerBall.vx=soccerBall.vz=soccerBall.vy=0;
+     if(soccerBall.owner==='angelique'){a.soccerGoals=Math.min(999,a.soccerGoals+1);success('⚽ ¡Gol de Angelique!','⚽ Angelique scored!',a.soccerGoals===3?'city-soccer':null);}
+   }else if(Math.abs(football.position.z)>9.2){football.position.z=Math.sign(football.position.z)*9.2;soccerBall.vz*=-.5;}
   }
   pool.rotation.y=Math.sin(performance.now()*.0003)*.012;
   ship.position.z=Math.sin(performance.now()*.0005)*.45;
