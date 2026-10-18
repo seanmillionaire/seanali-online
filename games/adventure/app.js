@@ -39,7 +39,7 @@ function welcome(){
   features.append(chip);
  }
  copy.append(features);
- const enter=button('🎮 '+(returning?text('Volver a jugar','Keep Playing'):text('¡Vamos a jugar!','Let’s Play!')),'primary enter-world',arrive);
+ const enter=button('🎮 '+tr(returning?text('Volver a jugar','Keep Playing'):text('¡Vamos a jugar!','Let’s Play!')),'primary enter-world',arrive);
  copy.append(enter,el('p','welcome-foot',text('Un toque. Y ya estás en otro mundo.','One tap. A whole new world.')));
  const guide=el('div','arrival-guide');guide.append(el('div','arrival-turtle'),el('span','',text('¡Por aquí!','This way!')));section.append(copy,guide);
  const travel=el('div','arrival-caption');travel.hidden=true;travel.setAttribute('role','status');travel.append(el('span','arrival-orbit','✦'),el('p','',text('¡Llegamos a Playa Gorgona!','Playa Gorgona is just ahead!')));section.append(travel);
