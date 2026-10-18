@@ -139,16 +139,8 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  const estateMenu=btn(say('🏗️ Mi pueblo','🏗️ My village'),'world-small estate-menu-button',showEstate);menu.append(estateMenu);
  const mobileDock=makeEl('nav','mobile-game-dock');mobileDock.setAttribute('aria-label',say('Controles del mundo','World controls'));
  const dockMap=btn(say('🗺️ Mapa','🗺️ Map'),'mobile-dock-map',()=>{setHelpers(false);adventureMap.open();});
- const dockBuild=btn(say('🏰 Construir','🏰 Build'),'mobile-dock-build',showEstate);
- const dockFriend=btn(say('🫶 Amigos','🫶 Friends'),'mobile-dock-friend',()=>{
-  if(friendSystem?.companion()){
-   const friendId=friendSystem.companion();
-   if(friendSystem.sendHome())tell('🏡 ¡Tu amigo vuelve a su hogar!','🏡 Your friend is heading home!');
-   return;
-  }
-  if(friendSystem)friendSystem.openDirectory();
-  else tell('🐢 Tus amigos están llegando…','🐢 Your friends are loading…');
- });
+ const dockBuild=btn(say('🎒 Mochila','🎒 Backpack'),'mobile-dock-build',()=>showBag());
+ const dockFriend=btn(say('🫶 Amigos','🫶 Friends'),'mobile-dock-friend',openPhone);
  const dockPhone=btn(say('📱 Teléfono','📱 Phone'),'mobile-dock-phone',openPhone);
  function openPhone(){
   if(!friendSystem){tell('📱 Cargando contactos…','📱 Loading contacts…');return;}
@@ -177,7 +169,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   }
  }
  const dockMore=btn(say('☰ Más','☰ More'),'mobile-dock-more',()=>setHelpers(!host.classList.contains('helpers-open')));
- mobileDock.append(dockMap,dockBuild,dockPhone,dockFriend,dockMore);
+ mobileDock.append(dockBuild,dockMap,dockFriend);
  const setDockLabel=(control,icon,label)=>{
   const signature=icon+':'+label;
   if(control.dataset.dockLabel===signature)return;
@@ -185,7 +177,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   control.replaceChildren(makeEl('span','mobile-dock-icon',icon),makeEl('span','mobile-dock-caption',label));
  };
  setDockLabel(dockMap,'🗺️',say('Mapa','Map'));
- setDockLabel(dockBuild,'🏰',say('Construir','Build'));
+ setDockLabel(dockBuild,'🎒',say('Mochila','Backpack'));
  setDockLabel(dockFriend,'🫶',say('Amigos','Friends'));
  setDockLabel(dockPhone,'📱',say('Teléfono','Phone'));
  setDockLabel(dockMore,'☰',say('Más','More'));
@@ -197,13 +189,13 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  const directions=makeEl('div','world-arrows');for(const [label,k]of [['↑','ArrowUp'],['←','ArrowLeft'],['↓','ArrowDown'],['→','ArrowRight']]){const b=btn(label,'',()=>{});b.setAttribute('aria-label',say('Mover ','Move ')+({ArrowUp:say('norte','north'),ArrowDown:say('sur','south'),ArrowLeft:say('oeste','west'),ArrowRight:say('este','east')}[k]));b.onpointerdown=e=>{b.setPointerCapture(e.pointerId);keys.add(k);targetPoint=null;joy.gesture();};b.onpointerup=b.onpointercancel=()=>keys.delete(k);directions.append(b);}
  const instructions=makeEl('div','explore-controls',say('Toca el suelo para ir · Flechas / WASD · Espacio para saltar','Tap ground to walk · Arrows / WASD · Space to jump'));
  const panel=makeEl('section','explore-panel');panel.hidden=true;panel.setAttribute('aria-label',say('Descubrimientos','Discoveries'));
- hud.append(title,bag);actions.append(lesson,act,jump,descend,friendMeet);host.append(canvas,hud,volcanoStatus,regionStatus,quest,goalCard,mobileShade,menu,helperToggle,bagShortcut,pad,directions,actions,instructions,message,panel,mobileDock);
+ hud.append(title);actions.append(lesson,act,jump,descend,friendMeet);host.append(canvas,hud,volcanoStatus,regionStatus,quest,goalCard,mobileShade,menu,helperToggle,bagShortcut,pad,directions,actions,instructions,message,panel,mobileDock);
  const adventureMap=createWorldMap({host,panel,world:s,islands:worldIslands,places:explorePlaces,language:state.lang,
    onTravel:travelTo,onOpen:()=>{setHelpers(false);blur();targetPoint=null;}});
  refresh();
  const buttonUpdates=new Map();
  function setText(e,t){if(e.tagName==='BUTTON')buttonUpdates.set(e,t);else if(e.textContent!==t)e.textContent=t;}
- function refresh(){paintButton(craftButton,'🎒 '+say('Mochila','Bag')+' '+(s.craft?.built?.length||0)+'/7');paintButton(walletButton,'🪙 '+coinBalance(state));walletButton.setAttribute('aria-label',say('Mis monedas y tienda: ','My coins and shop: ')+coinBalance(state));const total=s.estate?.buildings?.length||0;bag.textContent=`🍌 ${s.food.banana}   🥥 ${s.food.coconut}   🪙 ${coinBalance(state)}   🍀 ${s.estate?.charms||0}`;dockBuild.setAttribute('aria-label',say('Construir mi pueblo','Build my village')+' · '+total);
+ function refresh(){paintButton(craftButton,'🎒 '+say('Mochila','Bag')+' '+(s.craft?.built?.length||0)+'/7');paintButton(walletButton,'🪙 '+coinBalance(state));walletButton.setAttribute('aria-label',say('Mis monedas y tienda: ','My coins and shop: ')+coinBalance(state));const total=s.estate?.buildings?.length||0;bag.textContent=`🍌 ${s.food.banana}   🥥 ${s.food.coconut}   🪙 ${coinBalance(state)}   🍀 ${s.estate?.charms||0}`;dockBuild.setAttribute('aria-label',say('Abrir mochila','Open backpack'));
  const companion=friendSystem?.companion?.()||s.friends?.companion;
  const names={pip:'Pip',dori:'Dori',mila:'Mila',ollie:'Ollie',luna:'Luna',kai:'Kai'};
  setDockLabel(dockFriend,companion?'🏡':'🫶',companion?say('A casa','Go home'):say('Amigos','Friends'));
