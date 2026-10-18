@@ -301,7 +301,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   }
   panel.append(other);
  }
- function showBag(focusId=null){
+ function showBag(focusId=null){panel.classList.remove('estate-panel');
   if(friendSystem?.isOpen())friendSystem.close();
   if(adventureMap.isOpen())adventureMap.close(false);
   setHelpers(false);panel.replaceChildren();panel.hidden=false;blur();targetPoint=null;route=[];
@@ -353,22 +353,35 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    const ok=canBuildEstate(s,p.type,coinBalance(state));
    const card=makeEl('section','estate-plan'+(ok?' estate-ready':'')),front=makeEl('div','estate-plan-head');
    front.append(makeEl('span','estate-emoji',p.icon),makeEl('strong','',es?p.es:p.en));card.append(front);
-   const costs=makeEl('div','estate-costs',`🍌 ${p.banana}  🥥 ${p.coconut}  🪙 ${p.coins}  🍀 ${p.charms}`);card.append(costs);
+   const cost=estateCosts(s,p.type),missing=estateMissing(s,p.type,coinBalance(state));
+   const costs=makeEl('div','estate-costs',cost.starter?say('🎁 PRIMERA CASA GRATIS','🎁 FIRST HOME FREE'):`🍌 ${cost.banana}  🥥 ${cost.coconut}  🪙 ${cost.coins}  🍀 ${cost.charms}`);card.append(costs);
+   const feedback=makeEl('p','estate-feedback');feedback.setAttribute('role','status');feedback.setAttribute('aria-live','polite');
    if(owns<p.unlock)card.append(makeEl('p','estate-locked',say('🔒 Construye '+p.unlock+' antes','🔒 Build '+p.unlock+' other buildings first')));
-   const action=btn(ok?say('✨ Construir aquí','✨ Build here'):say('🔎 Me faltan recursos','🔎 Collect more resources'),'estate-build-button',()=>{
-    if(action.disabled||!canBuildEstate(s,p.type,coinBalance(state))){showEstate();return;}
+   const action=btn(ok?(cost.starter?say('🎁 ¡Construir mi primera casa!','🎁 Build my first home!'):say('✨ Construir aquí','✨ Build here')):say('🔎 ¿Qué necesito?','🔎 What do I need?'),'estate-build-button',()=>{
+    if(!estateWorld){feedback.textContent=say('⏳ Espera a que cargue el mundo.','⏳ Wait for the 3D world to load.');return;}
+    if(!canBuildEstate(s,p.type,coinBalance(state))){
+      const lack=estateMissing(s,p.type,coinBalance(state));
+      const parts=[];
+      if(lack.cap)parts.push(say('Máximo de construcciones','Building limit reached'));
+      if(lack.unlock)parts.push(say('Construye '+lack.unlock+' edificio(s) primero','Build '+lack.unlock+' building(s) first'));
+      for(const [kind,icon] of [['banana','🍌'],['coconut','🥥'],['coins','🪙'],['charms','🍀']])if(lack[kind])parts.push(icon+' '+lack[kind]);
+      feedback.textContent=say('Te falta: ','You need: ')+parts.join(' · ')+'. '+say('Usa "Buscar recursos" abajo.','Tap "Find supplies" below.');
+      return;
+    }
     action.disabled=true;
-    if(boating||ride||swimming||inside||carDriving||mountId||houseSystem?.isInside()){
-      action.disabled=false;tell('🏡 Baja a tierra firme para construir.','🏡 Step onto land before building.');return;
+    if(carDriving)exitCar();
+    if(mountId)friendSystem?.dismount();
+    if(boating||ride||swimming||inside||houseSystem?.isInside()){
+      action.disabled=false;feedback.textContent=say('🏝️ Primero baja a tierra firme. Cierra este panel y usa Salir.','🏝️ Step onto land first. Close this panel and use Exit.');return;
     }
     const site=findEstateSite(s,p.type,{x:s.x,z:s.z},{canStand:(x,z)=>walkable(x,z)&&!inWater(x,z),height:(x,z)=>isletHeight(x,z)>0?isletHeight(x,z):0});
-    if(!site){action.disabled=false;tell('🏝️ Necesitas un espacio plano cerca. Ve a otro lugar y prueba.','🏝️ Find some flat open land nearby and try again.');return;}
+    if(!site){action.disabled=false;feedback.textContent=say('🏝️ Aquí no cabe. Camina hasta un espacio abierto y prueba otra vez.','🏝️ Not enough open space here. Walk to a clear area and try again.');return;}
     const entry=buildEstate(s,p.type,coinBalance(state),site);
-    if(!entry){action.disabled=false;return;}
-    estateWorld?.add(entry);save();refresh();panel.hidden=true;panel.classList.remove('estate-panel');
-    joy.effect('finish');tell('🎉 ¡Lo construiste! Mira tu nueva creación.','🎉 You built it! Look at your new creation.');
+    if(!entry){action.disabled=false;feedback.textContent=say('Inténtalo de nuevo.','Please try again.');return;}
+    estateWorld.add(entry);save();refresh();panel.hidden=true;panel.classList.remove('estate-panel');
+    control?.showBuild?.(entry);tell('🎉 ¡Lo construiste! ¡Ahí está tu nueva casa!','🎉 You built it! There is your new building!');
     targetPoint=null;route=[];
-   });action.disabled=!ok;card.append(action);plans.append(card);
+   });card.append(action,feedback);plans.append(card);
   }
   panel.append(plans);
   if(owns){
@@ -385,7 +398,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
       if(!upgradeEstate(s,b.id,coinBalance(state))){btnUp.disabled=false;return;}
       estateWorld?.upgrade(b.id);save();refresh();showEstate();
       tell('✨ ¡Tu propiedad es más grande ahora!','✨ Your property just grew!');
-    });btnUp.disabled=!valid;row.append(btnUp);upgrades.append(row);
+    });btnUp.disabled=!valid;row.append(btnUp,btn(say('👁️ Ver en el mundo','👁️ See in the world'),'estate-view-button',()=>{panel.hidden=true;panel.classList.remove('estate-panel');control?.showBuild?.(b);tell('🏡 ¡Esta es tu propiedad!','🏡 Here is your property!');}));upgrades.append(row);
    }
    panel.append(upgrades);
   }
@@ -414,7 +427,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   }
   if(boating)control?.disembark();const dest=p.id==='boat'?s.boat:p;route=islandPath(s,dest);targetPoint=route.shift()||null;panel.hidden=true;
  }
- function showDiscover(){if(carDriving)exitCar();if(houseSystem?.isInside()){houseSystem.leave();host.classList.remove('inside-cottage');}if(mountId)friendSystem?.dismount();if(friendSystem?.isOpen())friendSystem.close();if(adventureMap.isOpen())adventureMap.close(false);if(inside)control?.leaveTower();guide(say('Elige un lugar y Angelique caminará hasta allí.','Choose a place and Angelique will walk there.'),true);panel.replaceChildren();panel.hidden=false;blur();targetPoint=null;const close=btn('×','panel-close',()=>{panel.hidden=true;canvas.focus({preventScroll:true});});close.setAttribute('aria-label',say('Cerrar','Close'));panel.append(close,makeEl('h2','',say('¿Qué te apetece?','What feels fun?')),makeEl('p','',say('Una misión principal por región · 🐢 🦋 🌋 🪸','One main mission per region · 🐢 🦋 🌋 🪸')));
+ function showDiscover(){panel.classList.remove('estate-panel');if(carDriving)exitCar();if(houseSystem?.isInside()){houseSystem.leave();host.classList.remove('inside-cottage');}if(mountId)friendSystem?.dismount();if(friendSystem?.isOpen())friendSystem.close();if(adventureMap.isOpen())adventureMap.close(false);if(inside)control?.leaveTower();guide(say('Elige un lugar y Angelique caminará hasta allí.','Choose a place and Angelique will walk there.'),true);panel.replaceChildren();panel.hidden=false;blur();targetPoint=null;const close=btn('×','panel-close',()=>{panel.hidden=true;canvas.focus({preventScroll:true});});close.setAttribute('aria-label',say('Cerrar','Close'));panel.append(close,makeEl('h2','',say('¿Qué te apetece?','What feels fun?')),makeEl('p','',say('Una misión principal por región · 🐢 🦋 🌋 🪸','One main mission per region · 🐢 🦋 🌋 🪸')));
  panel.append(btn('🌍 '+say('Ayudar al lugar donde estoy','Help the region I’m visiting'),'discover-place',()=>showRegionProject()));const list=makeEl('div','discover-grid');for(const p of explorePlaces)list.append(btn(`${({wilds:'🍌',coconutCoast:'🥥',sunset:'✨',islet:'🦋',crystalCove:'💎',beacon:'🗼'})[p.id]||p.icon} ${es?p.es:p.en}`,'discover-place',()=>travelTo(p)));panel.append(list);close.focus();}
  function keydown(e){if(paused())return;if(!panel.hidden){if(e.key==='Escape'){if(friendSystem?.isOpen())friendSystem.close();else if(adventureMap.isOpen())adventureMap.close();else{panel.hidden=true;canvas.focus();}}return;}if((e.target.tagName==='BUTTON'&&(e.key===' '||e.key==='Enter'))||['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)||document.querySelector('dialog[open]'))return;const k=e.key.toLowerCase();if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d',' ','e','q','shift'].includes(k)){e.preventDefault();joy.gesture();keys.add(e.key);targetPoint=null;if(!e.repeat&&k===' ')hop();if(!e.repeat&&k==='e')interact();if(!e.repeat&&k==='q'){if(ride)flightTarget=Math.max(0,flightTarget-5);else if(birdMount()){birdLanding=false;birdTarget=Math.max(1.5,birdTarget-3);}}}}
  const keyup=e=>keys.delete(e.key),blur=()=>{keys.clear();stick.x=stick.z=0;knob.style.transform='';};
