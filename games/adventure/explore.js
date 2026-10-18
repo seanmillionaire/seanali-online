@@ -43,7 +43,8 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   else if(b.classList.contains('craft-bag-button'))named('🎒',say('Construir','Build')+(text.match(/\d+\/\d+/)?.[0]?' '+text.match(/\d+\/\d+/)[0]:''));
   else if(b.classList.contains('city-guide-button'))named('🏙️',say('Ciudad','City'));
   else if(b.classList.contains('helper-toggle'))named(text==='×'?'✕':'🧭',text==='×'?say('Cerrar','Close'):say('Menú','Menu'));
-  else if(/Descubrir|Discover|Explorar|Explore/.test(text))named('🗺️',say('Mapa','Map'));
+  else if(/Lugares|Places/.test(text))named('📍',say('Lugares','Places'));
+   else if(/Descubrir|Discover|Explorar|Explore/.test(text))named('🗺️',say('Mapa','Map'));
   else if(/Historias|Stories/.test(text))named('📖',say('Historias','Stories'));
   else if(text==='⌂')named('🏡',say('Casa','Home'));
   else if(/Ayuda|Help/.test(text))named('💡',say('Ayuda','Help'));
@@ -117,7 +118,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  const actions=makeEl('div','explore-actions'),act=btn(say('Saludar','Say hello'),'world-action',interact),jump=btn(say('Saltar ⤴','Jump ⤴'),'world-jump',hop);
  const descend=btn(say('↓ Bajar','↓ Lower'),'world-jump',()=>{if(ride)flightTarget=Math.max(0,flightTarget-5);else if(birdMount()){birdLanding=false;birdTarget=Math.max(1.5,birdTarget-3);}});descend.hidden=true;
  const friendMeet=btn('🐢 '+say('Amigos','Friends'),'world-action friend-hello',()=>{const f=friendSystem?.nearest(boating?'boat':swimming?'swim':'walk');if(f)friendSystem.open(f.id);});friendMeet.hidden=true;friendMeet.setAttribute('aria-label',say('Jugar con un amigo','Play with a friend'));
- const menu=makeEl('div','explore-menu');menu.append(btn('☷ '+say('Descubrir','Discover'),'world-small',showDiscover),btn('▤ '+say('Historias','Stories'),'world-small',openBook),btn('⌂','world-small',openHome));menu.lastChild.setAttribute('aria-label',say('Mi casita','My cottage'));menu.append(btn(say('? Ayuda','? Help'),'world-small',listen));
+ const menu=makeEl('div','explore-menu');menu.append(btn('☷ '+say('Lugares','Places'),'world-small',showDiscover),btn('▤ '+say('Historias','Stories'),'world-small',openBook),btn('⌂','world-small',openHome));menu.lastChild.setAttribute('aria-label',say('Mi casita','My cottage'));menu.append(btn(say('? Ayuda','? Help'),'world-small',listen));
  const helperToggle=btn('☰','world-small helper-toggle',()=>setHelpers(!host.classList.contains('helpers-open')));menu.id='island-helper-menu';goalCard.id='island-helper-goal';helperToggle.setAttribute('aria-controls','island-helper-menu island-helper-goal');
  function setHelpers(open){host.classList.toggle('helpers-open',open);paintButton(helperToggle,open?'×':'☰');helperToggle.setAttribute('aria-expanded',String(open));helperToggle.setAttribute('aria-label',open?say('Ocultar ayuda','Hide helpers'):say('Mostrar ayuda','Show helpers'));}setHelpers(false);
  goalButton.addEventListener('click',()=>setHelpers(false));
@@ -136,7 +137,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  const friendMenu=btn(say('🫶 Amigos','🫶 Friends'),'world-small friend-menu-button',()=>friendSystem?.openDirectory());menu.append(friendMenu);
  const estateMenu=btn(say('🏗️ Mi pueblo','🏗️ My village'),'world-small estate-menu-button',showEstate);menu.append(estateMenu);
  const mobileDock=makeEl('nav','mobile-game-dock');mobileDock.setAttribute('aria-label',say('Controles del mundo','World controls'));
- const dockMap=btn(say('🗺️ Mapa','🗺️ Map'),'mobile-dock-map',()=>{setHelpers(false);showDiscover();});
+ const dockMap=btn(say('🗺️ Mapa','🗺️ Map'),'mobile-dock-map',()=>{setHelpers(false);adventureMap.open();});
  const dockBuild=btn(say('🏰 Construir','🏰 Build'),'mobile-dock-build',showEstate);
  const dockFriend=btn(say('🫶 Amigos','🫶 Friends'),'mobile-dock-friend',()=>{
   if(friendSystem?.companion()){
