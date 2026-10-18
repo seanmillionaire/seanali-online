@@ -1,5 +1,5 @@
 import {earnCoins,syncWallet} from './explore-state.js?v=81';
-import {createExplore} from './explore.js?v=89';
+import {createExplore} from './explore.js?v=102';
 import {createEntrance} from './entrance.js?v=73';
 import {createDelight,burst,livingWorld,foxPortrait} from './delight.js?v=73';
 import {regions,quests,challenges,ui,text} from './content.js?v=73';
@@ -90,3 +90,4 @@ function cottage(main){const house=el('div',`cottage palette-${state.palette}`);
 function ending(){const section=el('main','celebration');section.append(el('div','trophy','🌟'),el('p','eyebrow',text('FIN · Y UN NUEVO COMIENZO','THE END · AND A NEW BEGINNING')),el('h1','',t('final')),el('p','',t('finaltext')),el('div','earned','✦ ✦ ✦ ✦ ✦ ✦'),el('p','',`${totalStars(state)} / 144 ${t('stars')} · ${tr(text('Guardián de Panamá','Panama Adventure Guardian'))}`),button(t('back'),'primary',()=>{screen='map';render();}),button(t('studio'),'soft',()=>{screen='studio';render();}));app.append(section);confetti();joy.effect('finish');}
 // Save on every meaningful action. An interrupted activity resumes at its last completed stage.
 save();render();
+

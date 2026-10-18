@@ -497,3 +497,42 @@ body[data-scene="explore"] .animal-ride-quick:not([hidden]){
   font-size:14px!important;box-shadow:0 4px 12px #123a4259;
  }
 }
+
+/* Fixed arrow controls share the keyboard movement loop; touch cannot scroll them. */
+.world-arrows,.world-arrows button,.explore-stick{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.world-arrows button[aria-pressed="true"]{background:#f6cc69!important;box-shadow:inset 0 2px 5px #244e4960}
+.world-arrows button:focus-visible{outline:3px solid #246b91;outline-offset:2px}
+@media(max-width:780px),(pointer:coarse){
+ body[data-scene="explore"] .explore-world{
+  --game-dock-bottom:max(7px,env(safe-area-inset-bottom));--game-dock-height:58px;
+  --game-control-bottom:calc(var(--game-dock-bottom) + var(--game-dock-height) + 14px);
+ }
+ body[data-scene="explore"] .explore-stick{display:none!important}
+ body[data-scene="explore"] .world-arrows{
+  position:absolute;display:grid!important;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(3,44px);
+  gap:2px;left:max(8px,env(safe-area-inset-left));bottom:var(--game-control-bottom);
+  width:136px;height:136px;z-index:20;
+ }
+ body[data-scene="explore"] .world-arrows button{
+  width:44px;height:44px;min-width:44px;min-height:44px;padding:0;margin:0;
+  border:2px solid #fff9e8;border-radius:12px;background:#fff7e7ed;color:#264d46;font-size:28px;line-height:1;
+ }
+ .world-arrows [data-direction="ArrowUp"]{grid-area:1/2}
+ .world-arrows [data-direction="ArrowLeft"]{grid-area:2/1}
+ .world-arrows [data-direction="ArrowDown"]{grid-area:3/2}
+ .world-arrows [data-direction="ArrowRight"]{grid-area:2/3}
+ body[data-scene="explore"] .explore-actions .animal-ride-quick:not([hidden]){
+  width:calc((100% - 6px)/2)!important;min-width:0!important;min-height:62px!important;height:62px!important;padding:5px 2px!important;
+ }
+ body[data-scene="explore"] .explore-world:not(.explore-ready) .world-arrows,
+ body[data-scene="explore"] .explore-world.helpers-open .world-arrows,
+ body[data-scene="explore"] .explore-world:has(.explore-panel:not([hidden]),.friend-panel:not([hidden]),.realm-panel:not([hidden]),.journey-panel:not([hidden])) .world-arrows{visibility:hidden;pointer-events:none}
+}
+@media(pointer:coarse) and (min-width:781px) and (min-height:521px){
+ body[data-scene="explore"] .world-arrows{bottom:145px}
+}
+@media(max-height:520px) and (max-width:780px),(pointer:coarse) and (max-height:520px){
+ body[data-scene="explore"] .world-arrows{--game-control-bottom:calc(max(4px,env(safe-area-inset-bottom)) + 49px + 9px)}
+ body[data-scene="explore"] .explore-actions .animal-ride-quick:not([hidden]){height:50px!important;min-height:50px!important;padding:3px 2px!important}
+}
+

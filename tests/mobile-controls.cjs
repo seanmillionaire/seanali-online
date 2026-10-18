@@ -17,7 +17,7 @@ assert.match(tail,/max-height:62px!important/,'action buttons capped for determi
 assert.match(tail,/pointer:coarse/,'landscape phones wider than 780px use phone controls');
 assert.match(tail,/\.explore-actions\[hidden\]/,'loading fallback hides controls');
 assert.match(js,/setDockLabel\(dockMap,'🗺️'/,'map retains icon-and-caption');
-assert.match(js,/setDockLabel\(dockBuild,'🏰'/,'build retains icon-and-caption');
+assert.match(js,/setDockLabel\(dockBuild,'🎒'/,'backpack retains icon-and-caption');
 assert.match(js,/setDockLabel\(dockFriend,companion\?'🏡':'🫶'/,'friend/return home kept');
 assert.match(js,/setDockLabel\(dockMore,'☰'/,'more retained');
 const dimensions=[[320,568],[375,667],[390,844],[430,932],[568,320],[667,375],[844,390],[932,430]];
@@ -33,3 +33,4 @@ for(const [w,h] of dimensions){
  assert(12+stickWidth < w-10-actionsWidth,'joystick/action horizontally separate at '+w+'x'+h);
 }
 console.log('PASS mobile action/nav/joystick zones, four stacked buttons, short landscape, friend return, 8 viewport models');
+
