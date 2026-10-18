@@ -41,17 +41,36 @@ export function findEstateSite(world,type,position,{canStand,height}){
  }
  return null;
 }
+// One free starter home lets a new player BUILD immediately. This is a
+// one-time tutorial reward, not an unlimited free property exploit.
+export function estateCosts(world,type){
+ const p=byType(type);
+ if(!p)return null;
+ if(type==='cottage'&&!world?.estate?.buildings?.length)return {banana:0,coconut:0,coins:0,charms:0,starter:true};
+ return {banana:p.banana,coconut:p.coconut,coins:p.coins,charms:p.charms,starter:false};
+}
+export function estateMissing(world,type,coins){
+ const cost=estateCosts(world,type),have=world?.estate;
+ if(!cost||!have)return null;
+ return {
+  banana:Math.max(0,cost.banana-(world.food?.banana||0)),
+  coconut:Math.max(0,cost.coconut-(world.food?.coconut||0)),
+  coins:Math.max(0,cost.coins-(coins||0)),
+  charms:Math.max(0,cost.charms-have.charms),
+  unlock:Math.max(0,(byType(type)?.unlock||0)-(have.buildings?.length||0)),
+  cap:(have.buildings?.length||0)>=32
+ };
+}
 export function canBuildEstate(world,type,coins){
- const p=byType(type),e=world.estate;
- return !!p&&!!e&&(e.buildings?.length||0)<32&&(e.buildings?.length||0)>=p.unlock&&
-  (world.food?.banana||0)>=p.banana&&(world.food?.coconut||0)>=p.coconut&&
-  e.charms>=p.charms&&coins>=p.coins;
+ const cost=estateCosts(world,type),lack=estateMissing(world,type,coins);
+ return !!cost&&!!lack&&!lack.cap&&!Object.values(lack).some(Boolean);
 }
 export function buildEstate(world,type,coins,site){
  const p=byType(type),e=world.estate;
  if(!site||!Number.isFinite(site.x)||!Number.isFinite(site.z)||!canBuildEstate(world,type,coins))return null;
  // This is one synchronous transaction: check every input before debiting.
- world.food.banana-=p.banana;world.food.coconut-=p.coconut;e.charms-=p.charms;
+ const cost=estateCosts(world,type);
+ world.food.banana-=cost.banana;world.food.coconut-=cost.coconut;e.charms-=cost.charms;
  const entry={id:e.nextId++,type:p.type,x:site.x,z:site.z,coins:p.coins,level:1};
  e.buildings.push(entry);return entry;
 }
