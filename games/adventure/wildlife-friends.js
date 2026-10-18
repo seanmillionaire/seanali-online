@@ -293,7 +293,7 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
   camera.updateMatrixWorld();
   islandFriends.forEach((f,i)=>{
    const n=nodes.get(f.id),label=labels[i],dist=Math.hypot(s.x-n.g.position.x,s.z-n.g.position.z);
-   if(dist>24||opened||inside||mode==='fly'||mounted===f.id||mode==='house'){label.hidden=true;return;}
+   if(dist>4.5||opened||inside||mode==='fly'||mounted===f.id||mode==='house'){label.hidden=true;return;}
    temp.set(n.g.position.x,n.g.position.y+(f.id==='dori'?1.6:3),n.g.position.z).project(camera);
    if(temp.z>1||temp.z< -1||Math.abs(temp.x)>1.05||Math.abs(temp.y)>1.05){label.hidden=true;return;}
    label.hidden=false;label.style.left=(temp.x*.5+.5)*100+'%';label.style.top=(-temp.y*.5+.5)*100+'%';
