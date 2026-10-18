@@ -153,6 +153,16 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  const ship=new T.Group();ship.position.set(0,.68,0);locks.add(ship);
  makeObj(box,red,0,0,0,1.3,.38,.62,ship);makeObj(box,white,0,.40,-.1,.70,.52,.46,ship);
  icon(locks,'🚢',0,2.8,0,1.9);
+ // An inhabited city: people cross plazas and sidewalks on independent routes.
+ const pedestrians=[];
+ for(let i=0;i<8;i++){
+  const g=new T.Group();g.name='Casco Viejo pedestrian '+(i+1);group.add(g);
+  const clothing=palette[i%palette.length],personSkin=mat(i%2?'#c78c67':'#a87451');
+  makeObj(cylinder,clothing,0,1.02,0,.23,.72,.23,g);
+  makeObj(ball,personSkin,0,1.67,0,.23,.27,.22,g);
+  const legs=[-.13,.13].map(dx=>{const limb=new T.Group();limb.position.set(dx,.72,0);g.add(limb);makeObj(cylinder,dark,0,-.38,0,.095,.64,.095,limb);return limb;});
+  pedestrians.push({g,legs,i});
+ }
  // Soccer: visible pitch, striped goal and ball that reacts to shooting.
  const soccer=CITY_SITES.find(q=>q.id==='soccer'),field=new T.Group();
  field.position.set(soccer.x,height(soccer.x,soccer.z),soccer.z);group.add(field);
@@ -323,6 +333,13 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
   return false;
  }
  function update(dt,active,{x,z,driving=false,flying=false,indoors=false}={}){
+  for(const p of pedestrians){
+   const a=performance.now()*.00017*(p.i%3+1)+p.i*1.7;
+   const cx=-100+Math.cos(p.i*2.4)*20,cz=-74+Math.sin(p.i*2.4)*16;
+   const px=cx+Math.cos(a)*5,pz=cz+Math.sin(a)*4;
+   p.g.position.set(px,height(px,pz),pz);p.g.rotation.y=-a;
+   p.legs.forEach((leg,j)=>leg.rotation.x=Math.sin(a*22+j*Math.PI)*.35);
+  }
   const nearField=Math.hypot(x-soccer.x,z-soccer.z)<28;
   if(nearField&&active&&!driving&&!flying&&!indoors){
    const px=x-soccer.x,pz=z-soccer.z;
