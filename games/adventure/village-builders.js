@@ -41,7 +41,7 @@ export function createVillageBuilders({T,scene,host,state,make,mat,ball,box,cyli
   const finishedSites=[];
   for(let i=0;i<3;i++){
    const site=new T.Group();finished.add(site);
-   site.position.set(spec.x+(i-1)*5,height(spec.x+(i-1)*5,spec.z-7)+.04,spec.z-7);
+   site.position.set(spec.x+(i-1)*5,height(spec.x+(i-1)*5,spec.z+5)+.04,spec.z+5);
    make(box,timber,0,.12,0,2.5,.24,2.2,site);
    for(const dx of [-.95,.95])for(const dz of [-.8,.8])make(box,timber,dx,.87,dz,.15,1.4,.15,site);
    make(box,roof,0,1.67,0,2.85,.28,2.45,site);
