@@ -11,17 +11,60 @@ export function createVillageBuilders({T,scene,host,state,make,mat,ball,box,cyli
  const el=(tag,cls,txt)=>{const v=document.createElement(tag);v.className=cls;v.textContent=txt;return v;};
  const button=(txt,action)=>{const v=el('button','friend-world-label',txt);v.type='button';v.addEventListener('click',action);host.append(v);labels.push(v);return v;};
  function build(spec){
-  const g=new T.Group();g.name=spec.name+' autonomous builder';scene.add(g);
-  const shirt=mat(spec.shirt),roof=mat(spec.roof);
-  make(ball,shirt,0,1.04,0,.38,.55,.27,g);
-  make(ball,skin,0,1.78,0,.32,.35,.31,g);
-  make(ball,hair,0,2.03,-.08,.34,.15,.3,g);
+  const g=new T.Group();g.name=spec.name+' · Village Builder';scene.add(g);
+  // Match Angelique's world scale and construction language, with individual faces and clothes.
+  const shirt=mat(spec.shirt),roof=mat(spec.roof),shorts=mat(spec.id==='mateo'?'#4c7890':'#5c6d99');
+  const boots=mat('#534739'),darkEyes=mat('#263b40'),cheeks=mat('#d99a89');
+  const skinTone=mat(spec.id==='mateo'?'#aa7955':'#ce9a77');
+  const hairTone=mat(spec.id==='mateo'?'#2e2727':'#5b3527');
+  const cloth=mat(spec.id==='mateo'?'#f7d6a1':'#e8d9ff');
+  make(new T.CylinderGeometry(.24,.20,.58,12),shirt,0,1.06,0,1,1,1,g);
+  make(new T.CylinderGeometry(.20,.32,.28,12),shirt,0,.76,0,1,1,1,g);
+  make(ball,skinTone,0,1.57,0,.225,.275,.218,g);
+  make(ball,hairTone,0,1.77,-.045,.235,.15,.22,g);
+  make(ball,hairTone,0,1.68,-.17,.22,.15,.10,g);
   for(const sign of [-1,1]){
-   make(ball,hair,sign*.14,1.83,.292,.035,.05,.027,g);
-   make(ball,pants,sign*.18,.45,0,.14,.4,.16,g);
+   make(ball,darkEyes,sign*.085,1.605,.205,.022,.03,.012,g);
+   make(ball,cheeks,sign*.162,1.53,.163,.038,.02,.009,g);
+   make(ball,skinTone,sign*.228,1.55,-.004,.034,.065,.036,g);
   }
-  const arms=[-1,1].map(sign=>{const pivot=new T.Group();pivot.position.set(sign*.40,1.37,0);g.add(pivot);make(ball,skin,sign*.13,-.32,0,.14,.39,.13,pivot);return pivot;});
-  const tool=make(box,stone,.56,.59,.39,.34,.12,.12,g);
+  make(ball,mat('#9f655b'),0,1.485,.219,.055,.016,.012,g);
+  // Back of hair has distinct shape; Sofia's tied hair stays attached as she walks.
+  if(spec.id==='sofia'){
+   make(ball,hairTone,0,1.62,-.235,.145,.20,.13,g);
+   make(ball,hairTone,0,1.40,-.26,.095,.15,.095,g);
+   make(ball,cloth,0,1.63,-.28,.105,.05,.06,g);
+  }else{
+   for(const px of [-.12,0,.12])make(ball,hairTone,px,1.82,.025,.09,.07,.13,g);
+  }
+  // Utility apron, collar, pockets, tool belt and grounded boots.
+  make(box,cloth,0,1.12,.235,.32,.34,.04,g);
+  make(box,boots,0,.81,.205,.47,.09,.14,g);
+  for(const sign of [-1,1])make(box,cloth,sign*.19,.81,.245,.105,.115,.07,g);
+  const legs=[-.13,.13].map(x=>{
+   const leg=new T.Group();leg.position.set(x,.70,0);g.add(leg);
+   make(cylinder,shorts,0,-.13,0,.12,.29,.12,leg);
+   make(cylinder,skinTone,0,-.40,0,.075,.36,.075,leg);
+   make(ball,boots,0,-.61,.065,.115,.085,.175,leg);
+   return leg;
+  });
+  const arms=[-.31,.31].map(x=>{
+   const pivot=new T.Group();pivot.position.set(x,1.29,0);g.add(pivot);
+   make(cylinder,shirt,0,-.10,0,.105,.22,.105,pivot);
+   make(cylinder,skinTone,0,-.32,0,.067,.31,.067,pivot);
+   make(ball,skinTone,0,-.49,.015,.09,.095,.09,pivot);
+   return pivot;
+  });
+  const heldTool=new T.Group();arms[1].add(heldTool);heldTool.position.set(0,-.50,.07);
+  make(cylinder,timber,0,-.14,.02,.028,.34,.028,heldTool);
+  make(box,stone,0,.035,.02,.26,.11,.12,heldTool);
+  const tool=heldTool;
+  // Real in-world supplies rather than floating abstract construction.
+  const supplies=new T.Group();scene.add(supplies);supplies.position.set(spec.x-1.6,height(spec.x-1.6,spec.z+2.1),spec.z+2.1);
+  for(let k=0;k<4;k++)make(box,timber,(k%2)*.27-.14,.10+Math.floor(k/2)*.20,0,.58,.16,.19,supplies);
+  make(box,stone,.7,.17,.16,.5,.34,.48,supplies);
+  const shadow=make(new T.CircleGeometry(.36,24),mat('#26362d',{transparent:true,opacity:.22,depthWrite:false}),0,.025,0,1,1,1,g);
+  shadow.rotation.x=-Math.PI/2;
   const work=new T.Group();scene.add(work);work.position.set(spec.x+2.0,height(spec.x+2,spec.z)+.04,spec.z);
   const base=make(box,timber,0,.13,0,3.8,.26,3.0,work);
   const supports=[];
@@ -48,7 +91,7 @@ export function createVillageBuilders({T,scene,host,state,make,mat,ball,box,cyli
    finishedSites.push(site);
   }
   const label=button(spec.icon+' '+spec.name,()=>{if(nearby(node))show(node);else onTravel({x:spec.x,z:spec.z+2});});
-  const node={spec,g,arms,tool,work,finished,finishedSites,base,supports,walls,roofParts,label,clock:0,saveClock:0,stage:-1,cycle:Math.max(0,Number(progress[spec.id]?.cycle)||0),elapsed:Math.max(0,Number(progress[spec.id]?.elapsed)||0)};
+  const node={spec,g,arms,legs,tool,supplies,work,finished,finishedSites,base,supports,walls,roofParts,label,clock:0,saveClock:0,stage:-1,cycle:Math.max(0,Number(progress[spec.id]?.cycle)||0),elapsed:Math.max(0,Number(progress[spec.id]?.elapsed)||0)};
   nodes.push(node);return node;
  }
  let watcher=null,watchCard=null;
@@ -83,7 +126,9 @@ export function createVillageBuilders({T,scene,host,state,make,mat,ball,box,cyli
    const x=n.spec.x+trip*1.12,z=n.spec.z+Math.cos(time*.48)*.45;
    n.g.position.set(x,height(x,z),z);
    n.g.rotation.y=Math.atan2(n.spec.x+2-x,n.spec.z-z);
-   n.arms.forEach((arm,i)=>arm.rotation.x=Math.sin(time*(walking?5:8)+i*Math.PI)*(walking?.28:.65));
+   const stride=walking?Math.sin(time*5):0;
+   n.legs.forEach((leg,i)=>leg.rotation.x=stride*(i?-.38:.38));
+   n.arms.forEach((arm,i)=>arm.rotation.x=Math.sin(time*(walking?5:8)+i*Math.PI)*(walking?.22:.52));
    n.tool.rotation.z=Math.sin(time*8)*.18;
    if(n.saveClock>=5){progress[n.spec.id]={cycle:n.cycle,elapsed:n.elapsed};n.saveClock=0;save();}
    n.label.textContent=n.spec.icon+' '+n.spec.name+' · '+Math.round(portion*100)+'%';
@@ -93,12 +138,12 @@ export function createVillageBuilders({T,scene,host,state,make,mat,ball,box,cyli
  }
  function projectLabels(camera){
   for(const n of nodes){
-   const pos=n.g.position.clone();pos.y+=2.8;pos.project(camera);
+   const pos=n.g.position.clone();pos.y+=2.15;pos.project(camera);
    const onscreen=pos.z>-1&&pos.z<1&&Math.abs(pos.x)<1&&Math.abs(pos.y)<1;
    n.label.hidden=!onscreen;
    if(onscreen){n.label.style.left=((pos.x+1)*50)+'%';n.label.style.top=((1-pos.y)*50)+'%';}
   }
  }
- function dispose(){for(const n of nodes){progress[n.spec.id]={cycle:n.cycle,elapsed:n.elapsed};scene.remove(n.g,n.work,n.finished);}labels.forEach(v=>v.remove());watchCard?.remove();save();}
+ function dispose(){for(const n of nodes){progress[n.spec.id]={cycle:n.cycle,elapsed:n.elapsed};scene.remove(n.g,n.work,n.finished,n.supplies);}labels.forEach(v=>v.remove());watchCard?.remove();save();}
  return {update,projectLabels,dispose};
 }
