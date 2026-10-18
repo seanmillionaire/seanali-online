@@ -351,13 +351,26 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   for(const [emoji,value,label] of [['🍌',s.food.banana,say('Plátanos','Bananas')],['🥥',s.food.coconut,say('Cocos','Coconuts')],['🪙',coinBalance(state),say('Monedas','Coins')],['🍀',s.estate?.charms||0,say('Suerte','Charms')]]){
    const item=makeEl('span','backpack-main-resource',emoji+' '+value);item.title=label;mainSupplies.append(item);
   }
-  panel.append(mainSupplies,btn(say('🏰 Construir mi imperio','🏰 Build my empire'),'estate-find-link',showEstate));
+  const hub=makeEl('div','backpack-world-hub');
+  const goFromBag=fn=>()=>{fn();if(!panel.hidden&&!panel.querySelector('.backpack-return')&&!panel.querySelector('.backpack-world-hub'))panel.append(btn('🎒 '+say('Volver a mochila','Back to backpack'),'backpack-return',()=>showBag()));};
+  for(const [icon,label,fn] of [
+   ['📱',say('Teléfono','Phone'),openPhone],['🫶',say('Amigos','Friends'),()=>friendSystem?.openDirectory()],
+   ['🍌',say('Comida','Food'),showFood],['🏗️',say('Construir','Build'),showEstate],
+   ['🛠️',say('Talleres','Workshops'),()=>document.querySelector('.backpack-workshops')?.scrollIntoView({block:'start',behavior:'smooth'})],
+   ['🪙',say('Tienda','Shop'),showShop],['🌍',say('Misiones','Missions'),()=>showRegionProject()],
+   ['📍',say('Explorar','Explore'),showDiscover],['📖',say('Historias','Stories'),openBook],
+   ['🏠',say('Mi casa','Home'),openHome],['🏙️',say('Ciudad','City'),showCityGuide],['❔',say('Ayuda','Help'),listen]
+  ])hub.append(btn(icon+' '+label,'backpack-world-tile',goFromBag(fn)));
+  panel.append(mainSupplies,makeEl('h3','',say('✨ Mi mundo','✨ My world')),hub);
+  const workshopSection=makeEl('section','backpack-workshops');
+  workshopSection.append(makeEl('h3','',say('🛠️ Materiales y construcciones','🛠️ Materials and construction')));
+  panel.append(workshopSection);
   if(!workshop){panel.append(makeEl('p','',say('Cargando talleres…','Loading workshops…')));return;}
   const inv=workshop.inventory(),stock=makeEl('div','craft-resource-list');
   for(const [kind,meta]of Object.entries(RESOURCE_INFO))stock.append(makeEl('span','craft-resource',meta.icon+' '+(es?meta.es:meta.en)+' '+inv.available[kind]+'/'+inv.total[kind]));
   const extras=makeEl('details','backpack-extra-treasures');
   extras.append(makeEl('summary','',say('🐚 Ver otros tesoros y materiales','🐚 More treasures and materials')),stock);
-  panel.append(extras,makeEl('h3','',say('🏗️ Talleres y construcciones clásicas','🏗️ Classic workshops and builds')));
+  workshopSection.append(extras,makeEl('h3','',say('🏗️ Talleres y construcciones clásicas','🏗️ Classic workshops and builds')));
   const cards=makeEl('div','craft-recipe-grid');
   for(const r of BUILD_RECIPES){
    const built=workshop.isBuilt(r.id),here=workshop.nearest(s.x,s.z,5)?.id===r.id;
@@ -378,7 +391,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    }));
    cards.append(card);
   }
-  panel.append(cards);
+  workshopSection.append(cards);
  }
  function showEstate(){
   if(friendSystem?.isOpen())friendSystem.close();
