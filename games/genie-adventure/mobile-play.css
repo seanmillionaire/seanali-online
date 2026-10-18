@@ -1,0 +1,126 @@
+/* the cosmos Aventura • play-first interface
+   Only the world, one compact resource bar, movement, a context action,
+   and three unmistakable navigation buttons remain visible on phones.
+   Old modules stay accessible through the menu and legacy-build link. */
+.mobile-game-dock,.mobile-menu-shade{display:none}
+.estate-panel .estate-eyebrow{text-align:center;color:#58816b;font-size:12px;font-weight:900;letter-spacing:.14em}
+.estate-panel h2{text-align:center;margin:4px auto 10px!important;padding:0!important}
+.estate-panel .estate-intro{text-align:center;font-size:17px!important;line-height:1.42!important;max-width:550px;margin:0 auto 15px}
+.estate-progress{display:flex;justify-content:space-between;gap:12px;max-width:620px;margin:0 auto 10px;font-size:18px}
+.estate-progress b{color:#1b765e}
+.estate-wallet{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:0 auto 18px;max-width:640px}
+.estate-currency{text-align:center;padding:9px 2px;background:#e6f5dd;border:1px solid #bad8a9;border-radius:14px;font-size:18px;font-weight:900;white-space:nowrap}
+.estate-plans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;max-width:650px;margin:auto}
+.estate-plan{min-width:0;border:2px solid #c9d6cb;background:#fffbef;border-radius:19px;padding:13px;display:flex;flex-direction:column;gap:10px;box-shadow:0 3px 0 #3e604b12}
+.estate-plan.estate-ready{border-color:#75bb91;background:#f1ffef}
+.estate-plan-head{display:flex;align-items:center;gap:10px;font-size:19px;line-height:1.2}
+.estate-emoji{font-size:38px}
+.estate-costs{background:#eff1dc;border-radius:12px;padding:9px 5px;font-size:17px;font-weight:900;text-align:center;white-space:normal;line-height:1.55}
+.estate-locked{margin:0!important;color:#8e5a45;font-size:14px!important;font-weight:800}
+.estate-build-button{width:100%;min-height:51px;border:0;border-radius:13px;background:#e5b958;color:#27443c;font-size:16px;font-weight:900;padding:10px 7px;margin-top:auto}
+.estate-build-button:disabled{background:#e8e7df;color:#7d817d}
+.estate-legacy-link{display:block;width:min(100%,510px);min-height:50px;margin:17px auto 3px;background:#fff7df;color:#2d5c52;border:1px solid #d3d8c6;border-radius:13px;font-size:15px;font-weight:800}
+@media(max-width:780px){
+ body[data-scene="explore"] .topbar{height:55px;min-height:55px;padding:5px 11px;background:linear-gradient(#18484bbd,#18484b55,transparent)!important}
+ body[data-scene="explore"] .topbar .brand{font-size:14px;max-width:195px;letter-spacing:-.02em}
+ body[data-scene="explore"] .brand small,body[data-scene="explore"] .brand-mark{display:none}
+ body[data-scene="explore"] .topbar .tools{gap:2px}
+ body[data-scene="explore"] .topbar .tools>button{display:none}
+ body[data-scene="explore"] .topbar .lang{padding:2px;border-radius:12px}
+ body[data-scene="explore"] .topbar .lang button{font-size:12px;min-width:32px;min-height:32px;padding:5px 8px}
+ body[data-scene="explore"] .explore-hud{top:64px;left:10px;right:10px;max-width:none;display:grid;gap:5px;z-index:16}
+ body[data-scene="explore"] .explore-location{font-size:14px;max-width:calc(100vw - 20px);width:max-content;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:7px 11px;min-height:34px;border-radius:11px;background:#fffae9ed}
+ body[data-scene="explore"] .explore-bag{display:block!important;font-size:15px;line-height:1.3;padding:7px 10px;white-space:nowrap;justify-self:start;max-width:calc(100vw - 20px);border-radius:11px;background:#fff6dbe8}
+ body[data-scene="explore"] .helper-toggle.picture-button{display:none!important}
+ body[data-scene="explore"] .island-goal,
+ body[data-scene="explore"] .region-help-status,
+ body[data-scene="explore"] .explore-world:not(.explore-fallback) .explore-hint,
+ body[data-scene="explore"] .pizza-city-status,
+ body[data-scene="explore"] .pizza-city-prompt,
+ body[data-scene="explore"] .friend-peek,
+ body[data-scene="explore"] .journey-peek,
+ body[data-scene="explore"] .world-story,
+ body[data-scene="explore"] .island-map-mini,
+ body[data-scene="explore"] .volcano-hike-status{display:none!important}
+ body[data-scene="explore"] .explore-actions .friend-hello,
+ body[data-scene="explore"] .explore-actions .world-lesson{display:none!important}
+ body[data-scene="explore"] .explore-actions{right:10px;bottom:max(12px,env(safe-area-inset-bottom));max-width:156px;flex-direction:row;gap:6px;justify-content:flex-end}
+ body[data-scene="explore"] .explore-actions .picture-button{
+  min-width:65px!important;max-width:73px!important;width:73px!important;min-height:70px!important;
+  padding:7px 4px!important;gap:3px!important;border-radius:17px!important;
+  background:#fff8eae8!important;border:2px solid #fffbee!important;
+ }
+ body[data-scene="explore"] .explore-actions .button-picture{font-size:30px!important}
+ body[data-scene="explore"] .explore-actions .button-caption{font-size:12px!important}
+ body[data-scene="explore"] .explore-stick{
+  left:12px;bottom:max(12px,env(safe-area-inset-bottom));width:96px;height:96px;border-width:2px;z-index:18;
+ }
+ body[data-scene="explore"] .stick-knob{width:47px;height:47px}
+ body[data-scene="explore"] .explore-menu{display:none!important}
+ body[data-scene="explore"] .mobile-menu-shade{display:none}
+ body[data-scene="explore"] .explore-world.helpers-open .mobile-menu-shade{
+  display:block;position:absolute;inset:0;z-index:22;background:#071f2f84;border:0;min-width:100%;
+ }
+ body[data-scene="explore"] .explore-world.helpers-open .explore-menu{
+  display:grid!important;position:absolute;z-index:28;left:10px;right:10px;top:auto;
+  bottom:max(192px,calc(env(safe-area-inset-bottom) + 180px));width:auto;
+  grid-template-columns:repeat(3,minmax(0,1fr));max-height:min(57svh,430px);
+  overflow-y:auto;gap:7px;padding:11px;border-radius:18px;background:#fffaf1;
+ }
+ body[data-scene="explore"] .explore-menu .picture-button{
+  min-height:70px;padding:7px 3px;gap:2px;border-radius:12px;box-shadow:none;
+ }
+ body[data-scene="explore"] .explore-menu .button-picture{font-size:27px}
+ body[data-scene="explore"] .explore-menu .button-caption{font-size:12px;line-height:1.15}
+ body[data-scene="explore"] .mobile-game-dock{
+  display:flex;align-items:stretch;justify-content:center;gap:7px;
+  position:absolute;bottom:max(122px,calc(env(safe-area-inset-bottom) + 117px));
+  left:50%;transform:translateX(-50%);z-index:27;pointer-events:auto;
+ }
+ body[data-scene="explore"] .mobile-game-dock button{
+  border:2px solid #fff9e8;border-radius:15px;min-height:57px;padding:10px 8px;
+  background:#fffae9f2;color:#264d46;font-weight:900;font-size:15px;
+  box-shadow:0 4px 11px #123a4252;white-space:nowrap;touch-action:manipulation;
+ }
+ body[data-scene="explore"] .mobile-game-dock .mobile-dock-build{background:#f4c964;font-size:17px;padding:10px 13px}
+ body[data-scene="explore"] .explore-world.snack-moment .mobile-game-dock{visibility:hidden}
+ body[data-scene="explore"] .explore-world:has(.explore-panel:not([hidden])) .mobile-game-dock,
+ body[data-scene="explore"] .explore-world:has(.explore-panel:not([hidden])) .explore-menu,
+ body[data-scene="explore"] .explore-world:has(.explore-panel:not([hidden])) .mobile-menu-shade,
+ body[data-scene="explore"] .explore-world:has(.explore-panel:not([hidden])) .explore-stick{
+  visibility:hidden;pointer-events:none;
+ }
+ body[data-scene="explore"] .explore-panel{
+  position:absolute;z-index:35;left:0;right:0;top:auto;bottom:0;transform:none;
+  width:100%;max-width:none;max-height:min(82svh,calc(100svh - 55px));
+  border-radius:26px 26px 0 0;border:2px solid #fffbee;border-bottom:0;
+  padding:24px 14px max(27px,env(safe-area-inset-bottom));
+  box-shadow:0 -12px 50px #0e293a90;overscroll-behavior:contain;
+ }
+ body[data-scene="explore"] .estate-panel h2{font-size:27px!important}
+ body[data-scene="explore"] .estate-panel .estate-intro{font-size:16px!important}
+ body[data-scene="explore"] .estate-plans{grid-template-columns:1fr;gap:10px}
+ body[data-scene="explore"] .estate-plan{padding:12px;gap:8px}
+ body[data-scene="explore"] .estate-emoji{font-size:38px}
+ body[data-scene="explore"] .estate-costs{font-size:16px}
+ body[data-scene="explore"] .estate-wallet{gap:4px}
+ body[data-scene="explore"] .estate-currency{font-size:15px;padding:8px 1px}
+ body[data-scene="explore"] .explore-message.show{top:153px;max-width:calc(100vw - 30px);font-size:14px;line-height:1.3;padding:8px 10px;border-width:2px}
+}
+@media(max-width:380px){
+ body[data-scene="explore"] .mobile-game-dock{gap:4px;bottom:max(113px,calc(env(safe-area-inset-bottom) + 110px))}
+ body[data-scene="explore"] .mobile-game-dock button{font-size:13px;min-height:53px;padding:8px 6px}
+ body[data-scene="explore"] .mobile-game-dock .mobile-dock-build{font-size:15px;padding:8px 10px}
+ body[data-scene="explore"] .explore-stick{width:86px;height:86px}
+ body[data-scene="explore"] .explore-actions .picture-button{width:65px!important;min-width:65px!important;max-width:65px!important;min-height:65px!important}
+ body[data-scene="explore"] .explore-menu .button-caption{font-size:11px}
+}
+@media(max-width:780px) and (max-height:600px){
+ body[data-scene="explore"] .explore-hud{top:52px}
+ body[data-scene="explore"] .explore-location{font-size:12px;padding:5px 8px;min-height:29px}
+ body[data-scene="explore"] .explore-bag{font-size:12px;padding:5px 7px}
+ body[data-scene="explore"] .mobile-game-dock{bottom:86px}
+ body[data-scene="explore"] .explore-stick{width:76px;height:76px}
+ body[data-scene="explore"] .explore-actions .picture-button{min-height:60px!important}
+ body[data-scene="explore"] .explore-world.helpers-open .explore-menu{bottom:147px;max-height:50svh}
+}
