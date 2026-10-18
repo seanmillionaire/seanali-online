@@ -1,3 +1,4 @@
+import {createActiveVolcano} from './active-volcano.js?v=111';
 import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=106';
 import {createTropical} from './tropical.js?v=106';
 import {createSurfaceTextures} from './surface-textures.js?v=73';
@@ -22,7 +23,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   renderer.shadowMap.enabled=!light;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
   const scene=new T.Scene();scene.background=new T.Color('#a4c9de');scene.fog=new T.FogExp2('#b0d1dc',.0025);
   const camera=new T.PerspectiveCamera(42,1,.2,550),sun=new T.DirectionalLight('#fff0d2',3.0);sun.position.set(-22,38,18);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-30;sun.shadow.camera.right=30;sun.shadow.camera.top=30;sun.shadow.camera.bottom=-30;sun.shadow.normalBias=.1;const ambient=new T.HemisphereLight('#c9edff','#58623c',1.45);scene.add(sun,ambient);
-  const geometries=new Set(),materials=new Set(),clouds=[],bobbing=[];let seed=4107;
+  const geometries=new Set(),materials=new Set(),clouds=[],bobbing=[],volcanoes=[];let seed=4107;
   const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
   const geometry=g=>{geometries.add(g);return g;};
   const mat=(color,extra={})=>{const m=new T.MeshStandardMaterial({color,roughness:.88,...extra});materials.add(m);return m;};
@@ -206,9 +207,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
     // Terrain is the real, walkable collision surface, not a decorative cone.
     const basalt=mat('#645d56',{map:surfaces.stone,bumpMap:surfaces.stone,bumpScale:.20,roughness:1}),
       gravel=mat('#bd9f79',{map:surfaces.sand,bumpMap:surfaces.sand,bumpScale:.10,roughness:1}),
-      signWood=mat('#866445',{map:surfaces.wood,bumpMap:surfaces.wood,bumpScale:.075}),
-      craterOrange=mat('#da764e',{emissive:'#f06827',emissiveIntensity:.75,roughness:.6}),
-      steam=mat('#ece4d4',{transparent:true,opacity:.15,depthWrite:false});
+      signWood=mat('#866445',{map:surfaces.wood,bumpMap:surfaces.wood,bumpScale:.075});
     // A wide, continuous stone hiking path that sits exactly on the terrain.
     const vertices=[],texcoords=[],triangles=[],steps=220;
     for(let i=0;i<=steps;i++){
@@ -260,18 +259,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
      const angle=i*2.4,r=.78+(i%3)*.043,p=place(land,Math.sin(angle)*r,Math.cos(angle)*r);
      fireflyTree(p.x,p.z,i);
     }
-    // The open crater is a depression in the actual mountain surface.
-    // Only a soft amber glow is used: no dangerous lava hazards or damage.
-    const centerH=isletHeight(land.x,land.z);
-    const warmRock=make(ball,craterOrange,land.x,centerH+.11,land.z,3.25,.18,2.8);
-    warmRock.name='Warm volcanic crater at Volcán Barú';
-    warmRock.castShadow=false;
-    for(let i=0;i<7;i++){
-     const angle=i*Math.PI*2/7,x=land.x+Math.cos(angle)*2.6,z=land.z+Math.sin(angle)*2.2;
-     const puff=make(ball,steam,x,centerH+1.8+(i%3)*1.25,z,.8+(i%2)*.35,.65+(i%3)*.27,.7);
-     puff.castShadow=false;puff.renderOrder=2;
-     bobbing.push({g:puff,y:puff.position.y,z:puff.position.z});
-    }
+    volcanoes.push(createActiveVolcano({T,scene,x:land.x,z:land.z,height:isletHeight,light}));
     // Safe summit lookout at the end of the hiking trail.
     const summit=volcanoTrailPoint(1);
     const platform=make(cylinder,signWood,summit.x,summit.y+.13,summit.z,1.60,.24,1.60);
@@ -427,7 +415,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   function tick(stamp){frame=0;if(disposed||document.hidden||renderer.getContext?.().isContextLost())return;if(lastDraw&&stamp-lastDraw<1000/30){frame=requestAnimationFrame(tick);return;}lastDraw=stamp;const elapsed=last?(stamp-last)/1000:0,dt=Math.min(elapsed,.05);last=stamp;const moving=motion();if(moving)time+=dt;
     if(flight!==null){flight+=elapsed;const p=moving?Math.min(flight/3.2,1):1,e=p*p*(3-2*p);camera.position.lerpVectors(startCam,endCam,e);target.lerpVectors(startLook,endLook,e);camera.clearViewOffset();camera.updateProjectionMatrix();canvas.parentElement.style.setProperty('--arrival',String(p));if(p===1){const done=finish;finish=null;flight=null;done?.();if(disposed)return;}}
     else if(!explorer){pose();if(moving){camera.position.x+=Math.sin(time*.13)*1.3+px*1.2;camera.position.y+=Math.sin(time*.24)*.4-py*.5;}}
-    if(explorer)explorer.update(dt,time);camera.lookAt(target);tropical.update(motion()?time:0);waterMaterial.uniforms.time.value=time;crystal.rotation.y=time*.35;beam.rotation.y=time*.22;
+    if(explorer)explorer.update(dt,time);camera.lookAt(target);volcanoes.forEach(v=>v.update(time));tropical.update(motion()?time:0);waterMaterial.uniforms.time.value=time;crystal.rotation.y=time*.35;beam.rotation.y=time*.22;
     clouds.forEach(c=>{c.g.position.x=c.x+Math.sin(time*.03+c.z)*3;});bobbing.forEach((b,i)=>{b.g.position.y=b.y+Math.sin(time*1.2+i)*.12;b.g.rotation.z=Math.sin(time+i)*.025;});sailboat.position.x=-18+Math.sin(time*.04)*4;motes.rotation.y=Math.sin(time*.1)*.03;
     try{draw();}catch(error){onError(error);return;}if(explorer||moving||flight!==null)frame=requestAnimationFrame(tick);
   }
@@ -446,5 +434,5 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
     flyIn(done){if(disposed)return;startCam.copy(camera.position);startLook.copy(target);flight=0;finish=done;wake();},
     dispose
   };
-  function dispose(){if(disposed)return;disposed=true;cancelAnimationFrame(frame);finish=null;explorer?.dispose();tropical.dispose();polyhaven?.dispose();surfaces.dispose();observer.disconnect();bodyObserver.disconnect();document.removeEventListener('visibilitychange',visibility);canvas.parentElement?.removeEventListener('pointermove',pointer);geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());sun.shadow.map?.dispose();renderer.dispose();renderer.forceContextLoss();}
+  function dispose(){if(disposed)return;disposed=true;cancelAnimationFrame(frame);finish=null;explorer?.dispose();volcanoes.forEach(v=>v.dispose());tropical.dispose();polyhaven?.dispose();surfaces.dispose();observer.disconnect();bodyObserver.disconnect();document.removeEventListener('visibilitychange',visibility);canvas.parentElement?.removeEventListener('pointermove',pointer);geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());sun.shadow.map?.dispose();renderer.dispose();renderer.forceContextLoss();}
 }
