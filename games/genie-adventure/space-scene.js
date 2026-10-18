@@ -1,4 +1,4 @@
-import {PLANETS} from './space-state.js?v=space3';
+import {PLANETS} from './space-state.js?v=space4';
 
 export function createSpaceScene(T,canvas){
  const renderer=new T.WebGLRenderer({canvas,antialias:true,powerPreference:'default'});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
@@ -31,7 +31,12 @@ export function createSpaceScene(T,canvas){
   if(p.id==='light'){const ring=make(geo(new T.RingGeometry(p.radius*1.45,p.radius*2.15,100)),mat('#cbb596',{side:T.DoubleSide,transparent:true,opacity:.42,roughness:1}),0,0,0,1,1,1,root);ring.rotation.x=1.08;ring.rotation.y=.3;}
   const visitor=new T.Group();visitor.name=p.visitor+' cosmic visitor';root.add(visitor);visitor.position.set(0,p.radius+2,0);const robe=mat('#d8d4e5',{emissive:p.light,emissiveIntensity:.2});make(small,robe,0,2.8,0,1.15,1.5,.75,visitor);make(cylinder,robe,0,1.5,0,.8,2.5,.7,visitor);make(small,mat('#b3c8df'),0,5,0,.7,.83,.7,visitor);for(const x of [-1.1,1.1])make(cylinder,robe,x,2.8,0,.23,1.9,.23,visitor);
   const beacon=new T.Group();root.add(beacon);beacon.position.set(0,p.radius+10,0);const glow=mat(p.light,{emissive:p.light,emissiveIntensity:1.8});make(small,glow,0,0,0,2.3,2.3,2.3,beacon);const ring=make(geo(new T.TorusGeometry(4,.16,8,48)),glow,0,0,0,1,1,1,beacon);beacon.visible=false;
-  return {p,root,surface,visitor,beacon,ring};});
+  // A real mission structure: three installed energy modules power an orbital relay.
+  const relay=new T.Group();relay.name=p.name+' planetary relay';root.add(relay);relay.position.set(0,p.radius+.25,-6);
+  const alloy=mat('#7f92a7',{metalness:.7,roughness:.35});make(cylinder,alloy,0,.4,0,5,.8,5,relay);
+  const relayParts=[];for(let i=0;i<3;i++){const module=new T.Group();module.name='Energy module '+(i+1);relay.add(module);const angle=i*Math.PI*2/3;module.position.set(Math.cos(angle)*3,0,Math.sin(angle)*3);make(cylinder,alloy,0,2,0,.45,4,.45,module);make(small,glow,0,4.2,0,.8,1.2,.8,module);module.visible=false;relayParts.push(module);}
+  make(geo(new T.TorusGeometry(3.5,.12,8,48)),mat(p.light,{emissive:p.light,emissiveIntensity:.5,transparent:true,opacity:.35}),0,5,0,1,1,1,relay).rotation.x=Math.PI/2;
+  return {p,root,surface,visitor,beacon,ring,relay,relayParts};});
  let seed=41;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};const coords=[];for(let i=0;i<2400;i++){const a=rand()*Math.PI*2,b=Math.acos(rand()*2-1),r=22000+rand()*8000;coords.push(Math.sin(b)*Math.cos(a)*r,Math.cos(b)*r,Math.sin(b)*Math.sin(a)*r);}
  const stars=new T.Points(geo(new T.BufferGeometry()),new T.PointsMaterial({color:'#d2deed',size:13,sizeAttenuation:true}));materials.push(stars.material);stars.geometry.setAttribute('position',new T.Float32BufferAttribute(coords,3));scene.add(stars);
  // A readable adult male genie, without the toy balloon or animal companions.

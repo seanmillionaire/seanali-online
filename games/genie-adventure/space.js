@@ -1,5 +1,5 @@
-import {PLANETS,FRAGMENT_SITES,planetById,screenMotion,collectFragment,grantPlanetWish} from './space-state.js?v=space3';
-import {createSpaceScene} from './space-scene.js?v=space3';
+import {PLANETS,FRAGMENT_SITES,planetById,screenMotion,collectFragment,grantPlanetWish} from './space-state.js?v=space4';
+import {createSpaceScene} from './space-scene.js?v=space4';
 const load=()=>import('/games/adventure/vendor/three.module.min.js');
 const node=(tag,cls,text)=>{const n=document.createElement(tag);n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 
@@ -41,10 +41,10 @@ export function createExplore(host,{state,save,joy,motion=()=>true}){
   let label,fn;
   if(complete){const next=PLANETS.find(p=>!done(p.id));label=next?say('Siguiente Planeta','Next Planet'):say('Explorar El Sistema','Explore The System');fn=()=>next?mission(next.id):destinations();}
   else if(s.planet!==id){label=say('Volar A ','Fly To ')+p.name;fn=()=>{closePanel();startTravel(id);};}
-  else if(s.mode!=='walk'){const near=engine.avatar.position.distanceTo(new T.Vector3().fromArray(p.center))<p.radius+400;label=near?say('Aterrizar Para Ayudar','Land To Help'):say('Volar A ','Fly To ')+p.name;fn=()=>{closePanel();land(id);};}
+  else if(s.mode!=='walk'){const near=engine?.avatar.position.distanceTo(new T.Vector3().fromArray(p.center))<p.radius+400;label=near?say('Aterrizar Para Ayudar','Land To Help'):say('Volar A ','Fly To ')+p.name;fn=()=>{closePanel();land(id);};}
   else if(n<3){label=say('Localizar Fragmento','Locate Fragment');fn=()=>{closePanel();const i=[0,1,2].find(i=>!fragments(id).includes(i));delete s.targetSurface;walkTarget=FRAGMENT_SITES[i];};}
   else if(Math.hypot(...s.local)>9){label=say('Volver Con ','Return To ')+p.visitor;fn=()=>{closePanel();delete s.targetSurface;walkTarget=[0,0];};}
-  else{label=say('Conceder Deseo','Grant Wish');fn=()=>{closePanel();grant();};}
+  else{label=say('Construir Relé','Build Relay');fn=()=>{closePanel();grant();};}
   card.append(button(label,'space-primary',fn));panel.append(card);
   if(w.granted.length===6)panel.append(node('p','space-complete-note',say('El cosmos vuelve a brillar. Has cumplido tu misión.','The cosmos shines again. Your mission is complete.')));
  }
@@ -58,8 +58,9 @@ export function createExplore(host,{state,save,joy,motion=()=>true}){
  function launch(){alignFlightView();const p=current(),c=new T.Vector3().fromArray(p.center);normal.copy(engine.avatar.position).sub(c).normalize();s.mode='flight';setPosition(c.addScaledVector(normal,p.radius+80));walkTarget=null;clear();persist();lastUI='';}
  function startTravel(id){if(!engine)return;const p=planetById(id),from=engine.avatar.position.clone(),to=new T.Vector3().fromArray(p.center).add(new T.Vector3(0,p.radius+150,p.radius*.5));
   travel={id,from,to,elapsed:0,duration:Math.max(3,from.distanceTo(to)/2600)};s.mode='flight';walkTarget=null;clear();joy.effect('travel');lastUI='';}
- function grant(){if(!grantPlanetWish(state,s.planet))return;joy.effect('finish');persist();lastUI='';message(say('Deseo concedido. La luz de ','Wish granted. ')+current().name+say(' vuelve a brillar.',' shines again.'));if(w.granted.length===6)mission();}
- function contextAction(){if(!engine||!panel.hidden||travel)return;if(s.mode==='walk'){if(!done(s.planet)&&Math.hypot(...s.local)<9){if(fragments(s.planet).length===3)grant();else mission();}else launch();}else if(s.mode==='orbit')land();else{const closest=nearestPlanet();if(closest.distance<closest.p.radius+400)enterOrbit(closest.p.id);else destinations();}}
+ function guideNext(){delete s.targetSurface;if(fragments(s.planet).length<3){walkTarget=FRAGMENT_SITES[[0,1,2].find(i=>!fragments(s.planet).includes(i))];message(say('Siguiendo la señal de energía','Following the energy signal'));}else if(s.surface[1]<.5||Math.hypot(...s.local)>9){walkTarget=[0,0];message(say('Volviendo al relé para construir','Returning to the relay to build'));}else grant();}
+ function grant(){if(!grantPlanetWish(state,s.planet)){message(say('Acércate al relé con tres fragmentos de energía','Move to the relay with three energy fragments'));return;}joy.effect('finish');persist();lastUI='';message(say('Relé construido. La luz de ','Relay built. ')+current().name+say(' vuelve a brillar.',' shines again.'));if(w.granted.length===6)mission();}
+ function contextAction(){if(!engine||!panel.hidden||travel)return;if(s.mode==='walk'){if(!done(s.planet))guideNext();else destinations();}else if(s.mode==='orbit')land();else{const closest=nearestPlanet();if(closest.distance<closest.p.radius+400)enterOrbit(closest.p.id);else destinations();}}
  function nearestPlanet(){return PLANETS.map(p=>({p,distance:engine.avatar.position.distanceTo(new T.Vector3().fromArray(p.center))})).sort((a,b)=>a.distance-b.distance)[0];}
  missionButton.onclick=missionNav.onclick=()=>{joy.gesture();mission();};planetNav.onclick=()=>{joy.gesture();destinations();};action.onclick=()=>{joy.gesture();contextAction();};
  const altPress=(b,n)=>{b.onpointerdown=e=>{e.preventDefault();b.setPointerCapture(e.pointerId);vertical=n;travel=null;joy.gesture();};b.onpointerup=b.onpointercancel=()=>vertical=0;};altPress(higher,1);altPress(lower,-1);
@@ -73,8 +74,8 @@ export function createExplore(host,{state,save,joy,motion=()=>true}){
  function tapWorld(e){if(!engine||s.mode!=='walk')return;const r=canvas.getBoundingClientRect(),ray=new T.Raycaster();ray.setFromCamera(new T.Vector2((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1),engine.camera);const objects=fragmentMeshes.filter(f=>f.planet===s.planet&&!fragments(s.planet).includes(f.index));const hit=ray.intersectObjects(objects.map(f=>f.mesh),false)[0];if(hit){delete s.targetSurface;walkTarget=FRAGMENT_SITES[objects.find(f=>f.mesh===hit.object).index];return;}const surface=engine.planets.find(p=>p.p.id===s.planet).surface,ground=ray.intersectObject(surface,false)[0];if(ground){const p=current(),local=ground.point.clone().sub(new T.Vector3().fromArray(p.center)).normalize();s.targetSurface=local.toArray();walkTarget=[local.x*p.radius,local.z*p.radius];}}
  function ui(){const p=current(),n=fragments(p.id).length,count=w.granted.length,key=[p.id,s.mode,n,count,!!travel].join(':');if(key===lastUI)return;lastUI=key;
   modeLabel.textContent=s.mode==='walk'?say('SUPERFICIE','SURFACE'):s.mode==='orbit'?say('EN ÓRBITA','IN ORBIT'):say('ESPACIO PROFUNDO','DEEP SPACE');const nearby=s.mode==='flight'&&!travel?nearestPlanet():null;nameLabel.textContent=travel?planetById(travel.id).name:nearby&&nearby.distance>nearby.p.radius+400?say('Espacio Interplanetario','Interplanetary Space'):nearby?nearby.p.name:p.name;
-  missionTitle.textContent=count===6?say('Las seis luces están restauradas','All six lights restored'):say('Restaura las seis luces','Restore the six lights')+' · '+count+'/6';missionHint.textContent=done(p.id)?say('Abre Planetas para continuar','Open Planets to continue'):p.visitor+' · '+(n===3?say('Vuelve para conceder el deseo','Return to grant the wish'):n+'/3 '+say('fragmentos','fragments'));
-  action.disabled=!!travel;action.textContent=s.mode==='walk'?(Math.hypot(...s.local)<9&&!done(p.id)?(n===3?say('Conceder Deseo','Grant Wish'):say('Hablar','Talk')):say('Despegar','Launch')):s.mode==='orbit'?say('Aterrizar','Land'):(nearby&&nearby.distance<nearby.p.radius+400?say('Entrar En Órbita','Enter Orbit'):say('Planetas','Planets'));altitude.hidden=s.mode!=='flight'||!!travel;travelUI.hidden=!travel;
+  missionTitle.textContent=count===6?say('Las seis luces están restauradas','All six lights restored'):say('Restaura las seis luces','Restore the six lights')+' · '+count+'/6';missionHint.textContent=done(p.id)?say('Abre Planetas para continuar','Open Planets to continue'):p.visitor+' · '+(n===3?say('Vuelve al relé y constrúyelo','Return to the relay and build it'):n+'/3 '+say('energía · Busca con el botón inferior','energy · Use Find Energy below'));
+  action.disabled=!!travel||!!walkTarget;action.textContent=s.mode==='walk'?(done(p.id)?say('Siguiente Planeta','Next Planet'):walkTarget?say('En Camino…','Following Signal…'):n<3?say('Buscar Energía','Find Energy'):s.surface[1]>.5&&Math.hypot(...s.local)<9?say('Construir Relé','Build Relay'):say('Volver Al Relé','Return To Relay')):s.mode==='orbit'?say('Aterrizar','Land'):(nearby&&nearby.distance<nearby.p.radius+400?say('Entrar En Órbita','Enter Orbit'):say('Planetas','Planets'));altitude.hidden=s.mode!=='flight'||!!travel;travelUI.hidden=!travel;
  }
  load().then(three=>{if(disposed)return;T=three;engine=createSpaceScene(T,canvas);planetPosition=new T.Vector3();normal=new T.Vector3(0,1,0);setPosition(new T.Vector3().fromArray(s.position));
   for(const p of PLANETS)FRAGMENT_SITES.forEach(([x,z],index)=>{const mesh=engine.make(engine.geo(new T.OctahedronGeometry(1.3,0)),engine.mat(p.light,{emissive:p.light,emissiveIntensity:.7}),0,0,0);mesh.position.copy(engine.surfacePoint(p,x,z,3));mesh.name=p.name+' fragment '+index;fragmentMeshes.push({planet:p.id,index,mesh});});host.classList.add('explore-ready');tick(0);
@@ -85,7 +86,7 @@ export function createExplore(host,{state,save,joy,motion=()=>true}){
   if(s.mode==='walk'){
    normal.fromArray(s.surface).normalize();if(normal.lengthSq()<.5)normal.set(0,1,0);
    let movement=screenMotion(T,engine.camera,normal,x,y);
-   if(walkTarget&&!hasInput){const targetNormal=s.targetSurface?new T.Vector3().fromArray(s.targetSurface):new T.Vector3(walkTarget[0],Math.sqrt(Math.max(1,p.radius*p.radius-walkTarget[0]**2-walkTarget[1]**2)),walkTarget[1]).normalize();const gap=normal.angleTo(targetNormal)*p.radius;if(gap<.55){walkTarget=null;delete s.targetSurface;}else movement.copy(targetNormal).projectOnPlane(normal).normalize();}
+   if(walkTarget&&!hasInput){const targetNormal=s.targetSurface?new T.Vector3().fromArray(s.targetSurface):new T.Vector3(walkTarget[0],Math.sqrt(Math.max(1,p.radius*p.radius-walkTarget[0]**2-walkTarget[1]**2)),walkTarget[1]).normalize();const gap=normal.angleTo(targetNormal)*p.radius;if(gap<.55){walkTarget=null;delete s.targetSurface;persist();message(fragments(p.id).length===3?say('Pulsa Construir Relé para restaurar la luz','Press Build Relay to restore the light'):say('Pulsa Buscar Energía para la siguiente señal','Press Find Energy for the next signal'));}else movement.copy(targetNormal).projectOnPlane(normal).normalize();}
    if(active){normal.addScaledVector(movement,dt*12/p.radius).normalize();s.surface=normal.toArray();s.local=[normal.x*p.radius,normal.z*p.radius];}
    avatar.position.copy(c).addScaledVector(normal,p.radius+1);avatar.quaternion.setFromUnitVectors(new T.Vector3(0,1,0),normal);
    if(active&&normal.y>0){for(let i=0;i<3;i++)if(collectFragment(state,p.id,i)){joy.effect('pair');persist();lastUI='';message(fragments(p.id).length===3?say('Vuelve con ','Return to ')+p.visitor:fragments(p.id).length+'/3 '+say('fragmentos recuperados','fragments recovered'));}}
@@ -105,7 +106,7 @@ export function createExplore(host,{state,save,joy,motion=()=>true}){
    if(s.mode==='flight'||dt===0)engine.camera.position.copy(cameraPos);else engine.camera.position.lerp(cameraPos,1-Math.exp(-dt*10));engine.camera.up.copy(up);engine.camera.lookAt(avatar.position.clone().addScaledVector(up,3));
   }
   engine.camera.updateMatrixWorld();
-  for(const v of engine.planets){v.beacon.visible=done(v.p.id);if(motion())v.ring.rotation.y=time*.2;}
+  for(const v of engine.planets){v.beacon.visible=done(v.p.id);v.relayParts.forEach((part,i)=>{part.visible=done(v.p.id)||fragments(v.p.id).length>i;});if(motion())v.ring.rotation.y=time*.2;}
   for(const f of fragmentMeshes){f.mesh.visible=!done(f.planet)&&!fragments(f.planet).includes(f.index);if(motion())f.mesh.rotation.y=time*.5;}
   if(toastTime>0){toastTime-=dt;if(toastTime<=0)toast.classList.remove('visible');}autosave+=dt;if(autosave>1){autosave=0;persist();}
   // Context wording changes with physical proximity, rather than stale menu labels.
