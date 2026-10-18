@@ -67,6 +67,9 @@
   grid-template-columns:repeat(3,minmax(0,1fr));max-height:min(57svh,430px);
   overflow-y:auto;gap:7px;padding:11px;border-radius:18px;background:#fffaf1;
  }
+ body[data-scene="explore"] .explore-menu>:first-child,
+ body[data-scene="explore"] .explore-menu .craft-bag-button,
+ body[data-scene="explore"] .explore-menu .estate-menu-button{display:none!important}
  body[data-scene="explore"] .explore-menu .picture-button{
   min-height:70px;padding:7px 3px;gap:2px;border-radius:12px;box-shadow:none;
  }
