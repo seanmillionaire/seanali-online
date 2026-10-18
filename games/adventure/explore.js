@@ -160,16 +160,16 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   close.setAttribute('aria-label',say('Cerrar teléfono','Close phone'));
   panel.append(close,makeEl('h2','',say('📱 Teléfono de Angelique','📱 Angelique’s Phone')));
   panel.append(makeEl('p','',say('Llama a tus amigos para jugar juntos. Puedes enviarlos a casa cuando quieras.','Call friends to join you. Send them home whenever you like.')));
-  const active=friendSystem.companion();
-  if(active)panel.append(btn('🏡 '+say('Enviar amigo a casa','Send friend home'),'discover-place',()=>{
+  const active=friendSystem.called();
+  if(active.length||friendSystem.companion())panel.append(btn('🏡 '+say('Enviar amigo a casa','Send friend home'),'discover-place',()=>{
    if(friendSystem.sendHome())tell('🏡 ¡Tu amigo vuelve a casa!','🏡 Your friend is going home!');
    openPhone();
   }));
   const contacts=[['pip','🐢','Pip'],['dori','🐬','Dori'],['mila','🦜','Mila'],['ollie','🪶','Ollie'],['luna','🦀','Luna'],['kai','👦','Kai']];
   for(const [id,icon,name] of contacts){
-   const joined=active===id;
+   const joined=active.includes(id);
    const b=btn(icon+' '+name+' · '+(joined?say('🏡 Enviar a casa','🏡 Send home'):say('📞 Llamar','📞 Call')),'discover-place',()=>{
-    if(joined){friendSystem.sendHome();tell('🏡 ¡Hasta luego, '+name+'!','🏡 See you later, '+name+'!');}
+    if(joined){friendSystem.sendFriendHome(id);tell('🏡 ¡Hasta luego, '+name+'!','🏡 See you later, '+name+'!');}
     else {friendSystem.callFriend(id);tell('📞 ¡'+name+' viene a jugar!','📞 '+name+' is joining you!');}
     openPhone();
    });
