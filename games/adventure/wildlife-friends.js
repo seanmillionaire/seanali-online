@@ -83,9 +83,23 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
   const n=nodes.get(id);if(!n)return false;
   return Math.hypot(n.g.position.x-s.x,n.g.position.z-s.z)<(id==='dori'?9:4.6);
  }
+ function sendHome(){
+  const previous=friends.companion||mounted;
+  if(!previous)return false;
+  if(mounted)dismount(); // restore normal foot controls
+  friends.companion=null;
+  // The world's friend-update loop now walks the character to its home.
+  save();refresh();joy.effect('friend');
+  if(opened)openDirectory();
+  return true;
+ }
  function openDirectory(){
   opened='directory';gameActive=false;
   startPanel('🫶 '+say('¡Mis amigos de la isla!','My island friends!'),say('¡Visítalos y juega con ellos!','Go visit your friends and play together!'));
+  if(friends.companion){
+   const chosen=islandFriends.find(f=>f.id===friends.companion);
+   if(chosen)panel.append(btn('🏡 '+say('Mandar a ','Send ')+chosen.name+say(' a casa',' home'),'friend-primary friend-send-home',sendHome));
+  }
   const list=el('div','friend-directory');
   for(const f of islandFriends){
    const card=el('div','friend-directory-card');
@@ -112,7 +126,8 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
   else actions.append(btn('🏐 '+tr(f.game),'friend-primary',()=>startGame(f.id)));
   const chosen=friends.companion===id;
   actions.append(btn(chosen?'🏡 '+say('Me quedo aquí','Stay here'):'🤝 '+say('Ven conmigo','Come with me'),'friend-secondary',()=>{
-   friends.companion=chosen?null:id;if(id==='pip')s.pet=false;save();joy.effect('friend');open(id);
+   if(chosen){sendHome();openDirectory();return;}
+   friends.companion=id;if(id==='pip')s.pet=false;save();refresh();joy.effect('friend');open(id);
   }));
   if(['pip','mila','ollie','luna'].includes(id))
    actions.append(btn('⭐ '+say('Aventura opcional','Optional adventure'),'friend-secondary',()=>{close();onLessons(id);}));
@@ -274,11 +289,11 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
   if(!['pip','dori','mila','ollie','luna'].includes(id))return false;
   const p=origin||nodes.get(id)?.g.position;
   if(!p)return false;
-  mounted=id;friends.companion=id;save();
+  mounted=id;friends.companion=id;save();refresh();
   onMount(id,{x:p.x,z:p.z});joy.effect('friend');close();
   return true;
  }
  function dismount(){const previous=mounted;mounted=null;if(previous){nodes.get(previous)?.g.scale.setScalar(1);onMount(null);save();}return previous;}
  function dispose(){close();directory.remove();labels.forEach(l=>l.remove());for(const n of nodes.values())scene.remove(n.g);}
- return {nearest,isNearby,open,openDirectory,close,update,hit,ride,dismount,mounted:()=>mounted,isOpen:()=>opened!==null,dispose,hasCompanion:id=>friends.companion===id};
+ return {nearest,isNearby,open,openDirectory,close,update,hit,ride,dismount,sendHome,companion:()=>friends.companion,mounted:()=>mounted,isOpen:()=>opened!==null,dispose,hasCompanion:id=>friends.companion===id};
 }
