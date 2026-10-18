@@ -123,6 +123,10 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  goalButton.addEventListener('click',()=>setHelpers(false));
  const walletButton=btn('','world-small wallet-button',showShop);menu.append(walletButton);
  const craftButton=btn('🎒 '+say('Mochila','Bag'),'world-small craft-bag-button',()=>showBag());craftButton.setAttribute('aria-label',say('Mochila para construir','Building and crafting bag'));menu.append(craftButton);
+  const bagShortcut=btn('🎒','mobile-bag-shortcut',()=>showBag());
+  bagShortcut.append(makeEl('span','mobile-bag-caption',say('Mochila','Bag')));
+  bagShortcut.setAttribute('aria-label',say('Abrir mochila, inventario y materiales','Open backpack, inventory and materials'));
+  bagShortcut.title=say('Mi mochila','My backpack');
  const regionButton=btn('🌍 '+say('Ayudar','Help'),'world-small region-help-button',()=>showRegionProject());
  regionButton.setAttribute('aria-label',say('Misión para ayudar esta región','Mission to help this region'));menu.append(regionButton);
  const cityGuideButton=btn('🏙️ '+say('Ciudad','City'),'world-small city-guide-button',showCityGuide);
@@ -152,13 +156,13 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  const directions=makeEl('div','world-arrows');for(const [label,k]of [['↑','ArrowUp'],['←','ArrowLeft'],['↓','ArrowDown'],['→','ArrowRight']]){const b=btn(label,'',()=>{});b.setAttribute('aria-label',say('Mover ','Move ')+({ArrowUp:say('norte','north'),ArrowDown:say('sur','south'),ArrowLeft:say('oeste','west'),ArrowRight:say('este','east')}[k]));b.onpointerdown=e=>{b.setPointerCapture(e.pointerId);keys.add(k);targetPoint=null;joy.gesture();};b.onpointerup=b.onpointercancel=()=>keys.delete(k);directions.append(b);}
  const instructions=makeEl('div','explore-controls',say('Toca el suelo para ir · Flechas / WASD · Espacio para saltar','Tap ground to walk · Arrows / WASD · Space to jump'));
  const panel=makeEl('section','explore-panel');panel.hidden=true;panel.setAttribute('aria-label',say('Descubrimientos','Discoveries'));
- hud.append(title,bag);actions.append(lesson,act,jump,descend,friendMeet);host.append(canvas,hud,volcanoStatus,regionStatus,quest,goalCard,mobileShade,menu,helperToggle,pad,directions,actions,instructions,message,panel,mobileDock);
+ hud.append(title,bag);actions.append(lesson,act,jump,descend,friendMeet);host.append(canvas,hud,volcanoStatus,regionStatus,quest,goalCard,mobileShade,menu,helperToggle,bagShortcut,pad,directions,actions,instructions,message,panel,mobileDock);
  const adventureMap=createWorldMap({host,panel,world:s,islands:worldIslands,places:explorePlaces,language:state.lang,
    onTravel:travelTo,onOpen:()=>{setHelpers(false);blur();targetPoint=null;}});
  refresh();
  const buttonUpdates=new Map();
  function setText(e,t){if(e.tagName==='BUTTON')buttonUpdates.set(e,t);else if(e.textContent!==t)e.textContent=t;}
- function refresh(){paintButton(craftButton,'🎒 '+say('Construir','Build')+' '+(s.craft?.built?.length||0)+'/7');paintButton(walletButton,'🪙 '+coinBalance(state));walletButton.setAttribute('aria-label',say('Mis monedas y tienda: ','My coins and shop: ')+coinBalance(state));const total=s.estate?.buildings?.length||0;bag.textContent=`🍌 ${s.food.banana}   🥥 ${s.food.coconut}   🪙 ${coinBalance(state)}   🍀 ${s.estate?.charms||0}`;dockBuild.setAttribute('aria-label',say('Construir mi pueblo','Build my village')+' · '+total);
+ function refresh(){paintButton(craftButton,'🎒 '+say('Mochila','Bag')+' '+(s.craft?.built?.length||0)+'/7');paintButton(walletButton,'🪙 '+coinBalance(state));walletButton.setAttribute('aria-label',say('Mis monedas y tienda: ','My coins and shop: ')+coinBalance(state));const total=s.estate?.buildings?.length||0;bag.textContent=`🍌 ${s.food.banana}   🥥 ${s.food.coconut}   🪙 ${coinBalance(state)}   🍀 ${s.estate?.charms||0}`;dockBuild.setAttribute('aria-label',say('Construir mi pueblo','Build my village')+' · '+total);
  const companion=friendSystem?.companion?.()||s.friends?.companion;
  const names={pip:'Pip',dori:'Dori',mila:'Mila',ollie:'Ollie',luna:'Luna',kai:'Kai'};
  dockFriend.textContent=companion?'🏡 '+say('A casa','Go home'):'🫶 '+say('Amigos','Friends');
@@ -308,13 +312,19 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   setHelpers(false);panel.replaceChildren();panel.hidden=false;blur();targetPoint=null;route=[];
   const close=btn('×','panel-close',()=>{panel.hidden=true;canvas.focus({preventScroll:true});});
   close.setAttribute('aria-label',say('Cerrar mochila','Close bag'));
-  panel.append(close,makeEl('h2','',say('🎒 Mi mochila de construir','🎒 My building bag')),
-   makeEl('p','',say('Recoge materiales en las islas, construye cosas nuevas y vuelve a jugar con ellas.','Collect supplies across the islands, build things, and come back to play with them.')));
+  panel.append(close,makeEl('h2','',say('🎒 Mi mochila','🎒 My backpack')),
+   makeEl('p','',say('Tus tesoros y materiales. Usa plátanos, cocos y monedas para construir y jugar.','Your treasures and supplies. Use bananas, coconuts and coins to build and play.')));
+  const mainSupplies=makeEl('div','backpack-main-resources');
+  for(const [emoji,value,label] of [['🍌',s.food.banana,say('Plátanos','Bananas')],['🥥',s.food.coconut,say('Cocos','Coconuts')],['🪙',coinBalance(state),say('Monedas','Coins')],['🍀',s.estate?.charms||0,say('Suerte','Charms')]]){
+   const item=makeEl('span','backpack-main-resource',emoji+' '+value);item.title=label;mainSupplies.append(item);
+  }
+  panel.append(mainSupplies,btn(say('🏰 Construir mi imperio','🏰 Build my empire'),'estate-find-link',showEstate));
   if(!workshop){panel.append(makeEl('p','',say('Cargando talleres…','Loading workshops…')));return;}
-  panel.append(makeEl('p','',say('🍌 Comer, construir y vender usan los mismos plátanos','🍌 Eating, building and trading use the same bananas')));
   const inv=workshop.inventory(),stock=makeEl('div','craft-resource-list');
   for(const [kind,meta]of Object.entries(RESOURCE_INFO))stock.append(makeEl('span','craft-resource',meta.icon+' '+(es?meta.es:meta.en)+' '+inv.available[kind]+'/'+inv.total[kind]));
-  panel.append(makeEl('h3','',say('🎒 Disponibles / recogidos','🎒 Available / collected')),stock,makeEl('h3','',say('🏗️ Construye en cada destino','🏗️ Build something on every island')));
+  const extras=makeEl('details','backpack-extra-treasures');
+  extras.append(makeEl('summary','',say('🐚 Ver otros tesoros y materiales','🐚 More treasures and materials')),stock);
+  panel.append(extras,makeEl('h3','',say('🏗️ Talleres y construcciones clásicas','🏗️ Classic workshops and builds')));
   const cards=makeEl('div','craft-recipe-grid');
   for(const r of BUILD_RECIPES){
    const built=workshop.isBuilt(r.id),here=workshop.nearest(s.x,s.z,5)?.id===r.id;
