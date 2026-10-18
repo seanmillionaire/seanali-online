@@ -28,7 +28,7 @@ export function findEstateSite(world,type,position,{canStand,height}){
  // Building footprints must stay apart and avoid steep cliffs or ocean.
  for(const radius of [plan.radius+2.8,plan.radius+5,plan.radius+8,plan.radius+12]){
   for(let i=0;i<16;i++){
-   const a=(i/16)*Math.PI*2;
+   const a=-Math.PI/2+(i/16)*Math.PI*2; // try the visible area in front of the camera first
    const x=position.x+Math.cos(a)*radius,z=position.z+Math.sin(a)*radius;
    if(!canStand(x,z))continue;
    let flat=true;const h=height(x,z);
