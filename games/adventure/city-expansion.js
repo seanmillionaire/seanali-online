@@ -99,11 +99,11 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  // Painted lines and crossings: repeated street detail without large textures.
  for(const dx of xs)for(let k=-34;k<=34;k+=9){
   const x=-100+dx,z=-74+k;if((dx/58)**2+(k/48)**2>.78)continue;
-  decorate(box,stripe,x,height(x,z)+.22,z,.11,.035,2.6);
+  decorate(box,stripe,x,height(x,z)+.29,z,.11,.035,2.6);
  }
  for(const dz of zs)for(let k=-43;k<=43;k+=10){
   const x=-100+k,z=-74+dz;if((k/58)**2+(dz/48)**2>.78)continue;
-  decorate(box,stripe,x,height(x,z)+.22,z,2.6,.035,.11);
+  decorate(box,stripe,x,height(x,z)+.29,z,2.6,.035,.11);
  }
  // Seven neighborhoods, ~50 distinct buildings with color and height variation.
  let buildingCount=0;
