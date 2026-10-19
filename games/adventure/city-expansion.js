@@ -141,12 +141,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  }
  flushDecor();
  createPurpleApartment({T,group,make,mat,box,height});
- // Independence Plaza: fountain and animated centerpiece.
- const plaza=coord(1,12),fountain=new T.Group();fountain.position.set(plaza.x,height(plaza.x,plaza.z),plaza.z);group.add(fountain);
- makeObj(cylinder,stone,0,.38,0,3.8,.7,3.8,fountain);
- const pool=makeObj(cylinder,blue,0,.77,0,3.22,.09,3.22,fountain);pool.castShadow=false;
- makeObj(cylinder,white,0,1.1,0,.52,.85,.52,fountain);
- icon(fountain,'⛲',0,3,0,2.3);
+ // Plaza water feature removed; city streets remain unchanged.
  // The full-size canal and its single ocean liner are owned by canal-cruise.js.
  // An inhabited city: people cross plazas and sidewalks on independent routes.
  const pedestrians=[];
@@ -373,7 +368,6 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
      if(soccerBall.owner==='angelique'){a.soccerGoals=Math.min(999,a.soccerGoals+1);success('⚽ ¡Gol de Angelique!','⚽ Angelique scored!',a.soccerGoals===3?'city-soccer':null);}
    }else if(Math.abs(football.position.z)>9.2){football.position.z=Math.sign(football.position.z)*9.2;soccerBall.vz*=-.5;}
   }
-  pool.rotation.y=Math.sin(performance.now()*.0003)*.012;
 
   for(const b of washBubbles){
    b.mesh.visible=washCooldown.time>9;
