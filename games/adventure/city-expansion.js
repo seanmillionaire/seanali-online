@@ -368,8 +368,8 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
      if(soccerBall.owner==='angelique'){a.soccerGoals=Math.min(999,a.soccerGoals+1);success('⚽ ¡Gol de Angelique!','⚽ Angelique scored!',a.soccerGoals===3?'city-soccer':null);}
    }else if(Math.abs(football.position.z)>9.2){football.position.z=Math.sign(football.position.z)*9.2;soccerBall.vz*=-.5;}
   }
-  pool.rotation.y=Math.sin(performance.now()*.0003)*.012;
 
+  // Removed plaza water has no animation.
   for(const b of washBubbles){
    b.mesh.visible=washCooldown.time>9;
    if(b.mesh.visible)b.mesh.position.y=b.y+Math.sin(performance.now()*.005+b.phase)*.23;
