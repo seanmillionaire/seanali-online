@@ -1,4 +1,4 @@
-import {MAINLAND_ROADS,mainlandAt} from './explore-state.js?v=115';
+import {MAINLAND_ROADS,mainlandAt,mainlandRoadRoute} from './explore-state.js?v=115';
 import {createPanamaLife} from './panama-life.js?v=115';
 import {createCloseCamera} from './close-camera.js?v=115';
 import {createCampaign} from './campaign.js?v=114';
@@ -543,11 +543,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    if(mainlandAt(s.x,s.z)&&['pizzaCity','colon','sunset'].includes(land.id)){
     panel.append(btn(say('🛣️ Seguir la carretera','🛣️ Follow the road'),'discover-place',()=>{
      const destination={x:p.x,z:p.z};
-     const network=Object.values(MAINLAND_ROADS).flatMap(path=>path.map(([x,z])=>({x,z})));
-     const closest=(q)=>network.reduce((best,n)=>Math.hypot(q.x-n.x,q.z-n.z)<Math.hypot(q.x-best.x,q.z-best.z)?n:best);
-     const start=closest(s),finish=closest(destination),shared={x:-54,z:-11};
-     const segments=[start,...(Math.hypot(start.x-finish.x,start.z-finish.z)>90?[shared]:[]),finish,destination];
-     route=[];for(let i=1;i<segments.length;i++){const a=segments[i-1],b=segments[i],d=Math.hypot(b.x-a.x,b.z-a.z),n=Math.ceil(d/2);for(let k=1;k<=n;k++)route.push({x:a.x+(b.x-a.x)*k/n,z:a.z+(b.z-a.z)*k/n});}
+     route=mainlandRoadRoute(s,destination);
      targetPoint=route.shift()||destination;panel.hidden=true;
      tell('🛣️ Sigue la carretera terrestre.','🛣️ Follow the mainland road.');
     }));
