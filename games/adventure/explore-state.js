@@ -123,6 +123,10 @@ export function volcanoTrailPoint(progress){
 // Different topography in every biome. Keep the same coastline/footprints so
 // navigation, saved positions, swim transitions and ocean shader stay aligned.
 export function isletHeight(x,z){
+ // Panama City is one consistent urban grade, not rolling island hills.
+ // Keep the coastline transition outside the built city to avoid a vertical wall.
+ const urbanRadius=Math.hypot((x-120)/58,(z+50)/48);
+ if(urbanRadius<=.96)return 1.6;
  if(bridgeDistance(x,z)<1.5)return COLON_BRIDGE.y;
  
  const monkey=worldIslands.find(i=>i.id==='monkeyIslet'),onMonkey=Math.hypot((x-monkey.x)/monkey.rx,(z-monkey.z)/monkey.rz)<1;
