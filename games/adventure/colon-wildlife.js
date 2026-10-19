@@ -25,7 +25,13 @@ export function shoreCrocodilePose(index,time,isWater){
 // Stateful local wandering: the ellipse is used only to find a safe spawn.
 const angleDelta=(a,b)=>Math.atan2(Math.sin(a-b),Math.cos(a-b));
 const crocRandom=n=>{n.seed=(n.seed*1664525+1013904223)>>>0;return n.seed/4294967296;};
+// Colón crocs remain in a narrow Gatún/shoreline habitat rather than deep ocean.
+export function nearColonShore(x,z){
+ const d=Math.hypot((x+10)/32,(z+125)/29);
+ return d>=.78&&d<=1.15;
+}
 export function crocodileClear(x,z,heading,isWater){
+ if(!nearColonShore(x,z))return false;
  for(const forward of [-3.8,-1,1.5,2.4])for(const side of [-1.1,0,1.1])
   if(!isWater(x+Math.sin(heading)*forward+Math.cos(heading)*side,z+Math.cos(heading)*forward-Math.sin(heading)*side))return false;
  return true;
@@ -50,7 +56,7 @@ export function stepCrocodile(n,dt,isWater,player=null,neighbors=[]){
   for(let i=0;i<16;i++){
    const a=base+(crocRandom(n)-.5)*(i<8?2.5:Math.PI*2),d=6+crocRandom(n)*12;
    const x=n.x+Math.sin(a)*d,z=n.z+Math.cos(a)*d;
-   if(Math.hypot((x-(-10))/53,(z+(125))/49)>1.15)continue;
+   if(!nearColonShore(x,z))continue;
    if([.25,.5,.75,1].every(t=>crocodileClear(n.x+(x-n.x)*t,n.z+(z-n.z)*t,a,isWater))){n.goal={x,z};break;}
   }
  }
