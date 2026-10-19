@@ -21,7 +21,43 @@ export const CANAL_WATERWAY=[[40,-70],[15,-70],[5,-75],[-30,-85],[-55,-105],[-58
 export function segmentDistance(x,z,a,b){const dx=b[0]-a[0],dz=b[1]-a[1],t=Math.max(0,Math.min(1,((x-a[0])*dx+(z-a[1])*dz)/(dx*dx+dz*dz)));return Math.hypot(x-a[0]-dx*t,z-a[1]-dz*t);}
 export function canalWater(x,z){return (x>20&&x<62&&Math.abs(z+70)<13)||CANAL_WATERWAY.slice(1).some((p,i)=>segmentDistance(x,z,CANAL_WATERWAY[i],p)<23);}
 export function gatunWater(x,z){return z>-115&&(x<30||z< -78)&&Math.hypot((x+10)/28,(z+125)/25)>=1&&Math.hypot((x-5)/65,(z+95)/30)<1;}
-export function mainlandContains(x,z){let inside=false;const p=MAINLAND_OUTLINE;for(let i=0,j=p.length-1;i<p.length;j=i++){if((p[i][1]>z)!==(p[j][1]>z)&&x<(p[j][0]-p[i][0])*(z-p[i][1])/(p[j][1]-p[i][1])+p[i][0])inside=!inside;}return inside;}
+// Coastlines have smooth bays, small headlands, and no straight polygon corners.
+// Build the smoothed outline once. Gameplay and rendering call the same predicate.
+const SMOOTH_MAINLAND=[];
+for(let i=0;i<MAINLAND_OUTLINE.length;i++){
+ const a=MAINLAND_OUTLINE[(i-1+MAINLAND_OUTLINE.length)%MAINLAND_OUTLINE.length],
+  b=MAINLAND_OUTLINE[i],c=MAINLAND_OUTLINE[(i+1)%MAINLAND_OUTLINE.length],
+  d=MAINLAND_OUTLINE[(i+2)%MAINLAND_OUTLINE.length];
+ for(let j=0;j<4;j++){
+  const t=j/4,t2=t*t,t3=t2*t;
+  const curve=k=>.5*(2*b[k]+(-a[k]+c[k])*t+(2*a[k]-5*b[k]+4*c[k]-d[k])*t2+(-a[k]+3*b[k]-3*c[k]+d[k])*t3);
+  SMOOTH_MAINLAND.push([curve(0),curve(1)]);
+ }
+}
+export function mainlandContains(x,z){
+ // Subtle coordinate warping adds small coastline irregularities without moving
+ // roads, saved progress, boats, or the map's major Panama landmarks.
+ const px=x+1.35*Math.sin(z*.12+x*.009)+.55*Math.sin(z*.34-x*.025),
+  pz=z+1.15*Math.sin(x*.12-z*.012)+.42*Math.sin(x*.29+z*.02);
+ let inside=false;
+ for(let i=0,j=SMOOTH_MAINLAND.length-1;i<SMOOTH_MAINLAND.length;j=i++){
+  const a=SMOOTH_MAINLAND[i],b=SMOOTH_MAINLAND[j];
+  if((a[1]>pz)!==(b[1]>pz)&&px<(b[0]-a[0])*(pz-a[1])/(b[1]-a[1])+a[0])inside=!inside;
+ }
+ return inside;
+}
+// Shared, deterministic organic island footprint (not a mathematically perfect ellipse).
+// The maximum coastline offset is deliberately low so harbors and trails stay usable.
+export function organicIslandRadius(land,angle){
+ const phase=land.x*.047+land.z*.029,scale=land.id==='sunset'||land.id==='pizzaCity'?.55:land.guna?1.06:1;
+ return 1+scale*(.045*Math.sin(angle*3+phase)+.023*Math.sin(angle*7-phase*.7)
+  +.014*Math.sin(angle*11+phase*1.8)+.006*Math.sin(angle*19-phase));
+}
+// Gorgona's beach outline is also the physical swimming / shore boundary.
+export function homeShoreRadius(angle){
+ return 1+.047*Math.sin(angle*3+.4)+.027*Math.sin(angle*7-.8)
+  +.018*Math.cos(angle*11+1.1)+.009*Math.sin(angle*17);
+}
 export function migrateGeography(raw){
  if(!raw||raw.geographyVersion===GEOGRAPHY_VERSION)return raw;
  const moved={...raw,geographyVersion:GEOGRAPHY_VERSION,worldVersion:3};
