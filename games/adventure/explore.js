@@ -945,15 +945,16 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    }
    const usingClose=closeView&&!cruising&&!showingBuild&&!carDriving;
    cameraButton.hidden=cruising;
-   camera.position.lerp(desired,houseSystem?.isInside()&&!showingBuild?1:dt===0?1:1-Math.exp(-dt*(showingBuild?5:riding?18:5)));
+   if(!usingClose)camera.position.lerp(desired,houseSystem?.isInside()&&!showingBuild?1:dt===0?1:1-Math.exp(-dt*(showingBuild?5:riding?18:5)));
    if(riding&&!cruising&&!showingBuild)camera.position.x=ax;
    target.set(ax,ay+(carDriving?1.8:houseSystem?.isInside()?1.0:riding?(ride?2.25:mountId?1.6:1.3):.7*bodyScale),az-(houseSystem?.isInside()?1.2:0));
    if(showingBuild)target.set(buildReveal.x,height(buildReveal.x,buildReveal.z)+2.2,buildReveal.z);if(impactStrength>0){camera.position.x+=Math.sin(impactPhase*1.7)*impactStrength*.18;camera.position.y+=Math.cos(impactPhase*1.3)*impactStrength*.14;}
    if(usingClose){
     if(riding)closeCamera.face(avatar.rotation.y);
     closeCamera.place(desired,target,ax,ay,az,bodyScale);
-    if(!houseSystem?.isInside()&&!inside)desired.y=Math.max(desired.y,height(desired.x,desired.z)+.3);
-    camera.position.lerp(desired,cameraSnap||dt===0?1:1-Math.exp(-dt*15));camera.near=.08;
+    // Keep a stable close-follow position, avoiding oscillation between
+    // the terrain clamp, collision camera and the wide-camera lerp.
+    camera.position.lerp(desired,cameraSnap||dt===0?1:1-Math.exp(-dt*10));camera.near=.08;
    }else{if(cameraSnap)camera.position.copy(desired);camera.near=.2;}
    const nextFov=usingClose?72:60;if(camera.fov!==nextFov){camera.fov=nextFov;camera.updateProjectionMatrix();}cameraSnap=false;
    avatar.visible=!usingClose||Math.hypot(camera.position.x-ax,camera.position.y-(ay+1.75*bodyScale),camera.position.z-az)>.85*bodyScale;
