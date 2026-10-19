@@ -68,6 +68,24 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
   const tex=new T.CanvasTexture(canvas),material=new T.SpriteMaterial({map:tex,transparent:true,depthTest:false,depthWrite:false});
   const s=new T.Sprite(material);s.position.set(x,y,z);s.scale.set(size,size,1);parent.add(s);sprites.push({tex,material});return s;
  }
+ // Continuous city-grade asphalt foundation; streets read as one urban surface.
+ // Deliberately use one mesh rather than hundreds of overlapping road tiles.
+ const cityBase=new T.Mesh(new T.CircleGeometry(1,96),asph);
+ cityBase.name='Panama City continuous urban asphalt ground';
+ cityBase.rotation.x=-Math.PI/2;cityBase.scale.set(52,43,1);
+ cityBase.position.set(120,1.64,-50);cityBase.receiveShadow=true;cityBase.castShadow=false;group.add(cityBase);
+ // Reserved greenery sits on top of the asphalt as intentional neighborhood plots.
+ // These are parks, residential yards and the football barrio, not road colors.
+ const urbanPlots=[[98,-19,11,8],[91,-29,7,5],[140,-33,8,6],
+  [101,-65,8,6],[132,-67,9,6],[145,-19,7,5],[82,-47,7,5],
+  [120,-12,7,5],[153,-55,6,5]];
+ const plotGeo=new T.CircleGeometry(1,28);
+ for(const [px,pz,rx,rz] of urbanPlots){
+  const plot=new T.Mesh(plotGeo,green);
+  plot.name='Green city neighborhood plot';
+  plot.rotation.x=-Math.PI/2;plot.scale.set(rx,rz,1);
+  plot.position.set(px,1.67,pz);plot.receiveShadow=true;plot.castShadow=false;group.add(plot);
+ }
  // Roads follow the island's actual surface with lightweight instancing.
  const chunks=[];
  const road=(x,z,w,d)=>{chunks.push({x,z,w,d});};
