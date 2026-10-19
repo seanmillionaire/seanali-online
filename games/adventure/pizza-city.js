@@ -1,4 +1,4 @@
-import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=127';
+import {roadDistance,HIGHWAY_WIDTH,highwayEndBlocksCar} from './explore-state.js?v=127';
 import {createCityExpansion} from './city-expansion.js?v=127';
 /* Casco Viejo · Ciudad de Panamá — the largest fantasy island: real road grid, drivable mini car,
    walk-in pizzeria, and sixteen persistent 💰 money-bag pickups. */
@@ -182,7 +182,7 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
  function attach(host){if(host){host.append(status,sign);}}
  function isHere(x,z){return Math.hypot((x-CITY.x)/CITY.rx,(z-CITY.z)/CITY.rz)<1.0;}
  function nearCar(x,z){return Math.hypot(x-city.car.x,z-city.car.z)<4;}
- function canDrive(x,z){return Math.hypot((x-CITY.x)/CITY.rx,(z-CITY.z)/CITY.rz)<.91||roadDistance(x,z)<HIGHWAY_WIDTH/2-1.2;}
+ function canDrive(x,z){return !highwayEndBlocksCar(x,z)&&(Math.hypot((x-CITY.x)/CITY.rx,(z-CITY.z)/CITY.rz)<.91||roadDistance(x,z)<HIGHWAY_WIDTH/2-1.2);} 
  function hitCar(raycaster,x,z){return Math.hypot(x-city.car.x,z-city.car.z)<13&&raycaster.intersectObject(car,true).length>0;}
  function hitBag(raycaster,x,z){
   for(const bag of bags){
