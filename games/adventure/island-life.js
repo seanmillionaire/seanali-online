@@ -40,7 +40,7 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
  }
  function markRidden(a){ridden=a;if(a)a.g.visible=false;}
  function unmark(){ridden=null;}
- return {nearestRideable,hit,markRidden,unmark,update(dt,active,motion){if(!NIGHT_MODE_ENABLED)s.dayTime=60;else if(active&&Number.isFinite(dt)&&dt>0)s.dayTime=(s.dayTime+dt)%240;const {phase,day,night,twilight}=islandDaylight(s.dayTime),sunset=twilight;
+ return {nearestRideable,hit,markRidden,unmark,update(dt,active,motion,player=null){if(!NIGHT_MODE_ENABLED)s.dayTime=60;else if(active&&Number.isFinite(dt)&&dt>0)s.dayTime=(s.dayTime+dt)%240;const {phase,day,night,twilight}=islandDaylight(s.dayTime),sunset=twilight;
   if(scene.background?.isColor)scene.background.copy(nightSky).lerp(daySky,day).lerp(dusk,sunset*.35);if(scene.fog)scene.fog.color.copy(scene.background);
   if(sun){sun.intensity=.5+day*2.5;sun.color.set(night?'#9fbcff':'#fff0d2');}if(ambient){ambient.intensity=.85+day*.6;ambient.color.set(night?'#99b8ed':'#c9edff');}if(waterMaterial?.uniforms.daylight)waterMaterial.uniforms.daylight.value=day;
   sunBody.visible=!night;moon.visible=night;const arc=(phase%.5)*2;for(const body of [sunBody,moon])body.position.set((arc-.5)*2.6,2.1+Math.sin(arc*Math.PI)*.4,-10);starMaterial.opacity=(1-day)*.8;
@@ -51,6 +51,11 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
    const t=a.t,isDolphin=a.kind==='Dolphin',isFish=a.kind==='Reef fish';
    const speed=isDolphin?3.4:isFish?1.2:a.kind==='Manta ray'?1.65:.95;
    const radius=isFish?.3:.85;
+   const px=player?.x,pz=player?.z,notice=Number.isFinite(px)&&Number.isFinite(pz)?Math.hypot(px-a.g.position.x,pz-a.g.position.z):Infinity;
+   const observing=notice<(isDolphin?13:isFish?5:10)&&notice>1.6;
+   // Nearby wildlife watches Angelique without abandoning safe-water boundaries.
+   // Fish remain shy; dolphins and turtles slow down to observe.
+   const watchWeight=observing?(isFish?.15:isDolphin?.7:.85):0;
    // Spawn recovery prevents underwater NPCs from beginning trapped inside an island.
    if(!safeWater(a.g.position.x,a.g.position.z,radius)){
     let found=false;
@@ -79,9 +84,11 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
     if(a.waypoint){
      const dx=a.waypoint.x-a.g.position.x,dz=a.waypoint.z-a.g.position.z,d=Math.hypot(dx,dz);
      const desired=Math.atan2(dx,dz);
-     const delta=Math.atan2(Math.sin(desired-a.heading),Math.cos(desired-a.heading));
+     const playerHeading=observing?Math.atan2(px-a.g.position.x,pz-a.g.position.z):desired;
+     const blended=desired+Math.atan2(Math.sin(playerHeading-desired),Math.cos(playerHeading-desired))*watchWeight;
+     const delta=Math.atan2(Math.sin(blended-a.heading),Math.cos(blended-a.heading));
      a.heading+=Math.max(-dt*1.8,Math.min(dt*1.8,delta));
-     const step=Math.min(speed*dt,Math.max(0,d-.15));
+     const step=Math.min(speed*dt*(observing?(isFish?.85:isDolphin?.45:.28):1),Math.max(0,d-.15));
      const nx=a.g.position.x+Math.sin(a.heading)*step,nz=a.g.position.z+Math.cos(a.heading)*step;
      if(safeWater(nx,nz,radius)){
       a.g.position.x=nx;a.g.position.z=nz;a.stuck=0;a.travel+=step;
