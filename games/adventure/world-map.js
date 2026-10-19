@@ -3,8 +3,8 @@
 export function createWorldMap({host,panel,world,islands,places,language,onTravel,onOpen}){
  const es=language==='es',say=(a,b)=>es?a:b,ns='http://www.w3.org/2000/svg';
  const land=[{id:'home',x:0,z:0,rx:20,rz:14,es:'Playa Gorgona',en:'Playa Gorgona',icon:'🏡'}]
-   .concat(islands.map(i=>({id:i.id,x:i.x,z:i.z,rx:i.rx,rz:i.rz,es:i.es,en:i.en,
-     icon:({islet:'🦋',wilds:'🍌',coconutCoast:'🥥',sunset:'🌋',crystalCove:'💎',pizzaCity:'🍕',colon:'🌧️',monkeyIslet:'🐒'})[i.id]||'🏝️'})));
+   .concat(islands.map(i=>({id:i.id,guna:i.guna,x:i.x,z:i.z,rx:i.rx,rz:i.rz,es:i.es,en:i.en,
+     icon:({islet:'🦋',wilds:'🍌',coconutCoast:'🥥',sunset:'🌋',crystalCove:'🏝️',pizzaCity:'🍕',colon:'🌧️',monkeyIslet:'🐒'})[i.id]||'🏝️'})));
  const point=(x,z)=>({x:Number(x)||0,z:Number(z)||0});
  const name=i=>es?i.es:i.en;
  const svgEl=(tag,attrs={},text)=>{const n=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,String(v));if(text!==undefined)n.textContent=text;return n;};
@@ -33,7 +33,7 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
     g.append(svgEl('ellipse',{cx:i.x,cy:i.z,rx:i.rx+2,ry:i.rz+2,fill:palette[0]}));
     g.append(svgEl('ellipse',{cx:i.x,cy:i.z,rx:i.rx*.83,ry:i.rz*.82,fill:palette[1]}));
     g.append(svgEl('ellipse',{cx:i.x-i.rx*.18,cy:i.z-i.rz*.18,rx:i.rx*.36,ry:i.rz*.36,fill:palette[2],opacity:'.6'}));
-    if(!mini){
+    if(!mini&&!i.guna){
       const icon=svgEl('text',{x:i.x,y:i.z+2,'font-size':i.id==='home'?12:13,'text-anchor':'middle',
         'dominant-baseline':'central','pointer-events':'none'},i.icon);
       g.append(icon);

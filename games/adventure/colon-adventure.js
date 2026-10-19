@@ -1,6 +1,6 @@
 import {createColonWildlife,monkeyJumpPhase,recordMonkeyJump} from './colon-wildlife.js?v=106';
 import {COLON_SITES,COLON_BRIDGE,bridgeDistance,buildColon,expandColon} from './colon-state.js?v=106';
-import {addFood,inWater,earnCoins} from './explore-state.js?v=106';
+import {addFood,inWater,earnCoins} from './explore-state.js?v=114';
 export function createColonAdventure({T,scene,host,state,make,geometry,mat,box,ball,cylinder,cone,height,save,refresh,joy,tell,forest,motion=()=>true}){
  const s=state.world,c=s.colon,es=state.lang==='es',say=(a,b)=>es?a:b;
  const root=new T.Group();root.name='Colón rainforest · Monkey Island';scene.add(root);

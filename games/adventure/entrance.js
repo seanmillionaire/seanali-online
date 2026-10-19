@@ -1,6 +1,6 @@
 import {createActiveVolcano} from './active-volcano.js?v=111';
-import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=106';
-import {createTropical} from './tropical.js?v=106';
+import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=114';
+import {createTropical} from './tropical.js?v=114';
 import {createSurfaceTextures} from './surface-textures.js?v=73';
 import {installPolyHavenMaterials} from './polyhaven-materials.js?v=73';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
@@ -70,7 +70,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
    wilds:['#3b8050','#3d6d41','#d0bd7c'],
    coconutCoast:['#f2dfad','#d9df99','#f5e8c7'],
    sunset:['#3c4a3e','#6e675b','#8f8a82'],
-   crystalCove:['#92c5d9','#7eabbf','#d6ecf3'],
+   crystalCove:['#eee8d0','#f5edda','#fff6df'],
    pizzaCity:['#e2dfba','#87b07e','#ead7af']
   };
   function meadowFlower(x,z,n,scale=1){
@@ -122,8 +122,8 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
    }
   }
   for(const land of worldIslands){
-   const shades=ellipseMats[land.id]||['#36804b','#549d55','#eadab1'],iv=[],ic=[],ii=[],iu=[];
-   const rings=land.id==='sunset'?62:20,segments=land.id==='sunset'?144:80;
+   const shades=(land.guna?['#eee8d0','#f5edda','#fff6df']:ellipseMats[land.id])||['#36804b','#549d55','#eadab1'],iv=[],ic=[],ii=[],iu=[];
+   const rings=land.id==='sunset'?62:land.guna?10:20,segments=land.id==='sunset'?144:land.guna?32:80;
    for(let ring=0;ring<=rings;ring++)for(let j=0;j<=segments;j++){
     const a=j/segments*Math.PI*2,r=ring/rings;
     const x=land.x+Math.cos(a)*land.rx*r,z=land.z+Math.sin(a)*land.rz*r,y=isletHeight(x,z);
@@ -140,7 +140,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
    g.setAttribute('color',new T.Float32BufferAttribute(ic,3));
    g.setAttribute('uv',new T.Float32BufferAttribute(iu,2));
    g.setIndex(ii);g.computeVertexNormals();
-   const islandTexture=land.id==='coconutCoast'?surfaces.sand:land.id==='crystalCove'||land.id==='sunset'?surfaces.stone:surfaces.grass;
+   const islandTexture=land.id==='coconutCoast'||land.id==='crystalCove'||land.guna?surfaces.sand:land.id==='crystalCove'||land.id==='sunset'?surfaces.stone:surfaces.grass;
    const island=make(g,mat('#ffffff',{vertexColors:true,map:islandTexture,bumpMap:islandTexture,bumpScale:land.id==='crystalCove'?.14:.09,roughness:.96}));
    island.name=land.en;
 
@@ -274,23 +274,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
     const entranceSign=make(box,wood,start.x,start.y+1.82,start.z,3.2,1.12,.20);
     entranceSign.name='🥾 Sendero al Volcán Barú · trail begins';
    }else if(land.id==='crystalCove'){
-    // Guna Yala magical crystal cove (fantasy biome): cool blue stone, clustered glassy gem towers,
-    // arcing stone ruins, musical coral and luminous sea-glass.
-    for(let i=0;i<28;i++){
-     const a=i*2.39996,r=.35+(i%4)*.14,p=place(land,Math.sin(a)*r,Math.cos(a)*r);
-     crystalSpire(p.x,p.z,i,i%5===0?1.5:1);
-    }
-    const gate=place(land,-.40,-.26);
-    for(const side of [-1,1])make(box,crystalStone,gate.x+side*2,gate.y+1.8,gate.z,.8,3.6,1);
-    make(box,crystalStone,gate.x,gate.y+3.55,gate.z,4.8,.7,1);
-    for(let i=0;i<10;i++){
-     const a=i*2.4,r=.5,p=place(land,Math.sin(a)*r,Math.cos(a)*r);
-     tropical.card(14,p.x,p.y,p.z,1.15,1.15);
-    }
-    for(let i=0;i<7;i++){
-     const a=i*Math.PI*2/7,p=place(land,Math.sin(a)*.25,Math.cos(a)*.25);
-     make(ball,i%2?crystalBlue:crystalMint,p.x,p.y+.18,p.z,.45,.12,.4);
-    }
+    // Guna Yala is low white sand; palms and community life are added by San Blas life.
    }
    if(land.vehicleOnly){
     // Keep the existing strong-current boundary visible without adding a wall.
@@ -348,6 +332,8 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
         vec3 eye=normalize(cameraPosition-vec3(p.x,-.12,-p.y));
         float fresnel=pow(1.-max(dot(normal,eye),0.),4.5);
         vec3 water=mix(vec3(.12,.72,.64),vec3(.016,.21,.36),depth);
+        float guna=1.-smoothstep(48.,72.,length((p-vec2(10.,-100.))*vec2(1.,1.2)));
+        water=mix(water,vec3(.07,.63,.67),guna*depth*.45);
         // Turquoise color ripples move across the sandy shallows.
         float ripples=sin(p.x*1.2+p.y*.46+time*.8)*sin(p.y*1.24-p.x*.31-time*.9);
         water+=vec3(.014,.044,.043)*ripples*(1.-depth);

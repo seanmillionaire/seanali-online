@@ -1,5 +1,5 @@
 import {CRUISE_FARE,CRUISE_BOARD,CRUISE_DOCK,cruisePose,buyCruise,advanceCruise} from './cruise-route.js?v=104';
-import {coinBalance} from './explore-state.js?v=106';
+import {coinBalance} from './explore-state.js?v=114';
 export function createCanalCruise({T,scene,host,state,make,mat,box,ball,cylinder,height,save,refresh,joy,tell}){
  const s=state.world,c=s.city.cruise,es=state.lang==='es',choose=(a,b)=>es?a:b;
  const root=new T.Group();root.name='Panama Canal · monumental locks and one ocean liner';scene.add(root);

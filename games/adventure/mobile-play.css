@@ -605,3 +605,7 @@ body[data-scene="explore"] .animal-ride-quick:not([hidden]){
 @media(max-height:520px) and (orientation:landscape){.camera-view-toggle{left:auto;right:10px;top:145px;max-width:140px}}
 @media(min-width:781px){.explore-world:has(.world-story:not([hidden])) .camera-view-toggle{top:184px}}
 @media(max-width:780px){.explore-world .explore-message.show{top:235px!important}.explore-world .colon-status{top:235px!important}}
+
+.panama-food-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #ccd5c0}
+.panama-food-row .discover-place{min-height:44px;padding:8px 14px}
+.panama-feedback{padding:10px;border-radius:10px;background:#e4efd6;color:#264b3d}

@@ -1,6 +1,6 @@
 // Isla Aventura: collectible inventory -> visible, persistent structures.
 // All meshes are procedural and reuse the game's existing Three.js materials.
-import {worldIslands,volcanoTrailPoint,exploreItems,earnCoins,spendFood} from './explore-state.js?v=73';
+import {worldIslands,volcanoTrailPoint,exploreItems,earnCoins,spendFood} from './explore-state.js?v=114';
 const at=(id)=>worldIslands.find(p=>p.id===id);
 export const RESOURCE_INFO={
  shell:{icon:'🐚',es:'Conchas',en:'Shells'},fruit:{icon:'🍌',es:'Plátanos',en:'Bananas'},

@@ -1,7 +1,7 @@
 // A single meaningful, persistent community project for each Panama destination.
 // Mini-games and collecting now feed into a clear physical outcome in their region.
-import {worldIslands,isletHeight,exploreItems,volcanoTrailPoint} from './explore-state.js?v=105';
-import {BUILD_RECIPES} from './island-workshop.js?v=73';
+import {worldIslands,isletHeight,exploreItems,volcanoTrailPoint} from './explore-state.js?v=114';
+import {BUILD_RECIPES} from './island-workshop.js?v=114';
 const where=id=>worldIslands.find(x=>x.id===id);
 const build=id=>BUILD_RECIPES.find(x=>x.id===id);
 const at=id=>{const x=where(id);return {x:x?.x||0,z:x?.z||0};};

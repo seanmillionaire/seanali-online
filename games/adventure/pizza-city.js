@@ -1,4 +1,4 @@
-import {createCityExpansion} from './city-expansion.js?v=112';
+import {createCityExpansion} from './city-expansion.js?v=114';
 /* Casco Viejo · Ciudad de Panamá — the largest fantasy island: real road grid, drivable mini car,
    walk-in pizzeria, and sixteen persistent 💰 money-bag pickups. */
 export const CITY={x:-100,z:-74,rx:58,rz:48,restaurant:{x:-84,z:-60}};
@@ -49,8 +49,8 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
  }
  // City skyline: colorful little shops and townhouses; pizza is the only restaurant.
  const buildings=[
-  [-25,-19,6,7,0],[-10,-20,5,7,1],[12,-20,6,7,2],[26,-12,6,6,3],
-  [-25,18,6,6,2],[-11,20,7,7,0],[13,21,7,6,3],[26,17,6,6,1]
+  [-22,-17,6,5.5,0],[-8,-17,5,5.5,1],[8,-17,6,5.5,2],[22,-12,6,6,3],
+  [-22,8.5,6,5.5,2],[-8,8.5,6,5.5,0],[13,21,7,6,3],[26,17,6,6,1]
  ];
  for(let i=0;i<buildings.length;i++){
   const [ox,oz,w,d,ci]=buildings[i],x=CITY.x+ox,z=CITY.z+oz,y=height(x,z),m=shopColors[ci];
@@ -215,6 +215,6 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
   }
  }
  function dispose(){expansion.dispose();status.remove();sign.remove();scene.remove(group,car,pizzaSign);for(const b of bags)scene.remove(b.root);spriteMaterial.dispose();texture.dispose();pizzaMaterial.dispose();pizzaTexture.dispose();}
- return {attach,update,nearCar,canDrive,hitCar,hitBag,updateCar,order,setCoinAward,isHere,car,activityPrompt:expansion.activityPrompt,interactActivity:expansion.interactAt,activityNear:expansion.near,activityGoal:expansion.goal,activitySites:expansion.sites,setWaypoint:expansion.setWaypoint,dispose};
+ return {soccerPosition:expansion.soccerPosition,npcKick:expansion.npcKick,attach,update,nearCar,canDrive,hitCar,hitBag,updateCar,order,setCoinAward,isHere,car,activityPrompt:expansion.activityPrompt,interactActivity:expansion.interactAt,activityNear:expansion.near,activityGoal:expansion.goal,activitySites:expansion.sites,setWaypoint:expansion.setWaypoint,dispose};
 }
 
