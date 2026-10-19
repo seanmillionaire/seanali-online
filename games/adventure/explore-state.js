@@ -18,6 +18,28 @@ export const worldIslands=[
 export function islandPoint(id,x,z){const p=worldIslands.find(p=>p.id===id);return {x:p.x+(x-p.ox)*p.spread,z:p.z+(z-p.oz)*p.spread};}
 // Strong offshore currents require a vehicle to cross; walking remains free after arrival.
 export function remoteAccess(from,to){const p=worldIslands.find(i=>i.vehicleOnly);if(!p)return true;const radius=q=>Math.hypot((q.x-p.x)/p.rx,(q.z-p.z)/p.rz);return radius(to)>=1.6||radius(from)<1.6;}
+// A connected mainland corridor: Panama City → Gorgona → Colón and
+// Gorgona → Volcán → Barú. Offshore island footprints remain separate.
+export const MAINLAND_ROADS={
+ cityToColon:[[-100,-74],[-81,-42],[-54,-11],[-19,5],[5,8],[32,-8],[61,-27],[91,-46],[110,-56]],
+ cityToBaru:[[-54,-11],[-46,14],[-60,35],[-80,45],[-110,49]]
+};
+export const MAINLAND_STOPS=[
+ {id:'pizzaCity',x:-100,z:-74,en:'Panama City',es:'Ciudad de Panamá'},
+ {id:'colon',x:110,z:-56,en:'Colón',es:'Colón'},
+ {id:'volcanTown',x:-80,z:45,en:'Volcán Town',es:'Pueblo Volcán'},
+ {id:'sunset',x:-110,z:49,en:'Volcán Barú',es:'Volcán Barú'}
+];
+export function roadDistance(x,z){
+ let best=Infinity;
+ for(const nodes of Object.values(MAINLAND_ROADS))for(let i=1;i<nodes.length;i++){
+  const [ax,az]=nodes[i-1],[bx,bz]=nodes[i],dx=bx-ax,dz=bz-az;
+  const t=Math.max(0,Math.min(1,((x-ax)*dx+(z-az)*dz)/(dx*dx+dz*dz)));
+  best=Math.min(best,Math.hypot(x-ax-t*dx,z-az-t*dz));
+ }
+ return best;
+}
+export function mainlandAt(x,z){return roadDistance(x,z)<3.5||Math.hypot(x/18.7,z/12.5)<=1||worldIslands.some(i=>['pizzaCity','colon','sunset'].includes(i.id)&&Math.hypot((x-i.x)/i.rx,(z-i.z)/i.rz)<1);}
 // A sculpted, safely walkable dormant volcano. The center dips to form a real
 // bowl-shaped crater; the highest rock is the circular rim around the summit.
 export function volcanoRelief(u,v){
@@ -42,6 +64,7 @@ export function volcanoTrailPoint(progress){
 // navigation, saved positions, swim transitions and ocean shader stay aligned.
 export function isletHeight(x,z){
  if(bridgeDistance(x,z)<1.5)return COLON_BRIDGE.y;
+ if(roadDistance(x,z)<3.0)return .16;
  // A real sea-level canal cut through the eastern city waterfront.
  if(x>-64&&x<-22&&Math.abs(z+74)<13)return 0;
  let h=0;
