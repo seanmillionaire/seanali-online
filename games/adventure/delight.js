@@ -88,7 +88,7 @@ export function createDelight({soundEnabled,motionEnabled}) {
     {bass:43,chord:[59,62,67]},
     {bass:48,chord:[60,64,67]}
   ];
-  let musicBus=null,musicNoise=null,musicTimer=null,nextMusicTime=0,musicBar=0;
+  let musicBus=null,musicNoise=null,musicTimer=null,nextMusicTime=0,musicBar=0,cityAmbient=false,lastStreetSound=0;
   const musicNodes=new Set();
   const midi=n=>440*Math.pow(2,(n-69)/12);
   function musicSound(freq,at,len,volume,type='sine',drop=1){
@@ -151,7 +151,7 @@ export function createDelight({soundEnabled,motionEnabled}) {
   }
   function runTheme(){
     musicTimer=null;
-    if(!unlocked||!soundEnabled()||document.hidden||scene!=='explore'||!ready())return;
+    if(!unlocked||!soundEnabled()||document.hidden||(scene!=='explore'||cityAmbient)||!ready())return;
     const now=context.currentTime;
     if(nextMusicTime<now-.4)nextMusicTime=now+.1;
     while(nextMusicTime<now+.7){
@@ -161,7 +161,7 @@ export function createDelight({soundEnabled,motionEnabled}) {
     musicTimer=setTimeout(runTheme,250);
   }
   function startTheme(){
-    if(!unlocked||scene!=='explore'||!ready())return;
+    if(!unlocked||scene!=='explore'||cityAmbient||!ready())return;
     if(musicTimer!==null)return;
     const now=context.currentTime;
     musicBus.gain.cancelScheduledValues(now);
@@ -187,6 +187,24 @@ export function createDelight({soundEnabled,motionEnabled}) {
   function setScene(next){if(next!==scene)stopTheme();if(next!=='explore'){boatRequested=false;stopBoat();}scene=next;stopAmbient();if(ambience&&context){ambience.gain.cancelScheduledValues(context.currentTime);ambience.gain.setTargetAtTime(['map','home','welcome'].includes(scene)?.24:.0001,context.currentTime,.12);}if(unlocked){if(scene==='explore')startTheme();else ambientPhrase();}}
   function duck(){if(!ambience||!context)return;const at=context.currentTime;if(boatBus){boatBus.gain.cancelScheduledValues(at);boatBus.gain.setTargetAtTime(.18,at,.08);boatBus.gain.setTargetAtTime(.72,at+4,.4);}ambience.gain.cancelScheduledValues(at);ambience.gain.setTargetAtTime(.025,at,.08);if(['map','home','welcome'].includes(scene))ambience.gain.setTargetAtTime(.24,at+4,.7);if(musicBus&&scene==='explore'){musicBus.gain.cancelScheduledValues(at);musicBus.gain.setTargetAtTime(.07,at,.08);musicBus.gain.setTargetAtTime(.4,at+5,.55);}}
   const visibility=()=>{if(document.hidden)window.speechSynthesis?.cancel();sync();};document.addEventListener('visibilitychange',visibility);
+  function setCityAmbient(isCity){
+    const next=!!isCity;if(cityAmbient===next)return;
+    cityAmbient=next;
+    if(next)stopTheme();
+    else if(scene==='explore'&&soundEnabled())startTheme();
+  }
+  function streetSound({traffic=.45,chatter=.35}={}){
+    if(!cityAmbient||!unlocked||!soundEnabled()||document.hidden||!ready())return;
+    const now=context.currentTime;if(now-lastStreetSound<1.6)return;
+    lastStreetSound=now;
+    // Broadband filtered passing-engine noise and indistinct conversation.
+    // No recorded voices or music; sounds obey the game's mute control.
+    noise(1.25,Math.min(.13,traffic*.12),'lowpass',160+Math.random()*170);
+    if(Math.random()<.75){
+      noise(.38,Math.min(.075,chatter*.055),'bandpass',390+Math.random()*480);
+      voice(155+Math.random()*80,.13,{volume:chatter*.025,type:'triangle',end:190+Math.random()*110,delay:.12});
+    }
+  }
   function panamaSound({music=0,horn=0,step=0,cheer=0}={}){
    if(music<=.005&&horn<=.005&&cheer<=.04)return;
    if(!unlocked||!soundEnabled()||document.hidden||!ready())return;
@@ -194,7 +212,7 @@ export function createDelight({soundEnabled,motionEnabled}) {
    if(horn>.005){const v=Math.min(1,horn);for(const frequency of [260,330]){voice(frequency,.32,{volume:v*.12,type:'sawtooth'});voice(frequency,.2,{volume:v*.09,type:'sawtooth',delay:.42});}}
    if(cheer>.04&&step===0)voice(780,.15,{volume:cheer*.08,end:1100,type:'triangle'});
   }
-  return {panamaSound,boat,get boatActive(){return !!boatBus;},note,drum,effect,gesture,sync,setScene,duck,get voiceCount(){return voices.size;},get ambientScheduled(){return ambientTimer!==null;},destroy(){boatRequested=false;stopBoat();stopAmbient();stopTheme();document.removeEventListener('visibilitychange',visibility);context?.close();}};
+  return {panamaSound,setCityAmbient,streetSound,boat,get boatActive(){return !!boatBus;},note,drum,effect,gesture,sync,setScene,duck,get voiceCount(){return voices.size;},get ambientScheduled(){return ambientTimer!==null;},destroy(){boatRequested=false;stopBoat();stopAmbient();stopTheme();document.removeEventListener('visibilitychange',visibility);context?.close();}};
 }
 export function burst(target,{motion=true,big=false}={}){
   if(!motion||!target?.isConnected)return;
