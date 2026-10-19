@@ -39,6 +39,24 @@ export function roadDistance(x,z){
  }
  return best;
 }
+export function mainlandRoadRoute(from,to){
+ const vertices=new Map(),edges=new Map();
+ const key=(x,z)=>x+','+z;
+ for(const path of Object.values(MAINLAND_ROADS)){
+  for(let i=0;i<path.length;i++){
+   const [x,z]=path[i],id=key(x,z);vertices.set(id,{x,z});if(!edges.has(id))edges.set(id,[]);
+   if(i){const [px,pz]=path[i-1],prev=key(px,pz),distance=Math.hypot(x-px,z-pz);edges.get(id).push({id:prev,distance});edges.get(prev).push({id,distance});}
+  }
+ }
+ const nearest=p=>[...vertices.keys()].reduce((best,k)=>Math.hypot(vertices.get(k).x-p.x,vertices.get(k).z-p.z)<Math.hypot(vertices.get(best).x-p.x,vertices.get(best).z-p.z)?k:best);
+ const first=nearest(from),last=nearest(to),distance=new Map([[first,0]]),previous=new Map(),todo=new Set(vertices.keys());
+ while(todo.size){let current=null;for(const id of todo)if(current===null||(distance.get(id)??Infinity)<(distance.get(current)??Infinity))current=id;if(current===null||!Number.isFinite(distance.get(current)))break;todo.delete(current);if(current===last)break;for(const next of edges.get(current)||[]){const d=distance.get(current)+next.distance;if(d<(distance.get(next.id)??Infinity)){distance.set(next.id,d);previous.set(next.id,current);}}}
+ const path=[last];while(path[0]!==first&&previous.has(path[0]))path.unshift(previous.get(path[0]));
+ if(path[0]!==first)return [];
+ const points=[...path.map(k=>vertices.get(k)),to],route=[];
+ for(let i=1;i<points.length;i++){const a=points[i-1],b=points[i],n=Math.max(1,Math.ceil(Math.hypot(b.x-a.x,b.z-a.z)/2));for(let j=1;j<=n;j++)route.push({x:a.x+(b.x-a.x)*j/n,z:a.z+(b.z-a.z)*j/n});}
+ return route;
+}
 export function mainlandAt(x,z){return roadDistance(x,z)<3.5||Math.hypot(x/18.7,z/12.5)<=1||worldIslands.some(i=>['pizzaCity','colon','sunset'].includes(i.id)&&Math.hypot((x-i.x)/i.rx,(z-i.z)/i.rz)<1);}
 // A sculpted, safely walkable dormant volcano. The center dips to form a real
 // bowl-shaped crater; the highest rock is the circular rim around the summit.
