@@ -7,7 +7,7 @@ import {createCanalCruise} from './canal-cruise.js?v=114';
 import {createRealms} from './realms.js?v=114';
 import {createJourney} from './journey.js?v=114';
 import {oceanModel} from './ocean-models.js?v=73';
-import {createIslandLife} from './island-life.js?v=118';
+import {createIslandLife} from './island-life.js?v=144';
 import {createWorldStory,islandStories} from './world-story.js?v=114';
 import {REGION_PROJECTS,regionForPosition,missionStatus,restoreRegions,createRegionProjectWorld} from './region-projects.js?v=114';
 import {createWorldMap} from './world-map.js?v=114';
@@ -1069,7 +1069,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    workshop?.update(dt,time);estateWorld?.update(dt);builderSystem?.update(dt,time,active);builderSystem?.projectLabels(camera);
    cityLife?.update(dt,active,{x:s.x,z:s.z,driving:carDriving,flying:!!ride||birdAltitude>2,indoors:inside||houseSystem?.isInside()});
    cityGuideButton.hidden=!cityLife?.isHere(s.x,s.z)||inside||houseSystem?.isInside();
-   life.update(dt,active,motion());realms.update(dt,active,ride?'fly':swimming?'swim':boating?'boat':'walk',ay);journey.update(dt,active,ride?'fly':swimming?'swim':boating?'boat':'walk',ay);story.update(dt,time);realms.setTourView(cruising);journey.setTourView(cruising);if(host.classList.contains("story-nearby")){lesson.hidden=true;guideBeacon.visible=false;}
+   life.update(dt,active,motion(),{x:s.x,z:s.z});realms.update(dt,active,ride?'fly':swimming?'swim':boating?'boat':'walk',ay);journey.update(dt,active,ride?'fly':swimming?'swim':boating?'boat':'walk',ay);story.update(dt,time);realms.setTourView(cruising);journey.setTourView(cruising);if(host.classList.contains("story-nearby")){lesson.hidden=true;guideBeacon.visible=false;}
    // The previous small chapter lessons are still playable, but they now
    // contribute to a single tangible project in each Panama location.
    const regionId=regionForPosition(s.x,s.z),mission=missionStatus(s,state,regionId);
