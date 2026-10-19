@@ -111,7 +111,26 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
   ...CITY_DELIVERY,...CITY_RALLY,{x:(138),z:(-44)}];
  for(const dx of [-48,-37,-22,-8,8,22,36,48])for(const dz of [-40,-30,-18,-5,9,21,32,42]){
   if((dx/58)**2+(dz/48)**2>.76)continue;
-  const x=(120)+dx,z=(-50)+dz;
+  let x=120+dx,z=-50+dz;
+  // Buildings occupy blocks, never the asphalt grid, boulevard or highway.
+  // Preserve each building by shifting it to the nearest clear buildable plot.
+  const plotClear=(px,pz)=>{
+   const ox=px-120,oz=pz+50;
+   if((ox/58)**2+(oz/48)**2>.75)return false;
+   if(xs.some(v=>Math.abs(ox-v)<6.5)||zs.some(v=>Math.abs(oz-v)<6.5))return false;
+   if(Math.abs(Math.hypot(ox/48.4,oz/40)-1)<.20)return false;
+   if(reserved.some(q=>Math.hypot(q.x-px,q.z-pz)<9.2))return false;
+   return true;
+  };
+  if(!plotClear(x,z)){
+   let found=null,best=Infinity;
+   for(let u=-8;u<=8;u+=2)for(let v=-8;v<=8;v+=2){
+    const px=x+u,pz=z+v,d=u*u+v*v;
+    if(d<best&&plotClear(px,pz)){found={x:px,z:pz};best=d;}
+   }
+   if(!found)continue;
+   x=found.x;z=found.z;
+  }
   if(reserved.some(q=>Math.hypot(q.x-x,q.z-z)<9.2))continue;
   // Avoid overlapping original central colorful houses and pizzeria.
   if(Math.abs(dx)<30&&Math.abs(dz)<27&&((dx+22)**2+(dz+20)**2<110||(dx-12)**2+(dz+20)**2<110||(dx-24)**2+(dz+13)**2<90||(dx+25)**2+(dz-18)**2<90||(dx-13)**2+(dz-21)**2<90))continue;
