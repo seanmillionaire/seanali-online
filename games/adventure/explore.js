@@ -3,7 +3,7 @@ import {createPanamaLife} from './panama-life.js?v=147';
 import {createCloseCamera} from './close-camera.js?v=115';
 import {createCampaign} from './campaign.js?v=114';
 import {createColonAdventure} from './colon-adventure.js?v=114';
-import {createCanalCruise} from './canal-cruise.js?v=114';
+import {createCanalCruise} from './canal-cruise.js?v=148';
 import {createRealms} from './realms.js?v=114';
 import {createJourney} from './journey.js?v=114';
 import {oceanModel} from './ocean-models.js?v=73';
@@ -11,7 +11,7 @@ import {createIslandLife} from './island-life.js?v=144';
 import {createWorldStory,islandStories} from './world-story.js?v=114';
 import {REGION_PROJECTS,regionForPosition,missionStatus,restoreRegions,createRegionProjectWorld} from './region-projects.js?v=114';
 import {createWorldMap} from './world-map.js?v=114';
-import {createWildlifeFriends} from './wildlife-friends.js?v=114';
+import {createWildlifeFriends} from './wildlife-friends.js?v=148';
 import {createVillageBuilders} from './village-builders.js?v=1';
 import {createHouseInteriors} from './house-interiors.js?v=112';
 import {createPizzaCity} from './pizza-city.js?v=137';
@@ -944,7 +944,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    if(swimming)ay-=.95*(bodyScale-1);
    growthRing.visible=eating>0&&motion();growthRing.position.set(ax,ay+.08,az);growthRing.scale.setScalar(bodyScale*(1+(2-eating)*.55));growthRing.material.opacity=eating*.4;
    avatar.position.set(ax,ay,az);shadow.position.set(ax,houseSystem?.isInside()?0:height(ax,az)+.05,az);shadow.visible=!cruising&&!ride&&!swimming&&!inside&&!boating&&!airborne&&!mountId&&!carDriving&&!houseSystem?.isInside();legs.forEach((l,i)=>{l.visible=!swimming;l.rotation.x=carDriving?-.58:mountId?-.65:len>0?Math.sin(step+i*Math.PI)*.55:0;});rideBalloon.visible=!!ride;rideBalloon.position.set(s.x,flightY,s.z);rideBalloon.rotation.z=motion()?Math.sin(time*1.2)*.035:0;snack.visible=eating>0;snack.position.y=1.45+(motion()?Math.sin(eating*10)*.08:0);snack.scale.setScalar(.55+.45*Math.min(1,eating/2));if(eating>0)arms[1].rotation.x=-1.4;
-   rainbow.visible=s.badges.includes('song');picnic.visible=s.badges.includes('picnic');wish.visible=s.badges.includes('beacon');wish.rotation.y=time*.2;pet.visible=s.pet&&!friendSystem?.hasCompanion('pip')&&!inside&&!boating&&!ride;petX+=(s.x-1-petX)*Math.min(1,dt*3);petZ+=(s.z+1-petZ)*Math.min(1,dt*3);pet.position.set(petX,inWater(petX,petZ)?-.05:height(petX,petZ)+Math.abs(Math.sin(step))*.1,petZ);pet.rotation.y=avatar.rotation.y;
+   rainbow.visible=s.badges.includes('song');picnic.visible=s.badges.includes('picnic');wish.visible=s.badges.includes('beacon');wish.rotation.y=time*.2;pet.visible=!cruising&&s.pet&&!friendSystem?.hasCompanion('pip')&&!inside&&!boating&&!ride;petX+=(s.x-1-petX)*Math.min(1,dt*3);petZ+=(s.z+1-petZ)*Math.min(1,dt*3);pet.position.set(petX,inWater(petX,petZ)?-.05:height(petX,petZ)+Math.abs(Math.sin(step))*.1,petZ);pet.rotation.y=avatar.rotation.y;
    const phone=canvas.clientWidth<780;
    if(cruising)desired.set(ax+30,ay+29,az+(phone?58:51));
    else if(houseSystem?.isInside())desired.set(ax,ay+10,az+15);
@@ -1035,7 +1035,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    if(!inside&&!ride&&!mountId&&!carDriving&&!houseSystem?.isInside()&&panamaLife?.prompt(s.x,s.z)){act.hidden=false;setText(act,panamaLife.prompt(s.x,s.z));}
    guideBeacon.visible=guideBeacon.visible&&!cruising&&!inside&&!boating&&!ride;
    houseSystem?.updateDoor(s.x,s.z,!!mountId||!!ride||boating||carDriving||inside||houseSystem?.isInside());
-   const playful=mountId||carDriving||houseSystem?.isInside()?null:friendSystem?.nearest(ride?'fly':boating?'boat':swimming?'swim':'walk');
+   const playful=cruising||mountId||carDriving||houseSystem?.isInside()?null:friendSystem?.nearest(ride?'fly':boating?'boat':swimming?'swim':'walk');
    friendMeet.hidden=!playful||!!ride||inside||airborne||!!mountId||houseSystem?.isInside()||!panel.hidden||!host.classList.contains('explore-ready');
    const rideable=playful&&playful.id!=='kai'&&!inside&&!boating&&!ride&&!carDriving&&!houseSystem?.isInside()&&!airborne&&panel.hidden;
    rideQuick.hidden=!(rideable||mountId);
@@ -1044,7 +1044,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    if(playful){setText(friendMeet,playful.icon+' '+playful.name+' · '+(playful.id==='kai'?say('Saludar','Say hi'):say('Montar','Ride')));friendMeet.setAttribute('aria-label',say('Jugar con ','Play with ')+playful.name);}
    goalCard.hidden=boating||carDriving||inside||!!ride||airborne||near?.kind==='islet'||netTime>0;quest.hidden=true;
    adventureMap.update(false,avatar.rotation.y);
-   friendSystem?.update(dt,active,{mode:houseSystem?.isInside()?'house':mountId?(inWater(s.x,s.z)?'mount-water':'mount'):ride?'fly':boating?'boat':swimming?'swim':'walk',inside:inside||houseSystem?.isInside(),mount:mountId,heading:avatar.rotation.y,roomPosition:houseSystem?.position(),mountAltitude:birdAltitude,moving:len>.1});
+   friendSystem?.update(dt,active,{mode:houseSystem?.isInside()?'house':mountId?(inWater(s.x,s.z)?'mount-water':'mount'):ride?'fly':boating?'boat':swimming?'swim':'walk',inside:inside||houseSystem?.isInside(),mount:mountId,heading:avatar.rotation.y,roomPosition:houseSystem?.position(),mountAltitude:birdAltitude,moving:len>.1,cruise});
    // Hiking a physically climbable spiral earns a one-time summit keepsake.
    const onMountain=onVolcano(s.x,s.z)&&!houseSystem?.isInside()&&!inside;
    volcanoStatus.hidden=!onMountain;

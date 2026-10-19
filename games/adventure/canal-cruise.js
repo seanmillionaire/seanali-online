@@ -1,4 +1,4 @@
-import {CRUISE_FARE,CRUISE_BOARD,CRUISE_DOCK,cruisePose,buyCruise,advanceCruise} from './cruise-route.js?v=104';
+import {CRUISE_FARE,CRUISE_BOARD,CRUISE_DOCK,cruisePose,buyCruise,advanceCruise} from './cruise-route.js?v=148';
 import {coinBalance} from './explore-state.js?v=114';
 export function createCanalCruise({T,scene,host,state,make,mat,box,ball,cylinder,height,save,refresh,joy,tell}){
  const s=state.world,c=s.city.cruise,es=state.lang==='es',choose=(a,b)=>es?a:b;
@@ -45,7 +45,7 @@ export function createCanalCruise({T,scene,host,state,make,mat,box,ball,cylinder
   }
  }
  piece(box,blue,0,8.6,7.5,7.4,1,2.7,ship); // panoramic bridge
- for(const z of [-5,0]){
+ for(const z of [-6,-9]){
   piece(cylinder,navy,0,9.2,z,1,2.3,1,ship);
   piece(cylinder,gold,0,10.1,z,1.08,.45,1.08,ship);
  }
@@ -57,16 +57,30 @@ export function createCanalCruise({T,scene,host,state,make,mat,box,ball,cylinder
  piece(cylinder,white,0,10.7,10,.09,5,.09,ship);
  piece(box,gold,.7,12.5,10,1.4,.8,.06,ship);
  const status=document.createElement('div');status.className='cruise-status';status.setAttribute('role','status');status.hidden=true;host.append(status);
- let autosave=0;
+ // A clear play court on the upper deck; passengers use ship-local coordinates.
+ piece(box,wood,0,8.55,3,7.5,.12,7.2,ship);
+ const beachBall=piece(ball,orange,0,9.1,3,.38,.38,.38,ship);beachBall.name='Friends upper-deck beach ball';
+ const controls=document.createElement('div');controls.hidden=true;controls.setAttribute('aria-label',choose('Juegos en cubierta','Top deck games'));
+ Object.assign(controls.style,{position:'absolute',bottom:'max(20px, env(safe-area-inset-bottom))',left:'16px',right:'16px',zIndex:'32',display:'flex',justifyContent:'center',gap:'10px',flexWrap:'wrap'});
+ host.append(controls);
+ let game='ball',playTime=0,autosave=0;
+ const gameButtons=[];
+ for(const [id,label]of [['ball',choose('⚽ Jugar a la pelota','⚽ Play ball')],['dance',choose('💃 Bailar con amigos','💃 Dance with friends')]]){
+  const b=document.createElement('button');b.type='button';b.textContent=label;
+  Object.assign(b.style,{minHeight:'48px',padding:'12px 16px',border:'2px solid #ffe7a7',borderRadius:'16px',background:'#16364e',color:'#fff8e5',fontSize:'17px',fontWeight:'800'});
+  b.onclick=()=>{game=id;joy.gesture?.();joy.effect('friend');};controls.append(b);gameButtons.push([id,b]);
+ }
+ function deckPoint(x,z,y=0){const a=ship.rotation.y;return {x:ship.position.x+Math.cos(a)*x+Math.sin(a)*z,z:ship.position.z-Math.sin(a)*x+Math.cos(a)*z,y:ship.position.y+8.62+y};}
  function near(x,z){return Math.hypot(x-CRUISE_BOARD.x,z-CRUISE_BOARD.z)<8;}
  function board(){
   if(!buyCruise(c,coinBalance(state))){
    tell(choose('🚢 El crucero cuesta 10 🪙. Recoge bolsas de dinero en la ciudad.','🚢 The cruise costs 10 coins. Collect money bags in the city.'));return false;
   }
-  Object.assign(s,CRUISE_DOCK);save();refresh();joy.effect('boat');
-  tell(choose('🚢 ¡Bienvenida a bordo! Una vuelta completa por todo Panamá.','🚢 Welcome aboard! One complete tour around all of Panama.'));return true;
+  playTime=0;game='ball';Object.assign(s,CRUISE_DOCK);save();refresh();joy.effect('boat');
+  tell(choose('🚢 ¡Todos tus amigos a bordo! Jueguen en la cubierta mientras navegamos.','🚢 All your friends are aboard! Play on the top deck while we cruise.'));return true;
  }
  function update(dt,active){
+  if(c.active&&active)playTime+=dt;
   const finished=advanceCruise(c,dt,active);
   const p=cruisePose(c.active?c.distance:0);
   ship.position.set(p.x,.12,p.z);
@@ -75,10 +89,13 @@ export function createCanalCruise({T,scene,host,state,make,mat,box,ball,cylinder
   ship.rotation.y+=turn*(dt===0?1:Math.min(1,dt*1.8));
   if(c.active){s.x=p.x;s.z=p.z;autosave+=active?dt:0;if(autosave>2){autosave=0;save();}}
   if(finished){Object.assign(s,CRUISE_BOARD);save();refresh();joy.effect('finish');tell(choose('🚢 ¡Vuelta completa! De regreso en el Canal de Panamá.','🚢 Full tour complete! Back at the Panama Canal.'));}
-  host.classList.toggle('on-cruise',c.active);status.hidden=!c.active;
-  if(c.active)status.textContent='🚢 '+choose('Crucero por Panamá','Panama grand cruise')+' · '+Math.floor(p.progress*100)+'% · '+choose('Una vuelta completa','One full map tour');
-  return {active:c.active,finished,x:s.x+Math.sin(ship.rotation.y)*4,z:s.z+Math.cos(ship.rotation.y)*4,y:8.8,heading:ship.rotation.y};
+  host.classList.toggle('on-cruise',c.active);status.hidden=!c.active;controls.hidden=!c.active;controls.style.display=c.active?'flex':'none';
+  for(const [id,b]of gameButtons)b.setAttribute('aria-pressed',String(id===game));
+  beachBall.visible=c.active&&game==='ball';beachBall.position.set(Math.sin(playTime*1.4)*2,9.1+Math.abs(Math.sin(playTime*2.8))*1.1,3+Math.cos(playTime*1.4)*1.8);
+  if(c.active)status.textContent='🚢 '+choose('Crucero por Panamá','Panama grand cruise')+' · '+Math.floor(p.progress*100)+'% · '+choose('🫶 Todos los amigos · Juegos en cubierta','🫶 All friends · Top deck play');
+  const passenger=deckPoint(0,5.7,game==='dance'?Math.abs(Math.sin(playTime*4))*.25:0);
+  return {active:c.active,finished,...passenger,heading:ship.rotation.y+(game==='dance'?Math.sin(playTime*3)*.5:0),game,playTime,playing:active,deckPoint};
  }
  update(0,false);
- return {near,board,update,isActive:()=>c.active,prompt:()=>choose('🚢 Crucero · 10 🪙','🚢 Cruise · 10 coins'),dispose(){host.classList.remove('on-cruise');status.remove();scene.remove(root);signMaterial.dispose();signTexture.dispose();}};
+ return {near,board,update,isActive:()=>c.active,prompt:()=>choose('🚢 Crucero con todos tus amigos · 10 🪙','🚢 Cruise with all friends · 10 coins'),dispose(){host.classList.remove('on-cruise');status.remove();controls.remove();scene.remove(root);signMaterial.dispose();signTexture.dispose();}};
 }

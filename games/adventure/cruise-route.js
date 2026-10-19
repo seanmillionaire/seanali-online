@@ -30,7 +30,7 @@ export function buyCruise(cruise,balance){
 }
 export function advanceCruise(cruise,dt,active){
  if(!cruise.active||!active)return false;
- cruise.distance=Math.min(CRUISE_LENGTH,cruise.distance+Math.max(0,Math.min(dt,.05))*CRUISE_SPEED);
+ cruise.distance=Math.min(CRUISE_LENGTH,cruise.distance+Math.max(0,Math.min(dt,.1))*CRUISE_SPEED);
  if(cruise.distance<CRUISE_LENGTH)return false;
  cruise.active=false;cruise.completed++;cruise.distance=0;return true;
 }

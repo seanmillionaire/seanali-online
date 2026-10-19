@@ -244,9 +244,25 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
   }
   return null;
  }
- function update(dt,active,{mode='walk',inside=false,mount=null,heading=0,roomPosition=null,mountAltitude=0,moving=false}={}){
+ function update(dt,active,{mode='walk',inside=false,mount=null,heading=0,roomPosition=null,mountAltitude=0,moving=false,cruise=null}={}){
   if(document.hidden)return;
   if(motion())time+=Math.min(dt,.05);
+  if(cruise?.active){
+   let i=0;
+   for(const n of nodes.values()){
+    const angle=i++*Math.PI/3+(cruise.game==='dance'?Math.sin(cruise.playTime*2)*.12:0),bird=n.f.id==='mila'||n.f.id==='ollie';
+    const bounce=cruise.playing?Math.abs(Math.sin(cruise.playTime*(cruise.game==='dance'?4:2)+i))*.2:0;
+    const p=cruise.deckPoint(Math.sin(angle)*2.5,3+Math.cos(angle)*2,bounce+(bird?1.3:n.f.id==='pip'?.36:n.f.id==='dori'?.4:0));
+    n.g.visible=true;n.g.scale.setScalar(1);n.g.position.set(p.x,p.y,p.z);n.g.rotation.y=cruise.heading+angle+Math.PI;
+    for(const part of n.moving)part.rotation.z=cruise.playing?Math.sin(cruise.playTime*5+i)*.3:0;
+    n.other.detail?.animate(cruise.playTime,{moving:cruise.playing,flying:bird});
+    for(const limb of n.other.walkers||[]){limb.arm.rotation.x=Math.sin(cruise.playTime*4)*.6*limb.sign;limb.leg.rotation.x=Math.sin(cruise.playTime*4)*.25*limb.sign;}
+    if(n.other.ball)n.other.ball.visible=false;
+    n.onCruise=true;
+   }
+   labels.forEach(label=>label.hidden=true);return;
+  }
+  for(const n of nodes.values())if(n.onCruise){n.onCruise=false;n.g.position.set(n.home.x,height(n.home.x,n.home.z),n.home.z);if(n.other.ball)n.other.ball.visible=true;}
   const following=friends.companion;
   for(const n of nodes.values()){
    const id=n.f.id,isRidden=mounted===id&&mount===id,canFollow=(following===id||friends.called.includes(id))&&!isRidden&&(!inside||mode==='house');
