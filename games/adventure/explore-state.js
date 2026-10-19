@@ -30,7 +30,7 @@ export const MAINLAND_STOPS=[
  {id:'volcanTown',x:-80,z:45,en:'Volcán Town',es:'Pueblo Volcán'},
  {id:'sunset',x:-110,z:49,en:'Volcán Barú',es:'Volcán Barú'}
 ];
-export const HIGHWAY_WIDTH=9.5;
+export const HIGHWAY_WIDTH=16;
 export function smoothHighway(points){
  const result=[];
  for(let i=0;i<points.length-1;i++){
