@@ -1,3 +1,4 @@
+import {CITY_HOSPITAL} from './volcano-safety.js?v=154';
 import {worldIslands,roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=140';
 const mainland=[
  {id:'gorgona',x:0,z:0,rx:21,rz:15,icon:'🏖️',es:'Playa Gorgona',en:'Gorgona Beach'},
@@ -7,6 +8,7 @@ const icons={islet:'🦋',wilds:'🌴',coconutCoast:'🏖️',sunset:'🌋',crys
 const places=[...mainland,...worldIslands];
 export function locationLabel(x,z,lang='es',{cruising=false,interior=null,tower=false}={}){
  const es=lang==='es',name=p=>p[es?'es':'en'],label=p=>(p.icon||icons[p.id]||'🏝️')+' '+name(p);
+ if(Math.hypot(x-CITY_HOSPITAL.spawn.x,z-CITY_HOSPITAL.spawn.z)<4)return '🏥 '+(es?'Hospital · Ciudad de Panamá':'Hospital · Panama City');
  if(interior)return '🏠 '+interior;
  if(tower)return '🗼 '+(es?'Faro · Playa Gorgona':'Lighthouse · Gorgona Beach');
  if(x>=-72&&x<=-19&&z>=-91&&z<=-52)return '🚢 '+(es?'Canal de Panamá':'Panama Canal');
