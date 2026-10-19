@@ -7,8 +7,7 @@ export function createCanalCruise({T,scene,host,state,make,mat,box,ball,cylinder
  const piece=(geo,m,x,y,z,sx,sy,sz,parent=root)=>make(geo,m,x,y,z,sx,sy,sz,parent);
  // Former city-center basin: keep this footprint dry beneath the highway.
  // The cruise attraction remains, but no blue pond overlays the city streets.
- const roadSurface=mat('#4b5154',{roughness:.97});
- piece(box,roadSurface,-43,.16,-74,42,.25,25);
+ // Dry terrain and the unified road network now fill this area; no separate asphalt patch.
  for(const side of [-1,1]){
   piece(box,stone,-44,1.3,-74+side*15,44,2.6,3);
   piece(box,white,-44,2.75,-74+side*15,44,.3,3.4);
