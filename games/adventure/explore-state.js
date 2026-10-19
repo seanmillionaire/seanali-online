@@ -3,7 +3,7 @@ import {SAN_BLAS_ISLANDS,normalizePanama} from './panama-state.js?v=156';
 import {normalizeCampaign} from './campaign-state.js?v=156';
 import {normalizeColon,bridgeDistance,COLON_BRIDGE} from './colon-state.js?v=156';
 import {normalizeCruise,CRUISE_FARE} from './cruise-route.js?v=156';
-import {normalizeEstate,estateCoinCost} from './estate.js?v=156';
+import {normalizeEstate,estateCoinCost,ESTATE_PLANS} from './estate.js?v=156';
 // Exploration is independent of lesson order. Every place is open from the start.
 export const worldIslands=[
  {id:'islet',x:DESTINATIONS.islet.at[0],z:DESTINATIONS.islet.at[1],rx:12,rz:10,h:2.5,ox:24,oz:-8,spread:2.4,en:'Taboga · Island of Flowers',es:'Isla Taboga · Isla de las Flores'},
@@ -98,6 +98,26 @@ export function mainlandRoadRoute(from,to){
  const points=[...path.map(k=>vertices.get(k)),to],route=[];
  for(let i=1;i<points.length;i++){const a=points[i-1],b=points[i],n=Math.max(1,Math.ceil(Math.hypot(b.x-a.x,b.z-a.z)/2));for(let j=1;j<=n;j++)route.push({x:a.x+(b.x-a.x)*j/n,z:a.z+(b.z-a.z)*j/n});}
  return route;
+}
+// Older saved properties may have been built before roads reserved their space.
+// Only move an obstructing property, keeping its ID, level, inventory and owner.
+// Re-running normalization is idempotent once the property is clear.
+export function relocateEstateRoadObstructions(estate){
+ const buildings=estate?.buildings||[];let moved=0;
+ for(const house of buildings){
+  const radius=ESTATE_PLANS.find(p=>p.type===house.type)?.radius||3;
+  const clear=HIGHWAY_WIDTH/2+radius+1.35;
+  if(roadDistance(house.x,house.z)>clear)continue;
+  const originX=house.x,originZ=house.z;
+  let relocated=false;
+  for(let step=3;step<=30&&!relocated;step+=3)for(let angle=0;angle<24;angle++){
+   const a=angle*Math.PI/12,x=originX+Math.cos(a)*step,z=originZ+Math.sin(a)*step;
+   if(roadDistance(x,z)<=clear+1.1||!mainlandAt(x,z)||inWater(x,z))continue;
+   if(buildings.some(other=>other!==house&&Math.hypot(other.x-x,other.z-z)<radius+(ESTATE_PLANS.find(p=>p.type===other.type)?.radius||3)+1.5))continue;
+   house.x=x;house.z=z;moved++;relocated=true;break;
+  }
+ }
+ return moved;
 }
 export function mainlandAt(x,z){return (mainlandContains(x,z)&&!canalWater(x,z)&&!gatunWater(x,z))||nearRoad(x,z,HIGHWAY_WIDTH/2)||Math.hypot(x/18.7,z/12.5)<=1||worldIslands.some(i=>['pizzaCity','colon','sunset'].includes(i.id)&&Math.hypot((x-i.x)/i.rx,(z-i.z)/i.rz)<1);}
 // A sculpted, safely walkable dormant volcano. The center dips to form a real
@@ -250,6 +270,7 @@ s.dayTime=Number.isFinite(raw.dayTime)?((raw.dayTime%240)+240)%240:40;s.story=no
 if(raw.inventoryVersion!==1)s.food.banana+=Math.max(0,countExplore(s,'fruit')-s.craft.spent.fruit);
 for(const kind of ['banana','coconut'])s.foodTotal[kind]=Math.max(s.food[kind]+(kind==='banana'?s.craft.spent.fruit:0),raw.inventoryVersion===1?inventoryCount(raw.foodTotal?.[kind]):0);
 s.estate=normalizeEstate(raw.estate,s.collected.filter(id=>['islandTreasure','seaTreasure','glow'].includes(exploreItems.find(item=>item.id===id)?.kind)).length);
+ relocateEstateRoadObstructions(s.estate);
 s.lighthouseOn=typeof raw.lighthouseOn==='boolean'?raw.lighthouseOn:(Array.isArray(raw.badges)&&raw.badges.includes('beacon'));
 s.gardenWatered=raw.gardenWatered===true;s.chestOpen=raw.chestOpen===true;
 // NPC projects persist across island re-entry and page reloads.

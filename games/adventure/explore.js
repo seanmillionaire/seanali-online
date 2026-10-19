@@ -1,8 +1,8 @@
 import {touchesLava,returnToHospital,createCityHospital} from './volcano-safety.js?v=156';
 import {locationLabel} from './location-label.js?v=156';
 import {waterFriend,animalStep} from './animal-boundaries.js?v=156';
-import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,mainlandAt,mainlandRoadRoute} from './explore-state.js?v=164';
-import {createPanamaLife} from './panama-life.js?v=167';
+import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,mainlandAt,mainlandRoadRoute,roadDistance} from './explore-state.js?v=168';
+import {createPanamaLife} from './panama-life.js?v=168';
 import {createCloseCamera} from './close-camera.js?v=156';
 import {createCampaign} from './campaign.js?v=156';
 import {createColonAdventure} from './colon-adventure.js?v=162';
@@ -15,14 +15,14 @@ import {createWorldStory,islandStories} from './world-story.js?v=156';
 import {REGION_PROJECTS,regionForPosition,missionStatus,restoreRegions,createRegionProjectWorld} from './region-projects.js?v=156';
 import {createWorldMap} from './world-map.js?v=156';
 import {createWildlifeFriends} from './wildlife-friends.js?v=156';
-import {createVillageBuilders} from './village-builders.js?v=156';
+import {createVillageBuilders} from './village-builders.js?v=168';
 import {createHouseInteriors} from './house-interiors.js?v=156';
-import {createPizzaCity} from './pizza-city.js?v=167';
+import {createPizzaCity} from './pizza-city.js?v=168';
 import {driveByDirection} from './directional-drive.js?v=166';
 import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=156';
 import {ESTATE_PLANS,estateCosts,estateMissing,findEstateSite,canBuildEstate,buildEstate,canUpgradeEstate,upgradeEstate,estateBlocked,createEstateWorld} from './estate.js?v=156';
 import {buildIsland} from './entrance.js?v=165';
-import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=164';
+import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=168';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);syncWallet(state);
  let disposed=false,engine=null,control=null,builderSystem=null,friendSystem=null,houseSystem=null,wildLife=null,cityLife=null,panamaLife=null,cruiseLife=null,colonLife=null,workshop=null,estateWorld=null,regionWorld=null,carDriving=false,carSpeed=0,mountId=null,birdAltitude=0,birdTarget=0,birdLanding=false,near=null,ride=s.flight?1:0,flightY=s.flight||0,flightTarget=s.flight||0,flightVX=0,flightVZ=0,route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;
@@ -500,7 +500,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
     if(boating||ride||swimming||inside||houseSystem?.isInside()){
       action.disabled=false;feedback.textContent=say('🏝️ Primero baja a tierra firme. Cierra este panel y usa Salir.','🏝️ Step onto land first. Close this panel and use Exit.');return;
     }
-    const site=findEstateSite(s,p.type,{x:s.x,z:s.z},{canStand:(x,z)=>walkable(x,z)&&!inWater(x,z),height:(x,z)=>isletHeight(x,z)>0?isletHeight(x,z):0});
+    const site=findEstateSite(s,p.type,{x:s.x,z:s.z},{canStand:(x,z)=>walkable(x,z)&&!inWater(x,z)&&roadDistance(x,z)>HIGHWAY_WIDTH/2+(p.radius||3)+1.35,height:(x,z)=>isletHeight(x,z)>0?isletHeight(x,z):0});
     if(!site){action.disabled=false;feedback.textContent=say('🏝️ Aquí no cabe. Camina hasta un espacio abierto y prueba otra vez.','🏝️ Not enough open space here. Walk to a clear area and try again.');return;}
     const entry=buildEstate(s,p.type,coinBalance(state),site);
     if(!entry){action.disabled=false;feedback.textContent=say('Inténtalo de nuevo.','Please try again.');return;}
@@ -656,7 +656,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    const lateralX=Math.cos(ang),lateralZ=-Math.sin(ang);
    const sections=Math.ceil(len/4);
    // Highway-only rails: keep city streets and intersection approaches clear.
-   const outsideCity=(x,z)=>Math.hypot((x+100)/58,(z+74)/48)>1.12;
+   const outsideCity=(x,z)=>Math.hypot((x-120)/58,(z+50)/48)>1.12;
    for(const side of [-1,1])for(let j=0;j<sections;j++){
     const t=(j+.5)/sections,x=ax+dx*t+lateralX*side*(HIGHWAY_WIDTH/2+.35),z=az+dz*t+lateralZ*side*(HIGHWAY_WIDTH/2+.35),y=height(x,z);
     if(!outsideCity(x,z))continue;

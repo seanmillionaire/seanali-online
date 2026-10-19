@@ -1,3 +1,8 @@
+// Preserve all six completed construction projects off Gorgona's access road.
+export const GORGONA_BUILDER_FINISHED={
+ mateo:[[-15,-2],[-10,-2],[-5,-2]],
+ sofia:[[7,-1],[12,-1],[18,-10]]
+};
 // Two self-directed builders in Gorgona. Their projects belong to the world, not Angelique's inventory.
 export function createVillageBuilders({T,scene,host,state,make,mat,ball,box,cylinder,height,save,onTravel,language}){
  const es=language==='es',tr=(a,b)=>es?a:b;
@@ -84,7 +89,7 @@ export function createVillageBuilders({T,scene,host,state,make,mat,ball,box,cyli
   const finishedSites=[];
   for(let i=0;i<3;i++){
    const site=new T.Group();finished.add(site);
-   site.position.set(spec.x+(i-1)*5,height(spec.x+(i-1)*5,spec.z+5)+.04,spec.z+5);
+   const [px,pz]=GORGONA_BUILDER_FINISHED[spec.id][i];site.position.set(px,height(px,pz)+.04,pz);
    make(box,timber,0,.12,0,2.5,.24,2.2,site);
    for(const dx of [-.95,.95])for(const dz of [-.8,.8])make(box,timber,dx,.87,dz,.15,1.4,.15,site);
    make(box,roof,0,1.67,0,2.85,.28,2.45,site);
