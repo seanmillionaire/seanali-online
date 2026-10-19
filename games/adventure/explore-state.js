@@ -1,4 +1,4 @@
-import {DESTINATIONS,WORLD_BOUNDS,mainlandContains,canalWater,gatunWater,migrateGeography,segmentDistance} from './geography.js?v=156';
+import {DESTINATIONS,WORLD_BOUNDS,mainlandContains,canalWater,gatunWater,migrateGeography,segmentDistance,organicIslandRadius,homeShoreRadius} from './geography.js?v=157';
 import {SAN_BLAS_ISLANDS,normalizePanama} from './panama-state.js?v=156';
 import {normalizeCampaign} from './campaign-state.js?v=156';
 import {normalizeColon,bridgeDistance,COLON_BRIDGE} from './colon-state.js?v=156';
@@ -16,6 +16,7 @@ export const worldIslands=[
  {id:'monkeyIslet',x:DESTINATIONS.monkeyIslet.at[0],z:DESTINATIONS.monkeyIslet.at[1],rx:8,rz:7,h:1.8,ox:130,oz:-25,spread:1,en:'Monkey Island · Gatún Lake',es:'Isla de los Monos · Lago Gatún'},
  ...SAN_BLAS_ISLANDS
 ];
+const BARU_LAND=worldIslands.find(p=>p.id==='sunset');
 export function islandPoint(id,x,z){const p=worldIslands.find(p=>p.id===id);return {x:p.x+(x-p.ox)*p.spread,z:p.z+(z-p.oz)*p.spread};}
 // Strong offshore currents require a vehicle to cross; walking remains free after arrival.
 export function remoteAccess(from,to){const p=worldIslands.find(i=>i.vehicleOnly);if(!p)return true;const radius=q=>Math.hypot((q.x-p.x)/p.rx,(q.z-p.z)/p.rz);return radius(to)>=1.6||radius(from)<1.6;}
@@ -50,14 +51,33 @@ export function smoothHighway(points){
  result.push(points[points.length-1]);return result;
 }
 export const HIGHWAY_CURVES=Object.fromEntries(Object.entries(MAINLAND_ROADS).map(([id,points])=>[id,smoothHighway(points)]));
+// Flatten road polylines once, rather than rebuilding vectors every terrain
+// query. Broad-phase boxes prevent distant roads slowing land generation.
+const ROAD_SEGMENTS=Object.values(HIGHWAY_CURVES).flatMap(nodes=>nodes.slice(1).map(([bx,bz],i)=>{
+ const [ax,az]=nodes[i],dx=bx-ax,dz=bz-az;
+ return {ax,az,dx,dz,inv:1/Math.max(.000001,dx*dx+dz*dz),
+  minX:Math.min(ax,bx),maxX:Math.max(ax,bx),minZ:Math.min(az,bz),maxZ:Math.max(az,bz)};
+}));
+export function nearRoad(x,z,buffer=HIGHWAY_WIDTH/2){
+ const max2=buffer*buffer;
+ for(const q of ROAD_SEGMENTS){
+  if(x<q.minX-buffer||x>q.maxX+buffer||z<q.minZ-buffer||z>q.maxZ+buffer)continue;
+  const t=Math.max(0,Math.min(1,((x-q.ax)*q.dx+(z-q.az)*q.dz)*q.inv)),
+   dx=x-q.ax-t*q.dx,dz=z-q.az-t*q.dz;
+  if(dx*dx+dz*dz<max2)return true;
+ }
+ return false;
+}
 export function roadDistance(x,z){
  let best=Infinity;
- for(const nodes of Object.values(HIGHWAY_CURVES))for(let i=1;i<nodes.length;i++){
-  const [ax,az]=nodes[i-1],[bx,bz]=nodes[i],dx=bx-ax,dz=bz-az;
-  const t=Math.max(0,Math.min(1,((x-ax)*dx+(z-az)*dz)/(dx*dx+dz*dz)));
-  best=Math.min(best,Math.hypot(x-ax-t*dx,z-az-t*dz));
+ for(const q of ROAD_SEGMENTS){
+  const dx=Math.max(q.minX-x,0,x-q.maxX),dz=Math.max(q.minZ-z,0,z-q.maxZ);
+  if(dx*dx+dz*dz>=best)continue;
+  const t=Math.max(0,Math.min(1,((x-q.ax)*q.dx+(z-q.az)*q.dz)*q.inv)),
+   px=x-q.ax-t*q.dx,pz=z-q.az-t*q.dz;
+  best=Math.min(best,px*px+pz*pz);
  }
- return best;
+ return Math.sqrt(best);
 }
 export function mainlandRoadRoute(from,to){
  const vertices=new Map(),edges=new Map();
@@ -77,7 +97,7 @@ export function mainlandRoadRoute(from,to){
  for(let i=1;i<points.length;i++){const a=points[i-1],b=points[i],n=Math.max(1,Math.ceil(Math.hypot(b.x-a.x,b.z-a.z)/2));for(let j=1;j<=n;j++)route.push({x:a.x+(b.x-a.x)*j/n,z:a.z+(b.z-a.z)*j/n});}
  return route;
 }
-export function mainlandAt(x,z){return (mainlandContains(x,z)&&!canalWater(x,z)&&!gatunWater(x,z))||roadDistance(x,z)<HIGHWAY_WIDTH/2||Math.hypot(x/18.7,z/12.5)<=1||worldIslands.some(i=>['pizzaCity','colon','sunset'].includes(i.id)&&Math.hypot((x-i.x)/i.rx,(z-i.z)/i.rz)<1);}
+export function mainlandAt(x,z){return (mainlandContains(x,z)&&!canalWater(x,z)&&!gatunWater(x,z))||nearRoad(x,z,HIGHWAY_WIDTH/2)||Math.hypot(x/18.7,z/12.5)<=1||worldIslands.some(i=>['pizzaCity','colon','sunset'].includes(i.id)&&Math.hypot((x-i.x)/i.rx,(z-i.z)/i.rz)<1);}
 // A sculpted, safely walkable dormant volcano. The center dips to form a real
 // bowl-shaped crater; the highest rock is the circular rim around the summit.
 export function volcanoRelief(u,v){
@@ -104,14 +124,23 @@ export function isletHeight(x,z){
  if(bridgeDistance(x,z)<1.5)return COLON_BRIDGE.y;
  
  const monkey=worldIslands.find(i=>i.id==='monkeyIslet'),onMonkey=Math.hypot((x-monkey.x)/monkey.rx,(z-monkey.z)/monkey.rz)<1;
- if(gatunWater(x,z)&&!canalWater(x,z)&&roadDistance(x,z)<HIGHWAY_WIDTH/2+.5)return 3.8;
+ if(gatunWater(x,z)&&!canalWater(x,z)&&nearRoad(x,z,HIGHWAY_WIDTH/2+.5))return 3.8;
  if((canalWater(x,z)||gatunWater(x,z))&&!onMonkey)return 0;
- if(roadDistance(x,z)<HIGHWAY_WIDTH/2+.5)return .16;
+ // Roads must never carve rectangular flat strips through Gorgona's green hills
+  // or punch a straight trench into the volcanic crater.
+  const vu=(x-BARU_LAND.x)/BARU_LAND.rx,vv=(z-BARU_LAND.z)/BARU_LAND.rz,
+   volcanoDistance2=vu*vu+vv*vv,
+   onBaru=volcanoDistance2<1.21&&volcanoDistance2<Math.pow(organicIslandRadius(BARU_LAND,Math.atan2(vv,vu)),2),
+   homeDistance=Math.hypot(x/20,z/14),
+   inHome=homeDistance<1.11&&homeDistance<homeShoreRadius(Math.atan2(z/14,x/20))*.98;
+  if(!onBaru&&!inHome&&nearRoad(x,z,HIGHWAY_WIDTH/2+.5))return .16;
  // A real sea-level canal cut through the eastern city waterfront.
  
  let h=mainlandContains(x,z)&&Math.hypot(x/20,z/14)>1.02?1.1:0;
  for(const land of worldIslands){
-  const u=(x-land.x)/land.rx,v=(z-land.z)/land.rz,r2=u*u+v*v;
+  const u=(x-land.x)/land.rx,v=(z-land.z)/land.rz,rawRadius2=u*u+v*v;
+  if(rawRadius2>1.22)continue;
+  const shore=organicIslandRadius(land,Math.atan2(v,u)),r2=rawRadius2/(shore*shore);
   if(r2>1)continue;
   const core=1-r2,soft=core*core;
   let elevation=.08+core*land.h;
@@ -121,6 +150,10 @@ export function isletHeight(x,z){
   else if(land.id==='sunset')elevation=volcanoRelief(u,v);
   else if(land.id==='crystalCove'||land.guna)elevation=.12+core*.68+soft*.16;
   else if(land.id==='pizzaCity')elevation=.08+core*2.25+soft*.12*Math.sin(x*.18+z*.13);
+  // Natural soil relief has several scales, strongest inland; urban roads and
+  // the mapped volcano hiking trail retain their original stable elevations.
+  if(!['pizzaCity','colon','sunset'].includes(land.id))
+   elevation+=soft*(.19*Math.sin(x*.31+z*.12)+.12*Math.sin(z*.54-x*.23));
   h=Math.max(h,elevation);
  }
  return h;
@@ -239,10 +272,10 @@ export function badgeExplore(s,id){if(s.badges.includes(id))return false;s.badge
 export function countExplore(s,kind){return s.collected.filter(id=>exploreItems.find(x=>x.id===id)?.kind===kind).length;}
 // Small navigation grid: a tap walks around cottages instead of through them.
 export const worldObstacles=[[-10,5,1.55],[-13,2,1.3],[10,2,1.55],[12,-1,1.2],[9,-4,1.1],[-1,-5,1.5]];
-export function walkable(x,z){return (isletHeight(x,z)>0||(x/18.7)**2+(z/12.5)**2<=1)&&worldObstacles.every(([a,b,r])=>Math.hypot(x-a,z-b)>r+.3);}
+export function walkable(x,z){return (isletHeight(x,z)>0||Math.hypot(x/20,z/14)<=homeShoreRadius(Math.atan2(z/14,x/20)))&&worldObstacles.every(([a,b,r])=>Math.hypot(x-a,z-b)>r+.3);}
 // Match the sculpted shoreline; the wider lagoon is navigable, but buildings stay solid.
 export function onDock(x,z){return x>=3&&x<=5&&z>=11.8&&z<=17.4;}
-export function inWater(x,z){if(onDock(x,z)||isletHeight(x,z)>0)return false;const a=Math.atan2(z/14,x/20),shore=1+.035*Math.sin(a*7)+.03*Math.cos(a*5);return Math.hypot(x/20,z/14)>shore;}
+export function inWater(x,z){if(onDock(x,z)||isletHeight(x,z)>0)return false;const a=Math.atan2(z/14,x/20);return Math.hypot(x/20,z/14)>homeShoreRadius(a);}
 // Keep the hull clear, including saved boats that overlap a shore or world boundary.
 export function boatClear(x,z){if(Math.hypot(x/349,z/239)>=1||!inWater(x,z))return false;for(let i=0;i<8;i++){const a=i*Math.PI/4;if(!inWater(x+Math.sin(a)*1.1,z+Math.cos(a)*1.1))return false;}return true;}
 export function recoverBoat(x,z){if(boatClear(x,z))return {x,z};for(let r=.15;r<=6;r+=.15)for(let i=0;i<32;i++){const a=i*Math.PI/16,nx=x+Math.sin(a)*r,nz=z+Math.cos(a)*r;if(boatClear(nx,nz))return {x:nx,z:nz};}return {x:6.5,z:16};}
@@ -250,7 +283,7 @@ export function boatStep(x,z,dx,dz){const start=recoverBoat(x,z);x=start.x;z=sta
  for(let i=0;i<steps;i++){const candidates=[[dx,dz],...(Math.abs(dx)>=Math.abs(dz)?[[dx,0],[0,dz]]:[[0,dz],[dx,0]])];for(const a of [Math.PI/6,-Math.PI/6,Math.PI/3,-Math.PI/3,Math.PI/2,-Math.PI/2])candidates.push([dx*Math.cos(a)-dz*Math.sin(a),dx*Math.sin(a)+dz*Math.cos(a)]);for(const [mx,mz] of candidates){if(Math.hypot(mx,mz)>.00001&&boatClear(x+mx,z+mz)){x+=mx;z+=mz;break;}}}return {x,z};}
 // Sharks steer around shores with clearance for their whole body, not just their center.
 export function sharkClearance(x,z){
- const wet=(px,pz)=>inWater(px,pz)&&roadDistance(px,pz)>HIGHWAY_WIDTH/2+2.4;
+ const wet=(px,pz)=>inWater(px,pz)&&!nearRoad(px,pz,HIGHWAY_WIDTH/2+2.4);
  let count=wet(x,z)?1:0;
  for(let i=0;i<12;i++){const a=i*Math.PI/6;if(wet(x+Math.sin(a)*1.8,z+Math.cos(a)*1.8))count++;}
  return count;
