@@ -622,7 +622,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
      const px=x+lx*side*HIGHWAY_WIDTH*.5,pz=z+lz*side*HIGHWAY_WIDTH*.5;
      vertices.push(px,height(px,pz)+.13,pz);uv.push(side===-1?0:1,i*.23);
     }
-    if(i){const j=2*i;indices.push(j-2,j-1,j,j-1,j+1,j);}
+    if(i){const j=2*i;indices.push(j-2,j,j-1,j-1,j,j+1);}
    }
    const geo=geometry(new T.BufferGeometry());
    geo.setAttribute('position',new T.Float32BufferAttribute(vertices,3));
