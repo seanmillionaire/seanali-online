@@ -1,9 +1,10 @@
-import {mainlandContains,canalWater,gatunWater} from './geography.js?v=155';
-import {createActiveVolcano} from './active-volcano.js?v=155';
-import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=155';
-import {createTropical} from './tropical.js?v=155';
-import {createSurfaceTextures} from './surface-textures.js?v=155';
-import {installPolyHavenMaterials} from './polyhaven-materials.js?v=155';
+import {clipLandTriangle,coastDistanceField} from './terrain-surface.js?v=156';
+import {mainlandContains,canalWater,gatunWater} from './geography.js?v=156';
+import {createActiveVolcano} from './active-volcano.js?v=156';
+import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=156';
+import {createTropical} from './tropical.js?v=156';
+import {createSurfaceTextures} from './surface-textures.js?v=156';
+import {installPolyHavenMaterials} from './polyhaven-materials.js?v=156';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
 export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import('./vendor/three.module.min.js')}={}) {
   let disposed=false,world=null,pending=null;
@@ -24,7 +25,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   renderer.shadowMap.enabled=!light;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
   const scene=new T.Scene();scene.background=new T.Color('#b0d3e2');scene.fog=new T.FogExp2('#b8d6dd',.0022);
   const camera=new T.PerspectiveCamera(42,1,.2,550),sun=new T.DirectionalLight('#fff0d2',3.0);sun.position.set(-22,38,18);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-30;sun.shadow.camera.right=30;sun.shadow.camera.top=30;sun.shadow.camera.bottom=-30;sun.shadow.normalBias=.1;const ambient=new T.HemisphereLight('#c9edff','#58623c',1.45);scene.add(sun,ambient);
-  const geometries=new Set(),materials=new Set(),clouds=[],bobbing=[],volcanoes=[];let seed=4107;
+  const textures=new Set(),geometries=new Set(),materials=new Set(),clouds=[],bobbing=[],volcanoes=[];let seed=4107;
   const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
   const geometry=g=>{geometries.add(g);return g;};
   const mat=(color,extra={})=>{const m=new T.MeshStandardMaterial({color,roughness:.88,...extra});materials.add(m);return m;};
@@ -137,10 +138,18 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
     if(ring<rings&&j<segments){const n=ring*(segments+1)+j;ii.push(n,n+1,n+segments+1,n+segments+1,n+1,n+segments+2);}
    }
    const g=geometry(new T.BufferGeometry());
-   g.setAttribute('position',new T.Float32BufferAttribute(iv,3));
-   g.setAttribute('color',new T.Float32BufferAttribute(ic,3));
-   g.setAttribute('uv',new T.Float32BufferAttribute(iu,2));
-   g.setIndex(ii);g.computeVertexNormals();
+   const clipped=[],clippedColors=[],clippedUV=[],clippedIndices=[],vertexLookup=new Map();
+   for(let n=0;n<ii.length;n+=3){
+    const triangle=ii.slice(n,n+3).map(k=>[...iv.slice(k*3,k*3+3),...ic.slice(k*3,k*3+3),...iu.slice(k*2,k*2+2)]);
+    for(const v of clipLandTriangle(triangle,(x,z)=>isletHeight(x,z)>0)){
+     const key=v.map(n=>n.toFixed(5)).join(',');let index=vertexLookup.get(key);
+     if(index===undefined){index=clipped.length/3;vertexLookup.set(key,index);clipped.push(v[0],Math.max(.025,isletHeight(v[0],v[2])),v[2]);clippedColors.push(...v.slice(3,6));clippedUV.push(...v.slice(6,8));}clippedIndices.push(index);
+    }
+   }
+   g.setAttribute('position',new T.Float32BufferAttribute(clipped,3));
+   g.setAttribute('color',new T.Float32BufferAttribute(clippedColors,3));
+   g.setAttribute('uv',new T.Float32BufferAttribute(clippedUV,2));
+   g.setIndex(clippedIndices);g.computeVertexNormals();
    const islandTexture=land.id==='coconutCoast'||land.id==='crystalCove'||land.guna?surfaces.sand:land.id==='crystalCove'||land.id==='sunset'?surfaces.stone:surfaces.grass;
    const island=make(g,mat('#ffffff',{vertexColors:true,map:islandTexture,bumpMap:islandTexture,bumpScale:land.id==='crystalCove'?.14:.09,roughness:.96}));
    island.name=land.en;
@@ -288,10 +297,13 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   // Transparent lagoon, a visible sandy seabed, and small irregular wave highlights.
   // Layered moving water: soft vertex swell + screen-space foam/caustics.
   // Compact shader avoids reflection render passes and protects mobile FPS.
+  const coast=coastDistanceField((x,z)=>isletHeight(x,z)>0||Math.hypot(x/20,z/14)<1+.035*Math.sin(Math.atan2(z/14,x/20)*7)+.03*Math.cos(Math.atan2(z/14,x/20)*5));
+  const coastTexture=new T.DataTexture(coast.pixels,coast.width,coast.height,T.RGBAFormat);
+  coastTexture.magFilter=coastTexture.minFilter=T.LinearFilter;coastTexture.needsUpdate=true;textures.add(coastTexture);
   const waterMaterial=new T.ShaderMaterial({
     transparent:true,depthWrite:false,
     uniforms:{
-      time:{value:0},daylight:{value:1},
+      time:{value:0},daylight:{value:1},coastMap:{value:coastTexture},
       wakePosition:{value:new T.Vector2(-999,-999)},
       wakeDirection:{value:new T.Vector2(0,1)},
       wakeStrength:{value:0}
@@ -310,6 +322,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
     fragmentShader:`
       uniform float time;
       uniform float daylight;
+      uniform sampler2D coastMap;
       uniform vec2 wakePosition;
       uniform vec2 wakeDirection;
       uniform float wakeStrength;
@@ -322,14 +335,16 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
       }
       void main(){
         vec2 p=pos.xy;
-        float coast=length(p/vec2(20.,14.));${worldIslands.map(i=>`coast=min(coast,length((p-vec2(${i.x.toFixed(1)},${(-i.z).toFixed(1)}))/vec2(${i.rx.toFixed(1)},${i.rz.toFixed(1)})));`).join('')}
-        float depth=smoothstep(.98,2.8,coast);
+        float shoreDistance=texture2D(coastMap,(vec2(p.x,-p.y)+vec2(375.,325.))/vec2(750.,650.)).r*64.;
+        float depth=smoothstep(1.5,24.,shoreDistance);
+        float detailFade=1.-smoothstep(.12,.8,length(fwidth(p)));
         float swell=swells(p);
         vec3 normal=normalize(vec3(
           (swell-swells(p+vec2(.16,0.)))*2.6,
           1.,
           (swell-swells(p+vec2(0.,.16)))*2.6
         ));
+        normal=normalize(mix(vec3(0.,1.,0.),normal,detailFade));
         vec3 eye=normalize(cameraPosition-vec3(p.x,-.12,-p.y));
         float fresnel=pow(1.-max(dot(normal,eye),0.),4.5);
         vec3 water=mix(vec3(.12,.72,.64),vec3(.016,.21,.36),depth);
@@ -337,24 +352,23 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
         water=mix(water,mix(vec3(.25,.78,.72),vec3(.015,.42,.52),depth),guna*.72);
         // Turquoise color ripples move across the sandy shallows.
         float ripples=sin(p.x*1.2+p.y*.46+time*.8)*sin(p.y*1.24-p.x*.31-time*.9);
-        water+=vec3(.014,.044,.043)*ripples*(1.-depth);
+        water+=vec3(.014,.044,.043)*ripples*(1.-depth)*detailFade;
         // Small sun glints and broad, softened specular reflection.
         vec3 sun=normalize(vec3(-.46,1.,.39));
         float glare=pow(max(dot(normal,normalize(sun+eye)),0.),100.);
         water+=vec3(.94,.87,.68)*glare*.38;
         float sparkle=pow(max(0.,sin(p.x*5.6+time*1.8)*sin(p.y*6.4-time*1.1)),13.);
-        water+=vec3(.07,.11,.10)*sparkle*(.15+.5*(1.-depth));
+        water+=vec3(.07,.11,.10)*sparkle*(.15+.5*(1.-depth))*detailFade;
         // Moving caustics make the turquoise shallows look refractive.
         float caustic=pow(max(0.,sin(p.x*2.1+sin(p.y*.93)+time*.64)*
           sin(p.y*2.4+sin(p.x*1.15)-time*.52)),6.);
-        water+=vec3(.035,.075,.06)*caustic*(1.-depth);
+        water+=vec3(.035,.075,.06)*caustic*(1.-depth)*detailFade;
         // Two breathing foam lines break continuously along each shoreline.
-        float shoreDistance=abs(coast-1.02);
-        float foamBand=exp(-pow(shoreDistance/.078,2.));
-        float foamDetail=.58+.42*sin(p.x*2.3+sin(p.y*1.4)+time*1.9)*
+        float foamBand=exp(-pow((shoreDistance-1.2)/1.1,2.));
+        float foamDetail=.58+.42*detailFade*sin(p.x*2.3+sin(p.y*1.4)+time*1.9)*
                                sin(p.y*2.1-time*1.24);
         float shoreFoam=foamBand*smoothstep(.23,.82,foamDetail);
-        float incoming=exp(-pow((coast-1.075-.018*sin(time*1.18+p.x*.6))/.027,2.));
+        float incoming=exp(-pow((shoreDistance-2.2-.4*sin(time*1.18+p.x*.6))/.55,2.));
         shoreFoam=clamp(shoreFoam*.65+incoming*.26,0.,.83);
         // Triangular white wake stays BEHIND a moving boat and slowly fades.
         vec2 delta=vec2(p.x,-p.y)-wakePosition;
@@ -367,7 +381,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
         water=mix(water,vec3(.82,.97,.96),clamp(shoreFoam*.52+rippledWake*wakeStrength*.56,0.,.83));
         water=mix(water,vec3(.51,.78,.89),fresnel*.52);
         water*=mix(vec3(.34,.50,.71),vec3(1.),daylight);
-        float alpha=mix(.29,.94,smoothstep(1.,2.1,coast));
+        float alpha=mix(.29,.94,smoothstep(.6,18.,shoreDistance));
         gl_FragColor=vec4(water,alpha);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>
@@ -389,14 +403,30 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   for(let i=0;i<4;i++){const a=i/4*Math.PI*2;make(cylinder,wood,Math.sin(a),7.1,Math.cos(a),.07,1.4,.07,tower);}make(box,wood,0,1,1.2,.6,1.8,.1,tower);
   const beamMat=new T.MeshBasicMaterial({color:'#ffe9ad',transparent:true,opacity:.07,depthWrite:false,side:T.DoubleSide});materials.add(beamMat);const beam=make(geometry(new T.ConeGeometry(4,32,24,1,true)),beamMat,0,7.1,0,1,1,1,tower);beam.geometry.translate(0,-16,0);beam.rotation.z=Math.PI/2;beam.castShadow=false;beam.receiveShadow=false;
   // Low-cost mainland mesh connects the real regions; lake and canal cuts stay open.
-  const mainlandVertices=[];
-  const inland=(x,z)=>mainlandContains(x,z)&&!canalWater(x,z)&&!gatunWater(x,z)&&Math.hypot(x/20,z/14)>1.02&&!worldIslands.some(p=>Math.hypot((x-p.x)/p.rx,(z-p.z)/p.rz)<1.02);
+  const mainlandVertices=[],mainlandUV=[];
+  const dryMainland=(x,z)=>mainlandContains(x,z)&&!canalWater(x,z)&&!gatunWater(x,z);
+  const inland=(x,z)=>dryMainland(x,z)&&Math.hypot(x/20,z/14)>.90&&!worldIslands.some(p=>Math.hypot((x-p.x)/p.rx,(z-p.z)/p.rz)<.90);
+  // Overlap the existing region meshes slightly from below: no empty moat or z-fighting.
+  // Clip boundary triangles rather than dropping whole grid cells at the coast.
   for(let x=-190;x<265;x+=3)for(let z=-145;z<20;z+=3){
-   const corners=[[x,z],[x+3,z],[x,z+3],[x+3,z+3]];
-   for(const tri of [[0,2,1],[1,2,3]])if(tri.every(i=>inland(...corners[i])))for(const i of tri){const [px,pz]=corners[i];mainlandVertices.push(px,isletHeight(px,pz),pz);}
+   const corners=[[x,0,z],[x+3,0,z],[x,0,z+3],[x+3,0,z+3]];
+   for(const tri of [[0,2,1],[1,2,3]]){
+    const vertices=clipLandTriangle(tri.map(i=>corners[i]),inland);
+    const emit=(px,py,pz)=>{mainlandVertices.push(px,py,pz);mainlandUV.push(px*.18,pz*.18);};
+    for(const [px,,pz] of vertices)emit(px,Math.max(.025,height(px,pz)-.075),pz);
+    // Close the exposed shore down to the seabed instead of leaving a floating sheet.
+    for(let k=0;k<vertices.length;k+=3)for(let e=0;e<3;e++){
+     const a=vertices[k+e],b=vertices[k+(e+1)%3],dx=b[0]-a[0],dz=b[2]-a[2],len=Math.hypot(dx,dz);
+     if(len<.001)continue;
+     const mx=(a[0]+b[0])/2,mz=(a[2]+b[2])/2,nx=-dz/len*.015,nz=dx/len*.015;
+     if(dryMainland(mx+nx,mz+nz)===dryMainland(mx-nx,mz-nz))continue;
+     const ay=Math.max(.025,height(a[0],a[2])-.075),by=Math.max(.025,height(b[0],b[2])-.075);
+     for(const v of [[a[0],ay,a[2]],[a[0],-1.4,a[2]],[b[0],by,b[2]],[b[0],by,b[2]],[a[0],-1.4,a[2]],[b[0],-1.4,b[2]]])emit(...v);
+    }
+   }
   }
-  const mainlandGeo=geometry(new T.BufferGeometry());mainlandGeo.setAttribute('position',new T.Float32BufferAttribute(mainlandVertices,3));mainlandGeo.computeVertexNormals();
-  const mainlandMesh=make(mainlandGeo,mat('#829e69',{roughness:1}),0,0,0,1,1,1);mainlandMesh.name='Connected Panama mainland · Pacific and Caribbean coasts';mainlandMesh.castShadow=false;
+  const mainlandGeo=geometry(new T.BufferGeometry());mainlandGeo.setAttribute('position',new T.Float32BufferAttribute(mainlandVertices,3));mainlandGeo.setAttribute('uv',new T.Float32BufferAttribute(mainlandUV,2));mainlandGeo.computeVertexNormals();
+  const mainlandMesh=make(mainlandGeo,mat('#829e69',{map:surfaces.grass,bumpMap:surfaces.grass,bumpScale:.055,roughness:1}),0,0,0,1,1,1);mainlandMesh.name='Connected Panama mainland · Pacific and Caribbean coasts';mainlandMesh.castShadow=false;
   // The dock, moored boat, and a moving sailboat out on the water.
   for(let i=0;i<15;i++){make(box,wood,4,.42,12+i*.36,2,.16,.28);if(i%4===0)for(const dx of [-.9,.9])make(cylinder,wood,4+dx,.23,12+i*.36,.1,1.25,.1);}
   function boat(x,z,s){const g=new T.Group();g.position.set(x,.25,z);scene.add(g);make(ball,wood,0,0,0,1.8*s,.35*s,.7*s,g);make(cylinder,cream,0,1.7*s,0,.055*s,3.3*s,.055*s,g);const shape=new T.Shape();shape.moveTo(0,0);shape.lineTo(0,2.8*s);shape.lineTo(-1.5*s,.15*s);shape.closePath();make(geometry(new T.ShapeGeometry(shape)),mat('#ffe7b5',{side:T.DoubleSide}),.07,.3*s,0,1,1,1,g);g.rotation.y=-.3;bobbing.push({g,y:.25,z});return g;}
@@ -431,5 +461,5 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
     flyIn(done){if(disposed)return;startCam.copy(camera.position);startLook.copy(target);flight=0;finish=done;wake();},
     dispose
   };
-  function dispose(){if(disposed)return;disposed=true;cancelAnimationFrame(frame);finish=null;explorer?.dispose();volcanoes.forEach(v=>v.dispose());tropical.dispose();polyhaven?.dispose();surfaces.dispose();observer.disconnect();bodyObserver.disconnect();document.removeEventListener('visibilitychange',visibility);canvas.parentElement?.removeEventListener('pointermove',pointer);geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());sun.shadow.map?.dispose();renderer.dispose();renderer.forceContextLoss();}
+  function dispose(){if(disposed)return;disposed=true;cancelAnimationFrame(frame);finish=null;explorer?.dispose();volcanoes.forEach(v=>v.dispose());tropical.dispose();polyhaven?.dispose();surfaces.dispose();observer.disconnect();bodyObserver.disconnect();document.removeEventListener('visibilitychange',visibility);canvas.parentElement?.removeEventListener('pointermove',pointer);textures.forEach(t=>t.dispose());geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());sun.shadow.map?.dispose();renderer.dispose();renderer.forceContextLoss();}
 }

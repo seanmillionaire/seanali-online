@@ -1,4 +1,4 @@
-import {TRAFFIC_ROUTES,routePose,trafficAdvance,soundFalloff} from './panama-state.js?v=155';
+import {TRAFFIC_ROUTES,routePose,trafficAdvance,soundFalloff} from './panama-state.js?v=156';
 export const STREET_VENDORS=[{id:'raspao-centro',x:(129),z:(-42),kind:'raspao'},{id:'raspao-barrio',x:(120),z:(-21),kind:'raspao'},{id:'mercado-food',x:(140),z:(-58),kind:'market'}];
 export const BARRIO_HOMES=[{id:'barrio-casa-1',x:(84),z:(-13),es:'Casa del barrio · Cancha',en:'Barrio home · Football field',icon:'🏘️',theme:'sea'},{id:'barrio-casa-2',x:(124),z:(-23),es:'Casa del barrio · Balcón',en:'Barrio balcony home',icon:'🏘️',theme:'art'}];
 export function createCityStreetLife({T,scene,make,mat,box,ball,cylinder,height,models,joy,surfaces,football=()=>null,npcKick=()=>{}}){

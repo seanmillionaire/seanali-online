@@ -1,7 +1,7 @@
-import {waterFriend,animalClear,recoverAnimal,animalStep} from './animal-boundaries.js?v=155';
-import {explorePlaces,earnCoins} from './explore-state.js?v=155';
-import {oceanModel} from './ocean-models.js?v=155';
-import {createAnimalDetails} from './animal-details.js?v=155';
+import {waterFriend,animalClear,recoverAnimal,animalStep} from './animal-boundaries.js?v=156';
+import {explorePlaces,earnCoins} from './explore-state.js?v=156';
+import {oceanModel} from './ocean-models.js?v=156';
+import {createAnimalDetails} from './animal-details.js?v=156';
 // Repeatable, optional play with six friends in the 3D world.
 export const islandFriends=[
  {id:'pip',icon:'🐢',name:'Pip',where:['Playa Gorgona','Playa Gorgona'],game:['Búsqueda de conchas','Shell hunt'],hello:['¡Angelique! ¿Buscamos conchitas juntos?','Angelique! Shall we look for shells together?']},

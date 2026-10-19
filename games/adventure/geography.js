@@ -20,7 +20,7 @@ export const MAINLAND_OUTLINE=[[-190,-95],[-150,-110],[-95,-95],[-45,-145],[-10,
 export const CANAL_WATERWAY=[[40,-70],[15,-70],[5,-75],[-30,-85],[-55,-105],[-58,-130],[-55,-165]];
 export function segmentDistance(x,z,a,b){const dx=b[0]-a[0],dz=b[1]-a[1],t=Math.max(0,Math.min(1,((x-a[0])*dx+(z-a[1])*dz)/(dx*dx+dz*dz)));return Math.hypot(x-a[0]-dx*t,z-a[1]-dz*t);}
 export function canalWater(x,z){return (x>20&&x<62&&Math.abs(z+70)<13)||CANAL_WATERWAY.slice(1).some((p,i)=>segmentDistance(x,z,CANAL_WATERWAY[i],p)<23);}
-export function gatunWater(x,z){return z>-115&&(x<30||z< -78)&&Math.hypot((x-5)/65,(z+95)/30)<1;}
+export function gatunWater(x,z){return z>-115&&(x<30||z< -78)&&Math.hypot((x+10)/28,(z+125)/25)>=1&&Math.hypot((x-5)/65,(z+95)/30)<1;}
 export function mainlandContains(x,z){let inside=false;const p=MAINLAND_OUTLINE;for(let i=0,j=p.length-1;i<p.length;j=i++){if((p[i][1]>z)!==(p[j][1]>z)&&x<(p[j][0]-p[i][0])*(z-p[i][1])/(p[j][1]-p[i][1])+p[i][0])inside=!inside;}return inside;}
 export function migrateGeography(raw){
  if(!raw||raw.geographyVersion===GEOGRAPHY_VERSION)return raw;

@@ -1,4 +1,4 @@
-import {inWater,roadDistance,HIGHWAY_WIDTH,worldIslands} from './explore-state.js?v=155';
+import {inWater,roadDistance,HIGHWAY_WIDTH,worldIslands} from './explore-state.js?v=156';
 export const waterFriend=id=>id==='dori'||id==='pip';
 // Pip can crawl on beaches; Dori needs water beneath her whole body.
 export function animalClear(id,x,z,radius=1.4){

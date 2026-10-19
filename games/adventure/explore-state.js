@@ -1,9 +1,9 @@
-import {DESTINATIONS,WORLD_BOUNDS,mainlandContains,canalWater,gatunWater,migrateGeography,segmentDistance} from './geography.js?v=155';
-import {SAN_BLAS_ISLANDS,normalizePanama} from './panama-state.js?v=155';
-import {normalizeCampaign} from './campaign-state.js?v=155';
-import {normalizeColon,bridgeDistance,COLON_BRIDGE} from './colon-state.js?v=155';
-import {normalizeCruise,CRUISE_FARE} from './cruise-route.js?v=155';
-import {normalizeEstate,estateCoinCost} from './estate.js?v=155';
+import {DESTINATIONS,WORLD_BOUNDS,mainlandContains,canalWater,gatunWater,migrateGeography,segmentDistance} from './geography.js?v=156';
+import {SAN_BLAS_ISLANDS,normalizePanama} from './panama-state.js?v=156';
+import {normalizeCampaign} from './campaign-state.js?v=156';
+import {normalizeColon,bridgeDistance,COLON_BRIDGE} from './colon-state.js?v=156';
+import {normalizeCruise,CRUISE_FARE} from './cruise-route.js?v=156';
+import {normalizeEstate,estateCoinCost} from './estate.js?v=156';
 // Exploration is independent of lesson order. Every place is open from the start.
 export const worldIslands=[
  {id:'islet',x:DESTINATIONS.islet.at[0],z:DESTINATIONS.islet.at[1],rx:12,rz:10,h:2.5,ox:24,oz:-8,spread:2.4,en:'Taboga · Island of Flowers',es:'Isla Taboga · Isla de las Flores'},
