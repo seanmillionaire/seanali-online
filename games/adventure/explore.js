@@ -1,3 +1,4 @@
+import {MAINLAND_ROADS,mainlandAt} from './explore-state.js?v=115';
 import {createPanamaLife} from './panama-life.js?v=115';
 import {createCloseCamera} from './close-camera.js?v=115';
 import {createCampaign} from './campaign.js?v=114';
@@ -539,6 +540,13 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
   if(ride){targetPoint={x:p.x,z:p.z};route=[];panel.hidden=true;return;}
   if(boating&&land){const a=Math.atan2(s.x-land.x,s.z-land.z);let dest={x:land.x+Math.sin(a)*(land.rx+3),z:land.z+Math.cos(a)*(land.rz+3)};dest=recoverBoat(dest.x,dest.z);targetPoint=dest;route=[];panel.hidden=true;return;}
   if(land&&!here){panel.replaceChildren(btn('×','panel-close',()=>panel.hidden=true),makeEl('h2','',(es?land.es:land.en)),makeEl('p','',say('¿Cómo quieres explorar?','How will you explore?')));panel.hidden=false;
+   if(mainlandAt(s.x,s.z)&&['pizzaCity','colon','sunset'].includes(land.id)){
+    panel.append(btn(say('🛣️ Seguir la carretera','🛣️ Follow the road'),'discover-place',()=>{
+     const destination={x:p.x,z:p.z};route=islandPath(s,destination);targetPoint=route.shift()||destination;panel.hidden=true;
+     tell('🛣️ Sigue la carretera terrestre.','🛣️ Follow the mainland road.');
+    }));
+    return;
+   }
    if(land.id==='pizzaCity')panel.append(btn(say('🏙️ ¡Visitar Ciudad de Panamá ahora!','🏙️ Visit Panama City now'),'discover-place',()=>{
     s.x=s.city.car.x+3.2;s.z=s.city.car.z+1.1;swimming=false;targetPoint=null;route=[];
     panel.hidden=true;blur();save();refresh();
@@ -589,6 +597,20 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
  start();
  function setup({T,scene,camera,target,height,make,geometry,mat,ball,cone,cylinder,box,renderer,tropical,tower,beam,crystal,dockBoat,sun,ambient,waterMaterial,surfaces}){
   const gold=mat('#ffd46b'),pink=mat('#ed91b6'),orange=mat('#ef9955'),cream=mat('#fff2d3'),ink=mat('#254550'),purple=mat('#a895ed'),green=mat('#68bd7d');
+  // Visible continuous roadbed with center stripes; geometry follows the
+  // same corridor used by the ground collision/navigation logic.
+  const routeAsphalt=mat('#43484b',{roughness:.96}),routeStripe=mat('#e8d5a6');
+  for(const path of Object.values(MAINLAND_ROADS)){
+   for(let i=1;i<path.length;i++){
+    const [ax,az]=path[i-1],[bx,bz]=path[i],dx=bx-ax,dz=bz-az;
+    const len=Math.hypot(dx,dz),ang=Math.atan2(dx,dz),pieces=Math.ceil(len/4);
+    for(let j=0;j<pieces;j++){
+     const t=(j+.5)/pieces,x=ax+dx*t,z=az+dz*t,y=height(x,z)+.08;
+     const road=make(box,routeAsphalt,x,y,z,6,.14,len/pieces+.18);road.rotation.y=ang;road.castShadow=false;
+     if(j%2===0){const dash=make(box,routeStripe,x,y+.10,z,.13,.025,Math.min(2,len/pieces*.6));dash.rotation.y=ang;dash.castShadow=false;}
+    }
+   }
+  }
   const avatar=new T.Group();avatar.name='Angelique';scene.add(avatar);const skin=mat('#bd8e68'),shirt=mat('#b8a6d7'),shorts=mat('#437c80'),hair=mat('#44352a');
   make(geometry(new T.CylinderGeometry(.24,.20,.58,12)),shirt,0,1.06,0,1,1,1,avatar);make(ball,skin,0,1.58,0,.22,.27,.21,avatar);make(ball,hair,0,1.73,-.03,.23,.15,.21,avatar);
   // Angelique's ponytail, ribbon, and lavender adventure outfit.
