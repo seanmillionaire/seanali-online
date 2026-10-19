@@ -35,6 +35,8 @@ for(let i=0;i<MAINLAND_OUTLINE.length;i++){
  }
 }
 export function mainlandContains(x,z){
+ // World-scale ocean sampling dominates startup; reject distant water cheaply.
+ if(x<-197||x>272||z<-154||z>24)return false;
  // Subtle coordinate warping adds small coastline irregularities without moving
  // roads, saved progress, boats, or the map's major Panama landmarks.
  const px=x+1.35*Math.sin(z*.12+x*.009)+.55*Math.sin(z*.34-x*.025),
