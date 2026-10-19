@@ -21,8 +21,8 @@ export function remoteAccess(from,to){const p=worldIslands.find(i=>i.vehicleOnly
 // A connected mainland corridor: Panama City → Gorgona → Colón and
 // Gorgona → Volcán → Barú. Offshore island footprints remain separate.
 export const MAINLAND_ROADS={
- cityToColon:[[-100,-74],[-81,-42],[-54,-11],[-19,5],[5,8],[32,-8],[61,-27],[91,-46],[110,-56]],
- cityToBaru:[[-54,-11],[-46,14],[-60,35],[-80,45],[-110,49]]
+ cityToColon:[[-100,-74],[-81,-42],[-54,-11],[-19,5],[5,8],[32,-8],[61,-27],[91,-46]],
+ cityToBaru:[[-54,-11],[-46,14],[-60,35],[-80,45],[-93,47]]
 };
 export const MAINLAND_STOPS=[
  {id:'pizzaCity',x:-100,z:-74,en:'Panama City',es:'Ciudad de Panamá'},
@@ -31,6 +31,20 @@ export const MAINLAND_STOPS=[
  {id:'sunset',x:-110,z:49,en:'Volcán Barú',es:'Volcán Barú'}
 ];
 export const HIGHWAY_WIDTH=16;
+// Physical highway termini. Vehicle travel stops at the first edge of Colón
+// and Volcán Barú; these areas remain explorable on foot.
+export const HIGHWAY_TERMINI=Object.values(MAINLAND_ROADS).map(path=>{
+ const [ax,az]=path[path.length-2],[x,z]=path[path.length-1];
+ const length=Math.hypot(x-ax,z-az);
+ return {x,z,dx:(x-ax)/length,dz:(z-az)/length};
+});
+export function highwayEndBlocksCar(x,z){
+ return HIGHWAY_TERMINI.some(end=>{
+  const along=(x-end.x)*end.dx+(z-end.z)*end.dz;
+  const across=Math.abs((x-end.x)*end.dz-(z-end.z)*end.dx);
+  return along>-.9&&across<HIGHWAY_WIDTH/2+1.7;
+ });
+}
 export function smoothHighway(points){
  const result=[];
  for(let i=0;i<points.length-1;i++){
