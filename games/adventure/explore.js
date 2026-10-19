@@ -542,7 +542,13 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
   if(land&&!here){panel.replaceChildren(btn('×','panel-close',()=>panel.hidden=true),makeEl('h2','',(es?land.es:land.en)),makeEl('p','',say('¿Cómo quieres explorar?','How will you explore?')));panel.hidden=false;
    if(mainlandAt(s.x,s.z)&&['pizzaCity','colon','sunset'].includes(land.id)){
     panel.append(btn(say('🛣️ Seguir la carretera','🛣️ Follow the road'),'discover-place',()=>{
-     const destination={x:p.x,z:p.z};route=islandPath(s,destination);targetPoint=route.shift()||destination;panel.hidden=true;
+     const destination={x:p.x,z:p.z};
+     const network=Object.values(MAINLAND_ROADS).flatMap(path=>path.map(([x,z])=>({x,z})));
+     const closest=(q)=>network.reduce((best,n)=>Math.hypot(q.x-n.x,q.z-n.z)<Math.hypot(q.x-best.x,q.z-best.z)?n:best);
+     const start=closest(s),finish=closest(destination),shared={x:-54,z:-11};
+     const segments=[start,...(Math.hypot(start.x-finish.x,start.z-finish.z)>90?[shared]:[]),finish,destination];
+     route=[];for(let i=1;i<segments.length;i++){const a=segments[i-1],b=segments[i],d=Math.hypot(b.x-a.x,b.z-a.z),n=Math.ceil(d/2);for(let k=1;k<=n;k++)route.push({x:a.x+(b.x-a.x)*k/n,z:a.z+(b.z-a.z)*k/n});}
+     targetPoint=route.shift()||destination;panel.hidden=true;
      tell('🛣️ Sigue la carretera terrestre.','🛣️ Follow the mainland road.');
     }));
     return;
@@ -552,7 +558,8 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
     panel.hidden=true;blur();save();refresh();
     tell('🏙️ ¡Bienvenida al Casco Viejo! 🚙 🏁 ⚽ 🍕','🏙️ Welcome to Casco Viejo! 🚙 🏁 ⚽ 🍕');
    }));
-   for(const [icon,dest] of [['⛵',s.boat],['🎈',explorePlaces.find(p=>p.id==='balloon')],...(remoteAccess(s,p)?[['🏊',p]]:[])])panel.append(btn(icon,'discover-place',()=>{route=islandPath(s,dest);targetPoint=route.shift()||null;panel.hidden=true;}));return;
+   panel.append(makeEl('p','',say('🏝️ Las islas solo se alcanzan en barco. Busca el muelle, sube a bordo y navega hasta la costa.','🏝️ Offshore islands require water travel. Find a dock, board a boat and sail to shore.')));
+   panel.append(btn(say('⛵ Ir al barco','⛵ Go to boat'),'discover-place',()=>{const dest=s.boat;route=islandPath(s,dest);targetPoint=route.shift()||dest;panel.hidden=true;}));return;
   }
   if(boating)control?.disembark();const dest=p.id==='boat'?s.boat:p;route=islandPath(s,dest);targetPoint=route.shift()||null;panel.hidden=true;
  }
