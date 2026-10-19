@@ -1,4 +1,4 @@
-import {MAINLAND_ROADS,mainlandAt,mainlandRoadRoute} from './explore-state.js?v=115';
+import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,mainlandAt,mainlandRoadRoute} from './explore-state.js?v=115';
 import {createPanamaLife} from './panama-life.js?v=119';
 import {createCloseCamera} from './close-camera.js?v=115';
 import {createCampaign} from './campaign.js?v=114';
@@ -607,27 +607,27 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
   // Visible continuous roadbed with center stripes; geometry follows the
   // same corridor used by the ground collision/navigation logic.
   const routeAsphalt=mat('#43484b',{roughness:.96}),routeStripe=mat('#e8d5a6');
-  for(const path of Object.values(MAINLAND_ROADS)){
+  for(const path of Object.values(HIGHWAY_CURVES)){
    for(let i=1;i<path.length;i++){
     const [ax,az]=path[i-1],[bx,bz]=path[i],dx=bx-ax,dz=bz-az;
     const len=Math.hypot(dx,dz),ang=Math.atan2(dx,dz),pieces=Math.ceil(len/4);
     for(let j=0;j<pieces;j++){
      const t=(j+.5)/pieces,x=ax+dx*t,z=az+dz*t,y=height(x,z)+.08;
-     const road=make(box,routeAsphalt,x,y,z,6,.14,len/pieces+.18);road.rotation.y=ang;road.castShadow=false;
-     if(j%2===0){const dash=make(box,routeStripe,x,y+.10,z,.13,.025,Math.min(2,len/pieces*.6));dash.rotation.y=ang;dash.castShadow=false;}
+     const road=make(box,routeAsphalt,x,y,z,HIGHWAY_WIDTH,.14,len/pieces+.18);road.rotation.y=ang;road.castShadow=false;
+     if(j%3===0){const dash=make(box,routeStripe,x,y+.10,z,.13,.025,Math.min(2,len/pieces*.6));dash.rotation.y=ang;dash.castShadow=false;}
     }
    }
   }
   // Road-edge safety rails: paired steel beams and supports, matching road bends.
   const railMetal=mat('#a9afb1',{roughness:.66,metalness:.52}),railPost=mat('#555f65',{roughness:.78});
-  for(const path of Object.values(MAINLAND_ROADS))for(let i=1;i<path.length;i++){
+  for(const path of Object.values(HIGHWAY_CURVES))for(let i=1;i<path.length;i++){
    const [ax,az]=path[i-1],[bx,bz]=path[i],dx=bx-ax,dz=bz-az,len=Math.hypot(dx,dz),ang=Math.atan2(dx,dz);
    const lateralX=Math.cos(ang),lateralZ=-Math.sin(ang);
    const sections=Math.ceil(len/4);
    // Highway-only rails: keep city streets and intersection approaches clear.
    const outsideCity=(x,z)=>Math.hypot((x+100)/58,(z+74)/48)>1.12;
    for(const side of [-1,1])for(let j=0;j<sections;j++){
-    const t=(j+.5)/sections,x=ax+dx*t+lateralX*side*3.25,z=az+dz*t+lateralZ*side*3.25,y=height(x,z);
+    const t=(j+.5)/sections,x=ax+dx*t+lateralX*side*(HIGHWAY_WIDTH/2+.35),z=az+dz*t+lateralZ*side*(HIGHWAY_WIDTH/2+.35),y=height(x,z);
     if(!outsideCity(x,z))continue;
     const beam=make(box,railMetal,x,y+1.02,z,.15,.17,len/sections+.22);beam.rotation.y=ang;beam.castShadow=false;
     if(j%2===0){const post=make(box,railPost,x,y+.55,z,.17,1.1,.17);post.castShadow=false;}
