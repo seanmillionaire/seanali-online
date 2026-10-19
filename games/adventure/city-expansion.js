@@ -72,19 +72,19 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  const chunks=[];
  const road=(x,z,w,d)=>{chunks.push({x,z,w,d});};
  const xs=[-43,-29,-15,0,15,29,43],zs=[-35,-23,-11,2,15,27,38];
- for(const dx of xs)for(let dz=-42;dz<=42;dz+=5){
+ for(const dx of xs)for(let dz=-42;dz<=42;dz+=2.5){
   const norm=(dx/58)**2+(dz/48)**2;if(norm>.82)continue;
-  road(-100+dx,-74+dz,6.0,5.25);
+  road(120+dx,-50+dz,6.15,3.15);
  }
- for(const dz of zs)for(let dx=-52;dx<=52;dx+=5){
+ for(const dz of zs)for(let dx=-52;dx<=52;dx+=2.5){
   const norm=(dx/58)**2+(dz/48)**2;if(norm>.82)continue;
-  road(-100+dx,-74+dz,5.25,6.0);
+  road(120+dx,-50+dz,3.15,6.15);
  }
  // Seaside ring road. Outer street loops around the outer neighborhoods.
  for(let i=0;i<104;i++){
   const angle=(i+.5)/104*Math.PI*2,x=(120)+Math.cos(angle)*48.4,z=(-50)+Math.sin(angle)*40.0;
   const tangent=Math.atan2(Math.cos(angle)*48.4,-Math.sin(angle)*40);
-  chunks.push({x,z,w:4.8,d:4.0,rot:-tangent});
+  chunks.push({x,z,w:5.7,d:5.0,rot:-tangent});
  }
  if(typeof T.InstancedMesh==='function'&&typeof T.Object3D==='function'){
   const roads=new T.InstancedMesh(box,asph,chunks.length);roads.name='Casco Viejo connected road network';
