@@ -31,7 +31,8 @@ vm.runInContext('toggleSpeed()',speedContext);assert.equal(vm.runInContext('fast
 speedContext.swimming=false;vm.runInContext('toggleSpeed()',speedContext);assert.equal(vm.runInContext('fastMode',speedContext),true,'running toggles on land');
 const speed=source.match(/const speed=(.*?),len=Math.hypot/)[1];
 Object.assign(speedContext,{inside:false,energy:0,down:()=>false});
-assert.equal(vm.runInContext(speed,speedContext),7,'run speed');
+assert.equal(vm.runInContext(speed,speedContext),9,'run speed');
+vm.runInContext('fastMode=false',speedContext);assert.equal(vm.runInContext(speed,speedContext),6.5,'normal walk speed');vm.runInContext('fastMode=true',speedContext);
 speedContext.swimming=true;assert.equal(vm.runInContext(speed,speedContext),6,'fast swim speed');
 vm.runInContext('toggleSpeed()',speedContext);assert.equal(vm.runInContext(speed,speedContext),3.3,'normal swim speed');
 console.log('PASS immediate swim action, no double click, running and sustained swimming speeds');
