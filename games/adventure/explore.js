@@ -2,7 +2,7 @@ import {touchesLava,returnToHospital,createCityHospital} from './volcano-safety.
 import {locationLabel} from './location-label.js?v=156';
 import {waterFriend,animalStep} from './animal-boundaries.js?v=156';
 import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,mainlandAt,mainlandRoadRoute} from './explore-state.js?v=164';
-import {createPanamaLife} from './panama-life.js?v=162';
+import {createPanamaLife} from './panama-life.js?v=167';
 import {createCloseCamera} from './close-camera.js?v=156';
 import {createCampaign} from './campaign.js?v=156';
 import {createColonAdventure} from './colon-adventure.js?v=162';
@@ -17,7 +17,7 @@ import {createWorldMap} from './world-map.js?v=156';
 import {createWildlifeFriends} from './wildlife-friends.js?v=156';
 import {createVillageBuilders} from './village-builders.js?v=156';
 import {createHouseInteriors} from './house-interiors.js?v=156';
-import {createPizzaCity} from './pizza-city.js?v=165';
+import {createPizzaCity} from './pizza-city.js?v=167';
 import {driveByDirection} from './directional-drive.js?v=166';
 import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=156';
 import {ESTATE_PLANS,estateCosts,estateMissing,findEstateSite,canBuildEstate,buildEstate,canUpgradeEstate,upgradeEstate,estateBlocked,createEstateWorld} from './estate.js?v=156';

@@ -8,9 +8,9 @@ export function purchasePanama(world,kind,cost,balance){if(!PANAMA_FOODS[kind]||
 export function cookPanama(world,id){const recipe=PANAMA_RECIPES[id],p=world.panama.pantry;if(!recipe||p[id]>=9999||!Object.entries(recipe).every(([k,n])=>(k==='coconut'?world.food.coconut:p[k])>=n))return false;for(const [k,n]of Object.entries(recipe)){if(k==='coconut')world.food.coconut-=n;else p[k]-=n;}p[id]++;return true;}
 export function eatPanama(world,id){if(!['patacones','fishPlate','coconutRice','raspao'].includes(id)||!world.panama.pantry[id])return false;world.panama.pantry[id]--;world.panama.meals++;return true;}
 export const TRAFFIC_ROUTES=[
- [[91,-85],[135,-85],[135,-61],[91,-61]],
- [[77,-73],[120,-73],[120,-35],[77,-35]],
- [[105,-73],[149,-73],[149,-48],[105,-48]]
+ [[105,-85],[135,-85],[135,-61],[105,-61]],
+ [[77,-61],[105,-61],[105,-35],[77,-35]],
+ [[135,-61],[163,-61],[163,-35],[135,-35]]
 ].map(points=>points.map(([x,z])=>({x,z})));
 export function routePose(route,distance){let length=0;const lengths=route.map((p,i)=>{const q=route[(i+1)%route.length],n=Math.hypot(q.x-p.x,q.z-p.z);length+=n;return n;});let d=((distance%length)+length)%length;for(let i=0;i<route.length;i++){if(d<=lengths[i]){const p=route[i],q=route[(i+1)%route.length],t=d/lengths[i],heading=Math.atan2(q.x-p.x,q.z-p.z);return {x:p.x+(q.x-p.x)*t,z:p.z+(q.z-p.z)*t,heading,remaining:lengths[i]-d,length};}d-=lengths[i];}return {...route[0],heading:0,remaining:0,length};}
 export function trafficAdvance(car,cars,time,dt){

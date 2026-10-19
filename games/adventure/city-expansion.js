@@ -1,4 +1,5 @@
-import {STREET_VENDORS,BARRIO_HOMES} from './city-street-life.js?v=156';
+import {STREET_VENDORS,BARRIO_HOMES} from './city-street-life.js?v=167';
+import {CITY_EXPANSION_PLOTS,CITY_STREET_X,CITY_STREET_Z} from './city-layout.js?v=167';
 import {createPurpleApartment,PURPLE_APARTMENT} from './purple-apartment.js?v=156';
 import {spendFood} from './explore-state.js?v=156';
 /* Panama Adventure — substantial zero-dependency Casco Viejo city expansion.
@@ -6,14 +7,14 @@ import {spendFood} from './explore-state.js?v=156';
    game state only on meaningful user actions and persist in world.city. */
 export const CITY_SITES=[
  {id:'rally',x:(114),z:(-64),icon:'🏁',en:'City driving rally',es:'Carrera por la ciudad'},
- {id:'soccer',x:(103),z:(-19),icon:'⚽',en:'Football challenge',es:'Reto de fútbol'},
- {id:'market',x:(144),z:(-62),icon:'🥭',en:'Panama Fruit Market',es:'Mercado de Frutas de Panamá'},
- {id:'mural',x:(88),z:(-64),icon:'🎨',en:'Casco Viejo street art',es:'Murales del Casco Viejo'},
+ {id:'soccer',x:120,z:-23,icon:'⚽',en:'Football challenge',es:'Reto de fútbol'},
+ {id:'market',x:150,z:-48,icon:'🥭',en:'Panama Fruit Market',es:'Mercado de Frutas de Panamá'},
+ {id:'mural',x:91,z:-73,icon:'🎨',en:'Casco Viejo street art',es:'Murales del Casco Viejo'},
  {id:'museum0',x:(142),z:(-79),icon:'🏛️',en:'History exhibit',es:'Exhibición de historia'},
  {id:'museum1',x:(152),z:(-77),icon:'🦋',en:'Panama nature exhibit',es:'Exhibición de naturaleza'},
  {id:'museum2',x:(131),z:(-81),icon:'🚢',en:'Canal exhibit',es:'Exhibición del Canal'},
- {id:'wash',x:(88),z:(-40),icon:'🫧',en:'Drive-through car wash',es:'Lavado de autos'},
- {id:'plaza',x:(121),z:(-38),icon:'⛲',en:'Plaza de la Independencia',es:'Plaza de la Independencia'},
+ {id:'wash',x:88,z:-48,icon:'🫧',en:'Drive-through car wash',es:'Lavado de autos'},
+ {id:'plaza',x:120,z:-73,icon:'⛲',en:'Plaza de la Independencia',es:'Plaza de la Independencia'},
  {id:'canal',x:66,z:-65,icon:'🚢',en:'Panama Canal cruise terminal',es:'Terminal de cruceros del Canal de Panamá'}
 ];
 export const CITY_RALLY=[
@@ -89,7 +90,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  // Roads follow the island's actual surface with lightweight instancing.
  const chunks=[];
  const road=(x,z,w,d)=>{chunks.push({x,z,w,d});};
- const xs=[-43,-15,15,43],zs=[-35,-11,15,38];
+ const xs=CITY_STREET_X.map(x=>x-120),zs=CITY_STREET_Z.map(z=>z+50);
  for(const dx of xs)for(let dz=-42;dz<=42;dz+=2.5){
   const norm=(dx/58)**2+(dz/48)**2;if(norm>.82)continue;
   road(120+dx,-50+dz,6.15,3.15);
@@ -123,40 +124,13 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
   const x=(120)+k,z=(-50)+dz;if((k/58)**2+(dz/48)**2>.78)continue;
   decorate(box,stripe,x,height(x,z)+.22,z,2.6,.035,.11);
  }
- // Seven neighborhoods, ~50 distinct buildings with color and height variation.
+ // The layout plan owns each street-free building plot, with shared setbacks.
  let buildingCount=0;
- const reserved=[...[[ (98),(-67)],[(112),(-67)],[(128),(-67)],[(142),(-62)],[(98),(-41.5)],[(112),(-41.5)]].map(([x,z])=>({x,z})),...STREET_VENDORS,...BARRIO_HOMES,PURPLE_APARTMENT,...CITY_SITES,{x:(136),z:(-36)},{x:(114),z:(-50)},{x:(138),z:(-44)},{x:(123),z:(-51)},{x:(120),z:(-38)},
-  ...CITY_DELIVERY,...CITY_RALLY,{x:(138),z:(-44)}];
- for(const dx of [-48,-37,-22,-8,8,22,36,48])for(const dz of [-40,-30,-18,-5,9,21,32,42]){
-  if((dx/58)**2+(dz/48)**2>.76)continue;
-  let x=120+dx,z=-50+dz;
-  // Buildings occupy blocks, never the asphalt grid, boulevard or highway.
-  // Preserve each building by shifting it to the nearest clear buildable plot.
-  const plotClear=(px,pz)=>{
-   const ox=px-120,oz=pz+50;
-   if((ox/58)**2+(oz/48)**2>.75)return false;
-   if(xs.some(v=>Math.abs(ox-v)<6.5)||zs.some(v=>Math.abs(oz-v)<6.5))return false;
-   if(Math.abs(Math.hypot(ox/48.4,oz/40)-1)<.20)return false;
-   if(reserved.some(q=>Math.hypot(q.x-px,q.z-pz)<9.2))return false;
-   return true;
-  };
-  if(!plotClear(x,z)){
-   let found=null,best=Infinity;
-   for(let u=-8;u<=8;u+=2)for(let v=-8;v<=8;v+=2){
-    const px=x+u,pz=z+v,d=u*u+v*v;
-    if(d<best&&plotClear(px,pz)){found={x:px,z:pz};best=d;}
-   }
-   if(!found)continue;
-   x=found.x;z=found.z;
-  }
-  if(reserved.some(q=>Math.hypot(q.x-x,q.z-z)<9.2))continue;
-  // Avoid overlapping original central colorful houses and pizzeria.
-  if(Math.abs(dx)<30&&Math.abs(dz)<27&&((dx+22)**2+(dz+20)**2<110||(dx-12)**2+(dz+20)**2<110||(dx-24)**2+(dz+13)**2<90||(dx+25)**2+(dz-18)**2<90||(dx-13)**2+(dz-21)**2<90))continue;
-  const y=height(x,z),w=5.1+(buildingCount%3)*.6,d=5.4+(buildingCount%2)*.55,
-   floors=2+(buildingCount%4),h=floors*2.15;
+ for(const {x,z} of CITY_EXPANSION_PLOTS){
+  const y=height(x,z),w=5.1,d=5.8,floors=2+(buildingCount%4),h=floors*2.15;
   const walls=palette[buildingCount%palette.length],top=buildingCount%4===0?roof:stone;
   decorate(box,walls,x,y+h/2,z,w,h,d);
-  decorate(box,top,x,y+h+.19,z,w+.4,.38,d+.4);
+  decorate(box,top,x,y+h+.19,z,w+.2,.38,d+.2);
   for(let floor=0;floor<floors;floor++)for(const side of [-1,1]){
    decorate(box,glass,x+side*w*.27,y+1.30+floor*2.15,z+d*.508,.78,1.05,.06);
    decorate(box,wood,x+side*w*.27,y+.82+floor*2.15,z+d*.542,.92,.09,.10);
@@ -203,13 +177,13 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  // Soccer: visible pitch, striped goal and ball that reacts to shooting.
  const soccer=CITY_SITES.find(q=>q.id==='soccer'),field=new T.Group();
  field.position.set(soccer.x,height(soccer.x,soccer.z),soccer.z);group.add(field);
- makeObj(box,asph,0,.10,0,27,.15,19,field);
- for(const side of [-1,1])makeObj(box,white,side*13.2,.20,0,.11,.035,18.7,field);
- for(const side of [-1,1])makeObj(box,white,0,.20,side*9.2,26.5,.035,.12,field);
- makeObj(box,white,0,.20,0,26,.04,.11,field);
- for(const sx of [-2.4,2.4])makeObj(cylinder,white,sx,1.05,-9.25,.07,2,.07,field);
- makeObj(box,white,0,2.1,-9.25,5,.12,.12,field);
- const football=makeObj(ball,white,0,.52,6.2,.52,.52,.52,field);football.name='Kickable Panama football';
+ makeObj(box,asph,0,.10,0,20,.15,14,field);
+ for(const side of [-1,1])makeObj(box,white,side*9.9,.20,0,.11,.035,13.7,field);
+ for(const side of [-1,1])makeObj(box,white,0,.20,side*6.9,19.7,.035,.12,field);
+ makeObj(box,white,0,.20,0,19.7,.04,.11,field);
+ for(const sx of [-2.4,2.4])makeObj(cylinder,white,sx,1.05,-6.9,.07,2,.07,field);
+ makeObj(box,white,0,2.1,-6.9,5,.12,.12,field);
+ const football=makeObj(ball,white,0,.52,4.5,.52,.52,.52,field);football.name='Kickable Panama football';
  icon(field,'⚽',-10,3,6,2.2);
  // Animated teammate/opponent: a full world-scale friend, not an interface icon.
  const teammate=new T.Group();teammate.name='Soccer friend Kai';field.add(teammate);
@@ -219,7 +193,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  makeObj(ball,tHair,0,1.79,-.04,.235,.13,.21,teammate);
  const teammateLegs=[-.13,.13].map(v=>{const g=new T.Group();g.position.set(v,.70,0);teammate.add(g);makeObj(cylinder,tShort,0,-.16,0,.13,.34,.13,g);makeObj(cylinder,tSkin,0,-.43,0,.075,.35,.075,g);return g;});
  const teammateArms=[-.32,.32].map(v=>{const g=new T.Group();g.position.set(v,1.3,0);teammate.add(g);makeObj(cylinder,tSkin,0,-.23,0,.07,.48,.07,g);return g;});
- for(const side of [-1,1]){makeObj(box,white,side*12,.23,0,.14,.04,18.3,field);makeObj(box,white,0,.23,side*9.1,26,.04,.12,field);}
+ for(const side of [-1,1]){makeObj(box,white,side*9.6,.23,0,.14,.04,13.7,field);makeObj(box,white,0,.23,side*6.8,19.7,.04,.12,field);}
  makeObj(cylinder,white,0,.24,0,2,.04,2,field);
  const soccerBall={vx:0,vz:0,vy:0,cooldown:0,shotCooldown:0,owner:'free'};
 
@@ -371,8 +345,8 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
   if(!active||indoors)return;
   for(const p of pedestrians){
    const a=performance.now()*.00017*(p.i%3+1)+p.i*1.7;
-   const cx=(120)+Math.cos(p.i*2.4)*20,cz=(-50)+Math.sin(p.i*2.4)*16;
-   const px=cx+Math.cos(a)*5,pz=cz+Math.sin(a)*4;
+   const cx=93+(p.i%4)*18,cz=p.i<4?-56:-30;
+   const px=cx+Math.cos(a)*.6,pz=cz+Math.sin(a)*.6;
    p.g.position.set(px,height(px,pz),pz);p.g.rotation.y=-a;
    p.legs.forEach((leg,j)=>leg.rotation.x=Math.sin(a*22+j*Math.PI)*.35);
   }
@@ -411,7 +385,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
    football.rotation.x+=soccerBall.vz*dt/ .52;football.rotation.z-=soccerBall.vx*dt/.52;
    if(Math.abs(football.position.x)>12.9){football.position.x=Math.sign(football.position.x)*12.9;soccerBall.vx*=-.55;}
    if(football.position.z<-9.15&&Math.abs(football.position.x)<2.4&&football.position.y<2.05){
-     football.position.set(0,.52,6.2);soccerBall.vx=soccerBall.vz=soccerBall.vy=0;
+     football.position.set(0,.52,4.5);soccerBall.vx=soccerBall.vz=soccerBall.vy=0;
      if(soccerBall.owner==='angelique'){a.soccerGoals=Math.min(999,a.soccerGoals+1);success('⚽ ¡Gol de Angelique!','⚽ Angelique scored!',a.soccerGoals===3?'city-soccer':null);}
    }else if(Math.abs(football.position.z)>9.2){football.position.z=Math.sign(football.position.z)*9.2;soccerBall.vz*=-.5;}
   }

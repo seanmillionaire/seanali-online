@@ -23,9 +23,9 @@ export function remoteAccess(from,to){const p=worldIslands.find(i=>i.vehicleOnly
 // A connected mainland corridor: Panama City → Gorgona → Colón and
 // Gorgona → Volcán → Barú. Offshore island footprints remain separate.
 export const MAINLAND_ROADS={
- cityToColon:[[120,-50],[95,-74],[63,-88],[30,-116],[-10,-125]],
+ cityToColon:[[105,-61],[95,-74],[63,-88],[30,-116],[-10,-125]],
  // Intercity traffic bypasses the beach. Turn off onto Gorgona's access road.
- cityToGorgona:[[120,-50],[85,-26],[48,-15],[32,-14]],
+ cityToGorgona:[[105,-35],[85,-26],[48,-15],[32,-14]],
  gorgonaBeachAccess:[[32,-14],[28,-8],[24,-4],[21,1]],
  cityToBaru:[[32,-14],[-7,-8],[-35,0],[-75,-12],[-115,-22],[-155,-32],[-147,-43],[-135,-55]],
  boquete:[[-115,-22],[-112,-32]],canal:[[85,-26],[66,-65]]

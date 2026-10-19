@@ -1,8 +1,9 @@
+import {CITY_SHOP_PLOTS,cityBlocksVehicle} from './city-layout.js?v=167';
 import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=164';
-import {createCityExpansion} from './city-expansion.js?v=165';
+import {createCityExpansion} from './city-expansion.js?v=167';
 /* Casco Viejo · Ciudad de Panamá — the largest fantasy island: real road grid, drivable mini car,
    walk-in pizzeria, and sixteen persistent 💰 money-bag pickups. */
-export const CITY={x:(120),z:(-50),rx:58,rz:48,restaurant:{x:(136),z:(-36)}};
+export const CITY={x:(120),z:(-50),rx:58,rz:48,restaurant:{x:120,z:-48}};
 export const MONEY_BAGS=Array.from({length:24},(_,i)=>{
  if(i<16){
   const a=i/16*Math.PI*2,r=i%4===0?.62:i%3===0?.43:.77;
@@ -23,38 +24,15 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
  const piece=(geo,m,x,y,z,sx,sy,sz,parent=group)=>make(geo,m,x,y,z,sx,sy,sz,parent);
  const colorFrom=arr=>arr.map(col=>mat(col));
  const shopColors=['#aad4bf','#ecab7e','#b7bedf','#eadba7'].map(c=>mat(c,{map:surfaces?.plaster,bumpMap:surfaces?.plaster,bumpScale:.035}));
- const road=((x,z,sz,sx,rotation=0)=>{const mesh=piece(box,asphalt,x,height(x,z)+.09,z,sx,.15,sz);mesh.rotation.y=rotation;mesh.castShadow=false;return mesh;});
- // Two intersecting paved streets plus a circular seaside boulevard.
- for(let t=-34;t<=34;t+=4){
-  road(CITY.x+t,CITY.z,4.3,6.7,Math.PI/2);
-  road(CITY.x,CITY.z+t*.94,4.4,6.8);
-  if(Math.abs(t)>6&&t%8===-2){const d=piece(box,line,CITY.x+t,height(CITY.x+t,CITY.z)+.2,CITY.z,2,.035,.17);d.castShadow=false;}
- }
- const boulevard=[];
- for(let i=0;i<64;i++){
-  const a=(i+.5)/64*2*Math.PI,x=CITY.x+Math.cos(a)*31,z=CITY.z+Math.sin(a)*26;
-  const path=road(x,z,4.2,4.5,-Math.atan2(Math.cos(a)*31,-Math.sin(a)*26));
-  boulevard.push(path);
-  if(i%3===0){const p=piece(box,line,x,height(x,z)+.2,z,1.0,.025,.13);p.rotation.y=path.rotation.y;p.castShadow=false;}
- }
- // Square sidewalks and crossing stripes around the town center.
- for(const [u,v,w,d] of [[-15,-13,12,6],[16,-13,13,6],[-16,13,12,6],[17,13,13,6]]){
-  const x=CITY.x+u,z=CITY.z+v;
-  piece(box,pavement,x,height(x,z)+.09,z,w,.16,d).castShadow=false;
- }
- for(let k=0;k<6;k++){
-  for(const side of [-1,1]){
-   const x=CITY.x+side*5,z=CITY.z-3+k*1.2;
-   piece(box,white,x,height(x,z)+.20,z,.32,.035,.69).castShadow=false;
-  }
+ // One shared connected road grid serves all neighborhoods.
+ // Frontage walks occupy individual parcels rather than vehicle lanes.
+ for(const {x,z,w,d} of CITY_SHOP_PLOTS){
+  piece(box,pavement,x,height(x,z)+.095,z+d/2+1,w+.3,.12,1.4).castShadow=false;
  }
  // City skyline: colorful little shops and townhouses; pizza is the only restaurant.
- const buildings=[
-  [-22,-17,6,5.5,0],[-8,-17,5,5.5,1],[8,-17,6,5.5,2],[22,-12,6,6,3],
-  [-22,8.5,6,5.5,2],[-8,8.5,6,5.5,0],[13,21,7,6,3],[26,17,6,6,1]
- ];
+ const buildings=CITY_SHOP_PLOTS;
  for(let i=0;i<buildings.length;i++){
-  const [ox,oz,w,d,ci]=buildings[i],x=CITY.x+ox,z=CITY.z+oz,y=height(x,z),m=shopColors[ci];
+  const {x,z}=buildings[i],w=6.3,d=6,ci=i%shopColors.length,y=height(x,z),m=shopColors[ci];
   piece(box,m,x,y+2.3,z,w,4.6,d);
   piece(box,i%2?wood:roof,x,y+4.8,z,w+.55,.6,d+.6);
   for(const side of [-1,1]){
@@ -175,6 +153,7 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
  let coinAward=()=>0;
  const expansion=createCityExpansion({T,group,scene,state,make,mat,box,ball,cylinder,cone,height,surfaces,
    save,refresh,joy,tell:(a,b)=>tell(a,b),coinAward:id=>coinAward(id),onWash:()=>{carBlue.roughness=.16;carBlue.needsUpdate=true;}});
+ if(cityBlocksVehicle(city.car.x,city.car.z)){city.car.x=105;city.car.z=-50;city.car.heading=0;save();}
  const status=document.createElement('div');status.className='pizza-city-status';status.hidden=true;
  status.setAttribute('aria-live','polite'); 
  const sign=document.createElement('div');sign.className='pizza-city-prompt';sign.textContent='🍕 '+(es?'Pizzería del Casco':'Casco Viejo Pizzeria');sign.hidden=true;
@@ -182,7 +161,7 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
  function attach(host){if(host){host.append(status,sign);}}
  function isHere(x,z){return Math.hypot((x-CITY.x)/CITY.rx,(z-CITY.z)/CITY.rz)<1.0;}
  function nearCar(x,z){return Math.hypot(x-city.car.x,z-city.car.z)<4;}
- function canDrive(x,z){return Math.hypot((x-CITY.x)/CITY.rx,(z-CITY.z)/CITY.rz)<.91||roadDistance(x,z)<HIGHWAY_WIDTH/2-.7;}
+ function canDrive(x,z){return (Math.hypot((x-CITY.x)/CITY.rx,(z-CITY.z)/CITY.rz)<.91||roadDistance(x,z)<HIGHWAY_WIDTH/2-.7)&&!cityBlocksVehicle(x,z);}
  function hitCar(raycaster,x,z){return Math.hypot(x-city.car.x,z-city.car.z)<13&&raycaster.intersectObject(car,true).length>0;}
  function hitBag(raycaster,x,z){
   for(const bag of bags){
