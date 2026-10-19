@@ -71,7 +71,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  // Roads follow the island's actual surface with lightweight instancing.
  const chunks=[];
  const road=(x,z,w,d)=>{chunks.push({x,z,w,d});};
- const xs=[-43,-29,-15,0,15,29,43],zs=[-35,-23,-11,2,15,27,38];
+ const xs=[-43,-15,15,43],zs=[-35,-11,15,38];
  for(const dx of xs)for(let dz=-42;dz<=42;dz+=2.5){
   const norm=(dx/58)**2+(dz/48)**2;if(norm>.82)continue;
   road(120+dx,-50+dz,6.15,3.15);
