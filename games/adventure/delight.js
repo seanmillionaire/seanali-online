@@ -208,7 +208,7 @@ export function createDelight({soundEnabled,motionEnabled}) {
   function panamaSound({music=0,horn=0,step=0,cheer=0}={}){
    if(music<=.005&&horn<=.005&&cheer<=.04)return;
    if(!unlocked||!soundEnabled()||document.hidden||!ready())return;
-   if(music>.005){const v=Math.min(1,music);if([0,6,8,14].includes(step))voice(78,.16,{volume:v*.32,end:38});if([4,10,12].includes(step))noise(.075,v*.15,'highpass',1500);if(step%2===0)noise(.035,v*.055,'highpass',5500);if([0,3,8,11].includes(step))voice([110,110,98,123][Math.floor(step/4)],.16,{volume:v*.11,type:'triangle',end:55});}
+   if(music>.005&&!cityAmbient){const v=Math.min(1,music);if([0,6,8,14].includes(step))voice(78,.16,{volume:v*.32,end:38});if([4,10,12].includes(step))noise(.075,v*.15,'highpass',1500);if(step%2===0)noise(.035,v*.055,'highpass',5500);if([0,3,8,11].includes(step))voice([110,110,98,123][Math.floor(step/4)],.16,{volume:v*.11,type:'triangle',end:55});}
    if(horn>.005){const v=Math.min(1,horn);for(const frequency of [260,330]){voice(frequency,.32,{volume:v*.12,type:'sawtooth'});voice(frequency,.2,{volume:v*.09,type:'sawtooth',delay:.42});}}
    if(cheer>.04&&step===0)voice(780,.15,{volume:cheer*.08,end:1100,type:'triangle'});
   }
