@@ -1,4 +1,4 @@
-import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,mainlandAt,mainlandRoadRoute} from './explore-state.js?v=123';
+import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,mainlandAt,mainlandRoadRoute} from './explore-state.js?v=127';
 import {createPanamaLife} from './panama-life.js?v=119';
 import {createCloseCamera} from './close-camera.js?v=115';
 import {createCampaign} from './campaign.js?v=114';
@@ -14,7 +14,7 @@ import {createWorldMap} from './world-map.js?v=114';
 import {createWildlifeFriends} from './wildlife-friends.js?v=114';
 import {createVillageBuilders} from './village-builders.js?v=1';
 import {createHouseInteriors} from './house-interiors.js?v=112';
-import {createPizzaCity} from './pizza-city.js?v=126';
+import {createPizzaCity} from './pizza-city.js?v=127';
 import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=114';
 import {ESTATE_PLANS,estateCosts,estateMissing,findEstateSite,canBuildEstate,buildEstate,canUpgradeEstate,upgradeEstate,estateBlocked,createEstateWorld} from './estate.js?v=5';
 import {buildIsland} from './entrance.js?v=115';
