@@ -240,16 +240,30 @@ export function recoverBoat(x,z){if(boatClear(x,z))return {x,z};for(let r=.15;r<
 export function boatStep(x,z,dx,dz){const start=recoverBoat(x,z);x=start.x;z=start.z;const steps=Math.max(1,Math.ceil(Math.hypot(dx,dz)/.15));dx/=steps;dz/=steps;
  for(let i=0;i<steps;i++){const candidates=[[dx,dz],...(Math.abs(dx)>=Math.abs(dz)?[[dx,0],[0,dz]]:[[0,dz],[dx,0]])];for(const a of [Math.PI/6,-Math.PI/6,Math.PI/3,-Math.PI/3,Math.PI/2,-Math.PI/2])candidates.push([dx*Math.cos(a)-dz*Math.sin(a),dx*Math.sin(a)+dz*Math.cos(a)]);for(const [mx,mz] of candidates){if(Math.hypot(mx,mz)>.00001&&boatClear(x+mx,z+mz)){x+=mx;z+=mz;break;}}}return {x,z};}
 // Sharks steer around shores with clearance for their whole body, not just their center.
-export function sharkClearance(x,z){let wet=inWater(x,z)?1:0;for(let i=0;i<12;i++){const a=i*Math.PI/6;if(inWater(x+Math.sin(a)*1.4,z+Math.cos(a)*1.4))wet++;}return wet;}
-export function sharkStep(x,z,tx,tz,dt,speed,side=1){
- const distance=Math.hypot(tx-x,tz-z),step=Math.min(Math.max(0,dt)*speed,distance);if(step===0)return {x,z};
- const heading=Math.atan2(tx-x,tz-z),current=sharkClearance(x,z);let escape=null,best=-Infinity;
- for(let i=0;i<=12;i++)for(const sign of i===0?[1]:[side,-side]){const a=heading+i*Math.PI/12*sign,dx=Math.sin(a),dz=Math.cos(a),nx=x+dx*step,nz=z+dz*step;if(!inWater(nx,nz))continue;const clearance=sharkClearance(nx,nz),ahead=sharkClearance(x+dx*1.7,z+dz*1.7);
-  if(clearance===13&&ahead===13)return {x:nx,z:nz};
-  // Recover smoothly if an older position is already too close to a beach.
-  const score=clearance*100+ahead-i*.01;if(clearance>=current&&score>best){escape={x:nx,z:nz};best=score;}
+export function sharkClearance(x,z){
+ const wet=(px,pz)=>inWater(px,pz)&&roadDistance(px,pz)>HIGHWAY_WIDTH/2+2.4;
+ let count=wet(x,z)?1:0;
+ for(let i=0;i<12;i++){const a=i*Math.PI/6;if(wet(x+Math.sin(a)*1.8,z+Math.cos(a)*1.8))count++;}
+ return count;
+}
+export function sharkStep(x,z,tx,tz,dt,speed,side=1,previousHeading=null){
+ const distance=Math.hypot(tx-x,tz-z),step=Math.min(Math.max(0,dt)*speed,distance);
+ if(step===0)return {x,z,heading:previousHeading};
+ const desired=Math.atan2(tx-x,tz-z),base=previousHeading??desired;
+ const turn=(a,b)=>Math.atan2(Math.sin(a-b),Math.cos(a-b));
+ let best=null,bestScore=-Infinity;
+ // Select the safest forward heading with a persistent turning preference.
+ // Never bounce off dry road edges or instantly reverse course each frame.
+ for(let i=0;i<=18;i++)for(const sign of i===0?[1]:[side,-side]){
+  const candidate=base+sign*i*Math.PI/18;
+  const nx=x+Math.sin(candidate)*step,nz=z+Math.cos(candidate)*step;
+  if(sharkClearance(nx,nz)!==13)continue;
+  const ahead=sharkClearance(x+Math.sin(candidate)*2.5,z+Math.cos(candidate)*2.5);
+  if(ahead<12)continue;
+  const score=ahead*10-Math.abs(turn(candidate,desired))*2-Math.abs(turn(candidate,base))*8;
+  if(score>bestScore){best={x:nx,z:nz,heading:candidate};bestScore=score;}
  }
- return escape||{x,z};
+ return best||{x,z,heading:base};
 }
 export function traversable(x,z){return Math.hypot(x/200,z/175)<=1&&worldObstacles.every(([a,b,r])=>Math.hypot(x-a,z-b)>r+.3);}
 export function islandPath(from,to){
@@ -291,7 +305,7 @@ export function sharkPatrol(p,dt,target=null){
  p.waypoint??=0;p.watch??=0;p.anchor??={x:p.x,z:p.z};
  function destination(){const cx=p.cx||0,cz=p.cz||0,rx=p.rx||32,rz=p.rz||26;for(let i=0;i<24;i++){const a=p.waypoint/24*Math.PI*2,x=cx+Math.cos(a)*rx,z=cz+Math.sin(a)*rz;if(sharkClearance(x,z)===13)return {x,z};p.waypoint=(p.waypoint+(p.direction||1)+24)%24;}return recoverShark(cx+rx,cz);}
  let dest=target||destination();if(!target&&Math.hypot(dest.x-p.x,dest.z-p.z)<2){p.waypoint=(p.waypoint+(p.direction||1)+24)%24;dest=destination();}
- const next=sharkStep(p.x,p.z,dest.x,dest.z,Math.min(dt,.05),target?12:5,p.side||1);p.watch+=dt;
+ const next=sharkStep(p.x,p.z,dest.x,dest.z,Math.min(dt,.05),target?12:5,p.side||1,p.heading??null);p.heading=next.heading;p.watch+=dt;
  if(p.watch>=2){if(Math.hypot(next.x-p.anchor.x,next.z-p.anchor.z)<1.2){p.waypoint=(p.waypoint+6)%24;p.side=-(p.side||1);p.detour=4;}p.watch=0;p.anchor={...next};}
  return next;
 }
