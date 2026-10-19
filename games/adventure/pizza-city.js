@@ -1,5 +1,5 @@
 import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=156';
-import {createCityExpansion} from './city-expansion.js?v=156';
+import {createCityExpansion} from './city-expansion.js?v=160';
 /* Casco Viejo · Ciudad de Panamá — the largest fantasy island: real road grid, drivable mini car,
    walk-in pizzeria, and sixteen persistent 💰 money-bag pickups. */
 export const CITY={x:(120),z:(-50),rx:58,rz:48,restaurant:{x:(136),z:(-36)}};
