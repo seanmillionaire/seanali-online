@@ -1,4 +1,5 @@
 // Shared three-dimensional foliage; no spherical crowns or stacked cone trees.
+import {nearRoad,HIGHWAY_WIDTH} from './explore-state.js?v=159';
 export function createNaturalTrees({T,geometry,mat,make,height,scene,surfaces=null}){
  const trees=[],bark=mat('#73634d',{...(surfaces?.wood?{map:surfaces.wood,bumpMap:surfaces.wood}:{}),bumpScale:.13,roughness:1});
  function meshData(){return {p:[],c:[]};}
@@ -46,6 +47,15 @@ export function createNaturalTrees({T,geometry,mat,make,height,scene,surfaces=nu
  let focus=null;
  function addTree(kind,x,z,scale=1,seed=0,parent=scene){
   if(!leaves[kind])kind='natural';
+  // Preserve every Gorgona tree, but place trunks beside the paved driving lane.
+  if(x>-30&&x<58&&z>-37&&z<28&&nearRoad(x,z,HIGHWAY_WIDTH/2+1.75)){
+   const originalX=x,originalZ=z;
+   for(let j=1;j<=28;j++){
+    const a=j*2.399963229728653,dist=6+Math.floor((j-1)/7)*4;
+    const nx=originalX+Math.cos(a)*dist,nz=originalZ+Math.sin(a)*dist;
+    if(!nearRoad(nx,nz,HIGHWAY_WIDTH/2+2)){x=nx;z=nz;break;}
+   }
+  }
   const root=new T.Group();root.name=kind==='palm'?'Detailed curved coconut palm':kind==='pine'?'Detailed tall needle pine':kind==='banana'?'Broad-leaf banana plant':'Branching natural rainforest tree';parent.add(root);
   root.position.set(x,height(x,z)-.05,z);root.scale.setScalar(scale);root.rotation.y=seed*2.39996;
   make(kind==='palm'?palmTrunk:kind==='pine'?pineTrunk:kind==='banana'?bananaTrunk:naturalTrunk,bark,0,0,0,1,1,1,root);
