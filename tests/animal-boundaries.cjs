@@ -21,8 +21,9 @@ const assert=require('node:assert/strict'),fs=require('fs'),vm=require('vm');
  const context=vm.createContext({document:{hidden:false},motion:()=>true,time:0,nodes,islandFriends:list,friends:{companion:'dori',called:['pip'],completed:[]},s:{x:-100,z:-74,flight:10},mounted:null,height:()=>0,waterFriend,animalClear,recoverAnimal,animalStep,camera:new T.PerspectiveCamera(),temp:new T.Vector3(),labels:[{},{}],directory:{},say:(a,b)=>b});
  vm.runInContext(update,context);
  for(const mode of ['walk','house','fly','boat','swim']){
+  const before=new Map([...nodes].map(([id,n])=>[id,n.g.position.clone()]));
   vm.runInContext(`for(let i=0;i<120;i++)update(.1,true,{mode:'${mode}',inside:${mode==='house'},roomPosition:{x:-100,y:3,z:-74}})`,context);
-  for(const [id,n]of nodes){assert(animalClear(id,n.g.position.x,n.g.position.z));if(id==='dori'){assert(inWater(n.g.position.x,n.g.position.z));assert(n.g.position.y<1);}}
+  for(const [id,n]of nodes){assert(n.g.position.distanceTo(before.get(id))>.02,id+' moves while waiting at boundary');assert(animalClear(id,n.g.position.x,n.g.position.z));if(id==='dori'){assert(inWater(n.g.position.x,n.g.position.z));assert(n.g.position.y<1);}}
  }
  console.log('PASS water-only dolphin, beach turtle road/city exclusion, call/follow/house/flight, road-save recovery and mounted boundary steps');
 })().catch(e=>{console.error(e);process.exitCode=1});

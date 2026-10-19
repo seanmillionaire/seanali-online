@@ -55,7 +55,7 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
    const observing=notice<(isDolphin?13:isFish?5:10)&&notice>1.6;
    // Nearby wildlife watches Angelique without abandoning safe-water boundaries.
    // Fish remain shy; dolphins and turtles slow down to observe.
-   const watchWeight=observing?(isFish?.15:isDolphin?.7:.85):0;
+   const watchWeight=observing?(isFish?.1:.25):0;
    // Spawn recovery prevents underwater NPCs from beginning trapped inside an island.
    if(!safeWater(a.g.position.x,a.g.position.z,radius)){
     let found=false;
@@ -88,7 +88,7 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
      const blended=desired+Math.atan2(Math.sin(playerHeading-desired),Math.cos(playerHeading-desired))*watchWeight;
      const delta=Math.atan2(Math.sin(blended-a.heading),Math.cos(blended-a.heading));
      a.heading+=Math.max(-dt*1.8,Math.min(dt*1.8,delta));
-     const step=Math.min(speed*dt*(observing?(isFish?.85:isDolphin?.45:.28):1),Math.max(0,d-.15));
+     const step=Math.min(speed*dt*(observing?(isFish?.9:.65):1),Math.max(0,d-.15));
      const nx=a.g.position.x+Math.sin(a.heading)*step,nz=a.g.position.z+Math.cos(a.heading)*step;
      if(safeWater(nx,nz,radius)){
       a.g.position.x=nx;a.g.position.z=nz;a.stuck=0;a.travel+=step;
@@ -105,8 +105,8 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
        a.heading=Math.atan2(rx,rz)+(a.kind==='Reef fish'?.16:.25);
        a.waypoint=null;a.stuck=0;
       }else{
-       a.heading+=dt*1.5;
-       if(a.stuck>.25){a.waypoint=null;a.stuck=0;}
+       a.heading+=Math.PI*.35;
+       a.waypoint=null;a.stuck=0;
       }
      }
     }

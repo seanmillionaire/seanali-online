@@ -1,4 +1,4 @@
-import {createColonWildlife,monkeyJumpPhase,recordMonkeyJump} from './colon-wildlife.js?v=106';
+import {createColonWildlife,monkeyJumpPhase,recordMonkeyJump} from './colon-wildlife.js?v=150';
 import {COLON_SITES,COLON_BRIDGE,bridgeDistance,buildColon,expandColon} from './colon-state.js?v=106';
 import {addFood,inWater,earnCoins} from './explore-state.js?v=114';
 export function createColonAdventure({T,scene,host,state,make,geometry,mat,box,ball,cylinder,cone,height,save,refresh,joy,tell,forest,motion=()=>true}){
@@ -158,7 +158,7 @@ export function createColonAdventure({T,scene,host,state,make,geometry,mat,box,b
 
   bridge.visible=c.bridge;broken.visible=!c.bridge;house.visible=c.treehouse;garden.visible=c.garden;lookout.visible=c.lookout;extensions.visible=c.level>=2;second.visible=c.level>=3;
   for(const t of shells)t.m.visible=!c.shells.includes(t.i);
-  wildlife.update(dt,active,motion()?clock:0,{player:s,playing:play.active,signal:play.active&&cue.open,reducedMotion:!motion()});
+  wildlife.update(dt,active,clock,{player:s,playing:play.active,signal:play.active&&cue.open,reducedMotion:!motion()});
   animals.forEach(({g,x,z,index,kind})=>{g.position.x=x+Math.sin(clock*.4+index)*.5;g.rotation.y=Math.sin(clock*.2+index)*.3;if(kind==='crocodile')g.position.y=height(x,z)+.2;});
   falls.forEach((f,i)=>f.material.opacity=.65+Math.sin(clock*3+i)*.12);
  }

@@ -1,4 +1,4 @@
-import {waterFriend,animalClear,recoverAnimal,animalStep} from './animal-boundaries.js?v=149';
+import {waterFriend,animalClear,recoverAnimal,animalStep} from './animal-boundaries.js?v=150';
 import {explorePlaces,earnCoins} from './explore-state.js?v=114';
 import {oceanModel} from './ocean-models.js?v=73';
 import {createAnimalDetails} from './animal-details.js?v=73';
@@ -24,7 +24,7 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
  const sphere=(g,m,x,y,z,a,b,c)=>make(ball,m,x,y,z,a,b,c,g);
  let time=0,opened=null,step=0,gameActive=false,mounted=null;
  function model(friend){
-  const g=new T.Group(),p=home(friend.id);g.name='Playable friend: '+friend.name;g.userData.friendId=friend.id;scene.add(g);
+  const g=new T.Group(),homePoint=home(friend.id),p=waterFriend(friend.id)?recoverAnimal(friend.id,homePoint.x,homePoint.z):homePoint;g.name='Playable friend: '+friend.name;g.userData.friendId=friend.id;scene.add(g);
   const moving=[],other={};
   if(friend.id==='pip'||friend.id==='dori'){
    const aquatic=oceanModel(T,{geometry,mat,make,ball},friend.id==='pip'?'Sea turtle':'Dolphin');
@@ -248,7 +248,7 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
  }
  function update(dt,active,{mode='walk',inside=false,mount=null,heading=0,roomPosition=null,mountAltitude=0,moving=false,cruise=null}={}){
   if(document.hidden)return;
-  if(motion())time+=Math.min(dt,.05);
+  if(active||cruise?.playing)time+=Math.min(dt,.1);
   if(cruise?.active){
    let i=0;
    for(const n of nodes.values()){
@@ -269,14 +269,19 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
   for(const n of nodes.values()){
    const id=n.f.id,isRidden=mounted===id&&mount===id,canFollow=(following===id||friends.called.includes(id))&&!isRidden&&(!inside||mode==='house');
    const idleBird=(id==='mila'||id==='ollie')&&!isRidden&&!canFollow;
+   const idleRoam=!isRidden&&!canFollow,roam=idleBird?1.3:waterFriend(id)?1.4:.65;
    const formation=islandFriends.findIndex(f=>f.id===id),angle=formation*2.399963;
-   const px=isRidden?s.x:canFollow?(mode==='house'&&roomPosition?roomPosition.x+Math.sin(angle)*1.7:s.x+Math.sin(angle)*2.5):n.home.x+(idleBird?Math.sin(time*.7+n.home.z)*1.3:0),
-    pz=isRidden?s.z:canFollow?(mode==='house'&&roomPosition?roomPosition.z+Math.cos(angle)*1.7:s.z+Math.cos(angle)*2.5):n.home.z+(idleBird?Math.cos(time*.7+n.home.z)*1.15:0);
+   const px=isRidden?s.x:canFollow?(mode==='house'&&roomPosition?roomPosition.x+Math.sin(angle)*1.7:s.x+Math.sin(angle)*2.5):n.home.x+(idleRoam?Math.sin(time*.7+n.home.z)*roam:0),
+    pz=isRidden?s.z:canFollow?(mode==='house'&&roomPosition?roomPosition.z+Math.cos(angle)*1.7:s.z+Math.cos(angle)*2.5):n.home.z+(idleRoam?Math.cos(time*.7+n.home.z)*roam:0);
    if(waterFriend(id)){
     const radius=isRidden?3.3:1.4;
     const start=recoverAnimal(id,n.g.position.x,n.g.position.z,radius);
     const factor=isRidden?1:Math.min(1,dt*(canFollow?2.6:1.2));
-    const target=id==='dori'&&(inside||mode==='fly')?start:{x:start.x+(px-start.x)*factor,z:start.z+(pz-start.z)*factor};
+    const waiting=!isRidden&&(id==='dori'&&(inside||mode==='fly')||!animalClear(id,px,pz,radius));
+    // Keep swimming/pacing locally when the requested destination is across a road or on land.
+    if(waiting&&!n.waitCenter)n.waitCenter={...start};if(!waiting)n.waitCenter=null;
+    const goal=waiting?{x:n.waitCenter.x+Math.sin(time*.9+formation)*1.2,z:n.waitCenter.z+Math.cos(time*.9+formation)*1.2}:{x:px,z:pz};
+    const target={x:start.x+(goal.x-start.x)*factor,z:start.z+(goal.z-start.z)*factor};
     const next=animalStep(id,start.x,start.z,target.x,target.z,radius);n.g.position.x=next.x;n.g.position.z=next.z;
    }else if(isRidden){n.g.position.x=px;n.g.position.z=pz;}
    else if(canFollow&&Math.hypot(px-n.g.position.x,pz-n.g.position.z)>28){n.g.position.x=px;n.g.position.z=pz;}

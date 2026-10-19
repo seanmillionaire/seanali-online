@@ -23,7 +23,7 @@ export function shoreCrocodilePose(index,time,isWater){
  return {x:142,z:-56,heading:Math.PI};
 }
 export function stepMonkey(m,dt,anchors){
- m.t+=Math.max(0,Math.min(dt,.05))/m.duration;
+ m.t+=Math.max(0,Math.min(dt,.1))/m.duration;
  if(m.t>=1){
   m.a=m.b;m.t%=1;m.seed=(m.seed*1664525+1013904223)>>>0;
   const choices=anchors.map((p,i)=>({p,i,d:Math.hypot(p.x-m.a.x,p.z-m.a.z)+Math.abs(p.y-m.a.y)*.3})).filter(p=>p.d>1&&p.d<16).sort((a,b)=>a.d-b.d).slice(0,6);
@@ -120,7 +120,7 @@ export function createColonWildlife({T,root,make,geometry,mat,ball,box,cylinder,
     m.motion.t=0;m.motion.duration=1.3;
    }
    m.following=playing&&m.index<3;
-   const p=stepMonkey(m.motion,active&&!reducedMotion?dt:0,m.group);
+   const p=stepMonkey(m.motion,active?dt:0,m.group);
    if(playing&&m.index<3){
     const a=m.index*Math.PI*2/3,ease=Math.min(1,dt*7),tx=player.x+Math.sin(a)*2.5,tz=player.z+Math.cos(a)*2.5;
     p.x=m.g.position.x+((inWater(tx,tz)?player.x:tx)-m.g.position.x)*ease;

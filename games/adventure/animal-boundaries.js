@@ -16,6 +16,6 @@ export function recoverAnimal(id,x,z,radius=1.4){
 export function animalStep(id,x,z,tx,tz,radius=1.4){
  const start=recoverAnimal(id,x,z,radius);x=start.x;z=start.z;
  const distance=Math.hypot(tx-x,tz-z),steps=Math.max(1,Math.ceil(distance/.4)),dx=(tx-x)/steps,dz=(tz-z)/steps;
- for(let i=0;i<steps;i++){if(!animalClear(id,x+dx,z+dz,radius))break;x+=dx;z+=dz;}
+ for(let i=0;i<steps;i++){if(animalClear(id,x+dx,z+dz,radius)){x+=dx;z+=dz;}else if(Math.abs(dx)>1e-8&&animalClear(id,x+dx,z,radius)){x+=dx;}else if(Math.abs(dz)>1e-8&&animalClear(id,x,z+dz,radius)){z+=dz;}else break;}
  return {x,z};
 }
