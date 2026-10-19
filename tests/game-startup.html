@@ -1,0 +1,30 @@
+<!doctype html><meta charset="utf-8"><title>Game startup regression checks</title>
+<style>main{width:390px;height:568px;position:relative}canvas{width:100%;height:100%}</style>
+<pre id="results">Running…</pre><main></main>
+<script type="module">
+import {createExplore} from '../games/adventure/explore.js?v=134';
+import {buildIsland} from '../games/adventure/entrance.js?v=134';
+import * as T from '../games/adventure/vendor/three.module.min.js';
+const results=document.querySelector('#results'),host=document.querySelector('main');
+const check=(value,message)=>{if(!value)throw Error(message);results.textContent+='\nPASS '+message;};
+const waitFor=async(fn)=>{for(let i=0;i<100;i++){if(fn())return;await new Promise(r=>setTimeout(r,50));}throw Error('Timed out');};
+let game,engine;
+try{
+ results.textContent='';
+ let fail=true;
+ game=createExplore(host,{state:{lang:'en',world:{}},save(){},joy:new Proxy({},{get:()=>()=>{}}),motion:()=>true,load:()=>fail?Promise.reject(new ReferenceError('simulated startup failure')):Promise.resolve(T)});
+ await waitFor(()=>host.classList.contains('explore-fallback'));
+ check(host.querySelector('canvas').hidden,'failed canvas does not cover fallback');
+ check(!host.querySelector('.explore-hint').hidden,'failure message remains visible');
+ const retry=[...host.querySelectorAll('button')].find(b=>b.textContent.includes('Reopen the island'));
+ check(retry&&!retry.hidden,'manual retry remains available');
+ fail=false;retry.click();await waitFor(()=>host.classList.contains('explore-ready'));
+ check(!host.querySelector('canvas').hidden,'retry restores a visible working canvas');
+ game.dispose();game=null;host.replaceChildren();
+ const canvas=document.createElement('canvas');host.append(canvas);let updates=0,error;
+ engine=buildIsland(T,canvas,()=>true,()=>({update(){if(++updates>1)throw new ReferenceError('simulated frame failure');},dispose(){}}),{light:true,onError:e=>{error=e;}});
+ await waitFor(()=>error);
+ check(error.message==='simulated frame failure','scene update errors reach renderer error handler');
+ engine.dispose();engine=null;results.textContent+='\nALL CHECKS PASSED';
+}catch(error){results.textContent+='\nFAIL '+error.stack;game?.dispose();engine?.dispose();}
+</script>
