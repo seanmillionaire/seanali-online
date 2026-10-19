@@ -1,5 +1,5 @@
-import {createNaturalTrees} from './natural-trees.js?v=156';
-import {islandPoint} from './explore-state.js?v=156';
+import {createNaturalTrees} from './natural-trees.js?v=159';
+import {islandPoint} from './explore-state.js?v=159';
 /* One shared photographic atlas; textured cutouts keep the natural detail inexpensive on phones. */
 export function createTropical({T,scene,camera,height,geometry,mat,make,ball,renderer,surfaces=null}){
  const forest=createNaturalTrees({T,geometry,mat,make,height,scene,surfaces});
