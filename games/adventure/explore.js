@@ -817,10 +817,19 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    host.classList.toggle('is-swimming',swimming);if(swimming&&!wasSwimming)tell('🏊 Nada · 🦈 ¡Cuidado con las aletas!','🏊 Swim · 🦈 Watch for fins!');
    if(active){energy=Math.max(0,energy-dt);eating=Math.max(0,eating-dt);}host.classList.toggle("snack-moment",eating>0);
    if(carDriving){
-    if(active){const car=s.city.car,desired=len?Math.atan2(dx,dz):car.heading;
-     const change=Math.atan2(Math.sin(desired-car.heading),Math.cos(desired-car.heading));
-     car.heading+=change*Math.min(1,dt*4.2);
-     carSpeed+=((len?(fastMode?36:19):0)-carSpeed)*Math.min(1,dt*(len?3.5:5));
+    if(active){const car=s.city.car;
+     // Driving is vehicle-relative: left/right steer, up accelerates, down
+     // brakes/reverses. Never interpret directional input as a world heading.
+     const throttle=Math.max(-1,Math.min(1,-dz));
+     const steer=Math.max(-1,Math.min(1,dx));
+     const maximum=fastMode?34:18;
+     const desiredSpeed=throttle>0?throttle*maximum:throttle<0?throttle*7:0;
+     carSpeed+=(desiredSpeed-carSpeed)*Math.min(1,dt*(throttle===0?4:2.8));
+     if(Math.abs(carSpeed)<.08)carSpeed=0;
+     if(Math.abs(carSpeed)>.15&&steer){
+      const turnRate=1.75*Math.min(1,.4+Math.abs(carSpeed)/12);
+      car.heading+=steer*turnRate*dt*Math.sign(carSpeed);
+     }
      const nx=car.x+Math.sin(car.heading)*carSpeed*dt,nz=car.z+Math.cos(car.heading)*carSpeed*dt;
      if(cityLife.canDrive(nx,nz)){car.x=nx;car.z=nz;}else carSpeed=0;
      s.x=car.x;s.z=car.z;avatar.rotation.y=car.heading;
@@ -924,11 +933,11 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
     desired.set(buildReveal.x,bh+(phone?22:18),buildReveal.z+(phone?30:25));
     buildReveal.remaining=Math.max(0,buildReveal.remaining-(active?dt:0));
    }
-   const usingClose=closeView&&!cruising&&!showingBuild;
+   const usingClose=closeView&&!cruising&&!showingBuild&&!carDriving;
    cameraButton.hidden=cruising;
    camera.position.lerp(desired,houseSystem?.isInside()&&!showingBuild?1:dt===0?1:1-Math.exp(-dt*(showingBuild?5:riding?18:5)));
    if(riding&&!cruising&&!showingBuild)camera.position.x=ax;
-   target.set(ax,ay+(houseSystem?.isInside()?1.0:riding?(ride?2.25:mountId?1.6:1.3):.7*bodyScale),az-(houseSystem?.isInside()?1.2:0));
+   target.set(ax,ay+(carDriving?1.8:houseSystem?.isInside()?1.0:riding?(ride?2.25:mountId?1.6:1.3):.7*bodyScale),az-(houseSystem?.isInside()?1.2:0));
    if(showingBuild)target.set(buildReveal.x,height(buildReveal.x,buildReveal.z)+2.2,buildReveal.z);if(impactStrength>0){camera.position.x+=Math.sin(impactPhase*1.7)*impactStrength*.18;camera.position.y+=Math.cos(impactPhase*1.3)*impactStrength*.14;}
    if(usingClose){
     if(riding)closeCamera.face(avatar.rotation.y);
