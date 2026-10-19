@@ -16,6 +16,7 @@ export const worldIslands=[
  {id:'monkeyIslet',x:DESTINATIONS.monkeyIslet.at[0],z:DESTINATIONS.monkeyIslet.at[1],rx:8,rz:7,h:1.8,ox:130,oz:-25,spread:1,en:'Monkey Island · Gatún Lake',es:'Isla de los Monos · Lago Gatún'},
  ...SAN_BLAS_ISLANDS
 ];
+const BARU_LAND=worldIslands.find(p=>p.id==='sunset');
 export function islandPoint(id,x,z){const p=worldIslands.find(p=>p.id===id);return {x:p.x+(x-p.ox)*p.spread,z:p.z+(z-p.oz)*p.spread};}
 // Strong offshore currents require a vehicle to cross; walking remains free after arrival.
 export function remoteAccess(from,to){const p=worldIslands.find(i=>i.vehicleOnly);if(!p)return true;const radius=q=>Math.hypot((q.x-p.x)/p.rx,(q.z-p.z)/p.rz);return radius(to)>=1.6||radius(from)<1.6;}
@@ -127,10 +128,11 @@ export function isletHeight(x,z){
  if((canalWater(x,z)||gatunWater(x,z))&&!onMonkey)return 0;
  // Roads must never carve rectangular flat strips through Gorgona's green hills
   // or punch a straight trench into the volcanic crater.
-  const volcano=worldIslands.find(p=>p.id==='sunset'),
-   vu=(x-volcano.x)/volcano.rx,vv=(z-volcano.z)/volcano.rz,
-   onBaru=vu*vu+vv*vv<Math.pow(organicIslandRadius(volcano,Math.atan2(vv,vu)),2),
-   inHome=Math.hypot(x/20,z/14)<homeShoreRadius(Math.atan2(z/14,x/20))*.98;
+  const vu=(x-BARU_LAND.x)/BARU_LAND.rx,vv=(z-BARU_LAND.z)/BARU_LAND.rz,
+   volcanoDistance2=vu*vu+vv*vv,
+   onBaru=volcanoDistance2<1.21&&volcanoDistance2<Math.pow(organicIslandRadius(BARU_LAND,Math.atan2(vv,vu)),2),
+   homeDistance=Math.hypot(x/20,z/14),
+   inHome=homeDistance<1.11&&homeDistance<homeShoreRadius(Math.atan2(z/14,x/20))*.98;
   if(!onBaru&&!inHome&&nearRoad(x,z,HIGHWAY_WIDTH/2+.5))return .16;
  // A real sea-level canal cut through the eastern city waterfront.
  
