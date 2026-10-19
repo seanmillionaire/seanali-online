@@ -18,6 +18,7 @@ import {createWildlifeFriends} from './wildlife-friends.js?v=156';
 import {createVillageBuilders} from './village-builders.js?v=156';
 import {createHouseInteriors} from './house-interiors.js?v=156';
 import {createPizzaCity} from './pizza-city.js?v=165';
+import {driveByDirection} from './directional-drive.js?v=166';
 import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=156';
 import {ESTATE_PLANS,estateCosts,estateMissing,findEstateSite,canBuildEstate,buildEstate,canUpgradeEstate,upgradeEstate,estateBlocked,createEstateWorld} from './estate.js?v=156';
 import {buildIsland} from './entrance.js?v=165';
@@ -211,7 +212,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  const mobileShade=btn('×','mobile-menu-shade',()=>setHelpers(false));mobileShade.setAttribute('aria-label',say('Cerrar menú','Close menu'));
  
  const catchButton=btn('🦋','world-catch catch-action',()=>control?.catchNearest());catchButton.hidden=true;actions.append(catchButton);
- const pad=makeEl('div','explore-stick');pad.setAttribute('aria-label',say('Palanca para moverte','Movement joystick'));const knob=makeEl('span','stick-knob');pad.append(knob);const compass=makeEl('span','stick-compass'),stickReadout=makeEl('span','stick-readout');for(const [cls,icon] of [['north','↑'],['east','→'],['south','↓'],['west','←']])compass.append(makeEl('span',cls,icon));compass.setAttribute('aria-hidden','true');pad.append(compass,stickReadout);knob.textContent='🕹️';
+ const pad=makeEl('div','explore-stick');pad.setAttribute('aria-label',say('Empuja hacia donde quieras ir','Push toward where you want to go'));const knob=makeEl('span','stick-knob');pad.append(knob);const compass=makeEl('span','stick-compass'),stickReadout=makeEl('span','stick-readout');for(const [cls,icon] of [['north','↑'],['east','→'],['south','↓'],['west','←']])compass.append(makeEl('span',cls,icon));compass.setAttribute('aria-hidden','true');pad.append(compass,stickReadout);knob.textContent='🕹️';
  const directionPointers=new Map();
  const directions=makeEl('div','world-arrows');directions.setAttribute('role','group');directions.setAttribute('aria-label',say('Flechas para moverte','Movement arrows'));for(const [label,k]of [['↑','ArrowUp'],['←','ArrowLeft'],['↓','ArrowDown'],['→','ArrowRight']]){const b=btn(label,'',()=>{});b.textContent=label;b.setAttribute('aria-label',say('Mover ','Move ')+({ArrowUp:say('norte','north'),ArrowDown:say('sur','south'),ArrowLeft:say('oeste','west'),ArrowRight:say('este','east')}[k]));b.dataset.direction=k;b.setAttribute('aria-pressed','false');
   b.onpointerdown=e=>{if(e.button!==0||paused()||!panel.hidden)return;e.preventDefault();e.stopPropagation();directionPointers.set(e.pointerId,{button:b,key:k});b.setAttribute('aria-pressed','true');targetPoint=null;route=[];joy.gesture();try{b.setPointerCapture(e.pointerId);}catch{releaseDirection(e);}};
@@ -584,7 +585,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
   stick.x=stick.z=0;knob.style.transform='';targetPoint=null;route=[];
  };
  document.addEventListener('keydown',keydown);document.addEventListener('keyup',keyup);window.addEventListener('blur',blur);document.addEventListener('visibilitychange',blur);
- function joystick(e){const r=pad.getBoundingClientRect(),x=(e.clientX-r.left-r.width/2)/40,z=(e.clientY-r.top-r.height/2)/40,l=Math.hypot(x,z),strength=Math.max(0,Math.min(1,(l-.14)/.86));stick={x:l?x/l*strength:0,z:l?z/l*strength:0};knob.style.transform=`translate(${stick.x*32}px,${stick.z*32}px)`;targetPoint=null;}
+ function joystick(e){const r=pad.getBoundingClientRect(),radius=Math.max(30,Math.min(r.width,r.height)*.44),x=(e.clientX-r.left-r.width/2)/radius,z=(e.clientY-r.top-r.height/2)/radius,l=Math.hypot(x,z),strength=Math.max(0,Math.min(1,(l-.12)/.88));stick={x:l?x/l*strength:0,z:l?z/l*strength:0};knob.style.transform=`translate(${stick.x*radius*.65}px,${stick.z*radius*.65}px)`;targetPoint=null;}
  pad.onpointerdown=e=>{if(e.button!==0||joystickPointer!==null||paused()||!panel.hidden)return;e.preventDefault();joystickPointer=e.pointerId;try{pad.setPointerCapture(e.pointerId);}catch{blur();return;}joy.gesture();route=[];joystick(e);};
  pad.onpointermove=e=>{if(e.pointerId===joystickPointer){e.preventDefault();joystick(e);}};
  const releaseJoystick=e=>{if(e.pointerId!==joystickPointer)return;joystickPointer=null;stick.x=stick.z=0;knob.style.transform='';if(pad.hasPointerCapture(e.pointerId))pad.releasePointerCapture(e.pointerId);};
@@ -894,20 +895,8 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    if(active){energy=Math.max(0,energy-dt);eating=Math.max(0,eating-dt);}host.classList.toggle("snack-moment",eating>0);
    if(carDriving){
     if(active){const car=s.city.car;
-     // Driving is vehicle-relative: left/right steer, up accelerates, down
-     // brakes/reverses. Never interpret directional input as a world heading.
-     const throttle=Math.max(-1,Math.min(1,-dz));
-     const steer=Math.max(-1,Math.min(1,dx));
-     const maximum=fastMode?34:18;
-     const desiredSpeed=throttle>0?throttle*maximum:throttle<0?throttle*7:0;
-     carSpeed+=(desiredSpeed-carSpeed)*Math.min(1,dt*(throttle===0?4:2.8));
-     if(Math.abs(carSpeed)<.08)carSpeed=0;
-     if(Math.abs(carSpeed)>.15&&steer){
-      const turnRate=1.75*Math.min(1,.4+Math.abs(carSpeed)/12);
-      car.heading+=steer*turnRate*dt*Math.sign(carSpeed);
-     }
-     const nx=car.x+Math.sin(car.heading)*carSpeed*dt,nz=car.z+Math.cos(car.heading)*carSpeed*dt;
-     if(cityLife.canDrive(nx,nz)){car.x=nx;car.z=nz;}else carSpeed=0;
+     // Thumb stick and arrow keys mean the actual direction of travel.
+     carSpeed=driveByDirection(car,dx,dz,carSpeed,dt,fastMode,(x,z)=>cityLife.canDrive(x,z));
      s.x=car.x;s.z=car.z;avatar.rotation.y=car.heading;
      autosave+=dt;if(autosave>2){save();autosave=0;}
     }
@@ -1046,7 +1035,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    pad.classList.toggle('flight-stick',!!ride||birdMount());pad.classList.toggle('steering',(!!ride||birdMount())&&len>.05);setText(knob,ride?'🎈':birdMount()?'🪽':'✥');setText(stickReadout,ride?'↕ '+Math.round(flightY)+' m':birdMount()?'↕ '+Math.round(birdAltitude)+' m':'');pad.style.setProperty('--heading',Math.atan2(dx,-dz)+'rad');
    descend.hidden=!ride&&!birdMount();for(const e of entityMeshes)if(e.p.id==='balloon')e.g.visible=!ride;
    if(ride){act.hidden=false;setText(act,say('💥 Reventar globo','💥 Pop balloon'));setText(jump,say('↑ Más alto','↑ Higher'));setText(instructions,say('Flechas para volar · Espacio ↑ · Q ↓ · E 💥','Arrows to fly · Space ↑ · Q ↓ · E 💥'));}
-   else if(carDriving){act.hidden=false;setText(act,say('👣 Salir del auto','👣 Get out of car'));setText(jump,say('👣 Bajar','👣 Exit car'));setText(instructions,say('🚙 Flechas para conducir · Espacio / E para salir','🚙 Arrows to drive · Space / E to exit'));}
+   else if(carDriving){act.hidden=false;setText(act,say('👣 Salir del auto','👣 Get out of car'));setText(jump,say('👣 Bajar','👣 Exit car'));setText(knob,'🚙');setText(stickReadout,say('Mueve para conducir','Move to drive'));setText(instructions,say('🚙 Palanca para dirigir · Suelta para parar','🚙 Joystick to steer · Release to stop'));}
    else if(mountId){
     setText(act,birdMount()?say('🛬 Aterrizar','🛬 Land'):say('👣 Bajar del animal','👣 Hop off'));act.hidden=false;
     setText(jump,birdMount()?say('🪽 Subir','🪽 Climb'):say('👣 Bajar','👣 Dismount'));

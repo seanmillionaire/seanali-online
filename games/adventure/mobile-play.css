@@ -609,3 +609,19 @@ body[data-scene="explore"] .animal-ride-quick:not([hidden]){
 .panama-food-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #ccd5c0}
 .panama-food-row .discover-place{min-height:44px;padding:8px 14px}
 .panama-feedback{padding:10px;border-radius:10px;background:#e4efd6;color:#264b3d}
+
+/* One-thumb joystick replaces the old mobile D-pad; existing desktop keys remain. */
+@media(max-width:780px),(pointer:coarse){
+ body[data-scene="explore"] .explore-world.explore-ready .explore-stick{
+  display:grid!important;width:clamp(98px,29vw,120px)!important;
+  height:clamp(98px,29vw,120px)!important;
+  left:max(10px,env(safe-area-inset-left))!important;
+  bottom:var(--game-control-bottom)!important;z-index:22;touch-action:none
+ }
+ body[data-scene="explore"] .world-arrows{display:none!important;pointer-events:none!important}
+ body[data-scene="explore"] .explore-world.helpers-open .explore-stick,
+ body[data-scene="explore"] .explore-world:has(.explore-panel:not([hidden]),.friend-panel:not([hidden]),.realm-panel:not([hidden]),.journey-panel:not([hidden])) .explore-stick{visibility:hidden!important;pointer-events:none!important}
+}
+@media(max-height:520px) and (max-width:780px),(pointer:coarse) and (max-height:520px){
+ body[data-scene="explore"] .explore-world.explore-ready .explore-stick{width:80px!important;height:80px!important}
+}
