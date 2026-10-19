@@ -1,4 +1,4 @@
-import {createColonWildlife,monkeyJumpPhase,recordMonkeyJump} from './colon-wildlife.js?v=150';
+import {createColonWildlife,monkeyJumpPhase,recordMonkeyJump} from './colon-wildlife.js?v=152';
 import {COLON_SITES,COLON_BRIDGE,bridgeDistance,buildColon,expandColon} from './colon-state.js?v=106';
 import {addFood,inWater,earnCoins} from './explore-state.js?v=114';
 export function createColonAdventure({T,scene,host,state,make,geometry,mat,box,ball,cylinder,cone,height,save,refresh,joy,tell,forest,motion=()=>true}){

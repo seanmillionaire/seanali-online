@@ -22,16 +22,66 @@ export function shoreCrocodilePose(index,time,isWater){
  }
  return {x:142,z:-56,heading:Math.PI};
 }
+// Stateful local wandering: the ellipse is used only to find a safe spawn.
+const angleDelta=(a,b)=>Math.atan2(Math.sin(a-b),Math.cos(a-b));
+const crocRandom=n=>{n.seed=(n.seed*1664525+1013904223)>>>0;return n.seed/4294967296;};
+export function crocodileClear(x,z,heading,isWater){
+ for(const forward of [-3.8,-1,1.5,2.4])for(const side of [-1.1,0,1.1])
+  if(!isWater(x+Math.sin(heading)*forward+Math.cos(heading)*side,z+Math.cos(heading)*forward-Math.sin(heading)*side))return false;
+ return true;
+}
+export function createCrocodileMotion(index,isWater,neighbors=[]){
+ let p=shoreCrocodilePose(index,0,isWater);
+ for(let i=0;i<128;i++){const candidate=shoreCrocodilePose(index,i*1.8,isWater);if(crocodileClear(candidate.x,candidate.z,candidate.heading,isWater)&&neighbors.every(n=>Math.hypot(n.x-candidate.x,n.z-candidate.z)>7)){p=candidate;break;}}
+ return {...p,seed:7817+index*7919,speed:0,goal:null,rest:0,attention:0,phase:index*1.71,travel:0,mode:'wander'};
+}
+export function stepCrocodile(n,dt,isWater,player=null,neighbors=[]){
+ dt=Math.max(0,Math.min(.1,dt));if(!dt)return n;
+ const distance=player?Math.hypot(player.x-n.x,player.z-n.z):Infinity;
+ n.attention+=((distance<19?1:0)-n.attention)*(1-Math.exp(-dt*2));
+ const mode=distance<(n.mode==='give-space'?9:7)?'give-space':distance<(n.mode==='watch'?21:18)?'watch':'wander';
+ if(mode!==n.mode){n.mode=mode;n.goal=null;n.rest=0;}
+ n.rest=Math.max(0,n.rest-dt);
+ if(n.goal&&Math.hypot(n.goal.x-n.x,n.goal.z-n.z)<2){
+  n.goal=null;if(mode==='wander'&&crocRandom(n)<.25)n.rest=.5+crocRandom(n)*1.8;
+ }
+ if(!n.goal&&n.rest===0){
+  const base=mode==='give-space'?Math.atan2(n.x-player.x,n.z-player.z):n.heading;
+  for(let i=0;i<16;i++){
+   const a=base+(crocRandom(n)-.5)*(i<8?2.5:Math.PI*2),d=6+crocRandom(n)*12;
+   const x=n.x+Math.sin(a)*d,z=n.z+Math.cos(a)*d;
+   if(Math.hypot((x-110)/53,(z+56)/49)>1.15)continue;
+   if([.25,.5,.75,1].every(t=>crocodileClear(n.x+(x-n.x)*t,n.z+(z-n.z)*t,a,isWater))){n.goal={x,z};break;}
+  }
+ }
+ let desired=n.goal?Math.atan2(n.goal.x-n.x,n.goal.z-n.z):n.heading;
+ if(mode==='watch')desired+=angleDelta(Math.atan2(player.x-n.x,player.z-n.z),desired)*n.attention*.12;
+ let sx=0,sz=0;
+ for(const other of neighbors){if(other===n)continue;const d=Math.hypot(n.x-other.x,n.z-other.z);if(d>0&&d<6){sx+=(n.x-other.x)/d*(6-d);sz+=(n.z-other.z)/d*(6-d);}}
+ if(sx||sz)desired=Math.atan2(Math.sin(desired)+sx*.22,Math.cos(desired)+sz*.22);
+ const turn=Math.max(-dt*.65,Math.min(dt*.65,angleDelta(desired,n.heading)));
+ const wanted=!n.goal||n.rest>0?0:mode==='give-space'?1.5:mode==='watch'?.45:.75+.28*Math.sin(n.phase*.21);
+ n.speed+=(wanted-n.speed)*(1-Math.exp(-dt*1.4));
+ const h=n.heading+turn,step=n.speed*dt,x=n.x+Math.sin(h)*step,z=n.z+Math.cos(h)*step;
+ // Look ahead before the long body reaches a bank; never snap to a fallback pose.
+ if(crocodileClear(x,z,h,isWater)&&crocodileClear(x+Math.sin(h)*1.2,z+Math.cos(h)*1.2,h,isWater)){
+  n.x=x;n.z=z;n.heading=h;n.travel+=step;
+ }else{
+  n.speed*=Math.exp(-dt*5);n.goal=null;
+  for(const sign of [1,-1]){const h=n.heading+sign*dt*.5;if(crocodileClear(n.x,n.z,h,isWater)){n.heading=h;break;}}
+ }
+ n.phase+=dt*(.7+n.speed*1.7);return n;
+}
 export function stepMonkey(m,dt,anchors){
  m.t+=Math.max(0,Math.min(dt,.1))/m.duration;
  if(m.t>=1){
-  m.a=m.b;m.t%=1;m.seed=(m.seed*1664525+1013904223)>>>0;
-  const choices=anchors.map((p,i)=>({p,i,d:Math.hypot(p.x-m.a.x,p.z-m.a.z)+Math.abs(p.y-m.a.y)*.3})).filter(p=>p.d>1&&p.d<16).sort((a,b)=>a.d-b.d).slice(0,6);
+  m.previous=m.a;m.a=m.b;m.t%=1;m.seed=(m.seed*1664525+1013904223)>>>0;
+  const choices=anchors.map((p,i)=>({p,i,d:Math.hypot(p.x-m.a.x,p.z-m.a.z)+Math.abs(p.y-m.a.y)*.3})).filter(p=>p.d>1&&p.d<16&&p.p!==m.previous).sort((a,b)=>a.d-b.d).slice(0,6);
   m.b=choices.length?choices[m.seed%choices.length].p:anchors[(m.seed>>>8)%anchors.length];
-  m.duration=Math.max(.65,Math.min(1.5,Math.hypot(m.b.x-m.a.x,m.b.z-m.a.z)/8.5));
+  m.duration=Math.max(.8,Math.min(2.1,Math.hypot(m.b.x-m.a.x,m.b.z-m.a.z)/(6.5+(m.seed%23)/10)));
  }
- const t=m.t,arc=Math.sin(t*Math.PI)*(1.5+(m.seed%4)*.35);
- return {x:m.a.x+(m.b.x-m.a.x)*t,z:m.a.z+(m.b.z-m.a.z)*t,y:m.a.y+(m.b.y-m.a.y)*t+arc,
+ const t=m.t,e=t*t*(3-2*t),arc=Math.sin(t*Math.PI)*(1.5+(m.seed%4)*.35);
+ return {x:m.a.x+(m.b.x-m.a.x)*e,z:m.a.z+(m.b.z-m.a.z)*e,y:m.a.y+(m.b.y-m.a.y)*e+arc,
   heading:Math.atan2(m.b.x-m.a.x,m.b.z-m.a.z),air:Math.sin(t*Math.PI),stride:t*Math.PI*2};
 }
 export function createColonWildlife({T,root,make,geometry,mat,ball,box,cylinder,cone,height,inWater,anchors}){
@@ -107,7 +157,7 @@ export function createColonWildlife({T,root,make,geometry,mat,ball,box,cylinder,
   const tail=[];let parent=g;
   for(let j=0;j<5;j++){const rig=new T.Group();rig.position.z=j===0?-1.05:-.49;parent.add(rig);piece(ball,hide,0,0,-.2,.39-j*.058,.18-j*.025,.43,rig);piece(cone,ridge,0,.17-j*.025,-.22,.09,.16,.16,rig);tail.push(rig);parent=rig;}
   const wake=piece(wakeGeo,ripple,0,-.045,-.7,1,1.9,1,g);wake.rotation.x=-Math.PI/2;
-  const scale=.85+(i%3)*.1;g.scale.setScalar(scale);crocs.push({g,tail,jaw,wake,index:i});
+  const scale=.85+(i%3)*.1;g.scale.setScalar(scale);crocs.push({g,tail,jaw,wake,index:i,nav:createCrocodileMotion(i,inWater,crocs.map(c=>c.nav))});
  }
  function update(dt,active,time,{player,playing=false,signal=false,reducedMotion=false}={}){
   const nearby=Math.hypot(player.x-110,player.z+56)<100||Math.hypot(player.x-130,player.z+25)<80;
@@ -133,13 +183,17 @@ export function createColonWildlife({T,root,make,geometry,mat,ball,box,cylinder,
    m.arms.forEach((a,i)=>{a.pivot.rotation.x=-.45+Math.sin(p.stride+i*Math.PI)*.8;a.pivot.rotation.z=(i?1:-1)*(.2+p.air*.3);a.lower.rotation.x=-.4-p.air*.5;});
    m.legs.forEach((a,i)=>{a.pivot.rotation.x=Math.sin(p.stride+i*Math.PI)*.65;a.lower.rotation.x=.35+p.air*.5;});
    m.tail.forEach((t,j)=>{t.rotation.x=.14+Math.sin(time*5+j*.45+m.index)*.13;t.rotation.y=Math.sin(time*3+j*.5+m.index)*.13;});
-   m.head.rotation.y=Math.sin(time*1.4+m.index)*.18;
+   const nearPlayer=Math.hypot(player.x-p.x,player.z-p.z)<15;
+   const look=nearPlayer?Math.max(-.8,Math.min(.8,angleDelta(Math.atan2(player.x-p.x,player.z-p.z),p.heading))):Math.sin(time*1.4+m.index)*.18;
+   if(active)m.head.rotation.y+=(look-m.head.rotation.y)*(1-Math.exp(-dt*4));
    m.g.visible=Math.hypot(player.x-p.x,player.z-p.z)<65;
   }
+  const neighbors=crocs.map(c=>c.nav);
   for(const c of crocs){
-   const p=shoreCrocodilePose(c.index,time,inWater);c.g.position.set(p.x,-.03,p.z);c.g.rotation.y=p.heading;
-   c.tail.forEach((t,j)=>t.rotation.y=Math.sin(time*2.6-j*.65+c.index)*.19);
-   c.jaw.rotation.x=-.015-Math.max(0,Math.sin(time*.5+c.index))*.025;
+   const p=stepCrocodile(c.nav,active?dt:0,inWater,player,neighbors);c.g.position.set(p.x,-.03,p.z);c.g.rotation.y=p.heading;
+   c.tail.forEach((t,j)=>t.rotation.y=Math.sin(p.phase-j*.65)*(.05+p.speed*.1));
+   c.jaw.rotation.x=-.015-Math.max(0,Math.sin(p.phase*.2+c.index))*.025;
+   c.wake.visible=p.speed>.2&&!reducedMotion;
    c.g.visible=Math.hypot(player.x-p.x,player.z-p.z)<75;
   }
  }

@@ -3,12 +3,12 @@ import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,mainlandAt,mainlandRoadRoute
 import {createPanamaLife} from './panama-life.js?v=147';
 import {createCloseCamera} from './close-camera.js?v=115';
 import {createCampaign} from './campaign.js?v=114';
-import {createColonAdventure} from './colon-adventure.js?v=150';
+import {createColonAdventure} from './colon-adventure.js?v=152';
 import {createCanalCruise} from './canal-cruise.js?v=148';
 import {createRealms} from './realms.js?v=114';
 import {createJourney} from './journey.js?v=114';
 import {oceanModel} from './ocean-models.js?v=73';
-import {createIslandLife} from './island-life.js?v=150';
+import {createIslandLife,naturalSharkPatrol as sharkPatrol} from './island-life.js?v=152';
 import {createWorldStory,islandStories} from './world-story.js?v=114';
 import {REGION_PROJECTS,regionForPosition,missionStatus,restoreRegions,createRegionProjectWorld} from './region-projects.js?v=114';
 import {createWorldMap} from './world-map.js?v=114';
@@ -19,7 +19,7 @@ import {createPizzaCity} from './pizza-city.js?v=137';
 import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=114';
 import {ESTATE_PLANS,estateCosts,estateMissing,findEstateSite,canBuildEstate,buildEstate,canUpgradeEstate,upgradeEstate,estateBlocked,createEstateWorld} from './estate.js?v=5';
 import {buildIsland} from './entrance.js?v=146';
-import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,sharkPatrol,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=140';
+import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=140';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);syncWallet(state);
  let disposed=false,engine=null,control=null,builderSystem=null,friendSystem=null,houseSystem=null,wildLife=null,cityLife=null,panamaLife=null,cruiseLife=null,colonLife=null,workshop=null,estateWorld=null,regionWorld=null,carDriving=false,carSpeed=0,mountId=null,birdAltitude=0,birdTarget=0,birdLanding=false,near=null,ride=s.flight?1:0,flightY=s.flight||0,flightTarget=s.flight||0,flightVX=0,flightVZ=0,route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;

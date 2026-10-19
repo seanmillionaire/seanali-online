@@ -1,4 +1,4 @@
-import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=118';
+import {roadDistance,HIGHWAY_WIDTH,sharkClearance,sharkStep,recoverShark} from './explore-state.js?v=140';
 import {oceanModel} from './ocean-models.js?v=73';
 // Temporary gameplay switch. Re-enable the cycle by setting this to true.
 // Disabled mode forces bright midday even when an old save resumes at night.
@@ -14,7 +14,7 @@ export function islandDaylight(seconds){
 export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,cone,box,sun,ambient,waterMaterial,inWater}){
  const s=state.world,animals=[],group=new T.Group();group.name='Ocean wildlife';scene.add(group);let ridden=null;
  const nightSky=new T.Color('#172c50'),daySky=new T.Color('#a4c9de'),dusk=new T.Color('#ce9b96');
- function animal(kind,x,z,i){const {g,moving}=oceanModel(T,{geometry,mat,make,ball},kind);g.name=kind+' '+(i+1);group.add(g);g.position.set(x,-.3,z);animals.push({g,moving,x,z,phase:kind==='Reef fish'?Math.floor(i/6)*1.7+(i%6)*.08:i*1.7,kind,t:0,heading:i*2.39996,waypoint:null,stuck:0,travel:0});}
+ function animal(kind,x,z,i){const {g,moving}=oceanModel(T,{geometry,mat,make,ball},kind);g.name=kind+' '+(i+1);group.add(g);g.position.set(x,-.3,z);animals.push({g,moving,x,z,phase:kind==='Reef fish'?Math.floor(i/6)*1.7+(i%6)*.08:i*1.7,kind,seed:923+i*7919+(kind.length*131),attention:0,t:0,heading:i*2.39996,waypoint:null,stuck:0,travel:0});}
  [[8,19],[-58,24],[77,-51],[113,37]].forEach(([x,z],i)=>animal('Sea turtle',x,z,i));
  [[13,28],[-35,-42],[45,58],[75,12]].forEach(([x,z],i)=>animal('Dolphin',x,z,i));
  [[-8,24],[38,-27],[-55,-12],[13,73]].forEach(([x,z],i)=>animal('Manta ray',x,z,i));
@@ -52,10 +52,14 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
    const speed=isDolphin?3.4:isFish?1.2:a.kind==='Manta ray'?1.65:.95;
    const radius=isFish?.3:.85;
    const px=player?.x,pz=player?.z,notice=Number.isFinite(px)&&Number.isFinite(pz)?Math.hypot(px-a.g.position.x,pz-a.g.position.z):Infinity;
-   const observing=notice<(isDolphin?13:isFish?5:10)&&notice>1.6;
+   const observing=notice<(isDolphin?13:isFish?5:10);
    // Nearby wildlife watches Angelique without abandoning safe-water boundaries.
    // Fish remain shy; dolphins and turtles slow down to observe.
-   const watchWeight=observing?(isFish?.1:.25):0;
+   if(active)a.attention+=((observing?1:0)-a.attention)*(1-Math.exp(-dt*2));
+   const tooClose=notice<(isFish?2.5:isDolphin?4:3),wantedWeight=a.attention*(tooClose?-.6:isFish?-.18:.22);
+   a.watchWeight??=0;a.pace??=1;
+   if(active){const ease=1-Math.exp(-dt*2);a.watchWeight+=(wantedWeight-a.watchWeight)*ease;a.pace+=((tooClose?1.1:1-a.attention*(isFish?.08:.25))-a.pace)*ease;}
+   const watchWeight=a.watchWeight;
    // Spawn recovery prevents underwater NPCs from beginning trapped inside an island.
    if(!safeWater(a.g.position.x,a.g.position.z,radius)){
     let found=false;
@@ -71,8 +75,9 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
     const chooseWaypoint=()=>{
      // Pick stable goals inside a local roaming territory, biased away from coastlines.
      for(let j=0;j<24;j++){
-      const angle=a.heading+(j%2?-1:1)*(.45+(j%8)*.38)+Math.sin(a.phase+t*.17)*.3;
-      const dist=6+(j%5)*3,tx=a.g.position.x+Math.sin(angle)*dist,tz=a.g.position.z+Math.cos(angle)*dist;
+      a.seed=(a.seed*1664525+1013904223)>>>0;const random=a.seed/4294967296;
+      const angle=a.heading+(random-.5)*(j<12?2.7:Math.PI*2);
+      const dist=6+random*12,tx=a.g.position.x+Math.sin(angle)*dist,tz=a.g.position.z+Math.cos(angle)*dist;
       if(safeWater(tx,tz,radius+1.3)&&safeWater((tx+a.g.position.x)/2,(tz+a.g.position.z)/2,radius)){
        a.waypoint={x:tx,z:tz};a.travel=0;return;
       }
@@ -88,7 +93,7 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
      const blended=desired+Math.atan2(Math.sin(playerHeading-desired),Math.cos(playerHeading-desired))*watchWeight;
      const delta=Math.atan2(Math.sin(blended-a.heading),Math.cos(blended-a.heading));
      a.heading+=Math.max(-dt*1.8,Math.min(dt*1.8,delta));
-     const step=Math.min(speed*dt*(observing?(isFish?.9:.65):1),Math.max(0,d-.15));
+     const step=Math.min(speed*dt*(1+Math.sin(t*.31+a.phase)*.13)*a.pace,Math.max(0,d-.15));
      const nx=a.g.position.x+Math.sin(a.heading)*step,nz=a.g.position.z+Math.cos(a.heading)*step;
      if(safeWater(nx,nz,radius)){
       a.g.position.x=nx;a.g.position.z=nz;a.stuck=0;a.travel+=step;
@@ -102,11 +107,9 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
        const mag=Math.hypot(gx,gz)||1,nxOut=gx/mag,nzOut=gz/mag;
        const vx=Math.sin(a.heading),vz=Math.cos(a.heading),dot=vx*nxOut+vz*nzOut;
        const rx=vx-2*Math.min(0,dot)*nxOut,rz=vz-2*Math.min(0,dot)*nzOut;
-       a.heading=Math.atan2(rx,rz)+(a.kind==='Reef fish'?.16:.25);
-       a.waypoint=null;a.stuck=0;
+       a.waypoint={x:a.g.position.x+rx*8,z:a.g.position.z+rz*8};a.travel=0;a.stuck=0;
       }else{
-       a.heading+=Math.PI*.35;
-       a.waypoint=null;a.stuck=0;
+       a.waypoint=null;a.travel=0;a.stuck=0;
       }
      }
     }
@@ -125,4 +128,26 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
    });
   }
  },dispose(){camera.remove(sky);scene.remove(group);owned.forEach(m=>m.dispose());}};
+}
+
+// Sharks choose individual safe goals rather than replaying a ring of waypoints.
+export function naturalSharkPatrol(p,dt,target=null){
+ if(dt<=0)return {x:p.x,z:p.z,heading:p.heading};
+ if(sharkClearance(p.x,p.z)!==13)Object.assign(p,recoverShark(p.x,p.z));
+ p.roamSeed??=(173+(p.cx||0)*131+(p.cz||0)*317+(p.waypoint||0)*7919)>>>0;
+ p.roamTime=(p.roamTime||0)+dt;
+ const random=()=>{p.roamSeed=(p.roamSeed*1664525+1013904223)>>>0;return p.roamSeed/4294967296;};
+ if(!p.roamGoal||Math.hypot(p.roamGoal.x-p.x,p.roamGoal.z-p.z)<3){
+  p.roamGoal=null;
+  for(let i=0;i<16;i++){
+   const a=random()*Math.PI*2,r=.4+random()*.6,x=(p.cx||0)+Math.cos(a)*(p.rx||32)*r,z=(p.cz||0)+Math.sin(a)*(p.rz||26)*r;
+   if(Math.hypot(x-p.x,z-p.z)>5&&sharkClearance(x,z)===13){p.roamGoal={x,z};break;}
+  }
+ }
+ const goal=target||p.roamGoal||{x:p.x+Math.sin(p.heading||0)*3,z:p.z+Math.cos(p.heading||0)*3};
+ const speed=target?10:3.4+Math.sin(p.roamTime*.23+(p.cx||0))*.6;
+ const next=sharkStep(p.x,p.z,goal.x,goal.z,Math.min(dt,.1),speed,p.side||1,p.heading??null);
+ p.heading=next.heading;p.roamWatch=(p.roamWatch||0)+dt;
+ if(p.roamWatch>2){if(p.roamAnchor&&Math.hypot(next.x-p.roamAnchor.x,next.z-p.roamAnchor.z)<.5){p.roamGoal=null;p.side=-(p.side||1);p.detour=3;}p.roamAnchor={...next};p.roamWatch=0;}
+ return next;
 }
