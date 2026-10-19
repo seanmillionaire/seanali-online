@@ -30,9 +30,24 @@ export const MAINLAND_STOPS=[
  {id:'volcanTown',x:-80,z:45,en:'Volcán Town',es:'Pueblo Volcán'},
  {id:'sunset',x:-110,z:49,en:'Volcán Barú',es:'Volcán Barú'}
 ];
+export const HIGHWAY_WIDTH=9.5;
+export function smoothHighway(points){
+ const result=[];
+ for(let i=0;i<points.length-1;i++){
+  const a=points[Math.max(0,i-1)],b=points[i],d=points[i+1],e=points[Math.min(points.length-1,i+2)];
+  const count=Math.max(3,Math.ceil(Math.hypot(d[0]-b[0],d[1]-b[1])/2));
+  for(let j=0;j<count;j++){
+   const t=j/count,t2=t*t,t3=t2*t;
+   const calc=k=>.5*((2*b[k])+(-a[k]+d[k])*t+(2*a[k]-5*b[k]+4*d[k]-e[k])*t2+(-a[k]+3*b[k]-3*d[k]+e[k])*t3);
+   result.push([calc(0),calc(1)]);
+  }
+ }
+ result.push(points[points.length-1]);return result;
+}
+export const HIGHWAY_CURVES=Object.fromEntries(Object.entries(MAINLAND_ROADS).map(([id,points])=>[id,smoothHighway(points)]));
 export function roadDistance(x,z){
  let best=Infinity;
- for(const nodes of Object.values(MAINLAND_ROADS))for(let i=1;i<nodes.length;i++){
+ for(const nodes of Object.values(HIGHWAY_CURVES))for(let i=1;i<nodes.length;i++){
   const [ax,az]=nodes[i-1],[bx,bz]=nodes[i],dx=bx-ax,dz=bz-az;
   const t=Math.max(0,Math.min(1,((x-ax)*dx+(z-az)*dz)/(dx*dx+dz*dz)));
   best=Math.min(best,Math.hypot(x-ax-t*dx,z-az-t*dz));
@@ -57,7 +72,7 @@ export function mainlandRoadRoute(from,to){
  for(let i=1;i<points.length;i++){const a=points[i-1],b=points[i],n=Math.max(1,Math.ceil(Math.hypot(b.x-a.x,b.z-a.z)/2));for(let j=1;j<=n;j++)route.push({x:a.x+(b.x-a.x)*j/n,z:a.z+(b.z-a.z)*j/n});}
  return route;
 }
-export function mainlandAt(x,z){return roadDistance(x,z)<3.5||Math.hypot(x/18.7,z/12.5)<=1||worldIslands.some(i=>['pizzaCity','colon','sunset'].includes(i.id)&&Math.hypot((x-i.x)/i.rx,(z-i.z)/i.rz)<1);}
+export function mainlandAt(x,z){return roadDistance(x,z)<HIGHWAY_WIDTH/2||Math.hypot(x/18.7,z/12.5)<=1||worldIslands.some(i=>['pizzaCity','colon','sunset'].includes(i.id)&&Math.hypot((x-i.x)/i.rx,(z-i.z)/i.rz)<1);}
 // A sculpted, safely walkable dormant volcano. The center dips to form a real
 // bowl-shaped crater; the highest rock is the circular rim around the summit.
 export function volcanoRelief(u,v){
@@ -82,7 +97,7 @@ export function volcanoTrailPoint(progress){
 // navigation, saved positions, swim transitions and ocean shader stay aligned.
 export function isletHeight(x,z){
  if(bridgeDistance(x,z)<1.5)return COLON_BRIDGE.y;
- if(roadDistance(x,z)<3.0)return .16;
+ if(roadDistance(x,z)<HIGHWAY_WIDTH/2+.5)return .16;
  // A real sea-level canal cut through the eastern city waterfront.
  if(x>-64&&x<-22&&Math.abs(z+74)<13)return 0;
  let h=0;
