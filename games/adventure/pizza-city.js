@@ -23,20 +23,8 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
  const piece=(geo,m,x,y,z,sx,sy,sz,parent=group)=>make(geo,m,x,y,z,sx,sy,sz,parent);
  const colorFrom=arr=>arr.map(col=>mat(col));
  const shopColors=['#aad4bf','#ecab7e','#b7bedf','#eadba7'].map(c=>mat(c,{map:surfaces?.plaster,bumpMap:surfaces?.plaster,bumpScale:.035}));
- const road=((x,z,sz,sx,rotation=0)=>{const mesh=piece(box,asphalt,x,height(x,z)+.09,z,sx,.15,sz);mesh.rotation.y=rotation;mesh.castShadow=false;return mesh;});
- // Two intersecting paved streets plus a circular seaside boulevard.
- for(let t=-34;t<=34;t+=4){
-  road(CITY.x+t,CITY.z,4.3,6.7,Math.PI/2);
-  road(CITY.x,CITY.z+t*.94,4.4,6.8);
-  if(Math.abs(t)>6&&t%8===-2){const d=piece(box,line,CITY.x+t,height(CITY.x+t,CITY.z)+.2,CITY.z,2,.035,.17);d.castShadow=false;}
- }
- const boulevard=[];
- for(let i=0;i<64;i++){
-  const a=(i+.5)/64*2*Math.PI,x=CITY.x+Math.cos(a)*31,z=CITY.z+Math.sin(a)*26;
-  const path=road(x,z,4.2,4.5,-Math.atan2(Math.cos(a)*31,-Math.sin(a)*26));
-  boulevard.push(path);
-  if(i%3===0){const p=piece(box,line,x,height(x,z)+.2,z,1.0,.025,.13);p.rotation.y=path.rotation.y;p.castShadow=false;}
- }
+ // A single city-wide road mesh system lives in city-expansion.js.
+ // Avoid overlapping road layers and circular asphalt patches here.
  // Square sidewalks and crossing stripes around the town center.
  for(const [u,v,w,d] of [[-15,-13,12,6],[16,-13,13,6],[-16,13,12,6],[17,13,13,6]]){
   const x=CITY.x+u,z=CITY.z+v;
