@@ -14,10 +14,22 @@ export function panamaModels({T,make,mat,box,ball,cylinder,cone,geometry}){
  function wheel(parent,x,y,z,r=.33){const t=part(tire,rubber,x,y,z,r/.33,r/.33,r/.33,parent);t.rotation.y=Math.PI/2;const rim=part(cylinder,silver,x,y,z,r*.57,.025,r*.57,parent);rim.rotation.z=Math.PI/2;return t;}
  // A vehicle is rigid: merge its static pieces by material to reduce phone draw calls.
  function batchVehicle(parent){const groups=new Map();for(const mesh of [...parent.children]){if(!mesh.isMesh)continue;mesh.updateMatrix();const g=mesh.geometry.clone().applyMatrix4(mesh.matrix),key=mesh.material;let a=groups.get(key);if(!a)groups.set(key,a=[]);a.push(g);parent.remove(mesh);}for(const [material,parts]of groups){const arrays={position:[],normal:[],uv:[]},indices=[];let offset=0;for(const g of parts){for(const name of Object.keys(arrays))arrays[name].push(...g.attributes[name].array);const ix=g.index?g.index.array:Array.from({length:g.attributes.position.count},(_,i)=>i);for(const i of ix)indices.push(i+offset);offset+=g.attributes.position.count;g.dispose();}const g=geometry(new T.BufferGeometry());for(const [name,data]of Object.entries(arrays))g.setAttribute(name,new T.Float32BufferAttribute(data,name==='uv'?2:3));g.setIndex(indices);part(g,material,0,0,0,1,1,1,parent);}}
- function sedan(parent,police=false){const g=new T.Group();parent.add(g);g.name=police?'Moving police patrol car':'Moving white Kia-style sedan';
-  part(carBody,white,0,0,0,1,1,1,g);part(carCabin,glass,0,0,0,1,1,1,g);part(box,white,0,1.4,-.12,1.32,.055,1.05,g);
-  const d=details(g);for(const side of [-1,1]){for(const z of [-1.02,1.04])wheel(g,side*.83,.34,z);part(box,white,side*.7,1.1,-.2,.05,.47,.065,g);part(box,white,side*.79,.89,.62,.25,.12,.17,d);part(box,dark,side*.8,.65,-.1,.012,.025,2.4,d);part(box,silver,side*.81,.81,-.52,.025,.025,.17,d);part(box,silver,side*.81,.81,.43,.025,.025,.17,d);part(box,lamp,side*.55,.7,1.63,.43,.1,.035,g);part(box,tail,side*.56,.71,-1.64,.38,.11,.035,g);for(const z of [-.96,.15])part(box,dark,side*.81,.65,z,.014,.35,.012,d);}
+ const taxiYellow=mat('#fbd21e',{roughness:.4,metalness:.08}),taxiBlack=mat('#171d20'),taxiWhite=mat('#fefdf0');
+ function sedan(parent,police=false,taxi=false){const g=new T.Group();parent.add(g);g.name=police?'Moving police patrol car':taxi?'Panama yellow taxi':'Moving white Kia-style sedan';
+  const bodyColor=taxi?taxiYellow:white;
+  part(carBody,bodyColor,0,0,0,1,1,1,g);part(carCabin,glass,0,0,0,1,1,1,g);part(box,bodyColor,0,1.4,-.12,1.32,.055,1.05,g);
+  const d=details(g);for(const side of [-1,1]){for(const z of [-1.02,1.04])wheel(g,side*.83,.34,z);part(box,bodyColor,side*.7,1.1,-.2,.05,.47,.065,g);part(box,bodyColor,side*.79,.89,.62,.25,.12,.17,d);part(box,dark,side*.8,.65,-.1,.012,.025,2.4,d);part(box,silver,side*.81,.81,-.52,.025,.025,.17,d);part(box,silver,side*.81,.81,.43,.025,.025,.17,d);part(box,lamp,side*.55,.7,1.63,.43,.1,.035,g);part(box,tail,side*.56,.71,-1.64,.38,.11,.035,g);for(const z of [-.96,.15])part(box,dark,side*.81,.65,z,.014,.35,.012,d);}
   part(box,dark,0,.59,1.67,.79,.18,.035,g);for(let i=0;i<4;i++)part(box,silver,0,.53+i*.04,1.69,.74,.012,.02,d);part(box,white,0,.48,1.71,.32,.1,.014,d);part(box,silver,0,.83,1.63,.11,.04,.02,d);part(box,dark,0,.56,-1.68,.5,.12,.03,d);
+  if(taxi&&!police){
+   for(const side of [-1,1]){
+    // Highly visible black/white taxi door stripe on both sides.
+    part(box,taxiBlack,side*.817,.68,-.11,.033,.235,1.55,g);
+    part(box,taxiWhite,side*.84,.68,-.11,.036,.115,1.42,g);
+    part(box,taxiBlack,side*.865,.68,-.11,.039,.035,1.42,g);
+   }
+   part(box,taxiWhite,0,1.53,-.19,.78,.22,.42,g);
+   part(box,taxiBlack,0,1.65,-.19,.62,.045,.31,g);
+  }
   if(police){for(const side of [-1,1]){part(box,blue,side*.827,.68,-.12,.025,.21,2.5,g);const badge=sign(d,'POLICÍA',side*.846,.72,0,1.25,.23);if(badge)badge.rotation.y=side*Math.PI/2;}part(box,dark,0,1.47,-.1,1.05,.06,.24,g);for(const side of [-1,1])part(box,side<0?red:blue,side*.33,1.55,-.1,.4,.13,.22,g);}batchVehicle(d);batchVehicle(g);return g;
  }
  function bus(parent){const g=new T.Group();g.name='The one Diablo Rojo bus';parent.add(g);const d=details(g);

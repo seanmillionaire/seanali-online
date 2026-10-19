@@ -1,5 +1,5 @@
 import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,mainlandAt,mainlandRoadRoute} from './explore-state.js?v=140';
-import {createPanamaLife} from './panama-life.js?v=145';
+import {createPanamaLife} from './panama-life.js?v=147';
 import {createCloseCamera} from './close-camera.js?v=115';
 import {createCampaign} from './campaign.js?v=114';
 import {createColonAdventure} from './colon-adventure.js?v=114';

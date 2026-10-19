@@ -4,7 +4,7 @@ export const BARRIO_HOMES=[{id:'barrio-casa-1',x:-136,z:-37,es:'Casa del barrio 
 export function createCityStreetLife({T,scene,make,mat,box,ball,cylinder,height,models,joy,surfaces,football=()=>null,npcKick=()=>{}}){
  const root=new T.Group();root.name='Panama City moving traffic and barrio street life';scene.add(root);const {white,dark,blue,red,yellow,glass,green}=models.colors;
  const piece=(m,x,y,z,w,h,d,parent=root)=>make(box,m,x,y,z,w,h,d,parent);
- const vehicles=[];for(let i=0;i<13;i++){const bus=i===12,police=i===10||i===11,route=TRAFFIC_ROUTES[bus?1:i%3],g=bus?models.bus(root):models.sedan(root,police);vehicles.push({g,bus,police,route,distance:(i%5)*31+i*8,speed:bus?9:police?5.5:4.7});}
+ const vehicles=[];for(let i=0;i<11;i++){const bus=i===10,police=i===9,taxi=i<7,route=TRAFFIC_ROUTES[bus?1:i%3],g=bus?models.bus(root):models.sedan(root,police,taxi);vehicles.push({g,bus,police,taxi,route,distance:(i%7)*28+i*9,speed:bus?9:police?5.5:taxi?5.3:4.7});}
  const signals=[];for(const [x,z]of [[-129,-97],[-100,-85],[-85,-97],[-100,-59]]){const y=height(x,z);piece(dark,x+3.4,y+1.9,z+3.4,.12,3.8,.12);piece(dark,x+3.4,y+3.5,z+3.4,.55,1,.4);for(const side of [-1,1]){const m=mat(side<0?'#e53430':'#67c258',{emissive:side<0?'#e53430':'#67c258',emissiveIntensity:.5});const mesh=make(ball,m,x+3.4,y+3.5+side*.22,z+3.64,.15,.15,.08,root);signals.push({mesh,side});}}
  const people=[],police=[];
  for(let i=0;i<4;i++){const x=-139+i*11,z=-66+(i%2)*11,p=models.person(root,x,height(x,z),z,i,true);p.home={x,z};p.police=true;people.push(p);police.push(p);}
@@ -21,14 +21,14 @@ export function createCityStreetLife({T,scene,make,mat,box,ball,cylinder,height,
  const children=[],spectators=[];for(let i=0;i<6;i++){const p=models.person(root,-121+i*1.4,height(-117,-43),-43,i);p.g.scale.setScalar(.67);children.push(p);}for(let i=0;i<6;i++){const p=models.person(root,i<3?-131:-103,height(-117,-43),-48+(i%3)*4,i);spectators.push(p);}
  let clock=0,beat=0,hornAt=0,kickAt=0;function update(dt,active,{x,z,indoors=false}={}){root.visible=!indoors;if(!active||indoors)return;clock+=dt;
   const nearCity=Math.hypot(x+100,z+74)<170;if(!nearCity)return;
-  for(const car of vehicles){car.distance=trafficAdvance(car,vehicles,clock,dt);const p=routePose(car.route,car.distance);car.g.position.set(p.x,height(p.x,p.z)+.08,p.z);car.g.rotation.y=p.heading;if(car.g.userData.visualDetail)car.g.userData.visualDetail.visible=Math.hypot(x-p.x,z-p.z)<38;}
+  for(const car of vehicles){car.distance=trafficAdvance(car,vehicles,clock,dt);const p=routePose(car.route,car.distance);car.g.position.set(p.x,height(p.x,p.z)+.08,p.z);car.g.rotation.y=p.heading;const nearby=Math.hypot(x-p.x,z-p.z);car.g.visible=nearby<105;if(car.g.userData.visualDetail)car.g.userData.visualDetail.visible=nearby<30;}
   for(const s of signals)s.mesh.material.emissiveIntensity=((Math.floor(clock/7)%2===0)===(s.side>0))?.9:.03;
   people.forEach((p,i)=>{const a=clock*(p.police?.2:.35)+i,px=p.home.x+Math.sin(a)*2.2,pz=p.home.z+Math.cos(a)*1.2;p.g.position.set(px,height(px,pz),pz);p.g.rotation.y=Math.atan2(Math.cos(a)*2.2,-Math.sin(a)*1.2);p.legs.forEach((l,j)=>l.rotation.x=Math.sin(clock*5+j*Math.PI)*.35);if(p.police)p.arms[0].rotation.z=.7+Math.sin(clock*2)*.25;});
   const ballPos=football()||{x:-117,z:-43};children.forEach((p,i)=>{const a=clock*.7+i*1.05,tx=Math.max(-128,Math.min(-106,ballPos.x+Math.sin(a)*(1.1+i*.4))),tz=Math.max(-50,Math.min(-36,ballPos.z+Math.cos(a)*(1+i*.3)));p.g.position.x+=(tx-p.g.position.x)*Math.min(1,dt*2);p.g.position.z+=(tz-p.g.position.z)*Math.min(1,dt*2);p.g.position.y=height(p.g.position.x,p.g.position.z);p.g.rotation.y=Math.atan2(tx-p.g.position.x,tz-p.g.position.z);p.legs.forEach((l,j)=>l.rotation.x=Math.sin(clock*11+i+j*Math.PI)*.55);if(clock>kickAt&&Math.hypot(p.g.position.x-ballPos.x,p.g.position.z-ballPos.z)<.8){npcKick();kickAt=clock+3;}});
   spectators.forEach((p,i)=>p.arms.forEach((a,j)=>a.rotation.z=Math.sin(clock*2+i)*(j?-.6:.6)));
   const volume=Math.max(...musicSources.map(p=>soundFalloff(x,z,p,27)));
   if(clock>=beat){joy.panamaSound?.({music:volume,step:Math.floor(clock/.17)%16,cheer:soundFalloff(x,z,{x:-117,z:-43},24)*.1});beat=clock+.17;}
-  if(clock>=hornAt){const bus=vehicles[12].g.position;joy.panamaSound?.({horn:soundFalloff(x,z,bus,42)});const sedan=vehicles[Math.floor(clock)%10].g.position;joy.panamaSound?.({horn:soundFalloff(x,z,sedan,19)*.35});hornAt=clock+7;}
+  if(clock>=hornAt){const bus=vehicles.find(v=>v.bus).g.position;joy.panamaSound?.({horn:soundFalloff(x,z,bus,42)});const sedan=vehicles[Math.floor(clock)%10].g.position;joy.panamaSound?.({horn:soundFalloff(x,z,sedan,19)*.35});hornAt=clock+7;}
  }
  function near(x,z){const vendor=STREET_VENDORS.find(p=>Math.hypot(x-p.x,z-p.z)<2.7);if(vendor)return {...vendor,type:'vendor'};const p=police.find(p=>Math.hypot(x-p.g.position.x,z-p.g.position.z)<2.7);if(p)return {type:'police'};if(Math.hypot(x+103,z+44)<3)return {type:'barrio'};return null;}
  update(0,true,{x:-100,z:-74});return {root,vehicles,children,people,near,update,homes:BARRIO_HOMES,dispose(){scene.remove(root);}};
