@@ -1,3 +1,4 @@
+import {waterFriend,animalClear,recoverAnimal,animalStep} from './animal-boundaries.js?v=149';
 import {explorePlaces,earnCoins} from './explore-state.js?v=114';
 import {oceanModel} from './ocean-models.js?v=73';
 import {createAnimalDetails} from './animal-details.js?v=73';
@@ -101,7 +102,8 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
   if(id==='pip')s.pet=false;
   const node=nodes.get(id);
   if(node){
-   node.g.position.set(s.x+1.3,node.f.id==='dori'?Math.max(.25,node.g.position.y):0,s.z+1.4);
+   const p=waterFriend(id)?recoverAnimal(id,s.x+1.3,s.z+1.4):{x:s.x+1.3,z:s.z+1.4};
+   node.g.position.set(p.x,id==='dori'?-.15:height(p.x,p.z),p.z);
   }
   save();refresh();joy.effect('friend');
   if(opened)close();
@@ -270,18 +272,24 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
    const formation=islandFriends.findIndex(f=>f.id===id),angle=formation*2.399963;
    const px=isRidden?s.x:canFollow?(mode==='house'&&roomPosition?roomPosition.x+Math.sin(angle)*1.7:s.x+Math.sin(angle)*2.5):n.home.x+(idleBird?Math.sin(time*.7+n.home.z)*1.3:0),
     pz=isRidden?s.z:canFollow?(mode==='house'&&roomPosition?roomPosition.z+Math.cos(angle)*1.7:s.z+Math.cos(angle)*2.5):n.home.z+(idleBird?Math.cos(time*.7+n.home.z)*1.15:0);
-   if(isRidden){n.g.position.x=px;n.g.position.z=pz;}
+   if(waterFriend(id)){
+    const radius=isRidden?3.3:1.4;
+    const start=recoverAnimal(id,n.g.position.x,n.g.position.z,radius);
+    const factor=isRidden?1:Math.min(1,dt*(canFollow?2.6:1.2));
+    const target=id==='dori'&&(inside||mode==='fly')?start:{x:start.x+(px-start.x)*factor,z:start.z+(pz-start.z)*factor};
+    const next=animalStep(id,start.x,start.z,target.x,target.z,radius);n.g.position.x=next.x;n.g.position.z=next.z;
+   }else if(isRidden){n.g.position.x=px;n.g.position.z=pz;}
    else if(canFollow&&Math.hypot(px-n.g.position.x,pz-n.g.position.z)>28){n.g.position.x=px;n.g.position.z=pz;}
    else{const factor=Math.min(1,dt*(canFollow?2.6:1.2));n.g.position.x+=(px-n.g.position.x)*factor;n.g.position.z+=(pz-n.g.position.z)*factor;}
    n.g.rotation.y=isRidden?heading:canFollow?Math.atan2(s.x-n.g.position.x,s.z-n.g.position.z):Math.sin(time*.6+n.home.x)*.27;
    n.g.scale.setScalar(isRidden?(id==='pip'?2.2:id==='dori'?2.65:id==='luna'?2:1.65):1);
    if(n.cheer>0)n.cheer=Math.max(0,n.cheer-dt);
    const bounce=n.cheer>0?Math.abs(Math.sin((2.5-n.cheer)*10))*.34:0;
-   const indoors=canFollow&&mode==='house'&&roomPosition;
+   const indoors=!waterFriend(id)&&canFollow&&mode==='house'&&roomPosition;
    const isBird=id==='mila'||id==='ollie',birdInFlight=isBird&&isRidden&&mountAltitude>0;
    const footHeight=indoors?roomPosition.y:height(n.g.position.x,n.g.position.z);
    const sea=mode==='swim'||mode==='boat'||mode==='mount-water';
-   const aquatic=id==='dori'&&(sea||isRidden&&mode==='mount-water');
+   const aquatic=id==='dori';
    n.g.position.y=(indoors?footHeight+(id==='pip'?.36:.25):aquatic?-.15:footHeight+(id==='pip'?.36:id==='dori'?.28:0))
     +bounce+(isRidden?Math.sin(time*5)*.09:id==='dori'?Math.max(0,Math.sin(time*1.7))*.65:Math.sin(time*2+n.home.z)*.055);
    // Each species has its own gait: turtle breaststroke, dolphin tail beat,
@@ -297,7 +305,7 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
    }
    if(birdInFlight)n.g.position.y=(mode==='mount-water'?0:footHeight)+mountAltitude+Math.sin(time*6)*.08;
    else if(isBird&&!indoors)n.g.position.y+= (canFollow?1.8:1.1)+Math.sin(time*3.1)*.22;
-   if(canFollow&&mode==='fly'&&s.flight>0)n.g.position.y=s.flight+(id==='dori'?-.5:.3);
+   if(canFollow&&!waterFriend(id)&&mode==='fly'&&s.flight>0)n.g.position.y=s.flight+(id==='dori'?-.5:.3);
    n.other.detail?.animate(time,{moving:isRidden||canFollow||moving||idleBird,flying:birdInFlight||isBird&&!indoors});
    if(n.other.walkers)for(const limb of n.other.walkers){
     const swing=canFollow?Math.sin(time*9)*.48:Math.sin(time*1.4)*.08;
@@ -318,8 +326,9 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
  }
  function ride(id,origin=null){
   if(!['pip','dori','mila','ollie','luna'].includes(id))return false;
-  const p=origin||nodes.get(id)?.g.position;
+  let p=origin||nodes.get(id)?.g.position;
   if(!p)return false;
+  if(waterFriend(id))p=recoverAnimal(id,p.x,p.z,3.3);
   mounted=id;friends.companion=id;save();refresh();
   onMount(id,{x:p.x,z:p.z});joy.effect('friend');close();
   return true;

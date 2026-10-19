@@ -1,4 +1,4 @@
-import {roadDistance} from './explore-state.js?v=118';
+import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=118';
 import {oceanModel} from './ocean-models.js?v=73';
 // Temporary gameplay switch. Re-enable the cycle by setting this to true.
 // Disabled mode forces bright midday even when an old save resumes at night.
@@ -44,7 +44,7 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
   if(scene.background?.isColor)scene.background.copy(nightSky).lerp(daySky,day).lerp(dusk,sunset*.35);if(scene.fog)scene.fog.color.copy(scene.background);
   if(sun){sun.intensity=.5+day*2.5;sun.color.set(night?'#9fbcff':'#fff0d2');}if(ambient){ambient.intensity=.85+day*.6;ambient.color.set(night?'#99b8ed':'#c9edff');}if(waterMaterial?.uniforms.daylight)waterMaterial.uniforms.daylight.value=day;
   sunBody.visible=!night;moon.visible=night;const arc=(phase%.5)*2;for(const body of [sunBody,moon])body.position.set((arc-.5)*2.6,2.1+Math.sin(arc*Math.PI)*.4,-10);starMaterial.opacity=(1-day)*.8;
-  const roadClear=(x,z,r=.7)=>roadDistance(x,z)>3.3+r;
+  const roadClear=(x,z,r=.7)=>roadDistance(x,z)>HIGHWAY_WIDTH/2+r;
   const safeWater=(x,z,r=.7)=>roadClear(x,z,r)&&[[0,0],[r,0],[-r,0],[0,r],[0,-r]].every(([ox,oz])=>inWater(x+ox,z+oz));
   for(const a of animals){
    if(active)a.t+=dt;
