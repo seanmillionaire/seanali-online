@@ -13,7 +13,7 @@ export function islandDaylight(seconds){
 export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,cone,box,sun,ambient,waterMaterial,inWater}){
  const s=state.world,animals=[],group=new T.Group();group.name='Ocean wildlife';scene.add(group);let ridden=null;
  const nightSky=new T.Color('#172c50'),daySky=new T.Color('#a4c9de'),dusk=new T.Color('#ce9b96');
- function animal(kind,x,z,i){const {g,moving}=oceanModel(T,{geometry,mat,make,ball},kind);g.name=kind+' '+(i+1);group.add(g);g.position.set(x,-.3,z);animals.push({g,moving,x,z,phase:kind==='Reef fish'?Math.floor(i/6)*1.7+(i%6)*.08:i*1.7,kind,t:0});}
+ function animal(kind,x,z,i){const {g,moving}=oceanModel(T,{geometry,mat,make,ball},kind);g.name=kind+' '+(i+1);group.add(g);g.position.set(x,-.3,z);animals.push({g,moving,x,z,phase:kind==='Reef fish'?Math.floor(i/6)*1.7+(i%6)*.08:i*1.7,kind,t:0,heading:i*2.39996,waypoint:null,stuck:0,travel:0});}
  [[8,19],[-58,24],[77,-51],[113,37]].forEach(([x,z],i)=>animal('Sea turtle',x,z,i));
  [[13,28],[-35,-42],[45,58],[75,12]].forEach(([x,z],i)=>animal('Dolphin',x,z,i));
  [[-8,24],[38,-27],[-55,-12],[13,73]].forEach(([x,z],i)=>animal('Manta ray',x,z,i));
@@ -43,10 +43,65 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
   if(scene.background?.isColor)scene.background.copy(nightSky).lerp(daySky,day).lerp(dusk,sunset*.35);if(scene.fog)scene.fog.color.copy(scene.background);
   if(sun){sun.intensity=.5+day*2.5;sun.color.set(night?'#9fbcff':'#fff0d2');}if(ambient){ambient.intensity=.85+day*.6;ambient.color.set(night?'#99b8ed':'#c9edff');}if(waterMaterial?.uniforms.daylight)waterMaterial.uniforms.daylight.value=day;
   sunBody.visible=!night;moon.visible=night;const arc=(phase%.5)*2;for(const body of [sunBody,moon])body.position.set((arc-.5)*2.6,2.1+Math.sin(arc*Math.PI)*.4,-10);starMaterial.opacity=(1-day)*.8;
-  for(const a of animals){if(active)a.t+=dt;const t=a.t,x=a.x+Math.sin(t*.08+a.phase)*(a.kind==='Dolphin'?16:6),z=a.z+Math.cos(t*.08+a.phase)*(a.kind==='Dolphin'?12:5);
-   if(active){const dx=x-a.g.position.x,dz=z-a.g.position.z,d=Math.hypot(dx,dz),step=Math.min(d,dt*(a.kind==='Dolphin'?4.5:a.kind==='Reef fish'?1.4:.8)),nx=a.g.position.x+dx/Math.max(d,.001)*step,nz=a.g.position.z+dz/Math.max(d,.001)*step,r=a.kind==='Reef fish'?.4:1.3;if([[0,0],[r,0],[-r,0],[0,r],[0,-r]].every(([ox,oz])=>inWater(nx+ox,nz+oz))){if(d>.001)a.g.rotation.y=Math.atan2(dx,dz);a.g.position.x=nx;a.g.position.z=nz;}else a.phase+=dt;}
-   a.g.visible=a!==ridden&&inWater(a.g.position.x,a.g.position.z);if(a.kind==='Dolphin')a.g.rotation.x=motion?-Math.cos(t*.6+a.phase)*Math.pow(Math.max(0,Math.sin(t*.6+a.phase)),4)*.45:0;a.g.position.y=a.kind==='Dolphin'?(motion?-.2+Math.pow(Math.max(0,Math.sin(t*.6+a.phase)),8)*1.3:-.1):-.3;
-   a.moving.forEach((f,i)=>{if(a.kind==='Sea turtle'||a.kind==='Manta ray')f.rotation.z=motion?Math.sin(t*3+i)*.18:0;else if(a.kind==='Dolphin')f.rotation.x=motion?Math.sin(t*5)*.3:0;else f.rotation.y=motion?Math.sin(t*7)*.3:0;});
+  const safeWater=(x,z,r=.7)=>[[0,0],[r,0],[-r,0],[0,r],[0,-r]].every(([ox,oz])=>inWater(x+ox,z+oz));
+  for(const a of animals){
+   if(active)a.t+=dt;
+   const t=a.t,isDolphin=a.kind==='Dolphin',isFish=a.kind==='Reef fish';
+   const speed=isDolphin?3.4:isFish?1.2:a.kind==='Manta ray'?1.65:.95;
+   const radius=isFish?.3:.85;
+   // Spawn recovery prevents underwater NPCs from beginning trapped inside an island.
+   if(!safeWater(a.g.position.x,a.g.position.z,radius)){
+    let found=false;
+    for(let j=0;j<24;j++){
+     const angle=j*2.399963,dist=2+(j%7)*3.2;
+     const nx=a.g.position.x+Math.cos(angle)*dist,nz=a.g.position.z+Math.sin(angle)*dist;
+     if(safeWater(nx,nz,radius)){a.g.position.x=nx;a.g.position.z=nz;found=true;break;}
+    }
+    if(!found){a.g.visible=false;continue;}
+    a.waypoint=null;
+   }
+   if(active){
+    const chooseWaypoint=()=>{
+     // Pick stable goals inside a local roaming territory, biased away from coastlines.
+     for(let j=0;j<24;j++){
+      const angle=a.heading+(j%2?-1:1)*(.45+(j%8)*.38)+Math.sin(a.phase+t*.17)*.3;
+      const dist=6+(j%5)*3,tx=a.g.position.x+Math.sin(angle)*dist,tz=a.g.position.z+Math.cos(angle)*dist;
+      if(safeWater(tx,tz,radius+1.3)&&safeWater((tx+a.g.position.x)/2,(tz+a.g.position.z)/2,radius)){
+       a.waypoint={x:tx,z:tz};a.travel=0;return;
+      }
+     }
+     // No clear target: safely wait and try again on the next update.
+     a.waypoint=null;
+    };
+    if(!a.waypoint||Math.hypot(a.waypoint.x-a.g.position.x,a.waypoint.z-a.g.position.z)<1.4||a.travel>16)chooseWaypoint();
+    if(a.waypoint){
+     const dx=a.waypoint.x-a.g.position.x,dz=a.waypoint.z-a.g.position.z,d=Math.hypot(dx,dz);
+     const desired=Math.atan2(dx,dz);
+     const delta=Math.atan2(Math.sin(desired-a.heading),Math.cos(desired-a.heading));
+     a.heading+=Math.max(-dt*1.8,Math.min(dt*1.8,delta));
+     const step=Math.min(speed*dt,Math.max(0,d-.15));
+     const nx=a.g.position.x+Math.sin(a.heading)*step,nz=a.g.position.z+Math.cos(a.heading)*step;
+     if(safeWater(nx,nz,radius)){
+      a.g.position.x=nx;a.g.position.z=nz;a.stuck=0;a.travel+=step;
+     }else{
+      a.stuck+=dt;
+      a.heading+=dt*1.5;
+      if(a.stuck>.25){a.waypoint=null;a.stuck=0;}
+     }
+    }
+   }
+   a.g.rotation.y=a.heading;
+   a.g.visible=a!==ridden&&safeWater(a.g.position.x,a.g.position.z,.2);
+   // Separate gentle swimming strokes from occasional dolphin surfacing.
+   const pulse=Math.sin(t*(isDolphin?2.0:isFish?4:1.8)+a.phase);
+   a.g.position.y=isDolphin?-.30+Math.pow(Math.max(0,pulse),10)*.72:-.36+Math.sin(t*1.1+a.phase)*.07;
+   if(isDolphin)a.g.rotation.x=-Math.max(0,pulse)*.12;
+   a.moving.forEach((f,i)=>{
+    const phase=t*(isDolphin?3.2:isFish?5.5:2.2)+i*1.65+a.phase;
+    if(a.kind==='Sea turtle'||a.kind==='Manta ray')f.rotation.z=motion?Math.sin(phase)*.15:0;
+    else if(isDolphin)f.rotation.x=motion?Math.sin(phase)*.19:0;
+    else f.rotation.y=motion?Math.sin(phase)*.16:0;
+   });
   }
  },dispose(){camera.remove(sky);scene.remove(group);owned.forEach(m=>m.dispose());}};
 }
