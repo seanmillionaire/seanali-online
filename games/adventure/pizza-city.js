@@ -1,5 +1,5 @@
 import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=164';
-import {createCityExpansion} from './city-expansion.js?v=164';
+import {createCityExpansion} from './city-expansion.js?v=165';
 /* Casco Viejo · Ciudad de Panamá — the largest fantasy island: real road grid, drivable mini car,
    walk-in pizzeria, and sixteen persistent 💰 money-bag pickups. */
 export const CITY={x:(120),z:(-50),rx:58,rz:48,restaurant:{x:(136),z:(-36)}};
@@ -17,7 +17,7 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
  const s=state.world,city=s.city,es=state.lang==='es';
  const group=new T.Group();group.name='Casco Viejo · Panama City buildings and money bags';scene.add(group);
  const asphalt=mat('#404956',{map:surfaces?.asphalt,bumpMap:surfaces?.asphalt,bumpScale:.045,roughness:1}),pavement=mat('#c7d4d4',{map:surfaces?.stone,bumpMap:surfaces?.stone,bumpScale:.05}),line=mat('#f7e4a3'),white=mat('#f8f6ec'),
-  grass=mat('#629d71',{map:surfaces?.grass}),pink=mat('#e9959f'),red=mat('#d75f55'),brick=mat('#e6b9a1',{map:surfaces?.stone,bumpMap:surfaces?.stone,bumpScale:.045}),roof=mat('#ba675d',{map:surfaces?.roof,bumpMap:surfaces?.roof,bumpScale:.075}),
+  pink=mat('#e9959f'),red=mat('#d75f55'),brick=mat('#e6b9a1',{map:surfaces?.stone,bumpMap:surfaces?.stone,bumpScale:.045}),roof=mat('#ba675d',{map:surfaces?.roof,bumpMap:surfaces?.roof,bumpScale:.075}),
   blue=mat('#6dbac6'),gold=mat('#ffe381',{emissive:'#ffd063',emissiveIntensity:.28}),wood=mat('#886755',{map:surfaces?.wood,bumpMap:surfaces?.wood,bumpScale:.065}),
   tire=mat('#282e38'),glass=mat('#a4d9e8',{metalness:.18,roughness:.27}),bagFabric=mat('#d4aa63'),drawstring=mat('#78512f');
  const piece=(geo,m,x,y,z,sx,sy,sz,parent=group)=>make(geo,m,x,y,z,sx,sy,sz,parent);
@@ -86,7 +86,7 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
   const x=CITY.x+ox,z=CITY.z+oz,y=height(x,z);
   piece(cylinder,wood,x,y+2,z,.12,4,.12);
   piece(ball,gold,x,y+4.15,z,.48,.48,.48);
-  piece(cylinder,grass,x,y+.12,z,1.12,.24,1.12);
+  piece(cylinder,asphalt,x,y+.12,z,1.12,.24,1.12);
  }
  // The only drivable car: layered body panels, windows, lights and rolling wheels.
  const car=new T.Group();car.name='Only drivable car — Casco Viejo';scene.add(car);

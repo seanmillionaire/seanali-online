@@ -17,10 +17,10 @@ import {createWorldMap} from './world-map.js?v=156';
 import {createWildlifeFriends} from './wildlife-friends.js?v=156';
 import {createVillageBuilders} from './village-builders.js?v=156';
 import {createHouseInteriors} from './house-interiors.js?v=156';
-import {createPizzaCity} from './pizza-city.js?v=164';
+import {createPizzaCity} from './pizza-city.js?v=165';
 import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=156';
 import {ESTATE_PLANS,estateCosts,estateMissing,findEstateSite,canBuildEstate,buildEstate,canUpgradeEstate,upgradeEstate,estateBlocked,createEstateWorld} from './estate.js?v=156';
-import {buildIsland} from './entrance.js?v=159';
+import {buildIsland} from './entrance.js?v=165';
 import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=164';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);syncWallet(state);

@@ -74,15 +74,15 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  cityBase.name='Panama City continuous urban asphalt ground';
  cityBase.rotation.x=-Math.PI/2;cityBase.scale.set(52,43,1);
  cityBase.position.set(120,1.64,-50);cityBase.receiveShadow=true;cityBase.castShadow=false;group.add(cityBase);
- // Reserved greenery sits on top of the asphalt as intentional neighborhood plots.
- // These are parks, residential yards and the football barrio, not road colors.
+ // Pave neighborhood ground with the same asphalt; retain all plot geometry
+ // and elevations so nearby buildings, roads and activities stay unchanged.
  const urbanPlots=[[98,-19,11,8],[91,-29,7,5],[140,-33,8,6],
   [101,-65,8,6],[132,-67,9,6],[145,-19,7,5],[82,-47,7,5],
   [120,-12,7,5],[153,-55,6,5]];
  const plotGeo=new T.CircleGeometry(1,28);
  for(const [px,pz,rx,rz] of urbanPlots){
-  const plot=new T.Mesh(plotGeo,green);
-  plot.name='Green city neighborhood plot';
+  const plot=new T.Mesh(plotGeo,asph);
+  plot.name='Asphalt city neighborhood plot';
   plot.rotation.x=-Math.PI/2;plot.scale.set(rx,rz,1);
   plot.position.set(px,1.67,pz);plot.receiveShadow=true;plot.castShadow=false;group.add(plot);
  }
@@ -203,7 +203,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  // Soccer: visible pitch, striped goal and ball that reacts to shooting.
  const soccer=CITY_SITES.find(q=>q.id==='soccer'),field=new T.Group();
  field.position.set(soccer.x,height(soccer.x,soccer.z),soccer.z);group.add(field);
- makeObj(box,green,0,.10,0,27,.15,19,field);
+ makeObj(box,asph,0,.10,0,27,.15,19,field);
  for(const side of [-1,1])makeObj(box,white,side*13.2,.20,0,.11,.035,18.7,field);
  for(const side of [-1,1])makeObj(box,white,0,.20,side*9.2,26.5,.035,.12,field);
  makeObj(box,white,0,.20,0,26,.04,.11,field);

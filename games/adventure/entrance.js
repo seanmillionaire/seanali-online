@@ -78,7 +78,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
    coconutCoast:['#f2dfad','#d9df99','#f5e8c7'],
    sunset:['#3c4a3e','#6e675b','#8f8a82'],
    crystalCove:['#eee8d0','#f5edda','#fff6df'],
-   pizzaCity:['#e2dfba','#87b07e','#ead7af']
+   pizzaCity:['#3c424c','#3c424c','#3c424c']
   };
   function meadowFlower(x,z,n,scale=1){
    const y=height(x,z),petal=n%2?meadowPink:meadowLilac;
@@ -162,7 +162,8 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
    g.setAttribute('color',new T.Float32BufferAttribute(clippedColors,3));
    g.setAttribute('uv',new T.Float32BufferAttribute(clippedUV,2));
    g.setIndex(clippedIndices);g.computeVertexNormals();
-   const islandTexture=land.id==='coconutCoast'||land.id==='crystalCove'||land.guna?surfaces.sand:land.id==='crystalCove'||land.id==='sunset'?surfaces.stone:surfaces.grass;
+   // Match the existing city terrain geometry and height; only its surface changes.
+   const islandTexture=land.id==='pizzaCity'?surfaces.asphalt:land.id==='coconutCoast'||land.id==='crystalCove'||land.guna?surfaces.sand:land.id==='crystalCove'||land.id==='sunset'?surfaces.stone:surfaces.grass;
    const island=make(g,mat('#ffffff',{vertexColors:true,map:islandTexture,bumpMap:islandTexture,bumpScale:land.id==='crystalCove'?.14:.09,roughness:.96}));
    island.name=land.en;
 
@@ -438,7 +439,23 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
    }
   }
   const mainlandGeo=geometry(new T.BufferGeometry());mainlandGeo.setAttribute('position',new T.Float32BufferAttribute(mainlandVertices,3));mainlandGeo.setAttribute('uv',new T.Float32BufferAttribute(mainlandUV,2));mainlandGeo.computeVertexNormals();
-  const mainlandMesh=make(mainlandGeo,mat('#829e69',{map:surfaces.grass,bumpMap:surfaces.grass,bumpScale:.055,roughness:1}),0,0,0,1,1,1);mainlandMesh.name='Connected Panama mainland · Pacific and Caribbean coasts';mainlandMesh.castShadow=false;
+  // The mainland also shows between the city's organic edge and its streets.
+  // Select a material per existing triangle, without moving land or collision heights.
+  const cityLand=worldIslands.find(p=>p.id==='pizzaCity');
+  const mainlandIndices=[[],[]];
+  for(let i=0;i<mainlandVertices.length;i+=9){
+   const x=(mainlandVertices[i]+mainlandVertices[i+3]+mainlandVertices[i+6])/3,
+    z=(mainlandVertices[i+2]+mainlandVertices[i+5]+mainlandVertices[i+8])/3;
+   const urban=Math.hypot((x-cityLand.x)/cityLand.rx,(z-cityLand.z)/cityLand.rz)<=1;
+   mainlandIndices[urban?1:0].push(i/3,i/3+1,i/3+2);
+  }
+  // Two draw groups preserve every triangle while keeping mobile rendering cheap.
+  mainlandGeo.setIndex(mainlandIndices.flat());
+  mainlandGeo.addGroup(0,mainlandIndices[0].length,0);
+  mainlandGeo.addGroup(mainlandIndices[0].length,mainlandIndices[1].length,1);
+  const mainlandMaterials=[mat('#829e69',{map:surfaces.grass,bumpMap:surfaces.grass,bumpScale:.055,roughness:1}),
+   mat('#3c424c',{map:surfaces.asphalt,bumpMap:surfaces.asphalt,bumpScale:.035,roughness:1})];
+  const mainlandMesh=make(mainlandGeo,mainlandMaterials,0,0,0,1,1,1);mainlandMesh.name='Connected Panama mainland · Pacific and Caribbean coasts';mainlandMesh.castShadow=false;
   // The dock, moored boat, and a moving sailboat out on the water.
   for(let i=0;i<15;i++){make(box,wood,4,.42,12+i*.36,2,.16,.28);if(i%4===0)for(const dx of [-.9,.9])make(cylinder,wood,4+dx,.23,12+i*.36,.1,1.25,.1);}
   function boat(x,z,s){const g=new T.Group();g.position.set(x,.25,z);scene.add(g);make(ball,wood,0,0,0,1.8*s,.35*s,.7*s,g);make(cylinder,cream,0,1.7*s,0,.055*s,3.3*s,.055*s,g);const shape=new T.Shape();shape.moveTo(0,0);shape.lineTo(0,2.8*s);shape.lineTo(-1.5*s,.15*s);shape.closePath();make(geometry(new T.ShapeGeometry(shape)),mat('#ffe7b5',{side:T.DoubleSide}),.07,.3*s,0,1,1,1,g);g.rotation.y=-.3;bobbing.push({g,y:.25,z});return g;}
