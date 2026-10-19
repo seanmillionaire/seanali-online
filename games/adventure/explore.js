@@ -627,7 +627,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    // Highway-only rails: keep city streets and intersection approaches clear.
    const outsideCity=(x,z)=>Math.hypot((x+100)/58,(z+74)/48)>1.12;
    for(const side of [-1,1])for(let j=0;j<sections;j++){
-    const t=(j+.5)/sections,x=ax+dx*t+lateralX*side*(HIGHWAY_WIDTH/2+.35),z=az+dz*t+lateralZ*side*(HIGHWAY_WIDTH/2+.35),y=height(x,z);
+    const t=(j+.5)/sections,x=ax+dx*t+lateralX*side*(HIGHWAY_WIDTH/2+.45),z=az+dz*t+lateralZ*side*(HIGHWAY_WIDTH/2+.35),y=height(x,z);
     if(!outsideCity(x,z))continue;
     const beam=make(box,railMetal,x,y+1.02,z,.15,.17,len/sections+.22);beam.rotation.y=ang;beam.castShadow=false;
     if(j%2===0){const post=make(box,railPost,x,y+.55,z,.17,1.1,.17);post.castShadow=false;}
