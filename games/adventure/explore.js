@@ -1,4 +1,4 @@
-import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,mainlandAt,mainlandRoadRoute} from './explore-state.js?v=128';
+import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,HIGHWAY_TERMINI,mainlandAt,mainlandRoadRoute} from './explore-state.js?v=128';
 import {createPanamaLife} from './panama-life.js?v=119';
 import {createCloseCamera} from './close-camera.js?v=115';
 import {createCampaign} from './campaign.js?v=114';
@@ -631,6 +631,18 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
     if(!outsideCity(x,z))continue;
     const beam=make(box,railMetal,x,y+1.02,z,.15,.17,len/sections+.22);beam.rotation.y=ang;beam.castShadow=false;
     if(j%2===0){const post=make(box,railPost,x,y+.55,z,.17,1.1,.17);post.castShadow=false;}
+   }
+  }
+  // Strong end-of-road barriers show where driving must stop.
+  const stopRed=mat('#e64f42',{roughness:.68}),stopWhite=mat('#f8f7e6',{roughness:.75});
+  for(const end of HIGHWAY_TERMINI){
+   const angle=Math.atan2(end.dx,end.dz),h=height(end.x,end.z);
+   const barricade=make(box,stopWhite,end.x,h+.9,end.z,HIGHWAY_WIDTH-.3,1.1,.42);
+   barricade.rotation.y=angle;barricade.castShadow=false;
+   for(let k=-4;k<=4;k++){
+    const x=end.x+end.dz*k*1.55,z=end.z-end.dx*k*1.55;
+    const stripe=make(box,stopRed,x,height(x,z)+1.02,z,1.12,.25,.46);
+    stripe.rotation.y=angle;stripe.castShadow=false;
    }
   }
   const avatar=new T.Group();avatar.name='Angelique';scene.add(avatar);const skin=mat('#bd8e68'),shirt=mat('#b8a6d7'),shorts=mat('#437c80'),hair=mat('#44352a');
