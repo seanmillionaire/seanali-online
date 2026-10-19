@@ -13,6 +13,29 @@ export const TRAFFIC_ROUTES=[
  [[-115,-97],[-71,-97],[-71,-72],[-115,-72]]
 ].map(points=>points.map(([x,z])=>({x,z})));
 export function routePose(route,distance){let length=0;const lengths=route.map((p,i)=>{const q=route[(i+1)%route.length],n=Math.hypot(q.x-p.x,q.z-p.z);length+=n;return n;});let d=((distance%length)+length)%length;for(let i=0;i<route.length;i++){if(d<=lengths[i]){const p=route[i],q=route[(i+1)%route.length],t=d/lengths[i],heading=Math.atan2(q.x-p.x,q.z-p.z);return {x:p.x+(q.x-p.x)*t,z:p.z+(q.z-p.z)*t,heading,remaining:lengths[i]-d,length};}d-=lengths[i];}return {...route[0],heading:0,remaining:0,length};}
-export function trafficAdvance(car,cars,time,dt){const pose=routePose(car.route,car.distance),vertical=Math.abs(Math.cos(pose.heading))>.5,green=Math.floor(time/7)%2===(vertical?0:1);const intersections=vertical?[-109,-97,-85,-72,-59,-47,-36].map(z=>({x:pose.x,z})):[-143,-129,-115,-100,-85,-71,-57].map(x=>({x,z:pose.z}));
- const safe=car.bus?4.6:2.5,stop=intersections.some(q=>{const ahead=(q.x-pose.x)*Math.sin(pose.heading)+(q.z-pose.z)*Math.cos(pose.heading);return ahead>safe&&ahead<safe+1.1;});if((stop||pose.remaining<safe+1.1&&pose.remaining>safe)&&!green)return car.distance;const next=routePose(car.route,car.distance+car.speed*Math.min(.05,Math.max(0,dt)));const blocked=cars.some(other=>{if(other===car)return false;const q=routePose(other.route,other.distance),dx=q.x-pose.x,dz=q.z-pose.z,ahead=dx*Math.sin(pose.heading)+dz*Math.cos(pose.heading);return Math.hypot(q.x-next.x,q.z-next.z)<(car.bus||other.bus?5.8:3.8)&&ahead>0;});return blocked?car.distance:car.distance+car.speed*Math.min(.05,Math.max(0,dt));}
+export function trafficAdvance(car,cars,time,dt){
+ const step=Math.min(.08,Math.max(0,Number.isFinite(dt)?dt:0));
+ if(!step)return car.distance;
+ const pose=routePose(car.route,car.distance),vertical=Math.abs(Math.cos(pose.heading))>.5;
+ const green=Math.floor(time/6)%2===(vertical?0:1);
+ const safe=car.bus?4.6:2.6;
+ const signals=vertical?[-109,-97,-85,-72,-59,-47,-36].map(z=>({x:pose.x,z})):[-143,-129,-115,-100,-85,-71,-57].map(x=>({x,z:pose.z}));
+ const redStop=!green&&signals.some(q=>{const ahead=(q.x-pose.x)*Math.sin(pose.heading)+(q.z-pose.z)*Math.cos(pose.heading);return ahead>safe&&ahead<safe+1.3;});
+ // Cars on different streets may be close in 3D yet not block each other.
+ // Only follow cars in the same lane, ahead along that route.
+ const blocked=cars.some(other=>{
+  if(other===car||other.route!==car.route)return false;
+  const ahead=routePose(other.route,other.distance);
+  const total=pose.length;
+  const gap=((other.distance-car.distance)%total+total)%total;
+  return gap>.01&&gap<(car.bus||other.bus?7:4.5);
+ });
+ if(redStop||blocked){
+  car.wait=(car.wait||0)+step;
+  // A red light is never a permanent barrier and gridlock clears naturally.
+  if(car.wait<(blocked?2.6:1.9))return car.distance;
+ }
+ car.wait=0;
+ return car.distance+car.speed*step;
+}
 export function soundFalloff(x,z,source,radius=28){return Math.max(0,1-Math.hypot(x-source.x,z-source.z)/radius)**2;}
