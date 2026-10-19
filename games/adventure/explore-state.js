@@ -1,4 +1,4 @@
-import {DESTINATIONS,WORLD_BOUNDS,mainlandContains,canalWater,gatunWater,migrateGeography,segmentDistance} from './geography.js?v=156';
+import {DESTINATIONS,WORLD_BOUNDS,mainlandContains,canalWater,gatunWater,migrateGeography,segmentDistance,organicIslandRadius,homeShoreRadius} from './geography.js?v=157';
 import {SAN_BLAS_ISLANDS,normalizePanama} from './panama-state.js?v=156';
 import {normalizeCampaign} from './campaign-state.js?v=156';
 import {normalizeColon,bridgeDistance,COLON_BRIDGE} from './colon-state.js?v=156';
@@ -111,7 +111,9 @@ export function isletHeight(x,z){
  
  let h=mainlandContains(x,z)&&Math.hypot(x/20,z/14)>1.02?1.1:0;
  for(const land of worldIslands){
-  const u=(x-land.x)/land.rx,v=(z-land.z)/land.rz,r2=u*u+v*v;
+  const u=(x-land.x)/land.rx,v=(z-land.z)/land.rz,rawRadius2=u*u+v*v;
+  if(rawRadius2>1.22)continue;
+  const shore=organicIslandRadius(land,Math.atan2(v,u)),r2=rawRadius2/(shore*shore);
   if(r2>1)continue;
   const core=1-r2,soft=core*core;
   let elevation=.08+core*land.h;
@@ -121,6 +123,10 @@ export function isletHeight(x,z){
   else if(land.id==='sunset')elevation=volcanoRelief(u,v);
   else if(land.id==='crystalCove'||land.guna)elevation=.12+core*.68+soft*.16;
   else if(land.id==='pizzaCity')elevation=.08+core*2.25+soft*.12*Math.sin(x*.18+z*.13);
+  // Natural soil relief has several scales, strongest inland; urban roads and
+  // the mapped volcano hiking trail retain their original stable elevations.
+  if(!['pizzaCity','colon','sunset'].includes(land.id))
+   elevation+=soft*(.19*Math.sin(x*.31+z*.12)+.12*Math.sin(z*.54-x*.23));
   h=Math.max(h,elevation);
  }
  return h;
@@ -242,7 +248,7 @@ export const worldObstacles=[[-10,5,1.55],[-13,2,1.3],[10,2,1.55],[12,-1,1.2],[9
 export function walkable(x,z){return (isletHeight(x,z)>0||(x/18.7)**2+(z/12.5)**2<=1)&&worldObstacles.every(([a,b,r])=>Math.hypot(x-a,z-b)>r+.3);}
 // Match the sculpted shoreline; the wider lagoon is navigable, but buildings stay solid.
 export function onDock(x,z){return x>=3&&x<=5&&z>=11.8&&z<=17.4;}
-export function inWater(x,z){if(onDock(x,z)||isletHeight(x,z)>0)return false;const a=Math.atan2(z/14,x/20),shore=1+.035*Math.sin(a*7)+.03*Math.cos(a*5);return Math.hypot(x/20,z/14)>shore;}
+export function inWater(x,z){if(onDock(x,z)||isletHeight(x,z)>0)return false;const a=Math.atan2(z/14,x/20);return Math.hypot(x/20,z/14)>homeShoreRadius(a);}
 // Keep the hull clear, including saved boats that overlap a shore or world boundary.
 export function boatClear(x,z){if(Math.hypot(x/349,z/239)>=1||!inWater(x,z))return false;for(let i=0;i<8;i++){const a=i*Math.PI/4;if(!inWater(x+Math.sin(a)*1.1,z+Math.cos(a)*1.1))return false;}return true;}
 export function recoverBoat(x,z){if(boatClear(x,z))return {x,z};for(let r=.15;r<=6;r+=.15)for(let i=0;i<32;i++){const a=i*Math.PI/16,nx=x+Math.sin(a)*r,nz=z+Math.cos(a)*r;if(boatClear(nx,nz))return {x:nx,z:nz};}return {x:6.5,z:16};}
