@@ -12,7 +12,7 @@ export function recordMonkeyJump(play,clock){
 export function shoreCrocodilePose(index,time,isWater){
  const base=index*Math.PI*2/COAST_CROCODILE_COUNT+time*.045;
  for(let attempt=0;attempt<48;attempt++){
-  const a=base+attempt*.04,x=110+Math.cos(a)*32,z=-56+Math.sin(a)*29;
+  const a=base+attempt*.04,x=(-10)+Math.cos(a)*32,z=(-125)+Math.sin(a)*29;
   const heading=Math.atan2(-Math.sin(a)*32,Math.cos(a)*29);
   let clear=true;
   for(const forward of [-4,0,3])for(const side of [-1.1,1.1]){
@@ -20,7 +20,7 @@ export function shoreCrocodilePose(index,time,isWater){
   }
   if(clear)return {x,z,heading};
  }
- return {x:142,z:-56,heading:Math.PI};
+ return {x:(22),z:(-125),heading:Math.PI};
 }
 // Stateful local wandering: the ellipse is used only to find a safe spawn.
 const angleDelta=(a,b)=>Math.atan2(Math.sin(a-b),Math.cos(a-b));
@@ -50,7 +50,7 @@ export function stepCrocodile(n,dt,isWater,player=null,neighbors=[]){
   for(let i=0;i<16;i++){
    const a=base+(crocRandom(n)-.5)*(i<8?2.5:Math.PI*2),d=6+crocRandom(n)*12;
    const x=n.x+Math.sin(a)*d,z=n.z+Math.cos(a)*d;
-   if(Math.hypot((x-110)/53,(z+56)/49)>1.15)continue;
+   if(Math.hypot((x-(-10))/53,(z+(125))/49)>1.15)continue;
    if([.25,.5,.75,1].every(t=>crocodileClear(n.x+(x-n.x)*t,n.z+(z-n.z)*t,a,isWater))){n.goal={x,z};break;}
   }
  }
@@ -160,11 +160,11 @@ export function createColonWildlife({T,root,make,geometry,mat,ball,box,cylinder,
   const scale=.85+(i%3)*.1;g.scale.setScalar(scale);crocs.push({g,tail,jaw,wake,index:i,nav:createCrocodileMotion(i,inWater,crocs.map(c=>c.nav))});
  }
  function update(dt,active,time,{player,playing=false,signal=false,reducedMotion=false}={}){
-  const nearby=Math.hypot(player.x-110,player.z+56)<100||Math.hypot(player.x-130,player.z+25)<80;
+  const nearby=Math.hypot(player.x-(-10),player.z+(125))<100||Math.hypot(player.x-(10),player.z+(94))<80;
   monkeyRoot.visible=crocRoot.visible=nearby;if(!nearby)return;
   for(const m of monkeys){
    if(m.following&&!playing){
-    m.group=Math.hypot(m.g.position.x-130,m.g.position.z+25)<14?anchors.monkey:anchors.main;
+    m.group=Math.hypot(m.g.position.x-(10),m.g.position.z+(94))<14?anchors.monkey:anchors.main;
     m.motion.a={x:m.g.position.x,y:m.g.position.y,z:m.g.position.z};
     m.motion.b=m.group.reduce((a,b)=>Math.hypot(a.x-m.g.position.x,a.z-m.g.position.z)<Math.hypot(b.x-m.g.position.x,b.z-m.g.position.z)?a:b);
     m.motion.t=0;m.motion.duration=1.3;

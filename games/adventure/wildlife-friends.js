@@ -1,13 +1,13 @@
-import {waterFriend,animalClear,recoverAnimal,animalStep} from './animal-boundaries.js?v=150';
-import {explorePlaces,earnCoins} from './explore-state.js?v=114';
-import {oceanModel} from './ocean-models.js?v=73';
-import {createAnimalDetails} from './animal-details.js?v=73';
+import {waterFriend,animalClear,recoverAnimal,animalStep} from './animal-boundaries.js?v=155';
+import {explorePlaces,earnCoins} from './explore-state.js?v=155';
+import {oceanModel} from './ocean-models.js?v=155';
+import {createAnimalDetails} from './animal-details.js?v=155';
 // Repeatable, optional play with six friends in the 3D world.
 export const islandFriends=[
  {id:'pip',icon:'🐢',name:'Pip',where:['Playa Gorgona','Playa Gorgona'],game:['Búsqueda de conchas','Shell hunt'],hello:['¡Angelique! ¿Buscamos conchitas juntos?','Angelique! Shall we look for shells together?']},
  {id:'dori',icon:'🐬',name:'Dori',where:['Muelle de Gorgona','Gorgona Dock'],game:['Fiesta de burbujas','Bubble splash party'],hello:['¡Hola, Angelique! ¡Vamos a saltar y jugar!','Hi Angelique! Let’s splash and play!']},
  {id:'mila',icon:'🦜',name:'Mila',where:['Bocas del Toro','Bocas del Toro'],game:['Música de loro','Parrot music'],hello:['¡Pío, pío! ¡Hagamos una canción!','Squawk, squawk! Let’s make a song!']},
- {id:'ollie',icon:'🪶',name:'Ollie',where:['Volcán Barú · Chiriquí','Volcán Barú · Chiriquí'],game:['Luces escondidas','Find the fireflies'],hello:['¡Mis luciérnagas se escondieron!','My firefly friends are hiding!']},
+ {id:'ollie',icon:'🪶',name:'Ollie',where:['Boquete · Chiriquí','Boquete · Chiriquí'],game:['Luces escondidas','Find the fireflies'],hello:['¡Mis luciérnagas se escondieron!','My firefly friends are hiding!']},
  {id:'luna',icon:'🦀',name:'Luna',where:['Guna Yala · San Blas','Guna Yala · San Blas'],game:['Baile de cangrejo','Crab dance party'],hello:['¡Angelique! ¡Baila como un cangrejo conmigo!','Angelique! Do the crab dance with me!']},
  {id:'kai',icon:'👦',name:'Kai',where:['Isla Contadora','Isla Contadora'],game:['Pelota de playa','Beach-ball toss'],hello:['¡Hola! ¡Te guardé la pelota de playa!','Hey! I saved the beach ball for you!']}
 ];
@@ -16,8 +16,8 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
  s.friends??={visits:[],completed:[],companion:null};
  const friends=s.friends;friends.called=Array.isArray(friends.called)?friends.called.filter(id=>islandFriends.some(f=>f.id===id)):[];const nodes=new Map(),labels=[],temp=new T.Vector3();
  const place=id=>explorePlaces.find(p=>p.id===id);
- const destination=id=>id==='dori'?{x:4,z:16}:id==='kai'?{x:105,z:10}:place(id);
- const home=id=>id==='dori'?{x:8,z:20}:id==='kai'?{x:105,z:10}:place(id);
+ const destination=id=>id==='dori'?{x:4,z:16}:id==='kai'?{x:200,z:50}:place(id);
+ const home=id=>id==='dori'?{x:8,z:20}:id==='kai'?{x:200,z:50}:place(id);
  const el=(tag,cls='',text)=>{const n=document.createElement(tag);n.className=cls;if(text!==undefined)n.textContent=text;return n;};
  const btn=(text,cls,callback)=>{const b=el('button',cls,text);b.type='button';b.addEventListener('click',()=>{joy.gesture();joy.effect('tap');callback();});return b;};
  const green=mat('#55a878'),cream=mat('#fff1ce'),ink=mat('#26454e'),pink=mat('#e998b9'),gold=mat('#ffd36c'),yellow=mat('#f1b75c');

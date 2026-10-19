@@ -1,5 +1,5 @@
-import {roadDistance,HIGHWAY_WIDTH,sharkClearance,sharkStep,recoverShark} from './explore-state.js?v=140';
-import {oceanModel} from './ocean-models.js?v=73';
+import {roadDistance,HIGHWAY_WIDTH,sharkClearance,sharkStep,recoverShark} from './explore-state.js?v=155';
+import {oceanModel} from './ocean-models.js?v=155';
 // Temporary gameplay switch. Re-enable the cycle by setting this to true.
 // Disabled mode forces bright midday even when an old save resumes at night.
 export const NIGHT_MODE_ENABLED=false;
@@ -15,10 +15,10 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
  const s=state.world,animals=[],group=new T.Group();group.name='Ocean wildlife';scene.add(group);let ridden=null;
  const nightSky=new T.Color('#172c50'),daySky=new T.Color('#a4c9de'),dusk=new T.Color('#ce9b96');
  function animal(kind,x,z,i){const {g,moving}=oceanModel(T,{geometry,mat,make,ball},kind);g.name=kind+' '+(i+1);group.add(g);g.position.set(x,-.3,z);animals.push({g,moving,x,z,phase:kind==='Reef fish'?Math.floor(i/6)*1.7+(i%6)*.08:i*1.7,kind,seed:923+i*7919+(kind.length*131),attention:0,t:0,heading:i*2.39996,waypoint:null,stuck:0,travel:0});}
- [[8,19],[-58,24],[77,-51],[113,37]].forEach(([x,z],i)=>animal('Sea turtle',x,z,i));
- [[13,28],[-35,-42],[45,58],[75,12]].forEach(([x,z],i)=>animal('Dolphin',x,z,i));
- [[-8,24],[38,-27],[-55,-12],[13,73]].forEach(([x,z],i)=>animal('Manta ray',x,z,i));
- for(let i=0;i<24;i++){const spots=[[11,20],[72,-43],[-64,27],[90,38]],p=spots[Math.floor(i/6)];animal('Reef fish',p[0]+(i%3)*.7,p[1]+Math.floor(i%6/3)*.7,i);}
+ [[8,24],[-170,0],[108,30],[200,75]].forEach(([x,z],i)=>animal('Sea turtle',x,z,i));
+ [[13,28],[-100,-170],[205,-100],[230,50]].forEach(([x,z],i)=>animal('Dolphin',x,z,i));
+ [[-8,24],[130,14],[-140,-145],[200,-90]].forEach(([x,z],i)=>animal('Manta ray',x,z,i));
+ for(let i=0;i<24;i++){const spots=[[11,20],[108,25],[-135,-130],[220,75]],p=spots[Math.floor(i/6)];animal('Reef fish',p[0]+(i%3)*.7,p[1]+Math.floor(i%6/3)*.7,i);}
  // Celestial bodies travel across the upper camera view, away from Angelique and controls.
  const sky=new T.Group();sky.name='Sun moon and stars';camera.add(sky);if(!camera.parent)scene.add(camera);const owned=[];
  const basic=(color,extra={})=>{const m=new T.MeshBasicMaterial({color,depthTest:false,depthWrite:false,fog:false,toneMapped:false,...extra});owned.push(m);return m;};

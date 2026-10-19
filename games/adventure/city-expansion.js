@@ -1,28 +1,28 @@
-import {STREET_VENDORS,BARRIO_HOMES} from './city-street-life.js?v=115';
-import {createPurpleApartment,PURPLE_APARTMENT} from './purple-apartment.js?v=112';
-import {spendFood} from './explore-state.js?v=114';
+import {STREET_VENDORS,BARRIO_HOMES} from './city-street-life.js?v=155';
+import {createPurpleApartment,PURPLE_APARTMENT} from './purple-apartment.js?v=155';
+import {spendFood} from './explore-state.js?v=155';
 /* Panama Adventure — substantial zero-dependency Casco Viejo city expansion.
    Roads and landmark buildings are genuine Three.js meshes; activities update
    game state only on meaningful user actions and persist in world.city. */
 export const CITY_SITES=[
- {id:'rally',x:-106,z:-88,icon:'🏁',en:'City driving rally',es:'Carrera por la ciudad'},
- {id:'soccer',x:-117,z:-43,icon:'⚽',en:'Football challenge',es:'Reto de fútbol'},
- {id:'market',x:-76,z:-86,icon:'🥭',en:'Panama Fruit Market',es:'Mercado de Frutas de Panamá'},
- {id:'mural',x:-132,z:-88,icon:'🎨',en:'Casco Viejo street art',es:'Murales del Casco Viejo'},
- {id:'museum0',x:-78,z:-103,icon:'🏛️',en:'History exhibit',es:'Exhibición de historia'},
- {id:'museum1',x:-68,z:-101,icon:'🦋',en:'Panama nature exhibit',es:'Exhibición de naturaleza'},
- {id:'museum2',x:-89,z:-105,icon:'🚢',en:'Canal exhibit',es:'Exhibición del Canal'},
- {id:'wash',x:-132,z:-64,icon:'🫧',en:'Drive-through car wash',es:'Lavado de autos'},
- {id:'plaza',x:-99,z:-62,icon:'⛲',en:'Plaza de la Independencia',es:'Plaza de la Independencia'},
- {id:'canal',x:-67,z:-56,icon:'🚢',en:'Panama Canal cruise terminal',es:'Terminal de cruceros del Canal de Panamá'}
+ {id:'rally',x:(114),z:(-64),icon:'🏁',en:'City driving rally',es:'Carrera por la ciudad'},
+ {id:'soccer',x:(103),z:(-19),icon:'⚽',en:'Football challenge',es:'Reto de fútbol'},
+ {id:'market',x:(144),z:(-62),icon:'🥭',en:'Panama Fruit Market',es:'Mercado de Frutas de Panamá'},
+ {id:'mural',x:(88),z:(-64),icon:'🎨',en:'Casco Viejo street art',es:'Murales del Casco Viejo'},
+ {id:'museum0',x:(142),z:(-79),icon:'🏛️',en:'History exhibit',es:'Exhibición de historia'},
+ {id:'museum1',x:(152),z:(-77),icon:'🦋',en:'Panama nature exhibit',es:'Exhibición de naturaleza'},
+ {id:'museum2',x:(131),z:(-81),icon:'🚢',en:'Canal exhibit',es:'Exhibición del Canal'},
+ {id:'wash',x:(88),z:(-40),icon:'🫧',en:'Drive-through car wash',es:'Lavado de autos'},
+ {id:'plaza',x:(121),z:(-38),icon:'⛲',en:'Plaza de la Independencia',es:'Plaza de la Independencia'},
+ {id:'canal',x:66,z:-65,icon:'🚢',en:'Panama Canal cruise terminal',es:'Terminal de cruceros del Canal de Panamá'}
 ];
 export const CITY_RALLY=[
- {x:-73,z:-91},{x:-113,z:-107},{x:-143,z:-82},{x:-106,z:-47}
+ {x:(147),z:(-67)},{x:(107),z:(-83)},{x:(77),z:(-58)},{x:(114),z:(-23)}
 ];
 export const CITY_DELIVERY=[
- {x:-68,z:-64,en:'Waterfront apartment',es:'Apartamento del malecón'},
- {x:-116,z:-109,en:'Southern neighborhood',es:'Barrio del sur'},
- {x:-138,z:-48,en:'Volcano-view homes',es:'Casas con vista al volcán'}
+ {x:(152),z:(-40),en:'Waterfront apartment',es:'Apartamento del malecón'},
+ {x:(104),z:(-85),en:'Southern neighborhood',es:'Barrio del sur'},
+ {x:(82),z:(-24),en:'Volcano-view homes',es:'Casas con vista al volcán'}
 ];
 export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylinder,cone,height,surfaces=null,save,refresh,joy,tell,coinAward,onWash=()=>{}}){
  const city=state.world.city,a=city.activities,es=state.lang==='es',choose=(x,y)=>es?x:y;
@@ -82,7 +82,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  }
  // Seaside ring road. Outer street loops around the outer neighborhoods.
  for(let i=0;i<104;i++){
-  const angle=(i+.5)/104*Math.PI*2,x=-100+Math.cos(angle)*48.4,z=-74+Math.sin(angle)*40.0;
+  const angle=(i+.5)/104*Math.PI*2,x=(120)+Math.cos(angle)*48.4,z=(-50)+Math.sin(angle)*40.0;
   const tangent=Math.atan2(Math.cos(angle)*48.4,-Math.sin(angle)*40);
   chunks.push({x,z,w:4.8,d:4.0,rot:-tangent});
  }
@@ -98,20 +98,20 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  }else for(const r of chunks){const m=makeObj(box,asph,r.x,height(r.x,r.z)+.095,r.z,r.w,.16,r.d);m.rotation.y=r.rot||0;m.castShadow=false;}
  // Painted lines and crossings: repeated street detail without large textures.
  for(const dx of xs)for(let k=-34;k<=34;k+=9){
-  const x=-100+dx,z=-74+k;if((dx/58)**2+(k/48)**2>.78)continue;
+  const x=(120)+dx,z=(-50)+k;if((dx/58)**2+(k/48)**2>.78)continue;
   decorate(box,stripe,x,height(x,z)+.22,z,.11,.035,2.6);
  }
  for(const dz of zs)for(let k=-43;k<=43;k+=10){
-  const x=-100+k,z=-74+dz;if((k/58)**2+(dz/48)**2>.78)continue;
+  const x=(120)+k,z=(-50)+dz;if((k/58)**2+(dz/48)**2>.78)continue;
   decorate(box,stripe,x,height(x,z)+.22,z,2.6,.035,.11);
  }
  // Seven neighborhoods, ~50 distinct buildings with color and height variation.
  let buildingCount=0;
- const reserved=[...[[ -122,-91],[-108,-91],[-92,-91],[-78,-86],[-122,-65.5],[-108,-65.5]].map(([x,z])=>({x,z})),...STREET_VENDORS,...BARRIO_HOMES,PURPLE_APARTMENT,...CITY_SITES,{x:-84,z:-60},{x:-106,z:-74},{x:-82,z:-68},{x:-97,z:-75},{x:-100,z:-62},
-  ...CITY_DELIVERY,...CITY_RALLY,{x:-82,z:-68}];
+ const reserved=[...[[ (98),(-67)],[(112),(-67)],[(128),(-67)],[(142),(-62)],[(98),(-41.5)],[(112),(-41.5)]].map(([x,z])=>({x,z})),...STREET_VENDORS,...BARRIO_HOMES,PURPLE_APARTMENT,...CITY_SITES,{x:(136),z:(-36)},{x:(114),z:(-50)},{x:(138),z:(-44)},{x:(123),z:(-51)},{x:(120),z:(-38)},
+  ...CITY_DELIVERY,...CITY_RALLY,{x:(138),z:(-44)}];
  for(const dx of [-48,-37,-22,-8,8,22,36,48])for(const dz of [-40,-30,-18,-5,9,21,32,42]){
   if((dx/58)**2+(dz/48)**2>.76)continue;
-  const x=-100+dx,z=-74+dz;
+  const x=(120)+dx,z=(-50)+dz;
   if(reserved.some(q=>Math.hypot(q.x-x,q.z-z)<9.2))continue;
   // Avoid overlapping original central colorful houses and pizzeria.
   if(Math.abs(dx)<30&&Math.abs(dz)<27&&((dx+22)**2+(dz+20)**2<110||(dx-12)**2+(dz+20)**2<110||(dx-24)**2+(dz+13)**2<90||(dx+25)**2+(dz-18)**2<90||(dx-13)**2+(dz-21)**2<90))continue;
@@ -130,7 +130,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  }
  // Seaside walkway, lamps and benches make the outskirts worth exploring.
  for(let i=0;i<30;i++){
-  const theta=i*2*Math.PI/30,x=-100+Math.cos(theta)*50,z=-74+Math.sin(theta)*41;
+  const theta=i*2*Math.PI/30,x=(120)+Math.cos(theta)*50,z=(-50)+Math.sin(theta)*41;
   const y=height(x,z);
   decorate(cylinder,dark,x,y+2,z,.10,4,.10);
   decorate(ball,gold,x,y+4.20,z,.35,.40,.35);
@@ -144,7 +144,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  // Plaza water feature removed; city streets remain unchanged.
  // Emoji flags are easier to recognize and stay consistent with the game logo.
  const cityFlags=[];
- const flagPositions=[[-100,-62,9],[-117,-86,7],[-82,-87,7],[-122,-54,7],[-77,-55,7],[-103,-108,7.5]];
+ const flagPositions=[[(120),(-38),9],[(103),(-62),7],[(138),(-63),7],[(98),(-30),7],[(143),(-31),7],[(117),(-84),7.5]];
  for(const [x,z,h] of flagPositions){
   const pole=new T.Group();pole.name='🇵🇦 Bandera de Panamá';pole.position.set(x,height(x,z),z);group.add(pole);
   makeObj(cylinder,stone,0,.25,0,.6,.5,.6,pole);
@@ -334,7 +334,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
   if(!active||indoors)return;
   for(const p of pedestrians){
    const a=performance.now()*.00017*(p.i%3+1)+p.i*1.7;
-   const cx=-100+Math.cos(p.i*2.4)*20,cz=-74+Math.sin(p.i*2.4)*16;
+   const cx=(120)+Math.cos(p.i*2.4)*20,cz=(-50)+Math.sin(p.i*2.4)*16;
    const px=cx+Math.cos(a)*5,pz=cz+Math.sin(a)*4;
    p.g.position.set(px,height(px,pz),pz);p.g.rotation.y=-a;
    p.legs.forEach((leg,j)=>leg.rotation.x=Math.sin(a*22+j*Math.PI)*.35);

@@ -1,10 +1,10 @@
 export const COLON_SITES=[
- {id:'bridge',x:122,z:-39,icon:'🌉',es:'Reparar el puente de los monos',en:'Repair the monkey bridge',banana:3,coconut:2},
- {id:'garden',x:108,z:-48,icon:'🌱',es:'Restaurar el jardín de lluvia',en:'Restore the rain garden',banana:2,coconut:1},
- {id:'treehouse',x:101,z:-58,icon:'🌳',es:'Construir la casa del árbol',en:'Build the jungle treehouse',banana:3,coconut:2},
- {id:'lookout',x:112,z:-70,icon:'🌊',es:'Abrir el mirador de la cascada',en:'Open the waterfall lookout',banana:0,coconut:0}
+ {id:'bridge',x:(2),z:(-108),icon:'🌉',es:'Reparar el puente de los monos',en:'Repair the monkey bridge',banana:3,coconut:2},
+ {id:'garden',x:(-12),z:(-117),icon:'🌱',es:'Restaurar el jardín de lluvia',en:'Restore the rain garden',banana:2,coconut:1},
+ {id:'treehouse',x:(-19),z:(-127),icon:'🌳',es:'Construir la casa del árbol',en:'Build the jungle treehouse',banana:3,coconut:2},
+ {id:'lookout',x:(-8),z:(-139),icon:'🌊',es:'Abrir el mirador de la cascada',en:'Open the waterfall lookout',banana:0,coconut:0}
 ];
-export const COLON_BRIDGE={a:{x:122,z:-39},b:{x:130,z:-25},width:2.8,y:3.8};
+export const COLON_BRIDGE={a:{x:(2),z:(-108)},b:{x:(10),z:(-94)},width:2.8,y:3.8};
 export function bridgeDistance(x,z){
  const {a,b}=COLON_BRIDGE,dx=b.x-a.x,dz=b.z-a.z,t=Math.max(0,Math.min(1,((x-a.x)*dx+(z-a.z)*dz)/(dx*dx+dz*dz)));
  return Math.hypot(x-a.x-dx*t,z-a.z-dz*t);

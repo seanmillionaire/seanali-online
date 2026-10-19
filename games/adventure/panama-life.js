@@ -1,11 +1,12 @@
-import {createPanamaVisuals} from './panama-visuals.js?v=115';
-import {PANAMA_FOODS,PANAMA_RECIPES,purchasePanama,cookPanama,eatPanama} from './panama-state.js?v=114';
-import {coinBalance} from './explore-state.js?v=114';
-import {panamaModels} from './panama-models.js?v=147';
-import {createCityStreetLife} from './city-street-life.js?v=147';
-import {createSanBlasLife} from './san-blas-life.js?v=115';
-export const COOK_FIRES=[{x:-12,z:7},{x:13,z:103},{x:10,z:-106}];
-export const PLANTAIN_SITES=[{x:-8,z:8},{x:10,z:-102},{x:22,z:-112},{x:116,z:-55},{x:102,z:5}];
+import {moveLegacyPoint,movePoint} from './geography.js?v=155';
+import {createPanamaVisuals} from './panama-visuals.js?v=155';
+import {PANAMA_FOODS,PANAMA_RECIPES,purchasePanama,cookPanama,eatPanama} from './panama-state.js?v=155';
+import {coinBalance} from './explore-state.js?v=155';
+import {panamaModels} from './panama-models.js?v=155';
+import {createCityStreetLife} from './city-street-life.js?v=155';
+import {createSanBlasLife} from './san-blas-life.js?v=155';
+export const COOK_FIRES=[{x:-12,z:7},{x:13,z:103},{x:10,z:-106}].map(p=>({...p,...moveLegacyPoint(p.x,p.z)}));
+export const PLANTAIN_SITES=[{x:-8,z:8},{x:10,z:-102},{x:22,z:-112},{x:116,z:-55},{x:102,z:5}].map(p=>({...p,...moveLegacyPoint(p.x,p.z)}));
 export function createPanamaLife(options){
  const {T,scene,host,panel,state,save,refresh,joy,tell,make,mat,box,ball,cylinder,cone,height,forest,inWater,prepare,navigate,onEat,football,npcKick,eatLegacy}=options,s=state.world,p=s.panama,es=state.lang==='es',say=(a,b)=>es?a:b;
  const models=panamaModels(options),city=createCityStreetLife({...options,models}),sanBlas=createSanBlasLife({...options,models}),visuals=createPanamaVisuals({...options,models});
@@ -31,10 +32,10 @@ export function createPanamaLife(options){
  function prompt(x,z){const n=near(x,z);return !n?null:n.type==='plantain'?say('🍌 Recoger plátano verde','🍌 Pick green plantain'):n.type==='treasure'?say('🧰 Abrir tesoro','🧰 Open island treasure'):n.type==='vendor'?(n.kind==='raspao'?say('🍧 Comprar raspao','🍧 Buy raspao'):say('🍽️ Comprar comida','🍽️ Buy food')):n.type==='islandVendor'?say('🐟 Hablar con cocinero','🐟 Meet the island cook'):n.type==='police'?say('👮 Hablar con policía','👮 Talk to officer'):n.type==='barrio'?say('⚽ Conocer el barrio','⚽ Meet the barrio'):n.type==='fish'?say('🎣 Pescar','🎣 Catch fish'):say('🔥 Cocinar','🔥 Cook a meal');}
  function interact(x,z){const n=near(x,z);if(!n)return false;if(n.type==='plantain'){p.gathered['plantain-'+n.index]=(p.gathered['plantain-'+n.index]||0)+1;p.pantry.plantain=Math.min(9999,p.pantry.plantain+1);save();refresh();tell('🍌 +1 plátano verde para patacones','🍌 +1 green plantain for patacones');}
   else if(n.type==='vendor'||n.type==='islandVendor')vendor(n.kind||'market');else if(n.type==='cook')openFood();else if(n.type==='fish')fish();else if(n.type==='treasure'){if(!p.treasures.includes(n.id)){p.treasures.push(n.id);p.pantry.rice=Math.min(9999,p.pantry.rice+2);p.pantry.fish=Math.min(9999,p.pantry.fish+1);save();refresh();joy.effect('finish');tell('🧰 +2 arroz y +1 pescado','🧰 +2 rice and +1 fish');}}
-  else if(n.type==='police'){shell(say('👮 Policía del barrio','👮 Neighborhood officer'));panel.append(el('p',say('¡Buenas! Las patrullas recorren las calles. Mira a ambos lados al cruzar. La cancha está al norte; el mercado queda al este.','Hello! Patrols follow the streets. Look both ways before crossing. The football field is to the north; the market is east.')),btn(say('⚽ Ir a la cancha','⚽ Find the football field'),()=>{panel.hidden=true;navigate({x:-117,z:-43});}),btn(say('🍧 Buscar raspao','🍧 Find a raspao cart'),()=>{panel.hidden=true;navigate({x:-91,z:-66});}));}
-  else{shell(say('⚽ Bienvenida al barrio','⚽ Welcome to the barrio'));panel.append(el('p',say('Los niños juegan en la cancha. Entra, acércate al balón y toca Patear. Los goles cuentan cuando el balón entra en la portería.','The children are playing on the field. Join them, approach the ball and tap Kick. Goals count when the ball enters the goal.')),btn(say('⚽ Unirme al partido','⚽ Join the match'),()=>{panel.hidden=true;navigate({x:-117,z:-43});}));}return true;
+  else if(n.type==='police'){shell(say('👮 Policía del barrio','👮 Neighborhood officer'));panel.append(el('p',say('¡Buenas! Las patrullas recorren las calles. Mira a ambos lados al cruzar. La cancha está al norte; el mercado queda al este.','Hello! Patrols follow the streets. Look both ways before crossing. The football field is to the north; the market is east.')),btn(say('⚽ Ir a la cancha','⚽ Find the football field'),()=>{panel.hidden=true;navigate(movePoint('pizzaCity',-117,-43));}),btn(say('🍧 Buscar raspao','🍧 Find a raspao cart'),()=>{panel.hidden=true;navigate(movePoint('pizzaCity',-91,-66));}));}
+  else{shell(say('⚽ Bienvenida al barrio','⚽ Welcome to the barrio'));panel.append(el('p',say('Los niños juegan en la cancha. Entra, acércate al balón y toca Patear. Los goles cuentan cuando el balón entra en la portería.','The children are playing on the field. Join them, approach the ball and tap Kick. Goals count when the ball enters the goal.')),btn(say('⚽ Unirme al partido','⚽ Join the match'),()=>{panel.hidden=true;navigate(movePoint('pizzaCity',-117,-43));}));}return true;
  }
- function update(dt,active,info){const inCity=!info.indoors&&Math.hypot((info.x+100)/58,(info.z+74)/48)<1.04;joy.setCityAmbient?.(inCity);if(inCity&&active)joy.streetSound?.({traffic:.55,chatter:.42});visuals.update(info.x,info.z,info.indoors);city.update(dt,active,info);sanBlas.update(dt,active,info);garden.visible=!info.indoors;
+ function update(dt,active,info){const inCity=!info.indoors&&Math.hypot((info.x-120)/58,(info.z+50)/48)<1.04;joy.setCityAmbient?.(inCity);if(inCity&&active)joy.streetSound?.({traffic:.55,chatter:.42});visuals.update(info.x,info.z,info.indoors);city.update(dt,active,info);sanBlas.update(dt,active,info);garden.visible=!info.indoors;
   if(fishing){if(panel.hidden||!panel.contains(fishing.b)){fishing=null;}else if(!document.hidden){const f=fishing;f.time+=dt;if(!f.ready&&f.time>1.8){f.ready=true;f.b.disabled=false;f.b.textContent=say('🐟 ¡Recoger ahora!','🐟 Reel in now!');f.note.textContent=say('¡El pez está tirando!','The fish is pulling!');f.b.onclick=()=>{if(fishing!==f||!f.ready)return;p.pantry.fish=Math.min(9999,p.pantry.fish+1);p.caught++;fishing=null;save();refresh();joy.effect('correct');fish();notify(say('🐟 +1 pescado guardado.','🐟 +1 fish saved.'));};}if(f.time>5.5){fishing=null;fish();notify(say('El pez se escapó. Vuelve a intentarlo.','The fish escaped. Cast again.'));}}}
   mealTime=Math.max(0,mealTime-(active?dt:0));for(const [id,g]of Object.entries(previews)){g.visible=id===meal&&mealTime>0&&!info.indoors;g.position.set(s.x+.6,height(s.x,s.z)+1.2,s.z+.4);g.rotation.y+=dt*.3;}
  }

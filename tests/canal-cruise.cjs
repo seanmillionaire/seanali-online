@@ -1,9 +1,9 @@
 const fs=require('fs'),vm=require('vm'),assert=require('node:assert/strict');
 const base=__dirname+'/../games/adventure/';
-const route=fs.readFileSync(base+'cruise-route.js','utf8').replaceAll('export ','');
-const physics=fs.readFileSync(base+'explore-state.js','utf8').replace(/^import .*$/gm,'').replaceAll('export ','');
+const route=fs.readFileSync(base+'cruise-route.js','utf8').replace(/^import .*$/gm,'').replaceAll('export ','');
+const physics=fs.readFileSync(base+'explore-state.js','utf8').replace(/^import .*$/gm,'').replace(/^import .*$/gm,'').replaceAll('export ','');
 const ctx=vm.createContext({normalizeEstate:()=>({buildings:[]}),estateCoinCost:()=>0});
-vm.runInContext(fs.readFileSync(base+'panama-state.js','utf8').replaceAll('export ','')+'\n'+fs.readFileSync(base+'campaign-state.js','utf8').replaceAll('export ','')+'\n'+fs.readFileSync(base+'colon-state.js','utf8').replaceAll('export ','')+'\n'+route+'\n'+physics,ctx);
+vm.runInContext(fs.readFileSync(base+'geography.js','utf8').replace(/^import .*$/gm,'').replaceAll('export ','')+'\n'+fs.readFileSync(base+'panama-state.js','utf8').replace(/^import .*$/gm,'').replaceAll('export ','')+'\n'+fs.readFileSync(base+'campaign-state.js','utf8').replace(/^import .*$/gm,'').replaceAll('export ','')+'\n'+fs.readFileSync(base+'colon-state.js','utf8').replace(/^import .*$/gm,'').replaceAll('export ','')+'\n'+route+'\n'+physics,ctx);
 const evaluate=s=>vm.runInContext(s,ctx);
 assert.equal(evaluate('normalizeCruise(null).tickets'),0);
 assert.equal(evaluate('normalizeCruise({tickets:Infinity,active:true}).active'),false);
@@ -21,7 +21,7 @@ evaluate('c.distance=CRUISE_LENGTH-.01');assert.equal(evaluate('advanceCruise(c,
 assert.equal(evaluate('advanceCruise(c,.05,true)'),false);assert.equal(evaluate('c.completed'),1);
 assert.equal(evaluate('cruisePose(0).x===CRUISE_DOCK.x&&cruisePose(CRUISE_LENGTH).z===CRUISE_DOCK.z'),true);
 assert.equal(evaluate('walkable(CRUISE_BOARD.x,CRUISE_BOARD.z)'),true,'boarding terminal on land');
-assert.equal(evaluate('inWater(-50,-74)'),true,'canal carved to sea level');
+assert.equal(evaluate('inWater(CRUISE_DOCK.x,CRUISE_DOCK.z)'),true,'canal carved to sea level');
 const collisions=evaluate(`(()=>{
  const hits=[];
  for(let i=0;i<=3000;i++){

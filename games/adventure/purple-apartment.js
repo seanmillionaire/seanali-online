@@ -1,4 +1,4 @@
-export const PURPLE_APARTMENT={x:-122,z:-103,floors:40,floorHeight:2.4,width:8,depth:5.6};
+export const PURPLE_APARTMENT={x:(98),z:(-79),floors:40,floorHeight:2.4,width:8,depth:5.6};
 export function createPurpleApartment({T,group,make,mat,box,height}){
  const p=PURPLE_APARTMENT,root=new T.Group();root.name='One enormous purple apartment tower · 40 floors';root.position.set(p.x,height(p.x,p.z),p.z);group.add(root);
  const purple=mat('#7730bf',{roughness:.7}),violet=mat('#a85be0',{roughness:.65}),deep=mat('#462075'),trim=mat('#d1b3ef'),glass=mat('#9dc7dd',{metalness:.35,roughness:.23}),warm=mat('#ffe8af',{emissive:'#ffce70',emissiveIntensity:.45}),dark=mat('#30334b');

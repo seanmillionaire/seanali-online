@@ -1,4 +1,4 @@
-import {addFood,islandPoint} from './explore-state.js?v=114';
+import {addFood,islandPoint} from './explore-state.js?v=155';
 // Tiny, physical story puzzles. These never gate movement or mark a lesson complete.
 export const islandStories=[
  {id:'shells',region:'harbor',x:2,z:7,friend:'🐢',es:'Conchas de Playa Gorgona',en:'Gorgona Shell Trail',hintEs:'Pisa las conchas en orden',hintEn:'Step on shells in order',icons:['1 🐚','2 🐚','3 🐚'],order:[0,1,2],color:'#f4cc78',winEs:'¡Pip tiene un camino!',winEn:'Pip has a path!'},
@@ -8,7 +8,7 @@ export const islandStories=[
  {id:'care',region:'garden',x:24,z:-7.5,friend:'🦋',es:'Mariposas de Isla Taboga',en:'Taboga Butterfly Garden',hintEs:'¿Qué ayuda a una flor?',hintEn:'What helps a flower?',icons:['💧','🗑️','☀️'],order:[0,2],color:'#efa6c3',winEs:'¡Más flores y mariposas!',winEn:'More flowers and butterflies!'},
  {id:'light',region:'summit',x:47,z:6,friend:'🥥',es:'Cocos de Isla Contadora',en:'Contadora Coconut Picnic',hintEs:'Cuenta los cocos',hintEn:'Count the coconuts',icons:['1 🥥','2 🥥','3 🥥'],order:[2,0,1,2],color:'#88cfe0',winEs:'¡Una luz vuelve a casa!',winEn:'A light has come home!'}
 ];
-for(const q of islandStories){const land={picnic:'wilds',seed:'sunset',song:'crystalCove',care:'islet',light:'coconutCoast'}[q.id];if(land)Object.assign(q,islandPoint(land,q.x,q.z));}
+for(const q of islandStories){const land={picnic:'wilds',seed:'sunset',song:'crystalCove',care:'islet',light:'coconutCoast'}[q.id];if(q.id==='seed')Object.assign(q,{x:-112,z:-32});else if(land)Object.assign(q,islandPoint(land,q.x,q.z));}
 export function stepStory(progress,id,choice){const q=islandStories.find(q=>q.id===id);if(!q)return 'ignore';const n=progress[id]||0;if(n>=q.order.length)return 'done';if(choice!==q.order[n])return 'retry';progress[id]=n+1;return n+1===q.order.length?'complete':'next';}
 export function createWorldStory({T,scene,host,state,height,save,joy,spark,refresh,openNext,active,motion,panel,preparePanel}){
  const s=state.world,es=state.lang==='es',pick=(a,b)=>es?a:b,progress=s.story;

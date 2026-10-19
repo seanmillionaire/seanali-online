@@ -1,11 +1,11 @@
 const assert=require('node:assert/strict'),fs=require('fs'),vm=require('vm');
 (async()=>{
- const {LAVA_POOLS,lavaPoolPose,touchesLava,returnToHospital,CITY_HOSPITAL}=await import('../games/adventure/volcano-safety.js');
+ const {LAVA_POOLS,lavaPoolPose,touchesLava,returnToHospital,CITY_HOSPITAL,BARU}=await import('../games/adventure/volcano-safety.js');
  const {isletHeight,inWater,traversable,volcanoTrailPoint}=await import('../games/adventure/explore-state.js');
  assert(lavaPoolPose(LAVA_POOLS[0],isletHeight).y>40,'highway must not bury crater lava');
  for(const pool of LAVA_POOLS){const p=lavaPoolPose(pool,isletHeight);assert(touchesLava(p.x,p.y,p.z,isletHeight));assert(touchesLava(p.x,p.y-10,p.z,isletHeight));assert(!touchesLava(p.x,p.y+2,p.z,isletHeight),'flight above lava safe');}
  for(let i=0;i<=100;i++){const p=volcanoTrailPoint(i/100);assert(!touchesLava(p.x,p.y,p.z,isletHeight),'hiking trail stays safe');}
- const world={x:-110,z:49,growth:3,flight:4,food:{banana:5},collected:['a'],city:{cruise:{tickets:2}},badges:['picnic']};
+ const world={x:BARU.x,z:BARU.z,growth:3,flight:4,food:{banana:5},collected:['a'],city:{cruise:{tickets:2}},badges:['picnic']};
  returnToHospital(world);assert.deepEqual({x:world.x,z:world.z},CITY_HOSPITAL.spawn);assert.equal(world.flight,0);assert.equal(world.growth,1);assert.equal(world.food.banana,5);assert.equal(world.city.cruise.tickets,2);assert.deepEqual(world.badges,['picnic']);
  assert(!inWater(world.x,world.z));assert(traversable(world.x,world.z));assert(!touchesLava(world.x,isletHeight(world.x,world.z),world.z,isletHeight));
  const src=fs.readFileSync(__dirname+'/../games/adventure/explore.js','utf8');

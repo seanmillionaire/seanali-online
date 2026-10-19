@@ -1,8 +1,8 @@
 const assert=require('node:assert/strict'),path=require('node:path'),{pathToFileURL}=require('node:url');
 (async()=>{
- const base=path.resolve(__dirname,'../games/adventure'),T=await import(pathToFileURL(path.join(base,'vendor/three.module.min.js'))),{createActiveVolcano}=await import(pathToFileURL(path.join(base,'active-volcano.js'))),{LAVA_POOLS,lavaPoolPose}=await import(pathToFileURL(path.join(base,'volcano-safety.js'))),{isletHeight}=await import(pathToFileURL(path.join(base,'explore-state.js')));
+ const base=path.resolve(__dirname,'../games/adventure'),T=await import(pathToFileURL(path.join(base,'vendor/three.module.min.js'))),{createActiveVolcano}=await import(pathToFileURL(path.join(base,'active-volcano.js'))),{LAVA_POOLS,lavaPoolPose,BARU}=await import(pathToFileURL(path.join(base,'volcano-safety.js'))),{isletHeight}=await import(pathToFileURL(path.join(base,'explore-state.js')));
  for(const light of [false,true]){
-  const scene=new T.Scene(),v=createActiveVolcano({T,scene,x:-110,z:49,height:isletHeight,light});
+  const scene=new T.Scene(),v=createActiveVolcano({T,scene,x:BARU.x,z:BARU.z,height:isletHeight,light});
   assert.equal(v.smoke.length,light?14:26);assert.equal(v.pools.length,3);
   v.pools.forEach((mesh,i)=>{const p=lavaPoolPose(LAVA_POOLS[i],isletHeight);assert.equal(mesh.position.y,p.y);});
   assert(v.lava.position.y>40,'lava visible above the road-height cut');

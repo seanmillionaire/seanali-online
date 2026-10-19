@@ -1,35 +1,35 @@
-import {CRUISE_FARE,CRUISE_BOARD,CRUISE_DOCK,cruisePose,buyCruise,advanceCruise} from './cruise-route.js?v=148';
-import {coinBalance} from './explore-state.js?v=114';
+import {CRUISE_FARE,CRUISE_BOARD,CRUISE_DOCK,cruisePose,buyCruise,advanceCruise} from './cruise-route.js?v=155';
+import {coinBalance} from './explore-state.js?v=155';
 export function createCanalCruise({T,scene,host,state,make,mat,box,ball,cylinder,height,save,refresh,joy,tell}){
  const s=state.world,c=s.city.cruise,es=state.lang==='es',choose=(a,b)=>es?a:b;
  const root=new T.Group();root.name='Panama Canal · monumental locks and one ocean liner';scene.add(root);
  const white=mat('#fff7e6'),navy=mat('#16364e'),blue=mat('#58c6de'),gold=mat('#eac46f'),wood=mat('#b4875e'),stone=mat('#899d9f'),orange=mat('#f38c42'),dark=mat('#315665');
  const piece=(geo,m,x,y,z,sx,sy,sz,parent=root)=>make(geo,m,x,y,z,sx,sy,sz,parent);
  // Carved waterfront basin: two monumental lock walls, towers and open sea gates.
- piece(box,blue,-43,.04,-74,42,.09,25);
+ piece(box,blue,(41),.04,(-70),42,.09,25);
  for(const side of [-1,1]){
-  piece(box,stone,-44,1.3,-74+side*15,44,2.6,3);
-  piece(box,white,-44,2.75,-74+side*15,44,.3,3.4);
-  for(const x of [-62,-44,-24]){
-   piece(box,stone,x,4,-74+side*16,4,8,4);
-   piece(box,blue,x,6.2,-74+side*16,4.2,2,4.2);
-   piece(box,gold,x,7.6,-74+side*16,4.8,.4,4.8);
+  piece(box,stone,(40),1.3,(-70)+side*15,44,2.6,3);
+  piece(box,white,(40),2.75,(-70)+side*15,44,.3,3.4);
+  for(const x of [(22),(40),(60)]){
+   piece(box,stone,x,4,(-70)+side*16,4,8,4);
+   piece(box,blue,x,6.2,(-70)+side*16,4.2,2,4.2);
+   piece(box,gold,x,7.6,(-70)+side*16,4.8,.4,4.8);
   }
  }
  // Open lock gates and a promenade connect the existing city to the terminal.
- for(const side of [-1,1])piece(box,dark,-24,1.8,-74+side*12,1,3.6,5);
+ for(const side of [-1,1])piece(box,dark,(60),1.8,(-70)+side*12,1,3.6,5);
  const by=height(CRUISE_BOARD.x,CRUISE_BOARD.z);
- piece(box,stone,-65,by-.1,-56,10,.3,10);
- piece(box,white,-65,by+3,-56,11,.4,8);
- for(const x of [-69,-61])for(const z of [-59,-53])piece(cylinder,gold,x,by+1.5,z,.15,3,.15);
+ piece(box,stone,(68),by-.1,(-65),10,.3,10);
+ piece(box,white,(68),by+3,(-65),11,.4,8);
+ for(const x of [(64),(72)])for(const z of [(-68),(-62)])piece(cylinder,gold,x,by+1.5,z,.15,3,.15);
  const signCanvas=document.createElement('canvas');signCanvas.width=1024;signCanvas.height=256;
  const ctx=signCanvas.getContext('2d');
  ctx.fillStyle='#16364e';ctx.fillRect(0,0,1024,256);ctx.textAlign='center';
  ctx.fillStyle='#ffe7a7';ctx.font='bold 58px sans-serif';ctx.fillText('CANAL DE PANAMÁ',512,90);
  ctx.fillStyle='#fff8e5';ctx.font='bold 43px sans-serif';ctx.fillText(choose('CRUCERO · 10 MONEDAS','GRAND CRUISE · 10 COINS'),512,165);
- ctx.font='30px sans-serif';ctx.fillText(choose('UNA VUELTA POR TODO EL MAPA','ONE FULL TOUR AROUND THE MAP'),512,220);
+ ctx.font='30px sans-serif';ctx.fillText(choose('LAGO GATÚN · COSTA DE COLÓN','GATÚN LAKE · COLÓN COAST'),512,220);
  const signTexture=new T.CanvasTexture(signCanvas),signMaterial=new T.SpriteMaterial({map:signTexture,depthTest:false});
- const sign=new T.Sprite(signMaterial);sign.position.set(-65,by+7,-56);sign.scale.set(14,3.5,1);root.add(sign);
+ const sign=new T.Sprite(signMaterial);sign.position.set((68),by+7,(-65));sign.scale.set(14,3.5,1);root.add(sign);
  // The only cruise ship: 34 units long, five decks and a broad open sun deck.
  const ship=new T.Group();ship.name='Angelique · enormous Panama cruise ship';root.add(ship);
  piece(box,navy,0,1.4,0,11,2.8,30,ship);
@@ -92,7 +92,7 @@ export function createCanalCruise({T,scene,host,state,make,mat,box,ball,cylinder
   host.classList.toggle('on-cruise',c.active);status.hidden=!c.active;controls.hidden=!c.active;controls.style.display=c.active?'flex':'none';
   for(const [id,b]of gameButtons)b.setAttribute('aria-pressed',String(id===game));
   beachBall.visible=c.active&&game==='ball';beachBall.position.set(Math.sin(playTime*1.4)*2,9.1+Math.abs(Math.sin(playTime*2.8))*1.1,3+Math.cos(playTime*1.4)*1.8);
-  if(c.active)status.textContent='🚢 '+choose('Crucero por Panamá','Panama grand cruise')+' · '+Math.floor(p.progress*100)+'% · '+choose('🫶 Todos los amigos · Juegos en cubierta','🫶 All friends · Top deck play');
+  if(c.active)status.textContent='🚢 '+choose('Canal y Lago Gatún','Canal & Gatún Lake cruise')+' · '+Math.floor(p.progress*100)+'% · '+choose('🫶 Todos los amigos · Juegos en cubierta','🫶 All friends · Top deck play');
   const passenger=deckPoint(0,5.7,game==='dance'?Math.abs(Math.sin(playTime*4))*.25:0);
   return {active:c.active,finished,...passenger,heading:ship.rotation.y+(game==='dance'?Math.sin(playTime*3)*.5:0),game,playTime,playing:active,deckPoint};
  }

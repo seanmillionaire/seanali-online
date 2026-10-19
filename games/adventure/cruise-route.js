@@ -1,15 +1,12 @@
+import {CANAL_WATERWAY} from './geography.js?v=155';
 export const CRUISE_FARE=10;
-export const CRUISE_BOARD={x:-67,z:-56};
-export const CRUISE_DOCK={x:-44,z:-74};
+export const CRUISE_BOARD={x:66,z:-65};
+export const CRUISE_DOCK={x:40,z:-70};
 // One closed circuit around every island, in navigable open water.
-export const CRUISE_STOPS=[
- [-44,-74],[-25,-74],[-25,-145],[-70,-145],[-125,-137],[-175,-110],
- [-190,-55],[-190,10],[-175,80],[-125,135],[-35,150],[65,145],
- [145,100],[180,35],[170,-45],[120,-105],[65,-145],[-25,-145],[-25,-74],[-44,-74]
-].map(([x,z])=>({x,z}));
+export const CRUISE_STOPS=[...CANAL_WATERWAY,...CANAL_WATERWAY.slice(0,-1).reverse()].map(([x,z])=>({x,z}));
 const segments=CRUISE_STOPS.slice(1).map((p,i)=>Math.hypot(p.x-CRUISE_STOPS[i].x,p.z-CRUISE_STOPS[i].z));
 export const CRUISE_LENGTH=segments.reduce((a,b)=>a+b,0);
-export const CRUISE_SPEED=7;
+export const CRUISE_SPEED=4.5;
 export function normalizeCruise(raw){
  const tickets=Number.isFinite(raw?.tickets)?Math.max(0,Math.min(9999,Math.floor(raw.tickets))):0;
  return {tickets,completed:Math.min(tickets,Math.max(0,Math.floor(Number(raw?.completed)||0))),

@@ -12,7 +12,7 @@ export function normalizeEstate(raw,legacyCharms=0){
  const buildings=[],ids=new Set();
  for(const b of Array.isArray(raw?.buildings)?raw.buildings:[]){
   const p=byType(b?.type);
-  if(!p||!Number.isInteger(b?.id)||b.id<0||!Number.isFinite(b.x)||!Number.isFinite(b.z)||Math.abs(b.x)>200||Math.abs(b.z)>175||ids.has(b.id)||buildings.length>=32)continue;
+  if(!p||!Number.isInteger(b?.id)||b.id<0||!Number.isFinite(b.x)||!Number.isFinite(b.z)||Math.abs(b.x)>350||Math.abs(b.z)>240||ids.has(b.id)||buildings.length>=32)continue;
   ids.add(b.id);buildings.push({id:b.id,type:p.type,x:b.x,z:b.z,coins:p.coins,level:Math.max(1,Math.min(3,Math.floor(Number(b.level)||1)))});
  }
  return {buildings,charsVersion:1,charms:raw?.charsVersion===1?count(raw.charms):count(legacyCharms),nextId:Math.max(0,...buildings.map(b=>b.id+1),count(raw?.nextId))};

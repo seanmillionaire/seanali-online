@@ -1,8 +1,9 @@
-import {createActiveVolcano} from './active-volcano.js?v=154';
-import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=114';
-import {createTropical} from './tropical.js?v=114';
-import {createSurfaceTextures} from './surface-textures.js?v=73';
-import {installPolyHavenMaterials} from './polyhaven-materials.js?v=73';
+import {mainlandContains,canalWater,gatunWater} from './geography.js?v=155';
+import {createActiveVolcano} from './active-volcano.js?v=155';
+import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=155';
+import {createTropical} from './tropical.js?v=155';
+import {createSurfaceTextures} from './surface-textures.js?v=155';
+import {installPolyHavenMaterials} from './polyhaven-materials.js?v=155';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
 export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import('./vendor/three.module.min.js')}={}) {
   let disposed=false,world=null,pending=null;
@@ -332,7 +333,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
         vec3 eye=normalize(cameraPosition-vec3(p.x,-.12,-p.y));
         float fresnel=pow(1.-max(dot(normal,eye),0.),4.5);
         vec3 water=mix(vec3(.12,.72,.64),vec3(.016,.21,.36),depth);
-        float guna=1.-smoothstep(48.,72.,length((p-vec2(10.,-100.))*vec2(1.,1.2)));
+        float guna=1.-smoothstep(48.,72.,length((p-vec2(205.,130.))*vec2(1.,1.2)));
         water=mix(water,mix(vec3(.25,.78,.72),vec3(.015,.42,.52),depth),guna*.72);
         // Turquoise color ripples move across the sandy shallows.
         float ripples=sin(p.x*1.2+p.y*.46+time*.8)*sin(p.y*1.24-p.x*.31-time*.9);
@@ -373,7 +374,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
       }`
   });
   materials.add(waterMaterial);const water=make(geometry(new T.PlaneGeometry(750,650,112,96)),waterMaterial,0,-.12,0);water.rotation.x=-Math.PI/2;water.castShadow=false;water.receiveShadow=false;water.renderOrder=2;
-  const bedGeometry=geometry(new T.PlaneGeometry(400,340));const bedUV=bedGeometry.attributes.uv;for(let i=0;i<bedUV.count;i++)bedUV.setXY(i,bedUV.getX(i)*16,bedUV.getY(i)*16);const seabed=make(bedGeometry,mat('#b3c8b0',{map:surfaces.sand,bumpMap:surfaces.sand,bumpScale:.05,roughness:1}),0,-1.4,0);seabed.rotation.x=-Math.PI/2;seabed.castShadow=false;
+  const bedGeometry=geometry(new T.PlaneGeometry(700,480));const bedUV=bedGeometry.attributes.uv;for(let i=0;i<bedUV.count;i++)bedUV.setXY(i,bedUV.getX(i)*16,bedUV.getY(i)*16);const seabed=make(bedGeometry,mat('#b3c8b0',{map:surfaces.sand,bumpMap:surfaces.sand,bumpScale:.05,roughness:1}),0,-1.4,0);seabed.rotation.x=-Math.PI/2;seabed.castShadow=false;
   // A sandy path winding from the landing cove to the lighthouse.
   const pathPoints=[new T.Vector3(4,.4,12),new T.Vector3(3,height(3,8)+.07,8),new T.Vector3(7,height(7,4)+.08,4),new T.Vector3(4,height(4,0)+.08,0),new T.Vector3(0,height(0,-3)+.08,-3),new T.Vector3(-1,height(-1,-5)+.08,-5)];
   const pathCurve=new T.CatmullRomCurve3(pathPoints),pathVertices=[],pathUV=[],pathIndex=[];
@@ -387,6 +388,15 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   const crystal=make(ball,gold,0,7.1,0,.25,.35,.25,tower);
   for(let i=0;i<4;i++){const a=i/4*Math.PI*2;make(cylinder,wood,Math.sin(a),7.1,Math.cos(a),.07,1.4,.07,tower);}make(box,wood,0,1,1.2,.6,1.8,.1,tower);
   const beamMat=new T.MeshBasicMaterial({color:'#ffe9ad',transparent:true,opacity:.07,depthWrite:false,side:T.DoubleSide});materials.add(beamMat);const beam=make(geometry(new T.ConeGeometry(4,32,24,1,true)),beamMat,0,7.1,0,1,1,1,tower);beam.geometry.translate(0,-16,0);beam.rotation.z=Math.PI/2;beam.castShadow=false;beam.receiveShadow=false;
+  // Low-cost mainland mesh connects the real regions; lake and canal cuts stay open.
+  const mainlandVertices=[];
+  const inland=(x,z)=>mainlandContains(x,z)&&!canalWater(x,z)&&!gatunWater(x,z)&&Math.hypot(x/20,z/14)>1.02&&!worldIslands.some(p=>Math.hypot((x-p.x)/p.rx,(z-p.z)/p.rz)<1.02);
+  for(let x=-190;x<265;x+=3)for(let z=-145;z<20;z+=3){
+   const corners=[[x,z],[x+3,z],[x,z+3],[x+3,z+3]];
+   for(const tri of [[0,2,1],[1,2,3]])if(tri.every(i=>inland(...corners[i])))for(const i of tri){const [px,pz]=corners[i];mainlandVertices.push(px,isletHeight(px,pz),pz);}
+  }
+  const mainlandGeo=geometry(new T.BufferGeometry());mainlandGeo.setAttribute('position',new T.Float32BufferAttribute(mainlandVertices,3));mainlandGeo.computeVertexNormals();
+  const mainlandMesh=make(mainlandGeo,mat('#829e69',{roughness:1}),0,0,0,1,1,1);mainlandMesh.name='Connected Panama mainland · Pacific and Caribbean coasts';mainlandMesh.castShadow=false;
   // The dock, moored boat, and a moving sailboat out on the water.
   for(let i=0;i<15;i++){make(box,wood,4,.42,12+i*.36,2,.16,.28);if(i%4===0)for(const dx of [-.9,.9])make(cylinder,wood,4+dx,.23,12+i*.36,.1,1.25,.1);}
   function boat(x,z,s){const g=new T.Group();g.position.set(x,.25,z);scene.add(g);make(ball,wood,0,0,0,1.8*s,.35*s,.7*s,g);make(cylinder,cream,0,1.7*s,0,.055*s,3.3*s,.055*s,g);const shape=new T.Shape();shape.moveTo(0,0);shape.lineTo(0,2.8*s);shape.lineTo(-1.5*s,.15*s);shape.closePath();make(geometry(new T.ShapeGeometry(shape)),mat('#ffe7b5',{side:T.DoubleSide}),.07,.3*s,0,1,1,1,g);g.rotation.y=-.3;bobbing.push({g,y:.25,z});return g;}

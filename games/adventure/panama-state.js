@@ -1,5 +1,5 @@
 // Shared geography, traffic paths and durable food progression.
-export const SAN_BLAS_ISLANDS=Array.from({length:28},(_,i)=>{const col=i%7,row=Math.floor(i/7),x=-34+col*14+(row%2)*2,z=68+row*21+(col%2)*3;return {id:'guna-'+i,x,z,rx:3.5+(i%3)*.65,rz:2.9+(i%4)*.4,h:.65,guna:true,community:i%7===0,ox:x,oz:z,spread:1,en:'San Blas cay '+(i+1),es:'Cayo de San Blas '+(i+1)};}).filter(p=>Math.hypot(p.x-10,p.z-100)>17);
+export const SAN_BLAS_ISLANDS=Array.from({length:28},(_,i)=>{const col=i%7,row=Math.floor(i/7),x=161+col*14+(row%2)*2,z=-162+row*21+(col%2)*3;return {id:'guna-'+i,x,z,rx:3.5+(i%3)*.65,rz:2.9+(i%4)*.4,h:.65,guna:true,community:i%7===0,ox:x,oz:z,spread:1,en:'San Blas cay '+(i+1),es:'Cayo de San Blas '+(i+1)};}).filter(p=>Math.hypot(p.x-205,p.z+130)>17);
 export const PANAMA_FOODS={fish:{icon:'🐟',en:'Fresh fish',es:'Pescado fresco'},plantain:{icon:'🍌',en:'Green plantain',es:'Plátano verde'},rice:{icon:'🍚',en:'Rice',es:'Arroz'},patacones:{icon:'🍌',en:'Patacones',es:'Patacones'},fishPlate:{icon:'🍽️',en:'Fried fish with patacones',es:'Pescado frito con patacones'},coconutRice:{icon:'🥥',en:'Coconut rice',es:'Arroz con coco'},raspao:{icon:'🍧',en:'Raspao',es:'Raspao'}};
 export const PANAMA_RECIPES={patacones:{plantain:1},fishPlate:{fish:1,patacones:1},coconutRice:{rice:1,coconut:1}};
 const count=n=>Number.isFinite(n)?Math.max(0,Math.min(9999,Math.floor(n))):0;
@@ -8,9 +8,9 @@ export function purchasePanama(world,kind,cost,balance){if(!PANAMA_FOODS[kind]||
 export function cookPanama(world,id){const recipe=PANAMA_RECIPES[id],p=world.panama.pantry;if(!recipe||p[id]>=9999||!Object.entries(recipe).every(([k,n])=>(k==='coconut'?world.food.coconut:p[k])>=n))return false;for(const [k,n]of Object.entries(recipe)){if(k==='coconut')world.food.coconut-=n;else p[k]-=n;}p[id]++;return true;}
 export function eatPanama(world,id){if(!['patacones','fishPlate','coconutRice','raspao'].includes(id)||!world.panama.pantry[id])return false;world.panama.pantry[id]--;world.panama.meals++;return true;}
 export const TRAFFIC_ROUTES=[
- [[-129,-109],[-85,-109],[-85,-85],[-129,-85]],
- [[-143,-97],[-100,-97],[-100,-59],[-143,-59]],
- [[-115,-97],[-71,-97],[-71,-72],[-115,-72]]
+ [[91,-85],[135,-85],[135,-61],[91,-61]],
+ [[77,-73],[120,-73],[120,-35],[77,-35]],
+ [[105,-73],[149,-73],[149,-48],[105,-48]]
 ].map(points=>points.map(([x,z])=>({x,z})));
 export function routePose(route,distance){let length=0;const lengths=route.map((p,i)=>{const q=route[(i+1)%route.length],n=Math.hypot(q.x-p.x,q.z-p.z);length+=n;return n;});let d=((distance%length)+length)%length;for(let i=0;i<route.length;i++){if(d<=lengths[i]){const p=route[i],q=route[(i+1)%route.length],t=d/lengths[i],heading=Math.atan2(q.x-p.x,q.z-p.z);return {x:p.x+(q.x-p.x)*t,z:p.z+(q.z-p.z)*t,heading,remaining:lengths[i]-d,length};}d-=lengths[i];}return {...route[0],heading:0,remaining:0,length};}
 export function trafficAdvance(car,cars,time,dt){
@@ -19,7 +19,7 @@ export function trafficAdvance(car,cars,time,dt){
  const pose=routePose(car.route,car.distance),vertical=Math.abs(Math.cos(pose.heading))>.5;
  const green=Math.floor(time/6)%2===(vertical?0:1);
  const safe=car.bus?4.6:2.6;
- const signals=vertical?[-109,-97,-85,-72,-59,-47,-36].map(z=>({x:pose.x,z})):[-143,-129,-115,-100,-85,-71,-57].map(x=>({x,z:pose.z}));
+ const signals=vertical?[-85,-73,-61,-48,-35,-23,-12].map(z=>({x:pose.x,z})):[77,91,105,120,135,149,163].map(x=>({x,z:pose.z}));
  const redStop=!green&&signals.some(q=>{const ahead=(q.x-pose.x)*Math.sin(pose.heading)+(q.z-pose.z)*Math.cos(pose.heading);return ahead>safe&&ahead<safe+1.3;});
  // Cars on different streets may be close in 3D yet not block each other.
  // Only follow cars in the same lane, ahead along that route.
