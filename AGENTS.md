@@ -106,3 +106,66 @@ For ANY new or revised public-facing page (landing, sales, product, opt-in, than
 Before declaring a page task done, check: (a) centered one-column reading flow; (b) comfortable mobile text and short lines; (c) distinct visual section boundaries; (d) real assets/icons/demo instead of unnecessary prose; (e) clean headline → product → CTA hierarchy; (f) truthful price/proof/contents; (g) correct working forms/checkout/media; (h) no broken tracking; (i) rendered screenshots at phone + desktop sizes; (j) live production confirmation or an explicit statement that deployment was NOT verified. If a check fails, fix it or state exactly what remains.
 
 **Precedence:** Specific verified product/funnel behavior and the user's explicit latest instructions > this visual system > obsolete generic layout/color defaults. This UX SOP does NOT override editorial voice, security, backend behavior, checkout design already measured as a control, or legal disclosures. For 'layout only' requests, preserve wording. For normal website tasks, do not change code unless asked, and do not alter production without verification.
+
+---
+
+# PANAMÁ AVENTURA — PERMANENT WORLD-BUILDING & GAMEPLAY CONTRACT (2026-10-19)
+
+**Scope:** All work on Panamá Aventura within this repository: world/map, regions, terrain, roads, structures, assets, animals, NPCs, vehicles, UI, game mechanics, persistence, performance, and deployment. This is a mandatory quality gate, not inspiration. Follow the user's latest explicit request over these defaults. Existing site/editorial/page rules above remain in force outside the game. Do not apply website sales-page design rules to the game HUD.
+
+## Mission and non-negotiable quality bar
+
+Build a beautiful, coherent, explorable, family-friendly open-world Panama game, designed to be genuinely fun and intuitive for Angelique on mobile and desktop. It should feel rooted in recognizably Panamanian geography, architecture, nature, food, transport, sounds and daily life rather than a generic island game. Authenticity is determined by layout, scale, detail, spatial relationships and functioning activities—not by scattering themed props. Prefer improving existing systems and scenes over replacing them or creating competing systems.
+
+**Definition of success:** The complete affected scene looks naturally assembled, navigates correctly, works as expected, preserves existing gameplay, and is visually verified. A successful build, lint, commit, or test alone is NOT completion.
+
+## Before changing anything — mandatory context inspection
+
+1. Identify the actual game entry point, scene/region generators, world coordinate systems, road/path generation, terrain height sampling, object placement, UI controls, inventories, save/load, and deployment pipeline. Never infer architecture from an old patch.
+2. Inspect the current feature being changed AND everything spatially or functionally adjacent to it. Read current code and review prior behavior; capture a before-state screenshot or explicit test baseline where possible.
+3. Map dependencies before touching shared systems. For road changes: city blocks, Gorgona access, Barú elevation, sidewalks, traffic and collisions. For inventory changes: pickups, rewards, food, crafting, trades and saves. For UI changes: phone/desktop layouts, backpack, map, friends, build and back navigation.
+4. Use a single authoritative source of truth for each system. Do not leave old and new generators/meshes/inventories simultaneously active over the same area. When migrating, disable or retire obsolete renderers intentionally and preserve data compatibility.
+5. Make the smallest coherent change; no unrelated redesigns. Maintain an explicit 'preserve' list of currently working features and player progress. Never delete, replace, hide, or downgrade working functionality unless explicitly requested.
+
+## Spatial realism: roads, land, structures
+
+- Treat each region as a connected physical world. Roads own reserved right-of-way corridors; buildings, trees, utility poles, rocks, vendors, parked cars and decorations cannot overlap travel lanes, intersections, sidewalks or access paths. Check actual geometry/collision bounds, not merely object-center coordinates. Keep safe clearances for vehicles and players.
+- Roads must read as newly maintained and continuous: stable pavement width, coherent center/edge markings, smooth curves, connected junctions, plausible gradients, no seams, gaps, sharp spikes, floating pieces, terrain clipping or abrupt elevations. Curved/steep roads require terrain-following verification and drive tests, especially the route to Volcán Barú. Do not disguise road breaks by adding scenery.
+- Maintain clear road hierarchy: main highways, turnoffs, local streets, driveways, pedestrian areas, trails. Vehicles and pedestrians must have plausible access routes. Validate road connectivity (graph/intersections) and camera/player navigation. Protect intersections and junction sightlines.
+- **Gorgona invariant:** Inland highway -> distinct Gorgona access/main road -> drive a meaningful stretch -> coastal town/beach arrival. The beach is not attached directly to the highway. Existing houses, beach activities, lighthouse and landmarks must remain, but be appropriately distributed and accessed; nothing occupies the roads.
+- **Panama City invariant:** The city has a legible block/street system. Buildings belong on parcels with realistic setbacks, sidewalks and accessible entrances; never inside streets. Urban detail must be organized: white Kia sedans, a honking diablo rojo, local music where appropriate, raspao vendor, barrio football, police/cars and active NPCs. Add them as behaving entities, not road obstructions.
+- **San Blas invariant:** Multiple distinct small tropical islands with believable spacing, coastlines and marine life, including crabs. Do not represent San Blas as one generic cluttered island.
+- **Nature invariant:** coastlines, mountains, forests, beaches and transitions should be irregular, layered and organic; avoid obvious rectangular land patches, hard polygon seams, repeated grids, floating foliage and uniform scatter. Use plausible terrain biomes, slopes, spacing and boundaries. Preserve open sightlines and traversable paths. More objects do not automatically mean more realism.
+- Respect consistent scale and physical placement across all game objects. Run overlap/clearance checks after generation and after any terrain/road changes. Fix root generators rather than endlessly hand-moving individual assets.
+
+## Preserve gameplay and make every visible mechanic real
+
+- Keep the existing backpack hub, visual map with player-position pointer, friends/call/send-home controls, build menu, phone, bananas/coconuts/money/lucky charm inventory, animals, houses, activities and other working systems unless explicitly scoped otherwise. Do not replace an interactive map with a location list.
+- All visible buttons must respond, and all advertised activities must be completable, discoverable, and provide feedback. A build button must actually build; collection must change the same authoritative inventory everywhere; purchases/trades/crafting must debit the same state.
+- Protect saved progress when changing schemas: version/migrate stored data, provide backward-compatible defaults, and test old saves. Test pickup -> inventory -> consumption/trade/build -> save -> reload.
+- NPCs should move/live independently without clipping through objects. Friends must be dismissible. Animals' follow/ride behavior must function. Vehicle paths should not collide with buildings or roadsides. Use believable day/night duration and preserve any user-requested pause.
+- Do not expose raw objects, debug placeholders, [object Object], dead buttons or duplicate controls.
+
+## Visual direction and game UI
+
+- The goal is polished and distinctive, not generic, noisy, boxy, or 'more clutter = better'. Reuse and elevate the current visual system before introducing another renderer, asset pipeline or graphic style. Make major architecture swaps only when a measured limitation justifies them.
+- Clear focal points, natural density gradients, distinctive environments and meaningful movement. Authentic Panama-specific elements should exist in their correct regions and realistic context.
+- Design first for a child using a phone, without weakening desktop. Large equal-weight primary controls (Backpack, Map, Friends), reliable touch areas, legible text, visible states, simple back/home paths; no bottom-button overlap, safe-area collision, tiny instructions or excessive menus.
+- Mobile HUD must not block driving, movement or exploration. Use visuals/icons to explain actions, with concise labels.
+
+## Mandatory verification for EVERY change
+
+1. Run relevant static checks/build/tests. Add or update automated regression tests for any bug corrected twice, especially road graph connectivity, placement overlap, terrain continuity, authoritative inventory, save migration and HUD hitboxes.
+2. Test the actual interactive game, not just the source code. Navigate affected area end-to-end (for Gorgona: highway -> town road -> beach; for Barú: full drive up/down; for city: sample every main junction). Verify meshes, collisions, spawning, traffic, terrain and access.
+3. Inspect rendered screenshots or live browser views after the change at minimum on a representative phone viewport and desktop; inspect overlapping HUD, readability and player visibility. Compare against the before-state. Visual inspection MUST check the neighboring scene, not only the edited object.
+4. Use an explicit regression checklist: roads continuous; intersections connected; no buildings/trees in roads; no float/clipping; world navigation functional; existing landmarks preserved; map pointer/backpack/friends/build working; inventory counts stable; old saves load; phone controls clear; reasonable performance.
+5. If a live browser or deployment is inaccessible, **say verification was not done** and do not claim 'fixed', 'live', 'fully tested', or 'complete'. Report what was tested, what remains uncertain, and how to reproduce/verify. A GitHub push is not proof of production deployment.
+6. For deploys, verify the current production revision and reload the live route; test the affected scenario in production. If CI is not configured to enforce these checks, recommend/add the smallest reliable gate rather than asserting it already exists.
+
+## Completion / fail rules
+
+FAIL the task if any object occupies a road or important footpath, a road is discontinuous, an existing player feature disappears, duplicated systems disagree, UI overlaps on a phone, a visible action is nonfunctional, the game loses progress, or the agent claims live success without observing live behavior. Resolve before sign-off; if tools are unavailable, mark BLOCKED/UNVERIFIED rather than claiming DONE.
+
+**Required final report:** (1) exact region/system and root cause; (2) preserved features; (3) code/tests changed; (4) visual and gameplay tests performed with viewport and path; (5) deployed revision and production status; (6) remaining known issues. Do not substitute a list of edits for evidence of working results.
+
+**Operating principle:** Never deliver an isolated patch that makes the overall world less believable or less playable. Integrate, preserve, test, and visually inspect the whole affected environment before finishing.
