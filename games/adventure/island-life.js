@@ -1,3 +1,4 @@
+import {roadDistance} from './explore-state.js?v=118';
 import {oceanModel} from './ocean-models.js?v=73';
 // Temporary gameplay switch. Re-enable the cycle by setting this to true.
 // Disabled mode forces bright midday even when an old save resumes at night.
@@ -43,7 +44,8 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
   if(scene.background?.isColor)scene.background.copy(nightSky).lerp(daySky,day).lerp(dusk,sunset*.35);if(scene.fog)scene.fog.color.copy(scene.background);
   if(sun){sun.intensity=.5+day*2.5;sun.color.set(night?'#9fbcff':'#fff0d2');}if(ambient){ambient.intensity=.85+day*.6;ambient.color.set(night?'#99b8ed':'#c9edff');}if(waterMaterial?.uniforms.daylight)waterMaterial.uniforms.daylight.value=day;
   sunBody.visible=!night;moon.visible=night;const arc=(phase%.5)*2;for(const body of [sunBody,moon])body.position.set((arc-.5)*2.6,2.1+Math.sin(arc*Math.PI)*.4,-10);starMaterial.opacity=(1-day)*.8;
-  const safeWater=(x,z,r=.7)=>[[0,0],[r,0],[-r,0],[0,r],[0,-r]].every(([ox,oz])=>inWater(x+ox,z+oz));
+  const roadClear=(x,z,r=.7)=>roadDistance(x,z)>3.3+r;
+  const safeWater=(x,z,r=.7)=>roadClear(x,z,r)&&[[0,0],[r,0],[-r,0],[0,r],[0,-r]].every(([ox,oz])=>inWater(x+ox,z+oz));
   for(const a of animals){
    if(active)a.t+=dt;
    const t=a.t,isDolphin=a.kind==='Dolphin',isFish=a.kind==='Reef fish';
@@ -85,8 +87,20 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
       a.g.position.x=nx;a.g.position.z=nz;a.stuck=0;a.travel+=step;
      }else{
       a.stuck+=dt;
-      a.heading+=dt*1.5;
-      if(a.stuck>.25){a.waypoint=null;a.stuck=0;}
+      // A road is a hard boundary: reflect the swimming direction away
+      // from its closest edge, rather than repeatedly pushing through it.
+      if(!roadClear(nx,nz,radius)){
+       const e=.5,gx=roadDistance(a.g.position.x+e,a.g.position.z)-roadDistance(a.g.position.x-e,a.g.position.z);
+       const gz=roadDistance(a.g.position.x,a.g.position.z+e)-roadDistance(a.g.position.x,a.g.position.z-e);
+       const mag=Math.hypot(gx,gz)||1,nxOut=gx/mag,nzOut=gz/mag;
+       const vx=Math.sin(a.heading),vz=Math.cos(a.heading),dot=vx*nxOut+vz*nzOut;
+       const rx=vx-2*Math.min(0,dot)*nxOut,rz=vz-2*Math.min(0,dot)*nzOut;
+       a.heading=Math.atan2(rx,rz)+(a.kind==='Reef fish'?.16:.25);
+       a.waypoint=null;a.stuck=0;
+      }else{
+       a.heading+=dt*1.5;
+       if(a.stuck>.25){a.waypoint=null;a.stuck=0;}
+      }
      }
     }
    }
