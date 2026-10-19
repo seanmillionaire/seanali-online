@@ -2,10 +2,10 @@ import {touchesLava,returnToHospital,createCityHospital} from './volcano-safety.
 import {locationLabel} from './location-label.js?v=156';
 import {waterFriend,animalStep} from './animal-boundaries.js?v=156';
 import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,mainlandAt,mainlandRoadRoute} from './explore-state.js?v=159';
-import {createPanamaLife} from './panama-life.js?v=156';
+import {createPanamaLife} from './panama-life.js?v=162';
 import {createCloseCamera} from './close-camera.js?v=156';
 import {createCampaign} from './campaign.js?v=156';
-import {createColonAdventure} from './colon-adventure.js?v=156';
+import {createColonAdventure} from './colon-adventure.js?v=162';
 import {createCanalCruise} from './canal-cruise.js?v=156';
 import {createRealms} from './realms.js?v=156';
 import {createJourney} from './journey.js?v=156';
