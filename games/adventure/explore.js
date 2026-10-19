@@ -537,6 +537,10 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
   if(friendSystem?.isOpen())friendSystem.close();
   if(adventureMap.isOpen())adventureMap.close(false);
   const land=worldIslands.find(i=>Math.hypot((p.x-i.x)/i.rx,(p.z-i.z)/i.rz)<1),here=land&&Math.hypot((s.x-land.x)/land.rx,(s.z-land.z)/land.rz)<1;
+  if(p.id==='volcanTown'&&mainlandAt(s.x,s.z)){
+   route=mainlandRoadRoute(s,p);targetPoint=route.shift()||p;panel.hidden=true;
+   tell('🛣️ Sigue la carretera hacia Volcán.','🛣️ Follow the road to Volcán.');return;
+  }
   if(ride){targetPoint={x:p.x,z:p.z};route=[];panel.hidden=true;return;}
   if(boating&&land){const a=Math.atan2(s.x-land.x,s.z-land.z);let dest={x:land.x+Math.sin(a)*(land.rx+3),z:land.z+Math.cos(a)*(land.rz+3)};dest=recoverBoat(dest.x,dest.z);targetPoint=dest;route=[];panel.hidden=true;return;}
   if(land&&!here){panel.replaceChildren(btn('×','panel-close',()=>panel.hidden=true),makeEl('h2','',(es?land.es:land.en)),makeEl('p','',say('¿Cómo quieres explorar?','How will you explore?')));panel.hidden=false;
