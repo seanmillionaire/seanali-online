@@ -27,7 +27,7 @@ export const CITY_DELIVERY=[
 export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylinder,cone,height,surfaces=null,save,refresh,joy,tell,coinAward,onWash=()=>{}}){
  const city=state.world.city,a=city.activities,es=state.lang==='es',choose=(x,y)=>es?x:y;
  const coord=(dx,dz)=>({x:-100+dx,z:-74+dz});
- const asph=mat('#43484b',{map:surfaces?.asphalt,bumpMap:surfaces?.asphalt,bumpScale:.035,roughness:1}),
+ const asph=mat('#3c424c',{map:surfaces?.asphalt,bumpMap:surfaces?.asphalt,bumpScale:.035,roughness:1}),
   stripe=mat('#eed89c'),white=mat('#e9ecec'),walk=mat('#bbc5bd',{map:surfaces?.stone}),
   green=mat('#75a783',{map:surfaces?.grass}),grass=mat('#5f9b67'),
   stone=mat('#99948b',{map:surfaces?.stone,bumpMap:surfaces?.stone,bumpScale:.06}),
@@ -72,38 +72,38 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  const chunks=[];
  const road=(x,z,w,d)=>{chunks.push({x,z,w,d});};
  const xs=[-43,-29,-15,0,15,29,43],zs=[-35,-23,-11,2,15,27,38];
- for(const dx of xs)for(let dz=-44;dz<=44;dz+=2.5){
+ for(const dx of xs)for(let dz=-42;dz<=42;dz+=5){
   const norm=(dx/58)**2+(dz/48)**2;if(norm>.82)continue;
-  road(-100+dx,-74+dz,6.4,3.1);
+  road(-100+dx,-74+dz,6.0,5.25);
  }
- for(const dz of zs)for(let dx=-53;dx<=53;dx+=2.5){
+ for(const dz of zs)for(let dx=-52;dx<=52;dx+=5){
   const norm=(dx/58)**2+(dz/48)**2;if(norm>.82)continue;
-  road(-100+dx,-74+dz,3.1,6.4);
+  road(-100+dx,-74+dz,5.25,6.0);
  }
  // Seaside ring road. Outer street loops around the outer neighborhoods.
  for(let i=0;i<104;i++){
   const angle=(i+.5)/104*Math.PI*2,x=-100+Math.cos(angle)*48.4,z=-74+Math.sin(angle)*40.0;
   const tangent=Math.atan2(Math.cos(angle)*48.4,-Math.sin(angle)*40);
-  chunks.push({x,z,w:5.8,d:5.4,rot:-tangent});
+  chunks.push({x,z,w:4.8,d:4.0,rot:-tangent});
  }
  if(typeof T.InstancedMesh==='function'&&typeof T.Object3D==='function'){
   const roads=new T.InstancedMesh(box,asph,chunks.length);roads.name='Casco Viejo connected road network';
   roads.castShadow=false;roads.receiveShadow=true;
   const dummy=new T.Object3D();
   chunks.forEach((r,i)=>{
-   dummy.position.set(r.x,height(r.x,r.z)+.14,r.z);dummy.scale.set(r.w,.22,r.d);
+   dummy.position.set(r.x,height(r.x,r.z)+.095,r.z);dummy.scale.set(r.w,.16,r.d);
    dummy.rotation.y=r.rot||0;dummy.updateMatrix();roads.setMatrixAt(i,dummy.matrix);
   });
   roads.instanceMatrix.needsUpdate=true;group.add(roads);
- }else for(const r of chunks){const m=makeObj(box,asph,r.x,height(r.x,r.z)+.14,r.z,r.w,.22,r.d);m.rotation.y=r.rot||0;m.castShadow=false;}
+ }else for(const r of chunks){const m=makeObj(box,asph,r.x,height(r.x,r.z)+.095,r.z,r.w,.16,r.d);m.rotation.y=r.rot||0;m.castShadow=false;}
  // Painted lines and crossings: repeated street detail without large textures.
  for(const dx of xs)for(let k=-34;k<=34;k+=9){
   const x=-100+dx,z=-74+k;if((dx/58)**2+(k/48)**2>.78)continue;
-  decorate(box,stripe,x,height(x,z)+.29,z,.11,.035,2.6);
+  decorate(box,stripe,x,height(x,z)+.22,z,.11,.035,2.6);
  }
  for(const dz of zs)for(let k=-43;k<=43;k+=10){
   const x=-100+k,z=-74+dz;if((k/58)**2+(dz/48)**2>.78)continue;
-  decorate(box,stripe,x,height(x,z)+.29,z,2.6,.035,.11);
+  decorate(box,stripe,x,height(x,z)+.22,z,2.6,.035,.11);
  }
  // Seven neighborhoods, ~50 distinct buildings with color and height variation.
  let buildingCount=0;
@@ -369,7 +369,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
    }else if(Math.abs(football.position.z)>9.2){football.position.z=Math.sign(football.position.z)*9.2;soccerBall.vz*=-.5;}
   }
 
-  // Removed plaza water has no animation.
+  // Removed fountain has no update animation.
   for(const b of washBubbles){
    b.mesh.visible=washCooldown.time>9;
    if(b.mesh.visible)b.mesh.position.y=b.y+Math.sin(performance.now()*.005+b.phase)*.23;
