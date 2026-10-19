@@ -5,10 +5,8 @@ export function createCanalCruise({T,scene,host,state,make,mat,box,ball,cylinder
  const root=new T.Group();root.name='Panama Canal · monumental locks and one ocean liner';scene.add(root);
  const white=mat('#fff7e6'),navy=mat('#16364e'),blue=mat('#58c6de'),gold=mat('#eac46f'),wood=mat('#b4875e'),stone=mat('#899d9f'),orange=mat('#f38c42'),dark=mat('#315665');
  const piece=(geo,m,x,y,z,sx,sy,sz,parent=root)=>make(geo,m,x,y,z,sx,sy,sz,parent);
- // Former city-center basin: keep this footprint dry beneath the highway.
- // The cruise attraction remains, but no blue pond overlays the city streets.
- const roadSurface=mat('#4b5154',{roughness:.97});
- piece(box,roadSurface,-43,.16,-74,42,.25,25);
+ // Carved waterfront basin: two monumental lock walls, towers and open sea gates.
+ piece(box,blue,-43,.04,-74,42,.09,25);
  for(const side of [-1,1]){
   piece(box,stone,-44,1.3,-74+side*15,44,2.6,3);
   piece(box,white,-44,2.75,-74+side*15,44,.3,3.4);

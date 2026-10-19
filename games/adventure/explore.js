@@ -1,9 +1,9 @@
-import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,HIGHWAY_TERMINI,mainlandAt,mainlandRoadRoute} from './explore-state.js?v=130';
+import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,mainlandAt,mainlandRoadRoute} from './explore-state.js?v=123';
 import {createPanamaLife} from './panama-life.js?v=119';
 import {createCloseCamera} from './close-camera.js?v=115';
 import {createCampaign} from './campaign.js?v=114';
-import {createColonAdventure} from './colon-adventure.js?v=128';
-import {createCanalCruise} from './canal-cruise.js?v=133';
+import {createColonAdventure} from './colon-adventure.js?v=114';
+import {createCanalCruise} from './canal-cruise.js?v=114';
 import {createRealms} from './realms.js?v=114';
 import {createJourney} from './journey.js?v=114';
 import {oceanModel} from './ocean-models.js?v=73';
@@ -14,11 +14,11 @@ import {createWorldMap} from './world-map.js?v=114';
 import {createWildlifeFriends} from './wildlife-friends.js?v=114';
 import {createVillageBuilders} from './village-builders.js?v=1';
 import {createHouseInteriors} from './house-interiors.js?v=112';
-import {createPizzaCity} from './pizza-city.js?v=133';
+import {createPizzaCity} from './pizza-city.js?v=126';
 import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=114';
 import {ESTATE_PLANS,estateCosts,estateMissing,findEstateSite,canBuildEstate,buildEstate,canUpgradeEstate,upgradeEstate,estateBlocked,createEstateWorld} from './estate.js?v=5';
 import {buildIsland} from './entrance.js?v=115';
-import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,sharkPatrol,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=130';
+import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,sharkPatrol,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=116';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);syncWallet(state);
  let disposed=false,engine=null,control=null,builderSystem=null,friendSystem=null,houseSystem=null,wildLife=null,cityLife=null,panamaLife=null,cruiseLife=null,colonLife=null,workshop=null,estateWorld=null,regionWorld=null,carDriving=false,carSpeed=0,mountId=null,birdAltitude=0,birdTarget=0,birdLanding=false,near=null,ride=s.flight?1:0,flightY=s.flight||0,flightTarget=s.flight||0,flightVX=0,flightVZ=0,route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;
@@ -627,22 +627,10 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    // Highway-only rails: keep city streets and intersection approaches clear.
    const outsideCity=(x,z)=>Math.hypot((x+100)/58,(z+74)/48)>1.12;
    for(const side of [-1,1])for(let j=0;j<sections;j++){
-    const t=(j+.5)/sections,x=ax+dx*t+lateralX*side*(HIGHWAY_WIDTH/2+.45),z=az+dz*t+lateralZ*side*(HIGHWAY_WIDTH/2+.35),y=height(x,z);
+    const t=(j+.5)/sections,x=ax+dx*t+lateralX*side*(HIGHWAY_WIDTH/2+.35),z=az+dz*t+lateralZ*side*(HIGHWAY_WIDTH/2+.35),y=height(x,z);
     if(!outsideCity(x,z))continue;
     const beam=make(box,railMetal,x,y+1.02,z,.15,.17,len/sections+.22);beam.rotation.y=ang;beam.castShadow=false;
     if(j%2===0){const post=make(box,railPost,x,y+.55,z,.17,1.1,.17);post.castShadow=false;}
-   }
-  }
-  // Strong end-of-road barriers show where driving must stop.
-  const stopRed=mat('#e64f42',{roughness:.68}),stopWhite=mat('#f8f7e6',{roughness:.75});
-  for(const end of HIGHWAY_TERMINI){
-   const angle=Math.atan2(end.dx,end.dz),h=height(end.x,end.z);
-   const barricade=make(box,stopWhite,end.x,h+.9,end.z,HIGHWAY_WIDTH-.3,1.1,.42);
-   barricade.rotation.y=angle;barricade.castShadow=false;
-   for(let k=-4;k<=4;k++){
-    const x=end.x+end.dz*k*1.55,z=end.z-end.dx*k*1.55;
-    const stripe=make(box,stopRed,x,height(x,z)+1.02,z,1.12,.25,.46);
-    stripe.rotation.y=angle;stripe.castShadow=false;
    }
   }
   const avatar=new T.Group();avatar.name='Angelique';scene.add(avatar);const skin=mat('#bd8e68'),shirt=mat('#b8a6d7'),shorts=mat('#437c80'),hair=mat('#44352a');

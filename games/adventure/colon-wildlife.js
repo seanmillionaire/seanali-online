@@ -107,7 +107,7 @@ export function createColonWildlife({T,root,make,geometry,mat,ball,box,cylinder,
   const tail=[];let parent=g;
   for(let j=0;j<5;j++){const rig=new T.Group();rig.position.z=j===0?-1.05:-.49;parent.add(rig);piece(ball,hide,0,0,-.2,.39-j*.058,.18-j*.025,.43,rig);piece(cone,ridge,0,.17-j*.025,-.22,.09,.16,.16,rig);tail.push(rig);parent=rig;}
   const wake=piece(wakeGeo,ripple,0,-.045,-.7,1,1.9,1,g);wake.rotation.x=-Math.PI/2;
-  const scale=.85+(i%3)*.1;g.scale.setScalar(scale);crocs.push({g,tail,jaw,wake,index:i,heading:0,ready:false});
+  const scale=.85+(i%3)*.1;g.scale.setScalar(scale);crocs.push({g,tail,jaw,wake,index:i});
  }
  function update(dt,active,time,{player,playing=false,signal=false,reducedMotion=false}={}){
   const nearby=Math.hypot(player.x-110,player.z+56)<100||Math.hypot(player.x-130,player.z+25)<80;
@@ -137,25 +137,7 @@ export function createColonWildlife({T,root,make,geometry,mat,ball,box,cylinder,
    m.g.visible=Math.hypot(player.x-p.x,player.z-p.z)<65;
   }
   for(const c of crocs){
-   // The shoreline search can jump between valid samples when a highway
-   // changes the wet/dry mask. Swim toward the goal instead of teleporting.
-   const p=shoreCrocodilePose(c.index,time,inWater);
-   if(!c.ready){c.g.position.set(p.x,-.03,p.z);c.heading=p.heading;c.ready=true;}
-   else if(active){
-    const dx=p.x-c.g.position.x,dz=p.z-c.g.position.z,d=Math.hypot(dx,dz);
-    if(d>.02){
-     const step=Math.min(d,Math.max(0,dt)*1.4);
-     const nx=c.g.position.x+dx/d*step,nz=c.g.position.z+dz/d*step;
-     // Keep crocodiles in water; wait for a safe new goal otherwise.
-     if(inWater(nx,nz)&&inWater(nx+dx/d*1.4,nz+dz/d*1.4)){
-      c.g.position.x=nx;c.g.position.z=nz;
-      const desired=Math.atan2(dx,dz);
-      const delta=Math.atan2(Math.sin(desired-c.heading),Math.cos(desired-c.heading));
-      c.heading+=Math.max(-dt*.9,Math.min(dt*.9,delta));
-     }
-    }
-   }
-   c.g.rotation.y=c.heading;
+   const p=shoreCrocodilePose(c.index,time,inWater);c.g.position.set(p.x,-.03,p.z);c.g.rotation.y=p.heading;
    c.tail.forEach((t,j)=>t.rotation.y=Math.sin(time*2.6-j*.65+c.index)*.19);
    c.jaw.rotation.x=-.015-Math.max(0,Math.sin(time*.5+c.index))*.025;
    c.g.visible=Math.hypot(player.x-p.x,player.z-p.z)<75;
