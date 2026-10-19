@@ -1,7 +1,7 @@
 import {clipLandTriangle,coastDistanceField} from './terrain-surface.js?v=156';
-import {mainlandContains,canalWater,gatunWater} from './geography.js?v=156';
+import {mainlandContains,canalWater,gatunWater,organicIslandRadius,homeShoreRadius} from './geography.js?v=157';
 import {createActiveVolcano} from './active-volcano.js?v=156';
-import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=156';
+import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=157';
 import {createTropical} from './tropical.js?v=156';
 import {createSurfaceTextures} from './surface-textures.js?v=156';
 import {installPolyHavenMaterials} from './polyhaven-materials.js?v=156';
@@ -41,13 +41,18 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
     [stone,surfaces.stone,.11],[cream,surfaces.plaster,.035],[wood,surfaces.wood,.065]]){
     material.map=surface;material.bumpMap=surface;material.bumpScale=bump;material.needsUpdate=true;
   }
-  const positions=[],colors=[],uvs=[],indices=[],rings=48,segments=128;
-  for(let ring=0;ring<=rings;ring++)for(let i=0;i<=segments;i++){const a=i/segments*Math.PI*2,r=ring/rings,shore=1+.035*Math.sin(a*7)+.03*Math.cos(a*5),x=Math.cos(a)*20*r*shore,z=Math.sin(a)*14*r*shore,y=ring===rings?.08:height(x,z);positions.push(x,y,z);uvs.push(x*.18,z*.18);const smooth=(a,b,v)=>{const t=Math.max(0,Math.min(1,(v-a)/(b-a)));return t*t*(3-2*t);};const c=new T.Color('#527842').lerp(new T.Color('#789454'),smooth(.3,.77,r));c.lerp(new T.Color('#e5d5ad'),smooth(.75,.91,r));c.lerp(new T.Color('#969784'),smooth(4.5,7,y)*.7);c.multiplyScalar(.96+rand()*.08);colors.push(c.r,c.g,c.b);}
+  const positions=[],colors=[],uvs=[],indices=[],rings=52,segments=144;
+   const blend=(from,to,value)=>{const t=Math.max(0,Math.min(1,(value-from)/(to-from)));return t*t*(3-2*t);};
+  for(let ring=0;ring<=rings;ring++)for(let i=0;i<=segments;i++){const a=i/segments*Math.PI*2,r=ring/rings,shore=homeShoreRadius(a),x=Math.cos(a)*20*r*shore,z=Math.sin(a)*14*r*shore,y=ring===rings?.08:height(x,z);positions.push(x,y,z);uvs.push(x*.18,z*.18);const patch=r+.043*Math.sin(x*.28+z*.18)+.027*Math.cos(x*.13-z*.49);
+   const c=new T.Color('#527842').lerp(new T.Color('#789454'),blend(.30,.77,patch));
+   c.lerp(new T.Color('#e5d5ad'),blend(.75,.94,patch));
+   c.lerp(new T.Color('#969784'),blend(4.5,7,y)*.7);
+   c.multiplyScalar(.92+.10*Math.sin(x*.23+z*.13)*Math.cos(z*.38-x*.09)+rand()*.055);colors.push(c.r,c.g,c.b);}
   for(let j=0;j<rings;j++)for(let i=0;i<segments;i++){const a=j*(segments+1)+i,b=a+segments+1;indices.push(a,a+1,b,b,a+1,b+1);}
   const terrain=geometry(new T.BufferGeometry());terrain.setAttribute('position',new T.Float32BufferAttribute(positions,3));terrain.setAttribute('color',new T.Float32BufferAttribute(colors,3));terrain.setAttribute('uv',new T.Float32BufferAttribute(uvs,2));terrain.setIndex(indices);terrain.computeVertexNormals();make(terrain,mat('#ffffff',{vertexColors:true,map:surfaces.grass,bumpMap:surfaces.grass,bumpScale:.13,roughness:.98}));
   // Five deliberately different destinations: shape, silhouette, color and landmarks.
   // All decorations use the same physical x/z coordinates as player navigation.
-  const rockGeo=geometry(new T.DodecahedronGeometry(1,0));
+  const rockGeo=geometry(new T.IcosahedronGeometry(1,1));
   const crystalGeo=geometry(new T.ConeGeometry(1,1,5));
   const ringGeo=geometry(new T.TorusGeometry(1,.12,8,24));
   const barkDark=mat('#58462f',{map:surfaces.wood,bumpMap:surfaces.wood,bumpScale:.075});
@@ -128,13 +133,20 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
    const rings=land.id==='sunset'?62:land.guna?10:20,segments=land.id==='sunset'?144:land.guna?32:80;
    for(let ring=0;ring<=rings;ring++)for(let j=0;j<=segments;j++){
     const a=j/segments*Math.PI*2,r=ring/rings;
-    const x=land.x+Math.cos(a)*land.rx*r,z=land.z+Math.sin(a)*land.rz*r,y=isletHeight(x,z);
+    const shore=organicIslandRadius(land,a);
+     const x=land.x+Math.cos(a)*land.rx*r*shore,z=land.z+Math.sin(a)*land.rz*r*shore,y=isletHeight(x,z);
     iv.push(x,y,z);iu.push(x*.18,z*.18);
-    const base=new T.Color(land.id==='sunset'
-     ?r<.31?'#635a53':r<.64?'#777065':r<.84?'#63705c':'#aaa087'
-     :r>.87?shades[2]:r>.52?shades[1]:shades[0]);
-    const noise=(.95+.08*rand())*(1+.04*Math.sin(a*7+r*23));
-    base.multiplyScalar(noise);ic.push(base.r,base.g,base.b);
+    // Overlapping diffuse color transitions, rather than circular color bands.
+     // Spatial noise also breaks up artificial rings on aerial views.
+     const patch=r+.045*Math.sin(x*.29+z*.17)+.033*Math.sin(x*.62-z*.35);
+     const base=land.id==='sunset'
+      ?new T.Color('#5c5350').lerp(new T.Color('#777267'),blend(.23,.57,patch))
+       .lerp(new T.Color('#657a63'),blend(.51,.79,patch))
+       .lerp(new T.Color('#b2aa96'),blend(.80,.98,patch))
+      :new T.Color(shades[0]).lerp(new T.Color(shades[1]),blend(.36,.76,patch))
+       .lerp(new T.Color(shades[2]),blend(.75,.96,patch));
+     base.multiplyScalar(.93+.07*Math.sin(x*.19+z*.21)*Math.cos(z*.32-x*.13)+rand()*.055);
+     ic.push(base.r,base.g,base.b);
     if(ring<rings&&j<segments){const n=ring*(segments+1)+j;ii.push(n,n+1,n+segments+1,n+segments+1,n+1,n+segments+2);}
    }
    const g=geometry(new T.BufferGeometry());
@@ -297,7 +309,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   // Transparent lagoon, a visible sandy seabed, and small irregular wave highlights.
   // Layered moving water: soft vertex swell + screen-space foam/caustics.
   // Compact shader avoids reflection render passes and protects mobile FPS.
-  const coast=coastDistanceField((x,z)=>isletHeight(x,z)>0||Math.hypot(x/20,z/14)<1+.035*Math.sin(Math.atan2(z/14,x/20)*7)+.03*Math.cos(Math.atan2(z/14,x/20)*5));
+  const coast=coastDistanceField((x,z)=>isletHeight(x,z)>0||Math.hypot(x/20,z/14)<homeShoreRadius(Math.atan2(z/14,x/20)));
   const coastTexture=new T.DataTexture(coast.pixels,coast.width,coast.height,T.RGBAFormat);
   coastTexture.magFilter=coastTexture.minFilter=T.LinearFilter;coastTexture.needsUpdate=true;textures.add(coastTexture);
   const waterMaterial=new T.ShaderMaterial({
@@ -408,7 +420,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   const inland=(x,z)=>dryMainland(x,z)&&Math.hypot(x/20,z/14)>.90&&!worldIslands.some(p=>Math.hypot((x-p.x)/p.rx,(z-p.z)/p.rz)<.90);
   // Overlap the existing region meshes slightly from below: no empty moat or z-fighting.
   // Clip boundary triangles rather than dropping whole grid cells at the coast.
-  for(let x=-190;x<265;x+=3)for(let z=-145;z<20;z+=3){
+  for(let x=-196;x<270;x+=3)for(let z=-151;z<26;z+=3){
    const corners=[[x,0,z],[x+3,0,z],[x,0,z+3],[x+3,0,z+3]];
    for(const tri of [[0,2,1],[1,2,3]]){
     const vertices=clipLandTriangle(tri.map(i=>corners[i]),inland);
