@@ -618,6 +618,18 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
     }
    }
   }
+  // Road-edge safety rails: paired steel beams and supports, matching road bends.
+  const railMetal=mat('#a9afb1',{roughness:.66,metalness:.52}),railPost=mat('#555f65',{roughness:.78});
+  for(const path of Object.values(MAINLAND_ROADS))for(let i=1;i<path.length;i++){
+   const [ax,az]=path[i-1],[bx,bz]=path[i],dx=bx-ax,dz=bz-az,len=Math.hypot(dx,dz),ang=Math.atan2(dx,dz);
+   const lateralX=Math.cos(ang),lateralZ=-Math.sin(ang);
+   const sections=Math.ceil(len/4);
+   for(const side of [-1,1])for(let j=0;j<sections;j++){
+    const t=(j+.5)/sections,x=ax+dx*t+lateralX*side*3.25,z=az+dz*t+lateralZ*side*3.25,y=height(x,z);
+    const beam=make(box,railMetal,x,y+1.02,z,.15,.17,len/sections+.22);beam.rotation.y=ang;beam.castShadow=false;
+    if(j%2===0){const post=make(box,railPost,x,y+.55,z,.17,1.1,.17);post.castShadow=false;}
+   }
+  }
   const avatar=new T.Group();avatar.name='Angelique';scene.add(avatar);const skin=mat('#bd8e68'),shirt=mat('#b8a6d7'),shorts=mat('#437c80'),hair=mat('#44352a');
   make(geometry(new T.CylinderGeometry(.24,.20,.58,12)),shirt,0,1.06,0,1,1,1,avatar);make(ball,skin,0,1.58,0,.22,.27,.21,avatar);make(ball,hair,0,1.73,-.03,.23,.15,.21,avatar);
   // Angelique's ponytail, ribbon, and lavender adventure outfit.
@@ -782,7 +794,8 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
   const realms=createRealms({T,scene,host,state,make,geometry,mat,ball,box,cylinder,height,save,joy,spark,refresh,tell,navigate:(realm,dest)=>{if(!dest)return;setHelpers(false);if(dest.action==='food'){if(s.food.banana+s.food.coconut)showFood();else travelTo(explorePlaces.find(p=>p.id==='wilds'));return;}if(dest.action==='learn'){followGoal();return;}if(realm==='sky'){if(boating)disembark();if(ride){targetPoint={x:dest.x,z:dest.z};route=[];flightTarget=dest.y||12;}else{pendingRealm=dest;const launch=explorePlaces.filter(p=>p.kind==='balloon').sort((a,b)=>Math.hypot(a.x-s.x,a.z-s.z)-Math.hypot(b.x-s.x,b.z-s.z))[0];route=islandPath(s,launch);targetPoint=route.shift()||null;tell('🎈 Sube al globo para explorar el cielo','🎈 Board the balloon to explore the sky');}return;}if(realm==='islands'){travelTo(dest);return;}if(ride){waterLanding=dest;targetPoint={x:dest.x,z:dest.z};route=[];flightTarget=Math.max(8,flightY);return;}if(boating)disembark();route=islandPath(s,dest);targetPoint=route.shift()||null;tell('🌊 Sigue el brillo · Nada para descubrir','🌊 Follow the glow · Swim to discover');}});
   const journey=createJourney({T,scene,host,state,avatar,make,geometry,mat,height,save,joy,spark,refresh,realms,seek:kind=>{if(kind==='explore')showDiscover();else if(kind==='food'){if(s.food.banana+s.food.coconut)showFood();else travelTo(explorePlaces.find(p=>p.id==='wilds'));}else if(kind==='learn')followGoal();else{const dest=kind==='fly'?explorePlaces.find(p=>p.id==='balloon'):{x:11,z:20};route=islandPath(s,dest);targetPoint=route.shift()||null;}}});
   function update(dt,time){if(disposed)return;dt=Math.min(dt,.05);if(messageTime>0){messageTime-=dt;if(messageTime<=0)message.classList.remove('show');}
-   speedToggle.textContent=fastMode?say('Lento','Slow'):say('Rápido','Fast');speedToggle.setAttribute('aria-label',swimming?(fastMode?say('Nadar normal','Swim normally'):say('Nadar rápido','Swim fast')):(fastMode?say('Caminar','Walk'):say('Correr','Run')));speedToggle.setAttribute('aria-pressed',String(fastMode));speedToggle.hidden=!!ride||!!mountId||boating||carDriving||inside||!!houseSystem?.isInside();
+   speedToggle.textContent=fastMode?say('Lento','Slow'):say('Rápido','Fast');speedToggle.setAttribute('aria-label',swimming?(fastMode?say('Nadar normal','Swim normally'):say('Nadar rápido','Swim fast')):(fastMode?say('Caminar','Walk'):say('Correr','Run')));speedToggle.setAttribute('aria-pressed',String(fastMode));speedToggle.hidden=!!ride||!!mountId||boating||inside||!!houseSystem?.isInside();
+    if(carDriving){speedToggle.textContent=fastMode?say('🚙 Normal','🚙 Normal'):say('🏎️ Rápido','🏎️ Fast');speedToggle.setAttribute('aria-label',fastMode?say('Conducir normal','Drive normally'):say('Activar velocidad rápida','Enable fast driving'));}
    const cruise=cruiseLife.update(dt,!paused()&&!document.hidden&&panel.hidden&&!journey.isOpen()&&!document.querySelector('dialog[open]'));
    const cruising=cruise.active;if(cruising){bodyScale=1;blur();jumpY=0;velocity=0;airborne=false;swimming=false;}
    const down=(...ks)=>ks.some(k=>keys.has(k)||[...directionPointers.values()].some(p=>p.key===k));let dx=stick.x+(down('ArrowRight','d','D')?1:0)-(down('ArrowLeft','a','A')?1:0),dz=stick.z+(down('ArrowDown','s','S')?1:0)-(down('ArrowUp','w','W')?1:0);
@@ -804,7 +817,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
     if(active){const car=s.city.car,desired=len?Math.atan2(dx,dz):car.heading;
      const change=Math.atan2(Math.sin(desired-car.heading),Math.cos(desired-car.heading));
      car.heading+=change*Math.min(1,dt*4.2);
-     carSpeed+=((len?19:0)-carSpeed)*Math.min(1,dt*(len?3.5:5));
+     carSpeed+=((len?(fastMode?36:19):0)-carSpeed)*Math.min(1,dt*(len?3.5:5));
      const nx=car.x+Math.sin(car.heading)*carSpeed*dt,nz=car.z+Math.cos(car.heading)*carSpeed*dt;
      if(cityLife.canDrive(nx,nz)){car.x=nx;car.z=nz;}else carSpeed=0;
      s.x=car.x;s.z=car.z;avatar.rotation.y=car.heading;
