@@ -1,4 +1,4 @@
-import {STREET_VENDORS,BARRIO_HOMES} from './city-street-life.js?v=114';
+import {STREET_VENDORS,BARRIO_HOMES} from './city-street-life.js?v=115';
 import {createPurpleApartment,PURPLE_APARTMENT} from './purple-apartment.js?v=112';
 import {spendFood} from './explore-state.js?v=114';
 /* Panama Adventure — substantial zero-dependency Casco Viejo city expansion.

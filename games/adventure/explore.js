@@ -1,5 +1,5 @@
-import {createPanamaLife} from './panama-life.js?v=114';
-import {createCloseCamera} from './close-camera.js?v=113';
+import {createPanamaLife} from './panama-life.js?v=115';
+import {createCloseCamera} from './close-camera.js?v=115';
 import {createCampaign} from './campaign.js?v=114';
 import {createColonAdventure} from './colon-adventure.js?v=114';
 import {createCanalCruise} from './canal-cruise.js?v=114';
@@ -13,10 +13,10 @@ import {createWorldMap} from './world-map.js?v=114';
 import {createWildlifeFriends} from './wildlife-friends.js?v=114';
 import {createVillageBuilders} from './village-builders.js?v=1';
 import {createHouseInteriors} from './house-interiors.js?v=112';
-import {createPizzaCity} from './pizza-city.js?v=114';
+import {createPizzaCity} from './pizza-city.js?v=115';
 import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=114';
 import {ESTATE_PLANS,estateCosts,estateMissing,findEstateSite,canBuildEstate,buildEstate,canUpgradeEstate,upgradeEstate,estateBlocked,createEstateWorld} from './estate.js?v=5';
-import {buildIsland} from './entrance.js?v=114';
+import {buildIsland} from './entrance.js?v=115';
 import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,sharkPatrol,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=114';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);syncWallet(state);
@@ -587,7 +587,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
  const contextRestored=()=>{if(disposed||!engine)return;ready();engine.resume?.();};
  canvas.addEventListener('webglcontextlost',contextLost);canvas.addEventListener('webglcontextrestored',contextRestored);
  start();
- function setup({T,scene,camera,target,height,make,geometry,mat,ball,cone,cylinder,box,tropical,tower,beam,crystal,dockBoat,sun,ambient,waterMaterial,surfaces}){
+ function setup({T,scene,camera,target,height,make,geometry,mat,ball,cone,cylinder,box,renderer,tropical,tower,beam,crystal,dockBoat,sun,ambient,waterMaterial,surfaces}){
   const gold=mat('#ffd46b'),pink=mat('#ed91b6'),orange=mat('#ef9955'),cream=mat('#fff2d3'),ink=mat('#254550'),purple=mat('#a895ed'),green=mat('#68bd7d');
   const avatar=new T.Group();avatar.name='Angelique';scene.add(avatar);const skin=mat('#bd8e68'),shirt=mat('#b8a6d7'),shorts=mat('#437c80'),hair=mat('#44352a');
   make(geometry(new T.CylinderGeometry(.24,.20,.58,12)),shirt,0,1.06,0,1,1,1,avatar);make(ball,skin,0,1.58,0,.22,.27,.21,avatar);make(ball,hair,0,1.73,-.03,.23,.15,.21,avatar);
@@ -749,7 +749,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
   for(let i=0;i<9;i++){const x=-5+i*1.4,z=11.5+Math.sin(i*.8),y=height(x,z);const part=new T.Group();festival.add(part);make(cylinder,mat('#79553a'),x,y+1.6,z,.07,3.2,.07,part);make(ball,mat(['#f7ce62','#f29a86','#85c6ad'][i%3]),x,y+3.1,z,.27,.36,.27,part);festivalParts.push(part);}
   const festivalTable=new T.Group();festival.add(festivalTable);make(box,mat('#a87549'),1,height(1,12)+.9,12,3,.18,1.3,festivalTable);for(const x of [0,2])make(box,mat('#79553a'),x,height(1,12)+.4,12,.12,.8,.7,festivalTable);
 
-  panamaLife=createPanamaLife({T,scene,host,panel,state,save,refresh,joy,tell,make,mat,geometry,box,ball,cylinder,cone,height,inWater,forest:tropical.forest,prepare:prepareStory,navigate:travelTo,football:()=>cityLife.soccerPosition(),npcKick:()=>cityLife.npcKick(),onEat:()=>{energy=30;eating=2;s.journey.meals++;control?.snack('panama');},eatLegacy:kind=>{if(!spendFood(s,kind))return false;energy=30;eating=2;s.journey.meals++;s.growth=Math.min(6,s.growth+.45);control?.snack(kind);save();refresh();return true;}});
+  panamaLife=createPanamaLife({T,scene,renderer,sun,surfaces,host,panel,state,save,refresh,joy,tell,make,mat,geometry,box,ball,cylinder,cone,height,inWater,forest:tropical.forest,prepare:prepareStory,navigate:travelTo,football:()=>cityLife.soccerPosition(),npcKick:()=>cityLife.npcKick(),onEat:()=>{energy=30;eating=2;s.journey.meals++;control?.snack('panama');},eatLegacy:kind=>{if(!spendFood(s,kind))return false;energy=30;eating=2;s.journey.meals++;s.growth=Math.min(6,s.growth+.45);control?.snack(kind);save();refresh();return true;}});
   const realms=createRealms({T,scene,host,state,make,geometry,mat,ball,box,cylinder,height,save,joy,spark,refresh,tell,navigate:(realm,dest)=>{if(!dest)return;setHelpers(false);if(dest.action==='food'){if(s.food.banana+s.food.coconut)showFood();else travelTo(explorePlaces.find(p=>p.id==='wilds'));return;}if(dest.action==='learn'){followGoal();return;}if(realm==='sky'){if(boating)disembark();if(ride){targetPoint={x:dest.x,z:dest.z};route=[];flightTarget=dest.y||12;}else{pendingRealm=dest;const launch=explorePlaces.filter(p=>p.kind==='balloon').sort((a,b)=>Math.hypot(a.x-s.x,a.z-s.z)-Math.hypot(b.x-s.x,b.z-s.z))[0];route=islandPath(s,launch);targetPoint=route.shift()||null;tell('🎈 Sube al globo para explorar el cielo','🎈 Board the balloon to explore the sky');}return;}if(realm==='islands'){travelTo(dest);return;}if(ride){waterLanding=dest;targetPoint={x:dest.x,z:dest.z};route=[];flightTarget=Math.max(8,flightY);return;}if(boating)disembark();route=islandPath(s,dest);targetPoint=route.shift()||null;tell('🌊 Sigue el brillo · Nada para descubrir','🌊 Follow the glow · Swim to discover');}});
   const journey=createJourney({T,scene,host,state,avatar,make,geometry,mat,height,save,joy,spark,refresh,realms,seek:kind=>{if(kind==='explore')showDiscover();else if(kind==='food'){if(s.food.banana+s.food.coconut)showFood();else travelTo(explorePlaces.find(p=>p.id==='wilds'));}else if(kind==='learn')followGoal();else{const dest=kind==='fly'?explorePlaces.find(p=>p.id==='balloon'):{x:11,z:20};route=islandPath(s,dest);targetPoint=route.shift()||null;}}});
   function update(dt,time){if(disposed)return;dt=Math.min(dt,.05);if(messageTime>0){messageTime-=dt;if(messageTime<=0)message.classList.remove('show');}

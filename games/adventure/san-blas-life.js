@@ -1,9 +1,9 @@
 import {SAN_BLAS_ISLANDS,routePose} from './panama-state.js?v=114';
-export function createSanBlasLife({T,scene,make,mat,geometry,box,ball,cylinder,cone,height,inWater,forest,models,state}){
- const root=new T.Group();root.name='San Blas · separated white-sand cays and living beaches';scene.add(root);const main={x:10,z:100,rx:10,rz:8,community:true},islands=[main,...SAN_BLAS_ISLANDS],wood=mat('#916c46'),thatch=mat('#bea16c'),white=mat('#f4eacb'),dark=mat('#513c2f');
+export function createSanBlasLife({T,scene,make,mat,geometry,box,ball,cylinder,cone,height,inWater,forest,models,state,surfaces}){
+ const root=new T.Group();root.name='San Blas · separated white-sand cays and living beaches';scene.add(root);const main={x:10,z:100,rx:10,rz:8,community:true},islands=[main,...SAN_BLAS_ISLANDS],wood=mat('#916c46',{map:surfaces?.wood,bumpMap:surfaces?.wood,bumpScale:.05}),thatch=mat('#a89565',{map:surfaces?.grass,bumpMap:surfaces?.grass,bumpScale:.12}),white=mat('#f4eacb'),dark=mat('#513c2f');
  const piece=(g,m,x,y,z,w,h,d,parent=root)=>make(g,m,x,y,z,w,h,d,parent);
  for(const [i,p]of islands.entries()){
-  for(let k=0;k<(p.community?2:3);k++){const a=k*2.4+i,x=p.x+Math.sin(a)*p.rx*.32,z=p.z+Math.cos(a)*p.rz*.3;forest.addTree('palm',x,z,.57+(i%3)*.08,i*3+k,root);}
+  for(let k=0;k<(p.community?4:5);k++){const a=k*2.4+i,x=p.x+Math.sin(a)*p.rx*.46,z=p.z+Math.cos(a)*p.rz*.43;forest.addTree('palm',x,z,.57+(i%3)*.08,i*3+k,root);}
   if(p.community){for(let k=0;k<2;k++){const x=p.x+(k?1.3:-1.3),z=p.z-.8,y=height(x,z);piece(box,wood,x,y+1.0,z,1.8,2,1.7);const roof=piece(cone,thatch,x,y+2.4,z,1.6,1.0,1.5);roof.rotation.y=Math.PI/4;piece(box,dark,x,y+.7,z+ .86,.5,1.4,.03);}models.person(root,p.x,height(p.x,p.z),p.z+1.4,i);}
   // Light submerged sand and coral patches remain underwater between cays.
   for(let k=0;k<3;k++){const a=k*2.1+i,x=p.x+Math.cos(a)*(p.rx+1.8),z=p.z+Math.sin(a)*(p.rz+1.8);if(!inWater(x,z))continue;piece(cylinder,white,x,-.7,z,1.3,.08,1.0);const coral=piece(ball,mat(['#de9a83','#a899c9','#d6bb77'][(i+k)%3]),x,-.43,z,.35,.35,.3);coral.name='Shallow-water coral';}

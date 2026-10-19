@@ -1,13 +1,14 @@
+import {createPanamaVisuals} from './panama-visuals.js?v=115';
 import {PANAMA_FOODS,PANAMA_RECIPES,purchasePanama,cookPanama,eatPanama} from './panama-state.js?v=114';
 import {coinBalance} from './explore-state.js?v=114';
-import {panamaModels} from './panama-models.js?v=114';
-import {createCityStreetLife} from './city-street-life.js?v=114';
-import {createSanBlasLife} from './san-blas-life.js?v=114';
+import {panamaModels} from './panama-models.js?v=115';
+import {createCityStreetLife} from './city-street-life.js?v=115';
+import {createSanBlasLife} from './san-blas-life.js?v=115';
 export const COOK_FIRES=[{x:-12,z:7},{x:13,z:103},{x:10,z:-106}];
 export const PLANTAIN_SITES=[{x:-8,z:8},{x:10,z:-102},{x:22,z:-112},{x:116,z:-55},{x:102,z:5}];
 export function createPanamaLife(options){
  const {T,scene,host,panel,state,save,refresh,joy,tell,make,mat,box,ball,cylinder,cone,height,forest,inWater,prepare,navigate,onEat,football,npcKick,eatLegacy}=options,s=state.world,p=s.panama,es=state.lang==='es',say=(a,b)=>es?a:b;
- const models=panamaModels(options),city=createCityStreetLife({...options,models}),sanBlas=createSanBlasLife({...options,models});
+ const models=panamaModels(options),city=createCityStreetLife({...options,models}),sanBlas=createSanBlasLife({...options,models}),visuals=createPanamaVisuals({...options,models});
  const garden=new T.Group();garden.name='Plantain gardens and island cooking fires';scene.add(garden);
  for(const [i,q]of PLANTAIN_SITES.entries()){forest.addTree('banana',q.x,q.z,.7,i+500,garden);models.meal(garden,'plantain',q.x,height(q.x,q.z)+1.9,q.z,.7);}
  for(const q of COOK_FIRES){make(cylinder,mat('#66594a'),q.x,height(q.x,q.z)+.17,q.z,.55,.3,.55,garden);models.meal(garden,'fishPlate',q.x,height(q.x,q.z)+.4,q.z,.6);}
@@ -33,9 +34,9 @@ export function createPanamaLife(options){
   else if(n.type==='police'){shell(say('👮 Policía del barrio','👮 Neighborhood officer'));panel.append(el('p',say('¡Buenas! Las patrullas recorren las calles. Mira a ambos lados al cruzar. La cancha está al norte; el mercado queda al este.','Hello! Patrols follow the streets. Look both ways before crossing. The football field is to the north; the market is east.')),btn(say('⚽ Ir a la cancha','⚽ Find the football field'),()=>{panel.hidden=true;navigate({x:-117,z:-43});}),btn(say('🍧 Buscar raspao','🍧 Find a raspao cart'),()=>{panel.hidden=true;navigate({x:-91,z:-66});}));}
   else{shell(say('⚽ Bienvenida al barrio','⚽ Welcome to the barrio'));panel.append(el('p',say('Los niños juegan en la cancha. Entra, acércate al balón y toca Patear. Los goles cuentan cuando el balón entra en la portería.','The children are playing on the field. Join them, approach the ball and tap Kick. Goals count when the ball enters the goal.')),btn(say('⚽ Unirme al partido','⚽ Join the match'),()=>{panel.hidden=true;navigate({x:-117,z:-43});}));}return true;
  }
- function update(dt,active,info){city.update(dt,active,info);sanBlas.update(dt,active,info);garden.visible=!info.indoors;
+ function update(dt,active,info){visuals.update(info.x,info.z,info.indoors);city.update(dt,active,info);sanBlas.update(dt,active,info);garden.visible=!info.indoors;
   if(fishing){if(panel.hidden||!panel.contains(fishing.b)){fishing=null;}else if(!document.hidden){const f=fishing;f.time+=dt;if(!f.ready&&f.time>1.8){f.ready=true;f.b.disabled=false;f.b.textContent=say('🐟 ¡Recoger ahora!','🐟 Reel in now!');f.note.textContent=say('¡El pez está tirando!','The fish is pulling!');f.b.onclick=()=>{if(fishing!==f||!f.ready)return;p.pantry.fish=Math.min(9999,p.pantry.fish+1);p.caught++;fishing=null;save();refresh();joy.effect('correct');fish();notify(say('🐟 +1 pescado guardado.','🐟 +1 fish saved.'));};}if(f.time>5.5){fishing=null;fish();notify(say('El pez se escapó. Vuelve a intentarlo.','The fish escaped. Cast again.'));}}}
   mealTime=Math.max(0,mealTime-(active?dt:0));for(const [id,g]of Object.entries(previews)){g.visible=id===meal&&mealTime>0&&!info.indoors;g.position.set(s.x+.6,height(s.x,s.z)+1.2,s.z+.4);g.rotation.y+=dt*.3;}
  }
- return {city,sanBlas,near,prompt,interact,openFood,update,homes:()=>city.homes,dispose(){city.dispose();sanBlas.dispose();models.dispose();scene.remove(garden);Object.values(previews).forEach(g=>scene.remove(g));fishing=null;}};
+ return {city,sanBlas,near,prompt,interact,openFood,update,homes:()=>city.homes,dispose(){visuals.dispose();city.dispose();sanBlas.dispose();models.dispose();scene.remove(garden);Object.values(previews).forEach(g=>scene.remove(g));fishing=null;}};
 }

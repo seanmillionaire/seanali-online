@@ -21,7 +21,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   const renderer=new T.WebGLRenderer({canvas,antialias:!light,alpha:false,powerPreference:'default'});
   renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,light?1:1.5));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.02;
   renderer.shadowMap.enabled=!light;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
-  const scene=new T.Scene();scene.background=new T.Color('#a4c9de');scene.fog=new T.FogExp2('#b0d1dc',.0025);
+  const scene=new T.Scene();scene.background=new T.Color('#b0d3e2');scene.fog=new T.FogExp2('#b8d6dd',.0022);
   const camera=new T.PerspectiveCamera(42,1,.2,550),sun=new T.DirectionalLight('#fff0d2',3.0);sun.position.set(-22,38,18);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-30;sun.shadow.camera.right=30;sun.shadow.camera.top=30;sun.shadow.camera.bottom=-30;sun.shadow.normalBias=.1;const ambient=new T.HemisphereLight('#c9edff','#58623c',1.45);scene.add(sun,ambient);
   const geometries=new Set(),materials=new Set(),clouds=[],bobbing=[],volcanoes=[];let seed=4107;
   const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
@@ -333,7 +333,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
         float fresnel=pow(1.-max(dot(normal,eye),0.),4.5);
         vec3 water=mix(vec3(.12,.72,.64),vec3(.016,.21,.36),depth);
         float guna=1.-smoothstep(48.,72.,length((p-vec2(10.,-100.))*vec2(1.,1.2)));
-        water=mix(water,vec3(.07,.63,.67),guna*depth*.45);
+        water=mix(water,mix(vec3(.25,.78,.72),vec3(.015,.42,.52),depth),guna*.72);
         // Turquoise color ripples move across the sandy shallows.
         float ripples=sin(p.x*1.2+p.y*.46+time*.8)*sin(p.y*1.24-p.x*.31-time*.9);
         water+=vec3(.014,.044,.043)*ripples*(1.-depth);
@@ -342,11 +342,11 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
         float glare=pow(max(dot(normal,normalize(sun+eye)),0.),100.);
         water+=vec3(.94,.87,.68)*glare*.38;
         float sparkle=pow(max(0.,sin(p.x*5.6+time*1.8)*sin(p.y*6.4-time*1.1)),13.);
-        water+=vec3(.18,.25,.24)*sparkle*(.3+.7*(1.-depth));
+        water+=vec3(.07,.11,.10)*sparkle*(.15+.5*(1.-depth));
         // Moving caustics make the turquoise shallows look refractive.
         float caustic=pow(max(0.,sin(p.x*2.1+sin(p.y*.93)+time*.64)*
           sin(p.y*2.4+sin(p.x*1.15)-time*.52)),6.);
-        water+=vec3(.065,.13,.095)*caustic*(1.-depth);
+        water+=vec3(.035,.075,.06)*caustic*(1.-depth);
         // Two breathing foam lines break continuously along each shoreline.
         float shoreDistance=abs(coast-1.02);
         float foamBand=exp(-pow(shoreDistance/.078,2.));
@@ -366,7 +366,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
         water=mix(water,vec3(.82,.97,.96),clamp(shoreFoam*.52+rippledWake*wakeStrength*.56,0.,.83));
         water=mix(water,vec3(.51,.78,.89),fresnel*.52);
         water*=mix(vec3(.34,.50,.71),vec3(1.),daylight);
-        float alpha=mix(.48,.95,smoothstep(1.,2.1,coast));
+        float alpha=mix(.29,.94,smoothstep(1.,2.1,coast));
         gl_FragColor=vec4(water,alpha);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>
