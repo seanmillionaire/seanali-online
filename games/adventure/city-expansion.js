@@ -142,6 +142,28 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  flushDecor();
  createPurpleApartment({T,group,make,mat,box,height});
  // Plaza water feature removed; city streets remain unchanged.
+ // Six authentic Panama flags, proudly displayed around the city.
+ const flagCanvas=document.createElement('canvas');flagCanvas.width=256;flagCanvas.height=176;
+ const fc=flagCanvas.getContext('2d'),cityFlags=[];
+ let flagTexture=null;
+ if(fc){
+  fc.fillStyle='#ffffff';fc.fillRect(0,0,256,176);
+  fc.fillStyle='#da2634';fc.fillRect(128,0,128,88);
+  fc.fillStyle='#064fa1';fc.fillRect(0,88,128,88);
+  const star=(cx,cy,color)=>{fc.fillStyle=color;fc.beginPath();for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,r=i%2?12:29;i?fc.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r):fc.moveTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);}fc.closePath();fc.fill();};
+  star(64,44,'#064fa1');star(192,132,'#da2634');
+  flagTexture=new T.CanvasTexture(flagCanvas);
+  if(T.SRGBColorSpace)flagTexture.colorSpace=T.SRGBColorSpace;
+  const cloth=mat('#ffffff',{map:flagTexture,side:T.DoubleSide,roughness:.9});
+  for(const [x,z,h] of [[-100,-62,9],[-117,-86,7],[-82,-87,7],[-122,-54,7],[-77,-55,7],[-103,-108,7.5]]){
+   const pole=new T.Group();pole.name='Bandera de Panamá';pole.position.set(x,height(x,z),z);group.add(pole);
+   makeObj(cylinder,stone,0,.25,0,.6,.5,.6,pole);
+   makeObj(cylinder,white,0,h/2,0,.085,h,.085,pole);
+   makeObj(ball,gold,0,h+.12,0,.2,.2,.2,pole);
+   const flag=new T.Mesh(new T.PlaneGeometry(3.15,2.16,8,1),cloth);
+   flag.position.set(1.63,h-1.1,0);flag.castShadow=false;pole.add(flag);cityFlags.push(flag);
+  }
+ }
  // The full-size canal and its single ocean liner are owned by canal-cruise.js.
  // An inhabited city: people cross plazas and sidewalks on independent routes.
  const pedestrians=[];
@@ -369,6 +391,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
    }else if(Math.abs(football.position.z)>9.2){football.position.z=Math.sign(football.position.z)*9.2;soccerBall.vz*=-.5;}
   }
 
+  for(let i=0;i<cityFlags.length;i++)cityFlags[i].rotation.y=Math.sin(performance.now()*.0009+i*.8)*.11;
   for(const b of washBubbles){
    b.mesh.visible=washCooldown.time>9;
    if(b.mesh.visible)b.mesh.position.y=b.y+Math.sin(performance.now()*.005+b.phase)*.23;
