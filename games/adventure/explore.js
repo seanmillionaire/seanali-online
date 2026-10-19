@@ -607,17 +607,44 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
  start();
  function setup({T,scene,camera,target,height,make,geometry,mat,ball,cone,cylinder,box,renderer,tropical,tower,beam,crystal,dockBoat,sun,ambient,waterMaterial,surfaces}){
   const gold=mat('#ffd46b'),pink=mat('#ed91b6'),orange=mat('#ef9955'),cream=mat('#fff2d3'),ink=mat('#254550'),purple=mat('#a895ed'),green=mat('#68bd7d');
-  // Visible continuous roadbed with center stripes; geometry follows the
-  // same corridor used by the ground collision/navigation logic.
-  const routeAsphalt=mat('#43484b',{roughness:.96}),routeStripe=mat('#e8d5a6');
+  // Continuous new asphalt ribbons follow each sampled highway curve.
+  // Shared geometry avoids the seams, overlaps and square patches of road boxes.
+  const routeAsphalt=mat('#303943',{roughness:.91}),routeStripe=mat('#f4eee1',{roughness:.9});
+  const roadEdge=mat('#e9e4d6',{roughness:.94});
   for(const path of Object.values(HIGHWAY_CURVES)){
-   for(let i=1;i<path.length;i++){
-    const [ax,az]=path[i-1],[bx,bz]=path[i],dx=bx-ax,dz=bz-az;
-    const len=Math.hypot(dx,dz),ang=Math.atan2(dx,dz),pieces=Math.ceil(len/4);
-    for(let j=0;j<pieces;j++){
-     const t=(j+.5)/pieces,x=ax+dx*t,z=az+dz*t,y=height(x,z)+.08;
-     const road=make(box,routeAsphalt,x,y,z,HIGHWAY_WIDTH,.14,len/pieces+.18);road.rotation.y=ang;road.castShadow=false;
-     if(j%3===0){const dash=make(box,routeStripe,x,y+.10,z,.13,.025,Math.min(2,len/pieces*.6));dash.rotation.y=ang;dash.castShadow=false;}
+   if(path.length<2)continue;
+   const vertices=[],uv=[],indices=[];
+   for(let i=0;i<path.length;i++){
+    const [x,z]=path[i],prev=path[Math.max(0,i-1)],next=path[Math.min(path.length-1,i+1)];
+    const dx=next[0]-prev[0],dz=next[1]-prev[1],mag=Math.hypot(dx,dz)||1;
+    const lx=dz/mag,lz=-dx/mag;
+    for(const side of [-1,1]){
+     const px=x+lx*side*HIGHWAY_WIDTH*.5,pz=z+lz*side*HIGHWAY_WIDTH*.5;
+     vertices.push(px,height(px,pz)+.13,pz);uv.push(side===-1?0:1,i*.23);
+    }
+    if(i){const j=2*i;indices.push(j-2,j-1,j,j-1,j+1,j);}
+   }
+   const geo=geometry(new T.BufferGeometry());
+   geo.setAttribute('position',new T.Float32BufferAttribute(vertices,3));
+   geo.setAttribute('uv',new T.Float32BufferAttribute(uv,2));
+   geo.setIndex(indices);geo.computeVertexNormals();
+   const road=new T.Mesh(geo,routeAsphalt);road.name='Smooth connected highway asphalt';
+   road.receiveShadow=true;road.castShadow=false;scene.add(road);
+   for(let i=1;i<path.length;i+=4){
+    const [ax,az]=path[i-1],[bx,bz]=path[i],dx=bx-ax,dz=bz-az,len=Math.hypot(dx,dz);
+    if(len<.05)continue;
+    const x=(ax+bx)/2,z=(az+bz)/2,y=height(x,z)+.17,angle=Math.atan2(dx,dz);
+    const dash=make(box,routeStripe,x,y,z,.14,.018,Math.min(1.6,len*1.6));
+    dash.rotation.y=angle;dash.castShadow=false;
+   }
+   for(let i=1;i<path.length;i+=3){
+    const [ax,az]=path[i-1],[bx,bz]=path[i],dx=bx-ax,dz=bz-az,len=Math.hypot(dx,dz);
+    if(len<.05)continue;
+    const x=(ax+bx)/2,z=(az+bz)/2,angle=Math.atan2(dx,dz),lx=dz/len,lz=-dx/len;
+    for(const side of [-1,1]){
+     const px=x+lx*side*(HIGHWAY_WIDTH/2-.34),pz=z+lz*side*(HIGHWAY_WIDTH/2-.34);
+     const line=make(box,roadEdge,px,height(px,pz)+.17,pz,.085,.017,Math.min(2.5,len*3));
+     line.rotation.y=angle;line.castShadow=false;
     }
    }
   }
