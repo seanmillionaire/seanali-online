@@ -50,7 +50,10 @@ describe("welcome screen", () => {
       expect(choices).toContain(action);
     }
     expect(html).toContain('aria-label="Need a hand?" title="Need a hand?"');
-    expect(html).toContain('class="quiz-welcome-extra"');
+    expect(html).toContain("Discover What Your Dream Life Looks Like");
+    expect(html).toContain("Use your Dream Life GPS to get clear on what matters most");
+    expect(html).toContain('class="simple-brand"');
+    expect(html).not.toContain('class="guided-kicker"');
   });
 });
 

@@ -227,9 +227,8 @@ export default function Home() {
 
   const renderStep = () => {
     if (welcome) return <>
-      <p className="guided-kicker"><Compass size={18} /> DREAM LIFE GPS</p>
-      <h1>Let's find a little more direction.</h1>
-      <p className="guided-intro">Hey, I'm Sean. I'm glad you're here. <span className="quiz-welcome-extra">You don't need your whole life figured out. </span>Let's start with where you are today.</p>
+      <h1>Discover What Your Dream Life Looks Like</h1>
+      <p className="guided-intro">Use your Dream Life GPS to get clear on what matters most and find a simple first step toward it.</p>
       <fieldset className="quiz-start"><legend>What feels most like you right now?</legend>
         {[
           { title: "I have a dream, but I don't know where to start.", note: "Find my first step", icon: Compass },
