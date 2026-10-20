@@ -3,6 +3,7 @@ import {mainlandContains,canalWater,gatunWater,organicIslandRadius,homeShoreRadi
 import {createActiveVolcano} from './active-volcano.js?v=156';
 import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=164';
 import {createTropical} from './tropical.js?v=159';
+import {createForestLandscape} from './forest-landscape.js?v=170';
 import {createSurfaceTextures} from './surface-textures.js?v=156';
 import {installPolyHavenMaterials} from './polyhaven-materials.js?v=156';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
@@ -456,6 +457,10 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   const mainlandMaterials=[mat('#829e69',{map:surfaces.grass,bumpMap:surfaces.grass,bumpScale:.055,roughness:1}),
    mat('#3c424c',{map:surfaces.asphalt,bumpMap:surfaces.asphalt,bumpScale:.035,roughness:1})];
   const mainlandMesh=make(mainlandGeo,mainlandMaterials,0,0,0,1,1,1);mainlandMesh.name='Connected Panama mainland · Pacific and Caribbean coasts';mainlandMesh.castShadow=false;
+  // Large, irregular forestry corridors: rainforest palms and emergent broadleaf
+  // giants on the Pacific mainland, montane pines toward Volcán Barú.
+  // Six batched meshes keep the dense canopy inexpensive on mobile devices.
+  createForestLandscape({T,scene,mat,geometry,height,light});
   // The dock, moored boat, and a moving sailboat out on the water.
   for(let i=0;i<15;i++){make(box,wood,4,.42,12+i*.36,2,.16,.28);if(i%4===0)for(const dx of [-.9,.9])make(cylinder,wood,4+dx,.23,12+i*.36,.1,1.25,.1);}
   function boat(x,z,s){const g=new T.Group();g.position.set(x,.25,z);scene.add(g);make(ball,wood,0,0,0,1.8*s,.35*s,.7*s,g);make(cylinder,cream,0,1.7*s,0,.055*s,3.3*s,.055*s,g);const shape=new T.Shape();shape.moveTo(0,0);shape.lineTo(0,2.8*s);shape.lineTo(-1.5*s,.15*s);shape.closePath();make(geometry(new T.ShapeGeometry(shape)),mat('#ffe7b5',{side:T.DoubleSide}),.07,.3*s,0,1,1,1,g);g.rotation.y=-.3;bobbing.push({g,y:.25,z});return g;}
