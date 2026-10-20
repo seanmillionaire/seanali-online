@@ -625,3 +625,15 @@ body[data-scene="explore"] .animal-ride-quick:not([hidden]){
 @media(max-height:520px) and (max-width:780px),(pointer:coarse) and (max-height:520px){
  body[data-scene="explore"] .explore-world.explore-ready .explore-stick{width:80px!important;height:80px!important}
 }
+
+/* Keep travel speed available beside the phone joystick, even when arrows hide. */
+@media(max-width:780px),(pointer:coarse){
+ body[data-scene="explore"] .world-arrows{display:contents!important;pointer-events:auto!important}
+ body[data-scene="explore"] .world-arrows [data-direction]{display:none!important}
+ body[data-scene="explore"] .world-arrows .movement-speed{position:absolute;z-index:20;left:18px;bottom:calc(210px + env(safe-area-inset-bottom));min-width:94px;min-height:46px;padding:9px 12px;font-size:14px;line-height:1.2;border:2px solid #fff5d5;border-radius:14px;background:#fff3d9ed;color:#284b49;touch-action:none}
+ body[data-scene="explore"] .world-arrows .movement-speed[aria-pressed="true"]{background:#f6cc69}
+}
+
+@media(max-height:520px) and (max-width:780px),(pointer:coarse) and (max-height:520px){
+ body[data-scene="explore"] .world-arrows .movement-speed{left:110px;bottom:calc(var(--game-control-bottom) + 18px)}
+}

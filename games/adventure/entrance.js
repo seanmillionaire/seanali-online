@@ -1,11 +1,12 @@
-import {clipLandTriangle,coastDistanceField,shorelineTiles} from './terrain-surface.js?v=186';
-import {mainlandContains,canalWater,gatunWater,organicIslandRadius,homeShoreRadius,WORLD_EXTENT} from './geography.js?v=186';
-import {createActiveVolcano} from './active-volcano.js?v=186';
-import {worldIslands,isletHeight,volcanoTrailPoint,roadsidePoint,nearRoad,HIGHWAY_WIDTH} from './explore-state.js?v=186';
-import {createTropical} from './tropical.js?v=186';
-import {createForestLandscape} from './forest-landscape.js?v=186';
-import {createSurfaceTextures} from './surface-textures.js?v=186';
-import {installPolyHavenMaterials} from './polyhaven-materials.js?v=186';
+import {MAINLAND_EAST,cityX} from './geography.js?v=188';
+import {clipLandTriangle,coastDistanceField,shorelineTiles} from './terrain-surface.js?v=188';
+import {mainlandContains,canalWater,gatunWater,organicIslandRadius,homeShoreRadius,WORLD_EXTENT} from './geography.js?v=188';
+import {createActiveVolcano} from './active-volcano.js?v=188';
+import {worldIslands,isletHeight,volcanoTrailPoint,roadsidePoint,nearRoad,HIGHWAY_WIDTH} from './explore-state.js?v=188';
+import {createTropical} from './tropical.js?v=188';
+import {createForestLandscape} from './forest-landscape.js?v=188';
+import {createSurfaceTextures} from './surface-textures.js?v=188';
+import {installPolyHavenMaterials} from './polyhaven-materials.js?v=188';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
 export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import('./vendor/three.module.min.js')}={}) {
   let disposed=false,world=null,pending=null;
@@ -351,7 +352,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
       }
       void main(){
         vec2 p=pos.xy;
-        float shoreDistance=texture2D(coastMap,(vec2(p.x,-p.y)+vec2(700.,600.))/vec2(1400.,1200.)).r*64.;
+        float shoreDistance=texture2D(coastMap,(vec2(p.x,-p.y)+vec2(${-WORLD_EXTENT.left}.,${-WORLD_EXTENT.top}.))/vec2(${WORLD_EXTENT.width}.,${WORLD_EXTENT.height}.)).r*64.;
         float depth=smoothstep(1.5,24.,shoreDistance);
         float detailFade=1.-smoothstep(.12,.8,length(fwidth(p)));
         float swell=swells(p);
@@ -364,7 +365,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
         vec3 eye=normalize(cameraPosition-vec3(p.x,-.12,-p.y));
         float fresnel=pow(1.-max(dot(normal,eye),0.),4.5);
         vec3 water=mix(vec3(.12,.72,.64),vec3(.016,.21,.36),depth);
-        float guna=1.-smoothstep(48.,72.,length((p-vec2(290.,245.))*vec2(1.,1.2)));
+        float guna=1.-smoothstep(48.,72.,length((p-vec2(${cityX(290)}.,245.))*vec2(1.,1.2)));
         water=mix(water,mix(vec3(.25,.78,.72),vec3(.015,.42,.52),depth),guna*.72);
         // Turquoise color ripples move across the sandy shallows.
         float ripples=sin(p.x*1.2+p.y*.46+time*.8)*sin(p.y*1.24-p.x*.31-time*.9);
@@ -425,7 +426,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   // Overlap the existing region meshes slightly from below: no empty moat or z-fighting.
   // Subdivide waterline edges fivefold to remove blocky land endings without
   // multiplying all inland polygons; clip the final boundary precisely.
-  for(let x=-454;x<273;x+=3)for(let z=-432;z<39;z+=3)
+  for(let x=-454;x<MAINLAND_EAST+1;x+=3)for(let z=-432;z<39;z+=3)
   if(z>=-167||(x>=-125&&x<=80))for(const [sx,sz,size] of shorelineTiles(x,z,3,inland,light?3:5)){
    const corners=[[sx,0,sz],[sx+size,0,sz],[sx,0,sz+size],[sx+size,0,sz+size]];
    for(const tri of [[0,2,1],[1,2,3]]){
@@ -453,7 +454,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
     z=(mainlandVertices[i+2]+mainlandVertices[i+5]+mainlandVertices[i+8])/3;
    // Curved district edges replace the old square asphalt cutouts while
    // keeping the downtown highway and every saved structure in place.
-   const eastCoast=Math.hypot((x-216)/61,(z+51)/41),
+   const eastCoast=Math.hypot((x-cityX(216))/61,(z+51)/41),
     colonCoast=Math.min(Math.hypot((x+55)/35,(z+246)/26),Math.hypot((x-7)/43,(z+249)/29));
    const eastEdge=.99+.022*Math.sin(x*.21+z*.14),
     colonEdge=1+.024*Math.cos(x*.24-z*.16);

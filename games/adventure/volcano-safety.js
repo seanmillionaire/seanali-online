@@ -1,7 +1,8 @@
-import {volcanoRelief} from './explore-state.js?v=186';
+import {cityX} from './geography.js?v=188';
+import {volcanoRelief} from './explore-state.js?v=188';
 export const BARU={x:-350,z:-65,rx:58.8,rz:51.8};
 export const LAVA_POOLS=[{dx:0,dz:0,radius:4.35,lift:9,crater:true},{dx:-5,dz:-3,radius:1.35,lift:.45},{dx:2,dz:-7,radius:1.25,lift:.4}];
-export const CITY_HOSPITAL={x:105,z:-39,spawn:{x:105,z:-34.5}};
+export const CITY_HOSPITAL={x:cityX(105),z:-39,spawn:{x:cityX(105),z:-34.5}};
 export function lavaPoolPose(pool,height,x=BARU.x,z=BARU.z){
  const px=x+pool.dx,pz=z+pool.dz;
  return {x:px,z:pz,y:(pool.crater?volcanoRelief(0,0):height(px,pz))+pool.lift,radius:pool.radius,rz:pool.radius*.88};

@@ -1,26 +1,26 @@
-import {expandWorldPoint} from './geography.js?v=186';
+import {expandWorldPoint,cityX} from './geography.js?v=188';
 // Permanent dry-land work sites for Mateo and Sofía. Deterministic positions
 // mean finished houses never move when a builder starts a new job.
-import {worldIslands,isletHeight,inWater,roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=186';
-import {CITY_ALL_PLOTS,cityOverlap,allocateCityParcel} from './city-layout.js?v=186';
+import {worldIslands,isletHeight,inWater,roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=188';
+import {CITY_ALL_PLOTS,cityOverlap,cityRoadClear} from './city-layout.js?v=188';
 
 export const BUILDER_AREAS=[
- {id:'city',name:'Panama City',x:120,z:-50,rx:58,rz:48},
+ {id:'city',name:'Panama City',x:cityX(120),z:-50,rx:58,rz:48},
  {id:'taboga',name:'Taboga',x:110,z:85,rx:24,rz:20},
- {id:'contadora',name:'Contadora',x:320,z:125,rx:42,rz:36},
+ {id:'contadora',name:'Contadora',x:cityX(320),z:125,rx:42,rz:36},
  {id:'bocas',name:'Bocas del Toro',x:-230,z:-200,rx:39,rz:39},
  {id:'colon',name:'Colón',x:-50,z:-365,rx:40,rz:37},
- {id:'guna',name:'San Blas',x:290,z:-245,rx:12,rz:10}
+ {id:'guna',name:'San Blas',x:cityX(290),z:-245,rx:12,rz:10}
 ];
 const PROJECT_SIZE={w:3.8,d:3.1};
-const CITY_LOTS=[{x:120,z:-89},{x:147,z:-77},{x:114,z:-94},{x:151,z:-29}];
+const CITY_LOTS=[{x:120,z:-89},{x:147,z:-77},{x:114,z:-94},{x:151,z:-29}].map(p=>({...p,x:cityX(p.x)}));
 // Restrict the courtyards, visitor attractions, docks, activities and shops.
 const protectedLocations={
  taboga:[[86,28,3.6],[90,25,3.8]],
  contadora:[[200,50,3.6]],
  bocas:[[-105,-135,4.8],[-111,-131,3.7]],
  colon:[[-59,-247,9],[-50,-245,4],[-62,-240,3]],
- guna:[[288.7,-245.8,2.1],[291.3,-245.8,2.1],[290,-243.6,2.4]]
+ guna:[[288.7,-245.8,2.1],[291.3,-245.8,2.1],[290,-243.6,2.4]].map(([x,z,r])=>[cityX(x),z,r])
 };
 for(const [id,pts]of Object.entries(protectedLocations)){const region=({taboga:'islet',contadora:'coconutCoast',bocas:'wilds',colon:'colon'})[id];if(region)protectedLocations[id]=pts.map(([x,z,r])=>{const p=expandWorldPoint(x,z,region);return [p.x,p.z,r];});}
 export function builderSiteSafe(area,p,chosen=[]){
@@ -35,12 +35,13 @@ export function builderSiteSafe(area,p,chosen=[]){
  const plot={x:p.x,z:p.z,...PROJECT_SIZE};
  if(chosen.some(q=>cityOverlap(q,plot,1.5)))return false;
  if(area.id==='city'){
+  if(offset(p.x,p.z)>.96||!cityRoadClear(plot))return false;
   if(CITY_ALL_PLOTS.some(q=>cityOverlap(q,plot,1.6)))return false;
  }return true;
 }
 function pickIslandSite(area,wanted,claimed){
  // Walk a staggered outward spiral; every chosen house must fit on actual dry terrain.
- const steps=[0,2.2,4.4,6.6,8.8,11,13.2,15.4,18.2];
+ const steps=area.id==='city'?[0,2.2,4.4,6.6,8.8,11,13.2,15.4,18.2,22,26,30,34,38]:[0,2.2,4.4,6.6,8.8,11,13.2,15.4,18.2];
  for(const radius of steps){
   const spokes=radius===0?1:24;
   for(let k=0;k<spokes;k++){
@@ -54,7 +55,6 @@ function pickIslandSite(area,wanted,claimed){
 }
 export function planBuilderSites(){
  const claimed=[],positions={mateo:[],sofia:[]};
- const cityTaken=CITY_ALL_PLOTS.map(p=>({...p,w:p.w+2.4,d:p.d+2.4}));
  for(const region of BUILDER_AREAS){
   // Project pairs per region: both builders make two independent structures.
   for(let round=0;round<2;round++)for(const id of ['mateo','sofia']){
@@ -62,8 +62,7 @@ export function planBuilderSites(){
    let spot;
    if(region.id==='city'){
     const request=CITY_LOTS[step];
-    const lot=allocateCityParcel({...request,...PROJECT_SIZE},cityTaken,49);
-    spot=lot?{x:lot.x,z:lot.z}:null;
+    spot=pickIslandSite(region,request,claimed);
    }else{
     const compass=[[-.38,-.25],[.40,-.23],[-.37,.36],[.38,.38]][step];
     spot=pickIslandSite(region,{x:region.x+compass[0]*region.rx,z:region.z+compass[1]*region.rz},claimed);

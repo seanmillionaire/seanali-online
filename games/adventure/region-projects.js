@@ -1,8 +1,8 @@
-import {movePoint} from './geography.js?v=186';
+import {movePoint,cityX} from './geography.js?v=188';
 // A single meaningful, persistent community project for each Panama destination.
 // Mini-games and collecting now feed into a clear physical outcome in their region.
-import {worldIslands,isletHeight,exploreItems,volcanoTrailPoint} from './explore-state.js?v=186';
-import {BUILD_RECIPES} from './island-workshop.js?v=186';
+import {worldIslands,isletHeight,exploreItems,volcanoTrailPoint} from './explore-state.js?v=188';
+import {BUILD_RECIPES} from './island-workshop.js?v=188';
 const where=id=>worldIslands.find(x=>x.id===id);
 const build=id=>BUILD_RECIPES.find(x=>x.id===id);
 const at=id=>{const x=where(id);return {x:x?.x||0,z:x?.z||0};};
@@ -80,7 +80,7 @@ export const REGION_PROJECTS=[
   craft:'pizzaStand',spot:{x:build('pizzaStand').x,z:build('pizzaStand').z},
   tasks:[
    {id:'supplies',icon:'💰',es:'Recoge 2 bolsas para comprar materiales',en:'Collect 2 money bags for materials',check:{kind:'cityBags',count:2},go:at('pizzaCity')},
-   {id:'delivery',icon:'🍕',es:'Entrega una pizza a una familia del barrio',en:'Deliver a pizza to a neighborhood family',check:{kind:'cityDelivery',count:1},go:{x:136,z:-36}},
+   {id:'delivery',icon:'🍕',es:'Entrega una pizza a una familia del barrio',en:'Deliver a pizza to a neighborhood family',check:{kind:'cityDelivery',count:1},go:{x:cityX(136),z:-36}},
    {id:'build',icon:'🏠',es:'Construye el puesto comunitario de pizza',en:'Build the community pizza stand',check:{kind:'built',id:'pizzaStand'},go:{x:build('pizzaStand').x,z:build('pizzaStand').z}},
    {id:'activate',icon:'🍕',es:'Prepara pizza y abre el puesto',en:'Make pizza and open your stand',check:{kind:'used',id:'pizzaStand'},go:{x:build('pizzaStand').x,z:build('pizzaStand').z}}
   ]},

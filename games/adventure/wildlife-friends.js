@@ -1,7 +1,8 @@
-import {waterFriend,animalClear,recoverAnimal,animalStep} from './animal-boundaries.js?v=186';
-import {explorePlaces,earnCoins} from './explore-state.js?v=186';
-import {oceanModel} from './ocean-models.js?v=186';
-import {createAnimalDetails} from './animal-details.js?v=186';
+import {cityX} from './geography.js?v=188';
+import {waterFriend,animalClear,recoverAnimal,animalStep} from './animal-boundaries.js?v=188';
+import {explorePlaces,earnCoins} from './explore-state.js?v=188';
+import {oceanModel} from './ocean-models.js?v=188';
+import {createAnimalDetails} from './animal-details.js?v=188';
 // Repeatable, optional play with six friends in the 3D world.
 export const islandFriends=[
  {id:'pip',icon:'🐢',name:'Pip',where:['Playa Gorgona','Playa Gorgona'],game:['Búsqueda de conchas','Shell hunt'],hello:['¡Angelique! ¿Buscamos conchitas juntos?','Angelique! Shall we look for shells together?']},
@@ -16,8 +17,8 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
  s.friends??={visits:[],completed:[],companion:null};
  const friends=s.friends;friends.called=Array.isArray(friends.called)?friends.called.filter(id=>islandFriends.some(f=>f.id===id)):[];const nodes=new Map(),labels=[],temp=new T.Vector3();
  const place=id=>explorePlaces.find(p=>p.id===id);
- const destination=id=>id==='dori'?{x:4,z:16}:id==='kai'?{x:320,z:125}:place(id);
- const home=id=>id==='dori'?{x:8,z:20}:id==='kai'?{x:320,z:125}:place(id);
+ const destination=id=>id==='dori'?{x:4,z:16}:id==='kai'?{x:cityX(320),z:125}:place(id);
+ const home=id=>id==='dori'?{x:8,z:20}:id==='kai'?{x:cityX(320),z:125}:place(id);
  const el=(tag,cls='',text)=>{const n=document.createElement(tag);n.className=cls;if(text!==undefined)n.textContent=text;return n;};
  const btn=(text,cls,callback)=>{const b=el('button',cls,text);b.type='button';b.addEventListener('click',()=>{joy.gesture();joy.effect('tap');callback();});return b;};
  const green=mat('#55a878'),cream=mat('#fff1ce'),ink=mat('#26454e'),pink=mat('#e998b9'),gold=mat('#ffd36c'),yellow=mat('#f1b75c');

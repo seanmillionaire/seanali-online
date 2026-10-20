@@ -1,4 +1,4 @@
-import {addFood,islandPoint} from './explore-state.js?v=186';
+import {addFood,islandPoint} from './explore-state.js?v=188';
 // Tiny, physical story puzzles. These never gate movement or mark a lesson complete.
 export const islandStories=[
  {id:'shells',region:'harbor',x:2,z:7,friend:'🐢',es:'Conchas de Playa Gorgona',en:'Gorgona Shell Trail',hintEs:'Pisa las conchas en orden',hintEn:'Step on shells in order',icons:['1 🐚','2 🐚','3 🐚'],order:[0,1,2],color:'#f4cc78',winEs:'¡Pip tiene un camino!',winEn:'Pip has a path!'},

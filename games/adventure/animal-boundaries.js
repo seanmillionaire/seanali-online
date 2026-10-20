@@ -1,11 +1,12 @@
-import {WORLD_BOUNDS} from './geography.js?v=186';
-import {inWater,roadDistance,HIGHWAY_WIDTH,worldIslands} from './explore-state.js?v=186';
+import {WORLD_BOUNDS,freshwaterHabitat} from './geography.js?v=188';
+import {inWater,roadDistance,HIGHWAY_WIDTH,worldIslands} from './explore-state.js?v=188';
 export const waterFriend=id=>id==='dori'||id==='pip';
 // Pip can crawl on beaches; Dori needs water beneath her whole body.
 export function animalClear(id,x,z,radius=1.4){
  if(!Number.isFinite(x)||!Number.isFinite(z)||Math.hypot(x/(WORLD_BOUNDS.x-2),z/(WORLD_BOUNDS.z-2))>=1||roadDistance(x,z)<=HIGHWAY_WIDTH/2+radius)return false;
+ if(freshwaterHabitat(x,z))return false;
  if(id==='pip')return !worldIslands.some(p=>['pizzaCity','colon'].includes(p.id)&&Math.hypot((x-p.x)/(p.rx+radius),(z-p.z)/(p.rz+radius))<1);
- for(let i=0;i<9;i++){const a=i*Math.PI/4,r=i===8?0:radius;if(!inWater(x+Math.sin(a)*r,z+Math.cos(a)*r))return false;}
+ for(let i=0;i<9;i++){const a=i*Math.PI/4,r=i===8?0:radius;if(!inWater(x+Math.sin(a)*r,z+Math.cos(a)*r)||freshwaterHabitat(x+Math.sin(a)*r,z+Math.cos(a)*r))return false;}
  return true;
 }
 export function recoverAnimal(id,x,z,radius=1.4){

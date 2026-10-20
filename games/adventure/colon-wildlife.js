@@ -1,3 +1,5 @@
+import {COLON_OFFSET,freshwaterHabitat} from './geography.js?v=188';
+const lakeWater=(isWater)=>(x,z)=>isWater(x,z)&&freshwaterHabitat(x+COLON_OFFSET.x,z+COLON_OFFSET.z);
 export const BLACK_MONKEY_COUNT=28;
 export const COAST_CROCODILE_COUNT=8;
 export function monkeyJumpPhase(clock){const cycle=Math.floor(clock/3.2);return {cycle,open:clock%3.2<1.25};}
@@ -10,6 +12,7 @@ export function recordMonkeyJump(play,clock){
  return {scored:true,complete};
 }
 export function shoreCrocodilePose(index,time,isWater){
+ isWater=lakeWater(isWater);
  const base=index*Math.PI*2/COAST_CROCODILE_COUNT+time*.045;
  for(let attempt=0;attempt<48;attempt++){
   const a=base+attempt*.04,x=(-10)+Math.cos(a)*32,z=(-125)+Math.sin(a)*29;
@@ -44,14 +47,24 @@ export function nearColonShore(x,z){
  return (d>=.78&&d<=1.15)||(lake>=.28&&lake<=1.13);
 }
 export function crocodileClear(x,z,heading,isWater){
+ isWater=lakeWater(isWater);
  if(!nearColonShore(x,z))return false;
  for(const forward of [-3.8,-1,1.5,2.4])for(const side of [-1.1,0,1.1])
   if(!isWater(x+Math.sin(heading)*forward+Math.cos(heading)*side,z+Math.cos(heading)*forward-Math.sin(heading)*side))return false;
  return true;
 }
 export function createCrocodileMotion(index,isWater,neighbors=[]){
- let p=shoreCrocodilePose(index,0,isWater);
- for(let i=0;i<128;i++){const candidate=shoreCrocodilePose(index,i*1.8,isWater);if(crocodileClear(candidate.x,candidate.z,candidate.heading,isWater)&&neighbors.every(n=>Math.hypot(n.x-candidate.x,n.z-candidate.z)>7)){p=candidate;break;}}
+ let p=shoreCrocodilePose(index,0,isWater),found=false;
+ for(let i=0;i<128;i++){const candidate=shoreCrocodilePose(index,i*1.8,isWater);if(crocodileClear(candidate.x,candidate.z,candidate.heading,isWater)&&neighbors.every(n=>Math.hypot(n.x-candidate.x,n.z-candidate.z)>7)){p=candidate;found=true;break;}}
+ // The freshwater crescent is narrow. Search its actual shoreline when the
+ // old coastal ring cannot provide an independent, full-body-clear home.
+ if(!found){let spacing=-1;
+  for(let x=-30;x<=42;x+=2)for(let z=-125;z<=-70;z+=2)for(let i=0;i<8;i++){
+   const candidate={x,z,heading:i*Math.PI/4};if(![0,2,4,6].every(d=>crocodileClear(x+Math.sin(candidate.heading)*d,z+Math.cos(candidate.heading)*d,candidate.heading,isWater)))continue;
+   const distance=neighbors.length?Math.min(...neighbors.map(n=>Math.hypot(n.x-x,n.z-z))):100;
+   if(distance>spacing){spacing=distance;p=candidate;}
+  }
+ }
  return {...p,seed:7817+index*7919,speed:0,goal:null,rest:0,attention:0,phase:index*1.71,travel:0,mode:'wander'};
 }
 export function stepCrocodile(n,dt,isWater,player=null,neighbors=[]){
@@ -150,14 +163,14 @@ export function createColonWildlife({T,root,make,geometry,mat,ball,box,cylinder,
   monkeys.push({g,body,head,arms,legs,tail,motion,group,index:i});
  }
  // Detailed, low-slung crocodiles live exclusively in water around Colón.
- const crocRoot=new T.Group();crocRoot.name='Colón coastal crocodiles';root.add(crocRoot);
+ const crocRoot=new T.Group();crocRoot.name='Gatún Lake crocodiles';root.add(crocRoot);
  const scaleData=new Uint8Array(size*size*4);
  for(let y=0;y<size;y++)for(let x=0;x<size;x++){const edge=x%8===0||y%6===0,v=edge?62:116+((x*7+y*11)%22);scaleData.set([v,v,v,255],(y*size+x)*4);}
  const scales=new T.DataTexture(scaleData,size,size);scales.wrapS=scales.wrapT=T.RepeatWrapping;scales.needsUpdate=true;
  const hide=mat('#657048',{map:scales,bumpMap:scales,bumpScale:.07,roughness:.88}),belly=mat('#909071',{roughness:.96}),ridge=mat('#3f4933'),tooth=mat('#d2c8a5'),crocEye=mat('#bf9c3f',{roughness:.4}),ripple=mat('#d1eeea',{transparent:true,opacity:.15,depthWrite:false});
  const wakeGeo=geometry(new T.TorusGeometry(1,.018,4,24)),crocs=[];
  for(let i=0;i<COAST_CROCODILE_COUNT;i++){
-  const g=new T.Group();g.name='Detailed coastal crocodile '+(i+1);g.userData.animal='coastal-crocodile';crocRoot.add(g);
+  const g=new T.Group();g.name='Gatún crocodile '+(i+1);g.userData.animal='coastal-crocodile';crocRoot.add(g);
   piece(ball,hide,0,.06,0,.56,.29,1.25,g);piece(ball,belly,0,-.1,.12,.43,.18,1.1,g);
   piece(ball,hide,0,.16,1.18,.39,.19,.6,g);piece(box,hide,0,.12,1.75,.51,.2,.93,g);
   const jaw=new T.Group();jaw.position.set(0,-.025,1.05);g.add(jaw);

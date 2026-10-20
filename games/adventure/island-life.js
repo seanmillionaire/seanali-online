@@ -1,13 +1,14 @@
-import {roadDistance,HIGHWAY_WIDTH,sharkClearance,sharkStep,recoverShark} from './explore-state.js?v=186';
-import {oceanModel} from './ocean-models.js?v=186';
+import {cityX} from './geography.js?v=188';
+import {marineWater,roadDistance,HIGHWAY_WIDTH,sharkClearance,sharkStep,recoverShark} from './explore-state.js?v=188';
+import {oceanModel} from './ocean-models.js?v=188';
 // Temporary gameplay switch. Re-enable the cycle by setting this to true.
 // Disabled mode forces bright midday even when an old save resumes at night.
 export const NIGHT_MODE_ENABLED=false;
 // Named and inspectable natural marine habitats. All start in navigable
 // water and remain near attractions instead of hidden in the deep ocean.
 export const MARINE_HABITATS={
- dolphins:[[23,31],[38,40],[-100,-170],[-127,-172],[205,-100],[230,50],[275,-220],[-55,-318]],
- octopuses:[[-17,26],[120,24],[-118,-178],[200,85],[278,-228],[-56,-318]]
+ dolphins:[[23,31],[38,40],[-100,-170],[-127,-172],[cityX(205),-100],[cityX(230),50],[cityX(275),-220],[-8,-428]],
+ octopuses:[[-17,26],[cityX(120),24],[-118,-178],[cityX(200),85],[cityX(278),-228],[6,-424]]
 };
 export function islandDaylight(seconds){
  if(!NIGHT_MODE_ENABLED)return {phase:.25,day:1,night:false,twilight:0};
@@ -24,14 +25,14 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
   if(kind==='Dolphin')g.scale.setScalar(1.35);
   if(kind==='Octopus')g.scale.setScalar(.94);
   animals.push({g,moving,x,z,phase:kind==='Reef fish'?Math.floor(i/6)*1.7+(i%6)*.08:i*1.7,kind,seed:923+i*7919+(kind.length*131),attention:0,t:0,heading:i*2.39996,waypoint:null,stuck:0,travel:0});}
- [[8,24],[-170,0],[108,30],[200,75]].forEach(([x,z],i)=>animal('Sea turtle',x,z,i));
+ [[8,24],[-170,0],[108,30],[cityX(200),75]].forEach(([x,z],i)=>animal('Sea turtle',x,z,i));
  // Small dolphin pods visit beaches, docks and distant islands, rather than
  // remaining invisible far away in four arbitrary offshore coordinates.
  MARINE_HABITATS.dolphins.forEach(([x,z],i)=>animal('Dolphin',x,z,i));
- [[-8,24],[130,14],[-140,-145],[200,-90]].forEach(([x,z],i)=>animal('Manta ray',x,z,i));
+ [[-8,24],[130,14],[-140,-145],[cityX(200),-90]].forEach(([x,z],i)=>animal('Manta ray',x,z,i));
  // Visible shallow-water octopuses with independently moving arms.
  MARINE_HABITATS.octopuses.forEach(([x,z],i)=>animal('Octopus',x,z,i));
- for(let i=0;i<24;i++){const spots=[[-11,24],[108,25],[-135,-130],[220,75]],p=spots[Math.floor(i/6)];animal('Reef fish',p[0]+(i%3)*.7,p[1]+Math.floor(i%6/3)*.7,i);}
+ for(let i=0;i<24;i++){const spots=[[-11,24],[108,25],[-135,-130],[cityX(220),75]],p=spots[Math.floor(i/6)];animal('Reef fish',p[0]+(i%3)*.7,p[1]+Math.floor(i%6/3)*.7,i);}
  // Celestial bodies travel across the upper camera view, away from Angelique and controls.
  const sky=new T.Group();sky.name='Sun moon and stars';camera.add(sky);if(!camera.parent)scene.add(camera);const owned=[];
  const basic=(color,extra={})=>{const m=new T.MeshBasicMaterial({color,depthTest:false,depthWrite:false,fog:false,toneMapped:false,...extra});owned.push(m);return m;};
@@ -58,7 +59,7 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
   if(sun){sun.intensity=.5+day*2.5;sun.color.set(night?'#9fbcff':'#fff0d2');}if(ambient){ambient.intensity=.85+day*.6;ambient.color.set(night?'#99b8ed':'#c9edff');}if(waterMaterial?.uniforms.daylight)waterMaterial.uniforms.daylight.value=day;
   sunBody.visible=!night;moon.visible=night;const arc=(phase%.5)*2;for(const body of [sunBody,moon])body.position.set((arc-.5)*2.6,2.1+Math.sin(arc*Math.PI)*.4,-10);starMaterial.opacity=(1-day)*.8;
   const roadClear=(x,z,r=.7)=>roadDistance(x,z)>HIGHWAY_WIDTH/2+r;
-  const safeWater=(x,z,r=.7)=>roadClear(x,z,r)&&[[0,0],[r,0],[-r,0],[0,r],[0,-r]].every(([ox,oz])=>inWater(x+ox,z+oz));
+  const safeWater=(x,z,r=.7)=>roadClear(x,z,r)&&[[0,0],[r,0],[-r,0],[0,r],[0,-r]].every(([ox,oz])=>marineWater(x+ox,z+oz));
   for(const a of animals){
    if(active)a.t+=dt;
    const t=a.t,isDolphin=a.kind==='Dolphin',isFish=a.kind==='Reef fish';

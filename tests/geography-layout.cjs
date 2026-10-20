@@ -1,6 +1,6 @@
 const assert=require('node:assert/strict');
 (async()=>{
- const {DESTINATIONS,movePoint,moveLegacyPoint,GEOGRAPHY_VERSION,WORLD_BOUNDS,COLON_OFFSET}=await import('../games/adventure/geography.js');
+ const {cityX,DESTINATIONS,movePoint,moveLegacyPoint,GEOGRAPHY_VERSION,WORLD_BOUNDS,COLON_OFFSET}=await import('../games/adventure/geography.js');
  const {worldIslands,explorePlaces,isletHeight,inWater,normalizeExplore,freshExplore,MAINLAND_ROADS,roadDistance}=await import('../games/adventure/explore-state.js');
  const {CITY}=await import('../games/adventure/pizza-city.js');const {CITY_SITES}=await import('../games/adventure/city-expansion.js');const {COLON_SITES,COLON_BRIDGE}=await import('../games/adventure/colon-state.js');
  const {CRUISE_BOARD,CRUISE_LENGTH,cruisePose,CRUISE_SPEED}=await import('../games/adventure/cruise-route.js');const {CITY_HOSPITAL,BARU,touchesLava,LAVA_POOLS,lavaPoolPose}=await import('../games/adventure/volcano-safety.js');
@@ -15,7 +15,7 @@ const assert=require('node:assert/strict');
   const old=DESTINATIONS[id].old,raw={worldVersion:3,inventoryVersion:1,x:old[0],z:old[1],food:{banana:7,coconut:3},city:{car:{x:-106,z:-74},bags:['bag-1']},friends:{completed:['pip']},estate:{buildings:[]}};
   const moved=normalizeExplore(raw);assert.equal(moved.x,DESTINATIONS[id].at[0],id+' save migration');assert.equal(moved.z,DESTINATIONS[id].at[1]);assert.equal(moved.geographyVersion,GEOGRAPHY_VERSION);assert.equal(moved.food.banana,7);assert.deepEqual(moved.friends.completed,['pip']);assert.equal(moved.city.bags.length,1);const again=normalizeExplore(moved);assert.equal(again.x,moved.x,'migration once only');assert.equal(again.z,moved.z);
  }
- assert.equal(freshExplore().city.car.x,114,'car moves with city');
+ assert.equal(freshExplore().city.car.x,cityX(114),'car moves with city');
  assert(explorePlaces.find(p=>p.id==='ollie').x>BARU.x&&explorePlaces.find(p=>p.id==='ollie').z>BARU.z,'Boquete SE of Barú');
  for(const pool of LAVA_POOLS){const p=lavaPoolPose(pool,isletHeight);assert(touchesLava(p.x,p.y,p.z,isletHeight));}
  console.log('PASS accurate relative destination directions, world reachability, city/forest/bridge/dock/hospital alignment, complete turning cruise route, one-time save migration and lava alignment');

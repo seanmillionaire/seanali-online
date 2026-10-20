@@ -1,11 +1,12 @@
-import {ruralBlocks} from './rural-towns.js?v=186';
-import {CITY_SHOP_PLOTS,cityBlocksVehicle} from './city-layout.js?v=186';
-import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=186';
-import {createCityExpansion} from './city-expansion.js?v=186';
-import {districtDriveable,districtVehicleBlocked,districtNeighborhood} from './expanded-districts.js?v=186';
+import {cityX} from './geography.js?v=188';
+import {ruralBlocks} from './rural-towns.js?v=188';
+import {CITY_SHOP_PLOTS,cityBlocksVehicle} from './city-layout.js?v=188';
+import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=188';
+import {createCityExpansion} from './city-expansion.js?v=188';
+import {districtDriveable,districtVehicleBlocked,districtNeighborhood} from './expanded-districts.js?v=188';
 /* Casco Viejo · Ciudad de Panamá — the largest fantasy island: real road grid, drivable mini car,
    walk-in pizzeria, and sixteen persistent 💰 money-bag pickups. */
-export const CITY={x:(120),z:(-50),rx:58,rz:48,restaurant:{x:120,z:-48}};
+export const CITY={x:cityX(120),z:(-50),rx:58,rz:48,restaurant:{x:cityX(120),z:-48}};
 export const MONEY_BAGS=Array.from({length:24},(_,i)=>{
  if(i<16){
   const a=i/16*Math.PI*2,r=i%4===0?.62:i%3===0?.43:.77;
@@ -155,7 +156,7 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
  let coinAward=()=>0;
  const expansion=createCityExpansion({T,group,scene,state,make,mat,box,ball,cylinder,cone,height,surfaces,
    save,refresh,joy,tell:(a,b)=>tell(a,b),coinAward:id=>coinAward(id),onWash:()=>{carBlue.roughness=.16;carBlue.needsUpdate=true;}});
- if(cityBlocksVehicle(city.car.x,city.car.z)){city.car.x=105;city.car.z=-50;city.car.heading=0;save();}
+ if(cityBlocksVehicle(city.car.x,city.car.z)){city.car.x=cityX(105);city.car.z=-50;city.car.heading=0;save();}
  const status=document.createElement('div');status.className='pizza-city-status';status.hidden=true;
  status.setAttribute('aria-live','polite'); 
  const sign=document.createElement('div');sign.className='pizza-city-prompt';sign.textContent='🍕 '+(es?'Pizzería del Casco':'Casco Viejo Pizzeria');sign.hidden=true;

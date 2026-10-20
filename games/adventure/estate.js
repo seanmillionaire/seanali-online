@@ -1,4 +1,4 @@
-import {WORLD_BOUNDS} from './geography.js?v=186';
+import {WORLD_BOUNDS} from './geography.js?v=188';
 // Panamá Aventura: visible home-building progression. Keep the original seven
 // workshops and treasure histories for existing saves and regional missions.
 export const ESTATE_PLANS=[

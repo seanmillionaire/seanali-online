@@ -3,7 +3,9 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import * as T from '../games/adventure/vendor/three.module.min.js';
 import {createColonWildlife} from '../games/adventure/colon-wildlife.js';
-import {inWater} from '../games/adventure/explore-state.js';
+import {inWater as worldWater} from '../games/adventure/explore-state.js';
+import {COLON_OFFSET} from '../games/adventure/geography.js';
+const inWater=(x,z)=>worldWater(x+COLON_OFFSET.x,z+COLON_OFFSET.z);
 const root=new T.Group(),anchors={main:[],monkey:[]};
 for(let i=0;i<12;i++){anchors.main.push({x:-16+(i%4)*3,z:-129+Math.floor(i/4)*3,y:5+i%3});anchors.monkey.push({x:8+(i%3)*2,z:-95+Math.floor(i/3)*2,y:4+i%3});}
 const wildlife=createColonWildlife({T,root,anchors,inWater,height:()=>0,geometry:g=>g,mat:(c,o={})=>new T.MeshStandardMaterial({color:c,...o}),make:(g,m,x=0,y=0,z=0,sx=1,sy=sx,sz=sx,parent=root)=>{const n=new T.Mesh(g,m);n.position.set(x,y,z);n.scale.set(sx,sy,sz);parent.add(n);return n;},ball:new T.SphereGeometry(1,8,6),box:new T.BoxGeometry(),cylinder:new T.CylinderGeometry(1,1,1,8),cone:new T.ConeGeometry(1,1,8)});

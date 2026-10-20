@@ -1,12 +1,13 @@
+import {cityX} from './geography.js?v=188';
 // Space-first city districts beyond the original Casco Viejo loop.
 // All plots are deterministic, stay on dry land and leave existing gameplay
 // landmarks, highways and saved building locations untouched.
-import {mainlandContains,canalWater,gatunWater} from './geography.js?v=186';
-import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=186';
+import {mainlandContains,canalWater,gatunWater} from './geography.js?v=188';
+import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=188';
 
 export const EXPANDED_DISTRICTS=[
  {id:'panama-east',name:'Panama City · modern eastern neighborhoods',
-  xs:[174,187,201,216,231,246,261],zs:[-83,-68,-52,-35,-19],
+  xs:[174,187,201,216,231,246,261].map(cityX),zs:[-83,-68,-52,-35,-19],
   kind:'modern'},
  {id:'colon-civic',name:'Colón · spaced civic and port neighborhoods',
   xs:[-25,-10,5,20,35],zs:[-388,-374,-360],kind:'civic'},
@@ -15,7 +16,7 @@ export const EXPANDED_DISTRICTS=[
   kind:'caribbean'}
 ];
 export const DISTRICT_ROADS={
- panamaEast:[[163,-61],[175,-61],[181,-57],[197,-57],[213,-57],[229,-57],[245,-57]],
+ panamaEast:[[163,-61],[175,-61],[181,-57],[197,-57],[213,-57],[229,-57],[245,-57]].map(([x,z])=>[cityX(x),z]),
  colonAccess:[[-50,-365],[-57,-371],[-67,-374],[-72,-372]]
 };
 const within=(r,x,z)=>x>=r.xs[0]&&x<=r.xs.at(-1)&&z>=r.zs[0]&&z<=r.zs.at(-1);

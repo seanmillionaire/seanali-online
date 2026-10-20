@@ -3,10 +3,10 @@ const assert=require('node:assert/strict');
  const {worldIslands,explorePlaces,isletHeight,inWater,traversable,islandPath,freshExplore,normalizeExplore}=await import('../games/adventure/explore-state.js');
  const {WORLD_BOUNDS}=await import('../games/adventure/geography.js');
  const byId=id=>worldIslands.find(p=>p.id===id);
- assert.deepEqual(WORLD_BOUNDS,{x:700,z:600});
+ assert.deepEqual(WORLD_BOUNDS,{x:900,z:600});
  const original=[
-  ['islet',110,85],['wilds',-230,-200],['coconutCoast',320,125],
-  ['crystalCove',290,-245],['pizzaCity',120,-50],['sunset',-350,-65],['colon',-50,-365]
+  ['islet',110,85],['wilds',-230,-200],['coconutCoast',560,125],
+  ['crystalCove',530,-245],['pizzaCity',360,-50],['sunset',-350,-65],['colon',-50,-365]
  ];
  for(const [id,x,z]of original){assert.equal(byId(id).x,x);assert.equal(byId(id).z,z);}
  const remote=['coiba','delRey','escudo','cebaco'];
@@ -33,6 +33,6 @@ const assert=require('node:assert/strict');
  const path=islandPath(byId('coiba'),byId('delRey'));
  assert(path.length>25&&path.length<180,'distant route uses bounded waypoints instead of a giant 1m grid');
  assert(Math.hypot(path.at(-1).x-byId('delRey').x,path.at(-1).z-byId('delRey').z)<.05,'route reaches distant island');
- const restored=normalizeExplore(freshExplore());assert.equal(restored.geographyVersion,2,'old game saves remain compatible');
+ const restored=normalizeExplore(freshExplore());assert.equal(restored.geographyVersion,3,'old game saves remain compatible');
  console.log('PASS four physically distant islands, larger legacy island space, expanded locations and saved progression');
 })().catch(e=>{console.error(e);process.exitCode=1});

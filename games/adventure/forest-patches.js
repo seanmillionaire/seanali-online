@@ -1,7 +1,8 @@
-import {ruralParcels} from './rural-towns.js?v=186';
+import {cityX} from './geography.js?v=188';
+import {ruralParcels} from './rural-towns.js?v=188';
 // Irregular, mixed Panamanian understory and canopy. Gaps are intentional.
-import {mainlandContains,canalWater,gatunWater} from './geography.js?v=186';
-import {worldIslands,isletHeight,roadDistance,HIGHWAY_WIDTH,volcanoTrailPoint} from './explore-state.js?v=186';
+import {mainlandContains,canalWater,gatunWater} from './geography.js?v=188';
+import {worldIslands,isletHeight,roadDistance,HIGHWAY_WIDTH,volcanoTrailPoint} from './explore-state.js?v=188';
 export const FOREST_PATCHES=[
  {id:'gorgona-palm-grove',x:18,z:-36,rx:27,rz:20,n:54,biome:'tropical'},
  {id:'gorgona-rainforest',x:-23,z:-46,rx:29,rz:23,n:48,biome:'tropical'},
@@ -21,6 +22,8 @@ export const FOREST_PATCHES=[
  {id:'central-highlands',x:-170,z:-80,rx:54,rz:23,n:90,biome:'mixed'},
  {id:'veraguas-foothills',x:-235,z:-16,rx:40,rz:20,n:65,biome:'mixed'},
  {id:'caribbean-corridor',x:6,z:-238,rx:20,rz:38,n:52,biome:'tropical'},
+ {id:'gorgona-city-countryside',x:170,z:-80,rx:37,rz:24,n:30,biome:'mixed'},
+ {id:'panama-west-greenbelt',x:265,z:-60,rx:32,rz:25,n:28,biome:'tropical'},
  {id:'western-coast',x:-365,z:-15,rx:36,rz:18,n:48,biome:'montane'},
  {id:'colon-cape',x:-79,z:-390,rx:22,rz:18,n:18,biome:'tropical'}
 ];
@@ -41,7 +44,7 @@ function nearTrail(x,z){
 export function forestSiteClear(x,z,biome='tropical'){
  if(roadDistance(x,z)<HIGHWAY_WIDTH/2+10||townPlots.some(p=>Math.abs(x-p.x)<p.w/2+5&&Math.abs(z-p.z)<p.d/2+5))return false;
  if(FOREST_CLEARINGS.some(p=>Math.hypot(x-p.x,z-p.z)<p.r))return false;
- if(Math.hypot((x-120)/67,(z+50)/57)<1.09)return false;
+ if(Math.hypot((x-cityX(120))/67,(z+50)/57)<1.09)return false;
  // Giant rainforest canopy belongs inland, never on offshore beaches.
  if(worldIslands.some(p=>p.id!=='sunset'&&Math.hypot((x-p.x)/p.rx,(z-p.z)/p.rz)<1.07))return false;
  const land=mainlandContains(x,z);

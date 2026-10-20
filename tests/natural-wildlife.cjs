@@ -1,7 +1,9 @@
 const assert=require('node:assert/strict');
 (async()=>{
  const {createCrocodileMotion,stepCrocodile,crocodileClear}=await import('../games/adventure/colon-wildlife.js');
- const {inWater}=await import('../games/adventure/explore-state.js');
+ const {inWater:worldWater}=await import('../games/adventure/explore-state.js');
+ const {COLON_OFFSET}=await import('../games/adventure/geography.js');
+ const inWater=(x,z)=>worldWater(x+COLON_OFFSET.x,z+COLON_OFFSET.z);
  const animals=[];for(let i=0;i<8;i++)animals.push(createCrocodileMotion(i,inWater,animals));
  for(let i=0;i<8;i++)for(let j=0;j<i;j++)assert(Math.hypot(animals[i].x-animals[j].x,animals[i].z-animals[j].z)>7,'separate spawns');
  const starts=animals.map(a=>({...a}));let variation=animals.map(()=>0);
@@ -18,6 +20,6 @@ const assert=require('node:assert/strict');
  const before=JSON.stringify(a);stepCrocodile(a,0,inWater);assert.equal(JSON.stringify(a),before,'pause does not change motion');
  const {naturalSharkPatrol}=await import('../games/adventure/island-life.js');
  const p={x:8,z:28,cx:0,cz:0,rx:32,rz:26,waypoint:0};
- let traveled=0;for(let i=0;i<100;i++){const n=naturalSharkPatrol(p,.1);traveled+=Math.hypot(n.x-p.x,n.z-p.z);Object.assign(p,n);assert(inWater(p.x,p.z));}
+ let traveled=0;for(let i=0;i<100;i++){const n=naturalSharkPatrol(p,.1);traveled+=Math.hypot(n.x-p.x,n.z-p.z);Object.assign(p,n);assert(worldWater(p.x,p.z));}
  assert(traveled>1);console.log('PASS eight independent crocodiles over two minutes: no snaps, smooth turns, full-body water clearance, path variation, proximity response, pause; shark wandering');
 })().catch(e=>{console.error(e);process.exitCode=1});

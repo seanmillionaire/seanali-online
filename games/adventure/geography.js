@@ -1,29 +1,33 @@
+export const CITY_EAST_SHIFT=240;
+export const cityX=x=>x+CITY_EAST_SHIFT;
+export const CITY_CENTER={x:cityX(120),z:-50};
+export const MAINLAND_EAST=272+CITY_EAST_SHIFT;
 // North is -Z and east is +X. Distances are compressed for play, not a scale map.
-export const GEOGRAPHY_VERSION=2;
+export const GEOGRAPHY_VERSION=3;
 // Colón's adventure is authored in local coordinates and placed far north.
 export const COLON_OFFSET={x:-40,z:-240};
 export const COLON_LAYOUT_VERSION=2;
 export const colonWorld=(x,z)=>({x:x+COLON_OFFSET.x,z:z+COLON_OFFSET.z});
 export const colonLocal=(x,z)=>({x:x-COLON_OFFSET.x,z:z-COLON_OFFSET.z});
-export const WORLD_BOUNDS={x:700,z:600};
+export const WORLD_BOUNDS={x:900,z:600};
 export const DESTINATIONS={
- home:{old:[0,0],at:[0,0]},pizzaCity:{old:[-100,-74],at:[120,-50]},
+ home:{old:[0,0],at:[0,0]},pizzaCity:{old:[-100,-74],at:[cityX(120),-50]},
  colon:{old:[110,-56],at:[-50,-365]},monkeyIslet:{old:[130,-25],at:[-30,-334]},
  wilds:{old:[16,-112],at:[-230,-200]},sunset:{old:[-110,49],at:[-350,-65]},
- islet:{old:[60,-60],at:[110,85]},coconutCoast:{old:[105,10],at:[320,125]},
- crystalCove:{old:[10,100],at:[290,-245]},canal:{old:[-44,-74],at:[40,-70]},
+ islet:{old:[60,-60],at:[110,85]},coconutCoast:{old:[105,10],at:[cityX(320),125]},
+ crystalCove:{old:[10,100],at:[cityX(290),-245]},canal:{old:[-44,-74],at:[40,-70]},
  volcanTown:{old:[-80,45],at:[-385,-30]},boquete:{old:[-80,45],at:[-290,-50]}
 };
 export function movePoint(id,x,z){const p=DESTINATIONS[id];return {x:x+p.at[0]-p.old[0],z:z+p.at[1]-p.old[1]};}
 const legacyRegions=[['home',21,16],['pizzaCity',58,48],['colon',26,23],['monkeyIslet',8,7],['wilds',24,25],['sunset',38,34],['islet',12,10],['coconutCoast',23,19],['crystalCove',60,50]];
-export function moveLegacyPoint(x,z){
+export function moveLegacyPoint(x,z,version=GEOGRAPHY_VERSION){
  let id='home',distance=Infinity;
  for(const [key,rx,rz]of legacyRegions){const p=DESTINATIONS[key].old,d=Math.max(0,Math.hypot((x-p[0])/rx,(z-p[1])/rz)-1);if(d<distance){distance=d;id=key;}}
- return movePoint(id,x,z);
+ const point=movePoint(id,x,z);if(version<3&&['pizzaCity','coconutCoast','crystalCove'].includes(id))point.x-=CITY_EAST_SHIFT;return point;
 }
 // A wide western mainland and a long Caribbean peninsula. Keep the city's
 // authored blocks, Gorgona beach, canal entrance and San Blas intact.
-export const MAINLAND_OUTLINE=[[-425,-110],[-365,-130],[-290,-118],[-220,-100],[-145,-110],[-85,-133],[-45,-145],[-58,-235],[-103,-330],[-112,-366],[-99,-398],[-60,-417],[-27,-409],[12,-397],[29,-371],[37,-336],[44,-262],[48,-148],[75,-136],[90,-110],[145,-85],[190,-75],[260,-75],[265,-40],[200,-15],[145,-12],[115,-14],[65,-8],[45,14],[25,18],[15,9],[-15,9],[-45,10],[-120,16],[-205,8],[-290,12],[-385,26],[-435,0],[-440,-55]];
+export const MAINLAND_OUTLINE=[[-425,-110],[-365,-130],[-290,-118],[-220,-100],[-145,-110],[-85,-133],[-45,-145],[-58,-235],[-103,-330],[-112,-366],[-99,-398],[-60,-417],[-27,-409],[12,-397],[29,-371],[37,-336],[44,-262],[48,-148],[55,-140],[62,-136],[75,-136],[90,-110],[145,-85],[190,-75],[260,-75],[265,-40],[200,-15],[145,-12],[115,-14],[65,-8],[45,14],[25,18],[15,9],[-15,9],[-45,10],[-120,16],[-205,8],[-290,12],[-385,26],[-435,0],[-440,-55]].map(([x,z])=>[x>65?cityX(x):x,z]);
 export const CANAL_WATERWAY=[[40,-70],[15,-70],[5,-75],[-30,-85],[-55,-105],[-58,-130],[-55,-165],[-47,-215],[-43,-265],[-55,-285]];
 export const WORLD_EXTENT={left:-WORLD_BOUNDS.x,top:-WORLD_BOUNDS.z,width:WORLD_BOUNDS.x*2,height:WORLD_BOUNDS.z*2};
 // Scenic low hills separate towns; the road grader uses this same collision
@@ -46,6 +50,8 @@ export function canalWater(x,z){
  return false;
 }
 export function gatunWater(x,z){return z>-368&&z<-301&&Math.hypot((x+50)/40,(z+365)/37)>=1&&Math.hypot((x+35)/37,(z+335)/22)<1;}
+// Inland wildlife uses this shared boundary; navigable water alone is not an ocean habitat.
+export const freshwaterHabitat=(x,z)=>gatunWater(x,z)||canalWater(x,z);
 // Coastlines have smooth bays, small headlands, and no straight polygon corners.
 // Build the smoothed outline once. Gameplay and rendering call the same predicate.
 const SMOOTH_MAINLAND=[];
@@ -72,7 +78,7 @@ for(let i=0,j=SMOOTH_MAINLAND.length-1;i<SMOOTH_MAINLAND.length;j=i++){
 }
 export function mainlandContains(x,z){
  // World-scale ocean sampling dominates startup; reject distant water cheaply.
- if(x<-452||x>272||z<-430||z>38)return false;
+ if(x<-452||x>MAINLAND_EAST||z<-430||z>38)return false;
  // Subtle coordinate warping adds small coastline irregularities without moving
  // roads, saved progress, boats, or the map's major Panama landmarks.
  const px=x+1.35*Math.sin(z*.12+x*.009)+.55*Math.sin(z*.34-x*.025),
@@ -103,19 +109,19 @@ export const WORLD_EXPANSIONS=[
  {id:'boquete',from:[-112,-32],to:[-290,-50],rx:16,rz:13,scale:1},
  {id:'wilds',from:[-105,-135],to:[-230,-200],rx:38,rz:38,scale:1.35},
  {id:'islet',from:[90,25],to:[110,85],rx:24,rz:20,scale:1.45},
- {id:'coconutCoast',from:[200,50],to:[320,125],rx:39,rz:34,scale:1.5},
+ {id:'coconutCoast',from:[200,50],to:[cityX(320),125],rx:39,rz:34,scale:1.5},
  {id:'colon',from:[-50,-245],to:[-50,-365],rx:115,rz:50,scale:1},
  {id:'monkeyIslet',from:[-30,-214],to:[-30,-334],rx:13,rz:12,scale:1},
  {id:'coiba',from:[-260,140],to:[-480,160],rx:45,rz:40,scale:1.4},
- {id:'delRey',from:[273,142],to:[440,260],rx:42,rz:38,scale:1.4},
+ {id:'delRey',from:[273,142],to:[cityX(440),260],rx:42,rz:38,scale:1.4},
  {id:'escudo',from:[-244,-202],to:[-340,-310],rx:39,rz:35,scale:1.4},
  {id:'cebaco',from:[-102,166],to:[-200,260],rx:42,rz:38,scale:1.4}
 ];
-export function expandWorldPoint(x,z,id=null){
+export function expandWorldPoint(x,z,id=null,version=GEOGRAPHY_VERSION){
  if(!Number.isFinite(x)||!Number.isFinite(z))return {x,z};
  const candidates=WORLD_EXPANSIONS.filter(p=>!id||p.id===id).map(p=>({p,d:Math.hypot((x-p.from[0])/p.rx,(z-p.from[1])/p.rz)})).sort((a,b)=>a.d-b.d);
  const best=candidates[0];if(!best||(!id&&best.d>1.35))return {x,z};
- const p=best.p;return {x:p.to[0]+(x-p.from[0])*p.scale,z:p.to[1]+(z-p.from[1])*p.scale};
+ const p=best.p;return {x:p.to[0]+(x-p.from[0])*p.scale-(version<3&&['coconutCoast','delRey'].includes(p.id)?CITY_EAST_SHIFT:0),z:p.to[1]+(z-p.from[1])*p.scale};
 }
 // Upgrade old saves without resetting the player's buildings, boats or quests.
 // Two migrations are independent and run once each, including archived saves.
@@ -128,17 +134,24 @@ export function migrateGeography(raw){
    estate:moved.estate?{...moved.estate,buildings:(moved.estate.buildings||[]).map(migrate)}:moved.estate,
    sanBlasGeographyVersion:2};
  }
- if(moved.geographyVersion!==GEOGRAPHY_VERSION){
-  const next={...moved,geographyVersion:GEOGRAPHY_VERSION,worldVersion:3};
+ if(!moved.geographyVersion||moved.geographyVersion<2){
+  const next={...moved,geographyVersion:2,worldVersion:3};
   const versionOne=moved.geographyVersion===1;
-  const migratePoint=p=>p&&Number.isFinite(p.x)&&Number.isFinite(p.z)?{...p,...(versionOne?expandWorldPoint(p.x,p.z):moveLegacyPoint(p.x,p.z))}:p;
+  const migratePoint=p=>p&&Number.isFinite(p.x)&&Number.isFinite(p.z)?{...p,...(versionOne?expandWorldPoint(p.x,p.z,null,2):moveLegacyPoint(p.x,p.z,2))}:p;
   if(Number.isFinite(moved.x)&&Number.isFinite(moved.z))Object.assign(next,migratePoint({x:moved.x,z:moved.z}));
   if(moved.boat)next.boat=migratePoint(moved.boat);
-  if(moved.city){next.city={...moved.city};if(moved.city.car)next.city.car=versionOne?migratePoint(moved.city.car):{...moved.city.car,...movePoint('pizzaCity',moved.city.car.x,moved.city.car.z)};
+  if(moved.city){next.city={...moved.city};if(moved.city.car)next.city.car=versionOne?migratePoint(moved.city.car):{...moved.city.car,...movePoint('pizzaCity',moved.city.car.x,moved.city.car.z),x:movePoint('pizzaCity',moved.city.car.x,moved.city.car.z).x-CITY_EAST_SHIFT};
    if(moved.city.cruise)next.city.cruise={...moved.city.cruise,distance:moved.city.cruise.distance||0};}
   if(moved.estate)next.estate={...moved.estate,buildings:(moved.estate.buildings||[]).map(migratePoint)};
-  if(versionOne&&moved.builders)next.builders=Object.fromEntries(Object.entries(moved.builders).map(([id,p])=>[id,p?{...p,completed:(p.completed||[]).map(site=>({...site,...expandWorldPoint(site.x,site.z,({taboga:'islet',contadora:'coconutCoast',bocas:'wilds',colon:'colon'})[site.region]||null)}))}:p]));
+  if(versionOne&&moved.builders)next.builders=Object.fromEntries(Object.entries(moved.builders).map(([id,p])=>[id,p?{...p,completed:(p.completed||[]).map(site=>({...site,...expandWorldPoint(site.x,site.z,({taboga:'islet',contadora:'coconutCoast',bocas:'wilds',colon:'colon'})[site.region]||null,2)}))}:p]));
   moved=next;
+ }
+ if(moved.geographyVersion<3){
+  const east=p=>p&&Number.isFinite(p.x)&&Number.isFinite(p.z)&&(p.x>=220||(p.x>=70&&p.x<=278&&p.z>=-115&&p.z<=22))?{...p,x:cityX(p.x)}:p;
+  moved={...moved,...east({x:moved.x,z:moved.z}),geographyVersion:GEOGRAPHY_VERSION,
+   boat:east(moved.boat),city:moved.city?{...moved.city,car:east(moved.city.car)}:moved.city,
+   estate:moved.estate?{...moved.estate,buildings:(moved.estate.buildings||[]).map(east)}:moved.estate,
+   builders:moved.builders?Object.fromEntries(Object.entries(moved.builders).map(([id,p])=>[id,p?{...p,completed:(p.completed||[]).map(east)}:p])):moved.builders};
  }
  if(moved.colonLayoutVersion!==COLON_LAYOUT_VERSION){
   const shift=p=>{

@@ -1,7 +1,7 @@
-import {botanicalGeometry,mergeNatureGeometry,leafSurface} from './botanical-geometry.js?v=186';
+import {botanicalGeometry,mergeNatureGeometry,leafSurface} from './botanical-geometry.js?v=188';
 // High-canopy vegetation batched into just six shared GPU draws, even for
 // thousands of individual pines, palms and broadleaf tropical trees.
-import {planForestPatches} from './forest-patches.js?v=186';
+import {planForestPatches} from './forest-patches.js?v=188';
 
 export function createForestLandscape({T,scene,mat,geometry,height,light=false}){
  const trees=planForestPatches(light ? .63 : 1),group=new T.Group();
