@@ -29,3 +29,16 @@ export function coastDistanceField(isLand,width=384,height=320){
  }
  return {pixels,width,height};
 }
+
+// Adaptive shoreline tessellation. Leave inland triangles light, but replace
+// each coastal grid cell with fine triangles where the waterline crosses.
+// This follows the SAME land predicate as swimming and island geometry.
+export function shorelineTiles(x,z,size,isLand,coastDivisions=5){
+ const samples=[[0,0],[1,0],[0,1],[1,1],[.5,.5],[.5,0],[0,.5],[1,.5],[.5,1]];
+ const first=isLand(x,z);
+ const edge=samples.some(([u,v])=>isLand(x+size*u,z+size*v)!==first);
+ const divisions=edge?Math.max(2,Math.min(6,Math.floor(coastDivisions))):1,tiles=[],step=size/divisions;
+ for(let i=0;i<divisions;i++)for(let j=0;j<divisions;j++)
+  tiles.push([x+i*step,z+j*step,step]);
+ return tiles;
+}

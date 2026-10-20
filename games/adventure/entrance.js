@@ -1,9 +1,9 @@
-import {clipLandTriangle,coastDistanceField} from './terrain-surface.js?v=156';
-import {mainlandContains,canalWater,gatunWater,organicIslandRadius,homeShoreRadius} from './geography.js?v=157';
+import {clipLandTriangle,coastDistanceField,shorelineTiles} from './terrain-surface.js?v=171';
+import {mainlandContains,canalWater,gatunWater,organicIslandRadius,homeShoreRadius} from './geography.js?v=171';
 import {createActiveVolcano} from './active-volcano.js?v=156';
-import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=164';
+import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=171';
 import {createTropical} from './tropical.js?v=159';
-import {createForestLandscape} from './forest-landscape.js?v=170';
+import {createForestLandscape} from './forest-landscape.js?v=171';
 import {createSurfaceTextures} from './surface-textures.js?v=156';
 import {installPolyHavenMaterials} from './polyhaven-materials.js?v=156';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
@@ -42,7 +42,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
     [stone,surfaces.stone,.11],[cream,surfaces.plaster,.035],[wood,surfaces.wood,.065]]){
     material.map=surface;material.bumpMap=surface;material.bumpScale=bump;material.needsUpdate=true;
   }
-  const positions=[],colors=[],uvs=[],indices=[],rings=52,segments=144;
+  const positions=[],colors=[],uvs=[],indices=[],rings=72,segments=216;
    const blend=(from,to,value)=>{const t=Math.max(0,Math.min(1,(value-from)/(to-from)));return t*t*(3-2*t);};
   for(let ring=0;ring<=rings;ring++)for(let i=0;i<=segments;i++){const a=i/segments*Math.PI*2,r=ring/rings,shore=homeShoreRadius(a),x=Math.cos(a)*20*r*shore,z=Math.sin(a)*14*r*shore,y=ring===rings?.08:height(x,z);positions.push(x,y,z);uvs.push(x*.18,z*.18);const patch=r+.043*Math.sin(x*.28+z*.18)+.027*Math.cos(x*.13-z*.49);
    const c=new T.Color('#527842').lerp(new T.Color('#789454'),blend(.30,.77,patch));
@@ -131,7 +131,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   }
   for(const land of worldIslands){
    const shades=(land.guna?['#eee8d0','#f5edda','#fff6df']:ellipseMats[land.id])||['#36804b','#549d55','#eadab1'],iv=[],ic=[],ii=[],iu=[];
-   const rings=land.id==='sunset'?62:land.guna?10:20,segments=land.id==='sunset'?144:land.guna?32:80;
+   const rings=land.id==='sunset'?64:land.guna?14:28,segments=land.id==='sunset'?192:land.id==='pizzaCity'?192:land.guna?60:128;
    for(let ring=0;ring<=rings;ring++)for(let j=0;j<=segments;j++){
     const a=j/segments*Math.PI*2,r=ring/rings;
     const shore=organicIslandRadius(land,a);
@@ -421,9 +421,11 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   const dryMainland=(x,z)=>mainlandContains(x,z)&&!canalWater(x,z)&&!gatunWater(x,z);
   const inland=(x,z)=>dryMainland(x,z)&&Math.hypot(x/20,z/14)>.90&&!worldIslands.some(p=>Math.hypot((x-p.x)/p.rx,(z-p.z)/p.rz)<.90);
   // Overlap the existing region meshes slightly from below: no empty moat or z-fighting.
-  // Clip boundary triangles rather than dropping whole grid cells at the coast.
-  for(let x=-196;x<270;x+=3)for(let z=-151;z<26;z+=3){
-   const corners=[[x,0,z],[x+3,0,z],[x,0,z+3],[x+3,0,z+3]];
+  // Subdivide waterline edges fivefold to remove blocky land endings without
+  // multiplying all inland polygons; clip the final boundary precisely.
+  for(let x=-196;x<270;x+=3)for(let z=-151;z<26;z+=3)
+  for(const [sx,sz,size] of shorelineTiles(x,z,3,inland,light?3:5)){
+   const corners=[[sx,0,sz],[sx+size,0,sz],[sx,0,sz+size],[sx+size,0,sz+size]];
    for(const tri of [[0,2,1],[1,2,3]]){
     const vertices=clipLandTriangle(tri.map(i=>corners[i]),inland);
     const emit=(px,py,pz)=>{mainlandVertices.push(px,py,pz);mainlandUV.push(px*.18,pz*.18);};

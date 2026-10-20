@@ -1,6 +1,6 @@
 // Irregular forests across Panama. Deterministic and safely off roads.
-import {mainlandContains,canalWater,gatunWater} from './geography.js?v=157';
-import {worldIslands,isletHeight,roadDistance,HIGHWAY_WIDTH,volcanoTrailPoint} from './explore-state.js?v=170';
+import {mainlandContains,canalWater,gatunWater} from './geography.js?v=171';
+import {worldIslands,isletHeight,roadDistance,HIGHWAY_WIDTH,volcanoTrailPoint} from './explore-state.js?v=171';
 
 export const FOREST_PATCHES=[
  {id:'gorgona-inland',x:27,z:-37,rx:27,rz:18,n:125,biome:'tropical'},

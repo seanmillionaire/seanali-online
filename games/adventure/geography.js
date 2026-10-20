@@ -28,8 +28,8 @@ for(let i=0;i<MAINLAND_OUTLINE.length;i++){
  const a=MAINLAND_OUTLINE[(i-1+MAINLAND_OUTLINE.length)%MAINLAND_OUTLINE.length],
   b=MAINLAND_OUTLINE[i],c=MAINLAND_OUTLINE[(i+1)%MAINLAND_OUTLINE.length],
   d=MAINLAND_OUTLINE[(i+2)%MAINLAND_OUTLINE.length];
- for(let j=0;j<4;j++){
-  const t=j/4,t2=t*t,t3=t2*t;
+ for(let j=0;j<10;j++){
+  const t=j/10,t2=t*t,t3=t2*t;
   const curve=k=>.5*(2*b[k]+(-a[k]+c[k])*t+(2*a[k]-5*b[k]+4*c[k]-d[k])*t2+(-a[k]+3*b[k]-3*c[k]+d[k])*t3);
   SMOOTH_MAINLAND.push([curve(0),curve(1)]);
  }

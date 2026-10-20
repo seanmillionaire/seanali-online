@@ -1,4 +1,4 @@
-import {DESTINATIONS,WORLD_BOUNDS,mainlandContains,canalWater,gatunWater,migrateGeography,segmentDistance,organicIslandRadius,homeShoreRadius} from './geography.js?v=157';
+import {DESTINATIONS,WORLD_BOUNDS,mainlandContains,canalWater,gatunWater,migrateGeography,segmentDistance,organicIslandRadius,homeShoreRadius} from './geography.js?v=171';
 import {SAN_BLAS_ISLANDS,normalizePanama} from './panama-state.js?v=156';
 import {normalizeCampaign} from './campaign-state.js?v=156';
 import {normalizeColon,bridgeDistance,COLON_BRIDGE} from './colon-state.js?v=156';
@@ -274,7 +274,7 @@ s.estate=normalizeEstate(raw.estate,s.collected.filter(id=>['islandTreasure','se
 s.lighthouseOn=typeof raw.lighthouseOn==='boolean'?raw.lighthouseOn:(Array.isArray(raw.badges)&&raw.badges.includes('beacon'));
 s.gardenWatered=raw.gardenWatered===true;s.chestOpen=raw.chestOpen===true;
 // NPC projects persist across island re-entry and page reloads.
-s.builders=Object.fromEntries(['mateo','sofia'].map(id=>[id,{cycle:Math.max(0,Math.min(9999,Math.floor(Number(raw.builders?.[id]?.cycle)||0))),elapsed:Math.max(0,Math.min(95,Number(raw.builders?.[id]?.elapsed)||0)),lifeClock:Math.max(0,Math.min(1e7,Number(raw.builders?.[id]?.lifeClock)||0))}]));
+s.builders=Object.fromEntries(['mateo','sofia'].map(id=>[id,{cycle:Math.max(0,Math.min(9999,Math.floor(Number(raw.builders?.[id]?.cycle)||0))),elapsed:Math.max(0,Math.min(95,Number(raw.builders?.[id]?.elapsed)||0)),lifeClock:Math.max(0,Math.min(1e7,Number(raw.builders?.[id]?.lifeClock)||0)),completed:(Array.isArray(raw.builders?.[id]?.completed)?raw.builders[id].completed:[]).filter(p=>p&&typeof p.id==='string'&&/^((mateo|sofia)-(city|taboga|contadora|bocas|colon|guna)-[01])$/.test(p.id)&&Number.isFinite(p.x)&&Number.isFinite(p.z)&&Math.hypot(p.x/350,p.z/240)<1).slice(0,28).map(p=>({id:p.id,region:p.region,x:p.x,z:p.z}))}]));
 return s;}
 // Food is the single spendable stock. Collection history never gets spent.
 function inventoryCount(value){const n=Number(value);return Number.isFinite(n)?Math.max(0,Math.min(1000000,Math.floor(n))):0;}

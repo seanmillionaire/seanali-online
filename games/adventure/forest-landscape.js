@@ -1,6 +1,6 @@
 // High-canopy vegetation batched into just six shared GPU draws, even for
 // thousands of individual pines, palms and broadleaf tropical trees.
-import {planForestPatches} from './forest-patches.js?v=170';
+import {planForestPatches} from './forest-patches.js?v=171';
 
 export function createForestLandscape({T,scene,mat,geometry,height,light=false}){
  const trees=planForestPatches(light ? .53 : 1),group=new T.Group();
