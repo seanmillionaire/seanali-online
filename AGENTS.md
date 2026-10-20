@@ -184,3 +184,23 @@ FAIL the task if any object occupies a road or important footpath, a road is dis
 7. **TOOLING LIMITATION.** If no usable local workspace/browser is available, do not substitute repeated GitHub pushes as a preview mechanism. State that local testing is blocked and offer the exact untested diff/plan or proceed only with an explicitly requested remote change, labeling it unverified.
 
 **Normal cycle:** inspect latest repo → launch local server → implement and hot-reload → test roads/terrain/gameplay/collisions/mobile → iterate locally → run regression suite + visual QA → one meaningful grouped commit → push/release when verified → verify production only when actually deployed.
+
+
+## Complete local game and explicit release authorization (2026-10-20)
+
+- Canonical existing checkout: `/Users/rubigondola/Documents/Codex/2026-10-20/dow/seanali-online`. Resume here; preserve unfinished edits and read branch/status before changing files.
+- Integrate changes directly into the complete game and its assets. Never substitute downloadable patches, partial replacement games, or fresh clones for this checkout. Updating the complete game means changing necessary source files together and testing integrated behavior, not rewriting every file.
+- Start `bash tools/local-preview.sh`; it serves this repository directly, defaulting to http://127.0.0.1:8001/games/ . Port 8000 may already belong to a parent-folder server. Use PORT=8002 (or another free port) if needed; never stop an unrelated server automatically.
+- If Apple system Git fails, use the bundled Git from load_workspace_dependencies. No Xcode installation is needed for that fallback.
+- Never push to GitHub, deploy to Vercel, or otherwise publish until Sean explicitly authorizes release. Being tested or ready alone is not authorization; this supersedes looser release wording above.
+- Test the complete affected gameplay, phone/desktop rendering, and save compatibility. Report unverified checks honestly.
+
+
+## World foundation #2 — expanded geography (2026-10-20)
+
+- Geography/save layout is version 2. Use `GEOGRAPHY_VERSION`, `DESTINATIONS`, `COLON_OFFSET`, `WORLD_BOUNDS` and `WORLD_EXTENT` from `games/adventure/geography.js`; do not restore former fixed world, ocean, ferry, animal or estate limits.
+- Keep the enlarged western mainland, distinct inland Gorgona turnoff/access road, distant Colón, enlarged islands, and the Volcán/Boquete town parcels. Preserve the existing city, San Blas archipelago, quests and inventory systems.
+- Changes to destination coordinates must update `WORLD_EXPANSIONS` and be tested against `tests/fixtures/world-layout-v1.json`. Migration must run once and preserve progress, homes, builders, boats and vehicles. Keep save layout versioning separate from the outer application save format.
+- Rural houses use `ruralParcels()` for placement/collision and shared render batches. Protect their yards from forest placement and preserve existing saved estates when rendering infill.
+- Road grading must never fill navigable canal water. Test full cruise hull clearance, highway edges on visible terrain, Gorgona access, and complete ferry segments, not just waypoint endpoints.
+- Focused checks: `world-expansion.cjs`, `geography-layout.cjs`, `region-expansion.cjs`, `road-navigation.cjs`, `builder-persistence-coast.cjs`, `world-expansion-browser.cjs` and `inventory-current-browser.cjs` in `tests/`. Browser checks accept `BASE_URL` and `CHROME_PATH`; world screenshots use `SCREENSHOT_DIR`.
