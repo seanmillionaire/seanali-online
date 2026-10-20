@@ -188,6 +188,10 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 .welcome-intro .welcome-portrait{display:block;width:49px;height:49px;object-fit:cover;object-position:center 25%;border-radius:50%;border:2px solid #fff;margin:0;box-shadow:none}
 .welcome-intro .eyebrow{font-size:13px;letter-spacing:0;text-transform:none;font-weight:800;color:#a53c27;margin:0}
 .welcome h1{font-size:clamp(42px,5.7vw,65px);line-height:1.03;letter-spacing:-2.4px;margin:0 auto;font-weight:900;max-width:740px}
+.welcome-rotating-line{display:inline-block;white-space:nowrap}
+.welcome-rotating-word{display:inline-block;transition:opacity .22s ease,transform .22s ease}
+.welcome-rotating-word.is-changing{opacity:0;transform:translateY(-.16em)}
+@media(prefers-reduced-motion:reduce){.welcome-rotating-word{transition:none}}
 .welcome .welcome-copy{font-size:16px;line-height:1.57;max-width:535px;margin:17px auto 0;color:#54595f}
 .welcome-actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;column-gap:22px;row-gap:12px;margin-top:23px}
 .welcome-actions .main-cta{display:inline-flex;min-width:233px;gap:22px;padding:15px 25px;font-size:16px;border-radius:11px;box-shadow:0 7px 20px #ed3d2526}
@@ -206,6 +210,7 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 .welcome-intro .welcome-portrait{width:43px;height:43px}
 .welcome-intro .eyebrow{font-size:12px}
 .welcome h1{font-size:clamp(37px,10vw,46px);line-height:1.05;letter-spacing:-1.65px}
+.welcome h1 .welcome-rotating-line{font-size:clamp(29px,8.7vw,46px)}
 .welcome .welcome-copy{font-size:14px;line-height:1.55;margin-top:14px;max-width:440px}
 .welcome-actions{margin-top:19px;gap:8px;flex-direction:column}
 .welcome-actions .main-cta{width:100%;max-width:320px;min-width:0;min-height:51px;padding:13px 22px;font-size:16px}
@@ -262,7 +267,7 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
 <img class="welcome-portrait" src="/assets/sean-life/sean-couch-portrait.png" alt="Sean Ali" width="52" height="52" fetchpriority="high">
 <p class="eyebrow">Hey, I'm Sean 👋</p>
 </div>
-<h1><span class="welcome-headline-lead">Let Me Show You How To</span>Build A Life With<br><span>More Freedom</span></h1>
+<h1><span class="welcome-headline-lead">Let Me Show You How To</span>Build A Life With<br><span class="welcome-rotating-line">More <span class="welcome-rotating-word">Freedom</span></span></h1>
 <p class="welcome-copy">I share what I'm learning about mindset, meditation, AI, and online business while building a freer life in Panama.</p>
 <div class="welcome-actions">
 <a class="main-cta" href="/start-here/">Start My Journey <span aria-hidden="true">→</span></a>
@@ -365,4 +370,22 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
       <a class="life-button" href="/start-here/">Start My Journey →</a>
     </div>
   </section>
-</div><footer class="quiet-footer"><span>© 2026 Sean Ali</span><nav aria-label="Footer"><a href="/about-sean-ali/">About</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/contact.html">Contact</a></nav></footer></body></html>
+</div><footer class="quiet-footer"><span>© 2026 Sean Ali</span><nav aria-label="Footer"><a href="/about-sean-ali/">About</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/contact.html">Contact</a></nav></footer>
+<script>
+(() => {
+  const word = document.querySelector('.welcome-rotating-word');
+  if (!word || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const words = ['Freedom', 'Success', 'Abundance', 'Wealth'];
+  let index = 0;
+  window.setInterval(() => {
+    if (document.hidden) return;
+    word.classList.add('is-changing');
+    window.setTimeout(() => {
+      index = (index + 1) % words.length;
+      word.textContent = words[index];
+      word.classList.remove('is-changing');
+    }, 220);
+  }, 3000);
+})();
+</script>
+</body></html>
