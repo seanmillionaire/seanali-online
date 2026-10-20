@@ -1,5 +1,5 @@
 import {waterFriend,animalClear,recoverAnimal,animalStep} from './animal-boundaries.js?v=156';
-import {explorePlaces,earnCoins} from './explore-state.js?v=156';
+import {explorePlaces,earnCoins} from './explore-state.js?v=185';
 import {oceanModel} from './ocean-models.js?v=156';
 import {createAnimalDetails} from './animal-details.js?v=156';
 // Repeatable, optional play with six friends in the 3D world.
