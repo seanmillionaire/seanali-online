@@ -1,8 +1,14 @@
-import {roadDistance,HIGHWAY_WIDTH,sharkClearance,sharkStep,recoverShark} from './explore-state.js?v=178';
+import {roadDistance,HIGHWAY_WIDTH,sharkClearance,sharkStep,recoverShark} from './explore-state.js?v=180';
 import {oceanModel} from './ocean-models.js?v=182';
 // Temporary gameplay switch. Re-enable the cycle by setting this to true.
 // Disabled mode forces bright midday even when an old save resumes at night.
 export const NIGHT_MODE_ENABLED=false;
+// Named and inspectable natural marine habitats. All start in navigable
+// water and remain near attractions instead of hidden in the deep ocean.
+export const MARINE_HABITATS={
+ dolphins:[[13,19],[24,27],[-100,-170],[-127,-172],[205,-100],[230,50],[275,-220],[-55,-318]],
+ octopuses:[[14,22],[120,24],[-118,-178],[200,85],[278,-228],[-56,-318]]
+};
 export function islandDaylight(seconds){
  if(!NIGHT_MODE_ENABLED)return {phase:.25,day:1,night:false,twilight:0};
  const phase=((seconds%240)+240)%240/240;
@@ -21,10 +27,10 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
  [[8,24],[-170,0],[108,30],[200,75]].forEach(([x,z],i)=>animal('Sea turtle',x,z,i));
  // Small dolphin pods visit beaches, docks and distant islands, rather than
  // remaining invisible far away in four arbitrary offshore coordinates.
- [[13,19],[24,27],[-100,-170],[-127,-172],[205,-100],[230,50],[275,-220],[-70,-294]].forEach(([x,z],i)=>animal('Dolphin',x,z,i));
+ MARINE_HABITATS.dolphins.forEach(([x,z],i)=>animal('Dolphin',x,z,i));
  [[-8,24],[130,14],[-140,-145],[200,-90]].forEach(([x,z],i)=>animal('Manta ray',x,z,i));
  // Visible shallow-water octopuses with independently moving arms.
- [[14,22],[105,24],[-118,-178],[200,85],[278,-228],[-60,-288]].forEach(([x,z],i)=>animal('Octopus',x,z,i));
+ MARINE_HABITATS.octopuses.forEach(([x,z],i)=>animal('Octopus',x,z,i));
  for(let i=0;i<24;i++){const spots=[[11,20],[108,25],[-135,-130],[220,75]],p=spots[Math.floor(i/6)];animal('Reef fish',p[0]+(i%3)*.7,p[1]+Math.floor(i%6/3)*.7,i);}
  // Celestial bodies travel across the upper camera view, away from Angelique and controls.
  const sky=new T.Group();sky.name='Sun moon and stars';camera.add(sky);if(!camera.parent)scene.add(camera);const owned=[];
