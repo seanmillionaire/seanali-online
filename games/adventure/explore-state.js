@@ -1,4 +1,4 @@
-import {DESTINATIONS,WORLD_BOUNDS,mainlandContains,canalWater,gatunWater,migrateGeography,segmentDistance,organicIslandRadius,homeShoreRadius} from './geography.js?v=171';
+import {DESTINATIONS,WORLD_BOUNDS,mainlandContains,canalWater,gatunWater,migrateGeography,segmentDistance,organicIslandRadius,homeShoreRadius} from './geography.js?v=172';
 import {SAN_BLAS_ISLANDS,normalizePanama} from './panama-state.js?v=156';
 import {normalizeCampaign} from './campaign-state.js?v=156';
 import {normalizeColon,bridgeDistance,COLON_BRIDGE} from './colon-state.js?v=156';
@@ -6,15 +6,21 @@ import {normalizeCruise,CRUISE_FARE} from './cruise-route.js?v=156';
 import {normalizeEstate,estateCoinCost,ESTATE_PLANS} from './estate.js?v=156';
 // Exploration is independent of lesson order. Every place is open from the start.
 export const worldIslands=[
- {id:'islet',x:DESTINATIONS.islet.at[0],z:DESTINATIONS.islet.at[1],rx:12,rz:10,h:2.5,ox:24,oz:-8,spread:2.4,en:'Taboga · Island of Flowers',es:'Isla Taboga · Isla de las Flores'},
- {id:'wilds',x:DESTINATIONS.wilds.at[0],z:DESTINATIONS.wilds.at[1],rx:24,rz:25,h:5,ox:0,oz:-30,spread:1.25,en:'Isla Bastimentos · Bocas del Toro',es:'Isla Bastimentos · Bocas del Toro'},
- {id:'coconutCoast',x:DESTINATIONS.coconutCoast.at[0],z:DESTINATIONS.coconutCoast.at[1],rx:23,rz:19,h:4,ox:47,oz:6,spread:1.35,en:'Isla Contadora · Pearl Islands',es:'Isla Contadora · Las Perlas'},
- {id:'sunset',x:DESTINATIONS.sunset.at[0],z:DESTINATIONS.sunset.at[1],rx:38,rz:34,h:46,ox:-42,oz:8,spread:1.35,en:'Volcán Barú · Chiriquí',es:'Volcán Barú · Chiriquí'},
- {id:'crystalCove',x:DESTINATIONS.crystalCove.at[0],z:DESTINATIONS.crystalCove.at[1],rx:10,rz:8,h:1.2,ox:0,oz:48,spread:1.5,en:'Guna Yala · San Blas',es:'Guna Yala · San Blas'},
+ {id:'islet',x:DESTINATIONS.islet.at[0],z:DESTINATIONS.islet.at[1],rx:17,rz:14,h:2.5,ox:24,oz:-8,spread:2.4,en:'Taboga · Island of Flowers',es:'Isla Taboga · Isla de las Flores'},
+ {id:'wilds',x:DESTINATIONS.wilds.at[0],z:DESTINATIONS.wilds.at[1],rx:31,rz:31,h:5,ox:0,oz:-30,spread:1.25,en:'Isla Bastimentos · Bocas del Toro',es:'Isla Bastimentos · Bocas del Toro'},
+ {id:'coconutCoast',x:DESTINATIONS.coconutCoast.at[0],z:DESTINATIONS.coconutCoast.at[1],rx:29,rz:25,h:4,ox:47,oz:6,spread:1.35,en:'Isla Contadora · Pearl Islands',es:'Isla Contadora · Las Perlas'},
+ {id:'sunset',x:DESTINATIONS.sunset.at[0],z:DESTINATIONS.sunset.at[1],rx:42,rz:37,h:46,ox:-42,oz:8,spread:1.35,en:'Volcán Barú · Chiriquí',es:'Volcán Barú · Chiriquí'},
+ {id:'crystalCove',x:DESTINATIONS.crystalCove.at[0],z:DESTINATIONS.crystalCove.at[1],rx:12,rz:10,h:1.2,ox:0,oz:48,spread:1.5,en:'Guna Yala · San Blas',es:'Guna Yala · San Blas'},
  {id:'pizzaCity',x:DESTINATIONS.pizzaCity.at[0],z:DESTINATIONS.pizzaCity.at[1],rx:58,rz:48,h:3.3,ox:-100,oz:-74,spread:1,en:'Panama City · Casco Viejo',es:'Ciudad de Panamá · Casco Viejo'},
- {id:'colon',x:DESTINATIONS.colon.at[0],z:DESTINATIONS.colon.at[1],rx:26,rz:23,h:4,ox:110,oz:-56,spread:1,en:'Colón · Caribbean Coast',es:'Colón · Costa del Caribe'},
+ {id:'colon',x:DESTINATIONS.colon.at[0],z:DESTINATIONS.colon.at[1],rx:29,rz:27,h:4,ox:110,oz:-56,spread:1,en:'Colón · Caribbean Coast',es:'Colón · Costa del Caribe'},
  {id:'monkeyIslet',x:DESTINATIONS.monkeyIslet.at[0],z:DESTINATIONS.monkeyIslet.at[1],rx:8,rz:7,h:1.8,ox:130,oz:-25,spread:1,en:'Monkey Island · Gatún Lake',es:'Isla de los Monos · Lago Gatún'},
- ...SAN_BLAS_ISLANDS
+ ...SAN_BLAS_ISLANDS,
+ // Remote open-world islands occupy the empty ocean without relocating the
+ // established roads, save coordinates, city buildings or children's quests.
+ {id:'coiba',x:-260,z:140,rx:35,rz:30,h:6,ox:-260,oz:140,spread:1,en:'Isla Coiba · Pacific Wilderness',es:'Isla Coiba · Selva del Pacífico'},
+ {id:'delRey',x:273,z:142,rx:32,rz:28,h:4,ox:273,oz:142,spread:1,en:'Isla del Rey · Pearl Islands',es:'Isla del Rey · Las Perlas'},
+ {id:'escudo',x:-244,z:-202,rx:29,rz:26,h:3,ox:-244,oz:-202,spread:1,en:'Escudo de Veraguas · Wild Caribbean',es:'Escudo de Veraguas · Caribe Salvaje'},
+ {id:'cebaco',x:-102,z:166,rx:32,rz:28,h:4,ox:-102,oz:166,spread:1,en:'Isla Cébaco · Open Shores',es:'Isla Cébaco · Costas Abiertas'}
 ];
 const BARU_LAND=worldIslands.find(p=>p.id==='sunset');
 export function islandPoint(id,x,z){const p=worldIslands.find(p=>p.id===id);return {x:p.x+(x-p.ox)*p.spread,z:p.z+(z-p.oz)*p.spread};}
@@ -253,7 +259,7 @@ s.regionalProjects={helped:[...new Set((Array.isArray(raw.regionalProjects?.help
 const savedCraft=raw.craft||{},allowedResource=['shell','fruit','glow','islandTreasure','seaTreasure','moneyBag'];
 s.craft={built:[...new Set((Array.isArray(savedCraft.built)?savedCraft.built:[]).filter(id=>['sandcastle','butterflyGarden','treehouse','beachCabana','volcanoCamp','coralNursery','pizzaStand'].includes(id)))],
  spent:Object.fromEntries(allowedResource.map(kind=>[kind,Math.max(0,Math.min(999,Math.floor(Number(savedCraft.spent?.[kind])||0)))]))};
-s.dayTime=Number.isFinite(raw.dayTime)?((raw.dayTime%240)+240)%240:40;s.story=normalizeStory(raw.story);const ids=new Set(exploreItems.map(x=>x.id));s.collected=[...new Set(Array.isArray(raw.collected)?raw.collected.filter(x=>ids.has(x)):[])];s.badges=[...new Set(Array.isArray(raw.badges)?raw.badges.filter(x=>['picnic','glow','song','garden','treasure','beacon','balloon','boat','volcano-summit'].includes(x)):[])];if(Number.isFinite(raw.x)&&Number.isFinite(raw.z)&&(raw.x/350)**2+(raw.z/240)**2<=1){
+s.dayTime=Number.isFinite(raw.dayTime)?((raw.dayTime%240)+240)%240:40;s.story=normalizeStory(raw.story);const ids=new Set(exploreItems.map(x=>x.id));s.collected=[...new Set(Array.isArray(raw.collected)?raw.collected.filter(x=>ids.has(x)):[])];s.badges=[...new Set(Array.isArray(raw.badges)?raw.badges.filter(x=>['picnic','glow','song','garden','treasure','beacon','balloon','boat','volcano-summit'].includes(x)):[])];if(Number.isFinite(raw.x)&&Number.isFinite(raw.z)&&(raw.x/WORLD_BOUNDS.x)**2+(raw.z/WORLD_BOUNDS.z)**2<=1){
  s.x=raw.x;s.z=raw.z;
  if(raw.worldVersion===2){
   // Relocate saved characters standing on moved islands while retaining their
@@ -264,7 +270,7 @@ s.dayTime=Number.isFinite(raw.dayTime)?((raw.dayTime%240)+240)%240:40;s.story=no
   const old=worldIslands.find(p=>Math.hypot((s.x-p.ox)/(p.rx/p.spread),(s.z-p.oz)/(p.rz/p.spread))<1);
   if(old)Object.assign(s,islandPoint(old.id,s.x,s.z));
  }
-}s.hat=Number.isInteger(raw.hat)?Math.max(0,Math.min(6,raw.hat)):0;s.pet=raw.pet===true;s.flowers=Math.max(0,Math.min(6,Math.floor(Number(raw.flowers)||0)));for(const k of ['catches','pops'])s[k]=Math.max(0,Math.min(9999,Math.floor(Number(raw[k])||0)));s.growth=Number.isFinite(raw.growth)?Math.max(1,Math.min(6,raw.growth)):1;s.flight=Number.isFinite(raw.flight)?Math.max(0,Math.min(40,raw.flight)):0;for(const kind of ['coconut','banana'])s.food[kind]=Math.min(9999,inventoryCount(raw.food?.[kind]));for(const [id,n] of Object.entries(raw.harvested||{})){if(/^(coconut|banana)\d+$/.test(id))s.harvested[id]=Math.max(0,Math.min(6,Math.floor(Number(n)||0)));}if(Number.isFinite(raw.boat?.x)&&Number.isFinite(raw.boat?.z)&&Math.hypot(raw.boat.x/350,raw.boat.z/240)<1&&inWater(raw.boat.x,raw.boat.z)){s.boat={x:raw.boat.x,z:raw.boat.z,heading:Number.isFinite(raw.boat.heading)?raw.boat.heading:0};}Object.assign(s.boat,recoverBoat(s.boat.x,s.boat.z));
+}s.hat=Number.isInteger(raw.hat)?Math.max(0,Math.min(6,raw.hat)):0;s.pet=raw.pet===true;s.flowers=Math.max(0,Math.min(6,Math.floor(Number(raw.flowers)||0)));for(const k of ['catches','pops'])s[k]=Math.max(0,Math.min(9999,Math.floor(Number(raw[k])||0)));s.growth=Number.isFinite(raw.growth)?Math.max(1,Math.min(6,raw.growth)):1;s.flight=Number.isFinite(raw.flight)?Math.max(0,Math.min(40,raw.flight)):0;for(const kind of ['coconut','banana'])s.food[kind]=Math.min(9999,inventoryCount(raw.food?.[kind]));for(const [id,n] of Object.entries(raw.harvested||{})){if(/^(coconut|banana)\d+$/.test(id))s.harvested[id]=Math.max(0,Math.min(6,Math.floor(Number(n)||0)));}if(Number.isFinite(raw.boat?.x)&&Number.isFinite(raw.boat?.z)&&Math.hypot(raw.boat.x/WORLD_BOUNDS.x,raw.boat.z/WORLD_BOUNDS.z)<1&&inWater(raw.boat.x,raw.boat.z)){s.boat={x:raw.boat.x,z:raw.boat.z,heading:Number.isFinite(raw.boat.heading)?raw.boat.heading:0};}Object.assign(s.boat,recoverBoat(s.boat.x,s.boat.z));
 // Legacy ground bananas and tree/reward food were independent stocks. Merge only
 // the unspent ground stock once; collected IDs remain discovery history.
 if(raw.inventoryVersion!==1)s.food.banana+=Math.max(0,countExplore(s,'fruit')-s.craft.spent.fruit);
@@ -274,7 +280,7 @@ s.estate=normalizeEstate(raw.estate,s.collected.filter(id=>['islandTreasure','se
 s.lighthouseOn=typeof raw.lighthouseOn==='boolean'?raw.lighthouseOn:(Array.isArray(raw.badges)&&raw.badges.includes('beacon'));
 s.gardenWatered=raw.gardenWatered===true;s.chestOpen=raw.chestOpen===true;
 // NPC projects persist across island re-entry and page reloads.
-s.builders=Object.fromEntries(['mateo','sofia'].map(id=>[id,{cycle:Math.max(0,Math.min(9999,Math.floor(Number(raw.builders?.[id]?.cycle)||0))),elapsed:Math.max(0,Math.min(95,Number(raw.builders?.[id]?.elapsed)||0)),lifeClock:Math.max(0,Math.min(1e7,Number(raw.builders?.[id]?.lifeClock)||0)),completed:(Array.isArray(raw.builders?.[id]?.completed)?raw.builders[id].completed:[]).filter(p=>p&&typeof p.id==='string'&&/^((mateo|sofia)-(city|taboga|contadora|bocas|colon|guna)-[01])$/.test(p.id)&&Number.isFinite(p.x)&&Number.isFinite(p.z)&&Math.hypot(p.x/350,p.z/240)<1).slice(0,28).map(p=>({id:p.id,region:p.region,x:p.x,z:p.z}))}]));
+s.builders=Object.fromEntries(['mateo','sofia'].map(id=>[id,{cycle:Math.max(0,Math.min(9999,Math.floor(Number(raw.builders?.[id]?.cycle)||0))),elapsed:Math.max(0,Math.min(95,Number(raw.builders?.[id]?.elapsed)||0)),lifeClock:Math.max(0,Math.min(1e7,Number(raw.builders?.[id]?.lifeClock)||0)),completed:(Array.isArray(raw.builders?.[id]?.completed)?raw.builders[id].completed:[]).filter(p=>p&&typeof p.id==='string'&&/^((mateo|sofia)-(city|taboga|contadora|bocas|colon|guna)-[01])$/.test(p.id)&&Number.isFinite(p.x)&&Number.isFinite(p.z)&&Math.hypot(p.x/WORLD_BOUNDS.x,p.z/WORLD_BOUNDS.z)<1).slice(0,28).map(p=>({id:p.id,region:p.region,x:p.x,z:p.z}))}]));
 return s;}
 // Food is the single spendable stock. Collection history never gets spent.
 function inventoryCount(value){const n=Number(value);return Number.isFinite(n)?Math.max(0,Math.min(1000000,Math.floor(n))):0;}
@@ -304,7 +310,7 @@ export function walkable(x,z){return (isletHeight(x,z)>0||Math.hypot(x/20,z/14)<
 export function onDock(x,z){return x>=3&&x<=5&&z>=11.8&&z<=17.4;}
 export function inWater(x,z){if(onDock(x,z)||isletHeight(x,z)>0)return false;const a=Math.atan2(z/14,x/20);return Math.hypot(x/20,z/14)>homeShoreRadius(a);}
 // Keep the hull clear, including saved boats that overlap a shore or world boundary.
-export function boatClear(x,z){if(Math.hypot(x/349,z/239)>=1||!inWater(x,z))return false;for(let i=0;i<8;i++){const a=i*Math.PI/4;if(!inWater(x+Math.sin(a)*1.1,z+Math.cos(a)*1.1))return false;}return true;}
+export function boatClear(x,z){if(Math.hypot(x/(WORLD_BOUNDS.x-1),z/(WORLD_BOUNDS.z-1))>=1||!inWater(x,z))return false;for(let i=0;i<8;i++){const a=i*Math.PI/4;if(!inWater(x+Math.sin(a)*1.1,z+Math.cos(a)*1.1))return false;}return true;}
 export function recoverBoat(x,z){if(boatClear(x,z))return {x,z};for(let r=.15;r<=6;r+=.15)for(let i=0;i<32;i++){const a=i*Math.PI/16,nx=x+Math.sin(a)*r,nz=z+Math.cos(a)*r;if(boatClear(nx,nz))return {x:nx,z:nz};}return {x:6.5,z:16};}
 export function boatStep(x,z,dx,dz){const start=recoverBoat(x,z);x=start.x;z=start.z;const steps=Math.max(1,Math.ceil(Math.hypot(dx,dz)/.15));dx/=steps;dz/=steps;
  for(let i=0;i<steps;i++){const candidates=[[dx,dz],...(Math.abs(dx)>=Math.abs(dz)?[[dx,0],[0,dz]]:[[0,dz],[dx,0]])];for(const a of [Math.PI/6,-Math.PI/6,Math.PI/3,-Math.PI/3,Math.PI/2,-Math.PI/2])candidates.push([dx*Math.cos(a)-dz*Math.sin(a),dx*Math.sin(a)+dz*Math.cos(a)]);for(const [mx,mz] of candidates){if(Math.hypot(mx,mz)>.00001&&boatClear(x+mx,z+mz)){x+=mx;z+=mz;break;}}}return {x,z};}
@@ -334,11 +340,38 @@ export function sharkStep(x,z,tx,tz,dt,speed,side=1,previousHeading=null){
  }
  return best||{x,z,heading:base};
 }
-export function traversable(x,z){return Math.hypot(x/350,z/240)<=1&&worldObstacles.every(([a,b,r])=>Math.hypot(x-a,z-b)>r+.3);}
+export function traversable(x,z){return Math.hypot(x/WORLD_BOUNDS.x,z/WORLD_BOUNDS.z)<=1&&worldObstacles.every(([a,b,r])=>Math.hypot(x-a,z-b)>r+.3);}
 export function islandPath(from,to){
  if(!remoteAccess(from,to))return [];
+ // Far islands must not trigger a 100,000-node, one-meter A* grid on phones.
+ // In open world ocean / empty countryside use validated spaced waypoints.
+ // Short local navigation keeps the existing detailed obstacle-aware search.
+ const trip=Math.hypot(to.x-from.x,to.z-from.z);
+ if(trip>110){
+  // Gentle perpendicular detours avoid cottages near a shoreline; none of
+  // these crossings ever expands an enormous all-world A* graph.
+  const dx=(to.x-from.x)/trip,dz=(to.z-from.z)/trip;
+  for(const offset of [0,12,-12,24,-24,38,-38]){
+   const middle={x:(from.x+to.x)/2-dz*offset,z:(from.z+to.z)/2+dx*offset};
+   const waypoints=[from,middle,to],path=[];
+   let valid=true;
+   for(let segment=1;segment<waypoints.length;segment++){
+    const a=waypoints[segment-1],b=waypoints[segment],distance=Math.hypot(b.x-a.x,b.z-a.z),
+     count=Math.max(1,Math.ceil(distance/7));
+    for(let i=1;i<=count;i++){
+     const t=i/count,x=a.x+(b.x-a.x)*t,z=a.z+(b.z-a.z)*t;
+     if(!traversable(x,z)){valid=false;break;}
+     path.push({x,z});
+    }
+    if(!valid)break;
+   }
+   if(valid)return path;
+  }
+  return []; // Require manual boat/navigation when no safe route is available.
+ }
+
  const ocean=Math.abs(from.x)>18||Math.abs(to.x)>18||Math.abs(from.z)>12||Math.abs(to.z)>12||!walkable(from.x,from.z)||!walkable(to.x,to.z),allowed=ocean?traversable:walkable;
- const minX=ocean?Math.max(-350,Math.floor(Math.min(from.x,to.x))-5):-18,maxX=ocean?Math.min(350,Math.ceil(Math.max(from.x,to.x))+5):18,minZ=ocean?Math.max(-240,Math.floor(Math.min(from.z,to.z))-5):-12,maxZ=ocean?Math.min(240,Math.ceil(Math.max(from.z,to.z))+5):12;
+ const minX=ocean?Math.max(-WORLD_BOUNDS.x,Math.floor(Math.min(from.x,to.x))-5):-18,maxX=ocean?Math.min(WORLD_BOUNDS.x,Math.ceil(Math.max(from.x,to.x))+5):18,minZ=ocean?Math.max(-WORLD_BOUNDS.z,Math.floor(Math.min(from.z,to.z))-5):-12,maxZ=ocean?Math.min(WORLD_BOUNDS.z,Math.ceil(Math.max(from.z,to.z))+5):12;
  const nodes=[];for(let z=minZ;z<=maxZ;z++)for(let x=minX;x<=maxX;x++)if(allowed(x,z))nodes.push({x,z,key:x+','+z});
  const nearest=p=>nodes.reduce((a,b)=>Math.hypot(a.x-p.x,a.z-p.z)<Math.hypot(b.x-p.x,b.z-p.z)?a:b);
  const start=nearest(from),goal=nearest(to),map=new Map(nodes.map(n=>[n.key,n])),open=[start.key],cost=new Map([[start.key,0]]),came=new Map(),closed=new Set();

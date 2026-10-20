@@ -1,87 +1,75 @@
-// Irregular forests across Panama. Deterministic and safely off roads.
+// Irregular, mixed Panamanian understory and canopy. Gaps are intentional.
 import {mainlandContains,canalWater,gatunWater} from './geography.js?v=171';
-import {worldIslands,isletHeight,roadDistance,HIGHWAY_WIDTH,volcanoTrailPoint} from './explore-state.js?v=171';
-
+import {worldIslands,isletHeight,roadDistance,HIGHWAY_WIDTH,volcanoTrailPoint} from './explore-state.js?v=172';
 export const FOREST_PATCHES=[
- {id:'gorgona-inland',x:27,z:-37,rx:27,rz:18,n:125,biome:'tropical'},
- {id:'gorgona-west',x:-5,z:-42,rx:27,rz:21,n:115,biome:'tropical'},
- {id:'gorgona-hills',x:-31,z:-34,rx:26,rz:19,n:110,biome:'tropical'},
- {id:'pacific-valley',x:51,z:-49,rx:22,rz:19,n:104,biome:'tropical'},
- {id:'pacific-grove',x:25,z:-75,rx:27,rz:19,n:105,biome:'tropical'},
- {id:'colon-jungle',x:-5,z:-114,rx:22,rz:21,n:92,biome:'tropical'},
- {id:'canal-rainforest',x:66,z:-104,rx:23,rz:15,n:90,biome:'tropical'},
- {id:'west-canopy',x:-54,z:-58,rx:35,rz:25,n:140,biome:'tropical'},
- {id:'mountain-foot',x:-93,z:-55,rx:30,rz:24,n:120,biome:'mixed'},
- {id:'western-valley',x:-128,z:-85,rx:36,rz:22,n:118,biome:'mixed'},
- {id:'western-mountain',x:-159,z:-70,rx:28,rz:21,n:114,biome:'montane'},
- {id:'baru-east',x:-103,z:-21,rx:22,rz:15,n:108,biome:'montane'},
- {id:'baru-south',x:-135,z:-81,rx:29,rz:19,n:102,biome:'montane'},
- {id:'baru-west',x:-164,z:-48,rx:21,rz:22,n:106,biome:'montane'},
- {id:'cloud-forest',x:-138,z:-56,rx:32,rz:26,n:140,biome:'montane'},
- {id:'bocas-jungle',x:-105,z:-135,rx:23,rz:22,n:115,biome:'island',island:'wilds'},
- {id:'bocas-north',x:-113,z:-145,rx:14,rz:12,n:55,biome:'island',island:'wilds'},
- {id:'colon-forest',x:-13,z:-127,rx:18,rz:15,n:65,biome:'island',island:'colon'}
+ {id:'gorgona-palm-grove',x:18,z:-36,rx:27,rz:20,n:54,biome:'tropical'},
+ {id:'gorgona-rainforest',x:-23,z:-46,rx:29,rz:23,n:48,biome:'tropical'},
+ {id:'pacific-riverside',x:52,z:-72,rx:25,rz:25,n:44,biome:'tropical'},
+ {id:'canal-tropical',x:59,z:-111,rx:23,rz:19,n:36,biome:'tropical'},
+ {id:'western-rainforest',x:-66,z:-63,rx:33,rz:28,n:55,biome:'mixed'},
+ {id:'pacific-coast',x:-25,z:-104,rx:25,rz:20,n:41,biome:'tropical'},
+ {id:'mountain-cloudforest',x:-110,z:-76,rx:32,rz:23,n:54,biome:'montane'},
+ {id:'baru-highlands',x:-155,z:-73,rx:31,rz:23,n:58,biome:'montane'},
+ {id:'baru-foothills',x:-104,z:-19,rx:21,rz:15,n:37,biome:'mixed'},
+ {id:'bocas-jungle',x:-109,z:-141,rx:23,rz:22,n:45,biome:'island'},
+ {id:'colon-grove',x:-13,z:-126,rx:21,rz:18,n:34,biome:'island'}
 ];
 export const FOREST_CLEARINGS=[
- {x:0,z:0,r:19}, // Gorgona homes and beach
- {x:21,z:1,r:7}, // Town terminus of coastal road
- {x:32,z:-14,r:8}, // Inland highway turnoff
- {x:66,z:-65,r:10}, // Canal viewpoints
- {x:-155,z:-32,r:10}, // Volcán village
- {x:-112,z:-32,r:7}, // Boquete
- {x:-19,z:-127,r:13}, // Colón buildable treehouse
- {x:-105,z:-135,r:6} // Bocas gathering hub
+ {x:0,z:0,r:19},{x:21,z:1,r:7},{x:32,z:-14,r:8},
+ {x:66,z:-65,r:10},{x:-155,z:-32,r:10},{x:-112,z:-32,r:7},
+ {x:-19,z:-127,r:13},{x:-105,z:-135,r:7}
 ];
 const trail=Array.from({length:85},(_,i)=>volcanoTrailPoint(i/84));
 function nearTrail(x,z){
  for(let i=1;i<trail.length;i++){
-  const a=trail[i-1],b=trail[i],dx=b.x-a.x,dz=b.z-a.z,len2=dx*dx+dz*dz;
-  const t=Math.max(0,Math.min(1,((x-a.x)*dx+(z-a.z)*dz)/(len2||1)));
-  if(Math.hypot(x-a.x-t*dx,z-a.z-t*dz)<5.5)return true;
- }
- return false;
+  const a=trail[i-1],b=trail[i],dx=b.x-a.x,dz=b.z-a.z,n=dx*dx+dz*dz;
+  const t=Math.max(0,Math.min(1,((x-a.x)*dx+(z-a.z)*dz)/(n||1)));
+  if(Math.hypot(x-a.x-t*dx,z-a.z-t*dz)<5.8)return true;
+ }return false;
 }
 export function forestSiteClear(x,z,biome='tropical'){
- // Reserve room for the entire giant tree crown, not just its trunk, along
- // asphalt, town entrances, hiking routes and shorelines.
- if(roadDistance(x,z)<HIGHWAY_WIDTH/2+11.5)return false;
+ if(roadDistance(x,z)<HIGHWAY_WIDTH/2+10)return false;
  if(FOREST_CLEARINGS.some(p=>Math.hypot(x-p.x,z-p.z)<p.r))return false;
- if(Math.hypot((x-120)/65,(z+50)/55)<1.09)return false;
- const onMainland=mainlandContains(x,z);
- const onForestIsland=worldIslands.some(land=>
-  (land.id==='wilds'||land.id==='colon'||land.id==='sunset') &&
-  Math.hypot((x-land.x)/land.rx,(z-land.z)/land.rz)<.91);
- if(!onMainland&&!onForestIsland)return false;
- if(canalWater(x,z)||gatunWater(x,z))return false;
- if(nearTrail(x,z))return false;
- if(isletHeight(x,z)<.48)return false;
- if(biome==='island'&&!onForestIsland)return false;
- return true;
+ if(Math.hypot((x-120)/67,(z+50)/57)<1.09)return false;
+ const land=mainlandContains(x,z);
+ const island=worldIslands.some(p=>(p.id==='wilds'||p.id==='colon'||p.id==='sunset')&&
+  Math.hypot((x-p.x)/p.rx,(z-p.z)/p.rz)<.90);
+ if(!land&&!island||canalWater(x,z)||gatunWater(x,z)||nearTrail(x,z)||isletHeight(x,z)<.48)return false;
+ return biome!=='island'||island;
 }
 export function planForestPatches(density=1){
- const output=[],factor=Math.min(1,Math.max(.25,Number(density)||1));
- let seed=943017;
- const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
+ const plants=[],factor=Math.max(.25,Math.min(1,Number(density)||1));
+ let seed=943017;const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
  for(const patch of FOREST_PATCHES){
   const target=Math.round(patch.n*factor);
-  let placed=0;
-  // Feathered, warped patch outlines. No hard rectangles or artificial circles.
-  for(let attempt=0;attempt<target*13&&placed<target;attempt++){
-   const a=random()*Math.PI*2,r=Math.sqrt(random()),
-    shape=.86+.14*Math.sin(a*3+patch.x*.05)+.09*Math.cos(a*7+patch.z*.17),
-    x=patch.x+Math.cos(a)*r*patch.rx*shape+(random()-.5)*3.8,
-    z=patch.z+Math.sin(a)*r*patch.rz*shape+(random()-.5)*3.8;
-   if(!forestSiteClear(x,z,patch.biome))continue;
-   if(r>.82&&random()<(r-.82)*2.1)continue;
+  // Three broad woodland lobes with open meadows between them.
+  const groves=Array.from({length:3},(_,j)=>{
+   const a=j*2.399963+patch.x*.025;
+   return {x:patch.x+Math.cos(a)*patch.rx*.27,z:patch.z+Math.sin(a)*patch.rz*.25};
+  });
+  // Allocate separate slots for tall canopy and smaller understory FIRST.
+  // This prevents ferns winning every spacing check in dense locations.
+  for(let slot=0;slot<target;slot++){
+   const understory=slot%5===3||slot%5===4;
    const roll=random();
-   const kind=patch.biome==='montane'?(roll<.76?'pine':'natural')
-    :patch.biome==='mixed'?(roll<.48?'pine':roll<.82?'natural':'palm')
-    :patch.biome==='island'?(roll<.28?'palm':roll<.90?'natural':'pine')
-    :(roll<.38?'palm':roll<.91?'natural':'pine');
-   const size=kind==='pine'?1.7+random()*1.65:kind==='palm'?1.65+random()*1.3:1.65+random()*1.45;
-   output.push({x,z,kind,size,heading:random()*Math.PI*2,tint:random(),patch:patch.id});
-   placed++;
+   const kind=understory?'fern':patch.biome==='montane'?(roll<.52?'pine':roll<.92?'natural':'palm')
+    :patch.biome==='mixed'?(roll<.25?'pine':roll<.75?'natural':'palm')
+    :patch.biome==='island'?(roll<.06?'pine':roll<.55?'natural':'palm')
+    :(roll<.09?'pine':roll<.57?'natural':'palm');
+   const scaleRoll=random(),size=kind==='fern'?.55+scaleRoll*.85:kind==='palm'?.80+scaleRoll*1.50:
+    kind==='pine'?.90+scaleRoll*1.55:.77+scaleRoll*1.65;
+   for(let tries=0;tries<52;tries++){
+    const lobe=groves[Math.floor(random()*groves.length)],a=random()*Math.PI*2,r=Math.sqrt(random());
+    const shape=.83+.12*Math.sin(a*3+patch.x*.06)+.08*Math.cos(a*7+patch.z*.13);
+    const x=lobe.x+Math.cos(a)*r*patch.rx*.64*shape+(random()-.5)*1.4;
+    const z=lobe.z+Math.sin(a)*r*patch.rz*.64*shape+(random()-.5)*1.4;
+    if(!forestSiteClear(x,z,patch.biome)||r>.87&&random()<.4)continue;
+    const clearance=kind==='fern'?2.7:3.3+size*1.12;
+    if(plants.some(t=>Math.hypot(t.x-x,t.z-z)<clearance+(t.kind==='fern'?0:.9)))continue;
+    plants.push({x,z,kind,size,heading:random()*Math.PI*2,tint:random(),patch:patch.id});
+    break;
+   }
   }
  }
- return output;
+ return plants;
 }

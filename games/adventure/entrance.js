@@ -2,7 +2,7 @@ import {clipLandTriangle,coastDistanceField,shorelineTiles} from './terrain-surf
 import {mainlandContains,canalWater,gatunWater,organicIslandRadius,homeShoreRadius} from './geography.js?v=171';
 import {createActiveVolcano} from './active-volcano.js?v=156';
 import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=171';
-import {createTropical} from './tropical.js?v=159';
+import {createTropical} from './tropical.js?v=172';
 import {createForestLandscape} from './forest-landscape.js?v=171';
 import {createSurfaceTextures} from './surface-textures.js?v=156';
 import {installPolyHavenMaterials} from './polyhaven-materials.js?v=156';
@@ -401,8 +401,8 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
         #include <colorspace_fragment>
       }`
   });
-  materials.add(waterMaterial);const water=make(geometry(new T.PlaneGeometry(750,650,112,96)),waterMaterial,0,-.12,0);water.rotation.x=-Math.PI/2;water.castShadow=false;water.receiveShadow=false;water.renderOrder=2;
-  const bedGeometry=geometry(new T.PlaneGeometry(700,480));const bedUV=bedGeometry.attributes.uv;for(let i=0;i<bedUV.count;i++)bedUV.setXY(i,bedUV.getX(i)*16,bedUV.getY(i)*16);const seabed=make(bedGeometry,mat('#b3c8b0',{map:surfaces.sand,bumpMap:surfaces.sand,bumpScale:.05,roughness:1}),0,-1.4,0);seabed.rotation.x=-Math.PI/2;seabed.castShadow=false;
+  materials.add(waterMaterial);const water=make(geometry(new T.PlaneGeometry(820,680,112,96)),waterMaterial,0,-.12,0);water.rotation.x=-Math.PI/2;water.castShadow=false;water.receiveShadow=false;water.renderOrder=2;
+  const bedGeometry=geometry(new T.PlaneGeometry(800,660));const bedUV=bedGeometry.attributes.uv;for(let i=0;i<bedUV.count;i++)bedUV.setXY(i,bedUV.getX(i)*16,bedUV.getY(i)*16);const seabed=make(bedGeometry,mat('#b3c8b0',{map:surfaces.sand,bumpMap:surfaces.sand,bumpScale:.05,roughness:1}),0,-1.4,0);seabed.rotation.x=-Math.PI/2;seabed.castShadow=false;
   // A sandy path winding from the landing cove to the lighthouse.
   const pathPoints=[new T.Vector3(4,.4,12),new T.Vector3(3,height(3,8)+.07,8),new T.Vector3(7,height(7,4)+.08,4),new T.Vector3(4,height(4,0)+.08,0),new T.Vector3(0,height(0,-3)+.08,-3),new T.Vector3(-1,height(-1,-5)+.08,-5)];
   const pathCurve=new T.CatmullRomCurve3(pathPoints),pathVertices=[],pathUV=[],pathIndex=[];
@@ -462,7 +462,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   // Large, irregular forestry corridors: rainforest palms and emergent broadleaf
   // giants on the Pacific mainland, montane pines toward Volcán Barú.
   // Six batched meshes keep the dense canopy inexpensive on mobile devices.
-  createForestLandscape({T,scene,mat,geometry,height,light});
+  const forestLandscape=createForestLandscape({T,scene,mat,geometry,height,light});
   // The dock, moored boat, and a moving sailboat out on the water.
   for(let i=0;i<15;i++){make(box,wood,4,.42,12+i*.36,2,.16,.28);if(i%4===0)for(const dx of [-.9,.9])make(cylinder,wood,4+dx,.23,12+i*.36,.1,1.25,.1);}
   function boat(x,z,s){const g=new T.Group();g.position.set(x,.25,z);scene.add(g);make(ball,wood,0,0,0,1.8*s,.35*s,.7*s,g);make(cylinder,cream,0,1.7*s,0,.055*s,3.3*s,.055*s,g);const shape=new T.Shape();shape.moveTo(0,0);shape.lineTo(0,2.8*s);shape.lineTo(-1.5*s,.15*s);shape.closePath();make(geometry(new T.ShapeGeometry(shape)),mat('#ffe7b5',{side:T.DoubleSide}),.07,.3*s,0,1,1,1,g);g.rotation.y=-.3;bobbing.push({g,y:.25,z});return g;}
@@ -478,7 +478,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
     try{
     if(flight!==null){flight+=elapsed;const p=moving?Math.min(flight/3.2,1):1,e=p*p*(3-2*p);camera.position.lerpVectors(startCam,endCam,e);target.lerpVectors(startLook,endLook,e);camera.clearViewOffset();camera.updateProjectionMatrix();canvas.parentElement.style.setProperty('--arrival',String(p));if(p===1){const done=finish;finish=null;flight=null;done?.();if(disposed)return;}}
     else if(!explorer){pose();if(moving){camera.position.x+=Math.sin(time*.13)*1.3+px*1.2;camera.position.y+=Math.sin(time*.24)*.4-py*.5;}}
-    if(explorer)explorer.update(dt,time);camera.lookAt(target);volcanoes.forEach(v=>v.update(volcanoTime));tropical.update(motion()?time:0);waterMaterial.uniforms.time.value=time;crystal.rotation.y=time*.35;beam.rotation.y=time*.22;
+    if(explorer)explorer.update(dt,time);const player=explorer?.playerPosition?.();if(player)forestLandscape.updateFocus(player.x,player.z,camera);camera.lookAt(target);volcanoes.forEach(v=>v.update(volcanoTime));tropical.update(motion()?time:0);waterMaterial.uniforms.time.value=time;crystal.rotation.y=time*.35;beam.rotation.y=time*.22;
     clouds.forEach(c=>{c.g.position.x=c.x+Math.sin(time*.03+c.z)*3;});bobbing.forEach((b,i)=>{b.g.position.y=b.y+Math.sin(time*1.2+i)*.12;b.g.rotation.z=Math.sin(time+i)*.025;});sailboat.position.x=-18+Math.sin(time*.04)*4;motes.rotation.y=Math.sin(time*.1)*.03;
     draw();}catch(error){onError(error);return;}if(explorer||moving||flight!==null)frame=requestAnimationFrame(tick);
   }

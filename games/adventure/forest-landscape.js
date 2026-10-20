@@ -1,14 +1,14 @@
 // High-canopy vegetation batched into just six shared GPU draws, even for
 // thousands of individual pines, palms and broadleaf tropical trees.
-import {planForestPatches} from './forest-patches.js?v=171';
+import {planForestPatches} from './forest-patches.js?v=172';
 
 export function createForestLandscape({T,scene,mat,geometry,height,light=false}){
- const trees=planForestPatches(light ? .53 : 1),group=new T.Group();
+ const trees=planForestPatches(light ? .63 : 1),group=new T.Group();
  group.name='Panama forest reserves · giant palms, cloudforest pines and broadleaf canopy';
  scene.add(group);
  const bark=mat('#8b765c',{roughness:1});
  const crown=mat('#ffffff',{vertexColors:true,side:T.DoubleSide,roughness:.95});
- const byKind={palm:[],pine:[],natural:[]};
+ const byKind={palm:[],pine:[],natural:[],fern:[]};
  for(const tree of trees)byKind[tree.kind].push(tree);
 
  const vertex=(points,colors,p,tone)=>{
@@ -77,6 +77,21 @@ export function createForestLandscape({T,scene,mat,geometry,height,light=false})
    }
   }
  });
+ // Low forest understory and fern fans create the proper layers beneath
+ // broken canopies. A single batched mesh renders all fern/bush clumps.
+ const fernCrown=mesh((p,c)=>{
+  for(let frond=0;frond<14;frond++){
+   const a=frond*Math.PI*2/14,dx=Math.cos(a),dz=Math.sin(a),sx=-dz,sz=dx;
+   for(let k=0;k<6;k++){
+    const t=k/6,u=(k+1)/6,re=1.5+(frond%3)*.24;
+    const A=[dx*re*t,.18+.9*Math.sin(Math.PI*t*.75)-.3*t,dz*re*t];
+    const B=[dx*re*u,.18+.9*Math.sin(Math.PI*u*.75)-.3*u,dz*re*u];
+    const w=(.09+.23*Math.sin(Math.PI*(t+.08)));
+    triangle(p,c,A,[A[0]+sx*w,A[1],A[2]+sz*w],B,.70+(k%4)*.045);
+    triangle(p,c,A,B,[A[0]-sx*w,A[1],A[2]-sz*w],.71+(frond%3)*.06);
+   }
+  }
+ });
  const palmCurve=new T.CatmullRomCurve3([
   new T.Vector3(0,0,0),new T.Vector3(.04,2.0,.02),
   new T.Vector3(.38,5.0,.09),new T.Vector3(.82,7.2,.27)
@@ -88,35 +103,66 @@ export function createForestLandscape({T,scene,mat,geometry,height,light=false})
  };
  trunks.pine.translate(0,4.65,0);
  trunks.natural.translate(0,3.05,0);
- const crowns={palm:palmCrown,pine:pineCrown,natural:naturalCrown};
- const dummy=new T.Object3D(),color=new T.Color(),counts={};
+ const crowns={palm:palmCrown,pine:pineCrown,natural:naturalCrown,fern:fernCrown};
+ const dummy=new T.Object3D(),color=new T.Color(),counts={},visibility=[];
+ let focusTick=0;
  for(const [kind,items]of Object.entries(byKind)){
   if(!items.length)continue;
-  const stems=new T.InstancedMesh(trunks[kind],bark,items.length);
+  const stems=kind==='fern'?null:new T.InstancedMesh(trunks[kind],bark,items.length);
   const foliage=new T.InstancedMesh(crowns[kind],crown,items.length);
-  stems.name=kind+' giant forest trunks';
-  foliage.name=kind+' layered natural foliage';
-  stems.castShadow=false;foliage.castShadow=false;
-  stems.receiveShadow=false;foliage.receiveShadow=false;
+  if(stems){stems.name=kind+' mixed forest trunks';stems.castShadow=false;stems.receiveShadow=false;
+   stems.userData.cameraFoliage=true;}
+  foliage.name=kind+' layered natural foliage';foliage.castShadow=false;
+  foliage.receiveShadow=false;foliage.userData.cameraFoliage=true;
   for(let i=0;i<items.length;i++){
    const t=items[i];
    dummy.position.set(t.x,height(t.x,t.z)-.035,t.z);
    dummy.rotation.set(0,t.heading,0);
    dummy.scale.setScalar(t.size);
    dummy.updateMatrix();
-   stems.setMatrixAt(i,dummy.matrix);
+   if(stems)stems.setMatrixAt(i,dummy.matrix);
    foliage.setMatrixAt(i,dummy.matrix);
    if(kind==='pine')color.setHSL(.335+t.tint*.045,.31+t.tint*.09,.28+t.tint*.08);
    else if(kind==='palm')color.setHSL(.315+t.tint*.04,.43+t.tint*.09,.35+t.tint*.09);
+   else if(kind==='fern')color.setHSL(.30+t.tint*.07,.42+t.tint*.11,.27+t.tint*.12);
    else color.setHSL(.29+t.tint*.085,.34+t.tint*.15,.31+t.tint*.12);
    foliage.setColorAt(i,color);
   }
-  stems.instanceMatrix.needsUpdate=true;
+  if(stems)stems.instanceMatrix.needsUpdate=true;
   foliage.instanceMatrix.needsUpdate=true;
   if(foliage.instanceColor)foliage.instanceColor.needsUpdate=true;
-  stems.computeBoundingSphere?.();
+  stems?.computeBoundingSphere?.();
   foliage.computeBoundingSphere?.();
-  group.add(stems,foliage);counts[kind]=items.length;
+  if(stems)group.add(stems);group.add(foliage);counts[kind]=items.length;
+  visibility.push({items,foliage,factors:new Float32Array(items.length).fill(1)});
  }
- return {group,trees,counts};
+ // Never shrink or collide the entire tree. Only fade its leafy canopy when
+ // the player or a third-person sightline moves beneath it; keep its trunk
+ // visible as a landmark. Cached matrices make this cheap on mobile.
+ function updateFocus(x,z,camera=null){
+  if(!Number.isFinite(x)||!Number.isFinite(z))return;
+  focusTick++;if(focusTick%2)return;
+  for(const layer of visibility){
+   let changed=false;
+   for(let i=0;i<layer.items.length;i++){
+    const t=layer.items[i],dx=t.x-x,dz=t.z-z,dist=Math.hypot(dx,dz);
+    let fade=dist<3.8? .065:dist<6.2?.22:1;
+    if(camera&&dist<24){
+     const rayX=camera.position.x-x,rayZ=camera.position.z-z,len=rayX*rayX+rayZ*rayZ;
+     const progress=len?Math.max(0,Math.min(1,(dx*rayX+dz*rayZ)/len)):0;
+     const width=Math.hypot(dx-rayX*progress,dz-rayZ*progress);
+     if(progress>.06&&progress<.98&&width<2.5+t.size*.75)fade=Math.min(fade,.12);
+    }
+    // Smooth appearance between individual canopies without sudden popping.
+    const prev=layer.factors[i],next=prev+(fade-prev)*.42;
+    if(Math.abs(next-prev)<.007&&Math.abs(next-fade)<.025)continue;
+    layer.factors[i]=next;dummy.position.set(t.x,height(t.x,t.z)-.035,t.z);
+    dummy.rotation.set(0,t.heading,0);dummy.scale.setScalar(t.size*Math.max(.045,next));
+    dummy.updateMatrix();layer.foliage.setMatrixAt(i,dummy.matrix);changed=true;
+   }
+   if(changed){layer.foliage.instanceMatrix.needsUpdate=true;
+    layer.foliage.computeBoundingSphere?.();}
+  }
+ }
+ return {group,trees,counts,updateFocus};
 }

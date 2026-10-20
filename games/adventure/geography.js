@@ -1,6 +1,6 @@
 // North is -Z and east is +X. Distances are compressed for play, not a scale map.
 export const GEOGRAPHY_VERSION=1;
-export const WORLD_BOUNDS={x:350,z:240};
+export const WORLD_BOUNDS={x:400,z:320};
 export const DESTINATIONS={
  home:{old:[0,0],at:[0,0]},pizzaCity:{old:[-100,-74],at:[120,-50]},
  colon:{old:[110,-56],at:[-10,-125]},monkeyIslet:{old:[130,-25],at:[10,-94]},

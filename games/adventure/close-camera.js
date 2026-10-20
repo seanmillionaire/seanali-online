@@ -6,7 +6,7 @@ export function createCloseCamera({T,scene,camera,avatar}){
  function place(position,look,x,y,z,scale=1){
   const sin=Math.sin(yaw),cos=Math.cos(yaw);origin.set(x,y+1.75*scale,z);
   position.set(x-sin*1.95*scale+cos*Math.min(.65,.48+camera.aspect*.12)*scale,y+2.18*scale,z-cos*1.95*scale-sin*Math.min(.65,.48+camera.aspect*.12)*scale);
-  if(!solids){solids=[];scene.traverse(o=>{if(o.isMesh&&o.material&&!Array.isArray(o.material)&&!o.material.transparent)solids.push(o);});scene.updateMatrixWorld(true);}
+  if(!solids){solids=[];scene.traverse(o=>{if(o.isMesh&&o.material&&!Array.isArray(o.material)&&!o.material.transparent&&!o.userData.cameraFoliage&&!o.parent?.userData.cameraFoliage)solids.push(o);});scene.updateMatrixWorld(true);}
   offset.copy(position).sub(origin);const distance=offset.length();ray.set(origin,offset.normalize());ray.near=.06;ray.far=distance+.12;
   const hit=ray.intersectObjects(solids.filter(visible),false)[0];if(hit)position.copy(origin).addScaledVector(offset,Math.max(.1,hit.distance-.18));
   look.set(x+sin*8*scale,y+1.75*scale+Math.tan(pitch)*8*scale,z+cos*8*scale);

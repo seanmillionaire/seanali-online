@@ -1,5 +1,5 @@
 // Shared three-dimensional foliage; no spherical crowns or stacked cone trees.
-import {nearRoad,HIGHWAY_WIDTH} from './explore-state.js?v=159';
+import {nearRoad,HIGHWAY_WIDTH} from './explore-state.js?v=172';
 export function createNaturalTrees({T,geometry,mat,make,height,scene,surfaces=null}){
  const trees=[],bark=mat('#73634d',{...(surfaces?.wood?{map:surfaces.wood,bumpMap:surfaces.wood}:{}),bumpScale:.13,roughness:1});
  function meshData(){return {p:[],c:[]};}
@@ -56,7 +56,7 @@ export function createNaturalTrees({T,geometry,mat,make,height,scene,surfaces=nu
     if(!nearRoad(nx,nz,HIGHWAY_WIDTH/2+2)){x=nx;z=nz;break;}
    }
   }
-  const root=new T.Group();root.name=kind==='palm'?'Detailed curved coconut palm':kind==='pine'?'Detailed tall needle pine':kind==='banana'?'Broad-leaf banana plant':'Branching natural rainforest tree';parent.add(root);
+  const root=new T.Group();root.userData.cameraFoliage=true;root.name=kind==='palm'?'Detailed curved coconut palm':kind==='pine'?'Detailed tall needle pine':kind==='banana'?'Broad-leaf banana plant':'Branching natural rainforest tree';parent.add(root);
   root.position.set(x,height(x,z)-.05,z);root.scale.setScalar(scale);root.rotation.y=seed*2.39996;
   make(kind==='palm'?palmTrunk:kind==='pine'?pineTrunk:kind==='banana'?bananaTrunk:naturalTrunk,bark,0,0,0,1,1,1,root);
   if(kind==='palm'){
