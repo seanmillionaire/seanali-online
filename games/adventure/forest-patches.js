@@ -1,6 +1,6 @@
 // Irregular, mixed Panamanian understory and canopy. Gaps are intentional.
 import {mainlandContains,canalWater,gatunWater} from './geography.js?v=171';
-import {worldIslands,isletHeight,roadDistance,HIGHWAY_WIDTH,volcanoTrailPoint} from './explore-state.js?v=172';
+import {worldIslands,isletHeight,roadDistance,HIGHWAY_WIDTH,volcanoTrailPoint} from './explore-state.js?v=175';
 export const FOREST_PATCHES=[
  {id:'gorgona-palm-grove',x:18,z:-36,rx:27,rz:20,n:54,biome:'tropical'},
  {id:'gorgona-rainforest',x:-23,z:-46,rx:29,rz:23,n:48,biome:'tropical'},
@@ -31,6 +31,8 @@ export function forestSiteClear(x,z,biome='tropical'){
  if(roadDistance(x,z)<HIGHWAY_WIDTH/2+10)return false;
  if(FOREST_CLEARINGS.some(p=>Math.hypot(x-p.x,z-p.z)<p.r))return false;
  if(Math.hypot((x-120)/67,(z+50)/57)<1.09)return false;
+ // Giant rainforest canopy belongs inland, never on offshore beaches.
+ if(worldIslands.some(p=>p.id!=='sunset'&&Math.hypot((x-p.x)/p.rx,(z-p.z)/p.rz)<1.07))return false;
  const land=mainlandContains(x,z);
  const island=worldIslands.some(p=>(p.id==='wilds'||p.id==='colon'||p.id==='sunset')&&
   Math.hypot((x-p.x)/p.rx,(z-p.z)/p.rz)<.90);

@@ -30,11 +30,11 @@ export function createTropical({T,scene,camera,height,geometry,mat,make,ball,ren
  palms.push({root,crown,phase:random()*6});return tree;
  }
  // Open sight lines, coconut groves, banana plants, coastal ferns, and exposed limestone.
- for(let i=0;i<18;i++){let x=(random()-.5)*34,z=(random()-.5)*21;if(Math.hypot(x+10,z+7)<6||Math.hypot(x-12,z+6)<6||(x/18)**2+(z/12)**2>.9||(x>0&&x<9&&z>-4)||Math.hypot(x-11,z-7)<3||Math.hypot(x+1,z+5)<3)continue;const scale=.8+random()*.5;palm(x,z,scale);}
+ for(let i=0;i<10;i++){let x=(random()-.5)*34,z=(random()-.5)*21;if(Math.hypot(x+10,z+7)<6||Math.hypot(x-12,z+6)<6||(x/18)**2+(z/12)**2>.9||(x>0&&x<9&&z>-4)||Math.hypot(x-11,z-7)<3||Math.hypot(x+1,z+5)<3)continue;const scale=.8+random()*.5;palm(x,z,scale);}
  for(let i=0;i<18;i++){const a=i*2.4,r=7+random()*7,x=Math.sin(a)*r,z=Math.cos(a)*r*.6;if((x>1&&x<9&&z>-2)||Math.hypot(x-11,z-7)<3)continue;card(i%3===0?1:2,x,height(x,z)-.03,z,i%3===0?3.6:1.8,i%3===0?4.2:1.4);}
  for(let i=0;i<14;i++){const a=i/14*Math.PI*2,x=Math.cos(a)*18,z=Math.sin(a)*12;card(3,x,height(x,z)-.08,z,1.2+random()*1.4,.7+random());}
  for(let i=0;i<7;i++){const a=i*2.4,{x,z}=islandPoint('islet',24+Math.sin(a)*2,-8+Math.cos(a)*1.5);card(15,x,height(x,z),z,1.4,1.2);}
- for(let i=0;i<12;i++){const {x,z}=islandPoint('wilds',-9+(i%4)*6,-37+Math.floor(i/4)*7);forest.addTree('banana',x,z,1,i);const fruits=[];for(let n=0;n<6;n++)fruits.push(card(7,x+(n%3-.8)*.25,height(x,z)+2.1-Math.floor(n/3)*.3,z+.2,.5,.65));foodTrees.push({id:'banana'+i,kind:'banana',x,z,fruits});}
+ for(let i=0;i<12;i++){const {x,z}=islandPoint('wilds',-9+(i%4)*6,-37+Math.floor(i/4)*7);forest.addTree('banana',x,z,.7,i);const fruits=[];for(let n=0;n<6;n++)fruits.push(card(7,x+(n%3-.8)*.25,height(x,z)+2.1-Math.floor(n/3)*.3,z+.2,.5,.65));foodTrees.push({id:'banana'+i,kind:'banana',x,z,fruits});}
  for(const [tile,x,z,w,h] of [[8,-5,11,1.2,.8],[9,14,8,.7,.5],[10,-15,5,1.2,1.7],[11,-10,-6,1.1,1.1],[9,8,11,.6,.4],[8,-13,8,1,.7]]){const g=card(tile,x,height(x,z)+.02,z,w,h);wildlife.push({g,x,z,tile,phase:random()*6});}
  // Reef cover stays photographic; swimming animals use articulated 3D models.
  for(let i=0;i<7;i++)card(14,-6+i*2,-.9,15+(i%2)*2,1.3,1);

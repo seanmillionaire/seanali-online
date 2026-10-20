@@ -2,8 +2,8 @@ import {clipLandTriangle,coastDistanceField,shorelineTiles} from './terrain-surf
 import {mainlandContains,canalWater,gatunWater,organicIslandRadius,homeShoreRadius} from './geography.js?v=171';
 import {createActiveVolcano} from './active-volcano.js?v=156';
 import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=175';
-import {createTropical} from './tropical.js?v=172';
-import {createForestLandscape} from './forest-landscape.js?v=171';
+import {createTropical} from './tropical.js?v=177';
+import {createForestLandscape} from './forest-landscape.js?v=177';
 import {createSurfaceTextures} from './surface-textures.js?v=156';
 import {installPolyHavenMaterials} from './polyhaven-materials.js?v=156';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
@@ -188,9 +188,9 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
    }else if(land.id==='wilds'){
     // Banana Jungle: huge broad-leaf canopy, layered vines and fruit
     // everywhere, with a little treehouse shelter in the dense green.
-    for(let i=0;i<11;i++){
+    for(let i=0;i<5;i++){
      const a=i*2.39996,r=.43+(i%3)*.12,p=place(land,Math.sin(a)*r,Math.cos(a)*r);
-     jungleTree(p.x,p.z,i);
+     tropical.forest.addTree(i%3===0?'natural':'palm',p.x,p.z,.64+(i%3)*.11,i);
     }
     for(let i=0;i<19;i++){
      const a=i*2.4,r=.23+(i%4)*.17,p=place(land,Math.sin(a)*r,Math.cos(a)*r);
@@ -208,9 +208,9 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
    }else if(land.id==='coconutCoast'){
     // Sunshine Beach: pale sand, a dense ring of palms, bright beach
     // parasols and surfboards; deliberately flat and open for boating.
-    for(let i=0;i<22;i++){
+    for(let i=0;i<9;i++){
      const a=i*2.4,r=.37+(i%4)*.16,p=place(land,Math.sin(a)*r,Math.cos(a)*r);
-     tropical.palm(p.x,p.z,1.05+(i%3)*.23,true);
+     tropical.palm(p.x,p.z,.75+(i%3)*.13,true);
     }
     for(let i=0;i<5;i++){
      const a=i*2.4,p=place(land,Math.sin(a)*.38,Math.cos(a)*.36);
