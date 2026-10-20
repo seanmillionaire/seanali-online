@@ -1,11 +1,12 @@
 import {touchesLava,returnToHospital,createCityHospital} from './volcano-safety.js?v=156';
 import {locationLabel} from './location-label.js?v=156';
 import {waterFriend,animalStep} from './animal-boundaries.js?v=156';
-import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,mainlandAt,mainlandRoadRoute,roadDistance} from './explore-state.js?v=173';
+import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,mainlandAt,mainlandRoadRoute,roadDistance} from './explore-state.js?v=175';
 import {planHighwayGuardrails} from './highway-rails.js?v=169';
 import {createPanamaLife} from './panama-life.js?v=168';
 import {createCloseCamera} from './close-camera.js?v=156';
 import {WORLD_BOUNDS} from './geography.js?v=173';
+import {createExtendedDistricts} from './expanded-districts.js?v=175';
 import {createCampaign} from './campaign.js?v=156';
 import {createColonAdventure} from './colon-adventure.js?v=162';
 import {createCanalCruise} from './canal-cruise.js?v=156';
@@ -543,7 +544,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
   if(friendSystem?.isOpen())friendSystem.close();
   if(adventureMap.isOpen())adventureMap.close(false);
   const land=worldIslands.find(i=>Math.hypot((p.x-i.x)/i.rx,(p.z-i.z)/i.rz)<1),here=land&&Math.hypot((s.x-land.x)/land.rx,(s.z-land.z)/land.rz)<1;
-  if(['volcanTown','boquete'].includes(p.id)&&mainlandAt(s.x,s.z)){
+  if(['volcanTown','boquete','colonCity','panamaEast'].includes(p.id)&&mainlandAt(s.x,s.z)){
    route=mainlandRoadRoute(s,p);targetPoint=route.shift()||p;panel.hidden=true;
    tell('🛣️ Sigue la carretera hacia '+p.es+'.','🛣️ Follow the road to '+p.en+'.');return;
   }
@@ -609,6 +610,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
  canvas.addEventListener('webglcontextlost',contextLost);canvas.addEventListener('webglcontextrestored',contextRestored);
  start();
  function setup({T,scene,camera,target,height,make,geometry,mat,ball,cone,cylinder,box,renderer,tropical,tower,beam,crystal,dockBoat,sun,ambient,waterMaterial,surfaces}){
+  createExtendedDistricts({T,scene,make,mat,box,cylinder,height});
   const gold=mat('#ffd46b'),pink=mat('#ed91b6'),orange=mat('#ef9955'),cream=mat('#fff2d3'),ink=mat('#254550'),purple=mat('#a895ed'),green=mat('#68bd7d');
   // Continuous new asphalt ribbons follow each sampled highway curve.
   // Shared geometry avoids the seams, overlaps and square patches of road boxes.

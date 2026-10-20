@@ -1,7 +1,7 @@
 import {clipLandTriangle,coastDistanceField,shorelineTiles} from './terrain-surface.js?v=171';
 import {mainlandContains,canalWater,gatunWater,organicIslandRadius,homeShoreRadius} from './geography.js?v=171';
 import {createActiveVolcano} from './active-volcano.js?v=156';
-import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=171';
+import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=175';
 import {createTropical} from './tropical.js?v=172';
 import {createForestLandscape} from './forest-landscape.js?v=171';
 import {createSurfaceTextures} from './surface-textures.js?v=156';
@@ -449,7 +449,8 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   for(let i=0;i<mainlandVertices.length;i+=9){
    const x=(mainlandVertices[i]+mainlandVertices[i+3]+mainlandVertices[i+6])/3,
     z=(mainlandVertices[i+2]+mainlandVertices[i+5]+mainlandVertices[i+8])/3;
-   const urban=Math.hypot((x-cityLand.x)/cityLand.rx,(z-cityLand.z)/cityLand.rz)<=1;
+   const urban=Math.hypot((x-cityLand.x)/cityLand.rx,(z-cityLand.z)/cityLand.rz)<=1||
+    (x>=177&&x<=248&&z>=-77&&z<=-22)||(x>=-37&&x<=9&&z>=-144&&z<=-108);
    mainlandIndices[urban?1:0].push(i/3,i/3+1,i/3+2);
   }
   // Two draw groups preserve every triangle while keeping mobile rendering cheap.

@@ -34,11 +34,17 @@ export const MAINLAND_ROADS={
  cityToGorgona:[[105,-35],[85,-26],[48,-15],[32,-14]],
  gorgonaBeachAccess:[[32,-14],[28,-8],[24,-4],[21,1]],
  cityToBaru:[[32,-14],[-7,-8],[-35,0],[-75,-12],[-115,-22],[-155,-32],[-147,-43],[-135,-55]],
- boquete:[[-115,-22],[-112,-32]],canal:[[85,-26],[66,-65]]
+ boquete:[[-115,-22],[-112,-32]],canal:[[85,-26],[66,-65]],
+ // Eastern Panama's new neighborhoods, leading outward from downtown.
+ panamaEast:[[163,-61],[175,-61],[181,-57],[197,-57],[213,-57],[229,-57],[245,-57]],
+ // Colón is a Caribbean city, not simply the Monkey Island nature park.
+ colonCity:[[-10,-125],[-17,-131],[-27,-134],[-32,-132]]
 };
 export const MAINLAND_STOPS=[
  {id:'pizzaCity',x:120,z:-50,en:'Panama City',es:'Ciudad de Panamá'},
  {id:'colon',x:-10,z:-125,en:'Colón',es:'Colón'},
+ {id:'colonCity',x:-27,z:-134,en:'Colón Waterfront City',es:'Ciudad de Colón · Malecón'},
+ {id:'panamaEast',x:214,z:-50,en:'Panama East District',es:'Barrios de Panamá Este'},
  {id:'boquete',x:-112,z:-32,icon:'🌿',es:'Boquete · Chiriquí',en:'Boquete · Chiriquí',kind:'mainland'},
  {id:'volcanTown',x:-155,z:-32,en:'Volcán Town',es:'Pueblo Volcán'},
  {id:'boquete',x:-112,z:-32,en:'Boquete',es:'Boquete'},
@@ -191,6 +197,8 @@ export function isletHeight(x,z){
  return h;
 }
 export const explorePlaces=[
+ {id:'colonCity',x:-27,z:-134,icon:'🏙️',es:'Ciudad de Colón · Costa Caribe',en:'Colón City · Caribbean Waterfront',kind:'mainland'},
+ {id:'panamaEast',x:214,z:-50,icon:'🏙️',es:'Barrios de Panamá Este',en:'Panama City · Eastern Districts',kind:'mainland'},
  {id:'volcanTown',x:-155,z:-32,icon:'🏘️',es:'Pueblo Volcán · Chiriquí',en:'Volcán Town · Chiriquí',kind:'mainland'},
  ...worldIslands.slice(1).filter(p=>!p.guna).map(p=>({id:p.id,x:p.x,z:p.z,icon:({wilds:'🍌',coconutCoast:'🥥',sunset:'🌋',crystalCove:'🏝️',pizzaCity:'🍕',colon:'🌧️',monkeyIslet:'🐒'})[p.id],es:p.es,en:p.en,kind:'islet'})),
  {id:'volcanoTrail',...volcanoTrailPoint(0),icon:'🥾',es:'Sendero del Volcán Barú',en:'Volcán Barú Hiking Trail',kind:'volcano'},
