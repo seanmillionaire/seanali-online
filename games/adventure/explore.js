@@ -20,7 +20,7 @@ import {createWorldMap} from './world-map.js?v=181';
 import {createWildlifeFriends} from './wildlife-friends.js?v=156';
 import {createVillageBuilders} from './village-builders.js?v=181';
 import {createHouseInteriors} from './house-interiors.js?v=156';
-import {createPizzaCity} from './pizza-city.js?v=178';
+import {createPizzaCity} from './pizza-city.js?v=185';
 import {driveByDirection} from './directional-drive.js?v=166';
 import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=156';
 import {ESTATE_PLANS,estateCosts,estateMissing,findEstateSite,canBuildEstate,buildEstate,canUpgradeEstate,upgradeEstate,estateBlocked,createEstateWorld} from './estate.js?v=156';
@@ -610,7 +610,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
  canvas.addEventListener('webglcontextlost',contextLost);canvas.addEventListener('webglcontextrestored',contextRestored);
  start();
  function setup({T,scene,camera,target,height,make,geometry,mat,ball,cone,cylinder,box,renderer,tropical,tower,beam,crystal,dockBoat,sun,ambient,waterMaterial,surfaces}){
-  const detailedDistricts=createExtendedDistricts({T,scene,make,mat,box,cylinder,height});
+  const detailedDistricts=createExtendedDistricts({T,scene,make,mat,geometry,box,cylinder,height});
   const gold=mat('#ffd46b'),pink=mat('#ed91b6'),orange=mat('#ef9955'),cream=mat('#fff2d3'),ink=mat('#254550'),purple=mat('#a895ed'),green=mat('#68bd7d');
   // Continuous new asphalt ribbons follow each sampled highway curve.
   // Shared geometry avoids the seams, overlaps and square patches of road boxes.

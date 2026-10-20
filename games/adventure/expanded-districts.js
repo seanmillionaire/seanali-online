@@ -2,7 +2,8 @@
 // All plots are deterministic, stay on dry land and leave existing gameplay
 // landmarks, highways and saved building locations untouched.
 import {mainlandContains,canalWater,gatunWater} from './geography.js?v=180';
-import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=180';
+import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=185';
+import {createRoadSurface} from './road-surface.js?v=185';
 
 export const EXPANDED_DISTRICTS=[
  {id:'panama-east',name:'Panama City · modern eastern neighborhoods',
@@ -59,7 +60,7 @@ export function districtDriveable(x,z){
 export function districtNeighborhood(x,z){
  return EXPANDED_DISTRICTS.find(a=>within(a,x,z)&&districtGround(x,z))?.id||null;
 }
-export function createExtendedDistricts({T,scene,make,mat,box,cylinder,height}){
+export function createExtendedDistricts({T,scene,make,mat,geometry,box,cylinder,height}){
  const group=new T.Group();
  group.name='Panama detailed districts · eastern skyline, civic plazas and Colón waterfront';
  scene.add(group);
@@ -91,27 +92,26 @@ export function createExtendedDistricts({T,scene,make,mat,box,cylinder,height}){
   const y=height(x,z);
   boxAt(stone,x,y+.095,z,w,.16,d);
  }
- // Roads are built in one instanced draw per material; corner samples must
- // be dry so no artificial squares hang over the sea or the canal.
- function street(m,x,z,w,d){
-  if(!districtGround(x,z)||!districtGround(x+w*.43,z+d*.43)||!districtGround(x-w*.43,z-d*.43))return;
-  boxAt(m,x,height(x,z)+.074,z,w,.13,d);
- }
+ // Street ribbons are continuous across every block. The old 2.6-unit
+ // asphalt cubes used to show cracks and dark steps at every intersection.
+ const districtRoadMeshes=[];
  for(const area of EXPANDED_DISTRICTS){
   const minZ=area.zs[0],maxZ=area.zs.at(-1),minX=area.xs[0],maxX=area.xs.at(-1);
-  for(const x of area.xs)for(let z=minZ;z<=maxZ;z+=2.6){
-   street(asphalt,x,z,5.7,2.75);
-   if(Math.round((z-minZ)/2.6)%6===2&&districtGround(x,z))boxAt(yellow,x,height(x,z)+.157,z,.12,.018,1.05);
+  const junctions=area.xs.flatMap(x=>area.zs.map(z=>[x,z]));
+  const safe=(x,z)=>districtGround(x,z);
+  function build(points){
+   const street=createRoadSurface({T,geometry,group,points,width:5.7,height,
+    asphalt,paint:yellow,edgePaint:line,junctions,safe,lift:.145,step:1.5});
+   for(const obj of [street.surface,street.stripes,street.edges])if(obj)districtRoadMeshes.push(obj);
   }
-  for(const z of area.zs)for(let x=minX;x<=maxX;x+=2.6){
-   street(asphalt,x,z,2.75,5.7);
-   if(Math.round((x-minX)/2.6)%6===2&&districtGround(x,z))boxAt(line,x,height(x,z)+.158,z,1.05,.018,.12);
-  }
-  // Zebra crossings identify full intersections rather than random white tiles.
+  for(const x of area.xs)build([[x,minZ],[x,maxZ]]);
+  for(const z of area.zs)build([[minX,z],[maxX,z]]);
+  // Reserved safe zebra crossings stay at real intersections, not at the
+  // corners of individual asphalt chunks.
   for(const x of area.xs)for(const z of area.zs){
-   if(!districtGround(x,z))continue;
+   if(!districtGround(x,z)||!districtGround(x,z+3.5))continue;
    const y=height(x,z);
-   for(let k=-2;k<=2;k++)boxAt(line,x+k*.68,y+.173,z+4.3,.35,.021,1.16);
+   for(let k=-2;k<=2;k++)boxAt(line,x+k*.68,y+.186,z+3.5,.35,.021,1.16);
   }
  }
  const seed=(i,j)=>((i*29+j*17+13)%17)/17;
@@ -219,5 +219,5 @@ export function createExtendedDistricts({T,scene,make,mat,box,cylinder,height}){
   inst.instanceMatrix.needsUpdate=true;inst.computeBoundingSphere?.();
   group.add(inst);resources.push(inst);
  }
- return {group,count:counts,dispose:()=>{scene.remove(group);resources.forEach(m=>m.dispose?.());}};
+ return {group,count:counts,dispose:()=>{scene.remove(group);resources.forEach(m=>m.dispose?.());districtRoadMeshes.forEach(m=>m.geometry?.dispose?.());}};
 }

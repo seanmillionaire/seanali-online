@@ -53,18 +53,42 @@ export const MAINLAND_STOPS=[
  {id:'sunset',x:-135,z:-55,en:'Volcán Barú',es:'Volcán Barú'}
 ];
 export const HIGHWAY_WIDTH=9.5;
-export function smoothHighway(points){
- const result=[];
- for(let i=0;i<points.length-1;i++){
-  const a=points[Math.max(0,i-1)],b=points[i],d=points[i+1],e=points[Math.min(points.length-1,i+2)];
-  const count=Math.max(3,Math.ceil(Math.hypot(d[0]-b[0],d[1]-b[1])/2));
-  for(let j=0;j<count;j++){
-   const t=j/count,t2=t*t,t3=t2*t;
-   const calc=k=>.5*((2*b[k])+(-a[k]+d[k])*t+(2*a[k]-5*b[k]+4*d[k]-e[k])*t2+(-a[k]+3*b[k]-3*d[k]+e[k])*t3);
-   result.push([calc(0),calc(1)]);
+// Corners are rounded with bounded quadratic arcs, never overshooting into
+// off-road S-bends as uniform Catmull-Rom interpolation did at long segments.
+// Preserve shared junction nodes exactly, so distinct roads still meet.
+const roadNodeUse=new Map();
+for(const [name,points]of Object.entries(MAINLAND_ROADS))for(const [x,z]of points){
+ const key=x+','+z,used=roadNodeUse.get(key)||new Set();used.add(name);roadNodeUse.set(key,used);
+}
+export const ROAD_JUNCTIONS=[...roadNodeUse.entries()].filter(([,ids])=>ids.size>1)
+ .map(([point])=>point.split(',').map(Number));
+export function smoothHighway(points,spacing=1.6){
+ const result=[],add=(p)=>{const q=result.at(-1);if(!q||Math.hypot(q[0]-p[0],q[1]-p[1])>.0001)result.push(p);};
+ const line=(a,b)=>{const n=Math.max(1,Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1])/spacing));
+  for(let j=1;j<=n;j++)add([a[0]+(b[0]-a[0])*j/n,a[1]+(b[1]-a[1])*j/n]);};
+ if(!points.length)return result;add([...points[0]]);
+ let from=points[0];
+ for(let i=1;i<points.length-1;i++){
+  const prev=points[i-1],p=points[i],next=points[i+1];
+  const lenA=Math.hypot(p[0]-prev[0],p[1]-prev[1]),lenB=Math.hypot(next[0]-p[0],next[1]-p[1]);
+  if(lenA<.001||lenB<.001){line(from,p);from=p;continue;}
+  const ux=(p[0]-prev[0])/lenA,uz=(p[1]-prev[1])/lenA;
+  const vx=(next[0]-p[0])/lenB,vz=(next[1]-p[1])/lenB;
+  const dot=ux*vx+uz*vz,shared=roadNodeUse.get(p[0]+','+p[1])?.size>1;
+  const trim=shared||dot>.997?0:Math.min(3.1,lenA*.20,lenB*.20);
+  if(trim<.02){line(from,p);from=p;continue;}
+  const start=[p[0]-ux*trim,p[1]-uz*trim],finish=[p[0]+vx*trim,p[1]+vz*trim];
+  line(from,start);
+  const n=Math.max(4,Math.ceil(trim*2/spacing));
+  for(let j=1;j<=n;j++){
+   const t=j/n,u=1-t;
+   add([u*u*start[0]+2*u*t*p[0]+t*t*finish[0],
+        u*u*start[1]+2*u*t*p[1]+t*t*finish[1]]);
   }
+  from=finish;
  }
- result.push(points[points.length-1]);return result;
+ if(points.length>1)line(from,points.at(-1));
+ return result;
 }
 export const HIGHWAY_CURVES=Object.fromEntries(Object.entries(MAINLAND_ROADS).map(([id,points])=>[id,smoothHighway(points)]));
 // Flatten road polylines once, rather than rebuilding vectors every terrain

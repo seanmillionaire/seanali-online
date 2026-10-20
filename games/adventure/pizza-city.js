@@ -1,7 +1,7 @@
-import {CITY_SHOP_PLOTS,cityBlocksVehicle} from './city-layout.js?v=178';
-import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=178';
-import {createCityExpansion} from './city-expansion.js?v=178';
-import {districtDriveable,districtVehicleBlocked,districtNeighborhood} from './expanded-districts.js?v=178';
+import {CITY_SHOP_PLOTS,cityBlocksVehicle} from './city-layout.js?v=185';
+import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=185';
+import {createCityExpansion} from './city-expansion.js?v=185';
+import {districtDriveable,districtVehicleBlocked,districtNeighborhood} from './expanded-districts.js?v=185';
 /* Casco Viejo · Ciudad de Panamá — the largest fantasy island: real road grid, drivable mini car,
    walk-in pizzeria, and sixteen persistent 💰 money-bag pickups. */
 export const CITY={x:(120),z:(-50),rx:58,rz:48,restaurant:{x:120,z:-48}};
@@ -152,7 +152,7 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
   bags.push({id:b.id,x:b.x,z:b.z,root,icon});
  }
  let coinAward=()=>0;
- const expansion=createCityExpansion({T,group,scene,state,make,mat,box,ball,cylinder,cone,height,surfaces,
+ const expansion=createCityExpansion({T,group,scene,state,make,mat,box,ball,cylinder,cone,height,geometry,surfaces,
    save,refresh,joy,tell:(a,b)=>tell(a,b),coinAward:id=>coinAward(id),onWash:()=>{carBlue.roughness=.16;carBlue.needsUpdate=true;}});
  if(cityBlocksVehicle(city.car.x,city.car.z)){city.car.x=105;city.car.z=-50;city.car.heading=0;save();}
  const status=document.createElement('div');status.className='pizza-city-status';status.hidden=true;
