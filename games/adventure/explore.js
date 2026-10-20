@@ -1,31 +1,31 @@
 import {touchesLava,returnToHospital,createCityHospital} from './volcano-safety.js?v=156';
 import {locationLabel} from './location-label.js?v=156';
 import {waterFriend,animalStep} from './animal-boundaries.js?v=156';
-import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,mainlandAt,mainlandRoadRoute,roadDistance} from './explore-state.js?v=178';
+import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,mainlandAt,mainlandRoadRoute,roadDistance} from './explore-state.js?v=180';
 import {planHighwayGuardrails} from './highway-rails.js?v=176';
 import {createPanamaLife} from './panama-life.js?v=168';
 import {createCloseCamera} from './close-camera.js?v=156';
-import {WORLD_BOUNDS} from './geography.js?v=178';
-import {createExtendedDistricts} from './expanded-districts.js?v=178';
+import {WORLD_BOUNDS} from './geography.js?v=180';
+import {createExtendedDistricts} from './expanded-districts.js?v=181';
 import {createCampaign} from './campaign.js?v=156';
-import {createColonAdventure} from './colon-adventure.js?v=179';
+import {createColonAdventure} from './colon-adventure.js?v=181';
 import {createCanalCruise} from './canal-cruise.js?v=156';
 import {createRealms} from './realms.js?v=174';
 import {createJourney} from './journey.js?v=156';
-import {oceanModel} from './ocean-models.js?v=156';
-import {createIslandLife,naturalSharkPatrol as sharkPatrol} from './island-life.js?v=179';
+import {oceanModel} from './ocean-models.js?v=182';
+import {createIslandLife,naturalSharkPatrol as sharkPatrol} from './island-life.js?v=182';
 import {createWorldStory,islandStories} from './world-story.js?v=156';
-import {REGION_PROJECTS,regionForPosition,missionStatus,restoreRegions,createRegionProjectWorld} from './region-projects.js?v=179';
-import {createWorldMap} from './world-map.js?v=178';
+import {REGION_PROJECTS,regionForPosition,missionStatus,restoreRegions,createRegionProjectWorld} from './region-projects.js?v=181';
+import {createWorldMap} from './world-map.js?v=181';
 import {createWildlifeFriends} from './wildlife-friends.js?v=156';
-import {createVillageBuilders} from './village-builders.js?v=179';
+import {createVillageBuilders} from './village-builders.js?v=181';
 import {createHouseInteriors} from './house-interiors.js?v=156';
 import {createPizzaCity} from './pizza-city.js?v=178';
 import {driveByDirection} from './directional-drive.js?v=166';
 import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=156';
 import {ESTATE_PLANS,estateCosts,estateMissing,findEstateSite,canBuildEstate,buildEstate,canUpgradeEstate,upgradeEstate,estateBlocked,createEstateWorld} from './estate.js?v=156';
-import {buildIsland} from './entrance.js?v=178';
-import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=178';
+import {buildIsland} from './entrance.js?v=183';
+import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=180';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);syncWallet(state);
  let disposed=false,engine=null,control=null,builderSystem=null,friendSystem=null,houseSystem=null,wildLife=null,cityLife=null,panamaLife=null,cruiseLife=null,colonLife=null,workshop=null,estateWorld=null,regionWorld=null,carDriving=false,carSpeed=0,mountId=null,birdAltitude=0,birdTarget=0,birdLanding=false,near=null,ride=s.flight?1:0,flightY=s.flight||0,flightTarget=s.flight||0,flightVX=0,flightVZ=0,route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;
@@ -768,8 +768,10 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
   make(cylinder,stairMaterial,0,6.4,0,1.7,.15,1.7,interior);const lantern=make(ball,gold,0,7.3,0,.35,.5,.35,interior);
   const beamCopy=make(geometry(new T.ConeGeometry(1.5,14,20,1,true)),mat('#ffed9d',{transparent:true,opacity:.16,depthWrite:false,side:T.DoubleSide}),0,7.3,-7,1,1,1,interior);beamCopy.rotation.x=Math.PI/2;beamCopy.visible=false;beamCopy.castShadow=false;
   const seaLife=[];
-  const patrols=[{x:0,z:0,rx:32,rz:26},...worldIslands.filter(p=>['islet','wilds','coconutCoast','crystalCove'].includes(p.id)).map(p=>({x:p.x,z:p.z,rx:p.rx+8,rz:p.rz+8}))];
-  patrols.forEach((p,i)=>{const {g,moving}=oceanModel(T,{geometry,mat,make,ball},'Reef shark');g.name='Reef shark '+(i+1);scene.add(g);const a=i*Math.PI*.4,spawn=recoverShark(p.x+Math.cos(a)*p.rx,p.z+Math.sin(a)*p.rz);g.position.set(spawn.x,-.22,spawn.z);seaLife.push({g,tail:moving[0],a,nav:{...spawn,cx:p.x,cz:p.z,rx:p.rx,rz:p.rz,waypoint:Math.round(a/(Math.PI*2)*24)%24,direction:i%2?-1:1}});});
+  const patrols=[{x:0,z:0,rx:30,rz:24},
+   ...worldIslands.filter(p=>['islet','wilds','coconutCoast','crystalCove','colon','coiba','delRey'].includes(p.id))
+    .map(p=>({x:p.x,z:p.z,rx:p.rx+9,rz:p.rz+9}))];
+  patrols.forEach((p,i)=>{const {g,moving}=oceanModel(T,{geometry,mat,make,ball},'Reef shark');g.name='Reef shark '+(i+1);g.scale.setScalar(1.38+(i%3)*.12);scene.add(g);const a=i*Math.PI*.4,spawn=recoverShark(p.x+Math.cos(a)*p.rx,p.z+Math.sin(a)*p.rz);g.position.set(spawn.x,-.22,spawn.z);seaLife.push({g,tail:moving[0],a,nav:{...spawn,cx:p.x,cz:p.z,rx:p.rx,rz:p.rz,waypoint:Math.round(a/(Math.PI*2)*24)%24,direction:i%2?-1:1}});});
   const ripple=make(geometry(new T.TorusGeometry(.65,.025,5,28)),mat('#e2fffa',{transparent:true,opacity:.65,depthWrite:false}),0,-.03,0);ripple.rotation.x=-Math.PI/2;ripple.castShadow=false;ripple.visible=false;
   if(typeof s.lighthouseOn!=='boolean')s.lighthouseOn=s.badges.includes('beacon');
    function syncLighthouse(){if(beam){beam.visible=s.lighthouseOn;beam.material.opacity=s.lighthouseOn?.22:0;}if(crystal)crystal.material.emissiveIntensity=s.lighthouseOn?1.1:.05;beamCopy.visible=!!s.lighthouseOn;}
@@ -944,7 +946,8 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    if(inside)ay=height(-1,-5)+towerY;
    if(airborne){const floor=inWater(ax,az)?-.95:onDock(ax,az)?.58:height(ax,az);if(active){towerV-=12*dt;towerY+=towerV*dt;}ay=towerY;if(ay<=floor){landed=active;airborne=false;towerV=0;clearLanding();ax=s.x;az=s.z;ay=inWater(ax,az)?-.95:onDock(ax,az)?.58:height(ax,az);jumpY=0;velocity=0;}}
    danger=false;for(const shark of seaLife){const g=shark.g;const dist=Math.hypot(g.position.x-s.x,g.position.z-s.z);const chase=swimming&&dist<8&&rescueCooldown===0;
-    if(worldActive){shark.nav.x=g.position.x;shark.nav.z=g.position.z;shark.nav.detour=Math.max(0,(shark.nav.detour||0)-dt);const next=sharkPatrol(shark.nav,dt,chase&&!shark.nav.detour?{x:s.x,z:s.z}:null),mx=next.x-g.position.x,mz=next.z-g.position.z;if(Math.hypot(mx,mz)>.00001)g.rotation.y=Math.atan2(mx,mz);g.position.x=next.x;g.position.z=next.z;}shark.tail.rotation.y=motion()?Math.sin(time*(chase?16:8)+shark.a)*.38:0;
+    if(worldActive){shark.nav.x=g.position.x;shark.nav.z=g.position.z;shark.nav.detour=Math.max(0,(shark.nav.detour||0)-dt);const next=sharkPatrol(shark.nav,dt,chase&&!shark.nav.detour?{x:s.x,z:s.z}:null),mx=next.x-g.position.x,mz=next.z-g.position.z;if(Math.hypot(mx,mz)>.00001)g.rotation.y=Math.atan2(mx,mz);g.position.x=next.x;g.position.z=next.z;}g.position.y=-.10+Math.sin(time*1.4+shark.a)*.075;
+    shark.tail.rotation.y=motion()?Math.sin(time*(chase?16:8)+shark.a)*.38:0;
     if(chase)danger=true;if(chase&&dist<1.25&&active){s.x=lastShore.x;s.z=lastShore.z;ax=s.x;az=s.z;ay=height(ax,az);swimming=false;danger=false;rescueCooldown=8;s.growth=1;bodyScale=1;eating=0;energy=0;targetPoint=null;route=[];blur();tell('🐢 Pip te llevó a la playa. ¡Pequeña y a salvo!','🐢 Pip brought you to shore. Small again. Safe!');save();}}
    host.classList.toggle('shark-nearby',danger);ripple.visible=swimming;ripple.position.set(ax,-.03,az);ripple.scale.setScalar(1+(motion()?Math.sin(time*4)*.12:0));arms.forEach((arm,i)=>{arm.rotation.x=mountId?-.7:swimming&&motion()?Math.sin(time*7+i*Math.PI)*.9:0;});
 

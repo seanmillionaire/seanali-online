@@ -1,22 +1,22 @@
 // Space-first city districts beyond the original Casco Viejo loop.
 // All plots are deterministic, stay on dry land and leave existing gameplay
 // landmarks, highways and saved building locations untouched.
-import {mainlandContains,canalWater,gatunWater} from './geography.js?v=178';
-import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=178';
+import {mainlandContains,canalWater,gatunWater} from './geography.js?v=180';
+import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=180';
 
 export const EXPANDED_DISTRICTS=[
  {id:'panama-east',name:'Panama City · modern eastern neighborhoods',
   xs:[174,187,201,216,231,246,261],zs:[-83,-68,-52,-35,-19],
   kind:'modern'},
  {id:'colon-civic',name:'Colón · spaced civic and port neighborhoods',
-  xs:[15,30,45,60,75],zs:[-148,-134,-120],kind:'civic'},
+  xs:[-25,-10,5,20,35],zs:[-268,-254,-240],kind:'civic'},
  {id:'colon-port',name:'Colón · Caribbean port and historic blocks',
-  xs:[-38,-26,-13,0,13],zs:[-148,-136,-123,-110],
+  xs:[-78,-66,-53,-40,-27],zs:[-268,-256,-243,-230],
   kind:'caribbean'}
 ];
 export const DISTRICT_ROADS={
  panamaEast:[[163,-61],[175,-61],[181,-57],[197,-57],[213,-57],[229,-57],[245,-57]],
- colonAccess:[[-10,-125],[-17,-131],[-27,-134],[-32,-132]]
+ colonAccess:[[-50,-245],[-57,-251],[-67,-254],[-72,-252]]
 };
 const within=(r,x,z)=>x>=r.xs[0]&&x<=r.xs.at(-1)&&z>=r.zs[0]&&z<=r.zs.at(-1);
 export function districtGround(x,z){return mainlandContains(x,z)&&!canalWater(x,z)&&!gatunWater(x,z);}
@@ -37,7 +37,7 @@ export function districtBuildings(){
   if(area.kind==='civic'&&(i+j*2)%7===0)continue;
   const x=(area.xs[i]+area.xs[i+1])/2,z=(area.zs[j]+area.zs[j+1])/2;
   // Preserve the waterfall walkway and lookout already owned by the Colón quests.
-  if(area.id==='colon-port'&&(Math.hypot(x+19,z+116)<8||Math.hypot(x+8,z+139)<7))continue;
+  if(area.id==='colon-port'&&(Math.hypot(x+59,z+236)<8||Math.hypot(x+48,z+259)<7))continue;
   const dims=sizeFor(area,i,j);
   if(!districtGround(x,z)||roadDistance(x,z)<HIGHWAY_WIDTH/2+Math.hypot(dims.w,dims.d)*.5+1.3)continue;
   if([[1,1],[-1,1],[1,-1],[-1,-1]].some(([sx,sz])=>!districtGround(x+sx*(dims.w/2+.2),z+sz*(dims.d/2+.2))))continue;
@@ -182,17 +182,17 @@ export function createExtendedDistricts({T,scene,make,mat,box,cylinder,height}){
  }
  // Colón waterfront: cargo sheds, promenades and port identity beside its city.
  for(let i=0;i<5;i++){
-  const x=-33+i*8,z=-146,y=height(x,z);
-  if(!districtGround(x,z)||!districtGround(x,-142))continue;
-  boxAt(stone,x,y+.10,-142,5.0,.18,3.6);
-  boxAt(brick,x,y+1.65,-143,4.4,3.0,3.1);
-  boxAt(charcoal,x,y+3.34,-143,4.7,.32,3.45);
-  for(let k=-1;k<=1;k++)boxAt(glass,x+k*1.1,y+1.94,-141.39,.7,.92,.10);
+  const x=-73+i*8,z=-266,y=height(x,z);
+  if(!districtGround(x,z)||!districtGround(x,-262))continue;
+  boxAt(stone,x,y+.10,-262,5.0,.18,3.6);
+  boxAt(brick,x,y+1.65,-263,4.4,3.0,3.1);
+  boxAt(charcoal,x,y+3.34,-263,4.7,.32,3.45);
+  for(let k=-1;k<=1;k++)boxAt(glass,x+k*1.1,y+1.94,-261.39,.7,.92,.10);
  }
- if(districtGround(-33,-139)){
-  const y=height(-33,-139);
-  put(cylinder,pale,-33,y+5.1,-139,1.55,10.2,1.55);
-  put(cylinder,rust,-33,y+10.6,-139,2.15,.6,2.15);
+ if(districtGround(-73,-259)){
+  const y=height(-73,-259);
+  put(cylinder,pale,-73,y+5.1,-259,1.55,10.2,1.55);
+  put(cylinder,rust,-73,y+10.6,-259,2.15,.6,2.15);
  }
  // Two handfuls of street lights, bollards and shaded bus shelters.
  for(const area of EXPANDED_DISTRICTS)for(let i=1;i<area.xs.length-1;i+=2)for(let j=1;j<area.zs.length-1;j+=2){

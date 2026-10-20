@@ -1,6 +1,6 @@
 // Permanent dry-land work sites for Mateo and Sofía. Deterministic positions
 // mean finished houses never move when a builder starts a new job.
-import {worldIslands,isletHeight,inWater,roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=178';
+import {worldIslands,isletHeight,inWater,roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=180';
 import {CITY_ALL_PLOTS,cityOverlap,allocateCityParcel} from './city-layout.js?v=178';
 
 export const BUILDER_AREAS=[
@@ -8,7 +8,7 @@ export const BUILDER_AREAS=[
  {id:'taboga',name:'Taboga',x:90,z:25,rx:12,rz:10},
  {id:'contadora',name:'Contadora',x:200,z:50,rx:23,rz:19},
  {id:'bocas',name:'Bocas del Toro',x:-105,z:-135,rx:24,rz:25},
- {id:'colon',name:'Colón',x:-10,z:-125,rx:26,rz:23},
+ {id:'colon',name:'Colón',x:-50,z:-245,rx:29,rz:27},
  {id:'guna',name:'San Blas',x:290,z:-245,rx:12,rz:10}
 ];
 const PROJECT_SIZE={w:3.8,d:3.1};
@@ -18,7 +18,7 @@ const protectedLocations={
  taboga:[[86,28,3.6],[90,25,3.8]],
  contadora:[[200,50,3.6]],
  bocas:[[-105,-135,4.8],[-111,-131,3.7]],
- colon:[[-19,-127,9],[-10,-125,4],[-22,-120,3]],
+ colon:[[-59,-247,9],[-50,-245,4],[-62,-240,3]],
  guna:[[288.7,-245.8,2.1],[291.3,-245.8,2.1],[290,-243.6,2.4]]
 };
 export function builderSiteSafe(area,p,chosen=[]){

@@ -1,6 +1,6 @@
 // Irregular, mixed Panamanian understory and canopy. Gaps are intentional.
-import {mainlandContains,canalWater,gatunWater} from './geography.js?v=178';
-import {worldIslands,isletHeight,roadDistance,HIGHWAY_WIDTH,volcanoTrailPoint} from './explore-state.js?v=178';
+import {mainlandContains,canalWater,gatunWater} from './geography.js?v=180';
+import {worldIslands,isletHeight,roadDistance,HIGHWAY_WIDTH,volcanoTrailPoint} from './explore-state.js?v=180';
 export const FOREST_PATCHES=[
  {id:'gorgona-palm-grove',x:18,z:-36,rx:27,rz:20,n:54,biome:'tropical'},
  {id:'gorgona-rainforest',x:-23,z:-46,rx:29,rz:23,n:48,biome:'tropical'},
@@ -12,12 +12,12 @@ export const FOREST_PATCHES=[
  {id:'baru-highlands',x:-155,z:-73,rx:31,rz:23,n:58,biome:'montane'},
  {id:'baru-foothills',x:-104,z:-19,rx:21,rz:15,n:37,biome:'mixed'},
  {id:'bocas-jungle',x:-109,z:-141,rx:23,rz:22,n:45,biome:'island'},
- {id:'colon-grove',x:-13,z:-126,rx:21,rz:18,n:34,biome:'island'}
+ {id:'colon-grove',x:-53,z:-246,rx:21,rz:18,n:34,biome:'island'}
 ];
 export const FOREST_CLEARINGS=[
  {x:0,z:0,r:19},{x:21,z:1,r:7},{x:32,z:-14,r:8},
  {x:66,z:-65,r:10},{x:-155,z:-32,r:10},{x:-112,z:-32,r:7},
- {x:-19,z:-127,r:13},{x:-105,z:-135,r:7}
+ {x:-59,z:-247,r:13},{x:-105,z:-135,r:7}
 ];
 const trail=Array.from({length:85},(_,i)=>volcanoTrailPoint(i/84));
 function nearTrail(x,z){

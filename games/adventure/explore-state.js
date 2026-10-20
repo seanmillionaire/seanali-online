@@ -1,4 +1,4 @@
-import {DESTINATIONS,WORLD_BOUNDS,mainlandContains,canalWater,gatunWater,migrateGeography,segmentDistance,organicIslandRadius,homeShoreRadius} from './geography.js?v=178';
+import {DESTINATIONS,WORLD_BOUNDS,mainlandContains,canalWater,gatunWater,migrateGeography,segmentDistance,organicIslandRadius,homeShoreRadius,COLON_OFFSET,COLON_LAYOUT_VERSION} from './geography.js?v=180';
 import {SAN_BLAS_ISLANDS,normalizePanama} from './panama-state.js?v=173';
 import {normalizeCampaign} from './campaign-state.js?v=156';
 import {normalizeColon,bridgeDistance,COLON_BRIDGE} from './colon-state.js?v=156';
@@ -29,7 +29,7 @@ export function remoteAccess(from,to){const p=worldIslands.find(i=>i.vehicleOnly
 // A connected mainland corridor: Panama City → Gorgona → Colón and
 // Gorgona → Volcán → Barú. Offshore island footprints remain separate.
 export const MAINLAND_ROADS={
- cityToColon:[[105,-61],[95,-74],[63,-88],[30,-116],[-10,-125]],
+ cityToColon:[[105,-61],[95,-74],[63,-88],[30,-116],[26,-144],[24,-175],[25,-203],[24,-231],[14,-259],[-18,-272],[-47,-269],[-50,-245]],
  // Intercity traffic bypasses the beach. Turn off onto Gorgona's access road.
  cityToGorgona:[[105,-35],[85,-26],[48,-15],[32,-14]],
  gorgonaBeachAccess:[[32,-14],[28,-8],[24,-4],[21,1]],
@@ -38,14 +38,14 @@ export const MAINLAND_ROADS={
  // Eastern Panama's new neighborhoods, leading outward from downtown.
  panamaEast:[[163,-61],[175,-61],[181,-57],[197,-57],[213,-57],[229,-57],[245,-57]],
  // Colón is a Caribbean city, not simply the Monkey Island nature park.
- colonCity:[[-10,-125],[-17,-131],[-27,-134],[-32,-132]],
- colonCivic:[[30,-116],[45,-116],[58,-116],[74,-116]]
+ colonCity:[[-50,-245],[-57,-251],[-67,-254],[-72,-252]],
+ colonCivic:[[24,-231],[14,-242],[11,-252]]
 };
 export const MAINLAND_STOPS=[
  {id:'pizzaCity',x:120,z:-50,en:'Panama City',es:'Ciudad de Panamá'},
- {id:'colon',x:-10,z:-125,en:'Colón',es:'Colón'},
- {id:'colonCity',x:-27,z:-134,en:'Colón Waterfront City',es:'Ciudad de Colón · Malecón'},
- {id:'colonCivic',x:51,z:-132,en:'Colón Port Civic District',es:'Colón · Distrito Cívico del Puerto'},
+ {id:'colon',x:-50,z:-245,en:'Colón',es:'Colón'},
+ {id:'colonCity',x:-67,z:-254,en:'Colón Waterfront City',es:'Ciudad de Colón · Malecón'},
+ {id:'colonCivic',x:11,z:-252,en:'Colón Port Civic District',es:'Colón · Distrito Cívico del Puerto'},
  {id:'panamaEast',x:214,z:-50,en:'Panama East District',es:'Barrios de Panamá Este'},
  {id:'boquete',x:-112,z:-32,icon:'🌿',es:'Boquete · Chiriquí',en:'Boquete · Chiriquí',kind:'mainland'},
  {id:'volcanTown',x:-155,z:-32,en:'Volcán Town',es:'Pueblo Volcán'},
@@ -161,7 +161,7 @@ export function isletHeight(x,z){
  // Keep the coastline transition outside the built city to avoid a vertical wall.
  const urbanRadius=Math.hypot((x-120)/58,(z+50)/48);
  if(urbanRadius<=.96)return 1.6;
- if(bridgeDistance(x,z)<1.5)return COLON_BRIDGE.y;
+ if(bridgeDistance(x-COLON_OFFSET.x,z-COLON_OFFSET.z)<1.5)return COLON_BRIDGE.y;
  
  const monkey=worldIslands.find(i=>i.id==='monkeyIslet'),onMonkey=Math.hypot((x-monkey.x)/monkey.rx,(z-monkey.z)/monkey.rz)<1;
  if(gatunWater(x,z)&&!canalWater(x,z)&&nearRoad(x,z,HIGHWAY_WIDTH/2+.5))return 3.8;
@@ -199,8 +199,8 @@ export function isletHeight(x,z){
  return h;
 }
 export const explorePlaces=[
- {id:'colonCity',x:-27,z:-134,icon:'🏙️',es:'Ciudad de Colón · Costa Caribe',en:'Colón City · Caribbean Waterfront',kind:'mainland'},
- {id:'colonCivic',x:51,z:-132,icon:'🏘️',es:'Colón · Distrito Cívico y Puerto',en:'Colón · Port and Civic District',kind:'mainland'},
+ {id:'colonCity',x:-67,z:-254,icon:'🏙️',es:'Ciudad de Colón · Costa Caribe',en:'Colón City · Caribbean Waterfront',kind:'mainland'},
+ {id:'colonCivic',x:11,z:-252,icon:'🏘️',es:'Colón · Distrito Cívico y Puerto',en:'Colón · Port and Civic District',kind:'mainland'},
  {id:'panamaEast',x:214,z:-50,icon:'🏙️',es:'Barrios de Panamá Este',en:'Panama City · Eastern Districts',kind:'mainland'},
  {id:'volcanTown',x:-155,z:-32,icon:'🏘️',es:'Pueblo Volcán · Chiriquí',en:'Volcán Town · Chiriquí',kind:'mainland'},
  ...worldIslands.slice(1).filter(p=>!p.guna).map(p=>({id:p.id,x:p.x,z:p.z,icon:({wilds:'🍌',coconutCoast:'🥥',sunset:'🌋',crystalCove:'🏝️',pizzaCity:'🍕',colon:'🌧️',monkeyIslet:'🐒'})[p.id],es:p.es,en:p.en,kind:'islet'})),
@@ -240,7 +240,7 @@ export const exploreItems=[
 ];
 for(const p of exploreItems){const land={fruit:'wilds',glow:'sunset'}[p.kind];if(land)Object.assign(p,islandPoint(land,p.x,p.z));}
 export function normalizeStory(raw){return Object.fromEntries(Object.entries({shells:3,picnic:4,seed:3,song:4,care:2,light:4}).map(([id,length])=>[id,Number.isInteger(raw?.[id])?Math.max(0,Math.min(length,raw[id])):0]));}
-export function freshExplore(){return {panama:normalizePanama(null),campaign:normalizeCampaign(null),colon:normalizeColon(null),estate:normalizeEstate(null),inventoryVersion:1,foodTotal:{banana:0,coconut:0},worldVersion:3,geographyVersion:1,sanBlasGeographyVersion:2,realms:{found:[],turtle:0,bird:0},journey:{visited:[],meals:0,swim:0,fly:0,rings:[]},x:4,z:10,dayTime:40,story:normalizeStory(null),collected:[],badges:[],hat:0,pet:false,flowers:0,catches:0,pops:0,flight:0,growth:1,food:{coconut:0,banana:0},harvested:{},boat:{x:6.5,z:16,heading:0},regionalProjects:{helped:[]},craft:{built:[],spent:{}},city:{cruise:normalizeCruise(null),bags:[],pizzas:0,car:{x:114,z:-50,heading:0},activities:{deliveries:[],deliveryActive:false,rallyBest:0,rallyWins:0,soccerGoals:0,soccerShots:0,marketTrades:0,muralColors:0,museum:[],carWashes:0}},friends:{visits:[],completed:[],companion:null}};}
+export function freshExplore(){return {panama:normalizePanama(null),campaign:normalizeCampaign(null),colon:normalizeColon(null),estate:normalizeEstate(null),inventoryVersion:1,foodTotal:{banana:0,coconut:0},worldVersion:3,geographyVersion:1,sanBlasGeographyVersion:2,colonLayoutVersion:COLON_LAYOUT_VERSION,realms:{found:[],turtle:0,bird:0},journey:{visited:[],meals:0,swim:0,fly:0,rings:[]},x:4,z:10,dayTime:40,story:normalizeStory(null),collected:[],badges:[],hat:0,pet:false,flowers:0,catches:0,pops:0,flight:0,growth:1,food:{coconut:0,banana:0},harvested:{},boat:{x:6.5,z:16,heading:0},regionalProjects:{helped:[]},craft:{built:[],spent:{}},city:{cruise:normalizeCruise(null),bags:[],pizzas:0,car:{x:114,z:-50,heading:0},activities:{deliveries:[],deliveryActive:false,rallyBest:0,rallyWins:0,soccerGoals:0,soccerShots:0,marketTrades:0,muralColors:0,museum:[],carWashes:0}},friends:{visits:[],completed:[],companion:null}};}
 export function normalizeExplore(raw){raw=migrateGeography(raw);const s=freshExplore();if(!raw||typeof raw!=='object')return s;const rr=raw.realms||{};s.realms={found:[...new Set((Array.isArray(rr.found)?rr.found:[]).filter(id=>/^(reef-[0-5]|pearl-[0-4]|wind-[0-4]|star-[0-4]|seaChest-0|skyLight-0)$/.test(id)))],turtle:Math.max(0,Math.min(5,Math.floor(Number(rr.turtle)||0))),bird:Math.max(0,Math.min(4,Math.floor(Number(rr.bird)||0)))};const j=raw.journey||{};s.journey={visited:[...new Set((Array.isArray(j.visited)?j.visited:[]).filter(id=>worldIslands.some(p=>p.id===id)))],meals:Math.max(0,Math.min(999,Number(j.meals)||0)),swim:Math.max(0,Math.min(100000,Number(j.swim)||0)),fly:Math.max(0,Math.min(100000,Number(j.fly)||0)),rings:[...new Set((Array.isArray(j.rings)?j.rings:[]).filter(id=>/^(swim|fly)-[0-9]+$/.test(id)))]};// Preserve friendship, a chosen companion, and first-time play rewards across saves.
 const FRIEND_IDS=['pip','dori','mila','ollie','luna','kai'],savedFriends=raw.friends||{};
 s.friends={
@@ -270,6 +270,7 @@ s.regionalProjects={helped:[...new Set((Array.isArray(raw.regionalProjects?.help
 const savedCraft=raw.craft||{},allowedResource=['shell','fruit','glow','islandTreasure','seaTreasure','moneyBag'];
 s.craft={built:[...new Set((Array.isArray(savedCraft.built)?savedCraft.built:[]).filter(id=>['sandcastle','butterflyGarden','treehouse','beachCabana','volcanoCamp','coralNursery','pizzaStand'].includes(id)))],
  spent:Object.fromEntries(allowedResource.map(kind=>[kind,Math.max(0,Math.min(999,Math.floor(Number(savedCraft.spent?.[kind])||0)))]))};
+s.colonLayoutVersion=COLON_LAYOUT_VERSION;
 s.dayTime=Number.isFinite(raw.dayTime)?((raw.dayTime%240)+240)%240:40;s.story=normalizeStory(raw.story);const ids=new Set(exploreItems.map(x=>x.id));s.collected=[...new Set(Array.isArray(raw.collected)?raw.collected.filter(x=>ids.has(x)):[])];s.badges=[...new Set(Array.isArray(raw.badges)?raw.badges.filter(x=>['picnic','glow','song','garden','treasure','beacon','balloon','boat','volcano-summit'].includes(x)):[])];if(Number.isFinite(raw.x)&&Number.isFinite(raw.z)&&(raw.x/WORLD_BOUNDS.x)**2+(raw.z/WORLD_BOUNDS.z)**2<=1){
  s.x=raw.x;s.z=raw.z;
  if(raw.worldVersion===2){
