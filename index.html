@@ -260,6 +260,33 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
   .life-site .life-next p{margin:0 auto 20px}
 }
 </style>
+
+<style id="sean-brand-slider-styles">
+/* Accessible, mobile-first linked brand-wordmark marquee below the final CTA. */
+.sean-brand-slider{background:#fff;padding:49px 0 55px;border-top:1px solid #efebe6;overflow:hidden}
+.sean-brand-slider .sean-brand-label{text-align:center;font-size:12px;line-height:1.5;letter-spacing:1.4px;text-transform:uppercase;font-weight:850;color:#75716e;margin:0 0 26px}
+.sean-brand-viewport{width:100%;overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent)}
+.sean-brand-track{display:flex;align-items:center;width:max-content;animation:sean-brand-marquee 34s linear infinite}
+.sean-brand-set{display:flex;align-items:center;gap:46px;flex:0 0 auto;padding-right:46px}
+.sean-brand-logo{display:inline-flex;align-items:center;gap:11px;text-decoration:none!important;white-space:nowrap;min-height:65px;color:#20262c!important;border-radius:12px;padding:7px 3px;transition:transform .2s ease,opacity .2s ease}
+.sean-brand-logo:hover{transform:translateY(-2px);opacity:.77}
+.sean-brand-logo:focus-visible{outline:3px solid #2556d8;outline-offset:4px}
+.sean-brand-mark{display:grid;place-items:center;flex:0 0 auto;width:41px;height:41px;border-radius:12px;font-size:21px;font-weight:900;letter-spacing:-1px;line-height:1}
+.sean-brand-wordmark{display:block;font-size:17px;line-height:1.1;letter-spacing:-.55px;font-weight:900;text-align:left}
+.sean-brand-wordmark small{display:block;font-size:10px;line-height:1.45;letter-spacing:1.15px;font-weight:800}
+.sean-brand-sean .sean-brand-mark{background:#20262c;color:#fff;font-size:16px}
+.sean-brand-sean .sean-brand-wordmark b{color:#dc252e}
+.sean-brand-hm .sean-brand-mark{background:#f0e8fe;color:#6b39ad}
+.sean-brand-genie .sean-brand-mark{background:#f1e9ff;color:#8047d2}
+.sean-brand-genie .sean-brand-wordmark b{color:#8047d2}
+.sean-brand-panama .sean-brand-mark{background:#fff0ee;color:#d84533}
+.sean-brand-script .sean-brand-mark{background:#e9f0fd;color:#2856a4}
+.sean-brand-swap .sean-brand-mark{background:#fff0df;color:#d66c16}
+@keyframes sean-brand-marquee{to{transform:translateX(-50%)}}
+.sean-brand-viewport:hover .sean-brand-track,.sean-brand-viewport:focus-within .sean-brand-track{animation-play-state:paused}
+@media(max-width:640px){.sean-brand-slider{padding:37px 0 43px}.sean-brand-slider .sean-brand-label{font-size:11px;margin-bottom:17px}.sean-brand-set{gap:26px;padding-right:26px}.sean-brand-mark{width:38px;height:38px}.sean-brand-wordmark{font-size:16px}.sean-brand-track{animation-duration:30s}.sean-brand-viewport{mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}}
+@media(prefers-reduced-motion:reduce){.sean-brand-viewport{overflow-x:auto;mask-image:none;-webkit-mask-image:none}.sean-brand-track{animation:none}.sean-brand-set[aria-hidden="true"]{display:none}.sean-brand-logo{transition:none}}
+</style>
 </head><body class="opener"><div class="opener-top"><a class="skip" href="#main">Skip to content</a>
 <header class="opener-header"><a class="brand" href="/" aria-label="Sean Ali home">SEAN <span>ALI</span></a></header>
 <main id="main" class="welcome">
@@ -368,6 +395,30 @@ fbq('init','878451855254470');fbq('init','1586097145783190');fbq('track','PageVi
       <h2 id="life-next-title">Don't just look at my life. Build yours.</h2>
       <p>Choose one thing you want to work on. I'll help you find a simple place to begin.</p>
       <a class="life-button" href="/start-here/">Start My Journey →</a>
+    </div>
+  </section>
+
+  <section class="sean-brand-slider" aria-label="Explore Sean Ali's brands and projects">
+    <p class="sean-brand-label">Explore my brands &amp; projects</p>
+    <div class="sean-brand-viewport">
+      <div class="sean-brand-track">
+      <div class="sean-brand-set">
+        <a class="sean-brand-logo sean-brand-sean" href="/" aria-label="Visit Sean Ali"><span class="sean-brand-mark" aria-hidden="true">SA</span><span class="sean-brand-wordmark">SEAN <b>ALI</b></span></a>
+        <a class="sean-brand-logo sean-brand-hm" href="https://hypnoticmeditations.ai/" aria-label="Visit Hypnotic Meditations"><span class="sean-brand-mark" aria-hidden="true">◎</span><span class="sean-brand-wordmark">HYPNOTIC<small>MEDITATIONS</small></span></a>
+        <a class="sean-brand-logo sean-brand-genie" href="https://manifestationgenie.ai/" aria-label="Visit Manifestation Genie"><span class="sean-brand-mark" aria-hidden="true">✦</span><span class="sean-brand-wordmark">MANIFESTATION<small><b>GENIE</b></small></span></a>
+        <a class="sean-brand-logo sean-brand-panama" href="https://panamauntold.com/" aria-label="Visit Panama Untold"><span class="sean-brand-mark" aria-hidden="true">✹</span><span class="sean-brand-wordmark">PANAMA<small>UNTOLD</small></span></a>
+        <a class="sean-brand-logo sean-brand-script" href="https://trythescript.com/" aria-label="Visit Try the Script"><span class="sean-brand-mark" aria-hidden="true">▶</span><span class="sean-brand-wordmark">TRY THE<small>SCRIPT</small></span></a>
+        <a class="sean-brand-logo sean-brand-swap" href="https://swapyour9to5.com/" aria-label="Visit Swap Your 9 to 5"><span class="sean-brand-mark" aria-hidden="true">↗</span><span class="sean-brand-wordmark">SWAP YOUR<small>9 TO 5</small></span></a>
+      </div>
+      <div class="sean-brand-set" aria-hidden="true">
+        <a class="sean-brand-logo sean-brand-sean" href="/" aria-label="Visit Sean Ali" tabindex="-1"><span class="sean-brand-mark" aria-hidden="true">SA</span><span class="sean-brand-wordmark">SEAN <b>ALI</b></span></a>
+        <a class="sean-brand-logo sean-brand-hm" href="https://hypnoticmeditations.ai/" aria-label="Visit Hypnotic Meditations" tabindex="-1"><span class="sean-brand-mark" aria-hidden="true">◎</span><span class="sean-brand-wordmark">HYPNOTIC<small>MEDITATIONS</small></span></a>
+        <a class="sean-brand-logo sean-brand-genie" href="https://manifestationgenie.ai/" aria-label="Visit Manifestation Genie" tabindex="-1"><span class="sean-brand-mark" aria-hidden="true">✦</span><span class="sean-brand-wordmark">MANIFESTATION<small><b>GENIE</b></small></span></a>
+        <a class="sean-brand-logo sean-brand-panama" href="https://panamauntold.com/" aria-label="Visit Panama Untold" tabindex="-1"><span class="sean-brand-mark" aria-hidden="true">✹</span><span class="sean-brand-wordmark">PANAMA<small>UNTOLD</small></span></a>
+        <a class="sean-brand-logo sean-brand-script" href="https://trythescript.com/" aria-label="Visit Try the Script" tabindex="-1"><span class="sean-brand-mark" aria-hidden="true">▶</span><span class="sean-brand-wordmark">TRY THE<small>SCRIPT</small></span></a>
+        <a class="sean-brand-logo sean-brand-swap" href="https://swapyour9to5.com/" aria-label="Visit Swap Your 9 to 5" tabindex="-1"><span class="sean-brand-mark" aria-hidden="true">↗</span><span class="sean-brand-wordmark">SWAP YOUR<small>9 TO 5</small></span></a>
+      </div>
+      </div>
     </div>
   </section>
 </div><footer class="quiet-footer"><span>© 2026 Sean Ali</span><nav aria-label="Footer"><a href="/about-sean-ali/">About</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/contact.html">Contact</a></nav></footer>
