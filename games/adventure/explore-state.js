@@ -1,4 +1,4 @@
-import {DESTINATIONS,WORLD_BOUNDS,mainlandContains,canalWater,gatunWater,migrateGeography,segmentDistance,organicIslandRadius,homeShoreRadius} from './geography.js?v=172';
+import {DESTINATIONS,WORLD_BOUNDS,mainlandContains,canalWater,gatunWater,migrateGeography,segmentDistance,organicIslandRadius,homeShoreRadius} from './geography.js?v=178';
 import {SAN_BLAS_ISLANDS,normalizePanama} from './panama-state.js?v=173';
 import {normalizeCampaign} from './campaign-state.js?v=156';
 import {normalizeColon,bridgeDistance,COLON_BRIDGE} from './colon-state.js?v=156';
@@ -38,12 +38,14 @@ export const MAINLAND_ROADS={
  // Eastern Panama's new neighborhoods, leading outward from downtown.
  panamaEast:[[163,-61],[175,-61],[181,-57],[197,-57],[213,-57],[229,-57],[245,-57]],
  // Colón is a Caribbean city, not simply the Monkey Island nature park.
- colonCity:[[-10,-125],[-17,-131],[-27,-134],[-32,-132]]
+ colonCity:[[-10,-125],[-17,-131],[-27,-134],[-32,-132]],
+ colonCivic:[[30,-116],[45,-116],[58,-116],[74,-116]]
 };
 export const MAINLAND_STOPS=[
  {id:'pizzaCity',x:120,z:-50,en:'Panama City',es:'Ciudad de Panamá'},
  {id:'colon',x:-10,z:-125,en:'Colón',es:'Colón'},
  {id:'colonCity',x:-27,z:-134,en:'Colón Waterfront City',es:'Ciudad de Colón · Malecón'},
+ {id:'colonCivic',x:51,z:-132,en:'Colón Port Civic District',es:'Colón · Distrito Cívico del Puerto'},
  {id:'panamaEast',x:214,z:-50,en:'Panama East District',es:'Barrios de Panamá Este'},
  {id:'boquete',x:-112,z:-32,icon:'🌿',es:'Boquete · Chiriquí',en:'Boquete · Chiriquí',kind:'mainland'},
  {id:'volcanTown',x:-155,z:-32,en:'Volcán Town',es:'Pueblo Volcán'},
@@ -198,6 +200,7 @@ export function isletHeight(x,z){
 }
 export const explorePlaces=[
  {id:'colonCity',x:-27,z:-134,icon:'🏙️',es:'Ciudad de Colón · Costa Caribe',en:'Colón City · Caribbean Waterfront',kind:'mainland'},
+ {id:'colonCivic',x:51,z:-132,icon:'🏘️',es:'Colón · Distrito Cívico y Puerto',en:'Colón · Port and Civic District',kind:'mainland'},
  {id:'panamaEast',x:214,z:-50,icon:'🏙️',es:'Barrios de Panamá Este',en:'Panama City · Eastern Districts',kind:'mainland'},
  {id:'volcanTown',x:-155,z:-32,icon:'🏘️',es:'Pueblo Volcán · Chiriquí',en:'Volcán Town · Chiriquí',kind:'mainland'},
  ...worldIslands.slice(1).filter(p=>!p.guna).map(p=>({id:p.id,x:p.x,z:p.z,icon:({wilds:'🍌',coconutCoast:'🥥',sunset:'🌋',crystalCove:'🏝️',pizzaCity:'🍕',colon:'🌧️',monkeyIslet:'🐒'})[p.id],es:p.es,en:p.en,kind:'islet'})),

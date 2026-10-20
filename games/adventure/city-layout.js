@@ -1,4 +1,4 @@
-import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=168';
+import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=178';
 // Shared road and parcel clearances for all city scene generators.
 export const CITY_STREET_X=[77,105,135,163],CITY_STREET_Z=[-85,-61,-35,-12];
 export const CITY_FIXED_PLOTS=[
@@ -37,7 +37,11 @@ const claimed=CITY_FIXED_PLOTS.map(p=>({...p}));
 export const CITY_BARRIO_PLOTS=[[82,-24],[84,-15],[90,-5],[103,-5],[116,-5],[124,-15],[124,-25],[80,-29]].map(([x,z])=>allocateCityParcel({x,z,w:4.5,d:4},claimed)).filter(Boolean);
 export const CITY_SHOP_PLOTS=[[98,-67],[112,-67],[128,-67],[142,-62],[98,-41.5],[112,-41.5],[133,-29],[146,-33]].map(([x,z])=>allocateCityParcel({x,z,w:7,d:7},claimed)).filter(Boolean);
 export const CITY_EXPANSION_PLOTS=[];
-for(const dx of [-48,-37,-22,-8,8,22,36,48])for(const dz of [-40,-30,-18,-5,9,21,32,42]){
+// Let the city breathe: leave deliberate gaps between Casco's commercial
+// buildings, apartment blocks and open pedestrian squares.
+const COLS=[-48,-37,-22,-8,8,22,36,48],ROWS=[-40,-30,-18,-5,9,21,32,42];
+for(const [i,dx] of COLS.entries())for(const [j,dz] of ROWS.entries()){
+ if((i*3+j*5)%9===0||(i+j*2)%11===6)continue;
  const p=allocateCityParcel({x:120+dx,z:-50+dz,w:5.3,d:6.4},claimed,15);
  if(p)CITY_EXPANSION_PLOTS.push(p);
 }

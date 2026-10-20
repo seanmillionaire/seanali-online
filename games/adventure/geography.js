@@ -16,7 +16,7 @@ export function moveLegacyPoint(x,z){
  for(const [key,rx,rz]of legacyRegions){const p=DESTINATIONS[key].old,d=Math.max(0,Math.hypot((x-p[0])/rx,(z-p[1])/rz)-1);if(d<distance){distance=d;id=key;}}
  return movePoint(id,x,z);
 }
-export const MAINLAND_OUTLINE=[[-190,-95],[-150,-110],[-95,-95],[-45,-145],[-10,-143],[30,-115],[90,-110],[145,-85],[190,-75],[260,-75],[265,-40],[200,-15],[145,-12],[115,-14],[65,-8],[15,9],[-15,9],[-45,10],[-90,8],[-145,-5],[-185,-30]];
+export const MAINLAND_OUTLINE=[[-190,-95],[-150,-110],[-95,-95],[-45,-145],[-13,-149],[18,-151],[48,-148],[75,-136],[90,-110],[145,-85],[190,-75],[260,-75],[265,-40],[200,-15],[145,-12],[115,-14],[65,-8],[15,9],[-15,9],[-45,10],[-90,8],[-145,-5],[-185,-30]];
 export const CANAL_WATERWAY=[[40,-70],[15,-70],[5,-75],[-30,-85],[-55,-105],[-58,-130],[-55,-165]];
 export function segmentDistance(x,z,a,b){const dx=b[0]-a[0],dz=b[1]-a[1],t=Math.max(0,Math.min(1,((x-a[0])*dx+(z-a[1])*dz)/(dx*dx+dz*dz)));return Math.hypot(x-a[0]-dx*t,z-a[1]-dz*t);}
 export function canalWater(x,z){return (x>20&&x<62&&Math.abs(z+70)<13)||CANAL_WATERWAY.slice(1).some((p,i)=>segmentDistance(x,z,CANAL_WATERWAY[i],p)<23);}
@@ -34,9 +34,10 @@ for(let i=0;i<MAINLAND_OUTLINE.length;i++){
   SMOOTH_MAINLAND.push([curve(0),curve(1)]);
  }
 }
+export const SMOOTH_MAINLAND_OUTLINE=SMOOTH_MAINLAND;
 export function mainlandContains(x,z){
  // World-scale ocean sampling dominates startup; reject distant water cheaply.
- if(x<-197||x>272||z<-154||z>24)return false;
+ if(x<-197||x>272||z<-160||z>24)return false;
  // Subtle coordinate warping adds small coastline irregularities without moving
  // roads, saved progress, boats, or the map's major Panama landmarks.
  const px=x+1.35*Math.sin(z*.12+x*.009)+.55*Math.sin(z*.34-x*.025),

@@ -1,5 +1,5 @@
 import {STREET_VENDORS,BARRIO_HOMES} from './city-street-life.js?v=168';
-import {CITY_EXPANSION_PLOTS,CITY_STREET_X,CITY_STREET_Z} from './city-layout.js?v=168';
+import {CITY_EXPANSION_PLOTS,CITY_STREET_X,CITY_STREET_Z} from './city-layout.js?v=178';
 import {createPurpleApartment,PURPLE_APARTMENT} from './purple-apartment.js?v=156';
 import {spendFood} from './explore-state.js?v=156';
 /* Panama Adventure — substantial zero-dependency Casco Viejo city expansion.
@@ -149,6 +149,19 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
    decorate(box,wood,x,y+.63,z+.9,2.2,.22,.55);
    for(const q of [-.8,.8])decorate(cylinder,wood,x+q,y+.34,z+.9,.08,.65,.08);
   }
+ }
+ // The center of Casco Viejo stays a paved, walkable plaza rather than
+ // another tower. Sun-shaded seating and palms give the city breathing room.
+ for(const [px,pz] of [[116,-74],[124,-72],[117,-68],[124,-68]]){
+  const y=height(px,pz);
+  decorate(box,stone,px,y+.18,pz,2.1,.25,1.6);
+  decorate(cylinder,wood,px,y+1.25,pz,.15,2.45,.15);
+  decorate(ball,green,px+.2,y+2.75,pz,.9,.7,.85);
+ }
+ for(const [px,pz] of [[116,-70],[124,-70]]){
+  const y=height(px,pz);
+  decorate(box,stone,px,y+.43,pz,2.3,.22,.75);
+  for(const shift of [-.8,.8])decorate(cylinder,wood,px+shift,y+.18,pz,.1,.36,.1);
  }
  flushDecor();
  createPurpleApartment({T,group,make,mat,box,height});
