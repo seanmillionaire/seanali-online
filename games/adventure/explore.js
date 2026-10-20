@@ -1,7 +1,8 @@
 import {touchesLava,returnToHospital,createCityHospital} from './volcano-safety.js?v=156';
 import {locationLabel} from './location-label.js?v=156';
 import {waterFriend,animalStep} from './animal-boundaries.js?v=156';
-import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,mainlandAt,mainlandRoadRoute,roadDistance} from './explore-state.js?v=168';
+import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,mainlandAt,mainlandRoadRoute,roadDistance} from './explore-state.js?v=169';
+import {planHighwayGuardrails} from './highway-rails.js?v=169';
 import {createPanamaLife} from './panama-life.js?v=168';
 import {createCloseCamera} from './close-camera.js?v=156';
 import {createCampaign} from './campaign.js?v=156';
@@ -22,7 +23,7 @@ import {driveByDirection} from './directional-drive.js?v=166';
 import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=156';
 import {ESTATE_PLANS,estateCosts,estateMissing,findEstateSite,canBuildEstate,buildEstate,canUpgradeEstate,upgradeEstate,estateBlocked,createEstateWorld} from './estate.js?v=156';
 import {buildIsland} from './entrance.js?v=165';
-import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=168';
+import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=169';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);syncWallet(state);
  let disposed=false,engine=null,control=null,builderSystem=null,friendSystem=null,houseSystem=null,wildLife=null,cityLife=null,panamaLife=null,cruiseLife=null,colonLife=null,workshop=null,estateWorld=null,regionWorld=null,carDriving=false,carSpeed=0,mountId=null,birdAltitude=0,birdTarget=0,birdLanding=false,near=null,ride=s.flight?1:0,flightY=s.flight||0,flightTarget=s.flight||0,flightVX=0,flightVZ=0,route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;
@@ -649,20 +650,13 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
     }
    }
   }
-  // Road-edge safety rails: paired steel beams and supports, matching road bends.
+  // Terrain-side barriers only, never at junctions or along Gorgona access.
   const railMetal=mat('#a9afb1',{roughness:.66,metalness:.52}),railPost=mat('#555f65',{roughness:.78});
-  for(const path of Object.values(HIGHWAY_CURVES))for(let i=1;i<path.length;i++){
-   const [ax,az]=path[i-1],[bx,bz]=path[i],dx=bx-ax,dz=bz-az,len=Math.hypot(dx,dz),ang=Math.atan2(dx,dz);
-   const lateralX=Math.cos(ang),lateralZ=-Math.sin(ang);
-   const sections=Math.ceil(len/4);
-   // Highway-only rails: keep city streets and intersection approaches clear.
-   const outsideCity=(x,z)=>Math.hypot((x-120)/58,(z+50)/48)>1.12;
-   for(const side of [-1,1])for(let j=0;j<sections;j++){
-    const t=(j+.5)/sections,x=ax+dx*t+lateralX*side*(HIGHWAY_WIDTH/2+.35),z=az+dz*t+lateralZ*side*(HIGHWAY_WIDTH/2+.35),y=height(x,z);
-    if(!outsideCity(x,z))continue;
-    const beam=make(box,railMetal,x,y+1.02,z,.15,.17,len/sections+.22);beam.rotation.y=ang;beam.castShadow=false;
-    if(j%2===0){const post=make(box,railPost,x,y+.55,z,.17,1.1,.17);post.castShadow=false;}
-   }
+  for(const rail of planHighwayGuardrails()){
+   const y=height(rail.x,rail.z);
+   const beam=make(box,railMetal,rail.x,y+1.02,rail.z,.15,.17,rail.length);
+   beam.rotation.y=rail.angle;beam.castShadow=false;
+   if(rail.post){const post=make(box,railPost,rail.x,y+.55,rail.z,.17,1.1,.17);post.castShadow=false;}
   }
   const avatar=new T.Group();avatar.name='Angelique';scene.add(avatar);const skin=mat('#bd8e68'),shirt=mat('#b8a6d7'),shorts=mat('#437c80'),hair=mat('#44352a');
   make(geometry(new T.CylinderGeometry(.24,.20,.58,12)),shirt,0,1.06,0,1,1,1,avatar);make(ball,skin,0,1.58,0,.22,.27,.21,avatar);make(ball,hair,0,1.73,-.03,.23,.15,.21,avatar);
