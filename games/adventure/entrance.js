@@ -362,7 +362,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
         vec3 eye=normalize(cameraPosition-vec3(p.x,-.12,-p.y));
         float fresnel=pow(1.-max(dot(normal,eye),0.),4.5);
         vec3 water=mix(vec3(.12,.72,.64),vec3(.016,.21,.36),depth);
-        float guna=1.-smoothstep(48.,72.,length((p-vec2(205.,130.))*vec2(1.,1.2)));
+        float guna=1.-smoothstep(48.,72.,length((p-vec2(290.,245.))*vec2(1.,1.2)));
         water=mix(water,mix(vec3(.25,.78,.72),vec3(.015,.42,.52),depth),guna*.72);
         // Turquoise color ripples move across the sandy shallows.
         float ripples=sin(p.x*1.2+p.y*.46+time*.8)*sin(p.y*1.24-p.x*.31-time*.9);

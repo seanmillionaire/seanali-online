@@ -2,7 +2,7 @@
 // routes are cached; there is never a boat or building traveling over terrain.
 import {inWater} from './explore-state.js?v=171';
 import {BUILDER_AREAS} from './builder-projects.js?v=171';
-const GRID=9,LEFT=-270,RIGHT=306,TOP=-225,BOTTOM=153;
+const GRID=9,LEFT=-340,RIGHT=390,TOP=-322,BOTTOM=210;
 const W=Math.floor((RIGHT-LEFT)/GRID)+1,H=Math.floor((BOTTOM-TOP)/GRID)+1;
 let wet=null;
 const safe=(x,z)=>inWater(x,z)&&inWater(x+1.3,z)&&inWater(x-1.3,z)&&inWater(x,z+1.3)&&inWater(x,z-1.3);

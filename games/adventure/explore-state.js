@@ -1,5 +1,5 @@
 import {DESTINATIONS,WORLD_BOUNDS,mainlandContains,canalWater,gatunWater,migrateGeography,segmentDistance,organicIslandRadius,homeShoreRadius} from './geography.js?v=172';
-import {SAN_BLAS_ISLANDS,normalizePanama} from './panama-state.js?v=156';
+import {SAN_BLAS_ISLANDS,normalizePanama} from './panama-state.js?v=173';
 import {normalizeCampaign} from './campaign-state.js?v=156';
 import {normalizeColon,bridgeDistance,COLON_BRIDGE} from './colon-state.js?v=156';
 import {normalizeCruise,CRUISE_FARE} from './cruise-route.js?v=156';
@@ -195,12 +195,12 @@ export const explorePlaces=[
  ...worldIslands.slice(1).filter(p=>!p.guna).map(p=>({id:p.id,x:p.x,z:p.z,icon:({wilds:'🍌',coconutCoast:'🥥',sunset:'🌋',crystalCove:'🏝️',pizzaCity:'🍕',colon:'🌧️',monkeyIslet:'🐒'})[p.id],es:p.es,en:p.en,kind:'islet'})),
  {id:'volcanoTrail',...volcanoTrailPoint(0),icon:'🥾',es:'Sendero del Volcán Barú',en:'Volcán Barú Hiking Trail',kind:'volcano'},
  {id:'volcanoSummit',...volcanoTrailPoint(1),icon:'🌋',es:'Mirador de la Cima · Volcán Barú',en:'Volcán Barú Summit Lookout',kind:'volcano'},
- {id:'coveBalloon',x:5,z:48,icon:'🎈',es:'Globo de Guna Yala',en:'Guna Yala return balloon',kind:'balloon'},
+ {id:'coveBalloon',x:290,z:-233,icon:'🎈',es:'Globo de Guna Yala',en:'Guna Yala return balloon',kind:'balloon'},
  {id:'islet',x:24,z:-8,icon:'🦋',es:'Isla Taboga · Flores',en:'Taboga · Island of Flowers',kind:'islet'},
  {id:'pip',x:4,z:9,icon:'🐢',es:'Pip · Playa Gorgona',en:'Pip · Playa Gorgona',kind:'friend'},
  {id:'mila',x:0,z:-26,icon:'🦜',es:'Mila · Bocas del Toro',en:'Mila · Bocas del Toro',kind:'friend'},
  {id:'ollie',x:-112,z:-32,icon:'🪶',es:'Ollie · Boquete',en:'Ollie · Boquete',kind:'friend'},
- {id:'luna',x:0,z:43,icon:'🦀',es:'Luna · Guna Yala',en:'Luna · Guna Yala',kind:'friend'},
+ {id:'luna',x:290,z:-243,icon:'🦀',es:'Luna · Guna Yala',en:'Luna · Guna Yala',kind:'friend'},
  {id:'garden',x:24,z:-9.5,icon:'🌸',es:'Jardín de Flores de Taboga',en:'Taboga Flower Garden',kind:'garden'},
  {id:'beacon',x:-1,z:-2.5,icon:'✦',es:'Faro de la Aventura · Gorgona',en:'Gorgona Adventure Lighthouse',kind:'beacon'},
  {id:'bounce',x:-4,z:6,icon:'🍄',es:'Honguito de Gorgona',en:'Gorgona Bouncy Mushroom',kind:'bounce'},
@@ -222,14 +222,14 @@ export const exploreItems=[
   return {id:'wildGem4-'+i,x:p.x+Math.cos(a)*p.rx*.39,z:p.z+Math.sin(a)*p.rz*.39,
    kind:'islandTreasure',es:'gema de Taboga',en:'Taboga gem'};
  }),
- ...[[32,100],[-12,100],[10,118],[10,82]].map(([x,z],i)=>({id:'sea'+i,x,z,kind:'seaTreasure',es:'tesoro del arrecife de Guna Yala',en:'Guna Yala reef treasure'})),
+ ...[[276,-262],[303,-261],[310,-234],[268,-233]].map(([x,z],i)=>({id:'sea'+i,x,z,kind:'seaTreasure',es:'tesoro del arrecife de Guna Yala',en:'Guna Yala reef treasure'})),
  ...[[-7,-33],[-3,-35],[3,-35],[7,-33],[0,-38]].map(([x,z],i)=>({id:'fruit'+i,x,z,kind:'fruit',tile:7,es:'plátanos',en:'bananas'})),
  ...[[-48,4],[-45,1],[-39,2],[-36,5],[-49,8]].map(([x,z],i)=>({id:'glow'+i,x,z,kind:'glow',es:'luciérnaga',en:'firefly'})),
  ...[[2,11],[-3,11],[-9,9],[-15,5],[-17,0],[-14,-7],[-7,-11],[2,-11],[10,-9],[15,-4],[17,2],[14,8]].map(([x,z],i)=>({id:'shell'+i,x,z,kind:'shell',es:'concha',en:'shell'}))
 ];
 for(const p of exploreItems){const land={fruit:'wilds',glow:'sunset'}[p.kind];if(land)Object.assign(p,islandPoint(land,p.x,p.z));}
 export function normalizeStory(raw){return Object.fromEntries(Object.entries({shells:3,picnic:4,seed:3,song:4,care:2,light:4}).map(([id,length])=>[id,Number.isInteger(raw?.[id])?Math.max(0,Math.min(length,raw[id])):0]));}
-export function freshExplore(){return {panama:normalizePanama(null),campaign:normalizeCampaign(null),colon:normalizeColon(null),estate:normalizeEstate(null),inventoryVersion:1,foodTotal:{banana:0,coconut:0},worldVersion:3,geographyVersion:1,realms:{found:[],turtle:0,bird:0},journey:{visited:[],meals:0,swim:0,fly:0,rings:[]},x:4,z:10,dayTime:40,story:normalizeStory(null),collected:[],badges:[],hat:0,pet:false,flowers:0,catches:0,pops:0,flight:0,growth:1,food:{coconut:0,banana:0},harvested:{},boat:{x:6.5,z:16,heading:0},regionalProjects:{helped:[]},craft:{built:[],spent:{}},city:{cruise:normalizeCruise(null),bags:[],pizzas:0,car:{x:114,z:-50,heading:0},activities:{deliveries:[],deliveryActive:false,rallyBest:0,rallyWins:0,soccerGoals:0,soccerShots:0,marketTrades:0,muralColors:0,museum:[],carWashes:0}},friends:{visits:[],completed:[],companion:null}};}
+export function freshExplore(){return {panama:normalizePanama(null),campaign:normalizeCampaign(null),colon:normalizeColon(null),estate:normalizeEstate(null),inventoryVersion:1,foodTotal:{banana:0,coconut:0},worldVersion:3,geographyVersion:1,sanBlasGeographyVersion:2,realms:{found:[],turtle:0,bird:0},journey:{visited:[],meals:0,swim:0,fly:0,rings:[]},x:4,z:10,dayTime:40,story:normalizeStory(null),collected:[],badges:[],hat:0,pet:false,flowers:0,catches:0,pops:0,flight:0,growth:1,food:{coconut:0,banana:0},harvested:{},boat:{x:6.5,z:16,heading:0},regionalProjects:{helped:[]},craft:{built:[],spent:{}},city:{cruise:normalizeCruise(null),bags:[],pizzas:0,car:{x:114,z:-50,heading:0},activities:{deliveries:[],deliveryActive:false,rallyBest:0,rallyWins:0,soccerGoals:0,soccerShots:0,marketTrades:0,muralColors:0,museum:[],carWashes:0}},friends:{visits:[],completed:[],companion:null}};}
 export function normalizeExplore(raw){raw=migrateGeography(raw);const s=freshExplore();if(!raw||typeof raw!=='object')return s;const rr=raw.realms||{};s.realms={found:[...new Set((Array.isArray(rr.found)?rr.found:[]).filter(id=>/^(reef-[0-5]|pearl-[0-4]|wind-[0-4]|star-[0-4]|seaChest-0|skyLight-0)$/.test(id)))],turtle:Math.max(0,Math.min(5,Math.floor(Number(rr.turtle)||0))),bird:Math.max(0,Math.min(4,Math.floor(Number(rr.bird)||0)))};const j=raw.journey||{};s.journey={visited:[...new Set((Array.isArray(j.visited)?j.visited:[]).filter(id=>worldIslands.some(p=>p.id===id)))],meals:Math.max(0,Math.min(999,Number(j.meals)||0)),swim:Math.max(0,Math.min(100000,Number(j.swim)||0)),fly:Math.max(0,Math.min(100000,Number(j.fly)||0)),rings:[...new Set((Array.isArray(j.rings)?j.rings:[]).filter(id=>/^(swim|fly)-[0-9]+$/.test(id)))]};// Preserve friendship, a chosen companion, and first-time play rewards across saves.
 const FRIEND_IDS=['pip','dori','mila','ollie','luna','kai'],savedFriends=raw.friends||{};
 s.friends={

@@ -13,12 +13,12 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
  const currentPlace=()=>{const p=land.filter(i=>Math.hypot((world.x-i.x)/i.rx,(world.z-i.z)/i.rz)<1.22).sort((a,b)=>Math.hypot(world.x-a.x,world.z-a.z)-Math.hypot(world.x-b.x,world.z-b.z))[0];return p?name(p):mainlandContains(world.x,world.z)?say('Tierra firme de Panamá','Panama mainland'):say('En el mar','At sea');};
  const islandTarget=id=>places.find(p=>p.id===id)||(id==='home'?places.find(p=>p.id==='pip'):null);
  function drawing(mini){
-  const svg=svgEl('svg',{class:'island-map-art',viewBox:'-345 -275 730 530',role:'img',
+  const svg=svgEl('svg',{class:'island-map-art',viewBox:'-390 -340 810 650',role:'img',
     'aria-label':say('Mapa del archipiélago con la posición actual','Archipelago map with your current position')});
   const defs=svgEl('defs'),gradient=svgEl('linearGradient',{id:mini?'ocean-mini':'ocean-big',x1:'0%',y1:'0%',x2:'100%',y2:'100%'});
   gradient.append(svgEl('stop',{offset:'0%','stop-color':'#77cfd4'}),svgEl('stop',{offset:'100%','stop-color':'#267eac'}));
   defs.append(gradient);svg.append(defs);
-  svg.append(svgEl('rect',{x:-345,y:-275,width:730,height:530,fill:'url(#'+(mini?'ocean-mini':'ocean-big')+')'}));
+  svg.append(svgEl('rect',{x:-390,y:-340,width:810,height:650,fill:'url(#'+(mini?'ocean-mini':'ocean-big')+')'}));
   svg.append(svgEl('path',{d:MAINLAND_OUTLINE.map((p,i)=>(i?'L':'M')+p[0]+' '+p[1]).join(' ')+' Z',fill:'#86b574',stroke:'#e9d7a6','stroke-width':3}));
   svg.append(svgEl('path',{d:Array.from({length:49},(_,i)=>{const a=i/48*Math.PI*2;return (i?'L':'M')+(5+Math.cos(a)*65)+' '+Math.max(-115,-95+Math.sin(a)*30);}).join(' ')+' Z',fill:'#77cfd4'}));svg.append(svgEl('path',{d:CANAL_WATERWAY.map((p,i)=>(i?'L':'M')+p[0]+' '+p[1]).join(' '),stroke:'#77cfd4','stroke-width':46,fill:'none','stroke-linecap':'round','stroke-linejoin':'round'}));
   if(!mini){svg.append(svgEl('text',{x:45,y:-174,'font-size':12,'text-anchor':'middle',fill:'#16475e'},say('MAR CARIBE','CARIBBEAN SEA')));svg.append(svgEl('text',{x:65,y:90,'font-size':12,'text-anchor':'middle',fill:'#16475e'},say('OCÉANO PACÍFICO','PACIFIC OCEAN')));svg.append(svgEl('text',{x:-195,y:-170,'font-size':13,fill:'#16475e'},'N ↑'));}
@@ -123,7 +123,7 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
   if(!opened||!full)return;
   place(full);
   if(placeReadout)placeReadout.textContent='📍 '+say('ESTÁS AQUÍ: ','YOU ARE HERE: ')+currentPlace();
-  const w=730/zoom,h=530/zoom;
+  const w=810/zoom,h=650/zoom;
   const cx=zoom===1?20:center.x,cz=zoom===1?-10:center.z;
   full.svg.setAttribute('viewBox',(cx-w/2)+' '+(cz-h/2)+' '+w+' '+h);
  }

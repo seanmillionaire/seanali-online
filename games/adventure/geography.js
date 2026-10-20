@@ -1,12 +1,12 @@
 // North is -Z and east is +X. Distances are compressed for play, not a scale map.
 export const GEOGRAPHY_VERSION=1;
-export const WORLD_BOUNDS={x:400,z:320};
+export const WORLD_BOUNDS={x:500,z:420};
 export const DESTINATIONS={
  home:{old:[0,0],at:[0,0]},pizzaCity:{old:[-100,-74],at:[120,-50]},
  colon:{old:[110,-56],at:[-10,-125]},monkeyIslet:{old:[130,-25],at:[10,-94]},
  wilds:{old:[16,-112],at:[-105,-135]},sunset:{old:[-110,49],at:[-135,-55]},
  islet:{old:[60,-60],at:[90,25]},coconutCoast:{old:[105,10],at:[200,50]},
- crystalCove:{old:[10,100],at:[205,-130]},canal:{old:[-44,-74],at:[40,-70]},
+ crystalCove:{old:[10,100],at:[290,-245]},canal:{old:[-44,-74],at:[40,-70]},
  volcanTown:{old:[-80,45],at:[-155,-32]},boquete:{old:[-80,45],at:[-112,-32]}
 };
 export function movePoint(id,x,z){const p=DESTINATIONS[id];return {x:x+p.at[0]-p.old[0],z:z+p.at[1]-p.old[1]};}
@@ -61,6 +61,12 @@ export function homeShoreRadius(angle){
   +.018*Math.cos(angle*11+1.1)+.009*Math.sin(angle*17);
 }
 export function migrateGeography(raw){
+ // Keep 2026 saved Guna Yala position and buildings when shifting the region.
+ if(raw?.geographyVersion===1&&raw?.sanBlasGeographyVersion!==2){
+  const remap=p=>p&&Number.isFinite(p.x)&&Number.isFinite(p.z)&&Math.hypot((p.x-205)/72,(p.z+130)/56)<1?{...p,x:p.x+85,z:p.z-115}:p;
+  return {...raw,...remap({x:raw.x,z:raw.z}),boat:remap(raw.boat),estate:raw.estate?{...raw.estate,buildings:(raw.estate.buildings||[]).map(remap)}:raw.estate,sanBlasGeographyVersion:2};
+ }
+
  if(!raw||raw.geographyVersion===GEOGRAPHY_VERSION)return raw;
  const moved={...raw,geographyVersion:GEOGRAPHY_VERSION,worldVersion:3};
  if(Number.isFinite(raw.x)&&Number.isFinite(raw.z))Object.assign(moved,moveLegacyPoint(raw.x,raw.z));

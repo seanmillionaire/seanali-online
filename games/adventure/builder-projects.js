@@ -9,7 +9,7 @@ export const BUILDER_AREAS=[
  {id:'contadora',name:'Contadora',x:200,z:50,rx:23,rz:19},
  {id:'bocas',name:'Bocas del Toro',x:-105,z:-135,rx:24,rz:25},
  {id:'colon',name:'Colón',x:-10,z:-125,rx:26,rz:23},
- {id:'guna',name:'San Blas',x:205,z:-130,rx:10,rz:8}
+ {id:'guna',name:'San Blas',x:290,z:-245,rx:12,rz:10}
 ];
 const PROJECT_SIZE={w:3.8,d:3.1};
 const CITY_LOTS=[{x:120,z:-89},{x:147,z:-77},{x:114,z:-94},{x:151,z:-29}];
@@ -19,7 +19,7 @@ const protectedLocations={
  contadora:[[200,50,3.6]],
  bocas:[[-105,-135,4.8],[-111,-131,3.7]],
  colon:[[-19,-127,9],[-10,-125,4],[-22,-120,3]],
- guna:[[203.7,-130.8,2.1],[206.3,-130.8,2.1],[205,-128.6,2.4]]
+ guna:[[288.7,-245.8,2.1],[291.3,-245.8,2.1],[290,-243.6,2.4]]
 };
 export function builderSiteSafe(area,p,chosen=[]){
  const half=Math.hypot(PROJECT_SIZE.w/2,PROJECT_SIZE.d/2);
