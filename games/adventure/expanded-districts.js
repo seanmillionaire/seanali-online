@@ -12,12 +12,13 @@ export const EXPANDED_DISTRICTS=[
  {id:'colon-civic',name:'Colón · spaced civic and port neighborhoods',
   xs:[-25,-10,5,20,35],zs:[-268,-254,-240],kind:'civic'},
  {id:'colon-port',name:'Colón · Caribbean port and historic blocks',
-  xs:[-78,-66,-53,-40,-27],zs:[-268,-256,-243,-230],
+  xs:[-91,-79,-67,-55],zs:[-280,-268,-256],
   kind:'caribbean'}
 ];
 export const DISTRICT_ROADS={
  panamaEast:[[163,-61],[175,-61],[181,-57],[197,-57],[213,-57],[229,-57],[245,-57]],
- colonAccess:[[-50,-245],[-57,-251],[-67,-254],[-72,-252]]
+ colonAccess:[[-50,-245],[-57,-251],[-67,-254],[-72,-252]],
+ colonPortConnector:[[-47,-269],[-55,-268]]
 };
 const within=(r,x,z)=>x>=r.xs[0]&&x<=r.xs.at(-1)&&z>=r.zs[0]&&z<=r.zs.at(-1);
 export function districtGround(x,z){return mainlandContains(x,z)&&!canalWater(x,z)&&!gatunWater(x,z);}

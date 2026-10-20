@@ -39,6 +39,7 @@ export const MAINLAND_ROADS={
  panamaEast:[[163,-61],[175,-61],[181,-57],[197,-57],[213,-57],[229,-57],[245,-57]],
  // Colón is a Caribbean city, not simply the Monkey Island nature park.
  colonCity:[[-50,-245],[-57,-251],[-67,-254],[-72,-252]],
+ colonPortConnector:[[-47,-269],[-55,-268]],
  colonCivic:[[24,-231],[14,-242],[11,-252]]
 };
 export const MAINLAND_STOPS=[
