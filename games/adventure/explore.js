@@ -2,7 +2,7 @@ import {touchesLava,returnToHospital,createCityHospital} from './volcano-safety.
 import {locationLabel} from './location-label.js?v=156';
 import {waterFriend,animalStep} from './animal-boundaries.js?v=156';
 import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,mainlandAt,mainlandRoadRoute,roadDistance} from './explore-state.js?v=175';
-import {planHighwayGuardrails} from './highway-rails.js?v=169';
+import {planHighwayGuardrails} from './highway-rails.js?v=176';
 import {createPanamaLife} from './panama-life.js?v=168';
 import {createCloseCamera} from './close-camera.js?v=156';
 import {WORLD_BOUNDS} from './geography.js?v=173';
@@ -656,6 +656,9 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
   // Terrain-side barriers only, never at junctions or along Gorgona access.
   const railMetal=mat('#a9afb1',{roughness:.66,metalness:.52}),railPost=mat('#555f65',{roughness:.78});
   for(const rail of planHighwayGuardrails()){
+   // Guarantee that even previously cached rail plans cannot block Gorgona's
+   // approach: no beam may intersect either side of the road lane.
+   if(roadDistance(rail.x,rail.z)<HIGHWAY_WIDTH/2+1.05)continue;
    const y=height(rail.x,rail.z);
    const beam=make(box,railMetal,rail.x,y+1.02,rail.z,.15,.17,rail.length);
    beam.rotation.y=rail.angle;beam.castShadow=false;
@@ -880,7 +883,10 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    if(closeControls&&!targetPoint){const input=closeCamera.movement(dx,dz);dx=input.x;dz=input.z;}
    if(targetPoint&&panel.hidden&&!cruising){const x=targetPoint.x-s.x,z=targetPoint.z-s.z,d=Math.hypot(x,z);if(d<.25){targetPoint=route.shift()||null;marker.visible=!!targetPoint;}else{dx=x/d;dz=z/d;}}
    if(paused()||document.hidden||!panel.hidden||host.classList.contains('helpers-open')||friendSystem?.isOpen()||journey.isOpen()||document.querySelector('dialog[open]')){blur();dx=dz=0;}const worldActive=!paused()&&!document.hidden&&panel.hidden&&!journey.isOpen()&&!document.querySelector('dialog[open]'),active=!cruising&&worldActive;if(active){currentHint=Math.max(0,currentHint-dt);swimBoost=Math.max(0,swimBoost-dt);rescueCooldown=Math.max(0,rescueCooldown-dt);}const speed=houseSystem?.isInside()?0:carDriving?0:mountId?(mountId==='dori'?10.5:8):inside?2:swimming?(swimBoost>0||fastMode||down('Shift')?6:3.3):(fastMode||down('Shift')||energy>0?9:6.5),len=Math.hypot(dx,dz);if(active&&houseSystem?.isInside()){const p=houseSystem.move(dx,dz,dt);if(len)avatar.rotation.y=closeControls?closeCamera.heading():Math.atan2(dx,dz);}
-   if(len>0&&active&&!carDriving&&!ride&&!inside&&!boating&&!houseSystem?.isInside()){dx/=Math.max(1,len);dz/=Math.max(1,len);let nx=s.x+dx*speed*dt,nz=s.z+dz*speed*dt;const edge=Math.hypot(nx/WORLD_BOUNDS.x,nz/WORLD_BOUNDS.z);if(edge>1){nx/=edge;nz/=edge;}if(!airborne&&!mountId&&!remoteAccess(s,{x:nx,z:nz})){nx=s.x;nz=s.z;if(currentHint===0){tell('🌊 Corrientes fuertes · ⛵ 🎈','🌊 Strong currents · ⛵ 🎈');currentHint=5;}}const canMove=(px,pz)=>traversable(px,pz)&&colonLife.canWalk(px,pz)&&!estateBlocked(s,px,pz);if(waterFriend(mountId)){const next=animalStep(mountId,s.x,s.z,nx,nz,3.3);s.x=next.x;s.z=next.z;}else if(mountId||airborne||canMove(nx,nz)){s.x=nx;s.z=nz;}else if(canMove(nx,s.z))s.x=nx;else if(canMove(s.x,nz))s.z=nz;const facing=Math.atan2(dx,dz);const turn=Math.atan2(Math.sin(facing-avatar.rotation.y),Math.cos(facing-avatar.rotation.y));avatar.rotation.y+=turn*Math.min(1,dt*11);if(closeView&&targetPoint)closeCamera.face(avatar.rotation.y);step+=dt*12;autosave+=dt;if(autosave>2){save();autosave=0;}}
+   if(len>0&&active&&!carDriving&&!ride&&!inside&&!boating&&!houseSystem?.isInside()){dx/=Math.max(1,len);dz/=Math.max(1,len);let nx=s.x+dx*speed*dt,nz=s.z+dz*speed*dt;const edge=Math.hypot(nx/WORLD_BOUNDS.x,nz/WORLD_BOUNDS.z);if(edge>1){nx/=edge;nz/=edge;}if(!airborne&&!mountId&&!remoteAccess(s,{x:nx,z:nz})){nx=s.x;nz=s.z;if(currentHint===0){tell('🌊 Corrientes fuertes · ⛵ 🎈','🌊 Strong currents · ⛵ 🎈');currentHint=5;}}const canMove=(px,pz)=>traversable(px,pz)&&colonLife.canWalk(px,pz)&&
+    // A public highway can never be blocked by a legacy player-built
+    // property. Keep its structure/save, but never make the driving lane impassable.
+    (roadDistance(px,pz)<HIGHWAY_WIDTH*.43||!estateBlocked(s,px,pz));if(waterFriend(mountId)){const next=animalStep(mountId,s.x,s.z,nx,nz,3.3);s.x=next.x;s.z=next.z;}else if(mountId||airborne||canMove(nx,nz)){s.x=nx;s.z=nz;}else if(canMove(nx,s.z))s.x=nx;else if(canMove(s.x,nz))s.z=nz;const facing=Math.atan2(dx,dz);const turn=Math.atan2(Math.sin(facing-avatar.rotation.y),Math.cos(facing-avatar.rotation.y));avatar.rotation.y+=turn*Math.min(1,dt*11);if(closeView&&targetPoint)closeCamera.face(avatar.rotation.y);step+=dt*12;autosave+=dt;if(autosave>2){save();autosave=0;}}
    let landed=false;if(active&&dt>0&&(jumpY>0||velocity>0)){const aboveGround=jumpY>0;velocity-=15*dt;jumpY=Math.max(0,jumpY+velocity*dt);if(jumpY===0){velocity=0;landed=aboveGround;}}
    if(birdMount()&&active){
     const to=birdLanding?0:birdTarget,pace=birdLanding?5.8:6.4;
