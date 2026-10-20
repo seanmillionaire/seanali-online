@@ -102,13 +102,9 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  }
  for(const x of xs)paved([[x,-92],[x,-8]],6.0);
  for(const z of zs)paved([[68,z],[172,z]],6.0);
- // The ring is an actual continuous loop, no square chunks rotated into a
- // jagged chain. Keep the historic alignment to preserve plots and rallies.
- const ring=Array.from({length:129},(_,i)=>{
-  const angle=i/128*Math.PI*2;
-  return [120+Math.cos(angle)*48.4,-50+Math.sin(angle)*40.0];
- });
- paved(ring,5.8);
+ // Do not restore the former outer ellipse. That loop cut through the
+ // museum, tower, neighborhood houses and several saved building plots.
+ // The rectilinear grid is connected directly to every intercity approach.
  // The layout plan owns each street-free building plot, with shared setbacks.
  let buildingCount=0;
  for(const {x,z} of CITY_EXPANSION_PLOTS){
