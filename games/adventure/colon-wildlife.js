@@ -20,7 +20,19 @@ export function shoreCrocodilePose(index,time,isWater){
   }
   if(clear)return {x,z,heading};
  }
- return {x:(22),z:(-125),heading:Math.PI};
+ // The relocated rainforest now borders a different Gatún lagoon. If the
+ // former shoreline ring is dry, find a real navigable water corridor around
+ // Monkey Island rather than spawning a crocodile on the new coastal land.
+ for(let i=0;i<128;i++){
+  const a=index*2.399963+i*.39+time*.012;
+  const radius=19+(i%5)*2.2;
+  const x=5+Math.cos(a)*radius,z=-95+Math.sin(a)*radius*.70;
+  const heading=a+Math.PI/2;
+  if([-4,0,3].every(forward=>[-1.1,1.1].every(side=>
+   isWater(x+Math.sin(heading)*forward+Math.cos(heading)*side,
+    z+Math.cos(heading)*forward-Math.sin(heading)*side))))return {x,z,heading};
+ }
+ return {x:5,z:-83,heading:Math.PI/2};
 }
 // Stateful local wandering: the ellipse is used only to find a safe spawn.
 const angleDelta=(a,b)=>Math.atan2(Math.sin(a-b),Math.cos(a-b));
@@ -28,7 +40,8 @@ const crocRandom=n=>{n.seed=(n.seed*1664525+1013904223)>>>0;return n.seed/429496
 // Colón crocs remain in a narrow Gatún/shoreline habitat rather than deep ocean.
 export function nearColonShore(x,z){
  const d=Math.hypot((x+10)/32,(z+125)/29);
- return d>=.78&&d<=1.15;
+ const lake=Math.hypot((x-5)/37,(z+95)/22);
+ return (d>=.78&&d<=1.15)||(lake>=.28&&lake<=1.13);
 }
 export function crocodileClear(x,z,heading,isWater){
  if(!nearColonShore(x,z))return false;

@@ -1,9 +1,9 @@
 import {clipLandTriangle,coastDistanceField,shorelineTiles} from './terrain-surface.js?v=171';
-import {mainlandContains,canalWater,gatunWater,organicIslandRadius,homeShoreRadius} from './geography.js?v=178';
+import {mainlandContains,canalWater,gatunWater,organicIslandRadius,homeShoreRadius} from './geography.js?v=180';
 import {createActiveVolcano} from './active-volcano.js?v=156';
-import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=178';
+import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=180';
 import {createTropical} from './tropical.js?v=177';
-import {createForestLandscape} from './forest-landscape.js?v=178';
+import {createForestLandscape} from './forest-landscape.js?v=184';
 import {createSurfaceTextures} from './surface-textures.js?v=156';
 import {installPolyHavenMaterials} from './polyhaven-materials.js?v=156';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
@@ -423,8 +423,8 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   // Overlap the existing region meshes slightly from below: no empty moat or z-fighting.
   // Subdivide waterline edges fivefold to remove blocky land endings without
   // multiplying all inland polygons; clip the final boundary precisely.
-  for(let x=-196;x<270;x+=3)for(let z=-162;z<26;z+=3)
-  for(const [sx,sz,size] of shorelineTiles(x,z,3,inland,light?3:5)){
+  for(let x=-196;x<270;x+=3)for(let z=-312;z<26;z+=3)
+  if(z>=-167||(x>=-125&&x<=80))for(const [sx,sz,size] of shorelineTiles(x,z,3,inland,light?3:5)){
    const corners=[[sx,0,sz],[sx+size,0,sz],[sx,0,sz+size],[sx+size,0,sz+size]];
    for(const tri of [[0,2,1],[1,2,3]]){
     const vertices=clipLandTriangle(tri.map(i=>corners[i]),inland);
@@ -452,7 +452,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
    // Curved district edges replace the old square asphalt cutouts while
    // keeping the downtown highway and every saved structure in place.
    const eastCoast=Math.hypot((x-216)/61,(z+51)/41),
-    colonCoast=Math.min(Math.hypot((x+15)/35,(z+126)/26),Math.hypot((x-47)/43,(z+129)/29));
+    colonCoast=Math.min(Math.hypot((x+55)/35,(z+246)/26),Math.hypot((x-7)/43,(z+249)/29));
    const eastEdge=.99+.022*Math.sin(x*.21+z*.14),
     colonEdge=1+.024*Math.cos(x*.24-z*.16);
    const urban=Math.hypot((x-cityLand.x)/cityLand.rx,(z-cityLand.z)/cityLand.rz)<=1||

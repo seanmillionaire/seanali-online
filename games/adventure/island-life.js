@@ -1,8 +1,14 @@
-import {roadDistance,HIGHWAY_WIDTH,sharkClearance,sharkStep,recoverShark} from './explore-state.js?v=178';
-import {oceanModel} from './ocean-models.js?v=156';
+import {roadDistance,HIGHWAY_WIDTH,sharkClearance,sharkStep,recoverShark} from './explore-state.js?v=180';
+import {oceanModel} from './ocean-models.js?v=182';
 // Temporary gameplay switch. Re-enable the cycle by setting this to true.
 // Disabled mode forces bright midday even when an old save resumes at night.
 export const NIGHT_MODE_ENABLED=false;
+// Named and inspectable natural marine habitats. All start in navigable
+// water and remain near attractions instead of hidden in the deep ocean.
+export const MARINE_HABITATS={
+ dolphins:[[13,19],[24,27],[-100,-170],[-127,-172],[205,-100],[230,50],[275,-220],[-55,-318]],
+ octopuses:[[14,22],[120,24],[-118,-178],[200,85],[278,-228],[-56,-318]]
+};
 export function islandDaylight(seconds){
  if(!NIGHT_MODE_ENABLED)return {phase:.25,day:1,night:false,twilight:0};
  const phase=((seconds%240)+240)%240/240;
@@ -14,10 +20,17 @@ export function islandDaylight(seconds){
 export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,cone,box,sun,ambient,waterMaterial,inWater}){
  const s=state.world,animals=[],group=new T.Group();group.name='Ocean wildlife';scene.add(group);let ridden=null;
  const nightSky=new T.Color('#172c50'),daySky=new T.Color('#a4c9de'),dusk=new T.Color('#ce9b96');
- function animal(kind,x,z,i){const {g,moving}=oceanModel(T,{geometry,mat,make,ball},kind);g.name=kind+' '+(i+1);group.add(g);g.position.set(x,-.3,z);animals.push({g,moving,x,z,phase:kind==='Reef fish'?Math.floor(i/6)*1.7+(i%6)*.08:i*1.7,kind,seed:923+i*7919+(kind.length*131),attention:0,t:0,heading:i*2.39996,waypoint:null,stuck:0,travel:0});}
+ function animal(kind,x,z,i){const {g,moving}=oceanModel(T,{geometry,mat,make,ball},kind);g.name=kind+' '+(i+1);group.add(g);g.position.set(x,-.3,z);
+  if(kind==='Dolphin')g.scale.setScalar(1.35);
+  if(kind==='Octopus')g.scale.setScalar(1.18);
+  animals.push({g,moving,x,z,phase:kind==='Reef fish'?Math.floor(i/6)*1.7+(i%6)*.08:i*1.7,kind,seed:923+i*7919+(kind.length*131),attention:0,t:0,heading:i*2.39996,waypoint:null,stuck:0,travel:0});}
  [[8,24],[-170,0],[108,30],[200,75]].forEach(([x,z],i)=>animal('Sea turtle',x,z,i));
- [[13,28],[-100,-170],[205,-100],[230,50]].forEach(([x,z],i)=>animal('Dolphin',x,z,i));
+ // Small dolphin pods visit beaches, docks and distant islands, rather than
+ // remaining invisible far away in four arbitrary offshore coordinates.
+ MARINE_HABITATS.dolphins.forEach(([x,z],i)=>animal('Dolphin',x,z,i));
  [[-8,24],[130,14],[-140,-145],[200,-90]].forEach(([x,z],i)=>animal('Manta ray',x,z,i));
+ // Visible shallow-water octopuses with independently moving arms.
+ MARINE_HABITATS.octopuses.forEach(([x,z],i)=>animal('Octopus',x,z,i));
  for(let i=0;i<24;i++){const spots=[[11,20],[108,25],[-135,-130],[220,75]],p=spots[Math.floor(i/6)];animal('Reef fish',p[0]+(i%3)*.7,p[1]+Math.floor(i%6/3)*.7,i);}
  // Celestial bodies travel across the upper camera view, away from Angelique and controls.
  const sky=new T.Group();sky.name='Sun moon and stars';camera.add(sky);if(!camera.parent)scene.add(camera);const owned=[];
@@ -49,8 +62,8 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
   for(const a of animals){
    if(active)a.t+=dt;
    const t=a.t,isDolphin=a.kind==='Dolphin',isFish=a.kind==='Reef fish';
-   const speed=isDolphin?3.4:isFish?1.2:a.kind==='Manta ray'?1.65:.95;
-   const radius=isFish?.3:.85;
+   const speed=isDolphin?3.4:isFish?1.2:a.kind==='Octopus'?.48:a.kind==='Manta ray'?1.65:.95;
+   const radius=isFish?.3:a.kind==='Octopus'?1.1:.85;
    const px=player?.x,pz=player?.z,notice=Number.isFinite(px)&&Number.isFinite(pz)?Math.hypot(px-a.g.position.x,pz-a.g.position.z):Infinity;
    const observing=notice<(isDolphin?13:isFish?5:10);
    // Nearby wildlife watches Angelique without abandoning safe-water boundaries.
@@ -118,11 +131,15 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
    a.g.visible=a!==ridden&&safeWater(a.g.position.x,a.g.position.z,.2);
    // Separate gentle swimming strokes from occasional dolphin surfacing.
    const pulse=Math.sin(t*(isDolphin?2.0:isFish?4:1.8)+a.phase);
-   a.g.position.y=isDolphin?-.30+Math.pow(Math.max(0,pulse),10)*.72:-.36+Math.sin(t*1.1+a.phase)*.07;
+   a.g.position.y=isDolphin?-.23+Math.pow(Math.max(0,pulse),10)*.82:
+    a.kind==='Octopus'?-.11+Math.sin(t*.8+a.phase)*.07:-.36+Math.sin(t*1.1+a.phase)*.07;
    if(isDolphin)a.g.rotation.x=-Math.max(0,pulse)*.12;
    a.moving.forEach((f,i)=>{
     const phase=t*(isDolphin?3.2:isFish?5.5:2.2)+i*1.65+a.phase;
-    if(a.kind==='Sea turtle'||a.kind==='Manta ray')f.rotation.z=motion?Math.sin(phase)*.15:0;
+    if(a.kind==='Octopus'){
+     f.rotation.y=i*Math.PI/4+(motion?Math.sin(phase)*.16:0);
+     f.rotation.x=motion?Math.sin(phase*1.12)*.20:0;
+    }else if(a.kind==='Sea turtle'||a.kind==='Manta ray')f.rotation.z=motion?Math.sin(phase)*.15:0;
     else if(isDolphin)f.rotation.x=motion?Math.sin(phase)*.19:0;
     else f.rotation.y=motion?Math.sin(phase)*.16:0;
    });

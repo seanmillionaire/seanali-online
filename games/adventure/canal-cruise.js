@@ -27,7 +27,7 @@ export function createCanalCruise({T,scene,host,state,make,mat,box,ball,cylinder
  ctx.fillStyle='#16364e';ctx.fillRect(0,0,1024,256);ctx.textAlign='center';
  ctx.fillStyle='#ffe7a7';ctx.font='bold 58px sans-serif';ctx.fillText('CANAL DE PANAMÁ',512,90);
  ctx.fillStyle='#fff8e5';ctx.font='bold 43px sans-serif';ctx.fillText(choose('CRUCERO · 10 MONEDAS','GRAND CRUISE · 10 COINS'),512,165);
- ctx.font='30px sans-serif';ctx.fillText(choose('LAGO GATÚN · COSTA DE COLÓN','GATÚN LAKE · COLÓN COAST'),512,220);
+ ctx.font='30px sans-serif';ctx.fillText(choose('ESCLUSAS · CANAL DE PANAMÁ','LOCKS · PANAMA CANAL'),512,220);
  const signTexture=new T.CanvasTexture(signCanvas),signMaterial=new T.SpriteMaterial({map:signTexture,depthTest:false});
  const sign=new T.Sprite(signMaterial);sign.position.set((68),by+7,(-65));sign.scale.set(14,3.5,1);root.add(sign);
  // The only cruise ship: 34 units long, five decks and a broad open sun deck.

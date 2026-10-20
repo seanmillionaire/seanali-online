@@ -1,6 +1,6 @@
 // Smooth silhouettes, countershading and articulated fins; no downloaded models or extra textures.
 export function oceanModel(T,{geometry,mat,make,ball},kind){
- const g=new T.Group(),moving=[],skin=mat(kind==='Sea turtle'?'#526944':kind==='Manta ray'?'#364c58':kind==='Reef fish'?'#d6ae43':'#617e89',{roughness:.4}),underside=mat('#cbd5cb',{roughness:.55}),eye=mat('#102026',{roughness:.2});
+ const g=new T.Group(),moving=[],skin=mat(kind==='Sea turtle'?'#526944':kind==='Manta ray'?'#364c58':kind==='Reef fish'?'#d6ae43':kind==='Octopus'?'#c77a60':'#617e89',{roughness:.4}),underside=mat('#cbd5cb',{roughness:.55}),eye=mat('#102026',{roughness:.2});
  const smooth=geometry(new T.SphereGeometry(1,20,12));
  function fin(points,parent=g,material=skin){const shape=new T.Shape();points.forEach(([x,y],i)=>i?shape.lineTo(x,y):shape.moveTo(x,y));shape.closePath();const geo=geometry(new T.ExtrudeGeometry(shape,{depth:.025,bevelEnabled:true,bevelSegments:1,steps:1,bevelSize:.025,bevelThickness:.015}));return make(geo,material,0,0,0,1,1,1,parent);}
  if(kind==='Reef shark'||kind==='Dolphin'){
@@ -9,6 +9,33 @@ export function oceanModel(T,{geometry,mat,make,ball},kind){
   const dorsal=fin([[-.35,0],[.12,.7],[.23,.17],[.5,0]]);dorsal.rotation.y=Math.PI/2;dorsal.position.set(0,.22,-.25);
   for(const side of [-1,1]){const p=fin([[0,0],[side*.88,-.44],[side*.58,-.1],[0,.23]]);p.rotation.x=Math.PI/2;p.position.set(side*.2,-.12,.15);for(let n=0;n<(kind==='Reef shark'?4:0);n++){const slit=make(smooth,eye,side*.31,-.015,.15+n*.09,.008,.1,.012,g);slit.rotation.z=side*.2;}make(smooth,eye,side*.19,.055,.87,.038,.035,.025,g);}
   const tail=new T.Group();g.add(tail);tail.position.z=-1.33;const fluke=fin([[0,0],[-.24,.73],[.04,.5],[.16,.12],[.12,-.16],[-.2,-.48],[.1,-.35],[.27,0]],tail);fluke.rotation.y=Math.PI/2;if(kind==='Dolphin'){tail.rotation.z=Math.PI/2;make(smooth,skin,0,-.025,1.15,.13,.1,.38,g);}moving.push(tail);
+ }else if(kind==='Octopus'){
+  // Real 8-arm cephalopod silhouette: rounded mantle, head, eye stalks,
+  // curling tube tentacles and their underside suction cups.
+  const mantle=make(smooth,skin,0,.32,-.18,.65,.56,.62,g);
+  mantle.rotation.z=-.14;
+  make(smooth,skin,0,-.13,.28,.43,.28,.49,g);
+  for(const sign of [-1,1]){
+   make(smooth,skin,sign*.37,.26,.48,.16,.20,.16,g);
+   make(smooth,eye,sign*.37,.30,.61,.105,.11,.072,g);
+   make(smooth,underside,sign*.41,.33,.67,.027,.032,.018,g);
+  }
+  const cups=mat('#eab4a0',{roughness:.88});
+  for(let i=0;i<8;i++){
+   const a=i*Math.PI/4,pivot=new T.Group();
+   pivot.rotation.y=a;g.add(pivot);moving.push(pivot);
+   const points=[
+    new T.Vector3(0,-.23,.16),new T.Vector3(.12,-.34,.68),
+    new T.Vector3(.36,-.23,1.26),new T.Vector3(.43,-.46,1.72),
+    new T.Vector3(.36,-.12,1.92)
+   ];
+   const curve=new T.CatmullRomCurve3(points);
+   make(geometry(new T.TubeGeometry(curve,15,.095,6,false)),skin,0,0,0,1,1,1,pivot);
+   for(let k=2;k<=10;k+=2){
+    const point=curve.getPoint(k/12);
+    make(smooth,cups,point.x,-.07+point.y,point.z,.085,.042,.09,pivot);
+   }
+  }
  }else if(kind==='Manta ray'){
   make(smooth,skin,0,0,0,.5,.14,.7,g);make(smooth,underside,0,-.09,0,.45,.06,.65,g);
   for(const side of [-1,1]){const pivot=new T.Group();g.add(pivot);const wing=fin([[0,.55],[side*.65,.45],[side*1.65,-.35],[side*.65,-.45],[0,-.65]],pivot);wing.rotation.x=Math.PI/2;moving.push(pivot);make(smooth,skin,side*.2,0,.75,.09,.07,.35,g);make(smooth,eye,side*.35,.1,.35,.03,.03,.03,g);}

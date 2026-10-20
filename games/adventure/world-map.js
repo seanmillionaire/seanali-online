@@ -1,4 +1,4 @@
-import {SMOOTH_MAINLAND_OUTLINE,CANAL_WATERWAY,mainlandContains} from './geography.js?v=178';
+import {SMOOTH_MAINLAND_OUTLINE,CANAL_WATERWAY,mainlandContains} from './geography.js?v=180';
 /* Shared, coordinate-accurate archipelago map for the open-world explorer.
    X is east/right and Z is south/down, matching ArrowUp (negative Z). */
 export function createWorldMap({host,panel,world,islands,places,language,onTravel,onOpen}){
@@ -20,7 +20,7 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
   defs.append(gradient);svg.append(defs);
   svg.append(svgEl('rect',{x:-390,y:-340,width:810,height:650,fill:'url(#'+(mini?'ocean-mini':'ocean-big')+')'}));
   svg.append(svgEl('path',{d:SMOOTH_MAINLAND_OUTLINE.map((p,i)=>(i?'L':'M')+p[0]+' '+p[1]).join(' ')+' Z',fill:'#86b574',stroke:'#e9d7a6','stroke-width':3}));
-  svg.append(svgEl('path',{d:Array.from({length:49},(_,i)=>{const a=i/48*Math.PI*2;return (i?'L':'M')+(5+Math.cos(a)*65)+' '+Math.max(-115,-95+Math.sin(a)*30);}).join(' ')+' Z',fill:'#77cfd4'}));svg.append(svgEl('path',{d:CANAL_WATERWAY.map((p,i)=>(i?'L':'M')+p[0]+' '+p[1]).join(' '),stroke:'#77cfd4','stroke-width':46,fill:'none','stroke-linecap':'round','stroke-linejoin':'round'}));
+  svg.append(svgEl('path',{d:Array.from({length:49},(_,i)=>{const a=i/48*Math.PI*2;return (i?'L':'M')+(-35+Math.cos(a)*37)+' '+(-215+Math.sin(a)*22);}).join(' ')+' Z',fill:'#77cfd4'}));svg.append(svgEl('path',{d:CANAL_WATERWAY.map((p,i)=>(i?'L':'M')+p[0]+' '+p[1]).join(' '),stroke:'#77cfd4','stroke-width':46,fill:'none','stroke-linecap':'round','stroke-linejoin':'round'}));
   if(!mini){svg.append(svgEl('text',{x:45,y:-174,'font-size':12,'text-anchor':'middle',fill:'#16475e'},say('MAR CARIBE','CARIBBEAN SEA')));svg.append(svgEl('text',{x:65,y:90,'font-size':12,'text-anchor':'middle',fill:'#16475e'},say('OCÉANO PACÍFICO','PACIFIC OCEAN')));svg.append(svgEl('text',{x:-195,y:-170,'font-size':13,fill:'#16475e'},'N ↑'));}
   for(const i of land){
     const g=svgEl('g',{class:'island-map-land','data-island':i.id});

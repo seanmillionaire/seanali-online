@@ -1,8 +1,8 @@
 // Water-only ferry navigation for Mateo and Sofia. Coastal ports and ocean
 // routes are cached; there is never a boat or building traveling over terrain.
-import {inWater} from './explore-state.js?v=178';
-import {BUILDER_AREAS} from './builder-projects.js?v=179';
-const GRID=9,LEFT=-340,RIGHT=390,TOP=-322,BOTTOM=210;
+import {inWater} from './explore-state.js?v=180';
+import {BUILDER_AREAS} from './builder-projects.js?v=181';
+const GRID=9,LEFT=-340,RIGHT=390,TOP=-365,BOTTOM=210;
 const W=Math.floor((RIGHT-LEFT)/GRID)+1,H=Math.floor((BOTTOM-TOP)/GRID)+1;
 let wet=null;
 const safe=(x,z)=>inWater(x,z)&&inWater(x+1.3,z)&&inWater(x-1.3,z)&&inWater(x,z+1.3)&&inWater(x,z-1.3);
@@ -14,6 +14,9 @@ const point=n=>({x:LEFT+(n%W)*GRID,z:TOP+Math.floor(n/W)*GRID});
 export function builderWaterPort(area){
  const center=BUILDER_AREAS.find(a=>a.id===area)||area;
  if(!center)return null;
+ // The Colón rainforest now sits at the end of a long peninsula. Depart from
+ // the OPEN Caribbean, not its internal Gatún lagoon (which has no sea route).
+ if(center.id==='colon'&&safe(-56,-315))return {x:-56,z:-315};
  let best=null,score=Infinity;
  for(let ring=1;ring<=10;ring++)for(let k=0;k<64;k++){
   const a=k*Math.PI/32,x=center.x+Math.cos(a)*(center.rx+ring*2.8),
