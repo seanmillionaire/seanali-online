@@ -8,7 +8,7 @@ import {createCloseCamera} from './close-camera.js?v=156';
 import {WORLD_BOUNDS} from './geography.js?v=180';
 import {createExtendedDistricts} from './expanded-districts.js?v=181';
 import {createCampaign} from './campaign.js?v=156';
-import {createColonAdventure} from './colon-adventure.js?v=181';
+import {createColonAdventure} from './colon-adventure.js?v=184';
 import {createCanalCruise} from './canal-cruise.js?v=183';
 import {createRealms} from './realms.js?v=174';
 import {createJourney} from './journey.js?v=156';
@@ -24,7 +24,7 @@ import {createPizzaCity} from './pizza-city.js?v=178';
 import {driveByDirection} from './directional-drive.js?v=166';
 import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=156';
 import {ESTATE_PLANS,estateCosts,estateMissing,findEstateSite,canBuildEstate,buildEstate,canUpgradeEstate,upgradeEstate,estateBlocked,createEstateWorld} from './estate.js?v=156';
-import {buildIsland} from './entrance.js?v=183';
+import {buildIsland} from './entrance.js?v=184';
 import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=180';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);syncWallet(state);

@@ -1,4 +1,4 @@
-import {createColonWildlife,monkeyJumpPhase,recordMonkeyJump} from './colon-wildlife.js?v=181';
+import {createColonWildlife,monkeyJumpPhase,recordMonkeyJump} from './colon-wildlife.js?v=184';
 import {COLON_SITES,COLON_BRIDGE,bridgeDistance,buildColon,expandColon} from './colon-state.js?v=156';
 import {addFood,inWater as worldInWater,earnCoins} from './explore-state.js?v=180';
 import {COLON_OFFSET} from './geography.js?v=180';

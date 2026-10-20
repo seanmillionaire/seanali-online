@@ -12,7 +12,12 @@ export const FOREST_PATCHES=[
  {id:'baru-highlands',x:-155,z:-73,rx:31,rz:23,n:58,biome:'montane'},
  {id:'baru-foothills',x:-104,z:-19,rx:21,rz:15,n:37,biome:'mixed'},
  {id:'bocas-jungle',x:-109,z:-141,rx:23,rz:22,n:45,biome:'island'},
- {id:'colon-grove',x:-53,z:-246,rx:21,rz:18,n:34,biome:'island'}
+ {id:'colon-grove',x:-53,z:-246,rx:21,rz:18,n:34,biome:'island'},
+ // Scattered forest edges make the longer journey scenic, without turning it
+ // into another dense wall of identical trees.
+ {id:'colon-road-west',x:-66,z:-197,rx:21,rz:20,n:22,biome:'mixed'},
+ {id:'colon-road-east',x:7,z:-192,rx:19,rz:24,n:19,biome:'tropical'},
+ {id:'colon-cape',x:-79,z:-270,rx:22,rz:18,n:18,biome:'tropical'}
 ];
 export const FOREST_CLEARINGS=[
  {x:0,z:0,r:19},{x:21,z:1,r:7},{x:32,z:-14,r:8},

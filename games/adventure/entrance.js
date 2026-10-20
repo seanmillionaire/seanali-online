@@ -3,7 +3,7 @@ import {mainlandContains,canalWater,gatunWater,organicIslandRadius,homeShoreRadi
 import {createActiveVolcano} from './active-volcano.js?v=156';
 import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=180';
 import {createTropical} from './tropical.js?v=177';
-import {createForestLandscape} from './forest-landscape.js?v=181';
+import {createForestLandscape} from './forest-landscape.js?v=184';
 import {createSurfaceTextures} from './surface-textures.js?v=156';
 import {installPolyHavenMaterials} from './polyhaven-materials.js?v=156';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */

@@ -6,6 +6,7 @@ const assert=require('node:assert/strict');
  const {builderFerryRoute,builderWaterPort}=await import('../games/adventure/builder-ferry.js');
  const {districtBuildings}=await import('../games/adventure/expanded-districts.js');
  const {MARINE_HABITATS}=await import('../games/adventure/island-life.js');
+ const {shoreCrocodilePose,crocodileClear}=await import('../games/adventure/colon-wildlife.js');
  const city=worldIslands.find(p=>p.id==='pizzaCity');
  const colon=worldIslands.find(p=>p.id==='colon'),monkey=worldIslands.find(p=>p.id==='monkeyIslet');
  const distance=p=>Math.hypot(p.x-city.x,p.z-city.z);
@@ -51,6 +52,12 @@ const assert=require('node:assert/strict');
     ferryChecks++;
    }
   }
+ }
+ const localWater=(x,z)=>inWater(x+COLON_OFFSET.x,z+COLON_OFFSET.z);
+ for(let i=0;i<8;i++){
+  const p=shoreCrocodilePose(i,0,localWater);
+  assert(localWater(p.x,p.z)&&crocodileClear(p.x,p.z,p.heading,localWater),
+   'crocodile '+i+' must spawn afloat by the moved Colón lagoon');
  }
  assert.equal(MARINE_HABITATS.dolphins.length,8);
  assert.equal(MARINE_HABITATS.octopuses.length,6);
