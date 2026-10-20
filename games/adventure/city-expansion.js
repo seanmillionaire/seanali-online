@@ -95,13 +95,13 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  const xs=CITY_STREET_X,zs=CITY_STREET_Z;
  const junctions=xs.flatMap(x=>zs.map(z=>[x,z]));
  const safeRoad=(x,z)=>(Math.hypot((x-120)/58,(z+50)/48)<.945);
- function paved(points,width=6.0){
+ function paved(points,width=4.8){
   const road=createRoadSurface({T,geometry,group,points,width,height,asphalt:asph,
    paint:stripe,edgePaint:white,lift:.145,safe:safeRoad,junctions,step:1.5});
   roadCount+=road.quads;
  }
- for(const x of xs)paved([[x,-92],[x,-8]],6.0);
- for(const z of zs)paved([[68,z],[172,z]],6.0);
+ for(const x of xs)paved([[x,-92],[x,-8]],4.8);
+ for(const z of zs)paved([[68,z],[172,z]],4.8);
  // Do not restore the former outer ellipse. That loop cut through the
  // museum, tower, neighborhood houses and several saved building plots.
  // The rectilinear grid is connected directly to every intercity approach.
