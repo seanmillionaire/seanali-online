@@ -1,11 +1,17 @@
+import {WORLD_EXTENT} from './geography.js?v=186';
 // Water-only ferry navigation for Mateo and Sofia. Coastal ports and ocean
 // routes are cached; there is never a boat or building traveling over terrain.
-import {inWater} from './explore-state.js?v=180';
-import {BUILDER_AREAS} from './builder-projects.js?v=181';
-const GRID=9,LEFT=-340,RIGHT=390,TOP=-365,BOTTOM=210;
+import {inWater} from './explore-state.js?v=186';
+import {BUILDER_AREAS} from './builder-projects.js?v=186';
+const GRID=12,LEFT=WORLD_EXTENT.left,RIGHT=-WORLD_EXTENT.left,TOP=WORLD_EXTENT.top,BOTTOM=-WORLD_EXTENT.top;
 const W=Math.floor((RIGHT-LEFT)/GRID)+1,H=Math.floor((BOTTOM-TOP)/GRID)+1;
 let wet=null;
 const safe=(x,z)=>inWater(x,z)&&inWater(x+1.3,z)&&inWater(x-1.3,z)&&inWater(x,z+1.3)&&inWater(x,z-1.3);
+const clearSegment=(a,b)=>{
+ const len=Math.hypot(a.x-b.x,a.z-b.z);
+ for(let d=0;d<len;d+=.5){const t=d/(len||1);if(!safe(a.x+(b.x-a.x)*t,a.z+(b.z-a.z)*t))return false;}
+ return safe(b.x,b.z);
+};
 function grid(){if(wet)return wet;wet=new Uint8Array(W*H);
  for(let z=0;z<H;z++)for(let x=0;x<W;x++)wet[z*W+x]=safe(LEFT+x*GRID,TOP+z*GRID)?1:0;
  return wet;
@@ -16,7 +22,7 @@ export function builderWaterPort(area){
  if(!center)return null;
  // The Colón rainforest now sits at the end of a long peninsula. Depart from
  // the OPEN Caribbean, not its internal Gatún lagoon (which has no sea route).
- if(center.id==='colon'&&safe(-56,-315))return {x:-56,z:-315};
+ if(center.id==='colon'&&safe(-56,-435))return {x:-56,z:-435};
  let best=null,score=Infinity;
  for(let ring=1;ring<=10;ring++)for(let k=0;k<64;k++){
   const a=k*Math.PI/32,x=center.x+Math.cos(a)*(center.rx+ring*2.8),
@@ -52,25 +58,22 @@ function findRoute(from,to){
    if(mx<0||mx>=W||mz<0||mz>=H||Math.abs(mx-nx)>1||Math.abs(mz-nz)>1||visited[m]||!occupancy[m])continue;
    // Prevent diagonal shortcuts through coast tips.
    if(mx!==nx&&mz!==nz&&(!occupancy[nz*W+mx]||!occupancy[mz*W+nx]))continue;
+   if(!clearSegment(point(n),point(m)))continue;
    visited[m]=1;prev[m]=n;queue[tail++]=m;
   }
  }
  if(!visited[last])return [];
  const nodes=[];for(let n=last;n!==-1;n=prev[n])nodes.push(point(n));nodes.reverse();
  // Only drop turns when every intervening sample remains in navigable water.
- const visible=(a,b)=>{const len=Math.hypot(a.x-b.x,a.z-b.z);
-  for(let d=0;d<=len;d+=2.1){const t=d/(len||1);if(!safe(a.x+(b.x-a.x)*t,a.z+(b.z-a.z)*t))return false;}
-  return safe(b.x,b.z);
- };
- const compressed=[start];let i=0;while(i<nodes.length){
-  let next=i;
-  for(let j=nodes.length-1;j>i;j--){if(visible(compressed.at(-1),nodes[j])){next=j;break;}}
-  if(next===i&&!visible(compressed.at(-1),nodes[i]))compressed.push(nodes[i]);
-  else if(next>i)compressed.push(nodes[next]);
-  i=Math.max(next,i)+1;
+ const visible=clearSegment;
+ const complete=[start,...nodes,finish].filter((p,i,a)=>!i||Math.hypot(p.x-a[i-1].x,p.z-a[i-1].z)>.001);
+ if(complete.slice(1).some((p,i)=>!visible(complete[i],p)))return [];
+ const compressed=[complete[0]];let i=0;
+ while(i<complete.length-1){
+  let next=i+1;
+  for(let j=complete.length-1;j>i+1;j--)if(visible(complete[i],complete[j])){next=j;break;}
+  compressed.push(complete[next]);i=next;
  }
- if(visible(compressed.at(-1),finish))compressed.push(finish);
- else compressed.push(nodes.at(-1),finish);
  return compressed;
 }
 export function builderFerryRoute(from,to){

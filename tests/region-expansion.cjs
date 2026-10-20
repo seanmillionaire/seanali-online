@@ -3,10 +3,10 @@ const assert=require('node:assert/strict');
  const {worldIslands,explorePlaces,isletHeight,inWater,traversable,islandPath,freshExplore,normalizeExplore}=await import('../games/adventure/explore-state.js');
  const {WORLD_BOUNDS}=await import('../games/adventure/geography.js');
  const byId=id=>worldIslands.find(p=>p.id===id);
- assert.deepEqual(WORLD_BOUNDS,{x:400,z:320});
+ assert.deepEqual(WORLD_BOUNDS,{x:700,z:600});
  const original=[
-  ['islet',90,25],['wilds',-105,-135],['coconutCoast',200,50],
-  ['crystalCove',205,-130],['pizzaCity',120,-50],['sunset',-135,-55],['colon',-10,-125]
+  ['islet',110,85],['wilds',-230,-200],['coconutCoast',320,125],
+  ['crystalCove',290,-245],['pizzaCity',120,-50],['sunset',-350,-65],['colon',-50,-365]
  ];
  for(const [id,x,z]of original){assert.equal(byId(id).x,x);assert.equal(byId(id).z,z);}
  const remote=['coiba','delRey','escudo','cebaco'];
@@ -31,8 +31,8 @@ const assert=require('node:assert/strict');
   assert(Math.hypot(newer[i].x-newer[j].x,newer[i].z-newer[j].z)>newer[i].rx+newer[j].rx+30,'remote islands spaced apart');
  assert(byId('islet').rx>12&&byId('wilds').rx>24&&byId('coconutCoast').rx>23,'more land at established destinations');
  const path=islandPath(byId('coiba'),byId('delRey'));
- assert(path.length>25&&path.length<110,'distant route uses bounded waypoints instead of a giant 1m grid');
+ assert(path.length>25&&path.length<180,'distant route uses bounded waypoints instead of a giant 1m grid');
  assert(Math.hypot(path.at(-1).x-byId('delRey').x,path.at(-1).z-byId('delRey').z)<.05,'route reaches distant island');
- const restored=normalizeExplore(freshExplore());assert.equal(restored.geographyVersion,1,'old game saves remain compatible');
- console.log('PASS four physically distant islands, larger legacy island space, original locations and saved progression');
+ const restored=normalizeExplore(freshExplore());assert.equal(restored.geographyVersion,2,'old game saves remain compatible');
+ console.log('PASS four physically distant islands, larger legacy island space, expanded locations and saved progression');
 })().catch(e=>{console.error(e);process.exitCode=1});

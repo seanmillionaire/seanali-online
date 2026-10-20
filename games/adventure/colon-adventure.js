@@ -1,7 +1,7 @@
-import {createColonWildlife,monkeyJumpPhase,recordMonkeyJump} from './colon-wildlife.js?v=184';
-import {COLON_SITES,COLON_BRIDGE,bridgeDistance,buildColon,expandColon} from './colon-state.js?v=156';
-import {addFood,inWater as worldInWater,earnCoins} from './explore-state.js?v=180';
-import {COLON_OFFSET} from './geography.js?v=180';
+import {createColonWildlife,monkeyJumpPhase,recordMonkeyJump} from './colon-wildlife.js?v=186';
+import {COLON_SITES,COLON_BRIDGE,bridgeDistance,buildColon,expandColon} from './colon-state.js?v=186';
+import {addFood,inWater as worldInWater,earnCoins} from './explore-state.js?v=186';
+import {COLON_OFFSET} from './geography.js?v=186';
 export function createColonAdventure({T,scene,host,state,make,geometry,mat,box,ball,cylinder,cone,height:worldHeight,save,refresh,joy,tell,forest:worldForest,motion=()=>true}){
  const {x:offsetX,z:offsetZ}=COLON_OFFSET;
  const height=(x,z)=>worldHeight(x+offsetX,z+offsetZ);

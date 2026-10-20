@@ -1,14 +1,15 @@
+import {expandWorldPoint} from './geography.js?v=186';
 // Permanent dry-land work sites for Mateo and Sofía. Deterministic positions
 // mean finished houses never move when a builder starts a new job.
-import {worldIslands,isletHeight,inWater,roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=180';
-import {CITY_ALL_PLOTS,cityOverlap,allocateCityParcel} from './city-layout.js?v=178';
+import {worldIslands,isletHeight,inWater,roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=186';
+import {CITY_ALL_PLOTS,cityOverlap,allocateCityParcel} from './city-layout.js?v=186';
 
 export const BUILDER_AREAS=[
  {id:'city',name:'Panama City',x:120,z:-50,rx:58,rz:48},
- {id:'taboga',name:'Taboga',x:90,z:25,rx:12,rz:10},
- {id:'contadora',name:'Contadora',x:200,z:50,rx:23,rz:19},
- {id:'bocas',name:'Bocas del Toro',x:-105,z:-135,rx:24,rz:25},
- {id:'colon',name:'Colón',x:-50,z:-245,rx:29,rz:27},
+ {id:'taboga',name:'Taboga',x:110,z:85,rx:24,rz:20},
+ {id:'contadora',name:'Contadora',x:320,z:125,rx:42,rz:36},
+ {id:'bocas',name:'Bocas del Toro',x:-230,z:-200,rx:39,rz:39},
+ {id:'colon',name:'Colón',x:-50,z:-365,rx:40,rz:37},
  {id:'guna',name:'San Blas',x:290,z:-245,rx:12,rz:10}
 ];
 const PROJECT_SIZE={w:3.8,d:3.1};
@@ -21,6 +22,7 @@ const protectedLocations={
  colon:[[-59,-247,9],[-50,-245,4],[-62,-240,3]],
  guna:[[288.7,-245.8,2.1],[291.3,-245.8,2.1],[290,-243.6,2.4]]
 };
+for(const [id,pts]of Object.entries(protectedLocations)){const region=({taboga:'islet',contadora:'coconutCoast',bocas:'wilds',colon:'colon'})[id];if(region)protectedLocations[id]=pts.map(([x,z,r])=>{const p=expandWorldPoint(x,z,region);return [p.x,p.z,r];});}
 export function builderSiteSafe(area,p,chosen=[]){
  const half=Math.hypot(PROJECT_SIZE.w/2,PROJECT_SIZE.d/2);
  const offset=(x,z)=>Math.hypot((x-area.x)/area.rx,(z-area.z)/area.rz);

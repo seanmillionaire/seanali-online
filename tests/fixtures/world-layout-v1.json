@@ -1,0 +1,325 @@
+{
+  "bounds": {
+    "x": 500,
+    "z": 420
+  },
+  "islands": [
+    {
+      "id": "islet",
+      "x": 90,
+      "z": 25,
+      "rx": 17,
+      "rz": 14,
+      "h": 2.5,
+      "ox": 24,
+      "oz": -8,
+      "spread": 2.4,
+      "en": "Taboga · Island of Flowers",
+      "es": "Isla Taboga · Isla de las Flores"
+    },
+    {
+      "id": "wilds",
+      "x": -105,
+      "z": -135,
+      "rx": 31,
+      "rz": 31,
+      "h": 5,
+      "ox": 0,
+      "oz": -30,
+      "spread": 1.25,
+      "en": "Isla Bastimentos · Bocas del Toro",
+      "es": "Isla Bastimentos · Bocas del Toro"
+    },
+    {
+      "id": "coconutCoast",
+      "x": 200,
+      "z": 50,
+      "rx": 29,
+      "rz": 25,
+      "h": 4,
+      "ox": 47,
+      "oz": 6,
+      "spread": 1.35,
+      "en": "Isla Contadora · Pearl Islands",
+      "es": "Isla Contadora · Las Perlas"
+    },
+    {
+      "id": "sunset",
+      "x": -135,
+      "z": -55,
+      "rx": 42,
+      "rz": 37,
+      "h": 46,
+      "ox": -42,
+      "oz": 8,
+      "spread": 1.35,
+      "en": "Volcán Barú · Chiriquí",
+      "es": "Volcán Barú · Chiriquí"
+    },
+    {
+      "id": "crystalCove",
+      "x": 290,
+      "z": -245,
+      "rx": 12,
+      "rz": 10,
+      "h": 1.2,
+      "ox": 0,
+      "oz": 48,
+      "spread": 1.5,
+      "en": "Guna Yala · San Blas",
+      "es": "Guna Yala · San Blas"
+    },
+    {
+      "id": "pizzaCity",
+      "x": 120,
+      "z": -50,
+      "rx": 58,
+      "rz": 48,
+      "h": 3.3,
+      "ox": -100,
+      "oz": -74,
+      "spread": 1,
+      "en": "Panama City · Casco Viejo",
+      "es": "Ciudad de Panamá · Casco Viejo"
+    },
+    {
+      "id": "colon",
+      "x": -50,
+      "z": -245,
+      "rx": 29,
+      "rz": 27,
+      "h": 4,
+      "ox": 110,
+      "oz": -56,
+      "spread": 1,
+      "en": "Colón · Caribbean Coast",
+      "es": "Colón · Costa del Caribe"
+    },
+    {
+      "id": "monkeyIslet",
+      "x": -30,
+      "z": -214,
+      "rx": 8,
+      "rz": 7,
+      "h": 1.8,
+      "ox": 130,
+      "oz": -25,
+      "spread": 1,
+      "en": "Monkey Island · Gatún Lake",
+      "es": "Isla de los Monos · Lago Gatún"
+    },
+    {
+      "id": "coiba",
+      "x": -260,
+      "z": 140,
+      "rx": 35,
+      "rz": 30,
+      "h": 6,
+      "ox": -260,
+      "oz": 140,
+      "spread": 1,
+      "en": "Isla Coiba · Pacific Wilderness",
+      "es": "Isla Coiba · Selva del Pacífico"
+    },
+    {
+      "id": "delRey",
+      "x": 273,
+      "z": 142,
+      "rx": 32,
+      "rz": 28,
+      "h": 4,
+      "ox": 273,
+      "oz": 142,
+      "spread": 1,
+      "en": "Isla del Rey · Pearl Islands",
+      "es": "Isla del Rey · Las Perlas"
+    },
+    {
+      "id": "escudo",
+      "x": -244,
+      "z": -202,
+      "rx": 29,
+      "rz": 26,
+      "h": 3,
+      "ox": -244,
+      "oz": -202,
+      "spread": 1,
+      "en": "Escudo de Veraguas · Wild Caribbean",
+      "es": "Escudo de Veraguas · Caribe Salvaje"
+    },
+    {
+      "id": "cebaco",
+      "x": -102,
+      "z": 166,
+      "rx": 32,
+      "rz": 28,
+      "h": 4,
+      "ox": -102,
+      "oz": 166,
+      "spread": 1,
+      "en": "Isla Cébaco · Open Shores",
+      "es": "Isla Cébaco · Costas Abiertas"
+    }
+  ],
+  "roads": {
+    "cityToColon": 314.59391665810904,
+    "cityToGorgona": 76.56344987258026,
+    "gorgonaBeachAccess": 18.698908695265658,
+    "cityToBaru": 272.01454995283535,
+    "boquete": 10.44030650891055,
+    "canal": 43.382023926967726,
+    "panamaEast": 83.21110255092798,
+    "colonCity": 25.04501577333794,
+    "colonCivic": 25.306375256229053
+  },
+  "save": {
+    "panama": {
+      "pantry": {
+        "fish": 0,
+        "plantain": 0,
+        "rice": 0,
+        "patacones": 0,
+        "fishPlate": 0,
+        "coconutRice": 0,
+        "raspao": 0
+      },
+      "spent": 0,
+      "caught": 0,
+      "meals": 0,
+      "treasures": [],
+      "gathered": {}
+    },
+    "campaign": {
+      "introSeen": false,
+      "started": false,
+      "chapter": 0,
+      "accepted": false,
+      "work": {
+        "sandcastle": 0,
+        "butterflyGarden": 0,
+        "treehouse": 0,
+        "beachCabana": 0,
+        "volcanoCamp": 0,
+        "coralNursery": 0,
+        "pizzaStand": 0
+      }
+    },
+    "colon": {
+      "level": 1,
+      "monkeyGames": 0,
+      "banana": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "coconut": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "shells": [],
+      "bridge": false,
+      "garden": false,
+      "treehouse": false,
+      "lookout": false
+    },
+    "estate": {
+      "buildings": [],
+      "charsVersion": 1,
+      "charms": 0,
+      "nextId": 0
+    },
+    "inventoryVersion": 1,
+    "foodTotal": {
+      "banana": 0,
+      "coconut": 0
+    },
+    "worldVersion": 3,
+    "geographyVersion": 1,
+    "sanBlasGeographyVersion": 2,
+    "colonLayoutVersion": 2,
+    "realms": {
+      "found": [],
+      "turtle": 0,
+      "bird": 0
+    },
+    "journey": {
+      "visited": [],
+      "meals": 0,
+      "swim": 0,
+      "fly": 0,
+      "rings": []
+    },
+    "x": 4,
+    "z": 10,
+    "dayTime": 40,
+    "story": {
+      "shells": 0,
+      "picnic": 0,
+      "seed": 0,
+      "song": 0,
+      "care": 0,
+      "light": 0
+    },
+    "collected": [],
+    "badges": [],
+    "hat": 0,
+    "pet": false,
+    "flowers": 0,
+    "catches": 0,
+    "pops": 0,
+    "flight": 0,
+    "growth": 1,
+    "food": {
+      "coconut": 0,
+      "banana": 0
+    },
+    "harvested": {},
+    "boat": {
+      "x": 6.5,
+      "z": 16,
+      "heading": 0
+    },
+    "regionalProjects": {
+      "helped": []
+    },
+    "craft": {
+      "built": [],
+      "spent": {}
+    },
+    "city": {
+      "cruise": {
+        "tickets": 0,
+        "completed": 0,
+        "active": false,
+        "distance": 0
+      },
+      "bags": [],
+      "pizzas": 0,
+      "car": {
+        "x": 114,
+        "z": -50,
+        "heading": 0
+      },
+      "activities": {
+        "deliveries": [],
+        "deliveryActive": false,
+        "rallyBest": 0,
+        "rallyWins": 0,
+        "soccerGoals": 0,
+        "soccerShots": 0,
+        "marketTrades": 0,
+        "muralColors": 0,
+        "museum": [],
+        "carWashes": 0
+      }
+    },
+    "friends": {
+      "visits": [],
+      "completed": [],
+      "companion": null
+    }
+  }
+}

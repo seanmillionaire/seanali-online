@@ -114,13 +114,15 @@ export function createAnimalDetails({T,id,root,make,mat,geometry,ball,cone,cylin
   });
  }
  if(id==='luna'){
-  const red=shades('#cb6385'),shell=shades('#e9a0ac'),sand=shades('#fbd8b1'),joint=shades('#a95b71'),walkingLegs=[];
+  const red=shades('#a9654c'),shell=shades('#bf8260'),sand=shades('#dac295'),joint=shades('#855842'),walkingLegs=[];
   sphere(shell,0,.57,-.07,.71,.36,.62);
   for(let i=0;i<7;i++){
    const a=Math.PI*(i/8+.1);
    sphere(red,Math.cos(a)*.55,.75,Math.sin(a)*.35-.12,.12,.09,.19);
   }
   for(const sign of [-1,1]){
+   sphere(shell,sign*.275,.94,.42,.065,.22,.065);
+   sphere(sand,sign*.275,1.12,.48,.11,.13,.09);
    // Four segmented legs on either side; tapered claws with pincers.
    for(let i=0;i<4;i++){
     const thigh=sphere(joint,sign*(.60+i*.10),.21,.42-i*.30,.22,.10,.14);

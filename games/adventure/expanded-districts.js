@@ -1,22 +1,22 @@
 // Space-first city districts beyond the original Casco Viejo loop.
 // All plots are deterministic, stay on dry land and leave existing gameplay
 // landmarks, highways and saved building locations untouched.
-import {mainlandContains,canalWater,gatunWater} from './geography.js?v=180';
-import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=180';
+import {mainlandContains,canalWater,gatunWater} from './geography.js?v=186';
+import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=186';
 
 export const EXPANDED_DISTRICTS=[
  {id:'panama-east',name:'Panama City · modern eastern neighborhoods',
   xs:[174,187,201,216,231,246,261],zs:[-83,-68,-52,-35,-19],
   kind:'modern'},
  {id:'colon-civic',name:'Colón · spaced civic and port neighborhoods',
-  xs:[-25,-10,5,20,35],zs:[-268,-254,-240],kind:'civic'},
+  xs:[-25,-10,5,20,35],zs:[-388,-374,-360],kind:'civic'},
  {id:'colon-port',name:'Colón · Caribbean port and historic blocks',
-  xs:[-78,-66,-53,-40,-27],zs:[-268,-256,-243,-230],
+  xs:[-78,-66,-53,-40,-27],zs:[-388,-376,-363,-350],
   kind:'caribbean'}
 ];
 export const DISTRICT_ROADS={
  panamaEast:[[163,-61],[175,-61],[181,-57],[197,-57],[213,-57],[229,-57],[245,-57]],
- colonAccess:[[-50,-245],[-57,-251],[-67,-254],[-72,-252]]
+ colonAccess:[[-50,-365],[-57,-371],[-67,-374],[-72,-372]]
 };
 const within=(r,x,z)=>x>=r.xs[0]&&x<=r.xs.at(-1)&&z>=r.zs[0]&&z<=r.zs.at(-1);
 export function districtGround(x,z){return mainlandContains(x,z)&&!canalWater(x,z)&&!gatunWater(x,z);}
@@ -37,7 +37,7 @@ export function districtBuildings(){
   if(area.kind==='civic'&&(i+j*2)%7===0)continue;
   const x=(area.xs[i]+area.xs[i+1])/2,z=(area.zs[j]+area.zs[j+1])/2;
   // Preserve the waterfall walkway and lookout already owned by the Colón quests.
-  if(area.id==='colon-port'&&(Math.hypot(x+59,z+236)<8||Math.hypot(x+48,z+259)<7))continue;
+  if(area.id==='colon-port'&&(Math.hypot(x+59,z+356)<8||Math.hypot(x+48,z+379)<7))continue;
   const dims=sizeFor(area,i,j);
   if(!districtGround(x,z)||roadDistance(x,z)<HIGHWAY_WIDTH/2+Math.hypot(dims.w,dims.d)*.5+1.3)continue;
   if([[1,1],[-1,1],[1,-1],[-1,-1]].some(([sx,sz])=>!districtGround(x+sx*(dims.w/2+.2),z+sz*(dims.d/2+.2))))continue;

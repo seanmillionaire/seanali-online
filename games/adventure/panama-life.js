@@ -1,10 +1,10 @@
-import {moveLegacyPoint,movePoint} from './geography.js?v=156';
-import {createPanamaVisuals} from './panama-visuals.js?v=168';
-import {PANAMA_FOODS,PANAMA_RECIPES,purchasePanama,cookPanama,eatPanama} from './panama-state.js?v=173';
-import {coinBalance} from './explore-state.js?v=173';
-import {panamaModels} from './panama-models.js?v=156';
-import {createCityStreetLife} from './city-street-life.js?v=168';
-import {createSanBlasLife} from './san-blas-life.js?v=156';
+import {moveLegacyPoint,movePoint} from './geography.js?v=186';
+import {createPanamaVisuals} from './panama-visuals.js?v=186';
+import {PANAMA_FOODS,PANAMA_RECIPES,purchasePanama,cookPanama,eatPanama} from './panama-state.js?v=186';
+import {coinBalance} from './explore-state.js?v=186';
+import {panamaModels} from './panama-models.js?v=186';
+import {createCityStreetLife} from './city-street-life.js?v=186';
+import {createSanBlasLife} from './san-blas-life.js?v=186';
 export const COOK_FIRES=[{x:-12,z:7},{x:13,z:103},{x:10,z:-106}].map(p=>({...p,...moveLegacyPoint(p.x,p.z)}));
 export const PLANTAIN_SITES=[{x:-8,z:8},{x:10,z:-102},{x:22,z:-112},{x:116,z:-55},{x:102,z:5}].map(p=>({...p,...moveLegacyPoint(p.x,p.z)}));
 export function createPanamaLife(options){

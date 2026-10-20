@@ -1,5 +1,5 @@
-import {addFood,worldIslands,explorePlaces,earnCoins} from './explore-state.js?v=173';
-import {oceanModel} from './ocean-models.js?v=156';
+import {addFood,worldIslands,explorePlaces,earnCoins} from './explore-state.js?v=186';
+import {oceanModel} from './ocean-models.js?v=186';
 export const realmTasks={
  islands:[{id:'visit',icon:'🏝',en:'Find Panama destinations',es:'Descubre destinos de Panamá',target:5},{id:'fruit',icon:'🍌',en:'Eat and grow',es:'Come y crece',target:3},{id:'butterfly',icon:'🦋',en:'Catch and release',es:'Atrapa y libera',target:5},{id:'friends',icon:'🌱',en:'Help island friends',es:'Ayuda a tus amigos',target:3}],
  water:[{id:'reef',icon:'🪸',en:'Restore the reef',es:'Cuida el arrecife',target:6},{id:'pearls',icon:'🐚',en:'Find five pearls',es:'Busca cinco perlas',target:5},{id:'turtle',icon:'🐢',en:'Follow the turtle',es:'Sigue la tortuga',target:5},{id:'seaChest',icon:'💎',en:'Open the sea treasure',es:'Abre el tesoro marino',target:1}],

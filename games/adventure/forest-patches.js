@@ -1,6 +1,7 @@
+import {ruralParcels} from './rural-towns.js?v=186';
 // Irregular, mixed Panamanian understory and canopy. Gaps are intentional.
-import {mainlandContains,canalWater,gatunWater} from './geography.js?v=180';
-import {worldIslands,isletHeight,roadDistance,HIGHWAY_WIDTH,volcanoTrailPoint} from './explore-state.js?v=180';
+import {mainlandContains,canalWater,gatunWater} from './geography.js?v=186';
+import {worldIslands,isletHeight,roadDistance,HIGHWAY_WIDTH,volcanoTrailPoint} from './explore-state.js?v=186';
 export const FOREST_PATCHES=[
  {id:'gorgona-palm-grove',x:18,z:-36,rx:27,rz:20,n:54,biome:'tropical'},
  {id:'gorgona-rainforest',x:-23,z:-46,rx:29,rz:23,n:48,biome:'tropical'},
@@ -8,22 +9,27 @@ export const FOREST_PATCHES=[
  {id:'canal-tropical',x:59,z:-111,rx:23,rz:19,n:36,biome:'tropical'},
  {id:'western-rainforest',x:-66,z:-63,rx:33,rz:28,n:55,biome:'mixed'},
  {id:'pacific-coast',x:-25,z:-104,rx:25,rz:20,n:41,biome:'tropical'},
- {id:'mountain-cloudforest',x:-110,z:-76,rx:32,rz:23,n:54,biome:'montane'},
- {id:'baru-highlands',x:-155,z:-73,rx:31,rz:23,n:58,biome:'montane'},
- {id:'baru-foothills',x:-104,z:-19,rx:21,rz:15,n:37,biome:'mixed'},
- {id:'bocas-jungle',x:-109,z:-141,rx:23,rz:22,n:45,biome:'island'},
- {id:'colon-grove',x:-53,z:-246,rx:21,rz:18,n:34,biome:'island'},
+ {id:'mountain-cloudforest',x:-315,z:-95,rx:44,rz:30,n:54,biome:'montane'},
+ {id:'baru-highlands',x:-385,z:-90,rx:42,rz:30,n:58,biome:'montane'},
+ {id:'baru-foothills',x:-290,z:-24,rx:30,rz:22,n:37,biome:'mixed'},
+ {id:'bocas-jungle',x:-235,z:-208,rx:30,rz:29,n:45,biome:'island'},
+ {id:'colon-grove',x:-53,z:-366,rx:30,rz:27,n:34,biome:'island'},
  // Scattered forest edges make the longer journey scenic, without turning it
  // into another dense wall of identical trees.
- {id:'colon-road-west',x:-66,z:-197,rx:21,rz:20,n:22,biome:'mixed'},
- {id:'colon-road-east',x:7,z:-192,rx:19,rz:24,n:19,biome:'tropical'},
- {id:'colon-cape',x:-79,z:-270,rx:22,rz:18,n:18,biome:'tropical'}
+ {id:'colon-road-west',x:-66,z:-317,rx:21,rz:20,n:22,biome:'mixed'},
+ {id:'colon-road-east',x:7,z:-302,rx:19,rz:24,n:19,biome:'tropical'},
+ {id:'central-highlands',x:-170,z:-80,rx:54,rz:23,n:90,biome:'mixed'},
+ {id:'veraguas-foothills',x:-235,z:-16,rx:40,rz:20,n:65,biome:'mixed'},
+ {id:'caribbean-corridor',x:6,z:-238,rx:20,rz:38,n:52,biome:'tropical'},
+ {id:'western-coast',x:-365,z:-15,rx:36,rz:18,n:48,biome:'montane'},
+ {id:'colon-cape',x:-79,z:-390,rx:22,rz:18,n:18,biome:'tropical'}
 ];
 export const FOREST_CLEARINGS=[
- {x:0,z:0,r:19},{x:21,z:1,r:7},{x:32,z:-14,r:8},
- {x:66,z:-65,r:10},{x:-155,z:-32,r:10},{x:-112,z:-32,r:7},
- {x:-59,z:-247,r:13},{x:-105,z:-135,r:7}
+ {x:0,z:0,r:19},{x:21,z:1,r:7},{x:32,z:-80,r:8},
+ {x:66,z:-65,r:10},{x:-385,z:-30,r:10},{x:-290,z:-50,r:7},
+ {x:-59,z:-367,r:13},{x:-230,z:-200,r:7}
 ];
+const townPlots=ruralParcels();
 const trail=Array.from({length:85},(_,i)=>volcanoTrailPoint(i/84));
 function nearTrail(x,z){
  for(let i=1;i<trail.length;i++){
@@ -33,7 +39,7 @@ function nearTrail(x,z){
  }return false;
 }
 export function forestSiteClear(x,z,biome='tropical'){
- if(roadDistance(x,z)<HIGHWAY_WIDTH/2+10)return false;
+ if(roadDistance(x,z)<HIGHWAY_WIDTH/2+10||townPlots.some(p=>Math.abs(x-p.x)<p.w/2+5&&Math.abs(z-p.z)<p.d/2+5))return false;
  if(FOREST_CLEARINGS.some(p=>Math.hypot(x-p.x,z-p.z)<p.r))return false;
  if(Math.hypot((x-120)/67,(z+50)/57)<1.09)return false;
  // Giant rainforest canopy belongs inland, never on offshore beaches.

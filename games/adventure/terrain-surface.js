@@ -17,9 +17,9 @@ export function clipLandTriangle(vertices,isLand){
 }
 // A compact coast-distance texture replaces the obsolete ellipse-only shader.
 // Calculated once at load; water animation needs one lookup per fragment.
-export function coastDistanceField(isLand,width=384,height=320){
- const distances=new Float32Array(width*height),pixels=new Uint8Array(width*height*4),dx=750/width,dz=650/height,diagonal=Math.hypot(dx,dz);
- for(let j=0;j<height;j++)for(let i=0;i<width;i++)distances[j*width+i]=isLand((i+.5)*dx-375,(j+.5)*dz-325)?0:1000;
+export function coastDistanceField(isLand,width=384,height=320,extent={left:-375,top:-325,width:750,height:650}){
+ const distances=new Float32Array(width*height),pixels=new Uint8Array(width*height*4),dx=extent.width/width,dz=extent.height/height,diagonal=Math.hypot(dx,dz);
+ for(let j=0;j<height;j++)for(let i=0;i<width;i++)distances[j*width+i]=isLand((i+.5)*dx+extent.left,(j+.5)*dz+extent.top)?0:1000;
  for(let j=0;j<height;j++)for(let i=0;i<width;i++){
   const k=j*width+i;let d=distances[k];if(i)d=Math.min(d,distances[k-1]+dx);if(j)d=Math.min(d,distances[k-width]+dz);if(i&&j)d=Math.min(d,distances[k-width-1]+diagonal);if(j&&i+1<width)d=Math.min(d,distances[k-width+1]+diagonal);distances[k]=d;
  }

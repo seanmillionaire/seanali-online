@@ -1,7 +1,7 @@
-import {waterFriend,animalClear,recoverAnimal,animalStep} from './animal-boundaries.js?v=156';
-import {explorePlaces,earnCoins} from './explore-state.js?v=156';
-import {oceanModel} from './ocean-models.js?v=156';
-import {createAnimalDetails} from './animal-details.js?v=156';
+import {waterFriend,animalClear,recoverAnimal,animalStep} from './animal-boundaries.js?v=186';
+import {explorePlaces,earnCoins} from './explore-state.js?v=186';
+import {oceanModel} from './ocean-models.js?v=186';
+import {createAnimalDetails} from './animal-details.js?v=186';
 // Repeatable, optional play with six friends in the 3D world.
 export const islandFriends=[
  {id:'pip',icon:'🐢',name:'Pip',where:['Playa Gorgona','Playa Gorgona'],game:['Búsqueda de conchas','Shell hunt'],hello:['¡Angelique! ¿Buscamos conchitas juntos?','Angelique! Shall we look for shells together?']},
@@ -16,8 +16,8 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
  s.friends??={visits:[],completed:[],companion:null};
  const friends=s.friends;friends.called=Array.isArray(friends.called)?friends.called.filter(id=>islandFriends.some(f=>f.id===id)):[];const nodes=new Map(),labels=[],temp=new T.Vector3();
  const place=id=>explorePlaces.find(p=>p.id===id);
- const destination=id=>id==='dori'?{x:4,z:16}:id==='kai'?{x:200,z:50}:place(id);
- const home=id=>id==='dori'?{x:8,z:20}:id==='kai'?{x:200,z:50}:place(id);
+ const destination=id=>id==='dori'?{x:4,z:16}:id==='kai'?{x:320,z:125}:place(id);
+ const home=id=>id==='dori'?{x:8,z:20}:id==='kai'?{x:320,z:125}:place(id);
  const el=(tag,cls='',text)=>{const n=document.createElement(tag);n.className=cls;if(text!==undefined)n.textContent=text;return n;};
  const btn=(text,cls,callback)=>{const b=el('button',cls,text);b.type='button';b.addEventListener('click',()=>{joy.gesture();joy.effect('tap');callback();});return b;};
  const green=mat('#55a878'),cream=mat('#fff1ce'),ink=mat('#26454e'),pink=mat('#e998b9'),gold=mat('#ffd36c'),yellow=mat('#f1b75c');
@@ -29,28 +29,17 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
   if(friend.id==='pip'||friend.id==='dori'){
    const aquatic=oceanModel(T,{geometry,mat,make,ball},friend.id==='pip'?'Sea turtle':'Dolphin');
    g.add(aquatic.g);aquatic.g.scale.setScalar(friend.id==='pip'?1.45:1.3);moving.push(...aquatic.moving);
-   if(friend.id==='pip')sphere(g,cream,0,.3,1.27,.13,.08,.1);
-   else sphere(g,cream,0,.12,1.26,.12,.09,.12);
+   // The shared marine model includes its complete anatomy and markings.
   }else if(friend.id==='mila'||friend.id==='ollie'){
    const parrot=friend.id==='mila',body=mat(parrot?'#42b86d':'#ecf2df'),wings=mat(parrot?'#f3c052':'#b7cae8');
-   sphere(g,body,0,1.1,0,parrot?.5:.34,parrot?.7:1,.34);
    sphere(g,body,0,parrot?1.72:2.02,.2,.41,.4,.42);
    const beak=make(cone,yellow,0,parrot?1.55:1.92,.63,.24,.36,.26,g);beak.rotation.x=Math.PI/2;
    for(const sign of [-1,1]){
-    sphere(g,ink,sign*.2,parrot?1.79:2.1,.55,.05,.07,.045);
     // Detailed articulated feather wings are supplied by createAnimalDetails.
     sphere(g,yellow,sign*.23,.18,.14,.07,.21,.07);
    }
-   if(parrot)sphere(g,pink,0,1.85,-.32,.27,.16,.11);
   }else if(friend.id==='luna'){
-   sphere(g,pink,0,.49,0,.66,.38,.54);
-   for(const sign of [-1,1]){
-    const claw=new T.Group();g.add(claw);claw.position.set(sign*.66,.53,0);
-    sphere(claw,pink,sign*.3,0,.2,.3,.25,.29);sphere(claw,cream,sign*.36,.1,.44,.18,.1,.18);
-    moving.push(claw);
-    for(let i=0;i<3;i++){const leg=make(cylinder,pink,sign*(.49+i*.18),.20,(i-1)*.3,.06,.45,.06,g);leg.rotation.z=sign*.4;}
-    sphere(g,cream,sign*.26,1,.4,.16,.23,.16);sphere(g,ink,sign*.26,1.02,.55,.07,.1,.065);
-   }
+   // One complete articulated crab comes from the shared detail rig below.
   }else{
    const skin=mat('#c99574'),shirt=mat('#f1a35e'),shorts=mat('#65bdca'),hair=mat('#4a3832');
    sphere(g,shirt,0,1,0,.43,.67,.26);sphere(g,skin,0,1.83,0,.36,.36,.34);
@@ -64,7 +53,7 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
    }
    other.ball=sphere(g,pink,.9,.6,.8,.35,.35,.35);
   }
-  other.detail=friend.id==='kai'?null:createAnimalDetails({T,id:friend.id,root:g,make,mat,geometry,ball,cone,cylinder});
+  other.detail=['kai','pip','dori'].includes(friend.id)?null:createAnimalDetails({T,id:friend.id,root:g,make,mat,geometry,ball,cone,cylinder});
   g.position.set(p.x,friend.id==='dori'?-0.1:height(p.x,p.z)+(friend.id==='pip'?.36:0),p.z);
   const label=btn(friend.icon+' '+friend.name,'friend-world-label',()=>isNearby(friend.id)?open(friend.id):visit(friend.id));
   label.setAttribute('aria-label',say('Jugar con ','Play with ')+friend.name);host.append(label);labels.push(label);

@@ -1,4 +1,4 @@
-import {SMOOTH_MAINLAND_OUTLINE,CANAL_WATERWAY,mainlandContains} from './geography.js?v=180';
+import {SMOOTH_MAINLAND_OUTLINE,CANAL_WATERWAY,mainlandContains,WORLD_EXTENT} from './geography.js?v=186';
 /* Shared, coordinate-accurate archipelago map for the open-world explorer.
    X is east/right and Z is south/down, matching ArrowUp (negative Z). */
 export function createWorldMap({host,panel,world,islands,places,language,onTravel,onOpen}){
@@ -13,14 +13,14 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
  const currentPlace=()=>{const p=land.filter(i=>Math.hypot((world.x-i.x)/i.rx,(world.z-i.z)/i.rz)<1.22).sort((a,b)=>Math.hypot(world.x-a.x,world.z-a.z)-Math.hypot(world.x-b.x,world.z-b.z))[0];return p?name(p):mainlandContains(world.x,world.z)?say('Tierra firme de Panamá','Panama mainland'):say('En el mar','At sea');};
  const islandTarget=id=>places.find(p=>p.id===id)||(id==='home'?places.find(p=>p.id==='pip'):null);
  function drawing(mini){
-  const svg=svgEl('svg',{class:'island-map-art',viewBox:'-390 -340 810 650',role:'img',
+  const svg=svgEl('svg',{class:'island-map-art',viewBox:[WORLD_EXTENT.left,WORLD_EXTENT.top,WORLD_EXTENT.width,WORLD_EXTENT.height].join(' '),role:'img',
     'aria-label':say('Mapa del archipiélago con la posición actual','Archipelago map with your current position')});
   const defs=svgEl('defs'),gradient=svgEl('linearGradient',{id:mini?'ocean-mini':'ocean-big',x1:'0%',y1:'0%',x2:'100%',y2:'100%'});
   gradient.append(svgEl('stop',{offset:'0%','stop-color':'#77cfd4'}),svgEl('stop',{offset:'100%','stop-color':'#267eac'}));
   defs.append(gradient);svg.append(defs);
-  svg.append(svgEl('rect',{x:-390,y:-340,width:810,height:650,fill:'url(#'+(mini?'ocean-mini':'ocean-big')+')'}));
+  svg.append(svgEl('rect',{x:WORLD_EXTENT.left,y:WORLD_EXTENT.top,width:WORLD_EXTENT.width,height:WORLD_EXTENT.height,fill:'url(#'+(mini?'ocean-mini':'ocean-big')+')'}));
   svg.append(svgEl('path',{d:SMOOTH_MAINLAND_OUTLINE.map((p,i)=>(i?'L':'M')+p[0]+' '+p[1]).join(' ')+' Z',fill:'#86b574',stroke:'#e9d7a6','stroke-width':3}));
-  svg.append(svgEl('path',{d:Array.from({length:49},(_,i)=>{const a=i/48*Math.PI*2;return (i?'L':'M')+(-35+Math.cos(a)*37)+' '+(-215+Math.sin(a)*22);}).join(' ')+' Z',fill:'#77cfd4'}));svg.append(svgEl('path',{d:CANAL_WATERWAY.map((p,i)=>(i?'L':'M')+p[0]+' '+p[1]).join(' '),stroke:'#77cfd4','stroke-width':46,fill:'none','stroke-linecap':'round','stroke-linejoin':'round'}));
+  svg.append(svgEl('path',{d:Array.from({length:49},(_,i)=>{const a=i/48*Math.PI*2;return (i?'L':'M')+(-35+Math.cos(a)*37)+' '+(-335+Math.sin(a)*22);}).join(' ')+' Z',fill:'#77cfd4'}));svg.append(svgEl('path',{d:CANAL_WATERWAY.map((p,i)=>(i?'L':'M')+p[0]+' '+p[1]).join(' '),stroke:'#77cfd4','stroke-width':46,fill:'none','stroke-linecap':'round','stroke-linejoin':'round'}));
   if(!mini){svg.append(svgEl('text',{x:45,y:-174,'font-size':12,'text-anchor':'middle',fill:'#16475e'},say('MAR CARIBE','CARIBBEAN SEA')));svg.append(svgEl('text',{x:65,y:90,'font-size':12,'text-anchor':'middle',fill:'#16475e'},say('OCÉANO PACÍFICO','PACIFIC OCEAN')));svg.append(svgEl('text',{x:-195,y:-170,'font-size':13,fill:'#16475e'},'N ↑'));}
   for(const i of land){
     const g=svgEl('g',{class:'island-map-land','data-island':i.id});
@@ -38,11 +38,11 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
     g.append(svgEl('ellipse',{cx:i.x,cy:i.z,rx:i.rx*.83,ry:i.rz*.82,fill:palette[1]}));
     g.append(svgEl('ellipse',{cx:i.x-i.rx*.18,cy:i.z-i.rz*.18,rx:i.rx*.36,ry:i.rz*.36,fill:palette[2],opacity:'.6'}));
     if(!mini&&!i.guna){
-      const icon=svgEl('text',{x:i.x,y:i.z+2,'font-size':i.id==='home'?12:13,'text-anchor':'middle',
+      const icon=svgEl('text',{x:i.x,y:i.z+2,'font-size':i.id==='home'?24:26,'text-anchor':'middle',
         'dominant-baseline':'central','pointer-events':'none'},i.icon);
       g.append(icon);
       const short={coiba:'Coiba',delRey:'Isla del Rey',escudo:'Escudo',cebaco:'Cébaco',home:'Gorgona',islet:'Taboga',wilds:'Bocas del Toro',coconutCoast:'Contadora',sunset:'Barú',crystalCove:'Guna Yala',pizzaCity:es?'Panamá':'Panama City',colon:'Colón',monkeyIslet:es?'Isla de los Monos':'Monkey Island',volcanTown:'Volcán',boquete:'Boquete'}[i.id]||name(i);
-      g.append(svgEl('text',{x:i.x,y:i.z+12,'font-size':8,'font-weight':700,'text-anchor':'middle',fill:'#173e42',stroke:'#fff6dc','stroke-width':1.6,'paint-order':'stroke','pointer-events':'none'},short));
+      g.append(svgEl('text',{x:i.x,y:i.z+25,'font-size':14,'font-weight':700,'text-anchor':'middle',fill:'#173e42',stroke:'#fff6dc','stroke-width':1.6,'paint-order':'stroke','pointer-events':'none'},short));
       if(islandTarget(i.id)){
         g.setAttribute('class','island-map-land island-map-target');
         g.setAttribute('role','button');g.setAttribute('tabindex','0');
@@ -87,7 +87,7 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
  }
  function open(){
   onOpen?.();
-  opened=true;zoom=1;chosen=null;center=point(0,0);
+  opened=true;zoom=3;chosen=null;center=point(world.x,world.z);
   panel.replaceChildren();panel.hidden=false;panel.classList.add('island-map-open');
   const title=elem('h2','island-map-heading','🗺️ '+say('Mapa de Panamá','Panama Adventure Map'));
   const closeButton=elem('button','panel-close','×');closeButton.type='button';
@@ -123,8 +123,8 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
   if(!opened||!full)return;
   place(full);
   if(placeReadout)placeReadout.textContent='📍 '+say('ESTÁS AQUÍ: ','YOU ARE HERE: ')+currentPlace();
-  const w=810/zoom,h=650/zoom;
-  const cx=zoom===1?20:center.x,cz=zoom===1?-10:center.z;
+  const w=WORLD_EXTENT.width/zoom,h=WORLD_EXTENT.height/zoom;
+  const cx=zoom===1?0:center.x,cz=zoom===1?0:center.z;
   full.svg.setAttribute('viewBox',(cx-w/2)+' '+(cz-h/2)+' '+w+' '+h);
  }
  function dispose(){mini.remove();if(opened)close(false);full=null;}

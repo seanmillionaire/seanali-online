@@ -1,11 +1,11 @@
-import {clipLandTriangle,coastDistanceField,shorelineTiles} from './terrain-surface.js?v=171';
-import {mainlandContains,canalWater,gatunWater,organicIslandRadius,homeShoreRadius} from './geography.js?v=180';
-import {createActiveVolcano} from './active-volcano.js?v=156';
-import {worldIslands,isletHeight,volcanoTrailPoint} from './explore-state.js?v=180';
-import {createTropical} from './tropical.js?v=177';
-import {createForestLandscape} from './forest-landscape.js?v=184';
-import {createSurfaceTextures} from './surface-textures.js?v=156';
-import {installPolyHavenMaterials} from './polyhaven-materials.js?v=156';
+import {clipLandTriangle,coastDistanceField,shorelineTiles} from './terrain-surface.js?v=186';
+import {mainlandContains,canalWater,gatunWater,organicIslandRadius,homeShoreRadius,WORLD_EXTENT} from './geography.js?v=186';
+import {createActiveVolcano} from './active-volcano.js?v=186';
+import {worldIslands,isletHeight,volcanoTrailPoint,roadsidePoint,nearRoad,HIGHWAY_WIDTH} from './explore-state.js?v=186';
+import {createTropical} from './tropical.js?v=186';
+import {createForestLandscape} from './forest-landscape.js?v=186';
+import {createSurfaceTextures} from './surface-textures.js?v=186';
+import {installPolyHavenMaterials} from './polyhaven-materials.js?v=186';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
 export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import('./vendor/three.module.min.js')}={}) {
   let disposed=false,world=null,pending=null;
@@ -25,7 +25,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,light?1:1.5));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.02;
   renderer.shadowMap.enabled=!light;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
   const scene=new T.Scene();scene.background=new T.Color('#b0d3e2');scene.fog=new T.FogExp2('#b8d6dd',.0022);
-  const camera=new T.PerspectiveCamera(42,1,.2,550),sun=new T.DirectionalLight('#fff0d2',3.0);sun.position.set(-22,38,18);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-30;sun.shadow.camera.right=30;sun.shadow.camera.top=30;sun.shadow.camera.bottom=-30;sun.shadow.normalBias=.1;const ambient=new T.HemisphereLight('#c9edff','#58623c',1.45);scene.add(sun,ambient);
+  const camera=new T.PerspectiveCamera(42,1,.2,1800),sun=new T.DirectionalLight('#fff0d2',3.0);sun.position.set(-22,38,18);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-30;sun.shadow.camera.right=30;sun.shadow.camera.top=30;sun.shadow.camera.bottom=-30;sun.shadow.normalBias=.1;const ambient=new T.HemisphereLight('#c9edff','#58623c',1.45);scene.add(sun,ambient);
   const textures=new Set(),geometries=new Set(),materials=new Set(),clouds=[],bobbing=[],volcanoes=[];let seed=4107;
   const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
   const geometry=g=>{geometries.add(g);return g;};
@@ -33,7 +33,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   const make=(g,m,x=0,y=0,z=0,sx=1,sy=sx,sz=sx,parent=scene)=>{const mesh=new T.Mesh(g,m);mesh.position.set(x,y,z);mesh.scale.set(sx,sy,sz);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;};
   const ball=geometry(new T.SphereGeometry(1,16,12)),cone=geometry(new T.ConeGeometry(1,1,8)),cylinder=geometry(new T.CylinderGeometry(1,1,1,12)),box=geometry(new T.BoxGeometry(1,1,1));
   const sand=mat('#e8c895'),green=mat('#568d58'),darkGreen=mat('#246b57'),leaf=mat('#79a05b'),trunk=mat('#855b42'),stone=mat('#84958c'),cream=mat('#fff0ca'),wood=mat('#986b44'),red=mat('#ce826c'),blue=mat('#579c9d'),violet=mat('#a99ac0'),gold=mat('#ffda83',{emissive:'#efb449',emissiveIntensity:.32});
-  function height(x,z){if(isletHeight(x,z)>0)return isletHeight(x,z);const edge=Math.sqrt((x/20)**2+(z/14)**2);const hill=6*Math.exp(-((x+1)**2/30+(z+5)**2/22));return Math.max(.1,(1-edge*edge)*2.8)+hill;}
+  function height(x,z){const ground=isletHeight(x,z);if(ground>0)return ground;const edge=Math.sqrt((x/20)**2+(z/14)**2);const hill=6*Math.exp(-((x+1)**2/30+(z+5)**2/22));return Math.max(.1,(1-edge*edge)*2.8)+hill;}
   // A sculpted, vertex-colored island; this is geometry, not a picture on a plane.
   const surfaces=createSurfaceTextures(T);
   const tropical=createTropical({T,scene,camera,height,geometry,mat,make,ball,renderer,surfaces});
@@ -255,16 +255,17 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
     trail.castShadow=false;trail.receiveShadow=true;
     // Painted stone waymarkers and short rail fences keep the trail readable.
     for(let k=0;k<=20;k++){
-     const p=volcanoTrailPoint(k/20),h=isletHeight(p.x,p.z);
-     const marker=make(cylinder,signWood,p.x,h+.48,p.z,.10,.96,.10);
+     const p=volcanoTrailPoint(k/20),mark=roadsidePoint(p.x,p.z,.2),h=isletHeight(mark.x,mark.z);
+     const marker=make(cylinder,signWood,mark.x,h+.48,mark.z,.10,.96,.10);
      marker.name='Volcán Barú trail marker '+k;
-     make(ball,k%5===0?gold:cream,p.x,h+1.05,p.z,.18,.18,.18);
+     make(ball,k%5===0?gold:cream,mark.x,h+1.05,mark.z,.18,.18,.18);
      if(k>0&&k<20&&k%3===0){
       const next=volcanoTrailPoint((k+.15)/20),dirX=next.x-p.x,dirZ=next.z-p.z;
       const d=Math.max(.001,Math.hypot(dirX,dirZ));
       const sideX=dirZ/d,sideZ=-dirX/d;
       for(const sign of [-1,1]){
        const x=p.x+sideX*1.8*sign,z=p.z+sideZ*1.8*sign,y=isletHeight(x,z);
+       if(nearRoad(x,z,HIGHWAY_WIDTH/2+.5))continue;
        make(cylinder,signWood,x,y+.60,z,.10,1.20,.10);
        make(ball,gold,x,y+1.27,z,.15,.15,.15);
       }
@@ -273,8 +274,9 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
     // Jagged basalt outcrops along the slope, but outside the hiking lane.
     for(let i=0;i<56;i++){
      const angle=i*2.3999632,r=.22+(i%9)*.079;
-     const x=land.x+Math.cos(angle)*land.rx*r,z=land.z+Math.sin(angle)*land.rz*r;
-     const y=isletHeight(x,z),size=.60+(i%5)*.30;
+     const size=.60+(i%5)*.30;
+     const {x,z}=roadsidePoint(land.x+Math.cos(angle)*land.rx*r,land.z+Math.sin(angle)*land.rz*r,size);
+     const y=isletHeight(x,z);
      const rock=make(rockGeo,basalt,x,y+.43*size,z,size*.75,size,size*.65);
      rock.rotation.y=angle;rock.rotation.z=Math.sin(i*7)*.15;
     }
@@ -311,7 +313,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   // Transparent lagoon, a visible sandy seabed, and small irregular wave highlights.
   // Layered moving water: soft vertex swell + screen-space foam/caustics.
   // Compact shader avoids reflection render passes and protects mobile FPS.
-  const coast=coastDistanceField((x,z)=>isletHeight(x,z)>0||Math.hypot(x/20,z/14)<homeShoreRadius(Math.atan2(z/14,x/20)));
+  const coast=coastDistanceField((x,z)=>isletHeight(x,z)>0||Math.hypot(x/20,z/14)<homeShoreRadius(Math.atan2(z/14,x/20)),512,448,WORLD_EXTENT);
   const coastTexture=new T.DataTexture(coast.pixels,coast.width,coast.height,T.RGBAFormat);
   coastTexture.magFilter=coastTexture.minFilter=T.LinearFilter;coastTexture.needsUpdate=true;textures.add(coastTexture);
   const waterMaterial=new T.ShaderMaterial({
@@ -349,7 +351,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
       }
       void main(){
         vec2 p=pos.xy;
-        float shoreDistance=texture2D(coastMap,(vec2(p.x,-p.y)+vec2(375.,325.))/vec2(750.,650.)).r*64.;
+        float shoreDistance=texture2D(coastMap,(vec2(p.x,-p.y)+vec2(700.,600.))/vec2(1400.,1200.)).r*64.;
         float depth=smoothstep(1.5,24.,shoreDistance);
         float detailFade=1.-smoothstep(.12,.8,length(fwidth(p)));
         float swell=swells(p);
@@ -401,8 +403,8 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
         #include <colorspace_fragment>
       }`
   });
-  materials.add(waterMaterial);const water=make(geometry(new T.PlaneGeometry(820,680,112,96)),waterMaterial,0,-.12,0);water.rotation.x=-Math.PI/2;water.castShadow=false;water.receiveShadow=false;water.renderOrder=2;
-  const bedGeometry=geometry(new T.PlaneGeometry(800,660));const bedUV=bedGeometry.attributes.uv;for(let i=0;i<bedUV.count;i++)bedUV.setXY(i,bedUV.getX(i)*16,bedUV.getY(i)*16);const seabed=make(bedGeometry,mat('#b3c8b0',{map:surfaces.sand,bumpMap:surfaces.sand,bumpScale:.05,roughness:1}),0,-1.4,0);seabed.rotation.x=-Math.PI/2;seabed.castShadow=false;
+  materials.add(waterMaterial);const water=make(geometry(new T.PlaneGeometry(WORLD_EXTENT.width+100,WORLD_EXTENT.height+100,112,96)),waterMaterial,0,-.12,0);water.rotation.x=-Math.PI/2;water.castShadow=false;water.receiveShadow=false;water.renderOrder=2;
+  const bedGeometry=geometry(new T.PlaneGeometry(WORLD_EXTENT.width+100,WORLD_EXTENT.height+100));const bedUV=bedGeometry.attributes.uv;for(let i=0;i<bedUV.count;i++)bedUV.setXY(i,bedUV.getX(i)*16,bedUV.getY(i)*16);const seabed=make(bedGeometry,mat('#b3c8b0',{map:surfaces.sand,bumpMap:surfaces.sand,bumpScale:.05,roughness:1}),0,-1.4,0);seabed.rotation.x=-Math.PI/2;seabed.castShadow=false;
   // A sandy path winding from the landing cove to the lighthouse.
   const pathPoints=[new T.Vector3(4,.4,12),new T.Vector3(3,height(3,8)+.07,8),new T.Vector3(7,height(7,4)+.08,4),new T.Vector3(4,height(4,0)+.08,0),new T.Vector3(0,height(0,-3)+.08,-3),new T.Vector3(-1,height(-1,-5)+.08,-5)];
   const pathCurve=new T.CatmullRomCurve3(pathPoints),pathVertices=[],pathUV=[],pathIndex=[];
@@ -423,7 +425,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   // Overlap the existing region meshes slightly from below: no empty moat or z-fighting.
   // Subdivide waterline edges fivefold to remove blocky land endings without
   // multiplying all inland polygons; clip the final boundary precisely.
-  for(let x=-196;x<270;x+=3)for(let z=-312;z<26;z+=3)
+  for(let x=-454;x<273;x+=3)for(let z=-432;z<39;z+=3)
   if(z>=-167||(x>=-125&&x<=80))for(const [sx,sz,size] of shorelineTiles(x,z,3,inland,light?3:5)){
    const corners=[[sx,0,sz],[sx+size,0,sz],[sx,0,sz+size],[sx+size,0,sz+size]];
    for(const tri of [[0,2,1],[1,2,3]]){

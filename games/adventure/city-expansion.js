@@ -1,7 +1,8 @@
-import {STREET_VENDORS,BARRIO_HOMES} from './city-street-life.js?v=168';
-import {CITY_EXPANSION_PLOTS,CITY_STREET_X,CITY_STREET_Z} from './city-layout.js?v=178';
-import {createPurpleApartment,PURPLE_APARTMENT} from './purple-apartment.js?v=156';
-import {spendFood} from './explore-state.js?v=156';
+import {roadRibbon,surfaceMesh,cityStreetSurface} from './road-surfaces.js?v=186';
+import {STREET_VENDORS,BARRIO_HOMES} from './city-street-life.js?v=186';
+import {CITY_EXPANSION_PLOTS,CITY_STREET_X,CITY_STREET_Z} from './city-layout.js?v=186';
+import {createPurpleApartment,PURPLE_APARTMENT} from './purple-apartment.js?v=186';
+import {spendFood} from './explore-state.js?v=186';
 /* Panama Adventure — substantial zero-dependency Casco Viejo city expansion.
    Roads and landmark buildings are genuine Three.js meshes; activities update
    game state only on meaningful user actions and persist in world.city. */
@@ -87,34 +88,16 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
   plot.rotation.x=-Math.PI/2;plot.scale.set(rx,rz,1);
   plot.position.set(px,1.67,pz);plot.receiveShadow=true;plot.castShadow=false;group.add(plot);
  }
- // Roads follow the island's actual surface with lightweight instancing.
+ const roadGeometries=[];const keepRoadGeometry=g=>{roadGeometries.push(g);return g;};
+ // One non-overlapping surface owns the street grid and its intersections.
  const chunks=[];
- const road=(x,z,w,d)=>{chunks.push({x,z,w,d});};
  const xs=CITY_STREET_X.map(x=>x-120),zs=CITY_STREET_Z.map(z=>z+50);
- for(const dx of xs)for(let dz=-42;dz<=42;dz+=2.5){
-  const norm=(dx/58)**2+(dz/48)**2;if(norm>.82)continue;
-  road(120+dx,-50+dz,6.15,3.15);
- }
- for(const dz of zs)for(let dx=-52;dx<=52;dx+=2.5){
-  const norm=(dx/58)**2+(dz/48)**2;if(norm>.82)continue;
-  road(120+dx,-50+dz,3.15,6.15);
- }
- // Seaside ring road. Outer street loops around the outer neighborhoods.
- for(let i=0;i<104;i++){
-  const angle=(i+.5)/104*Math.PI*2,x=(120)+Math.cos(angle)*48.4,z=(-50)+Math.sin(angle)*40.0;
-  const tangent=Math.atan2(Math.cos(angle)*48.4,-Math.sin(angle)*40);
-  chunks.push({x,z,w:5.7,d:5.0,rot:-tangent});
- }
- if(typeof T.InstancedMesh==='function'&&typeof T.Object3D==='function'){
-  const roads=new T.InstancedMesh(box,asph,chunks.length);roads.name='Casco Viejo connected road network';
-  roads.castShadow=false;roads.receiveShadow=true;
-  const dummy=new T.Object3D();
-  chunks.forEach((r,i)=>{
-   dummy.position.set(r.x,height(r.x,r.z)+.095,r.z);dummy.scale.set(r.w,.16,r.d);
-   dummy.rotation.y=r.rot||0;dummy.updateMatrix();roads.setMatrixAt(i,dummy.matrix);
-  });
-  roads.instanceMatrix.needsUpdate=true;group.add(roads);
- }else for(const r of chunks){const m=makeObj(box,asph,r.x,height(r.x,r.z)+.095,r.z,r.w,.16,r.d);m.rotation.y=r.rot||0;m.castShadow=false;}
+ for(const x of CITY_STREET_X){const half=48*Math.sqrt(.82-((x-120)/58)**2);chunks.push({x,z:-50,w:6.15,d:2*half});}
+ for(const z of CITY_STREET_Z){const half=58*Math.sqrt(.82-((z+50)/48)**2);chunks.push({x:120,z,w:2*half,d:6.15});}
+ group.add(surfaceMesh(T,keepRoadGeometry,cityStreetSurface(chunks,height),asph,'Casco Viejo connected road network'));
+ // The closed coastal road uses the same continuous surface geometry.
+ const ring=Array.from({length:193},(_,i)=>{const a=i/192*Math.PI*2;return [120+Math.cos(a)*48.4,-50+Math.sin(a)*40];});
+ group.add(surfaceMesh(T,keepRoadGeometry,roadRibbon(ring,5.7,height,{lift:.175}),asph,'Casco Viejo coastal road'));
  // Painted lines and crossings: repeated street detail without large textures.
  for(const dx of xs)for(let k=-34;k<=34;k+=9){
   const x=(120)+dx,z=(-50)+k;if((dx/58)**2+(k/48)**2>.78)continue;
@@ -460,7 +443,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
   cityWaypoint=CITY_SITES.find(p=>p.id===id)||null;return cityWaypoint;
  }
  function aimReady(){return Math.abs(Math.sin(performance.now()*.0035))<.76;}
- function dispose(){for(const b of sprites){b.tex.dispose();b.material.dispose();}batches.clear();}
+ function dispose(){for(const g of roadGeometries)g.dispose();for(const b of sprites){b.tex.dispose();b.material.dispose();}batches.clear();}
  return {sites:CITY_SITES,near,activityPrompt,interactAt,beginDelivery,update,status,goal,setWaypoint,aimReady,dispose,roadCount:chunks.length,buildingCount,soccerPosition:()=>({x:soccer.x+football.position.x,z:soccer.z+football.position.z}),npcKick:()=>{if(soccerBall.cooldown>0||Math.hypot(soccerBall.vx,soccerBall.vz)>6)return;soccerBall.owner='barrio';soccerBall.cooldown=1.2;soccerBall.vx=(Math.random()-.5)*8;soccerBall.vz=(football.position.z>0?-1:1)*5;soccerBall.vy=1.8;}};
 }
 

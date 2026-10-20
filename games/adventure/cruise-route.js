@@ -1,4 +1,4 @@
-import {CANAL_WATERWAY} from './geography.js?v=156';
+import {CANAL_WATERWAY} from './geography.js?v=186';
 export const CRUISE_FARE=10;
 export const CRUISE_BOARD={x:66,z:-65};
 export const CRUISE_DOCK={x:40,z:-70};

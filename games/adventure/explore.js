@@ -1,31 +1,33 @@
-import {touchesLava,returnToHospital,createCityHospital} from './volcano-safety.js?v=156';
-import {locationLabel} from './location-label.js?v=156';
-import {waterFriend,animalStep} from './animal-boundaries.js?v=156';
-import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,mainlandAt,mainlandRoadRoute,roadDistance} from './explore-state.js?v=180';
-import {planHighwayGuardrails} from './highway-rails.js?v=176';
-import {createPanamaLife} from './panama-life.js?v=168';
-import {createCloseCamera} from './close-camera.js?v=156';
-import {WORLD_BOUNDS} from './geography.js?v=180';
-import {createExtendedDistricts} from './expanded-districts.js?v=181';
-import {createCampaign} from './campaign.js?v=156';
-import {createColonAdventure} from './colon-adventure.js?v=184';
-import {createCanalCruise} from './canal-cruise.js?v=183';
-import {createRealms} from './realms.js?v=174';
-import {createJourney} from './journey.js?v=156';
-import {oceanModel} from './ocean-models.js?v=182';
-import {createIslandLife,naturalSharkPatrol as sharkPatrol} from './island-life.js?v=182';
-import {createWorldStory,islandStories} from './world-story.js?v=156';
-import {REGION_PROJECTS,regionForPosition,missionStatus,restoreRegions,createRegionProjectWorld} from './region-projects.js?v=181';
-import {createWorldMap} from './world-map.js?v=181';
-import {createWildlifeFriends} from './wildlife-friends.js?v=156';
-import {createVillageBuilders} from './village-builders.js?v=181';
-import {createHouseInteriors} from './house-interiors.js?v=156';
-import {createPizzaCity} from './pizza-city.js?v=178';
-import {driveByDirection} from './directional-drive.js?v=166';
-import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=156';
-import {ESTATE_PLANS,estateCosts,estateMissing,findEstateSite,canBuildEstate,buildEstate,canUpgradeEstate,upgradeEstate,estateBlocked,createEstateWorld} from './estate.js?v=156';
-import {buildIsland} from './entrance.js?v=184';
-import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=180';
+import {createRuralTowns,ruralBlocks} from './rural-towns.js?v=186';
+import {roadRibbon,surfaceMesh} from './road-surfaces.js?v=186';
+import {touchesLava,returnToHospital,createCityHospital} from './volcano-safety.js?v=186';
+import {locationLabel} from './location-label.js?v=186';
+import {waterFriend,animalStep} from './animal-boundaries.js?v=186';
+import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,mainlandAt,mainlandRoadRoute,roadDistance} from './explore-state.js?v=186';
+import {planHighwayGuardrails} from './highway-rails.js?v=186';
+import {createPanamaLife} from './panama-life.js?v=186';
+import {createCloseCamera} from './close-camera.js?v=186';
+import {WORLD_BOUNDS} from './geography.js?v=186';
+import {createExtendedDistricts} from './expanded-districts.js?v=186';
+import {createCampaign} from './campaign.js?v=186';
+import {createColonAdventure} from './colon-adventure.js?v=186';
+import {createCanalCruise} from './canal-cruise.js?v=186';
+import {createRealms} from './realms.js?v=186';
+import {createJourney} from './journey.js?v=186';
+import {oceanModel} from './ocean-models.js?v=186';
+import {createIslandLife,naturalSharkPatrol as sharkPatrol} from './island-life.js?v=186';
+import {createWorldStory,islandStories} from './world-story.js?v=186';
+import {REGION_PROJECTS,regionForPosition,missionStatus,restoreRegions,createRegionProjectWorld} from './region-projects.js?v=186';
+import {createWorldMap} from './world-map.js?v=186';
+import {createWildlifeFriends} from './wildlife-friends.js?v=186';
+import {createVillageBuilders} from './village-builders.js?v=186';
+import {createHouseInteriors} from './house-interiors.js?v=186';
+import {createPizzaCity} from './pizza-city.js?v=186';
+import {driveByDirection} from './directional-drive.js?v=186';
+import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=186';
+import {ESTATE_PLANS,estateCosts,estateMissing,findEstateSite,canBuildEstate,buildEstate,canUpgradeEstate,upgradeEstate,estateBlocked,createEstateWorld} from './estate.js?v=186';
+import {buildIsland} from './entrance.js?v=186';
+import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=186';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);syncWallet(state);
  let disposed=false,engine=null,control=null,builderSystem=null,friendSystem=null,houseSystem=null,wildLife=null,cityLife=null,panamaLife=null,cruiseLife=null,colonLife=null,workshop=null,estateWorld=null,regionWorld=null,carDriving=false,carSpeed=0,mountId=null,birdAltitude=0,birdTarget=0,birdLanding=false,near=null,ride=s.flight?1:0,flightY=s.flight||0,flightTarget=s.flight||0,flightVX=0,flightVZ=0,route=[],targetPoint=null,keys=new Set(),stick={x:0,z:0},music=[],messageTime=0,autosave=0;
@@ -610,48 +612,20 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
  canvas.addEventListener('webglcontextlost',contextLost);canvas.addEventListener('webglcontextrestored',contextRestored);
  start();
  function setup({T,scene,camera,target,height,make,geometry,mat,ball,cone,cylinder,box,renderer,tropical,tower,beam,crystal,dockBoat,sun,ambient,waterMaterial,surfaces}){
+  createRuralTowns({T,scene,make,mat,box,geometry,height,state});
   const detailedDistricts=createExtendedDistricts({T,scene,make,mat,box,cylinder,height});
   const gold=mat('#ffd46b'),pink=mat('#ed91b6'),orange=mat('#ef9955'),cream=mat('#fff2d3'),ink=mat('#254550'),purple=mat('#a895ed'),green=mat('#68bd7d');
   // Continuous new asphalt ribbons follow each sampled highway curve.
   // Shared geometry avoids the seams, overlaps and square patches of road boxes.
   const routeAsphalt=mat('#303943',{roughness:.91}),routeStripe=mat('#f4eee1',{roughness:.9});
   const roadEdge=mat('#e9e4d6',{roughness:.94});
-  for(const path of Object.values(HIGHWAY_CURVES)){
-   if(path.length<2)continue;
-   const vertices=[],uv=[],indices=[];
-   for(let i=0;i<path.length;i++){
-    const [x,z]=path[i],prev=path[Math.max(0,i-1)],next=path[Math.min(path.length-1,i+1)];
-    const dx=next[0]-prev[0],dz=next[1]-prev[1],mag=Math.hypot(dx,dz)||1;
-    const lx=dz/mag,lz=-dx/mag;
-    for(const side of [-1,1]){
-     const px=x+lx*side*HIGHWAY_WIDTH*.5,pz=z+lz*side*HIGHWAY_WIDTH*.5;
-     vertices.push(px,height(px,pz)+.13,pz);uv.push(side===-1?0:1,i*.23);
-    }
-    if(i){const j=2*i;indices.push(j-2,j,j-1,j-1,j,j+1);}
-   }
-   const geo=geometry(new T.BufferGeometry());
-   geo.setAttribute('position',new T.Float32BufferAttribute(vertices,3));
-   geo.setAttribute('uv',new T.Float32BufferAttribute(uv,2));
-   geo.setIndex(indices);geo.computeVertexNormals();
-   const road=new T.Mesh(geo,routeAsphalt);road.name='Smooth connected highway asphalt';
-   road.receiveShadow=true;road.castShadow=false;scene.add(road);
-   for(let i=1;i<path.length;i+=4){
-    const [ax,az]=path[i-1],[bx,bz]=path[i],dx=bx-ax,dz=bz-az,len=Math.hypot(dx,dz);
-    if(len<.05)continue;
-    const x=(ax+bx)/2,z=(az+bz)/2,y=height(x,z)+.17,angle=Math.atan2(dx,dz);
-    const dash=make(box,routeStripe,x,y,z,.14,.018,Math.min(1.6,len*1.6));
-    dash.rotation.y=angle;dash.castShadow=false;
-   }
-   for(let i=1;i<path.length;i+=3){
-    const [ax,az]=path[i-1],[bx,bz]=path[i],dx=bx-ax,dz=bz-az,len=Math.hypot(dx,dz);
-    if(len<.05)continue;
-    const x=(ax+bx)/2,z=(az+bz)/2,angle=Math.atan2(dx,dz),lx=dz/len,lz=-dx/len;
-    for(const side of [-1,1]){
-     const px=x+lx*side*(HIGHWAY_WIDTH/2-.34),pz=z+lz*side*(HIGHWAY_WIDTH/2-.34);
-     const line=make(box,roadEdge,px,height(px,pz)+.17,pz,.085,.017,Math.min(2.5,len*3));
-     line.rotation.y=angle;line.castShadow=false;
-    }
-   }
+  const highwayPaths=Object.values(HIGHWAY_CURVES);
+  for(const path of highwayPaths){
+   const paintClear=(x,z)=>!highwayPaths.some(other=>other!==path&&other.some(([px,pz])=>Math.hypot(x-px,z-pz)<HIGHWAY_WIDTH/2+.3));
+   scene.add(surfaceMesh(T,geometry,roadRibbon(path,HIGHWAY_WIDTH,height),routeAsphalt,'Smooth connected highway asphalt'));
+   // Paint follows the same surface and curve; no floating box dashes.
+   scene.add(surfaceMesh(T,geometry,roadRibbon(path,.14,height,{lift:.145,dash:1.6,gap:5.4,include:paintClear}),routeStripe,'Highway center markings'));
+   for(const side of [-1,1])scene.add(surfaceMesh(T,geometry,roadRibbon(path,.085,height,{offset:side*(HIGHWAY_WIDTH/2-.34),lift:.145,include:paintClear}),roadEdge,'Continuous highway edge markings'));
   }
   // Terrain-side barriers only, never at junctions or along Gorgona access.
   const railMetal=mat('#a9afb1',{roughness:.66,metalness:.52}),railPost=mat('#555f65',{roughness:.78});
@@ -888,7 +862,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    if(len>0&&active&&!carDriving&&!ride&&!inside&&!boating&&!houseSystem?.isInside()){dx/=Math.max(1,len);dz/=Math.max(1,len);let nx=s.x+dx*speed*dt,nz=s.z+dz*speed*dt;const edge=Math.hypot(nx/WORLD_BOUNDS.x,nz/WORLD_BOUNDS.z);if(edge>1){nx/=edge;nz/=edge;}if(!airborne&&!mountId&&!remoteAccess(s,{x:nx,z:nz})){nx=s.x;nz=s.z;if(currentHint===0){tell('🌊 Corrientes fuertes · ⛵ 🎈','🌊 Strong currents · ⛵ 🎈');currentHint=5;}}const canMove=(px,pz)=>traversable(px,pz)&&colonLife.canWalk(px,pz)&&
     // A public highway can never be blocked by a legacy player-built
     // property. Keep its structure/save, but never make the driving lane impassable.
-    (roadDistance(px,pz)<HIGHWAY_WIDTH*.43||!estateBlocked(s,px,pz));if(waterFriend(mountId)){const next=animalStep(mountId,s.x,s.z,nx,nz,3.3);s.x=next.x;s.z=next.z;}else if(mountId||airborne||canMove(nx,nz)){s.x=nx;s.z=nz;}else if(canMove(nx,s.z))s.x=nx;else if(canMove(s.x,nz))s.z=nz;const facing=Math.atan2(dx,dz);const turn=Math.atan2(Math.sin(facing-avatar.rotation.y),Math.cos(facing-avatar.rotation.y));avatar.rotation.y+=turn*Math.min(1,dt*11);if(closeView&&targetPoint)closeCamera.face(avatar.rotation.y);step+=dt*12;autosave+=dt;if(autosave>2){save();autosave=0;}}
+    (roadDistance(px,pz)<HIGHWAY_WIDTH*.43||!estateBlocked(s,px,pz))&&!ruralBlocks(px,pz);if(waterFriend(mountId)){const next=animalStep(mountId,s.x,s.z,nx,nz,3.3);s.x=next.x;s.z=next.z;}else if(mountId||airborne||canMove(nx,nz)){s.x=nx;s.z=nz;}else if(canMove(nx,s.z))s.x=nx;else if(canMove(s.x,nz))s.z=nz;const facing=Math.atan2(dx,dz);const turn=Math.atan2(Math.sin(facing-avatar.rotation.y),Math.cos(facing-avatar.rotation.y));avatar.rotation.y+=turn*Math.min(1,dt*11);if(closeView&&targetPoint)closeCamera.face(avatar.rotation.y);step+=dt*12;autosave+=dt;if(autosave>2){save();autosave=0;}}
    let landed=false;if(active&&dt>0&&(jumpY>0||velocity>0)){const aboveGround=jumpY>0;velocity-=15*dt;jumpY=Math.max(0,jumpY+velocity*dt);if(jumpY===0){velocity=0;landed=aboveGround;}}
    if(birdMount()&&active){
     const to=birdLanding?0:birdTarget,pace=birdLanding?5.8:6.4;

@@ -1,26 +1,26 @@
-import {DESTINATIONS,WORLD_BOUNDS,mainlandContains,canalWater,gatunWater,migrateGeography,segmentDistance,organicIslandRadius,homeShoreRadius,COLON_OFFSET,COLON_LAYOUT_VERSION} from './geography.js?v=180';
-import {SAN_BLAS_ISLANDS,normalizePanama} from './panama-state.js?v=173';
-import {normalizeCampaign} from './campaign-state.js?v=156';
-import {normalizeColon,bridgeDistance,COLON_BRIDGE} from './colon-state.js?v=156';
-import {normalizeCruise,CRUISE_FARE} from './cruise-route.js?v=156';
-import {normalizeEstate,estateCoinCost,ESTATE_PLANS} from './estate.js?v=156';
+import {DESTINATIONS,WORLD_BOUNDS,mainlandContains,canalWater,gatunWater,migrateGeography,segmentDistance,organicIslandRadius,homeShoreRadius,COLON_OFFSET,COLON_LAYOUT_VERSION,mainlandRelief,GEOGRAPHY_VERSION} from './geography.js?v=186';
+import {SAN_BLAS_ISLANDS,normalizePanama} from './panama-state.js?v=186';
+import {normalizeCampaign} from './campaign-state.js?v=186';
+import {normalizeColon,bridgeDistance,COLON_BRIDGE} from './colon-state.js?v=186';
+import {normalizeCruise,CRUISE_FARE} from './cruise-route.js?v=186';
+import {normalizeEstate,estateCoinCost,ESTATE_PLANS} from './estate.js?v=186';
 // Exploration is independent of lesson order. Every place is open from the start.
 export const worldIslands=[
- {id:'islet',x:DESTINATIONS.islet.at[0],z:DESTINATIONS.islet.at[1],rx:17,rz:14,h:2.5,ox:24,oz:-8,spread:2.4,en:'Taboga · Island of Flowers',es:'Isla Taboga · Isla de las Flores'},
- {id:'wilds',x:DESTINATIONS.wilds.at[0],z:DESTINATIONS.wilds.at[1],rx:31,rz:31,h:5,ox:0,oz:-30,spread:1.25,en:'Isla Bastimentos · Bocas del Toro',es:'Isla Bastimentos · Bocas del Toro'},
- {id:'coconutCoast',x:DESTINATIONS.coconutCoast.at[0],z:DESTINATIONS.coconutCoast.at[1],rx:29,rz:25,h:4,ox:47,oz:6,spread:1.35,en:'Isla Contadora · Pearl Islands',es:'Isla Contadora · Las Perlas'},
- {id:'sunset',x:DESTINATIONS.sunset.at[0],z:DESTINATIONS.sunset.at[1],rx:42,rz:37,h:46,ox:-42,oz:8,spread:1.35,en:'Volcán Barú · Chiriquí',es:'Volcán Barú · Chiriquí'},
+ {id:'islet',x:DESTINATIONS.islet.at[0],z:DESTINATIONS.islet.at[1],rx:24.65,rz:20.3,h:2.5,ox:24,oz:-8,spread:3.48,en:'Taboga · Island of Flowers',es:'Isla Taboga · Isla de las Flores'},
+ {id:'wilds',x:DESTINATIONS.wilds.at[0],z:DESTINATIONS.wilds.at[1],rx:41.85,rz:41.85,h:5,ox:0,oz:-30,spread:1.6875,en:'Isla Bastimentos · Bocas del Toro',es:'Isla Bastimentos · Bocas del Toro'},
+ {id:'coconutCoast',x:DESTINATIONS.coconutCoast.at[0],z:DESTINATIONS.coconutCoast.at[1],rx:43.5,rz:37.5,h:4,ox:47,oz:6,spread:2.025,en:'Isla Contadora · Pearl Islands',es:'Isla Contadora · Las Perlas'},
+ {id:'sunset',x:DESTINATIONS.sunset.at[0],z:DESTINATIONS.sunset.at[1],rx:58.8,rz:51.8,h:46,ox:-42,oz:8,spread:1.89,en:'Volcán Barú · Chiriquí',es:'Volcán Barú · Chiriquí'},
  {id:'crystalCove',x:DESTINATIONS.crystalCove.at[0],z:DESTINATIONS.crystalCove.at[1],rx:12,rz:10,h:1.2,ox:0,oz:48,spread:1.5,en:'Guna Yala · San Blas',es:'Guna Yala · San Blas'},
  {id:'pizzaCity',x:DESTINATIONS.pizzaCity.at[0],z:DESTINATIONS.pizzaCity.at[1],rx:58,rz:48,h:3.3,ox:-100,oz:-74,spread:1,en:'Panama City · Casco Viejo',es:'Ciudad de Panamá · Casco Viejo'},
- {id:'colon',x:DESTINATIONS.colon.at[0],z:DESTINATIONS.colon.at[1],rx:29,rz:27,h:4,ox:110,oz:-56,spread:1,en:'Colón · Caribbean Coast',es:'Colón · Costa del Caribe'},
+ {id:'colon',x:DESTINATIONS.colon.at[0],z:DESTINATIONS.colon.at[1],rx:40,rz:37,h:4,ox:110,oz:-56,spread:1,en:'Colón · Caribbean Coast',es:'Colón · Costa del Caribe'},
  {id:'monkeyIslet',x:DESTINATIONS.monkeyIslet.at[0],z:DESTINATIONS.monkeyIslet.at[1],rx:8,rz:7,h:1.8,ox:130,oz:-25,spread:1,en:'Monkey Island · Gatún Lake',es:'Isla de los Monos · Lago Gatún'},
  ...SAN_BLAS_ISLANDS,
  // Remote open-world islands occupy the empty ocean without relocating the
  // established roads, save coordinates, city buildings or children's quests.
- {id:'coiba',x:-260,z:140,rx:35,rz:30,h:6,ox:-260,oz:140,spread:1,en:'Isla Coiba · Pacific Wilderness',es:'Isla Coiba · Selva del Pacífico'},
- {id:'delRey',x:273,z:142,rx:32,rz:28,h:4,ox:273,oz:142,spread:1,en:'Isla del Rey · Pearl Islands',es:'Isla del Rey · Las Perlas'},
- {id:'escudo',x:-244,z:-202,rx:29,rz:26,h:3,ox:-244,oz:-202,spread:1,en:'Escudo de Veraguas · Wild Caribbean',es:'Escudo de Veraguas · Caribe Salvaje'},
- {id:'cebaco',x:-102,z:166,rx:32,rz:28,h:4,ox:-102,oz:166,spread:1,en:'Isla Cébaco · Open Shores',es:'Isla Cébaco · Costas Abiertas'}
+ {id:'coiba',x:-480,z:160,rx:49,rz:42,h:6,ox:-260,oz:140,spread:1,en:'Isla Coiba · Pacific Wilderness',es:'Isla Coiba · Selva del Pacífico'},
+ {id:'delRey',x:440,z:260,rx:44.8,rz:39.2,h:4,ox:273,oz:142,spread:1,en:'Isla del Rey · Pearl Islands',es:'Isla del Rey · Las Perlas'},
+ {id:'escudo',x:-340,z:-310,rx:40.6,rz:36.4,h:3,ox:-244,oz:-202,spread:1,en:'Escudo de Veraguas · Wild Caribbean',es:'Escudo de Veraguas · Caribe Salvaje'},
+ {id:'cebaco',x:-200,z:260,rx:44.8,rz:39.2,h:4,ox:-102,oz:166,spread:1,en:'Isla Cébaco · Open Shores',es:'Isla Cébaco · Costas Abiertas'}
 ];
 const BARU_LAND=worldIslands.find(p=>p.id==='sunset');
 export function islandPoint(id,x,z){const p=worldIslands.find(p=>p.id===id);return {x:p.x+(x-p.ox)*p.spread,z:p.z+(z-p.oz)*p.spread};}
@@ -29,42 +29,56 @@ export function remoteAccess(from,to){const p=worldIslands.find(i=>i.vehicleOnly
 // A connected mainland corridor: Panama City → Gorgona → Colón and
 // Gorgona → Volcán → Barú. Offshore island footprints remain separate.
 export const MAINLAND_ROADS={
- cityToColon:[[105,-61],[95,-74],[63,-88],[30,-116],[26,-144],[24,-175],[25,-203],[24,-231],[14,-259],[-18,-272],[-47,-269],[-50,-245]],
+ cityToColon:[[77,-61],[77,-85],[63,-88],[30,-116],[26,-144],[24,-175],[25,-243],[24,-351],[14,-379],[-18,-392],[-47,-389],[-50,-365]],
  // Intercity traffic bypasses the beach. Turn off onto Gorgona's access road.
- cityToGorgona:[[105,-35],[85,-26],[48,-15],[32,-14]],
- gorgonaBeachAccess:[[32,-14],[28,-8],[24,-4],[21,1]],
- cityToBaru:[[32,-14],[-7,-8],[-35,0],[-75,-12],[-115,-22],[-155,-32],[-147,-43],[-135,-55]],
- boquete:[[-115,-22],[-112,-32]],canal:[[85,-26],[66,-65]],
+ cityToGorgona:[[105,-35],[85,-26],[64,-19],[48,-45],[32,-80]],
+ gorgonaBeachAccess:[[32,-80],[25,-63],[38,-40],[36,-15],[31,1],[21,1]],
+ cityToBaru:[[32,-80],[-30,-60],[-75,-45],[-155,-35],[-240,-42],[-300,-32],[-385,-30],[-400,-70],[-385,-110],[-350,-65-51.8*.925]],
+ boquete:[[-300,-32],[-290,-50]],
+ volcanTownStreet:[[-385,-30],[-385,-8],[-408,-8]],
+ boqueteStreet:[[-290,-50],[-265,-50],[-265,-28]],canal:[[85,-26],[66,-65]],
  // Eastern Panama's new neighborhoods, leading outward from downtown.
  panamaEast:[[163,-61],[175,-61],[181,-57],[197,-57],[213,-57],[229,-57],[245,-57]],
  // Colón is a Caribbean city, not simply the Monkey Island nature park.
- colonCity:[[-50,-245],[-57,-251],[-67,-254],[-72,-252]],
- colonCivic:[[24,-231],[14,-242],[11,-252]]
+ colonCity:[[-50,-365],[-57,-371],[-67,-374],[-72,-372]],
+ colonCivic:[[24,-351],[14,-362],[11,-372]]
 };
 export const MAINLAND_STOPS=[
  {id:'pizzaCity',x:120,z:-50,en:'Panama City',es:'Ciudad de Panamá'},
- {id:'colon',x:-50,z:-245,en:'Colón',es:'Colón'},
- {id:'colonCity',x:-67,z:-254,en:'Colón Waterfront City',es:'Ciudad de Colón · Malecón'},
- {id:'colonCivic',x:11,z:-252,en:'Colón Port Civic District',es:'Colón · Distrito Cívico del Puerto'},
+ {id:'colon',x:-50,z:-365,en:'Colón',es:'Colón'},
+ {id:'colonCity',x:-67,z:-374,en:'Colón Waterfront City',es:'Ciudad de Colón · Malecón'},
+ {id:'colonCivic',x:11,z:-372,en:'Colón Port Civic District',es:'Colón · Distrito Cívico del Puerto'},
  {id:'panamaEast',x:214,z:-50,en:'Panama East District',es:'Barrios de Panamá Este'},
- {id:'boquete',x:-112,z:-32,icon:'🌿',es:'Boquete · Chiriquí',en:'Boquete · Chiriquí',kind:'mainland'},
- {id:'volcanTown',x:-155,z:-32,en:'Volcán Town',es:'Pueblo Volcán'},
- {id:'boquete',x:-112,z:-32,en:'Boquete',es:'Boquete'},
- {id:'sunset',x:-135,z:-55,en:'Volcán Barú',es:'Volcán Barú'}
+ {id:'boquete',x:-290,z:-50,icon:'🌿',es:'Boquete · Chiriquí',en:'Boquete · Chiriquí',kind:'mainland'},
+ {id:'volcanTown',x:-385,z:-30,en:'Volcán Town',es:'Pueblo Volcán'},
+ {id:'sunset',x:-350,z:-65,en:'Volcán Barú',es:'Volcán Barú'}
 ];
 export const HIGHWAY_WIDTH=9.5;
 export function smoothHighway(points){
+ // Shape-preserving Hermite slopes: no coordinate overshoot at sharp bends.
+ // Keep every junction anchor exact so branches share the same road graph.
+ if(points.length<2)return points.map(p=>[...p]);
+ const nodes=points.filter((p,i)=>!i||Math.hypot(p[0]-points[i-1][0],p[1]-points[i-1][1])>1e-6);
+ if(nodes.length<2)return nodes.map(p=>[...p]);
+ const spans=nodes.slice(1).map((p,i)=>Math.hypot(p[0]-nodes[i][0],p[1]-nodes[i][1]));
+ const slopes=[0,1].map(k=>{
+  const sec=spans.map((h,i)=>(nodes[i+1][k]-nodes[i][k])/h);
+  return nodes.map((_,i)=>{
+   if(!i)return sec[0];if(i===nodes.length-1)return sec.at(-1);
+   const a=sec[i-1],b=sec[i];if(a*b<=0)return 0;
+   const w1=2*spans[i]+spans[i-1],w2=spans[i]+2*spans[i-1];
+   return (w1+w2)/(w1/a+w2/b);
+  });
+ });
  const result=[];
- for(let i=0;i<points.length-1;i++){
-  const a=points[Math.max(0,i-1)],b=points[i],d=points[i+1],e=points[Math.min(points.length-1,i+2)];
-  const count=Math.max(3,Math.ceil(Math.hypot(d[0]-b[0],d[1]-b[1])/2));
+ for(let i=0;i<nodes.length-1;i++){
+  const count=Math.max(3,Math.ceil(spans[i]));
   for(let j=0;j<count;j++){
    const t=j/count,t2=t*t,t3=t2*t;
-   const calc=k=>.5*((2*b[k])+(-a[k]+d[k])*t+(2*a[k]-5*b[k]+4*d[k]-e[k])*t2+(-a[k]+3*b[k]-3*d[k]+e[k])*t3);
-   result.push([calc(0),calc(1)]);
+   result.push([0,1].map(k=>(2*t3-3*t2+1)*nodes[i][k]+(t3-2*t2+t)*spans[i]*slopes[k][i]+(-2*t3+3*t2)*nodes[i+1][k]+(t3-t2)*spans[i]*slopes[k][i+1]));
   }
  }
- result.push(points[points.length-1]);return result;
+ result.push([...nodes.at(-1)]);return result;
 }
 export const HIGHWAY_CURVES=Object.fromEntries(Object.entries(MAINLAND_ROADS).map(([id,points])=>[id,smoothHighway(points)]));
 // Flatten road polylines once, rather than rebuilding vectors every terrain
@@ -74,27 +88,48 @@ const ROAD_SEGMENTS=Object.values(HIGHWAY_CURVES).flatMap(nodes=>nodes.slice(1).
  return {ax,az,dx,dz,inv:1/Math.max(.000001,dx*dx+dz*dz),
   minX:Math.min(ax,bx),maxX:Math.max(ax,bx),minZ:Math.min(az,bz),maxZ:Math.max(az,bz)};
 }));
+// Immutable bounding-volume tree: terrain queries visit nearby road segments
+// instead of scanning every metre of every highway across the expanded world.
+function roadTree(segments){
+ const bounds={minX:Infinity,maxX:-Infinity,minZ:Infinity,maxZ:-Infinity};
+ for(const q of segments){bounds.minX=Math.min(bounds.minX,q.minX);bounds.maxX=Math.max(bounds.maxX,q.maxX);bounds.minZ=Math.min(bounds.minZ,q.minZ);bounds.maxZ=Math.max(bounds.maxZ,q.maxZ);}
+ if(segments.length<=8)return {...bounds,segments};
+ const axis=bounds.maxX-bounds.minX>bounds.maxZ-bounds.minZ?'X':'Z';
+ segments.sort((a,b)=>a['min'+axis]+a['max'+axis]-b['min'+axis]-b['max'+axis]);
+ const mid=segments.length>>1;
+ return {...bounds,left:roadTree(segments.slice(0,mid)),right:roadTree(segments.slice(mid))};
+}
+const ROAD_TREE=roadTree([...ROAD_SEGMENTS]);
+function boundsDistance(q,x,z){const dx=Math.max(q.minX-x,0,x-q.maxX),dz=Math.max(q.minZ-z,0,z-q.maxZ);return dx*dx+dz*dz;}
+function nearestRoadSquared(q,x,z,best){
+ if(boundsDistance(q,x,z)>=best)return best;
+ if(q.segments){
+  for(const s of q.segments){
+   if(boundsDistance(s,x,z)>=best)continue;
+   const t=Math.max(0,Math.min(1,((x-s.ax)*s.dx+(z-s.az)*s.dz)*s.inv)),dx=x-s.ax-t*s.dx,dz=z-s.az-t*s.dz;
+   best=Math.min(best,dx*dx+dz*dz);
+  }
+  return best;
+ }
+ const a=boundsDistance(q.left,x,z),b=boundsDistance(q.right,x,z);
+ if(a<b){best=nearestRoadSquared(q.left,x,z,best);return nearestRoadSquared(q.right,x,z,best);}
+ best=nearestRoadSquared(q.right,x,z,best);return nearestRoadSquared(q.left,x,z,best);
+}
+// Deterministic relocation preserves scenery counts while reserving the entire
+// paved corridor, including the footprint of each tree or rock.
+export function roadsidePoint(x,z,radius=1,available=()=>true){
+ if(!nearRoad(x,z,HIGHWAY_WIDTH/2+radius+1)&&available(x,z))return {x,z};
+ for(let j=1;j<=160;j++){
+  const a=j*2.399963229728653,d=6+Math.floor((j-1)/12)*2;
+  const nx=x+Math.cos(a)*d,nz=z+Math.sin(a)*d;
+  if(available(nx,nz)&&!nearRoad(nx,nz,HIGHWAY_WIDTH/2+radius+1)&&isletHeight(nx,nz)>.05&&!inWater(nx,nz))return {x:nx,z:nz};
+ }
+ return {x,z};
+}
 export function nearRoad(x,z,buffer=HIGHWAY_WIDTH/2){
- const max2=buffer*buffer;
- for(const q of ROAD_SEGMENTS){
-  if(x<q.minX-buffer||x>q.maxX+buffer||z<q.minZ-buffer||z>q.maxZ+buffer)continue;
-  const t=Math.max(0,Math.min(1,((x-q.ax)*q.dx+(z-q.az)*q.dz)*q.inv)),
-   dx=x-q.ax-t*q.dx,dz=z-q.az-t*q.dz;
-  if(dx*dx+dz*dz<max2)return true;
- }
- return false;
+ return buffer>=0&&nearestRoadSquared(ROAD_TREE,x,z,buffer*buffer)<buffer*buffer;
 }
-export function roadDistance(x,z){
- let best=Infinity;
- for(const q of ROAD_SEGMENTS){
-  const dx=Math.max(q.minX-x,0,x-q.maxX),dz=Math.max(q.minZ-z,0,z-q.maxZ);
-  if(dx*dx+dz*dz>=best)continue;
-  const t=Math.max(0,Math.min(1,((x-q.ax)*q.dx+(z-q.az)*q.dz)*q.inv)),
-   px=x-q.ax-t*q.dx,pz=z-q.az-t*q.dz;
-  best=Math.min(best,px*px+pz*pz);
- }
- return Math.sqrt(best);
-}
+export function roadDistance(x,z){return Math.sqrt(nearestRoadSquared(ROAD_TREE,x,z,Infinity));}
 export function mainlandRoadRoute(from,to){
  const vertices=new Map(),edges=new Map();
  const key=(x,z)=>x+','+z;
@@ -156,7 +191,8 @@ export function volcanoTrailPoint(progress){
 }
 // Different topography in every biome. Keep the same coastline/footprints so
 // navigation, saved positions, swim transitions and ocean shader stay aligned.
-export function isletHeight(x,z){
+function ungradedHeight(x,z){
+ let roadFloor=null;
  // Panama City is one consistent urban grade, not rolling island hills.
  // Keep the coastline transition outside the built city to avoid a vertical wall.
  const urbanRadius=Math.hypot((x-120)/58,(z+50)/48);
@@ -173,10 +209,16 @@ export function isletHeight(x,z){
    onBaru=volcanoDistance2<1.21&&volcanoDistance2<Math.pow(organicIslandRadius(BARU_LAND,Math.atan2(vv,vu)),2),
    homeDistance=Math.hypot(x/20,z/14),
    inHome=homeDistance<1.11&&homeDistance<homeShoreRadius(Math.atan2(z/14,x/20))*.98;
-  if(!onBaru&&!inHome&&nearRoad(x,z,HIGHWAY_WIDTH/2+.5))return .16;
+  if(!onBaru&&!inHome&&nearRoad(x,z,HIGHWAY_WIDTH/2+5)){
+   // The terrain grid spans 3m cells. A level shoulder keeps neighboring
+   // triangles from cutting through the pavement edge between sample points.
+   // Blend city approaches down to the mainland instead of a 1.44m step.
+   const t=Math.max(0,Math.min(1,(1.28-urbanRadius)/.32));
+   roadFloor=.16+1.44*t*t*(3-2*t);
+  }
  // A real sea-level canal cut through the eastern city waterfront.
  
- let h=mainlandContains(x,z)&&Math.hypot(x/20,z/14)>1.02?1.1:0;
+ let h=mainlandContains(x,z)&&Math.hypot(x/20,z/14)>1.02?mainlandRelief(x,z):0;
  for(const land of worldIslands){
   const u=(x-land.x)/land.rx,v=(z-land.z)/land.rz,rawRadius2=u*u+v*v;
   if(rawRadius2>1.22)continue;
@@ -196,13 +238,59 @@ export function isletHeight(x,z){
    elevation+=soft*(.19*Math.sin(x*.31+z*.12)+.12*Math.sin(z*.54-x*.23));
   h=Math.max(h,elevation);
  }
+ if(roadFloor!==null){
+  const t=Math.max(0,Math.min(1,(roadDistance(x,z)-HIGHWAY_WIDTH/2-3)/2)),blend=t*t*(3-2*t);
+  return roadFloor*(1-blend)+h*blend;
+ }
  return h;
 }
+let gradedRoads,gradeCells;
+export function isletHeight(x,z){
+ const base=ungradedHeight(x,z);
+ // Road shoulders must not fill the canal or navigable open water.
+ if(base<=0)return base;
+ if(!nearRoad(x,z,HIGHWAY_WIDTH/2+5))return base;
+ if(!gradedRoads){
+  const profiles=Object.values(HIGHWAY_CURVES).map(path=>({path,ys:path.map(([x,z])=>ungradedHeight(x,z))}));
+  // Share endpoint/control-anchor grades before constraining each road. This
+  // prevents an otherwise smooth branch from stepping at a shared junction.
+  for(let pass=0;pass<profiles.length;pass++){
+   const shared=new Map();
+   for(const {path,ys}of profiles)path.forEach((p,i)=>{const key=p.join(',');shared.set(key,Math.min(shared.get(key)??Infinity,ys[i]));});
+   for(const {path,ys}of profiles){
+    path.forEach((p,i)=>ys[i]=shared.get(p.join(',')));
+    for(let i=1;i<path.length;i++)ys[i]=Math.min(ys[i],ys[i-1]+.30*Math.hypot(path[i][0]-path[i-1][0],path[i][1]-path[i-1][1]));
+    for(let i=path.length-2;i>=0;i--)ys[i]=Math.min(ys[i],ys[i+1]+.30*Math.hypot(path[i][0]-path[i+1][0],path[i][1]-path[i+1][1]));
+   }
+  }
+  gradedRoads=profiles.flatMap(({path,ys})=>path.slice(1).map((b,i)=>({a:path[i],b,ya:ys[i],yb:ys[i+1]})));
+  // Keep the original segment order in each cell so junction ties retain their
+  // original grade. Ten metres matches the exact shoulder search below.
+  gradeCells=new Map();
+  for(const q of gradedRoads){
+   const {a,b}=q;
+   for(let ix=Math.floor((Math.min(a[0],b[0])-10)/16);ix<=Math.floor((Math.max(a[0],b[0])+10)/16);ix++)
+   for(let iz=Math.floor((Math.min(a[1],b[1])-10)/16);iz<=Math.floor((Math.max(a[1],b[1])+10)/16);iz++){
+    const key=ix+','+iz;if(!gradeCells.has(key))gradeCells.set(key,[]);gradeCells.get(key).push(q);
+   }
+  }
+ }
+ let best=Infinity,grade=base;
+ for(const {a,b,ya,yb} of gradeCells.get(Math.floor(x/16)+','+Math.floor(z/16))||[]){
+  if(x<Math.min(a[0],b[0])-10||x>Math.max(a[0],b[0])+10||z<Math.min(a[1],b[1])-10||z>Math.max(a[1],b[1])+10)continue;
+  const dx=b[0]-a[0],dz=b[1]-a[1],t=Math.max(0,Math.min(1,((x-a[0])*dx+(z-a[1])*dz)/(dx*dx+dz*dz||1)));
+  const d=Math.hypot(x-a[0]-dx*t,z-a[1]-dz*t);
+  if(d<best){best=d;grade=ya+(yb-ya)*t;}
+ }
+ // Keep a 3m engineering shoulder for the renderer's coarse terrain cells.
+ const t=Math.max(0,Math.min(1,(best-HIGHWAY_WIDTH/2-3)/2)),blend=t*t*(3-2*t);
+ return grade*(1-blend)+base*blend;
+}
 export const explorePlaces=[
- {id:'colonCity',x:-67,z:-254,icon:'🏙️',es:'Ciudad de Colón · Costa Caribe',en:'Colón City · Caribbean Waterfront',kind:'mainland'},
- {id:'colonCivic',x:11,z:-252,icon:'🏘️',es:'Colón · Distrito Cívico y Puerto',en:'Colón · Port and Civic District',kind:'mainland'},
+ {id:'colonCity',x:-67,z:-374,icon:'🏙️',es:'Ciudad de Colón · Costa Caribe',en:'Colón City · Caribbean Waterfront',kind:'mainland'},
+ {id:'colonCivic',x:11,z:-372,icon:'🏘️',es:'Colón · Distrito Cívico y Puerto',en:'Colón · Port and Civic District',kind:'mainland'},
  {id:'panamaEast',x:214,z:-50,icon:'🏙️',es:'Barrios de Panamá Este',en:'Panama City · Eastern Districts',kind:'mainland'},
- {id:'volcanTown',x:-155,z:-32,icon:'🏘️',es:'Pueblo Volcán · Chiriquí',en:'Volcán Town · Chiriquí',kind:'mainland'},
+ {id:'volcanTown',x:-385,z:-30,icon:'🏘️',es:'Pueblo Volcán · Chiriquí',en:'Volcán Town · Chiriquí',kind:'mainland'},
  ...worldIslands.slice(1).filter(p=>!p.guna).map(p=>({id:p.id,x:p.x,z:p.z,icon:({wilds:'🍌',coconutCoast:'🥥',sunset:'🌋',crystalCove:'🏝️',pizzaCity:'🍕',colon:'🌧️',monkeyIslet:'🐒'})[p.id],es:p.es,en:p.en,kind:'islet'})),
  {id:'volcanoTrail',...volcanoTrailPoint(0),icon:'🥾',es:'Sendero del Volcán Barú',en:'Volcán Barú Hiking Trail',kind:'volcano'},
  {id:'volcanoSummit',...volcanoTrailPoint(1),icon:'🌋',es:'Mirador de la Cima · Volcán Barú',en:'Volcán Barú Summit Lookout',kind:'volcano'},
@@ -210,7 +298,7 @@ export const explorePlaces=[
  {id:'islet',x:24,z:-8,icon:'🦋',es:'Isla Taboga · Flores',en:'Taboga · Island of Flowers',kind:'islet'},
  {id:'pip',x:4,z:9,icon:'🐢',es:'Pip · Playa Gorgona',en:'Pip · Playa Gorgona',kind:'friend'},
  {id:'mila',x:0,z:-26,icon:'🦜',es:'Mila · Bocas del Toro',en:'Mila · Bocas del Toro',kind:'friend'},
- {id:'ollie',x:-112,z:-32,icon:'🪶',es:'Ollie · Boquete',en:'Ollie · Boquete',kind:'friend'},
+ {id:'ollie',x:-290,z:-50,icon:'🪶',es:'Ollie · Boquete',en:'Ollie · Boquete',kind:'friend'},
  {id:'luna',x:290,z:-243,icon:'🦀',es:'Luna · Guna Yala',en:'Luna · Guna Yala',kind:'friend'},
  {id:'garden',x:24,z:-9.5,icon:'🌸',es:'Jardín de Flores de Taboga',en:'Taboga Flower Garden',kind:'garden'},
  {id:'beacon',x:-1,z:-2.5,icon:'✦',es:'Faro de la Aventura · Gorgona',en:'Gorgona Adventure Lighthouse',kind:'beacon'},
@@ -240,7 +328,7 @@ export const exploreItems=[
 ];
 for(const p of exploreItems){const land={fruit:'wilds',glow:'sunset'}[p.kind];if(land)Object.assign(p,islandPoint(land,p.x,p.z));}
 export function normalizeStory(raw){return Object.fromEntries(Object.entries({shells:3,picnic:4,seed:3,song:4,care:2,light:4}).map(([id,length])=>[id,Number.isInteger(raw?.[id])?Math.max(0,Math.min(length,raw[id])):0]));}
-export function freshExplore(){return {panama:normalizePanama(null),campaign:normalizeCampaign(null),colon:normalizeColon(null),estate:normalizeEstate(null),inventoryVersion:1,foodTotal:{banana:0,coconut:0},worldVersion:3,geographyVersion:1,sanBlasGeographyVersion:2,colonLayoutVersion:COLON_LAYOUT_VERSION,realms:{found:[],turtle:0,bird:0},journey:{visited:[],meals:0,swim:0,fly:0,rings:[]},x:4,z:10,dayTime:40,story:normalizeStory(null),collected:[],badges:[],hat:0,pet:false,flowers:0,catches:0,pops:0,flight:0,growth:1,food:{coconut:0,banana:0},harvested:{},boat:{x:6.5,z:16,heading:0},regionalProjects:{helped:[]},craft:{built:[],spent:{}},city:{cruise:normalizeCruise(null),bags:[],pizzas:0,car:{x:114,z:-50,heading:0},activities:{deliveries:[],deliveryActive:false,rallyBest:0,rallyWins:0,soccerGoals:0,soccerShots:0,marketTrades:0,muralColors:0,museum:[],carWashes:0}},friends:{visits:[],completed:[],companion:null}};}
+export function freshExplore(){return {panama:normalizePanama(null),campaign:normalizeCampaign(null),colon:normalizeColon(null),estate:normalizeEstate(null),inventoryVersion:1,foodTotal:{banana:0,coconut:0},worldVersion:3,geographyVersion:GEOGRAPHY_VERSION,sanBlasGeographyVersion:2,colonLayoutVersion:COLON_LAYOUT_VERSION,realms:{found:[],turtle:0,bird:0},journey:{visited:[],meals:0,swim:0,fly:0,rings:[]},x:4,z:10,dayTime:40,story:normalizeStory(null),collected:[],badges:[],hat:0,pet:false,flowers:0,catches:0,pops:0,flight:0,growth:1,food:{coconut:0,banana:0},harvested:{},boat:{x:6.5,z:16,heading:0},regionalProjects:{helped:[]},craft:{built:[],spent:{}},city:{cruise:normalizeCruise(null),bags:[],pizzas:0,car:{x:114,z:-50,heading:0},activities:{deliveries:[],deliveryActive:false,rallyBest:0,rallyWins:0,soccerGoals:0,soccerShots:0,marketTrades:0,muralColors:0,museum:[],carWashes:0}},friends:{visits:[],completed:[],companion:null}};}
 export function normalizeExplore(raw){raw=migrateGeography(raw);const s=freshExplore();if(!raw||typeof raw!=='object')return s;const rr=raw.realms||{};s.realms={found:[...new Set((Array.isArray(rr.found)?rr.found:[]).filter(id=>/^(reef-[0-5]|pearl-[0-4]|wind-[0-4]|star-[0-4]|seaChest-0|skyLight-0)$/.test(id)))],turtle:Math.max(0,Math.min(5,Math.floor(Number(rr.turtle)||0))),bird:Math.max(0,Math.min(4,Math.floor(Number(rr.bird)||0)))};const j=raw.journey||{};s.journey={visited:[...new Set((Array.isArray(j.visited)?j.visited:[]).filter(id=>worldIslands.some(p=>p.id===id)))],meals:Math.max(0,Math.min(999,Number(j.meals)||0)),swim:Math.max(0,Math.min(100000,Number(j.swim)||0)),fly:Math.max(0,Math.min(100000,Number(j.fly)||0)),rings:[...new Set((Array.isArray(j.rings)?j.rings:[]).filter(id=>/^(swim|fly)-[0-9]+$/.test(id)))]};// Preserve friendship, a chosen companion, and first-time play rewards across saves.
 const FRIEND_IDS=['pip','dori','mila','ollie','luna','kai'],savedFriends=raw.friends||{};
 s.friends={
@@ -252,7 +340,7 @@ s.friends={
 const savedCity=raw.city||{},car=savedCity.car||{},withinCity=(x,z)=>Number.isFinite(x)&&Number.isFinite(z)&&Math.hypot((x-120)/58,(z+50)/48)<.86;
 s.city={cruise:normalizeCruise(savedCity.cruise),bags:[...new Set((Array.isArray(savedCity.bags)?savedCity.bags:[]).filter(id=>/^bag-(?:[0-9]|1[0-9]|2[0-3])$/.test(id)))],
  pizzas:Math.max(0,Math.min(999,Math.floor(Number(savedCity.pizzas)||0))),
- car:withinCity(car.x,car.z)?{x:car.x,z:car.z,heading:Number.isFinite(car.heading)?car.heading:0}:{x:114,z:-50,heading:0},
+ car:(withinCity(car.x,car.z)||(Number.isFinite(car.x)&&Number.isFinite(car.z)&&Math.hypot(car.x/WORLD_BOUNDS.x,car.z/WORLD_BOUNDS.z)<1&&roadDistance(car.x,car.z)<HIGHWAY_WIDTH/2-.7))?{x:car.x,z:car.z,heading:Number.isFinite(car.heading)?car.heading:0}:{x:114,z:-50,heading:0},
  activities:{
   deliveries:[...new Set((Array.isArray(savedCity.activities?.deliveries)?savedCity.activities.deliveries:[]).filter(n=>Number.isInteger(n)&&n>=0&&n<3))],
   deliveryActive:savedCity.activities?.deliveryActive===true,

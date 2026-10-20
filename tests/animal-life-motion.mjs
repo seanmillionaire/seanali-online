@@ -6,7 +6,7 @@ const scene=new T.Scene(),camera=new T.PerspectiveCamera();const life=createIsla
 const group=scene.getObjectByName('Ocean wildlife');life.update(0,true,true,{x:4,z:9});const starts=group.children.map(a=>a.position.clone());let distances=group.children.map(()=>0);let last=starts.map(p=>p.clone());
 for(let i=0;i<600;i++){life.update(1/30,true,true,{x:4,z:9});group.children.forEach((a,j)=>{distances[j]+=Math.hypot(a.position.x-last[j].x,a.position.z-last[j].z);last[j].copy(a.position);});}
 
-assert.equal(group.children.length,36);
+assert.equal(group.children.length,46);
 for(const [i,a]of group.children.entries()){
  assert(a.visible,a.name+' visible');assert(distances[i]>.5,a.name+' continues roaming');
  assert(inWater(a.position.x,a.position.z),a.name+' remains in water');
@@ -20,4 +20,4 @@ for(let i=0;i<300;i++){
  group.children.forEach((n,j)=>{nearDistances[j]+=Math.hypot(n.position.x-last[j].x,n.position.z-last[j].z);last[j].copy(n.position);});
 }
 for(const [i,a]of group.children.entries())assert(nearDistances[i]>.5,a.name+' moves while observing');
-life.dispose();console.log('PASS all 36 swimmers move over 30 seconds, including nearby observation; water/road boundaries preserved');
+life.dispose();console.log('PASS all 46 swimmers move over 30 seconds, including nearby observation; water/road boundaries preserved');

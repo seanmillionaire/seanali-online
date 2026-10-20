@@ -1,4 +1,4 @@
-import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=178';
+import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=186';
 // Shared road and parcel clearances for all city scene generators.
 export const CITY_STREET_X=[77,105,135,163],CITY_STREET_Z=[-85,-61,-35,-12];
 export const CITY_FIXED_PLOTS=[
