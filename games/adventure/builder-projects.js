@@ -1,8 +1,8 @@
-import {expandWorldPoint,cityX} from './geography.js?v=213';
+import {expandWorldPoint,cityX} from './geography.js?v=224';
 // Permanent dry-land work sites for Mateo and Sofía. Deterministic positions
 // mean finished houses never move when a builder starts a new job.
-import {worldIslands,isletHeight,inWater,roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=213';
-import {CITY_ALL_PLOTS,cityOverlap,cityRoadClear} from './city-layout.js?v=213';
+import {worldIslands,isletHeight,inWater,roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=224';
+import {CITY_ALL_PLOTS,cityOverlap,cityRoadClear} from './city-layout.js?v=224';
 
 export const BUILDER_AREAS=[
  {id:'city',name:'Panama City',x:cityX(120),z:-50,rx:58,rz:48},

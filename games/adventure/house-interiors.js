@@ -1,4 +1,4 @@
-import {homeMove,homePath} from './mansion-state.js?v=213';
+import {homeMove,homePath} from './mansion-state.js?v=224';
 // Five real walkable, furnished interiors. Exterior coordinates are never
 // overwritten while inside, so old saves and world navigation remain safe.
 export const villageHouses=[

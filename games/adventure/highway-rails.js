@@ -1,5 +1,5 @@
 // Selected remote barriers stay outside drivable lanes and away from turnoffs.
-import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,roadDistance} from './explore-state.js?v=213';
+import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,roadDistance} from './explore-state.js?v=224';
 const eligible=new Set(['cityToColon','cityToBaru']);
 const roadNodes=Object.entries(MAINLAND_ROADS).flatMap(([id,pts])=>pts.map(([x,z])=>({id,x,z})));
 export const HIGHWAY_JUNCTIONS=roadNodes.filter(p=>roadNodes.some(q=>q.id!==p.id&&Math.hypot(q.x-p.x,q.z-p.z)<.01))

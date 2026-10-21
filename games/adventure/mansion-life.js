@@ -1,5 +1,6 @@
-import {HOME_LOTS,HOME_STAGES,HOME_OUTFITS,homeAvailable,chooseHome,constructHome,homeLot,homeReady,homePath,homeCanWalk} from './mansion-state.js?v=213';
-import {exteriorMansion,mansionInterior} from './mansion-models.js?v=213';
+import {MORNING_TIME} from './world-clock.js?v=224';
+import {HOME_LOTS,HOME_STAGES,HOME_OUTFITS,homeAvailable,chooseHome,constructHome,homeLot,homeReady,homePath,homeCanWalk} from './mansion-state.js?v=224';
+import {exteriorMansion,mansionInterior} from './mansion-models.js?v=224';
 export function createMansionLife(o){
  const {T,scene,state,host,panel,save,refresh,joy,prepare,navigate,enter,leave,coinBalance,roadDistance,canPark,onPark,dress,onMeal,walkRoom,isHome}=o,h=state.world.mansion,es=state.lang==='es',say=(a,b)=>es?a:b;
  let exterior=null,room=null,timer=null,mode='earn',homeStep=0,selected=HOME_LOTS[0].id,fetchTime=0,time=0,bathTime=0,laundryTime=0,dogRoute=[],dogPlan=0;
@@ -59,7 +60,7 @@ export function createMansionLife(o){
   if(id==='dog'){page(h.dogName,say('Tu perro vive contigo. Cuídalo, juega y elige si te acompaña por la casa.','Your dog lives with you. Care for him, play, and choose whether he follows you around the house.'));const label=el('label',say('Nombre del perro','Dog name')),input=el('input','');input.value=h.dogName;input.maxLength=18;label.append(input);panel.append(label,button(say('Guardar nombre','Save name'),()=>{h.dogName=input.value.replace(/[<>]/g,'').trim().slice(0,18)||'Coco';persist();use('dog');}),button(say('Comida, agua y cepillado','Feed, water and brush'),()=>{h.dogCare++;persist();page(h.dogName,say('Está alimentado, limpio y contento.','Fed, groomed and happy.'));}),button(say('Jugar a buscar la pelota','Play fetch'),()=>{fetchTime=8;h.dogPlays++;persist();close();}),button(h.dogFollowing?say('Descansar en su cama','Rest in bed'):say('Seguirme por la casa','Follow me around the house'),()=>{h.dogFollowing=!h.dogFollowing;persist();use('dog');}));return;}
   const titles={dine:say('Mi comedor','My dining room'),rest:say('Mi dormitorio','My bedroom'),bath:say('Baño spa','Spa bathroom'),laundry:say('Lavandería','Laundry'),lights:say('Iluminación','House lights')};page(titles[id]||'Home');
   if(id==='dine'){panel.append(el('p',say('Platos preparados: ','Prepared meals: ')+h.plates),button(say('Servir y comer','Serve and eat'),()=>{if(h.plates<1)return;h.plates--;onMeal();persist();page(titles[id],say('¡Buen provecho! Recuperaste energía para explorar.','Enjoy your meal! Energy restored for exploring.'));},h.plates<1));}
-  if(id==='rest')panel.append(button(say('Dormir hasta la mañana','Sleep until morning'),()=>{h.rest++;state.world.dayTime=40;persist();close();joy.effect('finish');}));
+  if(id==='rest')panel.append(button(say('Dormir hasta la mañana','Sleep until morning'),()=>{h.rest++;state.world.dayTime=MORNING_TIME;persist();close();joy.effect('finish');}));
   if(id==='bath')panel.append(button(say('Preparar baño y relajarse','Run bath and relax'),()=>{h.showers++;bathTime=12;persist();page(titles[id],say('Agua lista, toallas limpias. Te sientes renovada.','Warm water and fresh towels. You feel refreshed.'));}));
   if(id==='laundry')panel.append(button(say('Lavar, secar y doblar','Wash, dry and fold'),()=>{h.laundry++;laundryTime=12;persist();page(titles[id],say('La ropa está limpia y guardada en el vestidor.','Fresh clothes are folded in your wardrobe.'));}));
   if(id==='lights')panel.append(button(h.lights?say('Apagar luces','Turn lights off'):say('Encender luces','Turn lights on'),()=>{h.lights=!h.lights;persist();close();}));

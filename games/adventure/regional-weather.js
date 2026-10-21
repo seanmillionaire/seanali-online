@@ -1,9 +1,9 @@
 const clamp=v=>Math.max(0,Math.min(1,v));
 export function regionalWeather(x,z,time){
  const north=clamp((-z-110)/160),highland=Math.exp(-(((x+345)/100)**2+((z+65)/65)**2)),perlas=Math.exp(-(((x-600)/140)**2+((z-180)/120)**2));
- const front=.5+.5*Math.sin(time*.018+x*.004-z*.003),shower=clamp((front-.22)/.55);
- const rain=clamp((.08+north*.86)*(.35+.65*shower)*(1-highland*.75)*(1-perlas*.9));
- return {rain,mist:highland*.006+north*.0015,cloud:clamp(north*.6+highland*.55+shower*.18-perlas*.3),wind:1.5+rain*5+Math.sin(time*.23)*1.2,storm:north>.65&&rain>.65,region:highland>.45?'highlands':perlas>.35?'perlas':north>.55?'caribbean':'pacific'};
+ const front=.5+.5*Math.sin(time*.014+x*.004-z*.003-1.6),shower=clamp((front-.94)/.06);
+ const rain=clamp((.35+north*.59)*shower*(1-highland*.75)*(1-perlas*.9));
+ return {rain,mist:highland*.003+north*.00015+rain*.0008,cloud:clamp( .04+north*.06+highland*.16+rain*.65-perlas*.03),wind:1.5+rain*5+Math.sin(time*.23)*1.2,storm:north>.65&&rain>.65,region:highland>.45?'highlands':perlas>.35?'perlas':north>.55?'caribbean':'pacific'};
 }
 export function createRegionalWeather({T,scene,geometry,height,sun,joy}){
  const root=new T.Group();root.name='Regional weather · drifting rain and lightning';scene.add(root);

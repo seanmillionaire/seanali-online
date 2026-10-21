@@ -1,0 +1,7 @@
+import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';import vm from 'node:vm';
+const source=readFileSync('games/adventure/welcome-world.js','utf8').replace(/^import .*;\n/gm,'').replace('export function','function');let disposed=0,saves=0,args;
+const stage={classList:{remove(){}},setAttribute(){},removeAttribute(){},remove(){},inert:false};
+const host={prepend(){},classList:{remove(){}}},initial={world:{x:5,z:7,dayTime:180,food:{banana:8}}};
+const context=vm.createContext({document:{createElement:()=>stage},createExplore:(h,o)=>(args=o,{dispose(){disposed++;}}),fresh:()=>initial,JSON});
+vm.runInContext(source,context);const entrance=context.createWelcomeWorld(host,{state:initial,options:{save(){saves++;}},motion:()=>true});
+assert(args.paused());args.save();assert.equal(saves,0);assert.equal(initial.world.dayTime,180);const prepared=entrance.takeGame();assert.equal(prepared.host,stage);assert(!args.paused());assert.equal(prepared.state.world.dayTime,180);assert.equal(prepared.state.world.food.banana,8);assert(!stage.inert);args.save();assert.equal(saves,1);entrance.dispose();assert.equal(disposed,0,'handed-off renderer must survive');prepared.game.dispose();assert.equal(disposed,1);console.log('PASS single game handoff, preview pause, save isolation, saved clock and ownership cleanup');

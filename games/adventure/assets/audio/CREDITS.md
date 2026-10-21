@@ -33,3 +33,11 @@ CC0 1.0; trimmed, faded at playback, and transcoded to AAC.
 - thunder.m4a — Freesound - THunder_recorded_2021_Summer_02.wav by benmerrill328 — https://freesound.org/s/613276/
 - coins.m4a — Freesound - Cash Register Purchase by Zott820 — https://freesound.org/s/209578/
 - body-impact.m4a — Freesound - Power Kick, Body Impact, 7x by Kinoton — https://freesound.org/s/586841/
+
+## Regional soundtrack additions
+
+Original MP3 recordings; CC BY 4.0. Regional playlists follow the player’s supplied music direction. Cumbia and reggae selections are game scoring, not recordings of Panamanian típico, Congo, or Guna traditions.
+
+- Montego — Kevin MacLeod — CC BY 4.0 — https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100808
+- No Frills Salsa — Kevin MacLeod — CC BY 4.0 — https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100133
+- No Frills Cumbia — Kevin MacLeod — CC BY 4.0 — https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100275

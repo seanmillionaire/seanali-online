@@ -1,8 +1,8 @@
-import {cityX} from './geography.js?v=213';
-import {waterFriend,animalClear,recoverAnimal,animalStep} from './animal-boundaries.js?v=213';
-import {explorePlaces,earnCoins} from './explore-state.js?v=213';
-import {oceanModel} from './ocean-models.js?v=213';
-import {createAnimalDetails} from './animal-details.js?v=213';
+import {cityX} from './geography.js?v=224';
+import {waterFriend,animalClear,recoverAnimal,animalStep} from './animal-boundaries.js?v=224';
+import {explorePlaces,earnCoins} from './explore-state.js?v=224';
+import {oceanModel} from './ocean-models.js?v=224';
+import {createAnimalDetails} from './animal-details.js?v=224';
 // Repeatable, optional play with six friends in the 3D world.
 export const islandFriends=[
  {id:'pip',icon:'🐢',name:'Pip',where:['Playa Gorgona','Playa Gorgona'],game:['Sendero de conchas','Shell trail'],hello:['Explora el sendero sin molestar a los animales.','Explore the trail and give the animals space.']},
@@ -12,7 +12,7 @@ export const islandFriends=[
  {id:'luna',icon:'🦀',name:'Luna',where:['Guna Yala · San Blas','Guna Yala · San Blas'],game:['Baile de cangrejo','Crab dance party'],hello:['¡Angelique! ¡Baila como un cangrejo conmigo!','Angelique! Do the crab dance with me!']},
  {id:'kai',icon:'👦',name:'Kai',where:['Isla Contadora','Isla Contadora'],game:['Pelota de playa','Beach-ball toss'],hello:['¡Hola! ¡Te guardé la pelota de playa!','Hey! I saved the beach ball for you!']}
 ];
-export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,geometry,ball,cone,cylinder,height,joy,save,refresh,onTravel,onOpen,onLessons,onMount=()=>{},motion}){
+export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,geometry,ball,cone,cylinder,height,joy,save,refresh,onTravel,onOpen,onLessons,onMount=()=>{},motion,airClear=()=>true}){
  const s=state.world,es=state.lang==='es',say=(a,b)=>es?a:b,tr=a=>a[es?0:1];
  s.friends??={visits:[],completed:[],companion:null};
  s.pet=false;const friends=s.friends;if(friends.companion==='pip'||friends.companion==='dori')friends.companion=null;friends.called=Array.isArray(friends.called)?friends.called.filter(id=>id!=='pip'&&id!=='dori'&&islandFriends.some(f=>f.id===id)):[];const nodes=new Map(),labels=[],temp=new T.Vector3();
@@ -257,6 +257,7 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
   for(const n of nodes.values())if(n.onCruise){n.onCruise=false;n.g.position.set(n.home.x,height(n.home.x,n.home.z),n.home.z);if(n.other.ball)n.other.ball.visible=true;}
   const following=friends.companion;
   for(const n of nodes.values()){
+   const previous=n.g.position.clone();
    const id=n.f.id,isRidden=mounted===id&&mount===id,canFollow=id!=='pip'&&id!=='dori'&&(following===id||friends.called.includes(id))&&!isRidden&&(!inside||mode==='house');
    const idleBird=(id==='mila'||id==='ollie')&&!isRidden&&!canFollow;
    const idleRoam=!isRidden&&!canFollow,roam=idleBird?1.3:waterFriend(id)?1.4:.65;
@@ -301,6 +302,12 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
    if(birdInFlight)n.g.position.y=(mode==='mount-water'?0:footHeight)+mountAltitude+Math.sin(time*6)*.08;
    else if(isBird&&!indoors)n.g.position.y+= (canFollow?1.8:1.1)+Math.sin(time*3.1)*.22;
    if(canFollow&&!waterFriend(id)&&mode==='fly'&&s.flight>0)n.g.position.y=s.flight+(id==='dori'?-.5:.3);
+   if(isBird&&!isRidden&&!indoors){
+    const desired=n.g.position.clone(),dx=desired.x-previous.x,dz=desired.z-previous.z,steps=Math.max(1,Math.ceil(Math.hypot(dx,dz)/.4));
+    let blocked=false;for(let i=1;i<=steps;i++)if(!airClear(previous.x+dx*i/steps,Math.max(previous.y,desired.y),previous.z+dz*i/steps)){blocked=true;break;}
+    if(blocked){n.g.position.copy(previous);n.g.position.y+=Math.max(0,dt)*5;}
+    else if(!airClear(desired.x,desired.y,desired.z))n.g.position.y=previous.y;
+   }
    n.other.detail?.animate(time,{moving:isRidden||canFollow||moving||idleBird,flying:birdInFlight||isBird&&!indoors});
    if(n.other.walkers)for(const limb of n.other.walkers){
     const swing=canFollow?Math.sin(time*9)*.48:Math.sin(time*1.4)*.08;

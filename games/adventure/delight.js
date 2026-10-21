@@ -1,4 +1,4 @@
-import {createSoundtrack} from './soundtrack.js?v=213';
+import {createSoundtrack} from './soundtrack.js?v=224';
 /* Recorded foley, activity-aware soundtrack, and independent music/effects mix. */
 export function createDelight({soundEnabled,motionEnabled}) {
   let context,master,ambience,limiter,scene='quiet',unlocked=false,ambientTimer=null,phrase=0;

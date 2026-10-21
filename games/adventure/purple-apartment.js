@@ -1,4 +1,4 @@
-import {cityX} from './geography.js?v=213';
+import {cityX} from './geography.js?v=224';
 export const PURPLE_APARTMENT={x:cityX(97),z:(-78),floors:40,floorHeight:2.4,width:8,depth:5.6};
 export function createPurpleApartment({T,group,make,mat,box,height}){
  const p=PURPLE_APARTMENT,root=new T.Group();root.name='One enormous purple apartment tower · 40 floors';root.position.set(p.x,height(p.x,p.z),p.z);group.add(root);

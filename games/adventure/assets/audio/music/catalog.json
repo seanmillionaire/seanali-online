@@ -89,5 +89,38 @@
     "bytes": 2055059,
     "license": "CC BY 4.0",
     "artist": "Kevin MacLeod"
+  },
+  {
+    "id": "montego",
+    "title": "Montego",
+    "duration": "00:03:26",
+    "instruments": "Bass, Guitar, Drum Kit, Organ",
+    "source": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100808",
+    "file": "montego.mp3",
+    "bytes": 8242268,
+    "license": "CC BY 4.0",
+    "artist": "Kevin MacLeod"
+  },
+  {
+    "id": "no-frills-salsa",
+    "title": "No Frills Salsa",
+    "duration": "00:02:47",
+    "instruments": "Percussion, Bass, Trombone, Trumpet",
+    "source": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100133",
+    "file": "no-frills-salsa.mp3",
+    "bytes": 3458459,
+    "license": "CC BY 4.0",
+    "artist": "Kevin MacLeod"
+  },
+  {
+    "id": "no-frills-cumbia",
+    "title": "No Frills Cumbia",
+    "duration": "00:03:56",
+    "instruments": "Drum Kit, Bass, Acoustic Guitar, Piano, Organ, Flute",
+    "source": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100275",
+    "file": "no-frills-cumbia.mp3",
+    "bytes": 7556182,
+    "license": "CC BY 4.0",
+    "artist": "Kevin MacLeod"
   }
 ]

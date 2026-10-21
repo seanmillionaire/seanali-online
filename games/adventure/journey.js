@@ -1,4 +1,4 @@
-import {worldIslands,earnCoins} from './explore-state.js?v=213';
+import {worldIslands,earnCoins} from './explore-state.js?v=224';
 export const journeyGoals=[{id:'explore',icon:'🏝',target:5,en:'Discover five Panama destinations',es:'Descubre cinco destinos panameños'},{id:'food',icon:'🍌',target:3,en:'Eat three healthy snacks',es:'Come tres frutas saludables'},{id:'learn',icon:'🧠',target:3,en:'Help friends learn',es:'Aprende con tus amigos'},{id:'swim',icon:'🏊',target:100,en:'Swim and get stronger',es:'Nada y gana fuerza'},{id:'fly',icon:'🎈',target:200,en:'Explore from the sky',es:'Explora desde el cielo'}];
 export function journeyValues(state){const j=state.world.journey;return {explore:j.visited.length,food:j.meals,learn:Object.keys({...state.completed,...state.islandLessons?.completed}).length+Object.entries({shells:3,picnic:4,seed:3,song:4,care:2,light:4}).filter(([id,n])=>state.world.story[id]>=n).length,swim:Math.floor(j.swim),fly:Math.floor(j.fly)};}
 export function createJourney({T,scene,host,state,avatar,make,geometry,mat,height,save,joy,spark,refresh,seek,realms}){

@@ -1,7 +1,7 @@
-import {makeDog} from './mansion-models.js?v=213';
-import {EXPANDED_DISTRICTS,districtGround,districtVehicleBlocked} from './expanded-districts.js?v=213';
-import {cityBlocksVehicle} from './city-layout.js?v=213';
-import {inWater,roadDistance,isletHeight} from './explore-state.js?v=213';
+import {makeDog} from './mansion-models.js?v=224';
+import {EXPANDED_DISTRICTS,districtGround,districtVehicleBlocked} from './expanded-districts.js?v=224';
+import {cityBlocksVehicle} from './city-layout.js?v=224';
+import {inWater,roadDistance,isletHeight} from './explore-state.js?v=224';
 export function dogWalkRoutes(){
  const furniture=[];for(const area of EXPANDED_DISTRICTS.filter(a=>a.kind==='modern'))for(let i=0;i<area.xs.length-1;i++)for(let j=0;j<area.zs.length-1;j++){
   if(!((i*7+j*5)%7===0||(i+2*j)%11===5||i===0))continue;

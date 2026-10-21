@@ -1,7 +1,10 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/games/adventure/style.css"><link rel="stylesheet" href="/games/adventure/mobile-play.css"><link rel="stylesheet" href="/games/adventure/expedition.css?v=195"></head><body data-scene="explore"><main class="explore-world"></main><aside style="position:fixed;top:60px;left:8px;z-index:9999;background:#fff9;padding:6px;border-radius:8px;max-width:95vw"><button id="beach">Beach day</button><button id="night">Moonlit beach</button><button id="island">Island visitors</button><button id="traffic">Highway traffic</button><button id="city">City</button><button id="portrait">Explorer</button><button id="clean">Clean view</button><button id="plane">Plane pass</button><button id="verify">Verify gameplay</button><output id="result">Loading…</output></aside><script type="module">
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/games/adventure/style.css"><link rel="stylesheet" href="/games/adventure/mobile-play.css"><link rel="stylesheet" href="/games/adventure/expedition.css?v=214"></head><body data-scene="explore"><main class="explore-world"></main><aside style="position:fixed;top:60px;left:8px;z-index:9999;background:#fff9;padding:6px;border-radius:8px;max-width:95vw"><button id="beach">Beach day</button><button id="dawn">Sunrise</button><button id="dusk">Sunset</button><button id="night">Moonlit beach</button><button id="island">Island visitors</button><button id="traffic">Highway traffic</button><button id="colon">Colón sunshine</button><button id="collision">Verify building collisions</button><button id="rewards">Verify road rewards</button><button id="volcanReward">Volcán scooter</button><button id="hospital">Hospital</button><button id="city">City</button><button id="portrait">Explorer</button><button id="clean">Clean view</button><button id="plane">Plane pass</button><button id="verify">Verify gameplay</button><output id="result">Loading…</output></aside><script type="module">
+import {CITY_ALL_PLOTS} from '/games/adventure/city-layout.js?v=221';
+import {createCityAirCollision} from '/games/adventure/world-collision.js?v=221';
+import {CITY_HOSPITAL} from '/games/adventure/volcano-safety.js?v=221';
 import * as T from '/games/adventure/vendor/three.module.min.js';
 import {fresh} from '/games/adventure/state.js?v=195';
-import {createExplore} from '/games/adventure/explore.js?v=195';
+import {createExplore} from '/games/adventure/explore.js?v=223';
 const errors=[];window.addEventListener('error',e=>errors.push(e.message));window.addEventListener('unhandledrejection',e=>errors.push(String(e.reason)));const state=fresh();state.lang='en';let scene,camera,lastSave;
 const W={...T,WebGLRenderer:class extends T.WebGLRenderer{constructor(o){super(o);this.debug.onShaderError=(gl,p)=>errors.push('Shader: '+gl.getProgramInfoLog(p));const render=this.render.bind(this);this.render=(s,c)=>{scene=s;camera=c;render(s,c);};}}};
 localStorage.setItem('isla-adventure-camera-v1','wide');
@@ -10,12 +13,36 @@ const status=document.querySelector('#result'),wait=ms=>new Promise(r=>setTimeou
 function closePanels(){document.querySelectorAll('.panel-close').forEach(b=>{if(b.getBoundingClientRect().width)b.click();});}
 function move(x,z,time=60){closePanels();state.world.x=x;state.world.z=z;state.world.dayTime=time;}
 document.querySelector('#portrait').onclick=()=>move(8,10);
+document.querySelector('#colon').onclick=()=>move(-50,-365);
+document.querySelector('#hospital').onclick=()=>move(CITY_HOSPITAL.x,CITY_HOSPITAL.z+8);
 document.querySelector('#city').onclick=()=>move(360,-66);document.querySelector('#clean').onclick=()=>document.querySelector('aside').hidden=true;
 document.querySelector('#beach').onclick=()=>move(4,10);
+document.querySelector('#dawn').onclick=()=>move(4,10,0);document.querySelector('#dusk').onclick=()=>move(4,10,120);
 document.querySelector('#night').onclick=()=>move(4,10,180);
 document.querySelector('#island').onclick=()=>move(560,143);
 document.querySelector('#traffic').onclick=()=>move(31,-10);
 document.querySelector('#plane').onclick=async()=>{move(4,10);status.textContent='Waiting for occasional plane…';while(!scene.getObjectByName('Occasional passenger plane')?.visible)await wait(300);status.textContent='Plane crossing sky';};
+function rewardPosition(name){const root=scene.getObjectByName('Main road destination rewards'),g=root.children.find(g=>g.name===name);if(!g)throw Error('Missing '+name);return g.position;}
+ document.querySelector('#volcanReward').onclick=()=>{const p=rewardPosition('Volcán scooter');move(p.x,p.z+3);};
+ document.querySelector('#rewards').onclick=async()=>{try{
+ closePanels();const root=scene.getObjectByName('Main road destination rewards');if(root.children.length!==7)throw Error('Missing road rewards');
+ let p=rewardPosition('Volcán scooter');move(p.x,p.z+3);await wait(500);document.querySelector('.world-action[data-words*="Use"]').click();await wait(200);if(state.world.travelMode!=='scooter')throw Error('scooter did not activate');const start=state.world.x;document.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true}));await wait(600);document.dispatchEvent(new KeyboardEvent('keyup',{key:'ArrowRight',bubbles:true}));if(Math.abs(state.world.x-start)<1)throw Error('scooter did not move');
+ p=rewardPosition('Jet ski');move(p.x,p.z+3);await wait(500);document.querySelector('.world-action[data-words*="Use"]').click();await wait(400);if(!scene.getObjectByName('Rideable coastal jet ski').visible)throw Error('jet ski did not board');document.querySelector('.world-jump').click();await wait(400);if(Math.hypot(state.world.x-p.x,state.world.z-p.z)>5)throw Error('jet ski shore return failed');
+ p=rewardPosition('Barú sky ride');move(p.x,p.z+3);await wait(500);document.querySelector('.world-action[data-words*="Use"]').click();await wait(900);if(!state.world.flight)throw Error('balloon did not launch');if(errors.length)throw Error(errors.join(';'));status.textContent='PASS seven visible rewards, scooter rides, jet ski boards and returns to shore, Barú balloon launches; no browser errors';
+ }catch(e){status.textContent='FAIL '+e.message;throw e;}};
+document.querySelector('#collision').onclick=async()=>{
+ try{
+ closePanels();move(CITY_HOSPITAL.x,CITY_HOSPITAL.z+8);await wait(300);
+ document.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowUp',bubbles:true}));await wait(1800);document.dispatchEvent(new KeyboardEvent('keyup',{key:'ArrowUp',bubbles:true}));
+ if(state.world.z<CITY_HOSPITAL.z+4.7)throw Error('walk entered hospital');
+ const air=createCityAirCollision(T,scene,()=>0),tower=air.boxes.find(p=>p.id==='tower');if(tower.top<12)throw Error('tower height missing');
+ move(tower.x,tower.z+14);state.world.friends.called=['ollie'];await wait(700);const mount=document.querySelector('.animal-ride-quick');if(mount.hidden)throw Error('bird unavailable');mount.click();await wait(1400);
+ state.world.x=tower.x;state.world.z=tower.z+14;
+ document.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowUp',bubbles:true}));await wait(2200);document.dispatchEvent(new KeyboardEvent('keyup',{key:'ArrowUp',bubbles:true}));
+ if(state.world.z<tower.z+tower.d/2+1)throw Error('bird entered tower');
+ if(errors.length)throw Error(errors.join(';'));status.textContent='PASS actual hospital walking barrier and mounted bird blocked by tower; road clearance and fast car controller covered by unit tests';
+ }catch(e){status.textContent='FAIL '+e.message;throw e;}
+};
 document.querySelector('#verify').onclick=async()=>{
  try{closePanels();if(errors.length)throw Error(errors[0]);const root=scene.getObjectByName('Living Panama · visitors traffic and flyovers');if(!root)throw Error('ambience missing');const people=root.children.filter(c=>c.name.startsWith('Visitor · ')),cars=root.children.filter(c=>c.name.startsWith('Roaming car · '));if(cars.length!==16||people.length<25)throw Error('population missing');
  move(4,10);await wait(300);const start=state.world.z;document.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowUp',bubbles:true}));await wait(1000);document.dispatchEvent(new KeyboardEvent('keyup',{key:'ArrowUp',bubbles:true}));if(Math.abs(state.world.z-start)<.1)throw Error('walking did not move');

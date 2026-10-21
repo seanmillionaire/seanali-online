@@ -1,5 +1,5 @@
-<!doctype html><html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Panama audio studio</title><style>body{background:#102e38;color:white;font:18px system-ui;padding:24px}button{font:inherit;padding:14px;margin:5px;border-radius:10px}output{display:block;white-space:pre-wrap;margin:24px 0}</style><h1>🎧 Panama soundtrack & effects</h1><button id="play">▶ Play soundtrack</button><button id="drive">🚙 Driving</button><button id="home">🏡 Home</button><button id="ocean">⛵ Ocean</button><button id="storm">⛈ Storm</button><button id="effects">💥 Test recorded effects</button><button id="next">⏭ Next track</button><button id="mute">🔇 Mute</button><button id="verify">✅ Verify loaded audio</button><output id="status">Ready — sound starts only after Play.</output><script type="module">
-import {createDelight} from '/games/adventure/delight.js?v=213';
+<!doctype html><html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Panama audio studio</title><style>body{background:#102e38;color:white;font:18px system-ui;padding:24px}button{font:inherit;padding:14px;margin:5px;border-radius:10px}output{display:block;white-space:pre-wrap;margin:24px 0}</style><h1>🎧 Panama soundtrack & effects</h1><button id="play">▶ Play soundtrack</button><button id="drive">🚙 Driving</button><button id="home">🏡 Home</button><button id="ocean">⛵ Ocean</button><button id="storm">⛈ Storm</button><button id="effects">💥 Test recorded effects</button><button id="next">⏭ Next track</button><button id="mute">🔇 Mute</button><button id="regional">🇵🇦 Verify regional music</button><button id="verify">✅ Verify loaded audio</button><output id="status">Ready — sound starts only after Play.</output><script type="module">
+import {createDelight} from '/games/adventure/delight.js?v=215';
 let enabled=true,info={x:350,z:-60,active:true},sourceCount=0,decoded=0,error=[];
 const Native=window.AudioContext;window.AudioContext=class extends Native{createBufferSource(){sourceCount++;return super.createBufferSource();}decodeAudioData(...args){return super.decodeAudioData(...args).then(b=>{decoded++;return b;});}};
 const joy=createDelight({soundEnabled:()=>enabled,motionEnabled:()=>true});joy.setScene('explore');const out=document.querySelector('#status');window.addEventListener('error',e=>error.push(e.message));window.addEventListener('unhandledrejection',e=>error.push(String(e.reason)));
@@ -9,6 +9,16 @@ for(const [id,data]of Object.entries({drive:{driving:true},home:{indoors:true},o
 document.querySelector('#next').onclick=()=>{joy.gesture();joy.nextTrack();report();};
 document.querySelector('#mute').onclick=e=>{enabled=!enabled;joy.sync();e.target.textContent=enabled?'🔇 Mute':'🔊 Unmute';report();};
 document.querySelector('#effects').onclick=async()=>{joy.gesture();for(const n of ['door','footstep','jump','land','crash','splash','coin','finish','thunder']){joy.effect(n);await new Promise(r=>setTimeout(r,1400));}report();};
+document.querySelector('#regional').onclick=async()=>{
+ joy.gesture();const results=[];
+ for(const [region,x,z,title] of [['city',350,-60,'No Frills Salsa'],['bocas',-230,-200,'Montego'],['chiriqui',-385,-30,'No Frills Cumbia']]){
+ info={x,z,driving:true,night:true,rain:.9,active:true};out.textContent='Checking '+region+'…';
+ const until=Date.now()+24000;
+ while(Date.now()<until){await new Promise(r=>setTimeout(r,500));const s=joy.soundtrackStatus;if(s.mood===region&&s.title===title&&s.playing&&s.readyState>=3&&s.time>.5){results.push(region+': '+title+' playing');break;}}
+ if(results.length!==[['city'],['bocas'],['chiriqui']].findIndex(v=>v[0]===region)+1){out.textContent='FAIL '+region+' '+JSON.stringify(joy.soundtrackStatus);return;}
+ }
+ out.textContent='PASS — regional tracks loaded and playing while driving at night in rain.\n'+results.join('\n')+'\nErrors: '+error.join(',');
+};
 document.querySelector('#verify').onclick=()=>{report();if(!error.length&&decoded>=8&&sourceCount>5&&joy.soundtrackStatus.playing)out.textContent='PASS recorded foley decoded and played; full soundtrack playing; no audio errors.\n'+out.textContent;else out.textContent='NOT READY\n'+out.textContent;};
 setInterval(()=>joy.soundscape(info),250);window.addEventListener('pagehide',()=>joy.destroy());
 </script></html>

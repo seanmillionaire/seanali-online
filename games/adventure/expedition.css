@@ -82,3 +82,13 @@ body[data-scene="entry"] .world-entry .welcome-feature-icon{font-size:27px}
 body[data-scene="entry"] .topbar .brand{color:#fff!important;background:#102e38e8;border:1px solid #ffffff30;border-radius:12px;padding:8px 12px;line-height:1.15}
 @media(max-width:380px){body[data-scene="entry"] .world-entry{min-height:568px;padding-top:85px;padding-bottom:18px}body[data-scene="entry"] .world-entry h1{font-size:34px}body[data-scene="entry"] .world-entry .welcome-feature{min-height:58px}body[data-scene="entry"] .world-entry .primary{min-height:58px;margin:10px 0}}
 .audio-mixer{display:grid;gap:18px}.audio-level{display:grid;grid-template-columns:1fr auto;gap:10px;font-weight:700}.audio-level input{grid-row:2;grid-column:1/-1;width:100%;min-height:36px;accent-color:#287c73}.audio-level output{grid-row:1;grid-column:2}.audio-now{font-size:14px}.audio-credits{color:#176b62;font-size:13px;padding:8px 0}
+
+/* One shared world clock, readable without opening another menu. */
+.world-clock{display:flex;align-items:center;gap:12px;width:max-content;max-width:100%;margin-top:6px;padding:7px 11px;border:1px solid #ffffff55;border-radius:14px;background:#12353aed;color:#fff;box-shadow:0 3px 12px #001c2430;pointer-events:auto}
+.world-clock-time{font-size:18px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.world-clock-schedule{font-size:12px;color:#f6e4b3;white-space:nowrap}
+@media(max-width:760px){.world-clock{gap:8px;padding:6px 9px}.world-clock-time{font-size:16px}.world-clock-schedule{font-size:11px}}
+@media(max-width:360px){.world-clock{flex-wrap:wrap;gap:2px 8px}.world-clock-schedule{font-size:10px}}
+
+.explore-world>.world-clock{position:absolute;z-index:12;top:14px;left:50%;transform:translateX(-50%);margin:0}
+@media(max-width:760px){.explore-world>.world-clock{top:112px;left:auto;right:12px;transform:none;max-width:calc(100% - 24px)}}

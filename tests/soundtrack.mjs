@@ -12,4 +12,8 @@ audios.at(-1).currentTime=178;tick();await Promise.resolve();assert.equal(music.
 
 for(let i=0;i<8;i++)music.next();await Promise.resolve();assert(music.status.players<=2,'rapid skips bounded');
 enabled=false;music.sync();assert(audios.every(a=>a.paused),'mute pauses every stream');enabled=true;music.sync();assert(music.status.playing);hidden=true;music.sync();assert(audios.every(a=>a.paused));hidden=false;music.sync();volume=0;music.sync();assert(!music.status.playing);volume=.8;music.sync();assert(music.status.playing);
-assert.equal(musicRegion({indoors:true,driving:true}),'home');assert.equal(musicRegion({driving:true}),'drive');assert.equal(musicRegion({boating:true}),'ocean');assert.equal(musicRegion({x:-385}),'adventure');assert.equal(musicRegion({rain:.8}),'adventure');assert.equal(musicRegion({x:350,z:-60}),'city');assert.equal(musicRegion({night:true}),'night');music.destroy();assert(audios.every(a=>a.paused));assert.equal(tick,null);console.log('PASS seven-track soundtrack: gesture, adaptive moods, stable transitions, bounded crossfade/skip, independent music mute, hidden-tab silence and disposal');
+for(const [point,region] of [[{x:350,z:-60},'city'],[{x:-50,z:-365},'colon'],[{x:-230,z:-200},'bocas'],[{x:-385,z:-30},'chiriqui'],[{x:-200,z:260},'interior'],[{x:350,z:-425},'guna'],[{x:560,z:143},'pacific'],[{x:0,z:0},'west']]){
+ for(const activity of [{},{driving:true},{boating:true},{flying:true},{night:true},{rain:.9}])assert.equal(musicRegion({...point,...activity}),region);
+ assert.equal(musicRegion({...point,indoors:true}),'home');
+}
+music.destroy();assert(audios.every(a=>a.paused));assert.equal(tick,null);console.log('PASS regional soundtrack: gesture, adaptive moods, stable transitions, bounded crossfade/skip, independent music mute, hidden-tab silence and disposal');

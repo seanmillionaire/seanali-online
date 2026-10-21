@@ -1,10 +1,10 @@
-import {homeLot} from './mansion-state.js?v=213';
-import {regionalBlocked} from './regional-layout.js?v=213';
-import {CITY_ALL_PLOTS} from './city-layout.js?v=213';
-import {districtVehicleBlocked} from './expanded-districts.js?v=213';
-import {ruralBlocks} from './rural-towns.js?v=213';
-import {estateBlocked} from './estate.js?v=213';
-import {traversable} from './explore-state.js?v=213';
+import {homeLot} from './mansion-state.js?v=224';
+import {regionalBlocked} from './regional-layout.js?v=224';
+import {CITY_ALL_PLOTS} from './city-layout.js?v=224';
+import {districtVehicleBlocked} from './expanded-districts.js?v=224';
+import {ruralBlocks} from './rural-towns.js?v=224';
+import {estateBlocked} from './estate.js?v=224';
+import {traversable} from './explore-state.js?v=224';
 
 // Shared walking/skating solids; speed never changes which objects are solid.
 export function createWorldCollision({state,trees=[],rocks=[]}){
@@ -34,4 +34,20 @@ export function createRoadSurfaceSampler(T,scene){
   }
  });
  return {count,height(x,z){let y=-Infinity;for(const q of cells.get(Math.floor(x/size)+','+Math.floor(z/size))||[]){const u=((q.bz-q.cz)*(x-q.cx)+(q.cx-q.bx)*(z-q.cz))/q.det,v=((q.cz-q.az)*(x-q.cx)+(q.ax-q.cx)*(z-q.cz))/q.det,w=1-u-v;if(u>=-1e-4&&v>=-1e-4&&w>=-1e-4)y=Math.max(y,u*q.ay+v*q.by+w*q.cy);}return y;}};
+}
+
+// Roof heights come from rendered city geometry, so tall towers stay solid
+// while a bird can clear a low roof. Keep the open football pitch flyable.
+export function createCityAirCollision(T,scene,height){
+ scene.updateMatrixWorld(true);
+ const boxes=CITY_ALL_PLOTS.filter(p=>p.solid!==false&&p.id!=='football'&&p.id!=='flag-base').map(p=>({...p,bottom:height(p.x,p.z),top:height(p.x,p.z)}));
+ const bounds=new T.Box3();
+ scene.traverse(mesh=>{
+  if(!mesh.isMesh||mesh.isInstancedMesh||mesh.userData.roadSurface)return;
+  if(!mesh.geometry.boundingBox)mesh.geometry.computeBoundingBox();
+  bounds.copy(mesh.geometry.boundingBox).applyMatrix4(mesh.matrixWorld);
+  const x=(bounds.min.x+bounds.max.x)/2,z=(bounds.min.z+bounds.max.z)/2;
+  for(const p of boxes)if(Math.abs(x-p.x)<p.w/2&&Math.abs(z-p.z)<p.d/2&&bounds.max.x-bounds.min.x<p.w*1.6&&bounds.max.z-bounds.min.z<p.d*1.6&&bounds.max.y>p.bottom+1)p.top=Math.max(p.top,bounds.max.y);
+ });
+ return {boxes,clear(x,y,z,radius=1.35){return !boxes.some(p=>y+2>p.bottom&&y-radius<p.top&&Math.abs(x-p.x)<p.w/2+radius&&Math.abs(z-p.z)<p.d/2+radius);}};
 }

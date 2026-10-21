@@ -1,6 +1,6 @@
-export const normalizeTravelMode=mode=>mode==='skates'?'skates':'walk';
+export const normalizeTravelMode=mode=>['skates','scooter'].includes(mode)?mode:'walk';
 export function groundTravelSpeed(mode,{running=false,boosted=false}={}){
- const speed=mode==='skates'?20:running?9:6.5;
+ const speed=mode==='scooter'?17:mode==='skates'?20:running?9:6.5;
  return boosted?speed*(mode==='skates'?1.4:1.65):speed;
 }
 // Sweep the complete movement, so faster skating cannot jump through a narrow

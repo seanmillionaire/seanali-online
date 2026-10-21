@@ -1,8 +1,8 @@
-import {regionalBlocked} from './regional-layout.js?v=213';
-import {HIGHWAY_CURVES,roadDistance,HIGHWAY_WIDTH,worldIslands,inWater,traversable,isletHeight} from './explore-state.js?v=213';
-import {ruralBlocks} from './rural-towns.js?v=213';
-import {estateBlocked} from './estate.js?v=213';
-import {routePose} from './panama-state.js?v=213';
+import {regionalBlocked} from './regional-layout.js?v=224';
+import {HIGHWAY_CURVES,roadDistance,HIGHWAY_WIDTH,worldIslands,inWater,traversable,isletHeight} from './explore-state.js?v=224';
+import {ruralBlocks} from './rural-towns.js?v=224';
+import {estateBlocked} from './estate.js?v=224';
+import {routePose} from './panama-state.js?v=224';
 
 // Return along the opposite lane, turning inside the road at each terminus.
 export function trafficLoop(points,lane=1.8){

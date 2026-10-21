@@ -1,4 +1,4 @@
-import {LAVA_POOLS,lavaPoolPose} from './volcano-safety.js?v=213';
+import {LAVA_POOLS,lavaPoolPose} from './volcano-safety.js?v=224';
 // Molten crater pools and continuous vents, aligned with the lava hazard surfaces.
 export function createActiveVolcano({T,scene,x,z,height,light=false}){
  const root=new T.Group();root.name='Volcán Barú · living lava pools and smoking vents';scene.add(root);

@@ -1,9 +1,11 @@
-import {cityX} from './geography.js?v=213';
-import {worldIslands,marineWater,roadDistance,HIGHWAY_WIDTH,sharkClearance,sharkStep,recoverShark} from './explore-state.js?v=213';
-import {oceanModel} from './ocean-models.js?v=213';
+import {worldClock,DAY_CYCLE_SECONDS} from './world-clock.js?v=224';
+export {DAY_CYCLE_SECONDS} from './world-clock.js?v=224';
+import {cityX} from './geography.js?v=224';
+import {worldIslands,marineWater,roadDistance,HIGHWAY_WIDTH,sharkClearance,sharkStep,recoverShark} from './explore-state.js?v=224';
+import {oceanModel} from './ocean-models.js?v=224';
 // Saved clock keeps its original 240-unit format; one full day takes 20 minutes.
 export const NIGHT_MODE_ENABLED=true;
-export const DAY_CYCLE_SECONDS=1200;
+
 // Named and inspectable natural marine habitats. All start in navigable
 // water and remain near attractions instead of hidden in the deep ocean.
 export const MARINE_HABITATS={
@@ -12,10 +14,10 @@ export const MARINE_HABITATS={
 };
 export function islandDaylight(seconds){
  if(!NIGHT_MODE_ENABLED)return {phase:.25,day:1,night:false,twilight:0};
- const phase=(((Number.isFinite(seconds)?seconds:40)%240)+240)%240/240;
+ const {phase,night}=worldClock(seconds);
  const elevation=Math.sin(phase*Math.PI*2);
  const t=Math.max(0,Math.min(1,(elevation+.25)/.55)),day=t*t*(3-2*t);
- return {phase,day,night:elevation<0,twilight:4*day*(1-day),elevation};
+ return {phase,day,night,twilight:4*day*(1-day),elevation};
 }
 export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,cone,box,sun,ambient,waterMaterial,inWater}){
  const s=state.world,animals=[],group=new T.Group();group.name='Ocean wildlife';scene.add(group);let ridden=null;

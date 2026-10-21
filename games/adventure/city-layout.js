@@ -1,5 +1,5 @@
-import {cityX} from './geography.js?v=213';
-import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=213';
+import {cityX} from './geography.js?v=224';
+import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=224';
 // Shared road and parcel clearances for all city scene generators.
 export const CITY_STREET_X=[77,105,135,163].map(cityX),CITY_STREET_Z=[-85,-61,-35,-12];
 export const CITY_FIXED_PLOTS=[
@@ -36,6 +36,9 @@ export function allocateCityParcel(wanted,claimed,span=34){
  const result={x:p.x,z:p.z,w:p.w,d:p.d};claimed.push(result);return result;
 }
 const claimed=CITY_FIXED_PLOTS.map(p=>({...p}));
+export const HOSPITAL_PLOT=allocateCityParcel({x:cityX(110),z:-46,w:8,d:9},claimed);
+if(!HOSPITAL_PLOT)throw Error('Hospital needs a clear city parcel');
+Object.assign(claimed[claimed.length-1],{id:'hospital',solid:true});
 export const CITY_BARRIO_PLOTS=[[cityX(82),-24],[cityX(84),-15],[cityX(90),-5],[cityX(103),-5],[cityX(116),-5],[cityX(124),-15],[cityX(124),-25],[cityX(80),-29]].map(([x,z])=>allocateCityParcel({x,z,w:4.5,d:4},claimed)).filter(Boolean);
 export const CITY_SHOP_PLOTS=[[cityX(98),-67],[cityX(112),-67],[cityX(128),-67],[cityX(142),-62],[cityX(98),-41.5],[cityX(112),-41.5],[cityX(133),-29],[cityX(146),-33]].map(([x,z])=>allocateCityParcel({x,z,w:7,d:7},claimed)).filter(Boolean);
 export const CITY_EXPANSION_PLOTS=[];
