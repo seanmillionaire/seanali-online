@@ -1,9 +1,9 @@
-import {CANAL_TERMINAL,cityX} from './geography.js?v=224';
-import {roadRibbon,surfaceMesh,cityStreetSurface} from './road-surfaces.js?v=224';
-import {STREET_VENDORS,BARRIO_HOMES} from './city-street-life.js?v=224';
-import {CITY_EXPANSION_PLOTS,CITY_STREET_X,CITY_STREET_Z,cityPropSite} from './city-layout.js?v=224';
-import {createPurpleApartment,PURPLE_APARTMENT} from './purple-apartment.js?v=224';
-import {spendFood} from './explore-state.js?v=224';
+import {CANAL_TERMINAL,cityX} from './geography.js?v=225';
+import {roadRibbon,surfaceMesh,cityStreetSurface} from './road-surfaces.js?v=225';
+import {STREET_VENDORS,BARRIO_HOMES} from './city-street-life.js?v=225';
+import {CITY_EXPANSION_PLOTS,CITY_STREET_X,CITY_STREET_Z,cityPropSite} from './city-layout.js?v=225';
+import {createPurpleApartment,PURPLE_APARTMENT} from './purple-apartment.js?v=225';
+import {spendFood} from './explore-state.js?v=225';
 /* Panama Adventure — substantial zero-dependency Casco Viejo city expansion.
    Roads and landmark buildings are genuine Three.js meshes; activities update
    game state only on meaningful user actions and persist in world.city. */

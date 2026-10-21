@@ -1,0 +1,46 @@
+const SHAPES=[[[1,1,1,1]],[[2,2],[2,2]],[[0,3,0],[3,3,3]],[[0,4,4],[4,4,0]],[[5,5,0],[0,5,5]],[[6,0,0],[6,6,6]],[[0,0,7],[7,7,7]]];
+export function createBlocks(random=Math.random){
+ const g={board:Array.from({length:18},()=>Array(10).fill(0)),score:0,lines:0,over:false,piece:null,bag:[]};
+ function valid(p){return p.shape.every((row,y)=>row.every((v,x)=>!v||(p.x+x>=0&&p.x+x<10&&p.y+y>=0&&p.y+y<18&&!g.board[p.y+y][p.x+x])));}
+ function spawn(){if(!g.bag.length)g.bag=[0,1,2,3,4,5,6].sort(()=>random()-.5);const shape=SHAPES[g.bag.pop()].map(r=>[...r]);g.piece={shape,x:3,y:0};if(!valid(g.piece))g.over=true;}
+ function move(dx,dy){if(g.over)return false;const p={...g.piece,x:g.piece.x+dx,y:g.piece.y+dy};if(!valid(p))return false;g.piece=p;return true;}
+ function rotate(){if(g.over)return;const s=g.piece.shape,shape=s[0].map((_,x)=>s.map(r=>r[x]).reverse());for(const kick of [0,-1,1,-2,2]){const p={...g.piece,shape,x:g.piece.x+kick};if(valid(p)){g.piece=p;return;}}}
+ function tick(){if(g.over||move(0,1))return;g.piece.shape.forEach((r,y)=>r.forEach((v,x)=>{if(v)g.board[g.piece.y+y][g.piece.x+x]=v;}));const rows=g.board.filter(r=>r.some(v=>!v)),cleared=18-rows.length;g.lines+=cleared;g.score+=[0,100,300,500,800][cleared];g.board=[...Array.from({length:cleared},()=>Array(10).fill(0)),...rows];spawn();}
+ function drop(){if(g.over)return;while(move(0,1))g.score+=2;tick();}
+ spawn();return Object.assign(g,{move,rotate,tick,drop,valid});
+}
+export function bowlingScore(rolls){let score=0,i=0;for(let frame=0;frame<10&&i<rolls.length;frame++){if(rolls[i]===10){score+=10+(rolls[i+1]||0)+(rolls[i+2]||0);i++;}else{const total=rolls[i]+(rolls[i+1]||0);score+=total+(total===10?(rolls[i+2]||0):0);i+=2;}}return score;}
+export function createBowling(){const g={rolls:[],pins:Array(10).fill(true),frame:1,ball:1,over:false};g.throw=(count,hits=null)=>{if(g.over)return;count=Math.min(g.pins.filter(Boolean).length,Math.max(0,Math.floor(count)));const remaining=g.pins.filter(Boolean).length-count;g.rolls.push(count);let removed=0;g.pins=g.pins.map((up,i)=>{if(up&&(hits?hits.includes(i):removed<count)){removed++;return false;}return up;});
+ if(g.frame<10){if(g.ball===2||remaining===0){g.frame++;g.ball=1;g.pins.fill(true);}else{g.ball=2;}}else{if(g.ball===1&&remaining===0)g.pins.fill(true);if(g.ball===2){const first=g.rolls[g.rolls.length-2];if(first===10||first+count===10){if(remaining===0)g.pins.fill(true);}else g.over=true;}if(g.ball===3)g.over=true;g.ball++;}return bowlingScore(g.rolls);};return g;}
+// Each game owns its input listeners and animation loop; closing the panel disposes both.
+export function mountHomeArcade({panel,kind,es,onFinish,onBack,joy}){
+ const say=(a,b)=>es?a:b,canvas=document.createElement('canvas');canvas.width=360;canvas.height=420;canvas.className='home-arcade-canvas';canvas.tabIndex=0;canvas.setAttribute('aria-label',say('Pantalla del juego','Game screen'));const ctx=canvas.getContext('2d');const status=document.createElement('p');status.setAttribute('role','status');const controls=document.createElement('div');controls.className='home-arcade-controls';panel.append(canvas,status,controls);let stopped=false,paused=false,raf=0,last=0,elapsed=0,ended=false;
+ const add=(label,fn)=>{const b=document.createElement('button');b.textContent=label;b.type='button';b.onclick=()=>{joy.gesture();fn();canvas.focus();};controls.append(b);return b;};
+ const finish=score=>{if(ended)return;ended=true;onFinish(score);status.textContent=say('🏆 Resultado: ','🏆 Score: ')+score;add(say('↩️ Elegir otro juego','↩️ Choose another game'),onBack);joy.effect('finish');};
+ const bg=()=>{ctx.fillStyle='#17253e';ctx.fillRect(0,0,360,420);};
+ let step=()=>{},draw=()=>{},key=()=>{},pointer=()=>{};
+ if(kind==='blocks'){
+  const g=createBlocks(),colors=['','#61d6d4','#f7cb68','#be9df0','#8bdd93','#ef929d','#78aee9','#efa665'];let fall=0;
+  status.textContent=say('🧩 Completa filas · ⤵ soltar','🧩 Fill rows · ⤵ drop');add('⬅️',()=>g.move(-1,0)).ariaLabel=say('Izquierda','Left');add('🔄',()=>g.rotate()).ariaLabel=say('Girar','Rotate');add('➡️',()=>g.move(1,0)).ariaLabel=say('Derecha','Right');add('⤵️',()=>g.drop()).ariaLabel=say('Soltar','Drop');
+  key=e=>{if(e.key==='ArrowLeft')g.move(-1,0);if(e.key==='ArrowRight')g.move(1,0);if(e.key==='ArrowUp')g.rotate();if(e.key==='ArrowDown')g.tick();if(e.code==='Space')g.drop();};
+  step=dt=>{fall+=dt;if(fall>Math.max(.13,.7-g.lines*.025)){g.tick();fall=0;}if(g.over)finish(g.score);};
+  draw=()=>{bg();ctx.fillStyle='#fff';ctx.font='18px system-ui';ctx.fillText('🧩 '+g.score+'     ▰ '+g.lines,52,24);const cell=(x,y,v)=>{ctx.fillStyle=v?colors[v]:'#22334e';ctx.fillRect(70+x*22,32+y*21,20,19);};g.board.forEach((r,y)=>r.forEach((v,x)=>cell(x,y,v)));g.piece.shape.forEach((r,y)=>r.forEach((v,x)=>{if(v)cell(g.piece.x+x,g.piece.y+y,v);}));};
+ }else if(kind==='monsters'){
+  let player=180,score=0,hearts=3,spawn=0,cool=0,shots=[],enemies=[];
+  const shoot=()=>{if(cool>0||ended)return;shots.push({x:player,y:365});cool=.2;joy.effect('tap');};
+  add('⬅️',()=>player=Math.max(25,player-35));add(say('✨ Disparar','✨ Fire'),shoot);add('➡️',()=>player=Math.min(335,player+35));
+  pointer=(x,y)=>{player=Math.max(25,Math.min(335,x));shoot();};key=e=>{if(e.key==='ArrowLeft')player=Math.max(25,player-24);if(e.key==='ArrowRight')player=Math.min(335,player+24);if(e.code==='Space')shoot();};
+  status.textContent=say('✨ Toca para apuntar y lanzar estrellas','✨ Tap to aim and launch stars');
+  step=dt=>{cool=Math.max(0,cool-dt);spawn-=dt;if(spawn<=0){enemies.push({x:30+Math.random()*300,y:35,t:Math.random()*6});spawn=Math.max(.45,1.3-score*.015);}shots.forEach(b=>b.y-=dt*330);enemies.forEach(m=>{m.y+=dt*(38+score);m.x+=Math.sin(elapsed*2+m.t)*dt*18;});for(const b of shots)for(const m of enemies)if(!b.hit&&!m.hit&&Math.hypot(b.x-m.x,b.y-m.y)<24){b.hit=m.hit=true;score++;joy.effect('correct');}for(const m of enemies)if(m.y>360&&!m.hit){m.hit=true;hearts--;joy.effect('impact');}shots=shots.filter(b=>b.y>0&&!b.hit);enemies=enemies.filter(m=>!m.hit);if(hearts<=0||score>=30)finish(score);};
+  draw=()=>{bg();ctx.font='20px system-ui';ctx.fillStyle='#fff';ctx.fillText('⭐ '+score+'    '+'💗'.repeat(Math.max(0,hearts)),18,27);ctx.font='30px system-ui';enemies.forEach(m=>ctx.fillText('👾',m.x-16,m.y+10));ctx.font='23px system-ui';shots.forEach(b=>ctx.fillText('✨',b.x-12,b.y));ctx.fillText('🚀',player-14,390);ctx.fillStyle='#65ab83';ctx.fillRect(0,404,360,16);};
+ }else{
+  const g=createBowling(),positions=Array.from({length:4},(_,row)=>Array.from({length:row+1},(_,col)=>({x:180+(col-row/2)*29,y:125-row*27}))).flat();let aim=180,ball=null,score=0,chosen=180;
+  const roll=()=>{if(ball||ended)return;chosen=aim;ball={x:180,y:375};joy.effect('roll');};add(say('🎳 Lanzar','🎳 Roll'),roll);status.textContent=say('🎯 Espera al centro y lanza','🎯 Wait for the center, then roll');key=e=>{if(e.code==='Space')roll();};pointer=()=>roll();
+  step=dt=>{if(!ball){aim=180+Math.sin(elapsed*1.7)*104;return;}ball.y-=dt*215;ball.x=180+(chosen-180)*((375-ball.y)/270);if(ball.y<=105){let hit=[];g.pins.forEach((up,i)=>{const p=positions[i];if(up&&Math.abs(p.x-chosen)<23+(125-p.y)*.32)hit.push(i);});if(Math.abs(chosen-180)<9)hit=g.pins.flatMap((up,i)=>up?[i]:[]);score=g.throw(hit.length,hit);ball=null;joy.effect('impact');status.textContent='🎳 '+Math.min(10,g.frame)+'/10 · ⭐ '+score;if(g.over)finish(score);}};
+  draw=()=>{bg();ctx.fillStyle='#caa77b';ctx.beginPath();ctx.moveTo(60,420);ctx.lineTo(110,30);ctx.lineTo(250,30);ctx.lineTo(300,420);ctx.fill();for(let x=110;x<260;x+=22){ctx.strokeStyle='#ae8965';ctx.beginPath();ctx.moveTo(x,40);ctx.lineTo(x,420);ctx.stroke();}ctx.font='24px system-ui';positions.forEach((p,i)=>{if(g.pins[i])ctx.fillText('🎳',p.x-12,p.y);});ctx.fillStyle='#c36ba5';ctx.beginPath();ctx.arc(ball?.x??180,ball?.y??375,13,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.font='20px system-ui';ctx.fillText('⭐ '+score,12,25);if(!ball){ctx.fillStyle='#753f75';ctx.beginPath();ctx.arc(aim,165,7,0,Math.PI*2);ctx.fill();}};
+ }
+ const pause=add(say('⏸️ Pausa','⏸️ Pause'),()=>{paused=!paused;pause.textContent=paused?say('▶️ Seguir','▶️ Resume'):say('⏸️ Pausa','⏸️ Pause');});
+ const keyboard=e=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Space'].includes(e.code))return;e.preventDefault();e.stopPropagation();if(!paused&&!ended)key(e);};
+ const tap=e=>{if(paused||ended)return;const r=canvas.getBoundingClientRect();pointer((e.clientX-r.left)*360/r.width,(e.clientY-r.top)*420/r.height);};canvas.addEventListener('keydown',keyboard);canvas.addEventListener('pointerdown',tap);
+ function frame(t){if(stopped)return;if(!canvas.isConnected){stopped=true;canvas.removeEventListener('keydown',keyboard);canvas.removeEventListener('pointerdown',tap);return;}const dt=Math.min(.05,(t-last)/1000||0);last=t;if(!document.hidden&&!panel.hidden&&!paused&&!ended){elapsed+=dt;step(dt);}draw();if(paused){ctx.fillStyle='#0009';ctx.fillRect(0,0,360,420);ctx.fillStyle='#fff';ctx.font='32px system-ui';ctx.fillText('⏸️',160,210);}raf=requestAnimationFrame(frame);}raf=requestAnimationFrame(frame);canvas.focus();return ()=>{stopped=true;cancelAnimationFrame(raf);canvas.removeEventListener('keydown',keyboard);canvas.removeEventListener('pointerdown',tap);};
+}

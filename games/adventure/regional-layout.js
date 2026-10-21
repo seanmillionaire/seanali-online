@@ -1,5 +1,6 @@
-import {BUILDER_SITES} from './builder-projects.js?v=224';
-import {worldIslands,isletHeight,inWater,roadDistance,HIGHWAY_WIDTH,explorePlaces,exploreItems} from './explore-state.js?v=224';
+import {homeReserved} from './mansion-state.js?v=225';
+import {BUILDER_SITES} from './builder-projects.js?v=225';
+import {worldIslands,isletHeight,inWater,roadDistance,HIGHWAY_WIDTH,explorePlaces,exploreItems} from './explore-state.js?v=225';
 // Shared render, forest exclusion and collision footprints. No saved destinations move.
 let cached;
 export function regionalParcels(){
@@ -29,7 +30,7 @@ export function regionalParcels(){
  }
  return cached=plots;
 }
-export function regionalParcelActive(p,world){return !(world?.estate?.buildings||[]).some(b=>Math.hypot(p.x-b.x,p.z-b.z)<Math.hypot(p.w,p.d)/2+8);}
+export function regionalParcelActive(p,world){return !homeReserved(p.x,p.z,Math.hypot(p.w,p.d)/2)&&!(world?.estate?.buildings||[]).some(b=>Math.hypot(p.x-b.x,p.z-b.z)<Math.hypot(p.w,p.d)/2+8);}
 export const regionalBlocked=(x,z,world,margin=.32)=>regionalParcels().some(p=>regionalParcelActive(p,world)&&Math.abs(x-p.x)<p.w/2+margin&&Math.abs(z-p.z)<p.d/2+margin);
 export const regionalClearing=(x,z,margin=4)=>regionalParcels().some(p=>Math.abs(x-p.x)<p.w/2+margin&&Math.abs(z-p.z)<p.d/2+margin);
 

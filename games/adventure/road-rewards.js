@@ -1,4 +1,4 @@
-import {HIGHWAY_CURVES,HIGHWAY_WIDTH,roadDistance,traversable,inWater} from './explore-state.js?v=224';
+import {HIGHWAY_CURVES,HIGHWAY_WIDTH,roadDistance,traversable,inWater} from './explore-state.js?v=225';
 export const ROAD_REWARDS=[
  {id:'baru',road:'cityToBaru',kind:'balloon',icon:'🎈',es:'Vuelo sobre Barú',en:'Barú sky ride'},
  {id:'volcan',road:'volcanTownStreet',kind:'scooter',icon:'🛴',es:'Scooter de Volcán',en:'Volcán scooter'},

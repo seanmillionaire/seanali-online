@@ -1,8 +1,8 @@
-import {cityX} from './geography.js?v=224';
-import {waterFriend,animalClear,recoverAnimal,animalStep} from './animal-boundaries.js?v=224';
-import {explorePlaces,earnCoins} from './explore-state.js?v=224';
-import {oceanModel} from './ocean-models.js?v=224';
-import {createAnimalDetails} from './animal-details.js?v=224';
+import {cityX} from './geography.js?v=225';
+import {waterFriend,animalClear,recoverAnimal,animalStep} from './animal-boundaries.js?v=225';
+import {explorePlaces,earnCoins} from './explore-state.js?v=225';
+import {oceanModel} from './ocean-models.js?v=225';
+import {createAnimalDetails} from './animal-details.js?v=225';
 // Repeatable, optional play with six friends in the 3D world.
 export const islandFriends=[
  {id:'pip',icon:'🐢',name:'Pip',where:['Playa Gorgona','Playa Gorgona'],game:['Sendero de conchas','Shell trail'],hello:['Explora el sendero sin molestar a los animales.','Explore the trail and give the animals space.']},

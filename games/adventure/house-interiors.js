@@ -1,4 +1,4 @@
-import {homeMove,homePath} from './mansion-state.js?v=224';
+import {homeMove,homePath} from './mansion-state.js?v=225';
 // Five real walkable, furnished interiors. Exterior coordinates are never
 // overwritten while inside, so old saves and world navigation remain safe.
 export const villageHouses=[
@@ -102,7 +102,8 @@ export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geomet
    prop(box,wood,-2.65,.65,1.0,1.8,.11,1.8);
    prop(box,wood,2.65,.65,1.0,1.8,.11,1.8);
    for(const x of [-2.65,2.65])prop(cylinder,wood,x,.35,1.0,.12,.6,.12);
-   add('pizza',0,-1.85,'🍕 Pedir pizza','🍕 Order a pizza','🍕 ¡Pizza recién hecha!','🍕 Fresh pizza!',onPizza);
+   for(const x of [-2.65,2.65]){prop(box,accent,x,.65,1.9,.9,.18,.8);prop(box,wood,x,1.1,2.25,.9,.9,.12);for(const dx of [-.3,.3])prop(cylinder,wood,x+dx,.3,1.9,.05,.6,.05);}
+   add('pizza',0,-1.85,cfg.id==='dream-restaurant'?'🍽️ Menú del restaurante':'🍕 Pedir pizza',cfg.id==='dream-restaurant'?'🍽️ Restaurant menu':'🍕 Order a pizza','🍕 ¡Pizza recién hecha!','🍕 Fresh pizza!',onPizza);
   }else{
    for(let i=0;i<5;i++)prop(box,i%2?accent:rug,-1.8+i*.78,.38,-2.1,.64,.77,.65);
    prop(ball,accent,1,.9,-1.8,.65,.9,.54);
@@ -184,7 +185,7 @@ export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geomet
  }
  function move(dx,dz,dt,speed=3.3){
   if(!active)return null;
-  if(active.cfg.mansion){if(dx||dz)indoorRoute=[];else if(indoorRoute.length){const target=indoorRoute[0],d=Math.hypot(target.x-localX,target.z-localZ);if(d<.12)indoorRoute.shift();else{dx=(target.x-localX)/d;dz=(target.z-localZ)/d;speed=Math.min(speed,d/Math.max(dt,.001));}}const len=Math.max(1,Math.hypot(dx,dz)),p=homeMove(localX,localZ,dx/len*dt*speed,dz/len*dt*speed);localX=p.x;localZ=p.z;return {x:localX,z:originZ+localZ,y:0,moving:!!(dx||dz),heading:Math.atan2(dx,dz)};}
+  if(active.cfg.mansion){speed=5.2;if(dx||dz)indoorRoute=[];else if(indoorRoute.length){const target=indoorRoute[0],d=Math.hypot(target.x-localX,target.z-localZ);if(d<.12)indoorRoute.shift();else{dx=(target.x-localX)/d;dz=(target.z-localZ)/d;speed=Math.min(speed,d/Math.max(dt,.001));}}const len=Math.max(1,Math.hypot(dx,dz)),p=homeMove(localX,localZ,dx/len*dt*speed,dz/len*dt*speed);localX=p.x;localZ=p.z;return {x:localX,z:originZ+localZ,y:0,moving:!!(dx||dz),heading:Math.atan2(dx,dz)};}
   if(dx||dz){const len=Math.max(1,Math.hypot(dx,dz));localX=Math.max(-4.25,Math.min(4.25,localX+dx/len*dt*speed));localZ=Math.max(-3.65,Math.min(3.65,localZ+dz/len*dt*speed));}
   return {x:localX,z:originZ+localZ,y:0};
  }
@@ -204,6 +205,6 @@ export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geomet
   if(found){cssButton.textContent=found.icon+' '+(es?'Entrar':'Enter')+' · '+(es?found.es:found.en);cssButton.onclick=()=>enter(found);}
  }
  function dispose(){leave();cssButton.remove();for(const r of rooms.values())scene.remove(r.root);}
- return {presentation:close=>{if(active?.cfg.mansion){active.ceiling.visible=close;for(const p of active.partitions){p.scale.y=close?3.2:1.4;p.position.y=close?1.6:.7;}}},hideOutside:()=>{if(active?.cfg.mansion)for(const [o]of active.saved)o.visible=false;},walkTo:(x,z)=>{if(active?.cfg.mansion)indoorRoute=homePath({x:localX,z:localZ},{x,z});},near,enter,leave,move,position,nearbyProp,inspect,updateDoor,isInside:()=>!!active,current:()=>active?.cfg||null,dispose};
+ return {place:(x,z)=>{if(active){localX=x;localZ=z;indoorRoute=[];}},presentation:close=>{if(active?.cfg.mansion){active.ceiling.visible=close;for(const p of active.partitions){p.scale.y=close?3.2:1.4;p.position.y=close?1.6:.7;}}},hideOutside:()=>{if(active?.cfg.mansion)for(const [o]of active.saved)o.visible=false;},walkTo:(x,z)=>{if(active?.cfg.mansion)indoorRoute=homePath({x:localX,z:localZ},{x,z});},near,enter,leave,move,position,nearbyProp,inspect,updateDoor,isInside:()=>!!active,current:()=>active?.cfg||null,dispose};
 }
 

@@ -36,7 +36,7 @@ body[data-scene="explore"] .explore-controls{color:#edf2eacc;text-shadow:0 1px 4
 body[data-scene="entry"] .welcome-copy{font-family:Inter,system-ui,sans-serif}
 body[data-scene="entry"] .world-entry h1{font-family:inherit;letter-spacing:-.045em;font-weight:650}
 body[data-scene="entry"] .world-entry h1 em{font-family:inherit;font-style:normal;font-weight:450;letter-spacing:.03em}
-body[data-scene="entry"] .primary.enter-world{border-radius:7px!important;box-shadow:0 4px 16px #07131944;background:#c8ad70!important;color:#152528!important}
+body[data-scene="entry"] .primary.enter-world{border-radius:7px!important;box-shadow:0 4px 16px #07131944;background:#ffdf55!important;color:#173d37!important}
 @media(max-width:780px){
  body[data-scene="explore"] .explore-actions .picture-button{border-radius:7px!important;min-height:64px!important}
  body[data-scene="explore"] .mobile-game-dock button{border-radius:7px!important}
@@ -63,7 +63,7 @@ body[data-scene="explore"] :is(.world-small,.world-action,.world-jump,.camera-vi
 /* Keep the identity legible against both bright skies and dark foliage. */
 body:is([data-scene="explore"],[data-scene="islandQuest"]) .topbar .brand{color:#fff!important;background:#102e38f5;border:1px solid #ffffff40;border-radius:12px;padding:8px 12px;text-shadow:0 1px 2px #000;line-height:1.15;flex-shrink:1}
 body:is([data-scene="explore"],[data-scene="islandQuest"]) .topbar .brand small{color:#e2efee!important}
-body[data-scene="entry"] .world-entry:before{background:linear-gradient(125deg,#103c48,#438c96);opacity:1}
+body[data-scene="entry"] .world-entry:before{background:linear-gradient(90deg,#103c48d9,#438c9644),url('./island.webp') center/cover;opacity:1}
 .welcome-world{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
 .welcome-world>:not(canvas){display:none!important}
 .welcome-world canvas{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;opacity:1!important;visibility:visible!important}

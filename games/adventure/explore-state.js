@@ -1,12 +1,12 @@
-import {normalizeMansion} from './mansion-state.js?v=224';
-import {cityX,freshwaterHabitat} from './geography.js?v=224';
-import {normalizeTravelMode} from './travel-mode.js?v=224';
-import {DESTINATIONS,WORLD_BOUNDS,mainlandContains,canalWater,gatunWater,migrateGeography,segmentDistance,organicIslandRadius,homeShoreRadius,COLON_OFFSET,COLON_LAYOUT_VERSION,mainlandRelief,GEOGRAPHY_VERSION} from './geography.js?v=224';
-import {SAN_BLAS_ISLANDS,normalizePanama} from './panama-state.js?v=224';
-import {normalizeCampaign} from './campaign-state.js?v=224';
-import {normalizeColon,bridgeDistance,COLON_BRIDGE} from './colon-state.js?v=224';
-import {normalizeCruise,CRUISE_FARE} from './cruise-route.js?v=224';
-import {normalizeEstate,estateCoinCost,ESTATE_PLANS} from './estate.js?v=224';
+import {normalizeMansion} from './mansion-state.js?v=225';
+import {cityX,freshwaterHabitat} from './geography.js?v=225';
+import {normalizeTravelMode} from './travel-mode.js?v=225';
+import {DESTINATIONS,WORLD_BOUNDS,mainlandContains,canalWater,gatunWater,migrateGeography,segmentDistance,organicIslandRadius,homeShoreRadius,COLON_OFFSET,COLON_LAYOUT_VERSION,mainlandRelief,GEOGRAPHY_VERSION} from './geography.js?v=225';
+import {SAN_BLAS_ISLANDS,normalizePanama} from './panama-state.js?v=225';
+import {normalizeCampaign} from './campaign-state.js?v=225';
+import {normalizeColon,bridgeDistance,COLON_BRIDGE} from './colon-state.js?v=225';
+import {normalizeCruise,CRUISE_FARE} from './cruise-route.js?v=225';
+import {normalizeEstate,estateCoinCost,ESTATE_PLANS} from './estate.js?v=225';
 // Exploration is independent of lesson order. Every place is open from the start.
 export const worldIslands=[
  {id:'islet',x:DESTINATIONS.islet.at[0],z:DESTINATIONS.islet.at[1],rx:24.65,rz:20.3,h:2.5,ox:24,oz:-8,spread:3.48,en:'Taboga · Island of Flowers',es:'Isla Taboga · Isla de las Flores'},

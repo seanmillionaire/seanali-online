@@ -1,10 +1,10 @@
-import {adventureIcon} from './adventure-icons.js?v=224';
-import {earnCoins,syncWallet} from './explore-state.js?v=224';
-import {createExplore} from './explore.js?v=224';
-import {createWelcomeWorld as createEntrance} from './welcome-world.js?v=224';
-import {createDelight,burst,livingWorld,foxPortrait} from './delight.js?v=224';
-import {regions,quests,challenges,ui,text} from './content.js?v=224';
-import {SAVE_KEY,fresh,normalize,completedCount,lightCount,totalStars,unlocked,award} from './state.js?v=224';
+import {adventureIcon} from './adventure-icons.js?v=225';
+import {earnCoins,syncWallet} from './explore-state.js?v=225';
+import {createExplore} from './explore.js?v=225';
+import {createWelcomeWorld as createEntrance} from './welcome-world.js?v=225';
+import {createDelight,burst,livingWorld,foxPortrait} from './delight.js?v=225';
+import {regions,quests,challenges,ui,text} from './content.js?v=225';
+import {SAVE_KEY,fresh,normalize,completedCount,lightCount,totalStars,unlocked,award} from './state.js?v=225';
 const $=s=>document.querySelector(s),app=$('#app'),dialog=$('#dialog');
 let storageOK=true,state;try{state=normalize(JSON.parse(localStorage.getItem(SAVE_KEY)));if(!localStorage.getItem(SAVE_KEY)){state.lang=localStorage.getItem('seanGameLang')==='en'?'en':'es';}}catch{state=fresh();}
 let islandQuestId=null,islandWelcome=null,introPending=false;

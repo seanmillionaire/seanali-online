@@ -1,4 +1,4 @@
-import {COLON_OFFSET,freshwaterHabitat} from './geography.js?v=224';
+import {COLON_OFFSET,freshwaterHabitat} from './geography.js?v=225';
 const lakeWater=(isWater)=>(x,z)=>isWater(x,z)&&freshwaterHabitat(x+COLON_OFFSET.x,z+COLON_OFFSET.z);
 export const BLACK_MONKEY_COUNT=28;
 export const COAST_CROCODILE_COUNT=8;

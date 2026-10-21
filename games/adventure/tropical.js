@@ -1,7 +1,7 @@
-import {createNatureDecor} from './nature-decor.js?v=224';
-import {oceanModel} from './ocean-models.js?v=224';
-import {createNaturalTrees} from './natural-trees.js?v=224';
-import {islandPoint} from './explore-state.js?v=224';
+import {createNatureDecor} from './nature-decor.js?v=225';
+import {oceanModel} from './ocean-models.js?v=225';
+import {createNaturalTrees} from './natural-trees.js?v=225';
+import {islandPoint} from './explore-state.js?v=225';
 /* Shared sculpted props and botanical meshes, consistently lit from every angle. */
 export function createTropical({T,scene,camera,height,geometry,mat,make,ball,renderer,surfaces=null}){
  const forest=createNaturalTrees({T,geometry,mat,make,height,scene,surfaces});

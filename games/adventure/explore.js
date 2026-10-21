@@ -1,46 +1,46 @@
-import {createRoadRewards,createRewardModels} from './road-rewards.js?v=224';
-import {worldClock} from './world-clock.js?v=224';
-import {createCanalBridges} from './canal-bridges.js?v=224';
-import {createMansionLife} from './mansion-life.js?v=224';
-import {HOME_OUTFITS} from './mansion-state.js?v=224';
-import {sailingSpeedLimit,sailingVelocity} from './ocean-travel.js?v=224';
-import {regionalClearing} from './regional-layout.js?v=224';
-import {createRegionalScenery} from './regional-scenery.js?v=224';
-import {FLIGHT_SPEED,birdTravelSpeed,flightStep} from './flight-travel.js?v=224';
-import {createCityAirCollision,createWorldCollision,createRoadSurfaceSampler} from './world-collision.js?v=224';
-import {adventureIcon} from './adventure-icons.js?v=224';
-import {createTouchJoystick} from './touch-joystick.js?v=224';
-import {groundTravelSpeed,groundTravelStep,impactPose} from './travel-mode.js?v=224';
-import {createRuralTowns,ruralBlocks} from './rural-towns.js?v=224';
-import {roadRibbon,surfaceMesh} from './road-surfaces.js?v=224';
-import {touchesLava,returnToHospital,createCityHospital} from './volcano-safety.js?v=224';
-import {locationLabel} from './location-label.js?v=224';
-import {waterFriend,animalStep} from './animal-boundaries.js?v=224';
-import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,mainlandAt,mainlandRoadRoute,roadDistance,roadsidePoint} from './explore-state.js?v=224';
-import {planHighwayGuardrails} from './highway-rails.js?v=224';
-import {createPanamaLife} from './panama-life.js?v=224';
-import {createCloseCamera} from './close-camera.js?v=224';
-import {WORLD_BOUNDS,freshwaterHabitat} from './geography.js?v=224';
-import {createExtendedDistricts} from './expanded-districts.js?v=224';
-import {createCampaign} from './campaign.js?v=224';
-import {createColonAdventure} from './colon-adventure.js?v=224';
-import {createCanalCruise} from './canal-cruise.js?v=224';
-import {createRealms} from './realms.js?v=224';
-import {createJourney} from './journey.js?v=224';
-import {oceanModel} from './ocean-models.js?v=224';
-import {createIslandLife,naturalSharkPatrol as sharkPatrol} from './island-life.js?v=224';
-import {createWorldStory,islandStories} from './world-story.js?v=224';
-import {REGION_PROJECTS,regionForPosition,missionStatus,restoreRegions,createRegionProjectWorld} from './region-projects.js?v=224';
-import {createWorldMap} from './world-map.js?v=224';
-import {createWildlifeFriends} from './wildlife-friends.js?v=224';
-import {createVillageBuilders} from './village-builders.js?v=224';
-import {createHouseInteriors} from './house-interiors.js?v=224';
-import {createPizzaCity} from './pizza-city.js?v=224';
-import {driveByDirection} from './directional-drive.js?v=224';
-import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=224';
-import {ESTATE_PLANS,estateCosts,estateMissing,findEstateSite,canBuildEstate,buildEstate,canUpgradeEstate,upgradeEstate,estateBlocked,createEstateWorld} from './estate.js?v=224';
-import {buildIsland} from './entrance.js?v=224';
-import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=224';
+import {createRoadRewards,createRewardModels} from './road-rewards.js?v=225';
+import {worldClock} from './world-clock.js?v=225';
+import {createCanalBridges} from './canal-bridges.js?v=225';
+import {createMansionLife} from './mansion-life.js?v=225';
+import {HOME_OUTFITS} from './mansion-state.js?v=225';
+import {sailingSpeedLimit,sailingVelocity} from './ocean-travel.js?v=225';
+import {regionalClearing} from './regional-layout.js?v=225';
+import {createRegionalScenery} from './regional-scenery.js?v=225';
+import {FLIGHT_SPEED,birdTravelSpeed,flightStep} from './flight-travel.js?v=225';
+import {createCityAirCollision,createWorldCollision,createRoadSurfaceSampler} from './world-collision.js?v=225';
+import {adventureIcon} from './adventure-icons.js?v=225';
+import {createTouchJoystick} from './touch-joystick.js?v=225';
+import {groundTravelSpeed,groundTravelStep,impactPose} from './travel-mode.js?v=225';
+import {createRuralTowns,ruralBlocks} from './rural-towns.js?v=225';
+import {roadRibbon,surfaceMesh} from './road-surfaces.js?v=225';
+import {touchesLava,returnToHospital,createCityHospital} from './volcano-safety.js?v=225';
+import {locationLabel} from './location-label.js?v=225';
+import {waterFriend,animalStep} from './animal-boundaries.js?v=225';
+import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,mainlandAt,mainlandRoadRoute,roadDistance,roadsidePoint} from './explore-state.js?v=225';
+import {planHighwayGuardrails} from './highway-rails.js?v=225';
+import {createPanamaLife} from './panama-life.js?v=225';
+import {createCloseCamera} from './close-camera.js?v=225';
+import {WORLD_BOUNDS,freshwaterHabitat} from './geography.js?v=225';
+import {createExtendedDistricts} from './expanded-districts.js?v=225';
+import {createCampaign} from './campaign.js?v=225';
+import {createColonAdventure} from './colon-adventure.js?v=225';
+import {createCanalCruise} from './canal-cruise.js?v=225';
+import {createRealms} from './realms.js?v=225';
+import {createJourney} from './journey.js?v=225';
+import {oceanModel} from './ocean-models.js?v=225';
+import {createIslandLife,naturalSharkPatrol as sharkPatrol} from './island-life.js?v=225';
+import {createWorldStory,islandStories} from './world-story.js?v=225';
+import {REGION_PROJECTS,regionForPosition,missionStatus,restoreRegions,createRegionProjectWorld} from './region-projects.js?v=225';
+import {createWorldMap} from './world-map.js?v=225';
+import {createWildlifeFriends} from './wildlife-friends.js?v=225';
+import {createVillageBuilders} from './village-builders.js?v=225';
+import {createHouseInteriors} from './house-interiors.js?v=225';
+import {createPizzaCity} from './pizza-city.js?v=225';
+import {driveByDirection} from './directional-drive.js?v=225';
+import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=225';
+import {ESTATE_PLANS,estateCosts,estateMissing,findEstateSite,canBuildEstate,buildEstate,canUpgradeEstate,upgradeEstate,estateBlocked,createEstateWorld} from './estate.js?v=225';
+import {buildIsland} from './entrance.js?v=225';
+import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=225';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);syncWallet(state);
  let disposed=false,engine=null,control=null,builderSystem=null,friendSystem=null,houseSystem=null,mansionLife=null,wildLife=null,cityLife=null,panamaLife=null,cruiseLife=null,colonLife=null,workshop=null,estateWorld=null,regionWorld=null,carDriving=false,carSpeed=0,mountId=null,birdAltitude=0,birdTarget=0,birdLanding=false,near=null,ride=s.flight?1:0,flightY=s.flight||0,flightTarget=s.flight||0,flightVX=0,flightVZ=0,route=[],targetPoint=null,keys=new Set(),music=[],messageTime=0,autosave=0;
@@ -648,8 +648,8 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
  start();
  function setup({T,scene,camera,target,height,make,geometry,mat,ball,cone,cylinder,box,renderer,tropical,tower,beam,crystal,dockBoat,sun,ambient,waterMaterial,surfaces}){
   createRuralTowns({T,scene,make,mat,box,geometry,height,state});
-  const regionalScenery=createRegionalScenery({T,scene,geometry,mat,box,ball,cylinder,height,surfaces,state});
-  const detailedDistricts=createExtendedDistricts({T,scene,make,mat,box,cylinder,height,surfaces});
+  const regionalScenery=createRegionalScenery({T,scene,geometry,mat,box,ball,cylinder,height,surfaces,state});let detailedDistricts=null;
+  function loadNearbyScenery(){if(!detailedDistricts&&s.x>200)detailedDistricts=createExtendedDistricts({T,scene,make,mat,box,cylinder,height,surfaces});}
   const gold=mat('#bba16b',{metalness:.18,roughness:.61}),pink=mat('#9d6550',{map:surfaces.plaster}),orange=mat('#b68151'),cream=mat('#d9d4bf'),ink=mat('#263b40'),purple=mat('#65717e'),green=mat('#627a58');
   // Continuous new asphalt ribbons follow each sampled highway curve.
   // Shared geometry avoids the seams, overlaps and square patches of road boxes.
@@ -680,11 +680,12 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    beam.rotation.y=rail.angle;beam.castShadow=false;
    if(rail.post){const post=make(box,railPost,rail.x,y+.55,rail.z,.17,1.1,.17);post.castShadow=false;}
   }
-  const avatar=new T.Group();avatar.name='Angelique';scene.add(avatar);const skin=mat('#bd8e68'),shirt=mat('#b8a6d7'),shorts=mat('#437c80'),hair=mat('#44352a');
-  make(geometry(new T.CylinderGeometry(.24,.20,.58,12)),shirt,0,1.06,0,1,1,1,avatar);make(ball,skin,0,1.58,0,.22,.27,.21,avatar);make(ball,hair,0,1.73,-.03,.23,.15,.21,avatar);
+  const avatar=new T.Group();avatar.name='Angelique';scene.add(avatar);const skin=mat('#bd8e68'),shirt=mat('#b8a6d7',{roughness:.92}),shorts=mat('#437c80',{roughness:.9}),hair=mat('#35291f',{roughness:.8});
+  make(geometry(new T.CylinderGeometry(.225,.19,.58,20)),shirt,0,1.06,0,1,1,1,avatar);make(ball,skin,0,1.58,0,.22,.27,.21,avatar);make(ball,hair,0,1.73,-.03,.23,.15,.21,avatar);
   // Angelique's ponytail, ribbon, and lavender adventure outfit.
-  const ponytail=new T.Group();ponytail.position.set(0,1.65,-.19);avatar.add(ponytail);make(ball,hair,0,-.15,-.08,.16,.29,.13,ponytail);make(ball,hair,0,-.37,-.09,.1,.18,.1,ponytail);const ribbon=mat('#ed9fbd');for(const x of [-.09,.09])make(ball,ribbon,x,.04,0,.1,.055,.035,ponytail);make(geometry(new T.CylinderGeometry(.20,.34,.32,16)),shirt,0,.75,0,1,1,1,avatar);make(ball,ribbon,.08,1.18,.23,.04,.04,.02,avatar);for(const x of [-.08,.08])make(ball,ink,x,1.6,.2,.018,.02,.01,avatar);
-  const legs=[-.13,.13].map(x=>{const leg=new T.Group();leg.position.set(x,.7,0);avatar.add(leg);make(cylinder,shorts,0,-.12,0,.12,.3,.12,leg);make(cylinder,skin,0,-.4,0,.075,.35,.075,leg);make(ball,woodMaterial(),0,-.6,.06,.1,.07,.18,leg);return leg;});
+  const ponytail=new T.Group();ponytail.position.set(0,1.65,-.19);avatar.add(ponytail);make(ball,hair,0,-.15,-.08,.16,.29,.13,ponytail);make(ball,hair,0,-.37,-.09,.1,.18,.1,ponytail);const ribbon=mat('#ed9fbd');for(const x of [-.09,.09])make(ball,ribbon,x,.04,0,.1,.055,.035,ponytail);const dressSkirt=make(geometry(new T.CylinderGeometry(.20,.34,.32,16)),shirt,0,.75,0,1,1,1,avatar);make(ball,ribbon,.08,1.18,.23,.04,.04,.02,avatar);
+  const legs=[-.13,.13].map(x=>{const leg=new T.Group();leg.position.set(x,.7,0);avatar.add(leg);make(cylinder,shorts,0,-.12,0,.12,.3,.12,leg);make(cylinder,skin,0,-.4,0,.075,.35,.075,leg);return leg;});
+  const pajamaLegs=legs.map(leg=>make(cylinder,shirt,0,-.3,0,.13,.66,.13,leg));pajamaLegs.forEach(p=>p.visible=false);
   const rollerblades=new T.Group();rollerblades.name='Angelique rollerblades';avatar.add(rollerblades);
   const skateBoot=mat('#8a719e'),skateFrame=mat('#ced6d1'),skateWheel=mat('#45565a');
   const wheelGeo=geometry(new T.CylinderGeometry(.065,.065,.055,10));
@@ -692,31 +693,52 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    make(box,skateBoot,side*.14,.145,.08,.23,.17,.39,rollerblades);make(box,skateFrame,side*.14,.085,.09,.10,.035,.43,rollerblades);
    for(let i=0;i<4;i++){const wheel=make(wheelGeo,skateWheel,side*.14,.052,-.08+i*.115,1,1,1,rollerblades);wheel.rotation.z=Math.PI/2;}
   }
-  const arms=[];for(const x of [-.31,.31]){const arm=make(cylinder,skin,x,1.02,0,.065,.56,.065,avatar);arm.rotation.z=x>0?-.13:.13;arms.push(arm);}
-  // Close-up character detailing: shaped limbs, layered outfit, expressive face.
-  const shoe=mat('#f4e8df'),sole=mat('#795a68'),eyes=mat('#28252d'),eyeWhite=mat('#fff8f0'),lip=mat('#a8585f'),seam=mat('#d8c0f0'),sock=mat('#f9f0ee');
-  make(ball,shirt,0,1.08,.045,.265,.34,.205,avatar);
-  make(ball,shirt,0,.88,.08,.25,.17,.19,avatar);
-  make(box,seam,0,.83,.205,.36,.047,.018,avatar);
-  make(ball,skin,0,1.37,.018,.115,.125,.105,avatar);
+  // Articulated shoulders keep sleeves, hands and accessories together in motion.
+  const shoe=mat('#ece6dc',{roughness:.8}),sole=mat('#6b5b66'),eyes=mat('#332920'),eyeWhite=mat('#eee9df'),lip=mat('#975e56'),seam=mat('#d8c0f0'),sock=mat('#f9f0ee');
+  const arms=[];
   for(const side of [-1,1]){
-   const x=side*.14;
-   make(ball,skin,side*.215,1.58,.18,.07,.045,.02,avatar);
-   make(ball,eyeWhite,side*.09,1.62,.194,.046,.033,.012,avatar);
-   make(ball,eyes,side*.09,1.62,.209,.022,.027,.009,avatar);
-   make(ball,hair,side*.105,1.69,.198,.066,.018,.012,avatar);
-   make(ball,shorts,x,.665,.015,.15,.14,.15,avatar);
-   make(ball,sock,x,.165,.015,.087,.08,.093,avatar);
-   make(ball,shoe,x,.09,.115,.142,.095,.215,avatar);
-   make(box,sole,x,.03,.142,.235,.032,.32,avatar);
-   make(ball,shirt,side*.31,1.235,.008,.115,.14,.12,avatar);
-   make(ball,skin,side*.39,.87,.018,.095,.12,.1,avatar);
-   make(ball,skin,side*.40,.75,.035,.09,.085,.12,avatar);
+   const arm=new T.Group();arm.position.set(side*.265,1.29,0);avatar.add(arm);arms.push(arm);
+   make(ball,shirt,0,-.045,0,.073,.10,.078,arm);
+   make(cylinder,skin,side*.025,-.23,0,.053,.30,.056,arm);
+   make(ball,skin,side*.025,-.37,.005,.056,.057,.056,arm);
+   make(cylinder,skin,side*.035,-.46,.018,.047,.20,.048,arm);
+   make(ball,skin,side*.035,-.585,.025,.052,.07,.04,arm);
+   make(ball,skin,side*-.012,-.565,.052,.022,.04,.022,arm);
+   for(let i=0;i<3;i++)make(box,lip,side*.035-.021+i*.021,-.61,.062,.004,.023,.003,arm);
+   arm.rotation.z=side*-.09;
   }
-  make(ball,skin,0,1.54,.225,.045,.052,.045,avatar);
-  make(ball,lip,0,1.465,.204,.062,.014,.014,avatar);
-  make(ball,hair,-.17,1.735,.105,.085,.16,.12,avatar);
-  make(ball,hair,.17,1.735,.105,.085,.16,.12,avatar);
+  make(ball,skin,0,1.37,.018,.085,.115,.085,avatar);
+  make(box,seam,0,.83,.205,.36,.022,.012,avatar);
+  for(const side of [-1,1]){
+   const x=side*.14,leg=legs[side===-1?0:1];
+   make(ball,skin,side*.213,1.58,.005,.038,.06,.033,avatar);
+   make(ball,eyeWhite,side*.083,1.62,.197,.033,.019,.009,avatar);
+   make(ball,eyes,side*.083,1.62,.207,.015,.018,.006,avatar);
+   make(ball,eyeWhite,side*.079,1.627,.214,.004,.004,.002,avatar);
+   make(ball,hair,side*.085,1.668,.192,.044,.009,.008,avatar);
+   make(ball,sock,0,-.535,.015,.078,.07,.082,leg);
+   make(ball,shoe,0,-.61,.07,.10,.075,.16,leg);
+   make(box,sole,0,-.666,.08,.18,.025,.27,leg);
+   for(let i=0;i<3;i++)make(box,seam,0,-.56,.09+i*.035,.11,.008,.008,leg);
+  }
+  make(ball,skin,0,1.55,.207,.029,.042,.034,avatar);
+  make(ball,lip,0,1.473,.199,.039,.008,.009,avatar);
+  // Fine swept hair strands follow the scalp and ponytail, rather than separate round tufts.
+  const highlight=mat('#574333',{roughness:.8});
+  function strand(points,parent=avatar,r=.004){const curve=new T.CatmullRomCurve3(points.map(p=>new T.Vector3(...p)));const mesh=make(geometry(new T.TubeGeometry(curve,10,r,4,false)),highlight,0,0,0,1,1,1,parent);mesh.name='Hair strand';return mesh;}
+  for(let i=0;i<9;i++){const x=-.18+i*.045;strand([[x*.4,1.859,-.01],[x*.85,1.80,.11],[x,1.69,.15],[x*.95,1.58,.07]]);}
+  for(let i=0;i<7;i++){const x=-.09+i*.03;strand([[x,.03,-.08],[x*1.2,-.18,-.18],[x*.55,-.43,-.10]],ponytail,.0035);}
+  // Slightly smaller head and restrained ribbon keep her young without a toddler silhouette.
+  const head=new T.Group();head.name='Angelique detailed face and hair';head.position.y=1.58;avatar.add(head);
+  for(const child of [...avatar.children])if(child!==head&&(child.position.y>=1.44||child.name==='Hair strand')){avatar.remove(child);child.position.y-=1.58;head.add(child);}
+  head.scale.set(.80,.86,.84);
+  for(const child of ponytail.children)if(child.material===ribbon)child.scale.multiplyScalar(.65);
+  // Stitched placket, collar, hem and small buttons read clearly at phone scale.
+  for(const side of [-1,1]){const collar=make(box,seam,side*.062,1.31,.17,.105,.055,.012,avatar);collar.rotation.z=side*.4;}
+  make(box,seam,0,1.12,.217,.012,.27,.012,avatar);
+  for(const y of [1.22,1.13,1.04])make(ball,sole,0,y,.23,.009,.009,.005,avatar);
+  const hem=make(geometry(new T.CylinderGeometry(.318,.326,.018,24)),seam,0,-.145,0,1,1,1,dressSkirt);
+  // The hem inherits outfit visibility and the skirt's party-dress scale.
   const hat=new T.Group();hat.position.y=1.86;avatar.add(hat);make(cylinder,gold,0,0,0,.35,.04,.35,hat);make(cylinder,gold,0,.1,0,.22,.17,.22,hat);
   function woodMaterial(){return mat('#554835');}
   avatar.userData.originalAngelique=true;
@@ -835,7 +857,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
   function popBubble(i){if(i<0||paused()||document.hidden||!panel.hidden)return;const b=bubbles.splice(i,1)[0];scene.remove(b.m);joy.note((popped++)%5,.2);s.pops=Math.min(9999,s.pops+1);spark(b.m.position.x,b.m.position.z,8,b.m.position.y);tell('🫧 '+s.pops+' · ¡Pop!','🫧 '+s.pops+' · Pop!',false);save();}
   function blowBubbles(){for(let i=0;i<10&&bubbles.length<20;i++){const x=s.x+(Math.random()-.5)*4,z=s.z+(Math.random()-.5)*4,m=make(ball,bubbleMaterial,x,height(x,z)+1+Math.random()*2,z,.3+Math.random()*.25);m.name='Catchable bubble';const rim=make(circle,bubbleRimMaterial,0,0,0,.95,.95,.95,m);make(ball,cream,-.28,.3,.7,.12,.22,.04,m);const hit=make(ball,pickMaterial,0,0,0,1.7,1.7,1.7,m);hit.castShadow=false;bubbles.push({m,hit,rim,life:24});}}
   function bloom(n){while(blooms.length<n){const i=blooms.length,{x,z}=islandPoint('islet',24+Math.sin(i*2.4)*1.8,-8+Math.cos(i*2.4)*1.2);blooms.push(tropical.card(15,x,height(x,z),z,1,1));}}
-  function dress(){shirt.color.set(HOME_OUTFITS.find(o=>o.id===s.mansion.outfit)?.color||'#b8a6d7');hat.visible=s.hat>0;hat.traverse(o=>{if(o.isMesh)o.material.color.set(['#b9a474','#b9a474','#a57252','#687b54','#db8b85','#4c9fa8','#edbe4d'][s.hat]);});}
+  function dress(){const outfit=s.mansion.outfit;dressSkirt.visible=!['swim','pajamas'].includes(outfit);dressSkirt.scale.set(outfit==='party'?1.2:1,outfit==='party'?1.4:1,outfit==='party'?1.2:1);pajamaLegs.forEach(p=>p.visible=outfit==='pajamas');shorts.color.set(outfit==='swim'?'#42bfd0':'#437c80');shirt.color.set(HOME_OUTFITS.find(o=>o.id===s.mansion.outfit)?.color||'#b8a6d7');hat.visible=s.hat>0;hat.traverse(o=>{if(o.isMesh)o.material.color.set(['#b9a474','#b9a474','#a57252','#687b54','#db8b85','#4c9fa8','#edbe4d'][s.hat]);});}
   camera.fov=60;camera.updateProjectionMatrix();
   control={cancelLook:()=>{lookPointer=null;},resetCamera:()=>{closeCamera.reset(avatar.rotation.y);lookPointer=null;},catchNearest,showBuild:(b)=>{if(!b)return;buildReveal={x:b.x,z:b.z,remaining:3.8};blur();targetPoint=null;route=[];},falling:()=>airborne,normalizeRider:()=>{bodyScale=1;},boardBalloon,popBalloon,board,disembark,boatNear,harvest,snack:(kind)=>{coconutSnack.visible=kind==='coconut';bananaSnack.visible=kind==='banana';spark(s.x,s.z,16,avatar.position.y+bodyScale*1.4);},enterTower,leaveTower,lightBeacon,bubbles:blowBubbles,hop:(v=5)=>{if(inside){if(towerV===0)towerV=v;}else if(!airborne&&jumpY<.1)velocity=v+(s.growth>=2?Math.min(4,s.growth-1):0);},spark,bloom,dress,demo:()=>{music=[];spark(pads[1].x,pads[1].z,8);}};bloom(s.flowers);dress();
   const life=createIslandLife({T,scene,camera,state,make,mat,geometry,ball,cone,box,sun,ambient,waterMaterial,inWater,sharkStep});wildLife=life;
@@ -848,7 +870,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
   estateWorld=createEstateWorld({T,scene,state,make,mat,geometry,ball,box,cylinder,cone,height,joy,save,refresh,tell,spark});
   regionWorld=createRegionProjectWorld({T,scene,state,make,mat,ball,box,cone,cylinder,height});
   refresh();
-  houseSystem=createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,height,surfaces,joy,language:state.lang,companionId:()=>s.friends?.companion,onPizza:()=>cityLife?.order(),
+  houseSystem=createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,height,surfaces,joy,language:state.lang,companionId:()=>s.friends?.companion,onPizza:()=>houseSystem?.current()?.id==='dream-restaurant'?mansionLife?.restaurant():panamaLife?.watchOrder('pizza',()=>cityLife?.order()),
     buildCustom:cfg=>mansionLife.buildInterior(cfg),extraHouses:()=>[...(mansionLife?.houses()||[]),...colonLife.houses(),...(panamaLife?.homes()||[])],treehouseLevel:()=>s.colon.level,onTreehouseUpgrade:()=>colonLife.expand(),estateBuildings:()=>s.estate?.buildings||[],
     workshopBuildings:()=>workshop?.recipes?.filter(b=>workshop.isBuilt(b.id))||[],
     onUseWorkshop:id=>{const r=workshop?.recipes?.find(r=>r.id===id);if(!r)return false;const result=useWorkshop(id);if(!result)tell('🛠️ ¡Usa el taller!','🛠️ Use your workshop!');return result;},
@@ -860,10 +882,10 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
     onEnter:()=>{avatar.rotation.y=Math.PI;closeCamera.reset(Math.PI);closeCamera.invalidate();cameraSnap=true;if(carDriving)exitCar();if(mountId)friendSystem?.dismount();swimming=false;boating=false;ride=0;s.flight=0;blur();route=[];targetPoint=null;host.classList.add('inside-cottage');},
     onMessage:m=>tell(m,m)
   });
-  mansionLife=createMansionLife({T,scene,state,host,panel,make,mat,geometry,box,ball,cylinder,height,surfaces,save,refresh,joy,coinBalance,roadDistance,canPark:(x,z)=>cityLife.canDrive(x,z),onPark:()=>cityLife.updateCar(),dress,
+  mansionLife=createMansionLife({T,scene,avatar,arms,legs,state,host,panel,make,mat,geometry,box,ball,cylinder,height,surfaces,save,refresh,joy,coinBalance,roadDistance,canPark:(x,z)=>cityLife.canDrive(x,z),onPark:()=>cityLife.updateCar(),launchBalloon:boardBalloon,dress,
    prepare:()=>{if(friendSystem?.isOpen())friendSystem.close();if(adventureMap.isOpen())adventureMap.close(false);setHelpers(false);blur();targetPoint=null;route=[];},
    navigate:p=>{if(carDriving)exitCar();if(mountId)friendSystem?.dismount();if(inside)leaveTower();boating=false;ride=0;s.flight=0;swimming=false;s.x=p.x;s.z=p.z;lastShore={x:p.x,z:p.z};cameraSnap=true;save();},
-   walkRoom:(x,z)=>houseSystem.walkTo(x,z),isHome:()=>houseSystem.current()?.mansion,enter:cfg=>houseSystem.enter(cfg),leave:()=>{houseSystem.leave();host.classList.remove('inside-cottage');},onMeal:()=>{energy=30;eating=2;s.journey.meals++;}});
+   placeRoom:(x,z)=>houseSystem.place(x,z),canWalk:(x,z)=>solids.clear(x,z)&&!inWater(x,z),walkRoom:(x,z)=>houseSystem.walkTo(x,z),isHome:()=>houseSystem.current()?.mansion,enter:cfg=>houseSystem.enter(cfg),leave:()=>{houseSystem.leave();host.classList.remove('inside-cottage');},onMeal:()=>{energy=30;eating=2;s.journey.meals++;}});
   builderSystem=createVillageBuilders({T,scene,host,state,make,mat,ball,box,cylinder,height,save,onTravel:p=>travelTo(p),language:state.lang});
   friendSystem=createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,geometry,ball,cone,cylinder,box,height,joy,save,refresh,motion,airClear:(x,y,z)=>airSolids.clear(x,y,z),
     onMount:(id,position)=>{if(!id)wildLife?.unmark();
@@ -923,7 +945,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    host.classList.add('collision-impact');crashRemaining=.75;crashCooldown=1.6;crashX=nx;crashZ=nz;energy=0;targetPoint=null;route=[];closeWalkX=closeWalkZ=0;carSpeed=0;
    tell('💥 ¡Pum! ¡Ay! Baja la velocidad y mira por dónde vas.','💥 Smash! Ouch! Slow down and watch where you’re going.');joy.effect(carDriving?'crash':'impact',{strength:Math.min(1,speed/22)});
   }
-  function update(dt,time){if(disposed)return;dt=Math.min(dt,.1);if(messageTime>0){messageTime-=dt;if(messageTime<=0)message.classList.remove('show');}
+  function update(dt,time){if(disposed)return;loadNearbyScenery();dt=Math.min(dt,.1);if(messageTime>0){messageTime-=dt;if(messageTime<=0)message.classList.remove('show');}
    const skating=['skates','scooter'].includes(s.travelMode)&&!swimming&&!inside&&!boating&&!ride&&!mountId&&!carDriving&&!houseSystem?.isInside();
    speedToggle.textContent=swimming?(fastMode?say('Lento','Slow'):say('Rápido','Fast')):skating?say('👟 Caminar','👟 Walk'):say('🛼 Patinar','🛼 Skate');speedToggle.setAttribute('aria-label',swimming?(fastMode?say('Nadar normal','Swim normally'):say('Nadar rápido','Swim fast')):skating?(s.travelMode==='scooter'?say('Bajar del scooter','Hop off scooter'):say('Quitarse los patines','Take off rollerblades')):say('Ponerse los patines','Put on rollerblades'));speedToggle.setAttribute('aria-pressed',String(skating||fastMode));speedToggle.hidden=!!ride||!!mountId||boating||inside||!!houseSystem?.isInside();
     if(carDriving){speedToggle.textContent=fastMode?say('🚙 Normal','🚙 Normal'):say('🏎️ Rápido','🏎️ Fast');speedToggle.setAttribute('aria-label',fastMode?say('Conducir normal','Drive normally'):say('Activar velocidad rápida','Enable fast driving'));}
@@ -961,7 +983,8 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    if(carDriving){
     if(active){const car=s.city.car;const incoming=carSpeed;const wanted=Math.hypot(dx,dz);
      // Thumb stick and arrow keys mean the actual direction of travel.
-     carSpeed=driveByDirection(car,crashRemaining>0?0:dx,crashRemaining>0?0:dz,carSpeed,dt,fastMode,(x,z)=>cityLife.canDrive(x,z)&&solids.clear(x,z));
+     const turnBlocked=wanted>.12&&!(panamaLife?.trafficClear(car.x,car.z,Math.atan2(dx,dz))??true);
+     carSpeed=driveByDirection(car,crashRemaining>0||turnBlocked?0:dx,crashRemaining>0||turnBlocked?0:dz,carSpeed,dt,fastMode,(x,z)=>cityLife.canDrive(x,z)&&solids.clear(x,z)&&(panamaLife?.trafficClear(x,z,car.heading)??true));
      if(carSpeed===0&&incoming>8&&wanted>.12)impact(-Math.sin(car.heading),-Math.cos(car.heading),incoming);s.x=car.x;s.z=car.z;avatar.rotation.y=car.heading;
      autosave+=dt;if(autosave>2){save();autosave=0;}
     }
@@ -1051,6 +1074,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
     if(active&&!carDriving&&!mountId&&!ride&&!airborne){const n=groundTravelStep(s.x,s.z,crashX*dt*2,crashZ*dt*2,(x,z)=>solids.clear(x,z)&&!inWater(x,z));s.x=n.x;s.z=n.z;ax=s.x;az=s.z;ay=groundHeight(ax,az)+jumpY;}
    }else{avatar.rotation.x=0;avatar.rotation.z=0;}
    avatar.position.set(ax,ay,az);shadow.position.set(ax,houseSystem?.isInside()?0:height(ax,az)+.05,az);shadow.visible=!renderer.shadowMap.enabled&&!cruising&&!ride&&!swimming&&!inside&&!boating&&!airborne&&!mountId&&!carDriving&&!houseSystem?.isInside();legs.forEach((l,i)=>{l.visible=!swimming;l.rotation.x=scooter.visible?0:carDriving?-.58:mountId?-.65:len>0?Math.sin(step+i*Math.PI)*(skating?.14:.55):0;});rideBalloon.visible=!!ride;rideBalloon.position.set(s.x,flightY,s.z);rideBalloon.rotation.z=motion()?Math.sin(time*1.2)*.035:0;snack.visible=eating>0;snack.position.y=1.45+(motion()?Math.sin(eating*10)*.08:0);snack.scale.setScalar(.55+.45*Math.min(1,eating/2));arms.forEach((arm,i)=>{arm.rotation.x=crashRemaining>0?-1.0:eating>0&&i===1?-1.4:scooter.visible?-.65:carDriving?-.55:len>0&&!mountId?-Math.sin(step+i*Math.PI)*.30:0;});
+   mansionLife?.pose(time);
    rainbow.visible=s.badges.includes('song');picnic.visible=s.badges.includes('picnic');wish.visible=s.badges.includes('beacon');wish.rotation.y=time*.2;pet.visible=false;if(pet.visible){const p=animalStep('pip',petX,petZ,petX+(s.x-1-petX)*Math.min(1,dt*3),petZ+(s.z+1-petZ)*Math.min(1,dt*3));petX=p.x;petZ=p.z;}pet.position.set(petX,inWater(petX,petZ)?-.05:height(petX,petZ)+Math.abs(Math.sin(step))*.1,petZ);pet.rotation.y=avatar.rotation.y;
    const phone=canvas.clientWidth<780;
    if(cruising)desired.set(ax+30,ay+29,az+(phone?58:51));
@@ -1227,7 +1251,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    campaign.update();host.classList.toggle('inside-mansion',!!houseSystem?.current()?.mansion);houseSystem?.presentation(usingClose);houseSystem?.hideOutside();
    for(const [button,words] of buttonUpdates)paintButton(button,words);buttonUpdates.clear();
   }
-  return {update,playerPosition:()=>({x:s.x,y:avatar.position.y,z:s.z}),dispose(){roadRewards?.dispose();scene.remove(jet);regionalScenery.dispose();detailedDistricts.dispose();hospital.dispose();scene.remove(festival);panamaLife?.dispose();panamaLife=null;builderSystem?.dispose();builderSystem=null;estateWorld?.dispose();estateWorld=null;regionWorld?.dispose();regionWorld=null;workshop?.dispose();workshop=null;volcanoStatus.remove();colonLife?.dispose();colonLife=null;cruiseLife?.dispose();cruiseLife=null;cityLife?.dispose();cityLife=null;mansionLife?.dispose();mansionLife=null;houseSystem?.dispose();houseSystem=null;friendSystem?.dispose();friendSystem=null;wildLife=null;realms.dispose();journey.dispose();life.dispose();story.dispose();canvas.removeEventListener('pointerdown',lookDown);canvas.removeEventListener('pointermove',lookMove);canvas.removeEventListener('pointerup',lookUp);canvas.removeEventListener('pointercancel',lookUp);canvas.removeEventListener('lostpointercapture',lookUp);control=null;}};
+  return {update,playerPosition:()=>({x:s.x,y:avatar.position.y,z:s.z}),dispose(){roadRewards?.dispose();scene.remove(jet);regionalScenery?.dispose();detailedDistricts?.dispose();hospital.dispose();scene.remove(festival);panamaLife?.dispose();panamaLife=null;builderSystem?.dispose();builderSystem=null;estateWorld?.dispose();estateWorld=null;regionWorld?.dispose();regionWorld=null;workshop?.dispose();workshop=null;volcanoStatus.remove();colonLife?.dispose();colonLife=null;cruiseLife?.dispose();cruiseLife=null;cityLife?.dispose();cityLife=null;mansionLife?.dispose();mansionLife=null;houseSystem?.dispose();houseSystem=null;friendSystem?.dispose();friendSystem=null;wildLife=null;realms.dispose();journey.dispose();life.dispose();story.dispose();canvas.removeEventListener('pointerdown',lookDown);canvas.removeEventListener('pointermove',lookMove);canvas.removeEventListener('pointerup',lookUp);canvas.removeEventListener('pointercancel',lookUp);canvas.removeEventListener('lostpointercapture',lookUp);control=null;}};
  }
  function dispose(){if(disposed)return;joy.carEngine?.(0,false);hornButton.remove();cameraButton.remove();host.classList.remove('close-camera-view');campaign.dispose();adventureMap.dispose();host.classList.remove('inside-lighthouse','is-swimming','shark-nearby');joy.boat?.(false);disposed=true;joystickControl.dispose();generation++;clearTimeout(startTimer);clearTimeout(recoveryTimer);canvas.removeEventListener('webglcontextlost',contextLost);canvas.removeEventListener('webglcontextrestored',contextRestored);save();engine?.dispose();engine=null;document.removeEventListener('keydown',keydown);document.removeEventListener('keyup',keyup);window.removeEventListener('blur',blur);document.removeEventListener('visibilitychange',blur);window.removeEventListener('pointerup',releaseDirection);window.removeEventListener('pointercancel',releaseDirection);window.removeEventListener('pagehide',blur);blur();}
  return {dispose};

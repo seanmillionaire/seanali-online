@@ -1,5 +1,6 @@
-import {DESTINATIONS} from './geography.js?v=224';
-import {roadDistance,HIGHWAY_WIDTH,isletHeight,inWater,worldIslands} from './explore-state.js?v=224';
+import {homeReserved} from './mansion-state.js?v=225';
+import {DESTINATIONS} from './geography.js?v=225';
+import {roadDistance,HIGHWAY_WIDTH,isletHeight,inWater,worldIslands} from './explore-state.js?v=225';
 // Low-density town parcels leave room for streets, yards, views and future
 // player buildings. The planner is shared with forest exclusions and tests.
 export const RURAL_TOWNS=[
@@ -17,7 +18,7 @@ export function ruralParcels(){
   let count=0;
   for(const p of candidates){
    const w=6,d=6.5,radius=Math.hypot(w,d)/2;
-   if(roadDistance(p.x,p.z)<HIGHWAY_WIDTH/2+radius+2||inWater(p.x,p.z))continue;
+   if(homeReserved(p.x,p.z,12)||roadDistance(p.x,p.z)<HIGHWAY_WIDTH/2+radius+2||inWater(p.x,p.z))continue;
    const ys=[[-1,-1],[1,-1],[-1,1],[1,1]].map(([sx,sz])=>isletHeight(p.x+sx*w/2,p.z+sz*d/2));
    if(Math.min(...ys)<.2||Math.max(...ys)-Math.min(...ys)>2.2)continue;
    // Keep the trailhead and mountain path separate from town construction.

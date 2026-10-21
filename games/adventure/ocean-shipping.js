@@ -1,6 +1,6 @@
-import {shipDetails,shipWake} from './ship-details.js?v=224';
-import {marineWater} from './explore-state.js?v=224';
-import {WORLD_BOUNDS} from './geography.js?v=224';
+import {shipDetails,shipWake} from './ship-details.js?v=225';
+import {marineWater} from './explore-state.js?v=225';
+import {WORLD_BOUNDS} from './geography.js?v=225';
 export function shippingPose(r,distance){const a=distance/r.rx;return {x:r.x+Math.cos(a)*r.rx,z:r.z+Math.sin(a)*r.rz,heading:Math.atan2(-Math.sin(a)*r.rx,Math.cos(a)*r.rz)};}
 export function shippingClear(x,z,heading,length,width){return [-length/2,0,length/2].every(f=>[-width/2,0,width/2].every(s=>{const px=x+Math.sin(heading)*f+Math.cos(heading)*s,pz=z+Math.cos(heading)*f-Math.sin(heading)*s;return Math.hypot(px/(WORLD_BOUNDS.x-8),pz/(WORLD_BOUNDS.z-8))<1&&marineWater(px,pz);}));}
 let cached;

@@ -1,8 +1,9 @@
-import {regionalBlocked} from './regional-layout.js?v=224';
-import {HIGHWAY_CURVES,roadDistance,HIGHWAY_WIDTH,worldIslands,inWater,traversable,isletHeight} from './explore-state.js?v=224';
-import {ruralBlocks} from './rural-towns.js?v=224';
-import {estateBlocked} from './estate.js?v=224';
-import {routePose} from './panama-state.js?v=224';
+import {vehicleOverlap} from './vehicle-contact.js?v=225';
+import {regionalBlocked} from './regional-layout.js?v=225';
+import {HIGHWAY_CURVES,roadDistance,HIGHWAY_WIDTH,worldIslands,inWater,traversable,isletHeight} from './explore-state.js?v=225';
+import {ruralBlocks} from './rural-towns.js?v=225';
+import {estateBlocked} from './estate.js?v=225';
+import {routePose} from './panama-state.js?v=225';
 
 // Return along the opposite lane, turning inside the road at each terminus.
 export function trafficLoop(points,lane=1.8){
@@ -54,7 +55,7 @@ export function createWorldAmbience({T,scene,models,make,mat,box,ball,cone,heigh
   const poses=cars.map(c=>routePose(c.route,c.distance));
   cars.forEach((c,i)=>{const p=poses[i],ahead=(q)=>{const dx=q.x-p.x,dz=q.z-p.z;return dx*Math.sin(p.heading)+dz*Math.cos(p.heading)>0&&Math.hypot(dx,dz)<(c.bus?12:9)&&Math.abs(dx*Math.cos(p.heading)-dz*Math.sin(p.heading))<1.8;};
    const blocked=(!indoors&&ahead({x,z}))||poses.some((q,j)=>j!==i&&ahead(q)&&(Math.cos(q.heading-p.heading)>.5||j<i));
-   if(!blocked)c.distance+=dt*c.speed;
+   const next=routePose(c.route,c.distance+dt*c.speed);if(!blocked&&!vehicleOverlap({...next,length:c.bus?4.8:1.8,width:c.bus?1.15:.9},state.world.city.car))c.distance+=dt*c.speed;
    const q=routePose(c.route,c.distance);c.g.position.set(q.x,height(q.x,q.z)+.15,q.z);c.g.rotation.y=q.heading;const dx=Math.sin(q.heading)*1.4,dz=Math.cos(q.heading)*1.4;c.g.rotation.x=-Math.atan2(height(q.x+dx,q.z+dz)-height(q.x-dx,q.z-dz),2.8);
    const detail=c.g.userData.visualDetail;if(detail)detail.visible=Math.hypot(q.x-x,q.z-z)<28;c.g.visible=Math.hypot(q.x-x,q.z-z)<155;
   });

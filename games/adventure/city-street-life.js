@@ -1,9 +1,10 @@
-import {cityX} from './geography.js?v=224';
-import {CITY_BARRIO_PLOTS,cityPropSite} from './city-layout.js?v=224';
-import {TRAFFIC_ROUTES,routePose,trafficAdvance,soundFalloff} from './panama-state.js?v=224';
+import {vehicleOverlap} from './vehicle-contact.js?v=225';
+import {cityX} from './geography.js?v=225';
+import {CITY_BARRIO_PLOTS,cityPropSite} from './city-layout.js?v=225';
+import {TRAFFIC_ROUTES,routePose,trafficAdvance,soundFalloff} from './panama-state.js?v=225';
 export const STREET_VENDORS=[{id:'raspao-centro',x:cityX(129),z:-53,kind:'raspao'},{id:'raspao-barrio',x:cityX(99),z:-18,kind:'raspao'},{id:'mercado-food',x:cityX(150),z:-56,kind:'market'}];
 export const BARRIO_HOMES=[{id:'barrio-casa-1',x:CITY_BARRIO_PLOTS[0].x,z:CITY_BARRIO_PLOTS[0].z,es:'Casa del barrio · Cancha',en:'Barrio home · Football field',icon:'🏘️',theme:'sea'},{id:'barrio-casa-2',x:CITY_BARRIO_PLOTS[1].x,z:CITY_BARRIO_PLOTS[1].z,es:'Casa del barrio · Balcón',en:'Barrio balcony home',icon:'🏘️',theme:'art'}];
-export function createCityStreetLife({T,scene,make,mat,box,ball,cylinder,height,models,joy,surfaces,football=()=>null,npcKick=()=>{}}){
+export function createCityStreetLife({state,T,scene,make,mat,box,ball,cylinder,height,models,joy,surfaces,football=()=>null,npcKick=()=>{}}){
  const root=new T.Group();root.name='Panama City moving traffic and barrio street life';scene.add(root);const {white,dark,blue,red,yellow,glass,green}=models.colors;
  const piece=(m,x,y,z,w,h,d,parent=root)=>make(box,m,x,y,z,w,h,d,parent);
  const vehicles=[];for(let i=0;i<13;i++){const bus=i>=10,police=i===9,taxi=i<7,route=TRAFFIC_ROUTES[bus?(i-10)%3:i%3],g=bus?models.bus(root):models.sedan(root,police,taxi);vehicles.push({g,bus,police,taxi,route,distance:(i%7)*28+i*9,speed:bus?9:police?5.5:taxi?5.3:4.7});}
@@ -23,7 +24,7 @@ export function createCityStreetLife({T,scene,make,mat,box,ball,cylinder,height,
  const children=[],spectators=[];for(let i=0;i<6;i++){const p=models.person(root,cityX(115)+i*1.4,height(cityX(115)+i*1.4,-23),-23,i);p.g.scale.setScalar(.67);children.push(p);}for(let i=0;i<6;i++){const p=models.person(root,i<3?cityX(109):cityX(131),height(i<3?cityX(109):cityX(131),-26+(i%3)*3),-26+(i%3)*3,i);spectators.push(p);}
  let clock=0,beat=0,hornAt=0,sirenAt=8,kickAt=0;function update(dt,active,{x,z,indoors=false}={}){root.visible=!indoors;if(!active||indoors)return;clock+=dt;
   const nearCity=Math.hypot(x-cityX(120),z+(50))<170;if(!nearCity)return;
-  for(const car of vehicles){car.distance=trafficAdvance(car,vehicles,clock,dt);const p=routePose(car.route,car.distance);car.g.position.set(p.x,height(p.x,p.z)+.08,p.z);car.g.rotation.y=p.heading;const nearby=Math.hypot(x-p.x,z-p.z);car.g.visible=nearby<105;if(car.police)car.g.userData.emergencyLights?.forEach((m,i)=>m.emissiveIntensity=(Math.floor(clock*7)%2===i%2)?3:.08);if(car.g.userData.visualDetail)car.g.userData.visualDetail.visible=car.police||nearby<30;}
+  for(const car of vehicles){const advance=trafficAdvance(car,vehicles,clock,dt),candidate=routePose(car.route,advance);if(!vehicleOverlap({...candidate,length:car.bus?4.8:1.8,width:car.bus?1.15:.9},state.world.city.car))car.distance=advance;const p=routePose(car.route,car.distance);car.g.position.set(p.x,height(p.x,p.z)+.08,p.z);car.g.rotation.y=p.heading;const nearby=Math.hypot(x-p.x,z-p.z);car.g.visible=nearby<105;if(car.police)car.g.userData.emergencyLights?.forEach((m,i)=>m.emissiveIntensity=(Math.floor(clock*7)%2===i%2)?3:.08);if(car.g.userData.visualDetail)car.g.userData.visualDetail.visible=car.police||nearby<30;}
   for(const s of signals)s.mesh.material.emissiveIntensity=((Math.floor(clock/7)%2===0)===(s.side>0))?.9:.03;
   if(clock>sirenAt){const patrol=vehicles.find(v=>v.police);joy.recordedSound?.('siren',{volume:soundFalloff(x,z,patrol.g.position,55)*.45,duration:7,offset:10});sirenAt=clock+22;}
   people.forEach((p,i)=>{const a=clock*(p.police?.2:.35)+i,px=p.home.x+Math.sin(a)*.55,pz=p.home.z+Math.cos(a)*.55;p.g.position.set(px,height(px,pz),pz);p.g.rotation.y=Math.atan2(Math.cos(a)*.55,-Math.sin(a)*.55);p.animate?.(clock*5,true);p.legs.forEach((l,j)=>l.rotation.x=Math.sin(clock*5+j*Math.PI)*.35);if(p.police)p.arms[0].rotation.z=.7+Math.sin(clock*2)*.25;});

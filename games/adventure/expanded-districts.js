@@ -1,9 +1,9 @@
-import {cityX} from './geography.js?v=224';
+import {cityX} from './geography.js?v=225';
 // Space-first city districts beyond the original Casco Viejo loop.
 // All plots are deterministic, stay on dry land and leave existing gameplay
 // landmarks, highways and saved building locations untouched.
-import {mainlandContains,canalWater,gatunWater} from './geography.js?v=224';
-import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=224';
+import {mainlandContains,canalWater,gatunWater} from './geography.js?v=225';
+import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=225';
 
 export const EXPANDED_DISTRICTS=[
  {id:'panama-east',name:'Panama City · modern eastern neighborhoods',

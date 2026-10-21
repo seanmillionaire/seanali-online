@@ -618,7 +618,7 @@ body[data-scene="explore"] .city-guide-card .discover-place{
  display:flex;align-items:center;justify-content:center;gap:10px;
  min-height:78px;width:min(100%,420px);
  padding:17px 24px;font-size:23px;line-height:1.2;font-weight:900;
- border-radius:20px;border:3px solid #fff5d7;
+ background:#ffdf55;color:#173d37;opacity:1;filter:none;border-radius:20px;border:3px solid #fffdf2;
  box-shadow:0 6px 0 #a7803e,0 10px 35px #f3d58944;
 }
 .world-entry .primary.enter-world:before{display:none}
@@ -808,3 +808,12 @@ body[data-scene="explore"] .animal-ride-quick:not([hidden]){
 .explore-world .journey-peek{display:none!important}
 
 .car-horn{position:absolute;left:24px;top:215px;z-index:12;min-height:48px;padding:10px 18px;border-radius:12px;background:#fff9e8;color:#193e40;border:1px solid #b8c3b8;font-weight:700}.car-horn[hidden]{display:none!important}
+/* Dream home: one activity at a time, large visual work surfaces. */
+.mansion-panel .home-choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.mansion-panel .home-choice-grid button{margin:0;min-height:76px;background:#fff0f6;border-color:#dcb6cd}.home-cooking-art{display:grid;place-items:center;min-height:104px;background:linear-gradient(145deg,#fff0dc,#f9daee);border-radius:18px;font-size:52px;margin:12px 0}.home-step{color:#78536a;font-weight:700}.home-prep-dots{letter-spacing:.4em;color:#b86693;font-size:26px}.mansion-panel progress{display:block;width:100%;height:24px;accent-color:#b86693}.home-outfit-preview{display:grid;place-items:center;min-height:140px;background:var(--outfit);border:8px solid #fff;border-radius:24px;box-shadow:0 2px 12px #81526c25;font-size:86px}.home-arcade-canvas{display:block;width:min(100%,300px);height:auto;margin:auto;border:4px solid #c499b9;border-radius:14px;touch-action:none;outline-offset:3px}.mansion-panel .home-arcade-controls{display:flex;flex-wrap:wrap;gap:6px}.mansion-panel .home-arcade-controls button{flex:1;min-width:52px;margin:3px 0;padding:9px 7px}.mansion-panel:has(.home-arcade-canvas) h2{font-size:24px;margin-bottom:8px}.mansion-panel:has(.home-arcade-canvas) p{margin:5px 0}.mansion-panel:has(.home-arcade-canvas) .mansion-eyebrow{display:none}@media(max-height:700px){.home-arcade-canvas{width:210px}.home-cooking-art{min-height:76px;font-size:42px}.home-outfit-preview{min-height:100px;font-size:64px}.mansion-panel h2{font-size:24px;margin-bottom:10px}}@media(max-width:360px){.mansion-panel .home-choice-grid{gap:7px}.mansion-panel .home-choice-grid button{font-size:15px;padding:9px}}
+.inside-mansion .mansion-launch{top:90px;bottom:auto;left:16px}@media(max-width:780px){.inside-mansion .mansion-launch{top:151px;left:12px;max-width:145px}}@media(max-height:520px) and (orientation:landscape){.inside-mansion .mansion-launch{top:90px;left:12px}}
+
+/* The first screen is immediate; the 3D world starts only after Play. */
+.world-entry:before{opacity:1;background:linear-gradient(0deg,#103943bb,#196c7522),url('./island.webp') center/cover}
+.world-entry .primary.enter-world{background:#ffdf55!important;color:#173d37!important;opacity:1!important;filter:none!important;animation:none;box-shadow:0 6px 0 #b68a20,0 8px 30px #ffdf5566}
+
+.street-food-film{display:block;width:100%;max-width:400px;height:auto;aspect-ratio:16/11;border-radius:12px;margin:12px auto}.street-food-film~progress{accent-color:#287966}.street-food-film~button{min-height:44px}

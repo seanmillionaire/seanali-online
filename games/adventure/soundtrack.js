@@ -52,6 +52,6 @@ export function createSoundtrack({enabled,volume,environment,createAudio=()=>new
  }
  function sync(){if(!running()){serial++;for(const p of [...players]){if(p!==current)release(p);else p.audio.pause();}return;}if(!current&&!players.some(p=>p.pending))start(rotations[mood][0]);else tick();}
  function unlock(){unlocked=true;if(timer===null)timer=setInterval(tick,100);sync();}
- function update(info){if(typeof info==='object')nightLevel=info.night?.72:1;const next=typeof info==='string'?info:musicRegion(info);if(!rotations[next])return;if(next!==candidate){candidate=next;candidateAt=now();}if(next!==mood&&now()-candidateAt>2&&now()-lastChange>12){mood=next;sequence=0;if(current?.key!==rotations[mood][0])start(rotations[mood][0]);}}
+ function update(info){if(typeof info==='object')nightLevel=info.night?.72:1;const next=typeof info==='string'?info:musicRegion(info);if(!rotations[next])return;if(next!==candidate){candidate=next;candidateAt=now();}if(next!==mood&&now()-candidateAt>10){mood=next;sequence=-1;}}
  return {unlock,sync,update,duck(seconds=4){duckUntil=now()+seconds;},next(){if(!unlocked)unlock();else start(rotations[mood][++sequence%rotations[mood].length]);},get status(){return {mood,region:MUSIC_LABELS[mood]||'',title:current?TRACKS[current.key].title:'',playing:!!current&&!current.audio.paused,players:players.length,time:current?.audio.currentTime||0,readyState:current?.audio.readyState||0,error};},destroy(){destroyed=true;serial++;clearInterval(timer);for(const p of [...players])release(p);current=null;}};
 }

@@ -1,5 +1,5 @@
-import {sanBlasLayout} from './san-blas-layout.js?v=224';
-import {cityX} from './geography.js?v=224';
+import {sanBlasLayout} from './san-blas-layout.js?v=225';
+import {cityX} from './geography.js?v=225';
 // Shared geography, traffic paths and durable food progression.
 export const SAN_BLAS_ISLANDS=sanBlasLayout(cityX(0));
 export const PANAMA_FOODS={fish:{icon:'🐟',en:'Fresh fish',es:'Pescado fresco'},plantain:{icon:'🍌',en:'Green plantain',es:'Plátano verde'},rice:{icon:'🍚',en:'Rice',es:'Arroz'},patacones:{icon:'🍌',en:'Patacones',es:'Patacones'},fishPlate:{icon:'🍽️',en:'Fried fish with patacones',es:'Pescado frito con patacones'},coconutRice:{icon:'🥥',en:'Coconut rice',es:'Arroz con coco'},raspao:{icon:'🍧',en:'Raspao',es:'Raspao'}};
