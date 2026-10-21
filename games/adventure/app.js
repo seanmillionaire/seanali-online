@@ -1,9 +1,10 @@
-import {earnCoins,syncWallet} from './explore-state.js?v=188';
-import {createExplore} from './explore.js?v=188';
-import {createEntrance} from './entrance.js?v=188';
-import {createDelight,burst,livingWorld,foxPortrait} from './delight.js?v=188';
-import {regions,quests,challenges,ui,text} from './content.js?v=188';
-import {SAVE_KEY,fresh,normalize,completedCount,lightCount,totalStars,unlocked,award} from './state.js?v=188';
+import {adventureIcon} from './adventure-icons.js?v=211';
+import {earnCoins,syncWallet} from './explore-state.js?v=211';
+import {createExplore} from './explore.js?v=211';
+import {createEntrance} from './entrance.js?v=211';
+import {createDelight,burst,livingWorld,foxPortrait} from './delight.js?v=211';
+import {regions,quests,challenges,ui,text} from './content.js?v=211';
+import {SAVE_KEY,fresh,normalize,completedCount,lightCount,totalStars,unlocked,award} from './state.js?v=211';
 const $=s=>document.querySelector(s),app=$('#app'),dialog=$('#dialog');
 let storageOK=true,state;try{state=normalize(JSON.parse(localStorage.getItem(SAVE_KEY)));if(!localStorage.getItem(SAVE_KEY)){state.lang=localStorage.getItem('seanGameLang')==='en'?'en':'es';}}catch{state=fresh();}
 let islandQuestId=null,islandWelcome=null,introPending=false;
@@ -30,17 +31,17 @@ function header(){const h=el('header','topbar'),brand=el('div','brand');brand.in
 function render(){clean();document.documentElement.lang=state.lang;document.body.classList.toggle('calm-motion',!state.motion);const atEntrance=screen==='entry'||!state.started;document.body.dataset.scene=atEntrance?'entry':screen;joy.setScene(atEntrance?'welcome':screen);app.replaceChildren(header());if(atEntrance)welcome();else if(screen==='explore')exploreView();else if(screen==='islandQuest'&&islandQuestId){exploreView();questView();}else if(screen==='quest'&&state.active)questView();else if(screen==='ending')ending();else worldView();window.scrollTo({top:0,behavior:'instant'});}
 function welcome(){
  const returning=state.started,section=el('main','welcome world-entry'),copy=el('div','welcome-copy');
- copy.append(el('div','eyebrow',returning?text('Panamá te estaba esperando','Panama has been waiting'):text('Tu gran aventura comienza en Panamá','Your Panama adventure begins here')));
- const h=el('h1','','🇵🇦 '+t('title'));h.append(el('em','',t('subtitle')));copy.append(h,el('p','',returning?text('Angelique, Pip te espera en Playa Gorgona. ¡Tus amigos están por todo Panamá!','Angelique, Pip is waiting in Playa Gorgona. Your friends are all over Panama!'):text('Desde Gorgona hasta el Volcán Barú: descubre un Panamá lleno de aventuras.','From Gorgona to Volcán Barú: discover a Panama full of adventures.')));
+ copy.append(el('div','eyebrow',returning?text('Continúa tu expedición','Continue your expedition'):text('Un país por descubrir','A country to discover')));
+ const h=el('h1','','🇵🇦 '+t('title'));h.append(el('em','',t('subtitle')));copy.append(h,el('p','',returning?text('Tu casa soñada te espera. Compra o construye una mansión, vive con tu perro y explora Panamá.','Your dream home awaits. Buy or build a mansion, live with your dog, and explore Panama.'):text('Elige un terreno, crea tu hogar y vive tu aventura con Angelique. Cocina, juega, conduce y explora Panamá.','Choose a plot, create your home, and live your adventure with Angelique. Cook, play, drive, and explore Panama.')));
  const features=el('div','welcome-feature-grid');
  for(const [icon,es,en]of [['🌋','Explora','Explore'],['🚙','Conduce','Drive'],['🛠️','Construye','Build'],['🐬','Amigos','Friends']]){
   const chip=el('div','welcome-feature');
-  chip.append(el('span','welcome-feature-icon',icon),el('span','welcome-feature-label',text(es,en)));
+  const glyph=el('span','welcome-feature-icon');glyph.innerHTML=adventureIcon(icon);chip.append(glyph,el('span','welcome-feature-label',text(es,en)));
   features.append(chip);
  }
  copy.append(features);
  const enter=button('🎮 '+tr(returning?text('Volver a jugar','Keep Playing'):text('¡Vamos a jugar!','Let’s Play!')),'primary enter-world',arrive);
- copy.append(enter,el('p','welcome-foot',text('Un toque. Y ya estás en otro mundo.','One tap. A whole new world.')));
+ copy.append(enter,el('p','welcome-foot',text('Mundo abierto · Progreso guardado en este dispositivo','Open world · Progress saved on this device')));
  const guide=el('div','arrival-guide');guide.append(el('div','arrival-turtle'),el('span','',text('¡Por aquí!','This way!')));section.append(copy,guide);
  const travel=el('div','arrival-caption');travel.hidden=true;travel.setAttribute('role','status');travel.append(el('span','arrival-orbit','🇵🇦'),el('p','',text('¡Llegamos a Playa Gorgona!','Playa Gorgona is just ahead!')));section.append(travel);
  const skip=button(text('Saltar llegada','Skip arrival'),'skip-arrival',()=>entrance?.skip());skip.hidden=true;section.append(skip);app.append(section);

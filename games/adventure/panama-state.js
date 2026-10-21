@@ -1,6 +1,7 @@
-import {cityX} from './geography.js?v=188';
+import {sanBlasLayout} from './san-blas-layout.js?v=211';
+import {cityX} from './geography.js?v=211';
 // Shared geography, traffic paths and durable food progression.
-export const SAN_BLAS_ISLANDS=Array.from({length:28},(_,i)=>{const col=i%7,row=Math.floor(i/7),x=cityX(246)+col*14+(row%2)*2,z=-277+row*21+(col%2)*3;return {id:'guna-'+i,x,z,rx:3.5+(i%3)*.65,rz:2.9+(i%4)*.4,h:.65,guna:true,community:i%7===0,ox:x,oz:z,spread:1,en:'San Blas cay '+(i+1),es:'Cayo de San Blas '+(i+1)};}).filter(p=>Math.hypot(p.x-cityX(290),p.z+245)>17);
+export const SAN_BLAS_ISLANDS=sanBlasLayout(cityX(0));
 export const PANAMA_FOODS={fish:{icon:'🐟',en:'Fresh fish',es:'Pescado fresco'},plantain:{icon:'🍌',en:'Green plantain',es:'Plátano verde'},rice:{icon:'🍚',en:'Rice',es:'Arroz'},patacones:{icon:'🍌',en:'Patacones',es:'Patacones'},fishPlate:{icon:'🍽️',en:'Fried fish with patacones',es:'Pescado frito con patacones'},coconutRice:{icon:'🥥',en:'Coconut rice',es:'Arroz con coco'},raspao:{icon:'🍧',en:'Raspao',es:'Raspao'}};
 export const PANAMA_RECIPES={patacones:{plantain:1},fishPlate:{fish:1,patacones:1},coconutRice:{rice:1,coconut:1}};
 const count=n=>Number.isFinite(n)?Math.max(0,Math.min(9999,Math.floor(n))):0;

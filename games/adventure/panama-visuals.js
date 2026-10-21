@@ -1,4 +1,4 @@
-import {CITY_BARRIO_PLOTS} from './city-layout.js?v=188';
+import {CITY_BARRIO_PLOTS} from './city-layout.js?v=211';
 // Panama street art direction: shared materials and GPU batches for small details.
 export function createPanamaVisuals({T,scene,make,mat,geometry,box,ball,cylinder,height,surfaces,models,renderer,sun}){
  const root=new T.Group();root.name='Panama architectural craftsmanship';scene.add(root);
@@ -22,5 +22,5 @@ export function createPanamaVisuals({T,scene,make,mat,geometry,box,ball,cylinder
  // Shared soft contact shade works on mobile where real shadow maps are disabled.
  const canvas=document.createElement('canvas');canvas.width=canvas.height=64;const ctx=canvas.getContext('2d'),gradient=ctx.createRadialGradient(32,32,3,32,32,31);gradient.addColorStop(0,'rgba(27,42,36,.35)');gradient.addColorStop(1,'rgba(27,42,36,0)');ctx.fillStyle=gradient;ctx.fillRect(0,0,64,64);const shade=new T.CanvasTexture(canvas);textures.push(shade);const shadeMat=mat('#ffffff',{map:shade,transparent:true,depthWrite:false,roughness:1,polygonOffset:true,polygonOffsetFactor:-1});const plane=geometry(new T.PlaneGeometry(1,1));for(const b of buildings){const shadow=make(plane,shadeMat,b.x,height(b.x,b.z)+.19,b.z,b.w+2,b.d+2,1,root);shadow.rotation.x=-Math.PI/2;shadow.castShadow=false;}
  for(const [geo,materials]of batches)for(const [material,items]of materials){const mesh=new T.InstancedMesh(geo,material,items.length),dummy=new T.Object3D();mesh.name='Batched Panama facade details';mesh.castShadow=false;mesh.receiveShadow=true;items.forEach(([x,y,z,w,h,d],i)=>{dummy.position.set(x,y,z);dummy.scale.set(w,h,d);dummy.updateMatrix();mesh.setMatrixAt(i,dummy.matrix);});mesh.instanceMatrix.needsUpdate=true;root.add(mesh);}
- let lastX=Infinity,lastZ=Infinity;scene.add(sun.target);return {update(x,z,indoors){root.visible=!indoors;if(renderer.shadowMap.enabled&&Math.hypot(x-lastX,z-lastZ)>7){lastX=x;lastZ=z;sun.target.position.set(x,0,z);sun.position.set(x-22,38,z+18);renderer.shadowMap.needsUpdate=true;}},dispose(){scene.remove(root);textures.forEach(t=>t.dispose());}};
+ return {update(x,z,indoors){root.visible=!indoors;},dispose(){scene.remove(root);textures.forEach(t=>t.dispose());}};
 }

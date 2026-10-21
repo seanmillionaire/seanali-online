@@ -19,7 +19,7 @@ const assert=require('node:assert/strict');
  const b=roadRibbon(Array.from({length:21},(_,i)=>[0,i]),.14,()=>0,{dash:2,gap:3});
  const area=d=>{let result=0;for(let i=0;i<d.indices.length;i+=3){const q=d.indices.slice(i,i+3).map(j=>[d.positions[j*3],d.positions[j*3+2]]);result+=Math.abs((q[1][0]-q[0][0])*(q[2][1]-q[0][1])-(q[1][1]-q[0][1])*(q[2][0]-q[0][0]))/2;}return result;};
  assert(Math.abs(area(a)-area(b))<1e-8,'dash coverage independent of sample density');
- const ring=roadRibbon([[0,0],[10,0],[10,10],[0,10],[0,0]],2,()=>0);assert.deepEqual(ring.positions.slice(0,6),ring.positions.slice(-6),'closed ring seam shares identical edge vertices');
+ const ring=roadRibbon([[0,0],[10,0],[10,10],[0,10],[0,0]],2,()=>0);assert.deepEqual(ring.positions.slice(0,15),ring.positions.slice(-15),'closed ring seam shares identical edge vertices');
  const grid=cityStreetSurface([{x:0,z:0,w:2,d:10},{x:0,z:0,w:10,d:2}],()=>0);
  assert.equal(area(grid),36,'intersection has exactly one pavement layer');
  for(let i=0;i<grid.indices.length;i+=3){const [a,b,c]=grid.indices.slice(i,i+3).map(j=>[grid.positions[j*3],grid.positions[j*3+2]]);assert((b[1]-a[1])*(c[0]-a[0])-(b[0]-a[0])*(c[1]-a[1])>0,'upward winding');}

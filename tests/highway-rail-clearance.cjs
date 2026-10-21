@@ -5,7 +5,7 @@ const assert=require('node:assert/strict');
  const rails=planHighwayGuardrails();
  assert(rails.length>50,'retain relevant remote highway shoulder rails');
  assert(rails.some(p=>p.road==='cityToBaru')&&rails.some(p=>p.road==='cityToColon'));
- for(const [x,z] of [[32,-80],[85,-26],[-300,-32]])
+ for(const [x,z] of [[64,-19],[-300,-32]])
   assert(HIGHWAY_JUNCTIONS.some(p=>p.x===x&&p.z===z),'known highway turnoff protected');
  for(const p of rails){
   assert(['cityToBaru','cityToColon'].includes(p.road));

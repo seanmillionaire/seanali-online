@@ -1,0 +1,9 @@
+import assert from 'node:assert/strict';
+import * as T from '../games/adventure/vendor/three.module.min.js';
+import {botanicalGeometry} from '../games/adventure/botanical-geometry.js';
+import {butterflyHabitats,butterflyPose,createButterflyLife} from '../games/adventure/butterfly-life.js';
+import {inWater,isletHeight} from '../games/adventure/explore-state.js';
+for(const kind of ['natural','palm','pine','banana','fern'])for(const distant of [false,true]){const g=botanicalGeometry(T,g=>g,kind,distant);assert([...g.attributes.position.array].every(Number.isFinite));assert(g.attributes.position.count>100);g.computeBoundingSphere();assert(g.boundingSphere.radius<15);assert([...g.attributes.color.array].every(v=>v>=0&&v<=1));g.dispose();}
+const habitats=butterflyHabitats();assert(habitats.length>35&&habitats.length<=78);assert(new Set(habitats.map(h=>h.color)).size===4);
+for(const h of habitats)for(let t=0;t<150;t+=.1){const p=butterflyPose(h,t),q=butterflyPose(h,t+.001);assert(!inWater(p.x,p.z));assert(p.y>isletHeight(p.x,p.z));assert(Math.hypot(p.x-h.x,p.z-h.z)<3.5);assert(Math.hypot(q.x-p.x,q.y-p.y,q.z-p.z)<.03,'continuous flight and landing');}
+const scene=new T.Scene(),life=createButterflyLife({T,scene,geometry:g=>g,mat:(color,o)=>new T.MeshStandardMaterial({color,...o}),ball:new T.SphereGeometry(1,6,4)});assert.equal(life.root.children.length,3);life.update(.05,true,habitats[0]);const start=Array.from(life.root.children[0].instanceMatrix.array);life.update(.05,true,habitats[0]);assert.notDeepEqual(Array.from(life.root.children[0].instanceMatrix.array),start);const time=life.clock;life.update(.1,false,habitats[0]);assert.equal(life.clock,time);life.update(.1,true,{indoors:true});assert.equal(life.clock,time);assert(!life.root.visible);life.dispose();assert(!scene.children.includes(life.root));console.log('PASS dense foliage geometry, '+habitats.length+' butterfly habitats, dry-land flight, continuous motion, pause, indoors and cleanup');

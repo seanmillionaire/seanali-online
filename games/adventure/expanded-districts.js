@@ -1,9 +1,9 @@
-import {cityX} from './geography.js?v=188';
+import {cityX} from './geography.js?v=211';
 // Space-first city districts beyond the original Casco Viejo loop.
 // All plots are deterministic, stay on dry land and leave existing gameplay
 // landmarks, highways and saved building locations untouched.
-import {mainlandContains,canalWater,gatunWater} from './geography.js?v=188';
-import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=188';
+import {mainlandContains,canalWater,gatunWater} from './geography.js?v=211';
+import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=211';
 
 export const EXPANDED_DISTRICTS=[
  {id:'panama-east',name:'Panama City · modern eastern neighborhoods',
@@ -60,14 +60,15 @@ export function districtDriveable(x,z){
 export function districtNeighborhood(x,z){
  return EXPANDED_DISTRICTS.find(a=>within(a,x,z)&&districtGround(x,z))?.id||null;
 }
-export function createExtendedDistricts({T,scene,make,mat,box,cylinder,height}){
+export function createExtendedDistricts({T,scene,make,mat,box,cylinder,height,surfaces={}}){
  const group=new T.Group();
  group.name='Panama detailed districts · eastern skyline, civic plazas and Colón waterfront';
  scene.add(group);
  const buildings=DISTRICT_PLOTS,counts={city:0,colon:0,parks:0};
  const walls=[
   '#e4c6a8','#d4dfd7','#e8d4ba','#b1c5cc','#dfb4a9','#eee2c7'
- ].map(c=>mat(c,{roughness:.93}));
+ ].map(c=>mat(c,{map:surfaces.plaster,roughness:.93}));
+ const colonWalls=['#d6b267','#79aaa8','#c8d0b7','#d8967c','#e5dcc1','#a8bca4'].map(c=>mat(c,{map:surfaces.plaster,roughness:.96}));
  const glass=mat('#8eb7c1',{roughness:.29,metalness:.14}),
   reflective=mat('#5e98b6',{roughness:.22,metalness:.24}),
   charcoal=mat('#383f45',{roughness:.9}),
@@ -117,7 +118,7 @@ export function createExtendedDistricts({T,scene,make,mat,box,cylinder,height}){
  }
  const seed=(i,j)=>((i*29+j*17+13)%17)/17;
  function frontage(b,y){
-  const wall=walls[b.style],front=b.z+b.d/2;
+  const caribbean=b.district!=='panama-east',wall=(caribbean?colonWalls:walls)[b.style],front=b.z+b.d/2;
   boxAt(wall,b.x,y+b.h/2,b.z,b.w,b.h,b.d);
   if(b.landmark){
    // Distinct concrete podium + slim glazed Panama City towers.
@@ -138,6 +139,15 @@ export function createExtendedDistricts({T,scene,make,mat,box,cylinder,height}){
     boxAt(charcoal,wx,wy-.43,front+.96,1.3,.06,.06);
     for(const d of [-.49,0,.49])boxAt(charcoal,wx+d,wy-.58,front+.96,.035,.38,.035);
    }
+  }
+  if(caribbean){
+   // Painted shutters, deep lintels and corrugated roofs suit the port blocks.
+   for(let row=0;row<Math.min(rows,4);row++)for(const sx of [-1,1]){
+    const wx=b.x+sx*Math.min(1.6,b.w*.26),wy=y+2.1+row*2.38;
+    for(let k=0;k<5;k++)boxAt(charcoal,wx,wy-.45+k*.22,front+.23,.74,.038,.08);
+   }
+   for(let k=0;k<12;k++)boxAt(charcoal,b.x-b.w*.46+k*b.w*.084,y+b.h+.36,b.z,.028,.045,b.d+.27);
+   boxAt(pale,b.x,y+.35,front+.10,b.w,.48,.15);
   }
   // Downspouts, awning bands, low railing and roof machinery.
   boxAt(pale,b.x-b.w*.5+.19,y+b.h*.5,front+.14,.17,b.h,.16);

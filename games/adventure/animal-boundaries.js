@@ -1,5 +1,5 @@
-import {WORLD_BOUNDS,freshwaterHabitat} from './geography.js?v=188';
-import {inWater,roadDistance,HIGHWAY_WIDTH,worldIslands} from './explore-state.js?v=188';
+import {WORLD_BOUNDS,freshwaterHabitat} from './geography.js?v=211';
+import {inWater,roadDistance,HIGHWAY_WIDTH,worldIslands} from './explore-state.js?v=211';
 export const waterFriend=id=>id==='dori'||id==='pip';
 // Pip can crawl on beaches; Dori needs water beneath her whole body.
 export function animalClear(id,x,z,radius=1.4){

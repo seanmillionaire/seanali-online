@@ -1,9 +1,9 @@
-import {cityX} from './geography.js?v=188';
-import {ruralBlocks} from './rural-towns.js?v=188';
-import {CITY_SHOP_PLOTS,cityBlocksVehicle} from './city-layout.js?v=188';
-import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=188';
-import {createCityExpansion} from './city-expansion.js?v=188';
-import {districtDriveable,districtVehicleBlocked,districtNeighborhood} from './expanded-districts.js?v=188';
+import {cityX} from './geography.js?v=211';
+import {ruralBlocks} from './rural-towns.js?v=211';
+import {CITY_SHOP_PLOTS,cityBlocksVehicle,cityPropSite} from './city-layout.js?v=211';
+import {roadDistance,HIGHWAY_WIDTH,inWater,traversable} from './explore-state.js?v=211';
+import {createCityExpansion} from './city-expansion.js?v=211';
+import {districtDriveable,districtVehicleBlocked,districtNeighborhood} from './expanded-districts.js?v=211';
 /* Casco Viejo · Ciudad de Panamá — the largest fantasy island: real road grid, drivable mini car,
    walk-in pizzeria, and sixteen persistent 💰 money-bag pickups. */
 export const CITY={x:cityX(120),z:(-50),rx:58,rz:48,restaurant:{x:cityX(120),z:-48}};
@@ -17,6 +17,7 @@ export const MONEY_BAGS=Array.from({length:24},(_,i)=>{
  const a=(i-16+.37)/8*Math.PI*2;
  return {id:'bag-'+i,x:CITY.x+Math.cos(a)*45,z:CITY.z+Math.sin(a)*36};
 });
+export function canDriveOnLand(x,z){return traversable(x,z)&&!inWater(x,z)&&!cityBlocksVehicle(x,z)&&!districtVehicleBlocked(x,z)&&!ruralBlocks(x,z);}
 export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,ball,box,cylinder,cone,surfaces=null,joy,save,refresh,tell}){
  const s=state.world,city=s.city,es=state.lang==='es';
  const group=new T.Group();group.name='Casco Viejo · Panama City buildings and money bags';scene.add(group);
@@ -64,27 +65,29 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
  for(let i=0;i<8;i++){const a=i*Math.PI/4;piece(ball,i%2?pink:roof,Math.sin(a)*.61,1.49,Math.cos(a)*.61,.13,.055,.14,oven);}
  // Real street furniture, street lamps, and palm-lined plazas.
  for(const [ox,oz] of [[-32,-14],[-17,-27],[18,-28],[30,-4],[-30,14],[8,29]]){
-  const x=CITY.x+ox,z=CITY.z+oz,y=height(x,z);
+  const site=cityPropSite(CITY.x+ox,CITY.z+oz,1.15);if(!site)continue;const {x,z}=site,y=height(x,z);
   piece(cylinder,wood,x,y+2,z,.12,4,.12);
   piece(ball,gold,x,y+4.15,z,.48,.48,.48);
   piece(cylinder,asphalt,x,y+.12,z,1.12,.24,1.12);
  }
  // The only drivable car: layered body panels, windows, lights and rolling wheels.
  const car=new T.Group();car.name='Only drivable car — Casco Viejo';scene.add(car);
- const carBlue=mat('#66bada',{metalness:.4,roughness:.31}),
-  carShade=mat('#397f9d',{metalness:.23,roughness:.38}),
+ const carBlue=mat('#47626e',{metalness:.4,roughness:.31}),
+  carShade=mat('#35464e',{metalness:.23,roughness:.38}),
   chrome=mat('#d8d9d0',{metalness:.6,roughness:.24}),
   seat=mat('#875b4f',{roughness:.95}),
   frontLight=mat('#ffefb8',{emissive:'#e8d479',emissiveIntensity:.5});
  if(city.activities?.carWashes>0)carBlue.roughness=.20;
  const wheelRigs=[];
- const rimPolish=mat('#f5f7fc',{metalness:.91,roughness:.12}),rimDark=mat('#252b37',{metalness:.62,roughness:.24}),accent=mat('#e7b8ee',{metalness:.55,roughness:.28}),tailLamp=mat('#f44761',{emissive:'#e32648',emissiveIntensity:.45});
+ const rimPolish=mat('#f5f7fc',{metalness:.91,roughness:.12}),rimDark=mat('#252b37',{metalness:.62,roughness:.24}),accent=mat('#9cabb0',{metalness:.55,roughness:.28}),tailLamp=mat('#f44761',{emissive:'#e32648',emissiveIntensity:.45});
+ const bevelShape=new T.Shape();bevelShape.moveTo(-.46,-.46);bevelShape.lineTo(.46,-.46);bevelShape.lineTo(.46,.46);bevelShape.lineTo(-.46,.46);bevelShape.closePath();
+ const bevelBody=geometry(new T.ExtrudeGeometry(bevelShape,{depth:.92,bevelEnabled:true,bevelThickness:.04,bevelSize:.04,bevelSegments:3,steps:1}));bevelBody.translate(0,0,-.46);
  // Bumper-height frame, distinct hood and raised passenger cabin.
- piece(box,carShade,0,-.05,0,2.16,.41,3.55,car);
- piece(box,carBlue,0,.26,0,2.12,.66,3.52,car);
- piece(box,carBlue,0,.58,1.10,2.03,.26,1.22,car); // bonnet
- piece(box,carBlue,0,.77,-.69,1.8,.81,1.55,car); // cabin
- piece(box,carBlue,0,1.19,-.64,1.87,.13,1.46,car); // roof
+ piece(bevelBody,carShade,0,-.05,0,2.16,.41,3.55,car);
+ piece(bevelBody,carBlue,0,.26,0,2.12,.66,3.52,car);
+ piece(bevelBody,carBlue,0,.58,1.10,2.03,.26,1.22,car); // bonnet
+ piece(bevelBody,carBlue,0,.77,-.69,1.8,.81,1.55,car); // cabin
+ piece(bevelBody,carBlue,0,1.19,-.64,1.87,.13,1.46,car); // roof
  const windscreen=piece(box,glass,0,.86,.26,1.68,.52,.07,car);
  windscreen.rotation.x=-.33;windscreen.castShadow=false;
  const rearGlass=piece(box,glass,0,.81,-1.52,1.63,.46,.07,car);
@@ -164,7 +167,7 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
  function attach(host){if(host){host.append(status,sign);}}
  function isHere(x,z){return Math.hypot((x-CITY.x)/CITY.rx,(z-CITY.z)/CITY.rz)<1.0||districtNeighborhood(x,z)==='panama-east';}
  function nearCar(x,z){return Math.hypot(x-city.car.x,z-city.car.z)<4;}
- function canDrive(x,z){return (Math.hypot((x-CITY.x)/CITY.rx,(z-CITY.z)/CITY.rz)<.91||roadDistance(x,z)<HIGHWAY_WIDTH/2-.7||districtDriveable(x,z))&&!cityBlocksVehicle(x,z)&&!districtVehicleBlocked(x,z)&&!ruralBlocks(x,z);}
+ const canDrive=canDriveOnLand;
  function hitCar(raycaster,x,z){return Math.hypot(x-city.car.x,z-city.car.z)<13&&raycaster.intersectObject(car,true).length>0;}
  function hitBag(raycaster,x,z){
   for(const bag of bags){

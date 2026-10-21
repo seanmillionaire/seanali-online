@@ -1,11 +1,12 @@
-import {cityX,freshwaterHabitat} from './geography.js?v=188';
-import {normalizeTravelMode} from './travel-mode.js?v=188';
-import {DESTINATIONS,WORLD_BOUNDS,mainlandContains,canalWater,gatunWater,migrateGeography,segmentDistance,organicIslandRadius,homeShoreRadius,COLON_OFFSET,COLON_LAYOUT_VERSION,mainlandRelief,GEOGRAPHY_VERSION} from './geography.js?v=188';
-import {SAN_BLAS_ISLANDS,normalizePanama} from './panama-state.js?v=188';
-import {normalizeCampaign} from './campaign-state.js?v=188';
-import {normalizeColon,bridgeDistance,COLON_BRIDGE} from './colon-state.js?v=188';
-import {normalizeCruise,CRUISE_FARE} from './cruise-route.js?v=188';
-import {normalizeEstate,estateCoinCost,ESTATE_PLANS} from './estate.js?v=188';
+import {normalizeMansion} from './mansion-state.js?v=211';
+import {cityX,freshwaterHabitat} from './geography.js?v=211';
+import {normalizeTravelMode} from './travel-mode.js?v=211';
+import {DESTINATIONS,WORLD_BOUNDS,mainlandContains,canalWater,gatunWater,migrateGeography,segmentDistance,organicIslandRadius,homeShoreRadius,COLON_OFFSET,COLON_LAYOUT_VERSION,mainlandRelief,GEOGRAPHY_VERSION} from './geography.js?v=211';
+import {SAN_BLAS_ISLANDS,normalizePanama} from './panama-state.js?v=211';
+import {normalizeCampaign} from './campaign-state.js?v=211';
+import {normalizeColon,bridgeDistance,COLON_BRIDGE} from './colon-state.js?v=211';
+import {normalizeCruise,CRUISE_FARE} from './cruise-route.js?v=211';
+import {normalizeEstate,estateCoinCost,ESTATE_PLANS} from './estate.js?v=211';
 // Exploration is independent of lesson order. Every place is open from the start.
 export const worldIslands=[
  {id:'islet',x:DESTINATIONS.islet.at[0],z:DESTINATIONS.islet.at[1],rx:24.65,rz:20.3,h:2.5,ox:24,oz:-8,spread:3.48,en:'Taboga · Island of Flowers',es:'Isla Taboga · Isla de las Flores'},
@@ -31,14 +32,15 @@ export function remoteAccess(from,to){const p=worldIslands.find(i=>i.vehicleOnly
 // A connected mainland corridor: Panama City → Gorgona → Colón and
 // Gorgona → Volcán → Barú. Offshore island footprints remain separate.
 export const MAINLAND_ROADS={
- cityToColon:[[cityX(77),-61],[cityX(77),-85],[255,-99],[190,-108],[125,-104],[63,-88],[30,-116],[26,-144],[24,-175],[25,-243],[24,-351],[14,-379],[-18,-392],[-47,-389],[-50,-365]],
+ cityToColon:[[cityX(77),-61],[cityX(77),-85],[255,-99],[190,-108],[125,-104],[90,-110],[45,-120],[26,-144],[24,-175],[25,-243],[24,-351],[14,-379],[-18,-392],[-47,-389],[-50,-365]],
  // Intercity traffic bypasses the beach. Turn off onto Gorgona's access road.
- cityToGorgona:[[cityX(105),-35],[cityX(85),-26],[260,-26],[205,-43],[150,-54],[100,-48],[64,-19],[48,-45],[32,-80]],
- gorgonaBeachAccess:[[32,-80],[25,-63],[38,-40],[36,-15],[31,1],[21,1]],
- cityToBaru:[[32,-80],[-30,-60],[-75,-45],[-155,-35],[-240,-42],[-300,-32],[-385,-30],[-400,-70],[-385,-110],[-350,-65-51.8*.925]],
+ cityToGorgona:[[cityX(105),-35],[cityX(85),-26],[260,-26],[205,-43],[150,-54],[100,-48],[64,-19]],
+ gorgonaBeachAccess:[[64,-19],[48,-24],[36,-15],[31,1],[21,1]],
+ cityToBaru:[[64,-19],[48,-20],[24,-25],[-5,-35],[-30,-45],[-75,-45],[-155,-35],[-240,-42],[-300,-32],[-385,-30],[-400,-70],[-385,-110],[-350,-65-51.8*.925]],
+ gorgonaTownStreet:[[31,1],[25,-10],[8,-19],[-22,-20],[-55,-16],[-82,-14]],
  boquete:[[-300,-32],[-290,-50]],
  volcanTownStreet:[[-385,-30],[-385,-8],[-408,-8]],
- boqueteStreet:[[-290,-50],[-265,-50],[-265,-28]],canal:[[100,-48],[66,-65]],
+ boqueteStreet:[[-290,-50],[-265,-50],[-265,-28]],canal:[[325,-26],[325,-17]],
  // Eastern Panama's new neighborhoods, leading outward from downtown.
  panamaEast:[[163,-61],[175,-61],[181,-57],[197,-57],[213,-57],[229,-57],[245,-57]].map(([x,z])=>[cityX(x),z]),
  // Colón is a Caribbean city, not simply the Monkey Island nature park.
@@ -46,6 +48,7 @@ export const MAINLAND_ROADS={
  colonCivic:[[24,-351],[14,-362],[11,-372]]
 };
 export const MAINLAND_STOPS=[
+ {id:'gorgonaTown',x:-55,z:-16,en:'Nueva Gorgona · Town and Beach',es:'Nueva Gorgona · Pueblo y Playa'},
  {id:'pizzaCity',x:cityX(120),z:-50,en:'Panama City',es:'Ciudad de Panamá'},
  {id:'colon',x:-50,z:-365,en:'Colón',es:'Colón'},
  {id:'colonCity',x:-67,z:-374,en:'Colón Waterfront City',es:'Ciudad de Colón · Malecón'},
@@ -247,7 +250,33 @@ function ungradedHeight(x,z){
  return h;
 }
 let gradedRoads,gradeCells;
-export function isletHeight(x,z){
+let bridgeCells;
+export function bridgeDeckHeight(x,z){
+ if(!bridgeCells){
+  const profiles=Object.values(HIGHWAY_CURVES).map(path=>({path,ys:path.map(([x,z])=>canalWater(x,z)?18:0)}));
+  // Propagate gentle approach grades along the connected road graph.
+  for(let pass=0;pass<profiles.length;pass++){
+   const shared=new Map();
+   for(const {path,ys}of profiles)path.forEach((p,i)=>shared.set(p.join(','),Math.max(shared.get(p.join(','))||0,ys[i])));
+   for(const {path,ys}of profiles){
+    path.forEach((p,i)=>ys[i]=shared.get(p.join(',')));
+    for(let i=1;i<path.length;i++)ys[i]=Math.max(ys[i],ys[i-1]-.24*Math.hypot(path[i][0]-path[i-1][0],path[i][1]-path[i-1][1]));
+    for(let i=path.length-2;i>=0;i--)ys[i]=Math.max(ys[i],ys[i+1]-.24*Math.hypot(path[i][0]-path[i+1][0],path[i][1]-path[i+1][1]));
+   }
+  }
+  bridgeCells=new Map();
+  for(const {path,ys}of profiles)for(let i=1;i<path.length;i++){
+   if(Math.max(ys[i-1],ys[i])<=0)continue;const a=path[i-1],b=path[i],q={a,b,ya:ys[i-1],yb:ys[i]};
+   for(let ix=Math.floor((Math.min(a[0],b[0])-8)/16);ix<=Math.floor((Math.max(a[0],b[0])+8)/16);ix++)for(let iz=Math.floor((Math.min(a[1],b[1])-8)/16);iz<=Math.floor((Math.max(a[1],b[1])+8)/16);iz++){const key=ix+','+iz;if(!bridgeCells.has(key))bridgeCells.set(key,[]);bridgeCells.get(key).push(q);}
+  }
+ }
+ let best=HIGHWAY_WIDTH/2+1,deck=0;
+ for(const {a,b,ya,yb}of bridgeCells.get(Math.floor(x/16)+','+Math.floor(z/16))||[]){const dx=b[0]-a[0],dz=b[1]-a[1],t=Math.max(0,Math.min(1,((x-a[0])*dx+(z-a[1])*dz)/(dx*dx+dz*dz||1))),d=Math.hypot(x-a[0]-dx*t,z-a[1]-dz*t);if(d<best){best=d;deck=ya+(yb-ya)*t;}}
+ return deck;
+}
+export function isletHeight(x,z){return Math.max(terrainHeight(x,z),bridgeDeckHeight(x,z));}
+export const navigableWater=(x,z)=>canalWater(x,z)||inWater(x,z);
+export function terrainHeight(x,z){
  const base=ungradedHeight(x,z);
  // Road shoulders must not fill the canal or navigable open water.
  if(base<=0)return base;
@@ -261,8 +290,8 @@ export function isletHeight(x,z){
    for(const {path,ys}of profiles)path.forEach((p,i)=>{const key=p.join(',');shared.set(key,Math.min(shared.get(key)??Infinity,ys[i]));});
    for(const {path,ys}of profiles){
     path.forEach((p,i)=>ys[i]=shared.get(p.join(',')));
-    for(let i=1;i<path.length;i++)ys[i]=Math.min(ys[i],ys[i-1]+.30*Math.hypot(path[i][0]-path[i-1][0],path[i][1]-path[i-1][1]));
-    for(let i=path.length-2;i>=0;i--)ys[i]=Math.min(ys[i],ys[i+1]+.30*Math.hypot(path[i][0]-path[i+1][0],path[i][1]-path[i+1][1]));
+    for(let i=1;i<path.length;i++)ys[i]=Math.min(ys[i],ys[i-1]+.18*Math.hypot(path[i][0]-path[i-1][0],path[i][1]-path[i-1][1]));
+    for(let i=path.length-2;i>=0;i--)ys[i]=Math.min(ys[i],ys[i+1]+.18*Math.hypot(path[i][0]-path[i+1][0],path[i][1]-path[i+1][1]));
    }
   }
   gradedRoads=profiles.flatMap(({path,ys})=>path.slice(1).map((b,i)=>({a:path[i],b,ya:ys[i],yb:ys[i+1]})));
@@ -277,18 +306,23 @@ export function isletHeight(x,z){
    }
   }
  }
- let best=Infinity,grade=base;
+ let best=Infinity,grade=base,gradeWeight=0,gradeTotal=0;
  for(const {a,b,ya,yb} of gradeCells.get(Math.floor(x/16)+','+Math.floor(z/16))||[]){
   if(x<Math.min(a[0],b[0])-10||x>Math.max(a[0],b[0])+10||z<Math.min(a[1],b[1])-10||z>Math.max(a[1],b[1])+10)continue;
   const dx=b[0]-a[0],dz=b[1]-a[1],t=Math.max(0,Math.min(1,((x-a[0])*dx+(z-a[1])*dz)/(dx*dx+dz*dz||1)));
   const d=Math.hypot(x-a[0]-dx*t,z-a[1]-dz*t);
-  if(d<best){best=d;grade=ya+(yb-ya)*t;}
+  if(d<best)best=d;
+  // Blend nearby road profiles through a junction. Choosing only the nearest
+  // branch made the ground jump between different grades at the midline.
+  const weight=Math.exp(-d*d/8);gradeWeight+=weight;gradeTotal+=(ya+(yb-ya)*t)*weight;
  }
+ if(gradeWeight>1e-9)grade=gradeTotal/gradeWeight;
  // Keep a 3m engineering shoulder for the renderer's coarse terrain cells.
  const t=Math.max(0,Math.min(1,(best-HIGHWAY_WIDTH/2-3)/2)),blend=t*t*(3-2*t);
  return grade*(1-blend)+base*blend;
 }
 export const explorePlaces=[
+ {id:'gorgonaTown',x:-55,z:-16,icon:'🏖️',es:'Nueva Gorgona · Pueblo y Playa',en:'Nueva Gorgona · Town and Beach',kind:'mainland'},
  {id:'colonCity',x:-67,z:-374,icon:'🏙️',es:'Ciudad de Colón · Costa Caribe',en:'Colón City · Caribbean Waterfront',kind:'mainland'},
  {id:'colonCivic',x:11,z:-372,icon:'🏘️',es:'Colón · Distrito Cívico y Puerto',en:'Colón · Port and Civic District',kind:'mainland'},
  {id:'panamaEast',x:cityX(214),z:-50,icon:'🏙️',es:'Barrios de Panamá Este',en:'Panama City · Eastern Districts',kind:'mainland'},
@@ -296,12 +330,12 @@ export const explorePlaces=[
  ...worldIslands.slice(1).filter(p=>!p.guna).map(p=>({id:p.id,x:p.x,z:p.z,icon:({wilds:'🍌',coconutCoast:'🥥',sunset:'🌋',crystalCove:'🏝️',pizzaCity:'🍕',colon:'🌧️',monkeyIslet:'🐒'})[p.id],es:p.es,en:p.en,kind:'islet'})),
  {id:'volcanoTrail',...volcanoTrailPoint(0),icon:'🥾',es:'Sendero del Volcán Barú',en:'Volcán Barú Hiking Trail',kind:'volcano'},
  {id:'volcanoSummit',...volcanoTrailPoint(1),icon:'🌋',es:'Mirador de la Cima · Volcán Barú',en:'Volcán Barú Summit Lookout',kind:'volcano'},
- {id:'coveBalloon',x:cityX(290),z:-233,icon:'🎈',es:'Globo de Guna Yala',en:'Guna Yala return balloon',kind:'balloon'},
+ {id:'coveBalloon',x:0,z:53,icon:'🎈',es:'Globo de Guna Yala',en:'Guna Yala return balloon',kind:'balloon'},
  {id:'islet',x:24,z:-8,icon:'🦋',es:'Isla Taboga · Flores',en:'Taboga · Island of Flowers',kind:'islet'},
  {id:'pip',x:4,z:9,icon:'🐢',es:'Pip · Playa Gorgona',en:'Pip · Playa Gorgona',kind:'friend'},
  {id:'mila',x:0,z:-26,icon:'🦜',es:'Mila · Bocas del Toro',en:'Mila · Bocas del Toro',kind:'friend'},
  {id:'ollie',x:-290,z:-50,icon:'🪶',es:'Ollie · Boquete',en:'Ollie · Boquete',kind:'friend'},
- {id:'luna',x:290,z:-243,icon:'🦀',es:'Luna · Guna Yala',en:'Luna · Guna Yala',kind:'friend'},
+ {id:'luna',x:0,z:49.3,icon:'🦀',es:'Luna · Guna Yala',en:'Luna · Guna Yala',kind:'friend'},
  {id:'garden',x:24,z:-9.5,icon:'🌸',es:'Jardín de Flores de Taboga',en:'Taboga Flower Garden',kind:'garden'},
  {id:'beacon',x:-1,z:-2.5,icon:'✦',es:'Faro de la Aventura · Gorgona',en:'Gorgona Adventure Lighthouse',kind:'beacon'},
  {id:'bounce',x:-4,z:6,icon:'🍄',es:'Honguito de Gorgona',en:'Gorgona Bouncy Mushroom',kind:'bounce'},
@@ -323,14 +357,14 @@ export const exploreItems=[
   return {id:'wildGem4-'+i,x:p.x+Math.cos(a)*p.rx*.39,z:p.z+Math.sin(a)*p.rz*.39,
    kind:'islandTreasure',es:'gema de Taboga',en:'Taboga gem'};
  }),
- ...[[276,-262],[303,-261],[310,-234],[268,-233]].map(([x,z],i)=>({id:'sea'+i,x,z,kind:'seaTreasure',es:'tesoro del arrecife de Guna Yala',en:'Guna Yala reef treasure'})),
+ ...[[276,-262],[303,-261],[310,-234],[268,-233]].map(([x,z],i)=>({id:'sea'+i,x:cityX(x),z:z-180,kind:'seaTreasure',es:'tesoro del arrecife de Guna Yala',en:'Guna Yala reef treasure'})),
  ...[[-7,-33],[-3,-35],[3,-35],[7,-33],[0,-38]].map(([x,z],i)=>({id:'fruit'+i,x,z,kind:'fruit',tile:7,es:'plátanos',en:'bananas'})),
  ...[[-48,4],[-45,1],[-39,2],[-36,5],[-49,8]].map(([x,z],i)=>({id:'glow'+i,x,z,kind:'glow',es:'luciérnaga',en:'firefly'})),
  ...[[2,11],[-3,11],[-9,9],[-15,5],[-17,0],[-14,-7],[-7,-11],[2,-11],[10,-9],[15,-4],[17,2],[14,8]].map(([x,z],i)=>({id:'shell'+i,x,z,kind:'shell',es:'concha',en:'shell'}))
 ];
 for(const p of exploreItems){const land={fruit:'wilds',glow:'sunset'}[p.kind];if(land)Object.assign(p,islandPoint(land,p.x,p.z));}
 export function normalizeStory(raw){return Object.fromEntries(Object.entries({shells:3,picnic:4,seed:3,song:4,care:2,light:4}).map(([id,length])=>[id,Number.isInteger(raw?.[id])?Math.max(0,Math.min(length,raw[id])):0]));}
-export function freshExplore(){return {panama:normalizePanama(null),campaign:normalizeCampaign(null),colon:normalizeColon(null),estate:normalizeEstate(null),inventoryVersion:1,foodTotal:{banana:0,coconut:0},worldVersion:3,travelMode:'walk',geographyVersion:GEOGRAPHY_VERSION,sanBlasGeographyVersion:2,colonLayoutVersion:COLON_LAYOUT_VERSION,realms:{found:[],turtle:0,bird:0},journey:{visited:[],meals:0,swim:0,fly:0,rings:[]},x:4,z:10,dayTime:40,story:normalizeStory(null),collected:[],badges:[],hat:0,pet:false,flowers:0,catches:0,pops:0,flight:0,growth:1,food:{coconut:0,banana:0},harvested:{},boat:{x:6.5,z:16,heading:0},regionalProjects:{helped:[]},craft:{built:[],spent:{}},city:{cruise:normalizeCruise(null),bags:[],pizzas:0,car:{x:cityX(114),z:-50,heading:0},activities:{deliveries:[],deliveryActive:false,rallyBest:0,rallyWins:0,soccerGoals:0,soccerShots:0,marketTrades:0,muralColors:0,museum:[],carWashes:0}},friends:{visits:[],completed:[],companion:null}};}
+export function freshExplore(){return {mansion:normalizeMansion(null),panama:normalizePanama(null),campaign:normalizeCampaign(null),colon:normalizeColon(null),estate:normalizeEstate(null),inventoryVersion:1,foodTotal:{banana:0,coconut:0},worldVersion:3,travelMode:'walk',geographyVersion:GEOGRAPHY_VERSION,sanBlasGeographyVersion:4,colonLayoutVersion:COLON_LAYOUT_VERSION,realms:{found:[],turtle:0,bird:0},journey:{visited:[],meals:0,swim:0,fly:0,rings:[]},x:4,z:10,dayTime:40,story:normalizeStory(null),collected:[],badges:[],hat:0,pet:false,flowers:0,catches:0,pops:0,flight:0,growth:1,food:{coconut:0,banana:0},harvested:{},boat:{x:6.5,z:16,heading:0},regionalProjects:{helped:[]},craft:{built:[],spent:{}},city:{cruise:normalizeCruise(null),bags:[],pizzas:0,car:{x:cityX(114),z:-50,heading:0},activities:{deliveries:[],deliveryActive:false,rallyBest:0,rallyWins:0,soccerGoals:0,soccerShots:0,marketTrades:0,muralColors:0,museum:[],carWashes:0}},friends:{visits:[],completed:[],companion:null}};}
 export function normalizeExplore(raw){raw=migrateGeography(raw);const s=freshExplore();if(!raw||typeof raw!=='object')return s;s.travelMode=normalizeTravelMode(raw.travelMode);const rr=raw.realms||{};s.realms={found:[...new Set((Array.isArray(rr.found)?rr.found:[]).filter(id=>/^(reef-[0-5]|pearl-[0-4]|wind-[0-4]|star-[0-4]|seaChest-0|skyLight-0)$/.test(id)))],turtle:Math.max(0,Math.min(5,Math.floor(Number(rr.turtle)||0))),bird:Math.max(0,Math.min(4,Math.floor(Number(rr.bird)||0)))};const j=raw.journey||{};s.journey={visited:[...new Set((Array.isArray(j.visited)?j.visited:[]).filter(id=>worldIslands.some(p=>p.id===id)))],meals:Math.max(0,Math.min(999,Number(j.meals)||0)),swim:Math.max(0,Math.min(100000,Number(j.swim)||0)),fly:Math.max(0,Math.min(100000,Number(j.fly)||0)),rings:[...new Set((Array.isArray(j.rings)?j.rings:[]).filter(id=>/^(swim|fly)-[0-9]+$/.test(id)))]};// Preserve friendship, a chosen companion, and first-time play rewards across saves.
 const FRIEND_IDS=['pip','dori','mila','ollie','luna','kai'],savedFriends=raw.friends||{};
 s.friends={
@@ -377,6 +411,7 @@ s.dayTime=Number.isFinite(raw.dayTime)?((raw.dayTime%240)+240)%240:40;s.story=no
 // the unspent ground stock once; collected IDs remain discovery history.
 if(raw.inventoryVersion!==1)s.food.banana+=Math.max(0,countExplore(s,'fruit')-s.craft.spent.fruit);
 for(const kind of ['banana','coconut'])s.foodTotal[kind]=Math.max(s.food[kind]+(kind==='banana'?s.craft.spent.fruit:0),raw.inventoryVersion===1?inventoryCount(raw.foodTotal?.[kind]):0);
+s.mansion=normalizeMansion(raw.mansion);
 s.estate=normalizeEstate(raw.estate,s.collected.filter(id=>['islandTreasure','seaTreasure','glow'].includes(exploreItems.find(item=>item.id===id)?.kind)).length);
  relocateEstateRoadObstructions(s.estate);
 s.lighthouseOn=typeof raw.lighthouseOn==='boolean'?raw.lighthouseOn:(Array.isArray(raw.badges)&&raw.badges.includes('beacon'));
@@ -412,10 +447,10 @@ export function walkable(x,z){return (isletHeight(x,z)>0||Math.hypot(x/20,z/14)<
 export function onDock(x,z){return x>=3&&x<=5&&z>=11.8&&z<=17.4;}
 export function inWater(x,z){if(onDock(x,z)||isletHeight(x,z)>0)return false;const a=Math.atan2(z/14,x/20);return Math.hypot(x/20,z/14)>homeShoreRadius(a);}
 // Keep the hull clear, including saved boats that overlap a shore or world boundary.
-export function boatClear(x,z){if(Math.hypot(x/(WORLD_BOUNDS.x-1),z/(WORLD_BOUNDS.z-1))>=1||!inWater(x,z))return false;for(let i=0;i<8;i++){const a=i*Math.PI/4;if(!inWater(x+Math.sin(a)*1.1,z+Math.cos(a)*1.1))return false;}return true;}
+export function boatClear(x,z){if(Math.hypot(x/(WORLD_BOUNDS.x-1),z/(WORLD_BOUNDS.z-1))>=1||!navigableWater(x,z))return false;for(let i=0;i<8;i++){const a=i*Math.PI/4;if(!navigableWater(x+Math.sin(a)*1.1,z+Math.cos(a)*1.1))return false;}return true;}
 export function recoverBoat(x,z){if(boatClear(x,z))return {x,z};for(let r=.15;r<=6;r+=.15)for(let i=0;i<32;i++){const a=i*Math.PI/16,nx=x+Math.sin(a)*r,nz=z+Math.cos(a)*r;if(boatClear(nx,nz))return {x:nx,z:nz};}return {x:6.5,z:16};}
-export function boatStep(x,z,dx,dz){const start=recoverBoat(x,z);x=start.x;z=start.z;const steps=Math.max(1,Math.ceil(Math.hypot(dx,dz)/.15));dx/=steps;dz/=steps;
- for(let i=0;i<steps;i++){const candidates=[[dx,dz],...(Math.abs(dx)>=Math.abs(dz)?[[dx,0],[0,dz]]:[[0,dz],[dx,0]])];for(const a of [Math.PI/6,-Math.PI/6,Math.PI/3,-Math.PI/3,Math.PI/2,-Math.PI/2])candidates.push([dx*Math.cos(a)-dz*Math.sin(a),dx*Math.sin(a)+dz*Math.cos(a)]);for(const [mx,mz] of candidates){if(Math.hypot(mx,mz)>.00001&&boatClear(x+mx,z+mz)){x+=mx;z+=mz;break;}}}return {x,z};}
+export function boatStep(x,z,dx,dz,extraClear=()=>true){const start=recoverBoat(x,z);x=start.x;z=start.z;const steps=Math.max(1,Math.ceil(Math.hypot(dx,dz)/.15));dx/=steps;dz/=steps;
+ for(let i=0;i<steps;i++){const candidates=[[dx,dz],...(Math.abs(dx)>=Math.abs(dz)?[[dx,0],[0,dz]]:[[0,dz],[dx,0]])];for(const a of [Math.PI/6,-Math.PI/6,Math.PI/3,-Math.PI/3,Math.PI/2,-Math.PI/2])candidates.push([dx*Math.cos(a)-dz*Math.sin(a),dx*Math.sin(a)+dz*Math.cos(a)]);for(const [mx,mz] of candidates){if(Math.hypot(mx,mz)>.00001&&boatClear(x+mx,z+mz)&&extraClear(x+mx,z+mz)){x+=mx;z+=mz;break;}}}return {x,z};}
 // Sharks steer around shores with clearance for their whole body, not just their center.
 export const marineWater=(x,z)=>inWater(x,z)&&!freshwaterHabitat(x,z);
 export function sharkClearance(x,z){
@@ -497,7 +532,7 @@ export function coinValue(id){if(id==='colon-monkey-play')return 12;if(/^region-
  if(/^city-museum-[0-2]$/.test(id))return 6;
  if(/^craft-build-(sandcastle|butterflyGarden|treehouse|beachCabana|volcanoCamp|coralNursery|pizzaStand)$/.test(id))return 10;if(/^craft-use-(sandcastle|butterflyGarden|treehouse|beachCabana|volcanoCamp|coralNursery|pizzaStand)$/.test(id))return 3;if(/^city-bag-(?:[0-9]|1[0-9]|2[0-3])$/.test(id))return 5;if(id==='city-pizza')return 3;if(/^friend-(pip|dori|mila|ollie|luna|kai)$/.test(id))return 12;if(/^realm-(islands|water|sky)$/.test(id))return 20;if(/^realm-(visit|fruit|butterfly|friends|reef|pearls|turtle|seaChest|wind|stars|bird|skyLight)$/.test(id))return 10;if(/^journey-(explore|food|learn|swim|fly)$/.test(id))return 20;if(/^ring-(swim|fly)-([0-9]|1[0-9])$/.test(id))return 2;if(/^story-(shells|picnic|seed|song|care|light)$/.test(id))return 10;if(/^(harbor|market|jungle|music|garden|summit)-[0-7]$/.test(id))return 10;if(/^flower-[1-6]$/.test(id))return 2;if(['picnic','glow','song'].includes(id))return 15;if(id==='beacon')return 25;if(id==='pet')return 3;if(exploreItems.some(i=>i.id===id))return 1;return 0;}
 export function normalizeWallet(raw){const rewards=[...new Set(Array.isArray(raw?.rewards)?raw.rewards.filter(id=>typeof id==='string'&&coinValue(id)>0):[])];let balance=rewards.reduce((n,id)=>n+coinValue(id),0);const items=[];for(const id of Array.isArray(raw?.items)?raw.items:[]){const item=islandShop.find(x=>x.id===id);if(item&&!items.includes(id)&&balance>=item.cost){items.push(id);balance-=item.cost;}}return {rewards,items};}
-export function coinBalance(state){const w=state.wallet||{rewards:[],items:[]};return w.rewards.reduce((n,id)=>n+coinValue(id),0)-w.items.reduce((n,id)=>n+(islandShop.find(x=>x.id===id)?.cost||0),0)-estateCoinCost(state.world)-(state.world?.city?.cruise?.tickets||0)*CRUISE_FARE-(state.world?.panama?.spent||0);}
+export function coinBalance(state){const w=state.wallet||{rewards:[],items:[]};return w.rewards.reduce((n,id)=>n+coinValue(id),0)-w.items.reduce((n,id)=>n+(islandShop.find(x=>x.id===id)?.cost||0),0)-estateCoinCost(state.world)-(state.world?.city?.cruise?.tickets||0)*CRUISE_FARE-(state.world?.panama?.spent||0)-(state.world?.mansion?.spent||0);}
 export function earnCoins(state,id){state.wallet??=normalizeWallet(null);const amount=coinValue(id);if(!amount||state.wallet.rewards.includes(id))return 0;state.wallet.rewards.push(id);return amount;}
 export function syncWallet(state){state.wallet=normalizeWallet(state.wallet);for(const id of Object.keys({...state.completed,...state.islandLessons?.completed}))earnCoins(state,id);for(let i=1;i<=(state.world?.flowers||0);i++)earnCoins(state,'flower-'+i);for(const id of state.world?.badges||[])earnCoins(state,id);for(const id of state.world?.collected||[])earnCoins(state,id);for(const id of state.world?.city?.bags||[])earnCoins(state,'city-'+id);if(state.world?.city?.pizzas)earnCoins(state,'city-pizza');if(state.world?.pet)earnCoins(state,'pet');for(const id of state.world?.friends?.completed||[])earnCoins(state,'friend-'+id);for(const [id,n] of Object.entries(state.world?.story||{})){if(n>=({shells:3,picnic:4,seed:3,song:4,care:2,light:4})[id])earnCoins(state,"story-"+id);}return state.wallet;}
 export function buyIslandItem(state,id){const item=islandShop.find(x=>x.id===id);if(!item)return false;state.wallet??=normalizeWallet(null);if(state.wallet.items.includes(id)){state.world.hat=item.hat;return true;}if(coinBalance(state)<item.cost)return false;state.wallet.items.push(id);state.world.hat=item.hat;return true;}

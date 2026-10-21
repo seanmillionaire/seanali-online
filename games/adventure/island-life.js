@@ -1,26 +1,25 @@
-import {cityX} from './geography.js?v=188';
-import {marineWater,roadDistance,HIGHWAY_WIDTH,sharkClearance,sharkStep,recoverShark} from './explore-state.js?v=188';
-import {oceanModel} from './ocean-models.js?v=188';
-// Temporary gameplay switch. Re-enable the cycle by setting this to true.
-// Disabled mode forces bright midday even when an old save resumes at night.
-export const NIGHT_MODE_ENABLED=false;
+import {cityX} from './geography.js?v=211';
+import {worldIslands,marineWater,roadDistance,HIGHWAY_WIDTH,sharkClearance,sharkStep,recoverShark} from './explore-state.js?v=211';
+import {oceanModel} from './ocean-models.js?v=211';
+// Saved clock keeps its original 240-unit format; one full day takes 20 minutes.
+export const NIGHT_MODE_ENABLED=true;
+export const DAY_CYCLE_SECONDS=1200;
 // Named and inspectable natural marine habitats. All start in navigable
 // water and remain near attractions instead of hidden in the deep ocean.
 export const MARINE_HABITATS={
- dolphins:[[23,31],[38,40],[-100,-170],[-127,-172],[cityX(205),-100],[cityX(230),50],[cityX(275),-220],[-8,-428]],
- octopuses:[[-17,26],[cityX(120),24],[-118,-178],[cityX(200),85],[cityX(278),-228],[6,-424]]
+ dolphins:[[-100,-170],[cityX(230),50],[-8,-428]],
+ octopuses:[[-17,26],[cityX(120),24],[-118,-178],[cityX(200),85],[cityX(278),-228],[6,-424],[-480,225],[-340,-265],[-200,325],[680,320],[110,128],[560,178],[430,-320],[620,-180]].filter(([x,z])=>marineWater(x,z))
 };
 export function islandDaylight(seconds){
  if(!NIGHT_MODE_ENABLED)return {phase:.25,day:1,night:false,twilight:0};
- const phase=((seconds%240)+240)%240/240;
- const smooth=(a,b,v)=>{const t=Math.max(0,Math.min(1,(v-a)/(b-a)));return t*t*(3-2*t);};
- const darkness=smooth(.69,.74,phase)*(1-smooth(.89,.96,phase));
- const day=1-darkness;
- return {phase,day,night:phase>=.72&&phase<.92,twilight:4*day*(1-day)};
+ const phase=(((Number.isFinite(seconds)?seconds:40)%240)+240)%240/240;
+ const elevation=Math.sin(phase*Math.PI*2);
+ const t=Math.max(0,Math.min(1,(elevation+.25)/.55)),day=t*t*(3-2*t);
+ return {phase,day,night:elevation<0,twilight:4*day*(1-day),elevation};
 }
 export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,cone,box,sun,ambient,waterMaterial,inWater}){
  const s=state.world,animals=[],group=new T.Group();group.name='Ocean wildlife';scene.add(group);let ridden=null;
- const nightSky=new T.Color('#172c50'),daySky=new T.Color('#a4c9de'),dusk=new T.Color('#ce9b96');
+ const nightSky=new T.Color('#809bb9'),daySky=new T.Color('#a4c9de'),dusk=new T.Color('#ce9b96'),moonLight=new T.Color('#b8ceff'),dayLight=new T.Color('#fff0d2'),sunsetLight=new T.Color('#ffcf9c'),nightAmbient=new T.Color('#b7cbed'),dayAmbient=new T.Color('#c9edff');
  function animal(kind,x,z,i){const {g,moving}=oceanModel(T,{geometry,mat,make,ball},kind);g.name=kind+' '+(i+1);group.add(g);g.position.set(x,-.3,z);
   if(kind==='Dolphin')g.scale.setScalar(1.35);
   if(kind==='Octopus')g.scale.setScalar(.94);
@@ -32,14 +31,16 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
  [[-8,24],[130,14],[-140,-145],[cityX(200),-90]].forEach(([x,z],i)=>animal('Manta ray',x,z,i));
  // Visible shallow-water octopuses with independently moving arms.
  MARINE_HABITATS.octopuses.forEach(([x,z],i)=>animal('Octopus',x,z,i));
- for(let i=0;i<24;i++){const spots=[[-11,24],[108,25],[-135,-130],[cityX(220),75]],p=spots[Math.floor(i/6)];animal('Reef fish',p[0]+(i%3)*.7,p[1]+Math.floor(i%6/3)*.7,i);}
+ const shoals=[[-11,24],[108,25],[-135,-130],[cityX(220),75],[-300,90],[30,155],[260,160],[460,230],[-460,240],[-340,-260],[-170,325],[670,315],...worldIslands.filter(p=>p.guna).filter((_,i)=>i%3===0).map(p=>[p.x+p.rx+7,p.z])].filter(([x,z])=>marineWater(x,z));
+ shoals.forEach(([x,z],i)=>{for(let k=0;k<6;k++)animal('Reef fish',x+(k%3)*.7,z+Math.floor(k/3)*.7,i*6+k);});
+
  // Celestial bodies travel across the upper camera view, away from Angelique and controls.
- const sky=new T.Group();sky.name='Sun moon and stars';camera.add(sky);if(!camera.parent)scene.add(camera);const owned=[];
- const basic=(color,extra={})=>{const m=new T.MeshBasicMaterial({color,depthTest:false,depthWrite:false,fog:false,toneMapped:false,...extra});owned.push(m);return m;};
- const sunBody=new T.Mesh(ball,basic('#ffe39c')),moon=new T.Mesh(ball,basic('#e3f1ff'));sunBody.name='Sun';moon.name='Moon';sunBody.scale.setScalar(.13);moon.scale.setScalar(.12);sky.add(sunBody,moon);sunBody.renderOrder=30;moon.renderOrder=30;for(let i=0;i<10;i++){const a=i*Math.PI/5,ray=new T.Mesh(cone,basic('#ffd16e'));ray.position.set(Math.sin(a)*1.4,Math.cos(a)*1.4,0);ray.rotation.z=-a;ray.scale.set(.13,.45,.1);ray.renderOrder=30;sunBody.add(ray);}
+ const sky=new T.Group();sky.name='Sun moon and stars';scene.add(sky);const owned=[];
+ const basic=(color,extra={})=>{const m=new T.MeshBasicMaterial({color,depthTest:true,depthWrite:false,fog:false,toneMapped:false,...extra});owned.push(m);return m;};
+ const sunBody=new T.Mesh(ball,basic('#ffe39c')),moon=new T.Mesh(ball,basic('#e3f1ff'));sunBody.name='Sun';moon.name='Moon';sunBody.scale.setScalar(12);moon.scale.setScalar(10);sky.add(sunBody,moon);sunBody.renderOrder=30;moon.renderOrder=30;for(let i=0;i<10;i++){const a=i*Math.PI/5,ray=new T.Mesh(cone,basic('#ffd16e'));ray.position.set(Math.sin(a)*1.4,Math.cos(a)*1.4,0);ray.rotation.z=-a;ray.scale.set(.13,.45,.1);ray.renderOrder=30;sunBody.add(ray);}
  for(let i=0;i<4;i++){const crater=new T.Mesh(ball,basic('#a6bad1'));crater.scale.set(.2,.15,.025);crater.renderOrder=31;crater.position.set(Math.sin(i*2)*.55,Math.cos(i*2)*.5,.85);moon.add(crater);}
- const starMaterial=basic('#dceeff',{transparent:true,opacity:0}),stars=[];for(let i=0;i<22;i++){const star=new T.Mesh(ball,starMaterial);star.position.set(Math.sin(i*9.7)*2,1.8+(i%7)*.17,-10.8);star.scale.setScalar(.012+(i%3)*.005);sky.add(star);stars.push(star);}
- // Keep the cycle logic available for a future feature toggle, but do not run it now.
+ const starMaterial=basic('#dceeff',{transparent:true,opacity:0}),stars=[];for(let i=0;i<22;i++){const star=new T.Mesh(ball,starMaterial);star.position.set(Math.sin(i*9.7)*550,220+(i%7)*40,Math.cos(i*9.7)*550);star.scale.setScalar(.65+(i%3)*.25);sky.add(star);stars.push(star);}
+ // Sky follows position only: turning the camera keeps the sun fixed on the horizon.
  function nearestRideable(x,z,limit=6.8){
   return animals.filter(a=>(a.kind==='Dolphin'||a.kind==='Sea turtle')&&a!==ridden&&a.g.visible)
    .map(a=>({animal:a,distance:Math.hypot(a.g.position.x-x,a.g.position.z-z)}))
@@ -54,17 +55,24 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
  }
  function markRidden(a){ridden=a;if(a)a.g.visible=false;}
  function unmark(){ridden=null;}
- return {nearestRideable,hit,markRidden,unmark,update(dt,active,motion,player=null){if(!NIGHT_MODE_ENABLED)s.dayTime=60;else if(active&&Number.isFinite(dt)&&dt>0)s.dayTime=(s.dayTime+dt)%240;const {phase,day,night,twilight}=islandDaylight(s.dayTime),sunset=twilight;
+ return {nearestRideable,hit,markRidden,unmark,update(dt,active,motion,player=null){if(!Number.isFinite(s.dayTime))s.dayTime=40;if(active&&Number.isFinite(dt)&&dt>0)s.dayTime=(s.dayTime+dt*240/DAY_CYCLE_SECONDS)%240;const {phase,day,night,twilight}=islandDaylight(s.dayTime),sunset=twilight;
   if(scene.background?.isColor)scene.background.copy(nightSky).lerp(daySky,day).lerp(dusk,sunset*.35);if(scene.fog)scene.fog.color.copy(scene.background);
-  if(sun){sun.intensity=.5+day*2.5;sun.color.set(night?'#9fbcff':'#fff0d2');}if(ambient){ambient.intensity=.85+day*.6;ambient.color.set(night?'#99b8ed':'#c9edff');}if(waterMaterial?.uniforms.daylight)waterMaterial.uniforms.daylight.value=day;
-  sunBody.visible=!night;moon.visible=night;const arc=(phase%.5)*2;for(const body of [sunBody,moon])body.position.set((arc-.5)*2.6,2.1+Math.sin(arc*Math.PI)*.4,-10);starMaterial.opacity=(1-day)*.8;
+  if(sun){sun.intensity=1.65+day*1.35;sun.color.copy(moonLight).lerp(dayLight,day).lerp(sunsetLight,twilight*.5);}if(ambient){ambient.intensity=1.35+day*.1;ambient.color.copy(nightAmbient).lerp(dayAmbient,day);}if(waterMaterial?.uniforms.daylight)waterMaterial.uniforms.daylight.value=.64+day*.36;
+  sky.position.set(camera.position.x,0,camera.position.z);
+  const angle=phase*Math.PI*2;
+  sunBody.position.set(-Math.cos(angle)*650,Math.sin(angle)*650,-290);
+  moon.position.copy(sunBody.position).multiplyScalar(-1);
+  sunBody.visible=sunBody.position.y>-24;moon.visible=moon.position.y>-24;
+  sunBody.rotation.z=-angle;starMaterial.opacity=(1-day)*.65;
   const roadClear=(x,z,r=.7)=>roadDistance(x,z)>HIGHWAY_WIDTH/2+r;
-  const safeWater=(x,z,r=.7)=>roadClear(x,z,r)&&[[0,0],[r,0],[-r,0],[0,r],[0,-r]].every(([ox,oz])=>marineWater(x+ox,z+oz));
+  const waterClear=(x,z,r=.7)=>roadClear(x,z,r)&&[[0,0],[r,0],[-r,0],[0,r],[0,-r]].every(([ox,oz])=>marineWater(x+ox,z+oz));
   for(const a of animals){
+   if(player&&Math.hypot(a.g.position.x-player.x,a.g.position.z-player.z)>180){a.g.visible=false;continue;}
    if(active)a.t+=dt;
    const t=a.t,isDolphin=a.kind==='Dolphin',isFish=a.kind==='Reef fish';
+   const safeWater=(x,z,r=.7)=>waterClear(x,z,isDolphin?Math.max(12,r):r);
    const speed=isDolphin?3.4:isFish?1.2:a.kind==='Octopus'?.48:a.kind==='Manta ray'?1.65:.95;
-   const radius=isFish?.3:a.kind==='Octopus'?1.1:.85;
+   const radius=isDolphin?2:isFish?.3:a.kind==='Octopus'?1.1:.85;
    const px=player?.x,pz=player?.z,notice=Number.isFinite(px)&&Number.isFinite(pz)?Math.hypot(px-a.g.position.x,pz-a.g.position.z):Infinity;
    const observing=notice<(isDolphin?13:isFish?5:10);
    // Nearby wildlife watches Angelique without abandoning safe-water boundaries.
@@ -132,7 +140,7 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
    a.g.visible=a!==ridden&&safeWater(a.g.position.x,a.g.position.z,.2);
    // Separate gentle swimming strokes from occasional dolphin surfacing.
    const pulse=Math.sin(t*(isDolphin?2.0:isFish?4:1.8)+a.phase);
-   a.g.position.y=isDolphin?-.23+Math.pow(Math.max(0,pulse),10)*.82:
+   a.g.position.y=isDolphin?-.48+Math.pow(Math.max(0,pulse),10)*.24:
     a.kind==='Octopus'?-.83+Math.sin(t*.8+a.phase)*.025:-.36+Math.sin(t*1.1+a.phase)*.07;
    if(isDolphin)a.g.rotation.x=-Math.max(0,pulse)*.12;
    a.moving.forEach((f,i)=>{
@@ -145,7 +153,7 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
     else f.rotation.y=motion?Math.sin(phase)*.16:0;
    });
   }
- },dispose(){camera.remove(sky);scene.remove(group);owned.forEach(m=>m.dispose());}};
+ },dispose(){scene.remove(sky,group);owned.forEach(m=>m.dispose());}};
 }
 
 // Sharks choose individual safe goals rather than replaying a ring of waypoints.

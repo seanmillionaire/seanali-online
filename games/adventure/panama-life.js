@@ -1,28 +1,36 @@
-import {moveLegacyPoint,movePoint,cityX} from './geography.js?v=188';
-import {createPanamaVisuals} from './panama-visuals.js?v=188';
-import {PANAMA_FOODS,PANAMA_RECIPES,purchasePanama,cookPanama,eatPanama} from './panama-state.js?v=188';
-import {coinBalance} from './explore-state.js?v=188';
-import {panamaModels} from './panama-models.js?v=188';
-import {createCityStreetLife} from './city-street-life.js?v=188';
-import {createSanBlasLife} from './san-blas-life.js?v=188';
+import {createEastCityLife} from './east-city-life.js?v=211';
+import {createRegionalWeather} from './regional-weather.js?v=211';
+import {createButterflyLife} from './butterfly-life.js?v=211';
+import {createOceanShipping} from './ocean-shipping.js?v=211';
+import {createMaritimeLife} from './maritime-life.js?v=211';
+import {createBirdFlocks} from './bird-flocks.js?v=211';
+import {createWorldAmbience} from './world-ambience.js?v=211';
+import {moveLegacyPoint,movePoint,cityX} from './geography.js?v=211';
+import {createPanamaVisuals} from './panama-visuals.js?v=211';
+import {PANAMA_FOODS,PANAMA_RECIPES,purchasePanama,cookPanama,eatPanama} from './panama-state.js?v=211';
+import {coinBalance} from './explore-state.js?v=211';
+import {panamaModels} from './panama-models.js?v=211';
+import {createCityStreetLife} from './city-street-life.js?v=211';
+import {createSanBlasLife} from './san-blas-life.js?v=211';
 export const COOK_FIRES=[{x:-12,z:7},{x:13,z:103},{x:10,z:-106}].map(p=>({...p,...moveLegacyPoint(p.x,p.z)}));
 export const PLANTAIN_SITES=[{x:-8,z:8},{x:10,z:-102},{x:22,z:-112},{x:116,z:-55},{x:102,z:5}].map(p=>({...p,...moveLegacyPoint(p.x,p.z)}));
 export function createPanamaLife(options){
  const {T,scene,host,panel,state,save,refresh,joy,tell,make,mat,box,ball,cylinder,cone,height,forest,inWater,prepare,navigate,onEat,football,npcKick,eatLegacy}=options,s=state.world,p=s.panama,es=state.lang==='es',say=(a,b)=>es?a:b;
  const models=panamaModels(options),city=createCityStreetLife({...options,models}),sanBlas=createSanBlasLife({...options,models}),visuals=createPanamaVisuals({...options,models});
+ const ambience=createWorldAmbience({...options,models}),maritime=createMaritimeLife(options),flocks=createBirdFlocks(options),shipping=createOceanShipping(options),butterflies=createButterflyLife(options),eastCity=createEastCityLife({...options,models}),weather=createRegionalWeather(options);
  const garden=new T.Group();garden.name='Plantain gardens and island cooking fires';scene.add(garden);
  for(const [i,q]of PLANTAIN_SITES.entries()){forest.addTree('banana',q.x,q.z,.7,i+500,garden);models.meal(garden,'plantain',q.x,height(q.x,q.z)+1.9,q.z,.7);}
  for(const q of COOK_FIRES){make(cylinder,mat('#66594a'),q.x,height(q.x,q.z)+.17,q.z,.55,.3,.55,garden);models.meal(garden,'fishPlate',q.x,height(q.x,q.z)+.4,q.z,.6);}
  const previews=Object.fromEntries(['patacones','fishPlate','coconutRice','raspao'].map(id=>{const g=models.meal(scene,id,0,0,0,.7);g.visible=false;return [id,g];}));let mealTime=0,meal=null,fishing=null;
- const el=(tag,text,cls='')=>{const n=document.createElement(tag);n.className=cls;n.textContent=text;return n;};
+ const el=(tag,text,cls='')=>{const n=document.createElement(tag);n.className=cls;n.textContent=text&&text!=='×'&&/^[\p{L}\p{N}]/u.test(text)?(tag==='button'?'🍽️ ':'💡 ')+text:text;return n;};
  const btn=(text,fn)=>{const b=el('button',text,'discover-place');b.type='button';b.onclick=()=>{joy.gesture();fn();};return b;};
  function shell(title){prepare();panel.replaceChildren();panel.hidden=false;panel.classList.remove('estate-panel','island-map-open');const close=btn('×',()=>{panel.hidden=true;fishing=null;});close.className='panel-close';close.setAttribute('aria-label',say('Cerrar','Close'));panel.append(close,el('h2',title));}
  function notify(text){panel.append(el('p',text,'panama-feedback'));}
  function openFood(){shell(say('🍽️ Sabores de Panamá','🍽️ Tastes of Panama'));panel.append(el('p',say('Ingredientes, recetas y comidas en tu mochila. La fruta te da 30 segundos de velocidad extra.','Ingredients, recipes and meals in your backpack. Fruit gives you 30 seconds of extra speed.')));
   for(const [kind,label]of [['banana',say('🍌 Plátanos','🍌 Bananas')],['coconut',say('🥥 Cocos','🥥 Coconuts')]]){const b=btn(label+' × '+s.food[kind]+' · '+say('Comer','Eat'),()=>{if(eatLegacy?.(kind)){openFood();notify(say('🍌 Impulso de fruta: 30 segundos. ¡Prueba los patines!','🍌 Fruit boost: 30 seconds. Try your rollerblades!'));}});b.disabled=!s.food[kind];panel.append(b);}
   if(s.growth>1)panel.append(btn(say('↘ Volver a pequeña','↘ Return to small'),()=>{s.growth=1;save();refresh();openFood();}));
-  for(const [id,meta]of Object.entries(PANAMA_FOODS)){const row=el('div','','panama-food-row');row.append(el('strong',meta.icon+' '+say(meta.es,meta.en)+' × '+p.pantry[id]));if(['patacones','fishPlate','coconutRice','raspao'].includes(id)){const eat=btn(say('Comer','Eat'),()=>{if(!eatPanama(s,id))return;meal=id;mealTime=2.7;onEat?.();save();refresh();joy.effect('correct');openFood();notify(say('¡Buen provecho! Energía renovada.','Enjoy! Energy restored.'));});eat.disabled=!p.pantry[id];row.append(eat);}panel.append(row);}
-  panel.append(el('h3',say('🔥 Cocina','🔥 Cooking')));const atFire=COOK_FIRES.some(q=>Math.hypot(s.x-q.x,s.z-q.z)<4);
+  for(const [id,meta]of Object.entries(PANAMA_FOODS).filter(([id])=>p.pantry[id]>0)){const row=el('div','','panama-food-row');row.append(el('strong',meta.icon+' '+say(meta.es,meta.en)+' × '+p.pantry[id]));if(['patacones','fishPlate','coconutRice','raspao'].includes(id)){const eat=btn(say('Comer','Eat'),()=>{if(!eatPanama(s,id))return;meal=id;mealTime=2.7;onEat?.();save();refresh();joy.effect('correct');openFood();notify(say('¡Buen provecho! Energía renovada.','Enjoy! Energy restored.'));});eat.disabled=!p.pantry[id];row.append(eat);}panel.append(row);}
+  const atFire=COOK_FIRES.some(q=>Math.hypot(s.x-q.x,s.z-q.z)<4);if(!atFire){panel.append(el('p',say('🔥 Acércate a una fogata para cocinar. 🍌 Recoge fruta de los árboles.','🔥 Go near a cooking fire to cook. 🍌 Pick fruit from trees.')));return;}panel.append(el('h3',say('🔥 Cocina','🔥 Cooking')));
   for(const [id,recipe]of Object.entries(PANAMA_RECIPES)){const meta=PANAMA_FOODS[id],ingredients=Object.entries(recipe).map(([k,n])=>n+' '+(k==='coconut'?say('coco','coconut'):say(PANAMA_FOODS[k].es,PANAMA_FOODS[k].en))).join(' + ');const b=btn(meta.icon+' '+say(meta.es,meta.en)+' · '+ingredients,()=>{if(!atFire){panel.hidden=true;const q=[...COOK_FIRES].sort((a,b)=>Math.hypot(s.x-a.x,s.z-a.z)-Math.hypot(s.x-b.x,s.z-b.z))[0];navigate(q);return;}if(cookPanama(s,id)){save();refresh();joy.effect('finish');openFood();notify(say('✅ Plato preparado y guardado.','✅ Meal cooked and saved.'));}else notify(say('Necesitas los ingredientes indicados.','You need the listed ingredients.'));});panel.append(b);}
   if(!atFire)panel.append(el('p',say('Toca una receta para ir a una fogata. El arroz se compra en los puestos y los cocos se recogen de las palmas.','Choose a recipe to find a cooking fire. Buy rice at food stalls and gather coconuts from palms.')));
  }
@@ -35,9 +43,9 @@ export function createPanamaLife(options){
   else if(n.type==='police'){shell(say('👮 Policía del barrio','👮 Neighborhood officer'));panel.append(el('p',say('¡Buenas! Las patrullas recorren las calles. Mira a ambos lados al cruzar. La cancha está al norte; el mercado queda al este.','Hello! Patrols follow the streets. Look both ways before crossing. The football field is to the north; the market is east.')),btn(say('⚽ Ir a la cancha','⚽ Find the football field'),()=>{panel.hidden=true;navigate(movePoint('pizzaCity',-117,-43));}),btn(say('🍧 Buscar raspao','🍧 Find a raspao cart'),()=>{panel.hidden=true;navigate(movePoint('pizzaCity',-91,-66));}));}
   else{shell(say('⚽ Bienvenida al barrio','⚽ Welcome to the barrio'));panel.append(el('p',say('Los niños juegan en la cancha. Entra, acércate al balón y toca Patear. Los goles cuentan cuando el balón entra en la portería.','The children are playing on the field. Join them, approach the ball and tap Kick. Goals count when the ball enters the goal.')),btn(say('⚽ Unirme al partido','⚽ Join the match'),()=>{panel.hidden=true;navigate(movePoint('pizzaCity',-117,-43));}));}return true;
  }
- function update(dt,active,info){const inCity=!info.indoors&&Math.hypot((info.x-cityX(120))/58,(info.z+50)/48)<1.04;joy.setCityAmbient?.(inCity);if(inCity&&active)joy.streetSound?.({traffic:.55,chatter:.42});visuals.update(info.x,info.z,info.indoors);city.update(dt,active,info);sanBlas.update(dt,active,info);garden.visible=!info.indoors;
+ function update(dt,active,info){const inCity=!info.indoors&&Math.hypot((info.x-cityX(120))/58,(info.z+50)/48)<1.04;joy.setCityAmbient?.(inCity);if(inCity&&active)joy.streetSound?.({traffic:.55,chatter:.42});visuals.update(info.x,info.z,info.indoors);ambience.update(dt,active,info);maritime.update(dt,active,info);flocks.update(dt,active,info);butterflies.update(dt,active,info);eastCity.update(dt,active,info);weather.update(dt,active,info);shipping.update(dt,active,info);city.update(dt,active,info);sanBlas.update(dt,active,info);garden.visible=!info.indoors;
   if(fishing){if(panel.hidden||!panel.contains(fishing.b)){fishing=null;}else if(!document.hidden){const f=fishing;f.time+=dt;if(!f.ready&&f.time>1.8){f.ready=true;f.b.disabled=false;f.b.textContent=say('🐟 ¡Recoger ahora!','🐟 Reel in now!');f.note.textContent=say('¡El pez está tirando!','The fish is pulling!');f.b.onclick=()=>{if(fishing!==f||!f.ready)return;p.pantry.fish=Math.min(9999,p.pantry.fish+1);p.caught++;fishing=null;save();refresh();joy.effect('correct');fish();notify(say('🐟 +1 pescado guardado.','🐟 +1 fish saved.'));};}if(f.time>5.5){fishing=null;fish();notify(say('El pez se escapó. Vuelve a intentarlo.','The fish escaped. Cast again.'));}}}
   mealTime=Math.max(0,mealTime-(active?dt:0));for(const [id,g]of Object.entries(previews)){g.visible=id===meal&&mealTime>0&&!info.indoors;g.position.set(s.x+.6,height(s.x,s.z)+1.2,s.z+.4);g.rotation.y+=dt*.3;}
  }
- return {city,sanBlas,near,prompt,interact,openFood,update,homes:()=>city.homes,dispose(){visuals.dispose();city.dispose();sanBlas.dispose();models.dispose();scene.remove(garden);Object.values(previews).forEach(g=>scene.remove(g));fishing=null;}};
+ return {city,sanBlas,ambience,maritime,flocks,shipping,butterflies,eastCity,weather,near,prompt,interact,openFood,update,homes:()=>city.homes,dispose(){weather.dispose();eastCity.dispose();butterflies.dispose();shipping.dispose();maritime.dispose();flocks.dispose();ambience.dispose();visuals.dispose();city.dispose();sanBlas.dispose();models.dispose();scene.remove(garden);Object.values(previews).forEach(g=>scene.remove(g));fishing=null;}};
 }

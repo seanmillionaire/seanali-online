@@ -1,7 +1,8 @@
-import {botanicalGeometry,leafSurface} from './botanical-geometry.js?v=188';
-import {ruralBlocks} from './rural-towns.js?v=188';
+import {regionalClearing,regionalTrailClear} from './regional-layout.js?v=211';
+import {botanicalGeometry,leafSurface} from './botanical-geometry.js?v=211';
+import {ruralBlocks} from './rural-towns.js?v=211';
 // Shared three-dimensional foliage; no spherical crowns or stacked cone trees.
-import {roadsidePoint} from './explore-state.js?v=188';
+import {roadsidePoint} from './explore-state.js?v=211';
 export function createNaturalTrees({T,geometry,mat,make,height,scene,surfaces=null}){
  const trees=[],bark=mat('#73634d',{...(surfaces?.wood?{map:surfaces.wood,bumpMap:surfaces.wood}:{}),bumpScale:.13,roughness:1});
  const leafTexture=leafSurface(T);let textureOwner=false;
@@ -17,7 +18,7 @@ export function createNaturalTrees({T,geometry,mat,make,height,scene,surfaces=nu
  function addTree(kind,x,z,scale=1,seed=0,parent=scene){
   if(!leaves[kind])kind='natural';
   // Preserve trees beside every highway, including the Barú approach.
-  ({x,z}=roadsidePoint(x,z,Math.max(2,3.5*scale),(x,z)=>!ruralBlocks(x,z,3.5*scale)));
+  ({x,z}=roadsidePoint(x,z,Math.max(2,3.5*scale),(x,z)=>!ruralBlocks(x,z,3.5*scale)&&!regionalClearing(x,z,Math.max(2,scale*1.5))&&regionalTrailClear(x,z)));
   const root=new T.Group();root.userData.cameraFoliage=true;root.name=kind==='palm'?'Detailed curved coconut palm':kind==='pine'?'Detailed tall needle pine':kind==='banana'?'Broad-leaf banana plant':'Branching natural rainforest tree';parent.add(root);
   root.position.set(x,height(x,z)-.05,z);root.scale.setScalar(scale);root.rotation.y=seed*2.39996;
   make(kind==='palm'?palmTrunk:kind==='pine'?pineTrunk:kind==='banana'?bananaTrunk:naturalTrunk,bark,0,0,0,1,1,1,root);
@@ -36,6 +37,7 @@ export function createNaturalTrees({T,geometry,mat,make,height,scene,surfaces=nu
  }
  function update(time){
   for(const t of trees){
+   t.root.visible=true;
    t.crown.rotation.z=Math.sin(time*.9+t.phase)*(t.kind==='palm'?.035:.012);
    const distance=focus?Math.hypot(t.x-focus.x,t.z-focus.z):100;
    let opacity=distance<4?.2:distance<7?.2+(distance-4)*.266:1;
@@ -44,7 +46,7 @@ export function createNaturalTrees({T,geometry,mat,make,height,scene,surfaces=nu
     const u=length?((t.x-focus.x)*dx+(t.z-focus.z)*dz)/length:0;
     const lateral=Math.hypot(t.x-focus.x-u*dx,t.z-focus.z-u*dz);
     const rayY=height(focus.x,focus.z)+1.6+(focus.camera.y-height(focus.x,focus.z)-1.6)*u;
-    if(u>0&&u<1&&lateral<3.8*t.scale&&rayY<height(t.x,t.z)+t.tip.y*t.scale+2&&rayY>height(t.x,t.z)+2)opacity=.12;
+    if(u>0&&u<=1.08&&lateral<3.8*t.scale&&rayY<height(t.x,t.z)+t.tip.y*t.scale+2){opacity=.05;t.root.visible=false;}
    }
    t.crown.material.opacity+=(opacity-t.crown.material.opacity)*.22;t.crown.material.depthWrite=t.crown.material.opacity>.95;
   }

@@ -1,5 +1,5 @@
-import {DESTINATIONS} from './geography.js?v=188';
-import {roadDistance,HIGHWAY_WIDTH,isletHeight,inWater,worldIslands} from './explore-state.js?v=188';
+import {DESTINATIONS} from './geography.js?v=211';
+import {roadDistance,HIGHWAY_WIDTH,isletHeight,inWater,worldIslands} from './explore-state.js?v=211';
 // Low-density town parcels leave room for streets, yards, views and future
 // player buildings. The planner is shared with forest exclusions and tests.
 export const RURAL_TOWNS=[

@@ -1,7 +1,7 @@
-import {createNatureDecor} from './nature-decor.js?v=188';
-import {oceanModel} from './ocean-models.js?v=188';
-import {createNaturalTrees} from './natural-trees.js?v=188';
-import {islandPoint} from './explore-state.js?v=188';
+import {createNatureDecor} from './nature-decor.js?v=211';
+import {oceanModel} from './ocean-models.js?v=211';
+import {createNaturalTrees} from './natural-trees.js?v=211';
+import {islandPoint} from './explore-state.js?v=211';
 /* Shared sculpted props and botanical meshes, consistently lit from every angle. */
 export function createTropical({T,scene,camera,height,geometry,mat,make,ball,renderer,surfaces=null}){
  const forest=createNaturalTrees({T,geometry,mat,make,height,scene,surfaces});
@@ -12,7 +12,7 @@ export function createTropical({T,scene,camera,height,geometry,mat,make,ball,ren
    const model=oceanModel(T,{geometry,mat,make,ball},tile===8?'Sea turtle':'Reef fish');g.add(model.g);
    model.g.position.y=tile===8?h*.30:h*.5;model.g.scale.set(w/(tile===8?1.8:.3),h/(tile===8?.7:.5),w/(tile===8?1.8:.3));
   }else make(specimen(tile),propMaterial,0,0,0,w,h,w,g);
-  g.name='Natural specimen '+tile;return g;
+  g.name='Natural specimen '+tile;if(tile===3)g.userData.solidRock=true;return g;
  }
  // Fine mineral grain, weathering, and broad tonal variation share a small procedural texture.
  const size=256,data=new Uint8Array(size*size*4);let seed=17;for(let y=0;y<size;y++)for(let x=0;x<size;x++){seed=(seed*1664525+1013904223)>>>0;const grain=(seed/4294967296-.5)*40,broad=Math.sin(x*.037+Math.sin(y*.03))*18+Math.sin(y*.13+x*.07)*8,v=Math.max(50,Math.min(255,188+grain+broad)),i=(y*size+x)*4;data[i]=v;data[i+1]=v;data[i+2]=v;data[i+3]=255;}

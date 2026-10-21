@@ -1,16 +1,16 @@
-import {CANAL_WATERWAY} from './geography.js?v=188';
+import {CANAL_WATERWAY,CANAL_TERMINAL,CANAL_LAYOUT_VERSION} from './geography.js?v=211';
 export const CRUISE_FARE=10;
-export const CRUISE_BOARD={x:66,z:-65};
-export const CRUISE_DOCK={x:40,z:-70};
-// One closed circuit around every island, in navigable open water.
-export const CRUISE_STOPS=[...CANAL_WATERWAY,...CANAL_WATERWAY.slice(0,-1).reverse()].map(([x,z])=>({x,z}));
+export const CRUISE_BOARD=CANAL_TERMINAL;
+export const CRUISE_DOCK={x:285,z:15};
+// One vessel makes the Pacific–Atlantic transit and returns to its terminal.
+export const CRUISE_STOPS=[...CANAL_WATERWAY.slice(1),...CANAL_WATERWAY.slice(1,-1).reverse()].map(([x,z])=>({x,z}));
 const segments=CRUISE_STOPS.slice(1).map((p,i)=>Math.hypot(p.x-CRUISE_STOPS[i].x,p.z-CRUISE_STOPS[i].z));
 export const CRUISE_LENGTH=segments.reduce((a,b)=>a+b,0);
 export const CRUISE_SPEED=4.5;
 export function normalizeCruise(raw){
  const tickets=Number.isFinite(raw?.tickets)?Math.max(0,Math.min(9999,Math.floor(raw.tickets))):0;
- return {tickets,completed:Math.min(tickets,Math.max(0,Math.floor(Number(raw?.completed)||0))),
-  active:raw?.active===true&&tickets>0,distance:Number.isFinite(raw?.distance)?Math.max(0,Math.min(CRUISE_LENGTH,raw.distance)):0};
+ return {layoutVersion:CANAL_LAYOUT_VERSION,tickets,completed:Math.min(tickets,Math.max(0,Math.floor(Number(raw?.completed)||0))),
+  active:raw?.active===true&&tickets>0,distance:raw?.layoutVersion===CANAL_LAYOUT_VERSION&&Number.isFinite(raw?.distance)?Math.max(0,Math.min(CRUISE_LENGTH,raw.distance)):0};
 }
 export function cruisePose(distance){
  let remaining=Math.max(0,Math.min(CRUISE_LENGTH,distance));

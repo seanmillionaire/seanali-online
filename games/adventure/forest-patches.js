@@ -1,9 +1,17 @@
-import {cityX} from './geography.js?v=188';
-import {ruralParcels} from './rural-towns.js?v=188';
+import {homeReserved} from './mansion-state.js?v=211';
+import {regionalClearing,regionalTrailClear} from './regional-layout.js?v=211';
+import {cityX} from './geography.js?v=211';
+import {ruralParcels} from './rural-towns.js?v=211';
 // Irregular, mixed Panamanian understory and canopy. Gaps are intentional.
-import {mainlandContains,canalWater,gatunWater} from './geography.js?v=188';
-import {worldIslands,isletHeight,roadDistance,HIGHWAY_WIDTH,volcanoTrailPoint} from './explore-state.js?v=188';
+import {mainlandContains,canalWater,gatunWater} from './geography.js?v=211';
+import {worldIslands,isletHeight,roadDistance,HIGHWAY_WIDTH,volcanoTrailPoint} from './explore-state.js?v=211';
 export const FOREST_PATCHES=[
+ {id:'coiba-moist-forest',x:-480,z:160,rx:35,rz:29,n:65,biome:'island'},
+ {id:'rey-island-forest',x:680,z:260,rx:31,rz:27,n:45,biome:'island'},
+ {id:'escudo-coastal-forest',x:-340,z:-310,rx:29,rz:26,n:50,biome:'island'},
+ {id:'cebaco-forest',x:-200,z:260,rx:32,rz:28,n:48,biome:'island'},
+ {id:'contadora-green-interior',x:560,z:125,rx:29,rz:25,n:23,biome:'island'},
+ {id:'taboga-gardens',x:110,z:85,rx:16,rz:13,n:12,biome:'island'},
  {id:'gorgona-palm-grove',x:18,z:-36,rx:27,rz:20,n:54,biome:'tropical'},
  {id:'gorgona-rainforest',x:-23,z:-46,rx:29,rz:23,n:48,biome:'tropical'},
  {id:'pacific-riverside',x:52,z:-72,rx:25,rz:25,n:44,biome:'tropical'},
@@ -42,14 +50,14 @@ function nearTrail(x,z){
  }return false;
 }
 export function forestSiteClear(x,z,biome='tropical'){
- if(roadDistance(x,z)<HIGHWAY_WIDTH/2+10||townPlots.some(p=>Math.abs(x-p.x)<p.w/2+5&&Math.abs(z-p.z)<p.d/2+5))return false;
+ if(homeReserved(x,z,5)||!regionalTrailClear(x,z)||regionalClearing(x,z)||roadDistance(x,z)<HIGHWAY_WIDTH/2+10||townPlots.some(p=>Math.abs(x-p.x)<p.w/2+5&&Math.abs(z-p.z)<p.d/2+5))return false;
  if(FOREST_CLEARINGS.some(p=>Math.hypot(x-p.x,z-p.z)<p.r))return false;
  if(Math.hypot((x-cityX(120))/67,(z+50)/57)<1.09)return false;
  // Giant rainforest canopy belongs inland, never on offshore beaches.
- if(worldIslands.some(p=>p.id!=='sunset'&&Math.hypot((x-p.x)/p.rx,(z-p.z)/p.rz)<1.07))return false;
+ if(worldIslands.some(p=>(p.id==='pizzaCity'||p.guna||p.id==='crystalCove')&&Math.hypot((x-p.x)/p.rx,(z-p.z)/p.rz)<1.07))return false;
  const land=mainlandContains(x,z);
- const island=worldIslands.some(p=>(p.id==='wilds'||p.id==='colon'||p.id==='sunset')&&
-  Math.hypot((x-p.x)/p.rx,(z-p.z)/p.rz)<.90);
+ const island=worldIslands.some(p=>!p.guna&&!['pizzaCity','crystalCove','monkeyIslet'].includes(p.id)&&
+  Math.hypot((x-p.x)/p.rx,(z-p.z)/p.rz)<(p.id==='sunset'?.90:.66));
  if(!land&&!island||canalWater(x,z)||gatunWater(x,z)||nearTrail(x,z)||isletHeight(x,z)<.48)return false;
  return biome!=='island'||island;
 }

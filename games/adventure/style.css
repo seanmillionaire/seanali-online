@@ -786,3 +786,25 @@ body[data-scene="explore"] .animal-ride-quick:not([hidden]){
   font-size:14px!important;box-shadow:0 4px 12px #123a4259;
  }
 }
+
+/* Overview shows the playable oval against a quiet globe backdrop. */
+.island-map-frame.map-globe{background:#183e51}
+
+/* Home ownership is a primary, always available activity. */
+.mansion-launch{position:absolute;left:16px;bottom:190px;z-index:42;min-height:48px;max-width:180px;padding:10px 16px;border:1px solid #b6a884;border-radius:14px;background:#fff6df;color:#334940;font:700 16px system-ui;box-shadow:0 4px 15px #172d3026}
+.mansion-panel{box-sizing:border-box!important;width:min(620px,calc(100% - 24px))!important;max-height:calc(100% - 24px)!important;overflow:auto!important;padding:26px!important;background:#fffaf0!important;color:#304039!important;border-radius:20px!important;line-height:1.5;font:17px/1.5 system-ui!important}
+.mansion-panel h2{font-size:clamp(25px,5vw,34px);line-height:1.15;margin:12px 28px 20px 0}.mansion-panel h3{font-size:21px;margin:22px 0 12px}.mansion-panel p{margin:12px 0}.mansion-panel button:not(.panel-close){display:block;width:100%;min-height:48px;padding:12px 16px;border:1px solid #b7c5b9;border-radius:12px;background:#edf1e6;color:#2b463c;font:600 16px/1.4 system-ui;margin:9px 0;cursor:pointer}.mansion-panel button[aria-pressed=true]{background:#294e43;color:white;border-color:#294e43}.mansion-panel button:disabled{opacity:.5;cursor:not-allowed}.mansion-panel .mansion-eyebrow{font-size:12px;letter-spacing:.13em;color:#667768;font-weight:700}.mansion-options{display:flex;gap:10px}.mansion-options>*{flex:1;min-width:0}.mansion-card{border-bottom:1px solid #e0e3d8;padding:5px 0 12px}.mansion-stages{padding-left:24px}.mansion-stages li{margin:10px 0}.mansion-panel input{display:block;box-sizing:border-box;width:100%;font:18px system-ui;padding:12px;margin-top:8px;border:1px solid #9dafa3;border-radius:10px}.mansion-memory{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.mansion-memory button{font-size:28px!important;min-height:64px!important}.mansion-racer{display:flex;height:240px;background:#34434b;border-radius:14px;overflow:hidden}.mansion-lane{position:relative;flex:1;border-right:2px dashed #e3dcc5}.mansion-race-car{position:absolute;top:78%;left:35%;font-size:30px}.mansion-obstacle{position:absolute;left:40%;color:#f3b15c;font-size:24px}.mansion-panel .panel-close{position:absolute;right:16px;top:12px;min-width:44px;min-height:44px;font-size:26px}
+@media(max-width:480px){.mansion-launch{left:12px;bottom:180px;max-width:150px;font-size:14px;min-height:44px;padding:9px 12px}.mansion-panel{padding:20px!important;font-size:16px!important}.mansion-options{flex-wrap:wrap}.mansion-options>button{flex-basis:40%}}
+.mansion-panel{position:absolute!important;left:50%!important;top:50%!important;right:auto!important;bottom:auto!important;transform:translate(-50%,-50%)!important;margin:0!important;z-index:90!important}.explore-world:has(.explore-panel:not([hidden])) .mansion-launch{visibility:hidden}
+.inside-mansion .campaign-hud,.inside-mansion .world-story,.inside-mansion .region-help-status{display:none!important}.inside-mansion .mansion-launch{top:16px;bottom:auto}.inside-mansion .explore-location{display:none}
+
+/* Free-roam interface: optional projects live in Activities, not competing HUDs. */
+.explore-world .campaign-hud,.explore-world .helper-toggle,.explore-world .goal-card{display:none!important}
+.explore-world .explore-panel .backpack-world-hub{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px}
+.backpack-world-tile{min-height:92px!important;text-align:left!important;padding:14px!important;white-space:normal!important}
+.play-benefit{display:block;font-size:12px;line-height:1.45;font-weight:400;margin-top:7px;color:inherit;opacity:.85}
+@media(max-width:350px){.explore-world .explore-panel .backpack-world-hub{grid-template-columns:1fr!important}.backpack-world-tile{min-height:72px!important}}
+
+.explore-world .journey-peek{display:none!important}
+
+.car-horn{position:absolute;left:24px;top:215px;z-index:12;min-height:48px;padding:10px 18px;border-radius:12px;background:#fff9e8;color:#193e40;border:1px solid #b8c3b8;font-weight:700}.car-horn[hidden]{display:none!important}

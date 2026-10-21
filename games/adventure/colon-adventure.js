@@ -1,7 +1,7 @@
-import {createColonWildlife,monkeyJumpPhase,recordMonkeyJump} from './colon-wildlife.js?v=188';
-import {COLON_SITES,COLON_BRIDGE,bridgeDistance,buildColon,expandColon} from './colon-state.js?v=188';
-import {addFood,inWater as worldInWater,earnCoins} from './explore-state.js?v=188';
-import {COLON_OFFSET} from './geography.js?v=188';
+import {createColonWildlife,monkeyJumpPhase,recordMonkeyJump} from './colon-wildlife.js?v=211';
+import {COLON_SITES,COLON_BRIDGE,bridgeDistance,buildColon,expandColon} from './colon-state.js?v=211';
+import {addFood,inWater as worldInWater,earnCoins} from './explore-state.js?v=211';
+import {COLON_OFFSET} from './geography.js?v=211';
 export function createColonAdventure({T,scene,host,state,make,geometry,mat,box,ball,cylinder,cone,height:worldHeight,save,refresh,joy,tell,forest:worldForest,motion=()=>true}){
  const {x:offsetX,z:offsetZ}=COLON_OFFSET;
  const height=(x,z)=>worldHeight(x+offsetX,z+offsetZ);
@@ -140,15 +140,12 @@ export function createColonAdventure({T,scene,host,state,make,geometry,mat,box,b
   if(active)clock+=dt;
   const localX=s.x-offsetX,localZ=s.z-offsetZ;
   const here=!inside&&!cruising&&(Math.hypot((localX+10)/29,(localZ+125)/26)<1.1||Math.hypot(localX-10,localZ+94)<12);
-  status.hidden=!here;const raining=clock%76<60,cue=monkeyJumpPhase(clock-play.start);
+  status.hidden=!here;const raining=(scene.userData.regionalWeather?.rain??1)>.12,cue=monkeyJumpPhase(clock-play.start);
   if(here)status.textContent=(raining?'🌧️ ':'☀️ ')+say('Colón · Selva e Isla de los Monos','Colón · Rainforest & Monkey Island')+' · 🐒 28 · '+COLON_SITES.filter(p=>c[p.id]).length+'/4';
   if(here&&play.active)status.textContent='🐒 '+play.score+'/3 · '+(cue.open?say('¡SALTA AHORA!','JUMP NOW!'):say('Mira el próximo salto…','Watch the next jump…'));
   if(!here)play.active=false;
-  rain.visible=here&&raining;splashes.visible=rain.visible;
+  rain.visible=false;splashes.visible=rain.visible;
   const storm=here&&raining,ease=Math.min(1,dt*2.5);
-  if(scene.fog&&baseFog!==undefined)scene.fog.density+=((storm ? .006 : baseFog)-scene.fog.density)*ease;
-  if(scene.background?.isColor&&baseSky)scene.background.lerp(storm?stormSky:baseSky,ease);
-  if(sun)sun.intensity+=((storm?baseSun*.52:baseSun)-sun.intensity)*ease;
   if(rain.visible&&active&&motion()){
    for(let i=0;i<DROP_COUNT;i++){
     const k=i*6;rainPositions[k]-=dt*2.8;rainPositions[k+1]-=dt*23;

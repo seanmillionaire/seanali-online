@@ -8,5 +8,5 @@ export function createCloseCamera({avatar}){
   position.set(x+sin*EYE_FORWARD*scale,y+EYE_HEIGHT*scale,z+cos*EYE_FORWARD*scale);
   look.set(position.x+sin*8*scale,position.y+Math.tan(pitch)*8*scale,position.z+cos*8*scale);
  }
- return {place,movement:(x,z)=>closeMovement(x,z,yaw),heading:()=>yaw,face(angle){yaw=angle;},look(dx,dy){yaw-=dx*.004;pitch=Math.max(-1.05,Math.min(1.05,pitch-dy*.003));},reset(angle){yaw=angle;pitch=0;},invalidate(){}};
+ return {place,movement:(x,z)=>closeMovement(x,z,yaw),heading:()=>yaw,drive(turn,forward,dt){yaw-=Math.max(-1,Math.min(1,turn))*Math.max(0,dt)*1.65;return closeMovement(0,forward,yaw);},face(angle){yaw=angle;},look(dx,dy){yaw-=dx*.004;pitch=Math.max(-1.05,Math.min(1.05,pitch-dy*.003));},reset(angle){yaw=angle;pitch=0;},invalidate(){}};
 }

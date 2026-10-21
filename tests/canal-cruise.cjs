@@ -3,7 +3,7 @@ const base=__dirname+'/../games/adventure/';
 const route=fs.readFileSync(base+'cruise-route.js','utf8').replace(/^import .*$/gm,'').replaceAll('export ','');
 const physics=fs.readFileSync(base+'explore-state.js','utf8').replace(/^import .*$/gm,'').replace(/^import .*$/gm,'').replaceAll('export ','');
 const ctx=vm.createContext({normalizeEstate:()=>({buildings:[]}),estateCoinCost:()=>0});
-vm.runInContext(fs.readFileSync(base+'geography.js','utf8').replace(/^import .*$/gm,'').replaceAll('export ','')+'\n'+fs.readFileSync(base+'panama-state.js','utf8').replace(/^import .*$/gm,'').replaceAll('export ','')+'\n'+fs.readFileSync(base+'campaign-state.js','utf8').replace(/^import .*$/gm,'').replaceAll('export ','')+'\n'+fs.readFileSync(base+'colon-state.js','utf8').replace(/^import .*$/gm,'').replaceAll('export ','')+'\n'+route+'\n'+physics,ctx);
+vm.runInContext(fs.readFileSync(base+'san-blas-layout.js','utf8').replaceAll('export ','')+'\n'+fs.readFileSync(base+'travel-mode.js','utf8').replaceAll('export ','')+'\n'+fs.readFileSync(base+'geography.js','utf8').replace(/^import .*$/gm,'').replaceAll('export ','')+'\n'+fs.readFileSync(base+'panama-state.js','utf8').replace(/^import .*$/gm,'').replaceAll('export ','')+'\n'+fs.readFileSync(base+'campaign-state.js','utf8').replace(/^import .*$/gm,'').replaceAll('export ','')+'\n'+fs.readFileSync(base+'colon-state.js','utf8').replace(/^import .*$/gm,'').replaceAll('export ','')+'\n'+route+'\n'+physics,ctx);
 const evaluate=s=>vm.runInContext(s,ctx);
 assert.equal(evaluate('normalizeCruise(null).tickets'),0);
 assert.equal(evaluate('normalizeCruise({tickets:Infinity,active:true}).active'),false);

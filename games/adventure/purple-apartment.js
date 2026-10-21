@@ -1,5 +1,5 @@
-import {cityX} from './geography.js?v=188';
-export const PURPLE_APARTMENT={x:cityX(98),z:(-79),floors:40,floorHeight:2.4,width:8,depth:5.6};
+import {cityX} from './geography.js?v=211';
+export const PURPLE_APARTMENT={x:cityX(97),z:(-78),floors:40,floorHeight:2.4,width:8,depth:5.6};
 export function createPurpleApartment({T,group,make,mat,box,height}){
  const p=PURPLE_APARTMENT,root=new T.Group();root.name='One enormous purple apartment tower · 40 floors';root.position.set(p.x,height(p.x,p.z),p.z);group.add(root);
  const purple=mat('#7730bf',{roughness:.7}),violet=mat('#a85be0',{roughness:.65}),deep=mat('#462075'),trim=mat('#d1b3ef'),glass=mat('#9dc7dd',{metalness:.35,roughness:.23}),warm=mat('#ffe8af',{emissive:'#ffce70',emissiveIntensity:.45}),dark=mat('#30334b');

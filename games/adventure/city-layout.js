@@ -1,11 +1,11 @@
-import {cityX} from './geography.js?v=188';
-import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=188';
+import {cityX} from './geography.js?v=211';
+import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=211';
 // Shared road and parcel clearances for all city scene generators.
 export const CITY_STREET_X=[77,105,135,163].map(cityX),CITY_STREET_Z=[-85,-61,-35,-12];
 export const CITY_FIXED_PLOTS=[
 {id:'football',x:cityX(120),z:-23,w:20,d:14,solid:true},
 {id:'pizzeria',x:cityX(120),z:-48,w:12,d:14,solid:true},
-{id:'tower',x:cityX(98),z:-79,w:9,d:7,solid:true},
+{id:'tower',x:cityX(97),z:-78,w:9,d:7,solid:true},
 {id:'museum',x:cityX(142),z:-79,w:8,d:7,solid:true},
 {id:'mural',x:cityX(91),z:-73,w:9,d:3,solid:true},
 {id:'market',x:cityX(150),z:-48,w:6,d:5,solid:true},
@@ -49,4 +49,11 @@ for(const [i,dx] of COLS.entries())for(const [j,dz] of ROWS.entries()){
 export const CITY_ALL_PLOTS=claimed;
 export function cityBlocksVehicle(x,z){
  return CITY_ALL_PLOTS.some(p=>p.solid!==false&&Math.abs(x-p.x)<p.w/2+.85&&Math.abs(z-p.z)<p.d/2+.85);
+}
+
+// Small street props share the road setbacks used by the parcel planner.
+export function cityPropSite(x,z,r=.75){
+ const clear=(a,b)=>!CITY_STREET_X.some(v=>Math.abs(v-a)<3.075+r+.55)&&!CITY_STREET_Z.some(v=>Math.abs(v-b)<3.075+r+.55)&&roadDistance(a,b)>HIGHWAY_WIDTH/2+r+.6&&!CITY_ALL_PLOTS.some(p=>p.solid!==false&&Math.abs(a-p.x)<p.w/2+r&&Math.abs(b-p.z)<p.d/2+r);
+ for(let d=0;d<=18;d+=.5)for(let i=0;i<(d?32:1);i++){const a=x+Math.cos(i*Math.PI/16)*d,b=z+Math.sin(i*Math.PI/16)*d;if(clear(a,b))return {x:a,z:b};}
+ return null;
 }

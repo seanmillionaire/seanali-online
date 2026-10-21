@@ -1,4 +1,5 @@
-import {SMOOTH_MAINLAND_OUTLINE,CANAL_WATERWAY,mainlandContains,WORLD_EXTENT} from './geography.js?v=188';
+import {homeLot} from './mansion-state.js?v=211';
+import {SMOOTH_MAINLAND_OUTLINE,CANAL_WATERWAY,mainlandContains,WORLD_EXTENT} from './geography.js?v=211';
 /* Shared, coordinate-accurate archipelago map for the open-world explorer.
    X is east/right and Z is south/down, matching ArrowUp (negative Z). */
 export function createWorldMap({host,panel,world,islands,places,language,onTravel,onOpen}){
@@ -18,7 +19,7 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
   const defs=svgEl('defs'),gradient=svgEl('linearGradient',{id:mini?'ocean-mini':'ocean-big',x1:'0%',y1:'0%',x2:'100%',y2:'100%'});
   gradient.append(svgEl('stop',{offset:'0%','stop-color':'#77cfd4'}),svgEl('stop',{offset:'100%','stop-color':'#267eac'}));
   defs.append(gradient);svg.append(defs);
-  svg.append(svgEl('rect',{x:WORLD_EXTENT.left,y:WORLD_EXTENT.top,width:WORLD_EXTENT.width,height:WORLD_EXTENT.height,fill:'url(#'+(mini?'ocean-mini':'ocean-big')+')'}));
+  svg.append(svgEl('ellipse',{cx:0,cy:0,rx:WORLD_EXTENT.width/2,ry:WORLD_EXTENT.height/2,fill:'url(#'+(mini?'ocean-mini':'ocean-big')+')'}));
   svg.append(svgEl('path',{d:SMOOTH_MAINLAND_OUTLINE.map((p,i)=>(i?'L':'M')+p[0]+' '+p[1]).join(' ')+' Z',fill:'#86b574',stroke:'#e9d7a6','stroke-width':3}));
   svg.append(svgEl('path',{d:Array.from({length:49},(_,i)=>{const a=i/48*Math.PI*2;return (i?'L':'M')+(-35+Math.cos(a)*37)+' '+(-335+Math.sin(a)*22);}).join(' ')+' Z',fill:'#77cfd4'}));svg.append(svgEl('path',{d:CANAL_WATERWAY.map((p,i)=>(i?'L':'M')+p[0]+' '+p[1]).join(' '),stroke:'#77cfd4','stroke-width':46,fill:'none','stroke-linecap':'round','stroke-linejoin':'round'}));
   if(!mini){svg.append(svgEl('text',{x:45,y:-174,'font-size':12,'text-anchor':'middle',fill:'#16475e'},say('MAR CARIBE','CARIBBEAN SEA')));svg.append(svgEl('text',{x:65,y:90,'font-size':12,'text-anchor':'middle',fill:'#16475e'},say('OCÉANO PACÍFICO','PACIFIC OCEAN')));svg.append(svgEl('text',{x:-195,y:-170,'font-size':13,fill:'#16475e'},'N ↑'));}
@@ -57,6 +58,7 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
   if(!mini)for(const p of places.filter(p=>['friend','boat','balloon'].includes(p.kind))){
     svg.append(svgEl('circle',{cx:p.x,cy:p.z,r:3.5,fill:'#fff9de',stroke:'#3d6775','stroke-width':1}));
   }
+  const homeMarker=svgEl('g',{'aria-label':say('Mi propiedad','My property')});homeMarker.append(svgEl('circle',{r:12,fill:'#f9edc5',stroke:'#355c4d','stroke-width':2}),svgEl('text',{x:0,y:5,'font-size':17,'text-anchor':'middle'},'⌂'));svg.append(homeMarker);
   const target=svgEl('circle',{r:6,fill:'none',stroke:'#fff3a1','stroke-width':2,
     'stroke-dasharray':'3 2',visibility:'hidden'});
   svg.append(target);
@@ -66,7 +68,7 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
   const arrow=svgEl('path',{d:'M0 -6 L5 5 L0 2 L-5 5 Z',fill:'#ed6b36',stroke:'#843b22','stroke-width':'.7'});
   group.append(arrow);
   svg.append(group);
-  return {svg,group,arrow,target};
+  return {svg,group,arrow,target,homeMarker};
  }
  let last=0,opened=false,zoom=1,center=point(world.x,world.z),chosen=null,full=null,placeReadout=null;
  const preview=drawing(true),mini=elem('button','island-map-mini');
@@ -104,6 +106,7 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
     b.type='button';b.addEventListener('click',()=>choose(island.id));
     destinations.append(b);
   }
+  const lot=homeLot({mansion:world.mansion});if(lot){const b=elem('button','island-map-destination',say('🏡 Mi propiedad','🏡 My property'));b.type='button';b.onclick=()=>{close(false);onTravel({x:lot.x,z:lot.z+16,en:lot.en,es:lot.es});};destinations.prepend(b);}
   const placesToggle=elem('details','island-map-places');
   const placesHeading=elem('summary','island-map-places-toggle',say('📍 Ver lista de destinos','📍 Show destination list'));
   placesToggle.append(placesHeading,destinations);
@@ -116,13 +119,14 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
   if(!force&&now-last<90)return;last=now;
   const x=Number(world.x)||0,z=Number(world.z)||0;
   const angle=180-(Number(heading)||0)*180/Math.PI;
-  function place(map){map.group.setAttribute('transform','translate('+x+' '+z+')');map.arrow.setAttribute('transform','rotate('+angle+')');}
+  function place(map){const lot=homeLot({mansion:world.mansion});map.homeMarker.setAttribute('visibility',lot?'visible':'hidden');if(lot)map.homeMarker.setAttribute('transform','translate('+lot.x+' '+lot.z+')');map.group.setAttribute('transform','translate('+x+' '+z+')');map.arrow.setAttribute('transform','rotate('+angle+')');}
   place(preview);
   // A moving local view keeps the player centered while approaching any island.
   preview.svg.setAttribute('viewBox',(x-37)+' '+(z-31)+' 74 62');
   if(!opened||!full)return;
   place(full);
   if(placeReadout)placeReadout.textContent='📍 '+say('ESTÁS AQUÍ: ','YOU ARE HERE: ')+currentPlace();
+  full.svg.parentElement.classList.toggle('map-globe',zoom===1);
   const w=WORLD_EXTENT.width/zoom,h=WORLD_EXTENT.height/zoom;
   const cx=zoom===1?0:center.x,cz=zoom===1?0:center.z;
   full.svg.setAttribute('viewBox',(cx-w/2)+' '+(cz-h/2)+' '+w+' '+h);

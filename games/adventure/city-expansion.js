@@ -1,9 +1,9 @@
-import {cityX} from './geography.js?v=188';
-import {roadRibbon,surfaceMesh,cityStreetSurface} from './road-surfaces.js?v=188';
-import {STREET_VENDORS,BARRIO_HOMES} from './city-street-life.js?v=188';
-import {CITY_EXPANSION_PLOTS,CITY_STREET_X,CITY_STREET_Z} from './city-layout.js?v=188';
-import {createPurpleApartment,PURPLE_APARTMENT} from './purple-apartment.js?v=188';
-import {spendFood} from './explore-state.js?v=188';
+import {CANAL_TERMINAL,cityX} from './geography.js?v=211';
+import {roadRibbon,surfaceMesh,cityStreetSurface} from './road-surfaces.js?v=211';
+import {STREET_VENDORS,BARRIO_HOMES} from './city-street-life.js?v=211';
+import {CITY_EXPANSION_PLOTS,CITY_STREET_X,CITY_STREET_Z,cityPropSite} from './city-layout.js?v=211';
+import {createPurpleApartment,PURPLE_APARTMENT} from './purple-apartment.js?v=211';
+import {spendFood} from './explore-state.js?v=211';
 /* Panama Adventure — substantial zero-dependency Casco Viejo city expansion.
    Roads and landmark buildings are genuine Three.js meshes; activities update
    game state only on meaningful user actions and persist in world.city. */
@@ -17,7 +17,7 @@ export const CITY_SITES=[
  {id:'museum2',x:cityX(131),z:(-81),icon:'🚢',en:'Canal exhibit',es:'Exhibición del Canal'},
  {id:'wash',x:cityX(88),z:-48,icon:'🫧',en:'Drive-through car wash',es:'Lavado de autos'},
  {id:'plaza',x:cityX(120),z:-73,icon:'⛲',en:'Plaza de la Independencia',es:'Plaza de la Independencia'},
- {id:'canal',x:66,z:-65,icon:'🚢',en:'Panama Canal cruise terminal',es:'Terminal de cruceros del Canal de Panamá'}
+ {id:'canal',...CANAL_TERMINAL,icon:'🚢',en:'Panama Canal cruise terminal',es:'Terminal de cruceros del Canal de Panamá'}
 ];
 export const CITY_RALLY=[
  {x:cityX(147),z:(-67)},{x:cityX(107),z:(-83)},{x:cityX(77),z:(-58)},{x:cityX(114),z:(-23)}
@@ -71,24 +71,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
   const tex=new T.CanvasTexture(canvas),material=new T.SpriteMaterial({map:tex,transparent:true,depthTest:false,depthWrite:false});
   const s=new T.Sprite(material);s.position.set(x,y,z);s.scale.set(size,size,1);parent.add(s);sprites.push({tex,material});return s;
  }
- // Continuous city-grade asphalt foundation; streets read as one urban surface.
- // Deliberately use one mesh rather than hundreds of overlapping road tiles.
- const cityBase=new T.Mesh(new T.CircleGeometry(1,96),asph);
- cityBase.name='Panama City continuous urban asphalt ground';
- cityBase.rotation.x=-Math.PI/2;cityBase.scale.set(52,43,1);
- cityBase.position.set(cityX(120),1.64,-50);cityBase.receiveShadow=true;cityBase.castShadow=false;group.add(cityBase);
- // Pave neighborhood ground with the same asphalt; retain all plot geometry
- // and elevations so nearby buildings, roads and activities stay unchanged.
- const urbanPlots=[[cityX(98),-19,11,8],[cityX(91),-29,7,5],[cityX(140),-33,8,6],
-  [cityX(101),-65,8,6],[cityX(132),-67,9,6],[cityX(145),-19,7,5],[cityX(82),-47,7,5],
-  [cityX(120),-12,7,5],[cityX(153),-55,6,5]];
- const plotGeo=new T.CircleGeometry(1,28);
- for(const [px,pz,rx,rz] of urbanPlots){
-  const plot=new T.Mesh(plotGeo,asph);
-  plot.name='Asphalt city neighborhood plot';
-  plot.rotation.x=-Math.PI/2;plot.scale.set(rx,rz,1);
-  plot.position.set(px,1.67,pz);plot.receiveShadow=true;plot.castShadow=false;group.add(plot);
- }
+ // Ground remains terrain; only authored streets receive asphalt.
  const roadGeometries=[];const keepRoadGeometry=g=>{roadGeometries.push(g);return g;};
  // One non-overlapping surface owns the street grid and its intersections.
  const chunks=[];
@@ -98,7 +81,8 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  group.add(surfaceMesh(T,keepRoadGeometry,cityStreetSurface(chunks,height),asph,'Casco Viejo connected road network'));
  // The closed coastal road uses the same continuous surface geometry.
  const ring=Array.from({length:193},(_,i)=>{const a=i/192*Math.PI*2;return [cityX(120)+Math.cos(a)*48.4,-50+Math.sin(a)*40];});
- group.add(surfaceMesh(T,keepRoadGeometry,roadRibbon(ring,5.7,height,{lift:.175}),asph,'Casco Viejo coastal road'));
+ // The old oval cut diagonally through plots; the connected street grid owns vehicle travel.
+ group.add(surfaceMesh(T,keepRoadGeometry,roadRibbon(ring,2,height,{lift:.08}),walk,'Casco Viejo pedestrian promenade'));
  // Painted lines and crossings: repeated street detail without large textures.
  for(const dx of xs)for(let k=-34;k<=34;k+=9){
   const x=cityX(120)+dx,z=(-50)+k;if((dx/58)**2+(k/48)**2>.78)continue;
@@ -125,7 +109,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  }
  // Seaside walkway, lamps and benches make the outskirts worth exploring.
  for(let i=0;i<30;i++){
-  const theta=i*2*Math.PI/30,x=cityX(120)+Math.cos(theta)*50,z=(-50)+Math.sin(theta)*41;
+  const theta=i*2*Math.PI/30,site=cityPropSite(cityX(120)+Math.cos(theta)*50,-50+Math.sin(theta)*41,1.8);if(!site)continue;const {x,z}=site;
   const y=height(x,z);
   decorate(cylinder,dark,x,y+2,z,.10,4,.10);
   decorate(ball,gold,x,y+4.20,z,.35,.40,.35);
@@ -153,7 +137,8 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  // Emoji flags are easier to recognize and stay consistent with the game logo.
  const cityFlags=[];
  const flagPositions=[[cityX(120),(-38),9],[cityX(103),(-62),7],[cityX(138),(-63),7],[cityX(98),(-30),7],[cityX(143),(-31),7],[cityX(117),(-84),7.5]];
- for(const [x,z,h] of flagPositions){
+ for(const [px,pz,h] of flagPositions){
+  const site=cityPropSite(px,pz,1);if(!site)continue;const {x,z}=site;
   const pole=new T.Group();pole.name='🇵🇦 Bandera de Panamá';pole.position.set(x,height(x,z),z);group.add(pole);
   makeObj(cylinder,stone,0,.25,0,.6,.5,.6,pole);
   makeObj(cylinder,white,0,h/2,0,.085,h,.085,pole);

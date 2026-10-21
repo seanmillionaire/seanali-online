@@ -13,19 +13,25 @@ export function roadRibbon(path,width,height,{offset=0,lift=.13,dash=0,gap=0,inc
   let t=0;
   while(t<length-1e-8){
    const phase=dash?(distance+t)%(dash+gap):0;
-   const step=dash?Math.min(length-t,(phase<dash?dash:dash+gap)-phase):length;
+   const step=dash?Math.min(length-t,(phase<dash?dash:dash+gap)-phase):Math.min(length-t,.75);
    if(step<1e-8)break;
    if((!dash||phase<dash)&&include(a[0]+dx*(t+step/2)/length,a[1]+dz*(t+step/2)/length)){
     const base=positions.length/3;
+    // Sample across the full pavement as well as along it. A single quad
+    // averaged the two shoulders and could bury its middle in a hillside.
+    const columns=Math.max(1,2*Math.ceil(width/1.5));
     for(const d of [t,t+step]){
      const f=d/length,nx=n0[0]*(1-f)+n1[0]*f,nz=n0[1]*(1-f)+n1[1]*f;
      const norm=Math.hypot(nx,nz)||1;
-     for(const side of [-1,1]){
-      const x=a[0]+dx*f+nx/norm*(offset+side*width/2),z=a[1]+dz*f+nz/norm*(offset+side*width/2);
-      positions.push(x,height(x,z)+lift,z);uv.push(side<0?0:1,distance+d);
+     for(let column=0;column<=columns;column++){
+      const across=-width/2+width*column/columns;
+      const x=a[0]+dx*f+nx/norm*(offset+across),z=a[1]+dz*f+nz/norm*(offset+across);
+      positions.push(x,height(x,z)+lift,z);uv.push(column/columns,distance+d);
      }
     }
-    indices.push(base,base+2,base+1,base+1,base+2,base+3);
+    for(let column=0;column<columns;column++){
+     const p=base+column,q=p+columns+1;indices.push(p,q,p+1,p+1,q,q+1);
+    }
    }
    t+=step;
   }
@@ -38,7 +44,7 @@ export function surfaceMesh(T,geometry,data,material,name){
  geo.setAttribute('position',new T.Float32BufferAttribute(data.positions,3));
  geo.setAttribute('uv',new T.Float32BufferAttribute(data.uv,2));
  geo.setIndex(data.indices);geo.computeVertexNormals();
- const mesh=new T.Mesh(geo,material);mesh.name=name;mesh.receiveShadow=true;mesh.castShadow=false;return mesh;
+ const mesh=new T.Mesh(geo,material);mesh.name=name;mesh.userData.roadSurface=/highway asphalt|connected road network|coastal road/i.test(name);mesh.receiveShadow=true;mesh.castShadow=false;return mesh;
 }
 // Split a rectangle union at every boundary. Each pavement cell appears once,
 // including junctions, so crossing streets cannot flicker against each other.
@@ -49,11 +55,14 @@ export function cityStreetSurface(rectangles,height){
  for(let i=1;i<xs.length;i++)for(let j=1;j<zs.length;j++){
   const x=(xs[i-1]+xs[i])/2,z=(zs[j-1]+zs[j])/2;
   if(!rectangles.some(r=>Math.abs(x-r.x)<r.w/2&&Math.abs(z-r.z)<r.d/2))continue;
-  const base=positions.length/3;
-  for(const [px,pz] of [[xs[i-1],zs[j-1]],[xs[i-1],zs[j]],[xs[i],zs[j-1]],[xs[i],zs[j]]]){
-   positions.push(px,height(px,pz)+.175,pz);uv.push(px*.2,pz*.2);
+  // Sample the actual terrain across each street cell: long corner-only quads
+  // could sink below the raised city surface in the middle of a block.
+  const nx=Math.ceil((xs[i]-xs[i-1])/1.25),nz=Math.ceil((zs[j]-zs[j-1])/1.25);
+  for(let ix=0;ix<nx;ix++)for(let iz=0;iz<nz;iz++){
+   const base=positions.length/3,x0=xs[i-1]+(xs[i]-xs[i-1])*ix/nx,x1=xs[i-1]+(xs[i]-xs[i-1])*(ix+1)/nx,z0=zs[j-1]+(zs[j]-zs[j-1])*iz/nz,z1=zs[j-1]+(zs[j]-zs[j-1])*(iz+1)/nz;
+   for(const [px,pz]of [[x0,z0],[x0,z1],[x1,z0],[x1,z1]]){positions.push(px,height(px,pz)+.175,pz);uv.push(px*.2,pz*.2);}
+   indices.push(base,base+1,base+2,base+2,base+1,base+3);
   }
-  indices.push(base,base+1,base+2,base+2,base+1,base+3);
  }
  return {positions,uv,indices};
 }

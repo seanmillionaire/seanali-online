@@ -5,7 +5,11 @@ export function driveByDirection(car,dx,dz,previousSpeed,dt,fast,canDrive){
  const vx=dx/length,vz=dz/length,desired=(fast?27:15)*force;
  car.heading=Math.atan2(vx,vz);
  const speed=previousSpeed+(desired-previousSpeed)*Math.min(1,dt*7);
- const nx=car.x+vx*speed*dt,nz=car.z+vz*speed*dt;
- if(!canDrive(nx,nz))return 0;
- car.x=nx;car.z=nz;return speed;
+ const distance=speed*dt,steps=Math.max(1,Math.ceil(distance/.15)),step=distance/steps;
+ for(let i=0;i<steps;i++){
+  const nx=car.x+vx*step,nz=car.z+vz*step;
+  if(!canDrive(nx,nz))return 0;
+  car.x=nx;car.z=nz;
+ }
+ return speed;
 }

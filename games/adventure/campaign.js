@@ -1,5 +1,5 @@
-import {FESTIVAL_CHAPTERS,FESTIVAL_WORK,campaignSnapshot,acceptCampaign,turnInCampaign,stepFestivalWork} from './campaign-state.js?v=188';
-import {missionStatus} from './region-projects.js?v=188';
+import {FESTIVAL_CHAPTERS,FESTIVAL_WORK,campaignSnapshot,acceptCampaign,turnInCampaign,stepFestivalWork} from './campaign-state.js?v=211';
+import {missionStatus} from './region-projects.js?v=211';
 export function createCampaign({host,panel,state,save,prepare,onObjective,onFinish,joy}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,c=state.world.campaign;
  const el=(tag,text,cls='')=>{const n=document.createElement(tag);n.className=cls;n.textContent=text;return n;};

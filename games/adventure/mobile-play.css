@@ -637,3 +637,14 @@ body[data-scene="explore"] .animal-ride-quick:not([hidden]){
 @media(max-height:520px) and (max-width:780px),(pointer:coarse) and (max-height:520px){
  body[data-scene="explore"] .world-arrows .movement-speed{left:110px;bottom:calc(var(--game-control-bottom) + 18px)}
 }
+
+.explore-stick.stick-held{border-color:#ffe3a0;background:#294c5270;box-shadow:0 0 0 4px #ffe3a02b,inset 0 0 20px #214a5420}
+/* More room to steer left before a thumb reaches the tablet's screen edge. */
+@media(min-width:600px) and (min-height:600px) and (pointer:coarse){
+ body[data-scene="explore"] .explore-world.explore-ready .explore-stick{left:max(54px,env(safe-area-inset-left))!important}
+ body[data-scene="explore"] .world-arrows .movement-speed{left:67px}
+}
+@media(min-width:781px) and (max-width:1100px) and (pointer:coarse){
+ .campaign-hud{top:136px}
+ .explore-world:has(.campaign-hud:not([hidden])) .camera-view-toggle{top:218px}
+}

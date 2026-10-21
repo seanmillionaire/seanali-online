@@ -10,5 +10,6 @@ const assert=require('node:assert/strict');
  }
  rig.reset(0);rig.look(100,100000);rig.place(p,look,0,0,0);assert(Number.isFinite(look.y));rig.reset(0);rig.place(p,look,0,0,0);assert.equal(look.y,EYE_HEIGHT);assert.equal(p.z,EYE_FORWARD,'no rear or shoulder camera offset');
  const v=closeMovement(0,-1,Math.PI/2);assert(Math.abs(v.x-1)<1e-9&&Math.abs(v.z)<1e-9);
+ rig.reset(0);const first=rig.heading();const turned=rig.drive(1,0,1);assert(rig.heading()<first,'right arrow turns camera right');assert.equal(Math.hypot(turned.x,turned.z),0,'turning alone never strafes');rig.drive(-1,0,1);assert(Math.abs(rig.heading())<1e-9,'left turns back');rig.reset(0);rig.drive(1,0,Math.PI/1.65/2);const ahead=rig.drive(0,-1,0);assert(ahead.x<-.999&&Math.abs(ahead.z)<1e-9,'forward walks along the turned view');const yaw=rig.heading();rig.drive(1,-1,0);assert.equal(rig.heading(),yaw,'paused input does not turn');
  console.log('PASS true eye-position camera at all avatar sizes/headings, pitch limits, reset and first-person movement');
 })().catch(e=>{console.error(e);process.exit(1)});

@@ -1,0 +1,62 @@
+/* Expedition art direction: restrained field equipment, readable maps and quiet controls. */
+body[data-scene="explore"],body[data-scene="islandQuest"]{--exp-panel:#152528ed;--exp-line:#87999166;--exp-ink:#edf2ea;--exp-accent:#c8ad70;font-family:Inter,system-ui,-apple-system,sans-serif}
+body[data-scene="explore"] .topbar{background:linear-gradient(#101b22d9,transparent)!important;color:var(--exp-ink)}
+body[data-scene="explore"] .brand{font-family:Inter,system-ui,sans-serif;font-weight:650;letter-spacing:.035em}
+body[data-scene="explore"] .tools .lang{background:#142126d9;border:1px solid var(--exp-line);border-radius:5px}
+body[data-scene="explore"] .tools .lang button{color:var(--exp-ink);border-radius:3px}
+body[data-scene="explore"] .tools .lang button.active{background:#c8ad70;color:#142126}
+body[data-scene="explore"] :is(.world-small,.world-action,.world-jump,.world-catch,.camera-view-toggle,.movement-speed,.mobile-game-dock button){background:var(--exp-panel)!important;color:var(--exp-ink)!important;border:1px solid var(--exp-line)!important;border-radius:7px!important;box-shadow:0 2px 10px #07131933!important;font-family:inherit;font-weight:550;}
+body[data-scene="explore"] :is(.world-small,.world-action,.world-jump,.camera-view-toggle,.mobile-game-dock button):hover{border-color:var(--exp-accent)!important;background:#273938f2!important}
+body[data-scene="explore"] .picture-button .button-picture{display:flex;justify-content:center;align-items:center;font-family:inherit;font-size:20px!important;color:var(--exp-accent)}
+body[data-scene="explore"] .button-picture svg{width:23px;height:23px}
+body[data-scene="explore"] .button-caption{font-size:12px!important;letter-spacing:.01em;font-weight:550!important}
+body[data-scene="explore"] .mobile-dock-icon{display:grid;place-items:center;color:var(--exp-accent);font-family:inherit;font-size:20px!important}
+body[data-scene="explore"] .mobile-dock-icon svg{width:23px;height:23px}
+body[data-scene="explore"] .mobile-dock-caption{font-weight:550!important;font-size:12px!important}
+body[data-scene="explore"] .mobile-game-dock .mobile-dock-build{background:#263b36f2!important;border-color:#adbe9b99!important}
+body[data-scene="explore"] :is(.explore-location,.explore-bag,.region-help-status,.colon-status,.volcano-hike-status){background:var(--exp-panel)!important;color:var(--exp-ink)!important;border:1px solid var(--exp-line)!important;border-radius:5px!important;box-shadow:none!important;font-weight:550!important}
+body[data-scene="explore"] .explore-location{font-family:inherit;letter-spacing:.025em;font-size:13px!important}
+body[data-scene="explore"] :is(.world-story,.campaign-hud,.island-goal,.explore-message){background:var(--exp-panel)!important;color:var(--exp-ink)!important;border:1px solid var(--exp-line)!important;border-radius:7px!important;box-shadow:0 3px 14px #07131933!important}
+body[data-scene="explore"] :is(.world-story,.campaign-hud){font-family:inherit;font-size:13px;font-weight:500}
+body[data-scene="explore"] .world-story :is(strong,b),body[data-scene="explore"] .campaign-hud :is(strong,b){font-weight:650;color:#d6c18d}
+body[data-scene="explore"] .explore-stick{border:1px solid #b7c4ba99!important;background:#10242b55!important;box-shadow:inset 0 0 20px #091a2425!important}
+body[data-scene="explore"] .stick-knob{background:#c4cbbabf!important;border:1px solid #f3f2deaa!important;box-shadow:0 2px 10px #07131955!important;font-size:19px;color:#1a2a2b}
+body[data-scene="explore"] .stick-compass{color:#edf2ea;font:10px system-ui;opacity:.8}
+body[data-scene="explore"] .explore-stick.stick-held{border-color:#dfca91!important;box-shadow:0 0 0 2px #c8ad7022!important}
+body[data-scene="explore"] :is(.explore-panel,.friend-panel,.realm-panel,.journey-panel){background:#182a2e!important;color:var(--exp-ink)!important;border:1px solid var(--exp-line)!important;border-radius:10px!important;box-shadow:0 20px 60px #06121977!important}
+body[data-scene="explore"] .explore-panel h2{font-family:inherit!important;font-size:25px!important;font-weight:600!important;letter-spacing:-.025em}
+body[data-scene="explore"] .explore-panel :is(p,h3){color:#c3cec4!important}
+body[data-scene="explore"] :is(.panel-close,.discover-place,.estate-plan,.estate-costs,.estate-currency,.estate-legacy-link){background:#24383c!important;color:var(--exp-ink)!important;border:1px solid var(--exp-line)!important;border-radius:6px!important;box-shadow:none!important}
+body[data-scene="explore"] .discover-place:disabled{color:#8c9b96!important;background:#1d2d31!important}
+body[data-scene="explore"] :is(.estate-ready,.estate-build-button,.goal-next){background:#385746!important;color:#edf2ea!important;border-color:#7e9d7d!important;border-radius:6px!important}
+body[data-scene="explore"] .explore-panel .button-picture{font-size:23px!important}
+body[data-scene="explore"] .world-arrows button{background:#152528d9;border:1px solid var(--exp-line);border-radius:4px;color:var(--exp-ink)}
+body[data-scene="explore"] .world-action.has-target{border-color:#c8ad70cc!important}
+body[data-scene="explore"] .explore-controls{color:#edf2eacc;text-shadow:0 1px 4px #0009;font-weight:400}
+body[data-scene="entry"] .welcome-copy{font-family:Inter,system-ui,sans-serif}
+body[data-scene="entry"] .world-entry h1{font-family:inherit;letter-spacing:-.045em;font-weight:650}
+body[data-scene="entry"] .world-entry h1 em{font-family:inherit;font-style:normal;font-weight:450;letter-spacing:.03em}
+body[data-scene="entry"] .primary.enter-world{border-radius:7px!important;box-shadow:0 4px 16px #07131944;background:#c8ad70!important;color:#152528!important}
+@media(max-width:780px){
+ body[data-scene="explore"] .explore-actions .picture-button{border-radius:7px!important;min-height:64px!important}
+ body[data-scene="explore"] .mobile-game-dock button{border-radius:7px!important}
+ body[data-scene="explore"] .mobile-game-dock{gap:6px}
+}
+@media(prefers-reduced-motion:reduce){body[data-scene="explore"] button{transition:none!important}}
+body[data-scene="explore"] .explore-world .explore-actions .animal-ride-quick:not([hidden]){background:var(--exp-panel)!important;color:var(--exp-ink)!important;border:1px solid var(--exp-line)!important;border-radius:7px!important;box-shadow:0 2px 10px #07131933!important;font-weight:550!important}
+body[data-scene="explore"] .world-story .story-sequence span{background:#314641;border:1px solid #65796c;border-radius:4px;color:#d9dfd2;box-shadow:none}
+body[data-scene="explore"] .world-story .story-sequence .story-next{background:#5a603f;border-color:#c8ad70}
+body[data-scene="entry"] .welcome-feature-icon{display:grid;place-items:center;color:#e0c68a}
+body[data-scene="entry"] .welcome-feature-icon svg{width:30px;height:30px}
+body[data-scene="entry"] .welcome-feature{border-radius:7px!important;background:#152528c9!important;border:1px solid #c0c7b866!important;color:#edf2ea!important}
+/* Angelique's Panama: warm and inviting, with clear equipment-style controls. */
+body[data-scene="explore"]{--exp-panel:#f8f1def0;--exp-line:#526e5e66;--exp-ink:#244c48;--exp-accent:#487a65}
+body[data-scene="explore"] :is(.world-small,.world-action,.world-jump,.world-catch,.camera-view-toggle,.movement-speed,.mobile-game-dock button){border-radius:11px!important}
+body[data-scene="explore"] .mobile-game-dock .mobile-dock-build{background:#efcf83f2!important;color:#244c48!important}
+body[data-scene="explore"] :is(.world-story,.campaign-hud) :is(strong,b){color:#315a46}
+body[data-scene="explore"] :is(.explore-panel,.friend-panel,.realm-panel,.journey-panel){background:#f6f1e4!important;color:#244c48!important}
+body[data-scene="explore"] .explore-panel :is(p,h3){color:#426055!important}
+body[data-scene="explore"] :is(.panel-close,.discover-place,.estate-plan,.estate-costs,.estate-currency,.estate-legacy-link){background:#e4edda!important;color:#244c48!important}
+body[data-scene="explore"] :is(.world-small,.world-action,.world-jump,.camera-view-toggle,.mobile-game-dock button):hover{background:#e0ead8f2!important}
+/* A single calm impact cue; never blink repeatedly or hide the movement controls. */
+.explore-world.collision-impact:after{content:'';position:absolute;inset:0;z-index:14;pointer-events:none;box-shadow:inset 0 0 65px #cf713344;border:2px solid #c8985b66}

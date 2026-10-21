@@ -1,10 +1,11 @@
-import {botanicalGeometry,mergeNatureGeometry,leafSurface} from './botanical-geometry.js?v=188';
+import {botanicalGeometry,mergeNatureGeometry,leafSurface} from './botanical-geometry.js?v=211';
 // High-canopy vegetation batched into just six shared GPU draws, even for
 // thousands of individual pines, palms and broadleaf tropical trees.
-import {planForestPatches} from './forest-patches.js?v=188';
+import {planForestPatches} from './forest-patches.js?v=211';
 
 export function createForestLandscape({T,scene,mat,geometry,height,light=false}){
  const trees=planForestPatches(light ? .63 : 1),group=new T.Group();
+ group.userData.solidTrees=trees;
  group.name='Panama forest reserves · giant palms, cloudforest pines and broadleaf canopy';
  scene.add(group);
  const bark=mat('#8b765c',{roughness:1});
@@ -64,7 +65,7 @@ export function createForestLandscape({T,scene,mat,geometry,height,light=false})
   stems?.computeBoundingSphere?.();
   foliage.computeBoundingSphere?.();
   if(stems)group.add(stems);group.add(foliage);counts[kind]=items.length;
-  visibility.push({items,foliage,factors:new Float32Array(items.length).fill(1)});
+  visibility.push({items,foliage,stems,factors:new Float32Array(items.length).fill(1)});
  }
  // Never shrink or collide the entire tree. Only fade its leafy canopy when
  // the player or a third-person sightline moves beneath it; keep its trunk
@@ -77,21 +78,23 @@ export function createForestLandscape({T,scene,mat,geometry,height,light=false})
    for(let i=0;i<layer.items.length;i++){
     const t=layer.items[i],dx=t.x-x,dz=t.z-z,dist=Math.hypot(dx,dz);
     let fade=dist<3.8? .065:dist<6.2?.22:1;
-    if(camera&&dist<24){
+    if(camera){
      const rayX=camera.position.x-x,rayZ=camera.position.z-z,len=rayX*rayX+rayZ*rayZ;
      const progress=len?Math.max(0,Math.min(1,(dx*rayX+dz*rayZ)/len)):0;
      const width=Math.hypot(dx-rayX*progress,dz-rayZ*progress);
-     if(progress>.06&&progress<.98&&width<2.5+t.size*.75)fade=Math.min(fade,.12);
+     if(progress>.02&&progress<=1&&width<2.5+t.size*.75)fade=0;
     }
     // Smooth appearance between individual canopies without sudden popping.
     const prev=layer.factors[i],next=prev+(fade-prev)*.42;
     if(Math.abs(next-prev)<.007&&Math.abs(next-fade)<.025)continue;
     layer.factors[i]=next;dummy.position.set(t.x,height(t.x,t.z)-.035,t.z);
     dummy.rotation.set(0,t.heading,0);dummy.scale.setScalar(t.size*Math.max(.045,next));
-    dummy.updateMatrix();layer.foliage.setMatrixAt(i,dummy.matrix);changed=true;
+    dummy.updateMatrix();layer.foliage.setMatrixAt(i,dummy.matrix);
+    if(layer.stems){dummy.scale.setScalar(t.size*(fade===0?0:1));dummy.updateMatrix();layer.stems.setMatrixAt(i,dummy.matrix);}
+    changed=true;
    }
    if(changed){layer.foliage.instanceMatrix.needsUpdate=true;
-    layer.foliage.computeBoundingSphere?.();}
+    layer.foliage.computeBoundingSphere?.();if(layer.stems){layer.stems.instanceMatrix.needsUpdate=true;layer.stems.computeBoundingSphere?.();}}
   }
  }
  return {group,trees,counts,updateFocus};

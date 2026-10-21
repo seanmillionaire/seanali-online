@@ -1,3 +1,4 @@
+import {sanBlasLayout,relocateSanBlasPoint,SAN_BLAS_LAYOUT_VERSION} from './san-blas-layout.js?v=211';
 export const CITY_EAST_SHIFT=240;
 export const cityX=x=>x+CITY_EAST_SHIFT;
 export const CITY_CENTER={x:cityX(120),z:-50};
@@ -9,13 +10,13 @@ export const COLON_OFFSET={x:-40,z:-240};
 export const COLON_LAYOUT_VERSION=2;
 export const colonWorld=(x,z)=>({x:x+COLON_OFFSET.x,z:z+COLON_OFFSET.z});
 export const colonLocal=(x,z)=>({x:x-COLON_OFFSET.x,z:z-COLON_OFFSET.z});
-export const WORLD_BOUNDS={x:900,z:600};
+export const WORLD_BOUNDS={x:900,z:760};
 export const DESTINATIONS={
  home:{old:[0,0],at:[0,0]},pizzaCity:{old:[-100,-74],at:[cityX(120),-50]},
  colon:{old:[110,-56],at:[-50,-365]},monkeyIslet:{old:[130,-25],at:[-30,-334]},
  wilds:{old:[16,-112],at:[-230,-200]},sunset:{old:[-110,49],at:[-350,-65]},
  islet:{old:[60,-60],at:[110,85]},coconutCoast:{old:[105,10],at:[cityX(320),125]},
- crystalCove:{old:[10,100],at:[cityX(290),-245]},canal:{old:[-44,-74],at:[40,-70]},
+ crystalCove:{old:[10,100],at:[cityX(290),-425]},canal:{old:[-44,-74],at:[285,15]},
  volcanTown:{old:[-80,45],at:[-385,-30]},boquete:{old:[-80,45],at:[-290,-50]}
 };
 export function movePoint(id,x,z){const p=DESTINATIONS[id];return {x:x+p.at[0]-p.old[0],z:z+p.at[1]-p.old[1]};}
@@ -27,8 +28,11 @@ export function moveLegacyPoint(x,z,version=GEOGRAPHY_VERSION){
 }
 // A wide western mainland and a long Caribbean peninsula. Keep the city's
 // authored blocks, Gorgona beach, canal entrance and San Blas intact.
-export const MAINLAND_OUTLINE=[[-425,-110],[-365,-130],[-290,-118],[-220,-100],[-145,-110],[-85,-133],[-45,-145],[-58,-235],[-103,-330],[-112,-366],[-99,-398],[-60,-417],[-27,-409],[12,-397],[29,-371],[37,-336],[44,-262],[48,-148],[55,-140],[62,-136],[75,-136],[90,-110],[145,-85],[190,-75],[260,-75],[265,-40],[200,-15],[145,-12],[115,-14],[65,-8],[45,14],[25,18],[15,9],[-15,9],[-45,10],[-120,16],[-205,8],[-290,12],[-385,26],[-435,0],[-440,-55]].map(([x,z])=>[x>65?cityX(x):x,z]);
-export const CANAL_WATERWAY=[[40,-70],[15,-70],[5,-75],[-30,-85],[-55,-105],[-58,-130],[-55,-165],[-47,-215],[-43,-265],[-55,-285]];
+export const MAINLAND_OUTLINE=[[-425,-110],[-365,-130],[-290,-118],[-220,-100],[-145,-110],[-85,-133],[-45,-145],[-58,-235],[-103,-330],[-112,-366],[-99,-398],[-60,-417],[-27,-409],[12,-397],[29,-371],[37,-336],[44,-262],[48,-148],[55,-140],[62,-136],[75,-136],[90,-110],[145,-85],[190,-75],[260,-75],[265,-40],[200,-15],[145,-12],[115,-14],[65,-8],[58,10],[42,20],[26,23],[18,10],[15,9],[-15,9],[-25,20],[-48,22],[-72,19],[-95,16],[-120,16],[-205,8],[-290,12],[-385,26],[-435,0],[-440,-55]].map(([x,z])=>[x>65?cityX(x):x,z]);
+// Pacific approach southwest of the city, then northwest to the Caribbean.
+export const CANAL_LAYOUT_VERSION=2;
+export const CANAL_WATERWAY=[[340,15],[285,15],[235,15],[210,-15],[185,-55],[150,-105],[110,-145],[90,-175],[5,-220],[-45,-275],[-65,-305],[-110,-340],[-150,-365]];
+export const CANAL_TERMINAL={x:325,z:-17};
 export const WORLD_EXTENT={left:-WORLD_BOUNDS.x,top:-WORLD_BOUNDS.z,width:WORLD_BOUNDS.x*2,height:WORLD_BOUNDS.z*2};
 // Scenic low hills separate towns; the road grader uses this same collision
 // height field, so countryside never becomes a decorative floating backdrop.
@@ -42,7 +46,7 @@ export function mainlandRelief(x,z){
 export function segmentDistance(x,z,a,b){const dx=b[0]-a[0],dz=b[1]-a[1],t=Math.max(0,Math.min(1,((x-a[0])*dx+(z-a[1])*dz)/(dx*dx+dz*dz)));return Math.hypot(x-a[0]-dx*t,z-a[1]-dz*t);}
 const CANAL_SEGMENTS=CANAL_WATERWAY.slice(1).map((b,i)=>{const a=CANAL_WATERWAY[i],dx=b[0]-a[0],dz=b[1]-a[1];return {a,b,dx,dz,minX:Math.min(a[0],b[0])-23,maxX:Math.max(a[0],b[0])+23,minZ:Math.min(a[1],b[1])-23,maxZ:Math.max(a[1],b[1])+23};});
 export function canalWater(x,z){
- if(x>20&&x<62&&Math.abs(z+70)<13)return true;
+
  for(const q of CANAL_SEGMENTS){
   if(x<q.minX||x>q.maxX||z<q.minZ||z>q.maxZ)continue;
   if(segmentDistance(x,z,q.a,q.b)<23)return true;
@@ -104,6 +108,7 @@ export function homeShoreRadius(angle){
 // Version 1 -> 2: authored region offsets/scales, also used by builders and
 // saved boats/houses. Never infer migration from the new expanded coastline.
 export const WORLD_EXPANSIONS=[
+ {id:'canal',from:[40,-70],to:[285,15],rx:1,rz:1,scale:1},
  {id:'sunset',from:[-135,-55],to:[-350,-65],rx:48,rz:43,scale:1.4},
  {id:'volcanTown',from:[-155,-32],to:[-385,-30],rx:16,rz:13,scale:1},
  {id:'boquete',from:[-112,-32],to:[-290,-50],rx:16,rz:13,scale:1},
@@ -165,6 +170,12 @@ export function migrateGeography(raw){
    builders:moved.builders?Object.fromEntries(Object.entries(moved.builders).map(([id,p])=>
     [id,p?{...p,completed:(p.completed||[]).map(site=>site.region==='colon'?{...site,x:site.x+COLON_OFFSET.x,z:site.z+COLON_OFFSET.z}:site)}:p])):moved.builders,
    colonLayoutVersion:COLON_LAYOUT_VERSION};
+ }
+ if((moved.sanBlasGeographyVersion||0)<SAN_BLAS_LAYOUT_VERSION){
+  const layout=sanBlasLayout(CITY_EAST_SHIFT),move=p=>relocateSanBlasPoint(p,layout,moved.sanBlasGeographyVersion||0);
+  moved={...moved,...move({x:moved.x,z:moved.z}),sanBlasGeographyVersion:SAN_BLAS_LAYOUT_VERSION,
+   boat:move(moved.boat),estate:moved.estate?{...moved.estate,buildings:(moved.estate.buildings||[]).map(move)}:moved.estate,
+   builders:moved.builders?Object.fromEntries(Object.entries(moved.builders).map(([id,b])=>[id,b?{...b,completed:(b.completed||[]).map(move)}:b])):moved.builders};
  }
  return moved;
 }

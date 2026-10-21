@@ -32,28 +32,28 @@ export function botanicalGeometry(T,geometry,kind,distant=false){
    if(j<sections){const a=start+j*3,b=a+3;indices.push(a,b,a+1,a+1,b,b+1,a+1,b+1,a+2,a+2,b+1,b+2);}
   }
  }
- const green=(i)=>[[.24,.40,.17],[.30,.47,.20],[.35,.49,.22],[.39,.50,.25]][i%4];
+ const green=(i)=>[[.12,.24,.09],[.16,.30,.11],[.23,.38,.13],[.13,.27,.10],[.32,.47,.17],[.43,.57,.23]][i%6];
  if(kind==='palm'){
   // Unequal frond lengths and elevations break the radial pinwheel silhouette.
-  for(let f=0;f<(distant?7:11);f++){
+  for(let f=0;f<(distant?10:15);f++){
    const a=f*2.399963,L=3.25+(f%4)*.27,rise=.75+(f%3)*.31,drop=1.1+(f%4)*.15;
-   const n=distant?7:17;
+   const n=distant?11:21;
    for(let k=1;k<n;k++){
     const t=k/n,r=L*t,o=[Math.sin(a)*r,rise*Math.sin(Math.PI*t)-drop*t*t,Math.cos(a)*r];
     const reach=(.15+.74*Math.sin(Math.PI*t))*(1-.18*t);
-    for(const side of [-1,1])leaf(o,a+side*(1.09+t*.18),reach,.047+(1-t)*.025,.04,.18,green(f+k));
+    for(const side of [-1,1])leaf(o,a+side*(1.09+t*.18),reach,.085+(1-t)*.045,.04,.18,green(f+k));
    }
    leaf([0,0,0],a,L,.025,rise,drop,[.48,.52,.24],distant?4:12);
   }
   // Upright new spears at the heart of the crown.
   for(let i=0;i<3;i++)leaf([0,.03,0],i*2.4,.7,.1,.65,-.55,[.42,.54,.26]);
  }else if(kind==='banana'){
-  for(let i=0;i<8;i++){
+  for(let i=0;i<11;i++){
    const a=i*2.399963,L=2.15+(i%3)*.24;
-   leaf([0,(i%3)*.12,0],a,L,.39,.48,.69,green(i),distant?6:10);
+   leaf([0,(i%3)*.12,0],a,L,.49,.48,.69,green(i),distant?8:12);
   }
  }else if(kind==='fern'){
-  for(let f=0;f<(distant?6:10);f++){
+  for(let f=0;f<(distant?8:12);f++){
    const a=f*2.399963,L=1.2+(f%3)*.2;
    const stem=t=>[Math.sin(a)*L*t,.12+.73*Math.sin(t*Math.PI*.75)-.25*t,Math.cos(a)*L*t];
    for(let k=0;k<6;k++)twig(stem(k/6),stem((k+1)/6),.012*(1-k/8));
@@ -63,27 +63,27 @@ export function botanicalGeometry(T,geometry,kind,distant=false){
    }
   }
  }else if(kind==='pine'){
-  for(let tier=0;tier<(distant?9:11);tier++){
-   const y=2.4+tier*(distant?.84:.67),reach=(1-tier/12)*2.65;
+  for(let tier=0;tier<(distant?11:13);tier++){
+   const y=2.4+tier*(distant?.84:.67),reach=(1-tier/14)*2.65;
    for(let b=0;b<(distant?6:7);b++){
     const a=b*Math.PI*2/7+tier*.54;
     twig([0,y,0],[Math.sin(a)*reach,y-.34,Math.cos(a)*reach],.035*(1-tier/15));
-    for(let k=1;k<=(distant?2:5);k++){
-     const t=k/(distant?3:5),o=[Math.sin(a)*reach*t,y-.34*t,Math.cos(a)*reach*t];
-     for(const side of [-1,1])leaf(o,a+side*1.0,.45*(1-t*.4),.085,.07,.06,[.22+(tier%3)*.025,.34+(b%3)*.025,.23],distant?1:3);
+    for(let k=1;k<=(distant?4:6);k++){
+     const t=k/(distant?5:6),o=[Math.sin(a)*reach*t,y-.34*t,Math.cos(a)*reach*t];
+     for(const side of [-1,1])leaf(o,a+side*1.0,.45*(1-t*.4),.12,.07,.06,[.22+(tier%3)*.025,.34+(b%3)*.025,.23],distant?1:3);
     }
    }
   }
  }else{
-  // Leaves grow from branching sprays, with real gaps between each bough.
-  for(let b=0;b<(distant?28:32);b++){
-   const a=b*2.399963,r=.65+(b%5)*.44,y=1.0*Math.sin(b*1.8)+(b%3)*.32;
+  // Leaves grow from branching sprays, with overlapping layers and small gaps between boughs.
+  for(let b=0;b<(distant?72:88);b++){
+   const a=b*2.399963,r=.65+(b%5)*.44,y=1.5*Math.sin(b*1.8)+(b%3)*.36;
    const start=[Math.sin(a)*r,y,Math.cos(a)*r],end=[Math.sin(a)*(r+.6),y+.2,Math.cos(a)*(r+.6)];
    twig([0,-1.8,0],start,.034+(b%3)*.007);twig(start,end,.022);
-   for(let k=0;k<(distant?7:10);k++){
-    const u=k/(distant?7:10),spread=(k%2?1:-1)*(.48+u*.4);
+   for(let k=0;k<(distant?9:12);k++){
+    const u=k/(distant?9:12),spread=(k%2?1:-1)*(.48+u*.4);
     const o=[Math.sin(a)*(r+u*.55),y+u*.18,Math.cos(a)*(r+u*.55)];
-    leaf(o,a+spread,(distant?.92:.85)+(k%3)*.14,(distant?.27:.24)+(b%3)*.035,.16,(b%4-1)*.22,green(b+k));
+    leaf(o,a+spread,(distant?.92:.85)+(k%3)*.14,(distant?.48:.43)+(b%3)*.035,.16,(b%4-1)*.22,green(b+k));
    }
   }
  }
