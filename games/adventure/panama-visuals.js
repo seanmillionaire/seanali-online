@@ -1,4 +1,4 @@
-import {CITY_BARRIO_PLOTS} from './city-layout.js?v=211';
+import {CITY_BARRIO_PLOTS} from './city-layout.js?v=213';
 // Panama street art direction: shared materials and GPU batches for small details.
 export function createPanamaVisuals({T,scene,make,mat,geometry,box,ball,cylinder,height,surfaces,models,renderer,sun}){
  const root=new T.Group();root.name='Panama architectural craftsmanship';scene.add(root);

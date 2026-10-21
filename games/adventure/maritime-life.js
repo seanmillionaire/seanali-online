@@ -1,5 +1,5 @@
-import {marineWater,worldIslands,isletHeight} from './explore-state.js?v=211';
-import {WORLD_BOUNDS} from './geography.js?v=211';
+import {marineWater,worldIslands,isletHeight} from './explore-state.js?v=213';
+import {WORLD_BOUNDS} from './geography.js?v=213';
 // Full-length footprints are checked before accepting a fishing circuit.
 export function fishingHullClear(x,z,heading){
  if(Math.hypot(x/(WORLD_BOUNDS.x-5),z/(WORLD_BOUNDS.z-5))>=1)return false;

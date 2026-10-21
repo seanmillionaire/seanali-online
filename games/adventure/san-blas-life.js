@@ -1,5 +1,5 @@
-import {cityX} from './geography.js?v=211';
-import {SAN_BLAS_ISLANDS,routePose} from './panama-state.js?v=211';
+import {cityX} from './geography.js?v=213';
+import {SAN_BLAS_ISLANDS,routePose} from './panama-state.js?v=213';
 export function createSanBlasLife({T,scene,make,mat,geometry,box,ball,cylinder,cone,height,inWater,forest,models,state,surfaces}){
  const root=new T.Group();root.name='San Blas · separated white-sand cays and living beaches';scene.add(root);const main={x:cityX(290),z:(-425),rx:10,rz:8,community:true},islands=[main,...SAN_BLAS_ISLANDS],wood=mat('#916c46',{map:surfaces?.wood,bumpMap:surfaces?.wood,bumpScale:.05}),thatch=mat('#a89565',{map:surfaces?.grass,bumpMap:surfaces?.grass,bumpScale:.12}),white=mat('#f4eacb'),dark=mat('#513c2f');
  const piece=(g,m,x,y,z,w,h,d,parent=root)=>make(g,m,x,y,z,w,h,d,parent);

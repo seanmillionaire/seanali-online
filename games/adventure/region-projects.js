@@ -1,8 +1,8 @@
-import {movePoint,cityX} from './geography.js?v=211';
+import {movePoint,cityX} from './geography.js?v=213';
 // A single meaningful, persistent community project for each Panama destination.
 // Mini-games and collecting now feed into a clear physical outcome in their region.
-import {worldIslands,isletHeight,exploreItems,volcanoTrailPoint} from './explore-state.js?v=211';
-import {BUILD_RECIPES} from './island-workshop.js?v=211';
+import {worldIslands,isletHeight,exploreItems,volcanoTrailPoint} from './explore-state.js?v=213';
+import {BUILD_RECIPES} from './island-workshop.js?v=213';
 const where=id=>worldIslands.find(x=>x.id===id);
 const build=id=>BUILD_RECIPES.find(x=>x.id===id);
 const at=id=>{const x=where(id);return {x:x?.x||0,z:x?.z||0};};

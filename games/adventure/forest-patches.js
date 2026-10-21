@@ -1,10 +1,10 @@
-import {homeReserved} from './mansion-state.js?v=211';
-import {regionalClearing,regionalTrailClear} from './regional-layout.js?v=211';
-import {cityX} from './geography.js?v=211';
-import {ruralParcels} from './rural-towns.js?v=211';
+import {homeReserved} from './mansion-state.js?v=213';
+import {regionalClearing,regionalTrailClear} from './regional-layout.js?v=213';
+import {cityX} from './geography.js?v=213';
+import {ruralParcels} from './rural-towns.js?v=213';
 // Irregular, mixed Panamanian understory and canopy. Gaps are intentional.
-import {mainlandContains,canalWater,gatunWater} from './geography.js?v=211';
-import {worldIslands,isletHeight,roadDistance,HIGHWAY_WIDTH,volcanoTrailPoint} from './explore-state.js?v=211';
+import {mainlandContains,canalWater,gatunWater} from './geography.js?v=213';
+import {worldIslands,isletHeight,roadDistance,HIGHWAY_WIDTH,volcanoTrailPoint} from './explore-state.js?v=213';
 export const FOREST_PATCHES=[
  {id:'coiba-moist-forest',x:-480,z:160,rx:35,rz:29,n:65,biome:'island'},
  {id:'rey-island-forest',x:680,z:260,rx:31,rz:27,n:45,biome:'island'},

@@ -1,5 +1,5 @@
-import {cityX} from './geography.js?v=211';
-import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=211';
+import {cityX} from './geography.js?v=213';
+import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=213';
 // Shared road and parcel clearances for all city scene generators.
 export const CITY_STREET_X=[77,105,135,163].map(cityX),CITY_STREET_Z=[-85,-61,-35,-12];
 export const CITY_FIXED_PLOTS=[
@@ -10,6 +10,7 @@ export const CITY_FIXED_PLOTS=[
 {id:'mural',x:cityX(91),z:-73,w:9,d:3,solid:true},
 {id:'market',x:cityX(150),z:-48,w:6,d:5,solid:true},
 {id:'wash',x:cityX(88),z:-48,w:6,d:6,solid:false},
+{id:'flag-base',x:cityX(120),z:-73,w:2.3,d:2.3,solid:true},
 {id:'plaza',x:cityX(120),z:-73,w:8,d:8,solid:false},
 {id:'raspao-centro',x:cityX(129),z:-53,w:3,d:3,solid:true},
 {id:'raspao-barrio',x:cityX(99),z:-18,w:3,d:3,solid:true},

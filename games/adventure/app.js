@@ -1,10 +1,10 @@
-import {adventureIcon} from './adventure-icons.js?v=211';
-import {earnCoins,syncWallet} from './explore-state.js?v=211';
-import {createExplore} from './explore.js?v=211';
-import {createEntrance} from './entrance.js?v=211';
-import {createDelight,burst,livingWorld,foxPortrait} from './delight.js?v=211';
-import {regions,quests,challenges,ui,text} from './content.js?v=211';
-import {SAVE_KEY,fresh,normalize,completedCount,lightCount,totalStars,unlocked,award} from './state.js?v=211';
+import {adventureIcon} from './adventure-icons.js?v=213';
+import {earnCoins,syncWallet} from './explore-state.js?v=213';
+import {createExplore} from './explore.js?v=213';
+import {createWelcomeWorld as createEntrance} from './welcome-world.js?v=213';
+import {createDelight,burst,livingWorld,foxPortrait} from './delight.js?v=213';
+import {regions,quests,challenges,ui,text} from './content.js?v=213';
+import {SAVE_KEY,fresh,normalize,completedCount,lightCount,totalStars,unlocked,award} from './state.js?v=213';
 const $=s=>document.querySelector(s),app=$('#app'),dialog=$('#dialog');
 let storageOK=true,state;try{state=normalize(JSON.parse(localStorage.getItem(SAVE_KEY)));if(!localStorage.getItem(SAVE_KEY)){state.lang=localStorage.getItem('seanGameLang')==='en'?'en':'es';}}catch{state=fresh();}
 let islandQuestId=null,islandWelcome=null,introPending=false;
@@ -27,22 +27,31 @@ let toastTimer;function toast(msg){$('#toast').textContent=tr(msg);clearTimeout(
 function modal(title,body,actions,portrait){returnFocus=document.activeElement;dialog.replaceChildren();if(portrait){const face=el('div','portrait',portrait==='🦊'?'':portrait);if(portrait==='🦊')face.append(foxPortrait());dialog.append(face);}const h=el('h2','',title);h.id='dialog-title';dialog.append(h);if(typeof body==='string'||body?.es)dialog.append(el('p','',body));else dialog.append(body);const row=el('div','dialog-actions');for(const [label,fn,cls]of actions)row.append(button(label,cls||'primary',()=>{dialog.close();fn?.();}));dialog.append(row);if(!dialog.open)dialog.showModal();}
 dialog.addEventListener('close',()=>{if(returnFocus?.isConnected)returnFocus.focus();});
 function help(){modal(t('help'),screen==='explore'?text('Toca el suelo o mueve la palanca para caminar. Usa Saltar para brincar y el botón dorado para jugar con lo que tienes cerca. Descubrir te lleva a cualquier lugar. Busca conchas, prepara un picnic, haz música y lleva a Pip contigo. Las Historias son opcionales.','Tap the ground or move the joystick to walk. Jump to hop and use the gold button to play with things nearby. Discover takes you anywhere. Find shells, make a picnic, play music, and bring Pip along. Stories are optional.'):t('helptext'),[[t('close')]],'🧭');}
-function header(){const h=el('header','topbar'),brand=el('div','brand');brand.innerHTML='<span class="brand-mark" aria-hidden="true">🇵🇦</span>';const name=el('div','',t('title'));name.append(el('small','',t('subtitle')));brand.append(name);h.append(brand);const tools=el('div','tools'),langs=el('div','lang');for(const l of ['es','en']){const b=button(l.toUpperCase(),l===state.lang?'active':'',()=>{state.lang=l;save();render();});b.setAttribute('aria-pressed',String(l===state.lang));langs.append(b);}tools.append(langs);const sound=button(state.sound?'♫':'♪','sound-toggle',()=>{state.sound=!state.sound;joy.sync();save();if(!state.sound){try{speechSynthesis.cancel();}catch{}}sound.textContent=state.sound?'♫':'♪';sound.setAttribute('aria-pressed',String(state.sound));});sound.setAttribute('aria-label',t('sound'));sound.setAttribute('aria-pressed',String(state.sound));tools.append(sound);const motion=button(state.motion?'✧':'·','motion-toggle',()=>{state.motion=!state.motion;save();document.body.classList.toggle('calm-motion',!state.motion);motion.textContent=state.motion?'✧':'·';motion.setAttribute('aria-pressed',String(state.motion));});motion.setAttribute('aria-label',tr(text('Animaciones','Animations')));motion.setAttribute('aria-pressed',String(state.motion));tools.append(motion);const hb=button('?','',help);hb.setAttribute('aria-label',t('help'));tools.append(hb);h.append(tools);return h;}
+function audioPanel(){
+ const content=el('div','audio-mixer'),levels=joy.audioLevels;
+ const toggle=button(state.sound?text('🔊 Sonido activado','🔊 Sound on'):text('🔇 Sonido apagado','🔇 Sound off'),'soft',()=>{state.sound=!state.sound;save();joy.sync();audioPanel();});content.append(toggle);
+ for(const [key,label]of [['music',text('🎵 Música','🎵 Music')],['effects',text('💥 Efectos','💥 Effects')]]){const row=el('label','audio-level'),caption=el('span','',label),slider=el('input');slider.type='range';slider.min='0';slider.max='100';slider.value=Math.round(levels[key]*100);slider.setAttribute('aria-label',tr(label));const value=el('output','',slider.value+'%');slider.oninput=()=>{joy.gesture();joy.setAudioLevels({[key]:Number(slider.value)/100});value.textContent=slider.value+'%';};row.append(caption,slider,value);content.append(row);}
+ const playing=el('p','audio-now','🎶 '+(joy.soundtrackStatus.title||tr(text('La música empieza al jugar','Music starts when you play'))));content.append(playing,button(text('⏭ Otra canción','⏭ Next song'),'soft',()=>{joy.nextTrack();playing.textContent=tr(text('🎶 Cambiando canción…','🎶 Changing song…'));}));
+ const credits=el('a','audio-credits',text('🎼 Música y créditos','🎼 Music credits'));credits.href='/games/adventure/assets/audio/credits.html';credits.target='_blank';credits.rel='noopener';content.append(credits);
+ modal(tr(text('🎧 Tu sonido','🎧 Your sound')),content,[[t('close'),()=>{document.querySelector('.sound-toggle').textContent=state.sound?'♫':'♪';}]]);
+ const update=()=>{if(!dialog.open||!content.isConnected)return;const status=joy.soundtrackStatus;playing.textContent='🎶 '+(status.error||status.title||tr(text('Cargando música…','Loading music…')));setTimeout(update,500);};update();
+}
+function header(){const h=el('header','topbar'),brand=el('div','brand');brand.innerHTML='<span class="brand-mark" aria-hidden="true">🇵🇦</span>';const name=el('div','',t('title'));name.append(el('small','',t('subtitle')));brand.append(name);h.append(brand);const tools=el('div','tools'),langs=el('div','lang');for(const l of ['es','en']){const b=button(l.toUpperCase(),l===state.lang?'active':'',()=>{state.lang=l;save();render();});b.setAttribute('aria-pressed',String(l===state.lang));langs.append(b);}tools.append(langs);const sound=button(state.sound?'♫':'♪','sound-toggle',audioPanel);sound.setAttribute('aria-label',tr(text('Música y sonidos','Music and sounds')));tools.append(sound);const motion=button(state.motion?'✧':'·','motion-toggle',()=>{state.motion=!state.motion;save();document.body.classList.toggle('calm-motion',!state.motion);motion.textContent=state.motion?'✧':'·';motion.setAttribute('aria-pressed',String(state.motion));});motion.setAttribute('aria-label',tr(text('Animaciones','Animations')));motion.setAttribute('aria-pressed',String(state.motion));tools.append(motion);const hb=button('?','',help);hb.setAttribute('aria-label',t('help'));tools.append(hb);h.append(tools);return h;}
 function render(){clean();document.documentElement.lang=state.lang;document.body.classList.toggle('calm-motion',!state.motion);const atEntrance=screen==='entry'||!state.started;document.body.dataset.scene=atEntrance?'entry':screen;joy.setScene(atEntrance?'welcome':screen);app.replaceChildren(header());if(atEntrance)welcome();else if(screen==='explore')exploreView();else if(screen==='islandQuest'&&islandQuestId){exploreView();questView();}else if(screen==='quest'&&state.active)questView();else if(screen==='ending')ending();else worldView();window.scrollTo({top:0,behavior:'instant'});}
 function welcome(){
  const returning=state.started,section=el('main','welcome world-entry'),copy=el('div','welcome-copy');
  copy.append(el('div','eyebrow',returning?text('Continúa tu expedición','Continue your expedition'):text('Un país por descubrir','A country to discover')));
- const h=el('h1','','🇵🇦 '+t('title'));h.append(el('em','',t('subtitle')));copy.append(h,el('p','',returning?text('Tu casa soñada te espera. Compra o construye una mansión, vive con tu perro y explora Panamá.','Your dream home awaits. Buy or build a mansion, live with your dog, and explore Panama.'):text('Elige un terreno, crea tu hogar y vive tu aventura con Angelique. Cocina, juega, conduce y explora Panamá.','Choose a plot, create your home, and live your adventure with Angelique. Cook, play, drive, and explore Panama.')));
+ const h=el('h1','','🇵🇦 '+t('title'));h.append(el('em','',t('subtitle')));copy.append(h,el('p','',returning?text('🏡 Tu mansión. 🐾 Tu perro. 🇵🇦 Todo Panamá para explorar.','🏡 Your mansion. 🐾 Your dog. 🇵🇦 All of Panama to explore.'):text('🏡 Crea tu hogar. 🚙 Conduce. 🏝️ Descubre tu próxima aventura.','🏡 Create your home. 🚙 Drive. 🏝️ Discover your next adventure.')));
  const features=el('div','welcome-feature-grid');
- for(const [icon,es,en]of [['🌋','Explora','Explore'],['🚙','Conduce','Drive'],['🛠️','Construye','Build'],['🐬','Amigos','Friends']]){
+ for(const [icon,es,en]of [['🌋','Explora','Explore'],['🚙','Conduce','Drive'],['🏡','Tu mansión','Your mansion'],['🐾','Tu perro','Your dog']]){
   const chip=el('div','welcome-feature');
-  const glyph=el('span','welcome-feature-icon');glyph.innerHTML=adventureIcon(icon);chip.append(glyph,el('span','welcome-feature-label',text(es,en)));
+  const glyph=el('span','welcome-feature-icon');glyph.textContent=icon;chip.append(glyph,el('span','welcome-feature-label',text(es,en)));
   features.append(chip);
  }
  copy.append(features);
  const enter=button('🎮 '+tr(returning?text('Volver a jugar','Keep Playing'):text('¡Vamos a jugar!','Let’s Play!')),'primary enter-world',arrive);
- copy.append(enter,el('p','welcome-foot',text('Mundo abierto · Progreso guardado en este dispositivo','Open world · Progress saved on this device')));
- const guide=el('div','arrival-guide');guide.append(el('div','arrival-turtle'),el('span','',text('¡Por aquí!','This way!')));section.append(copy,guide);
+ copy.append(enter,el('p','welcome-foot',text('🌎 Tu mundo, a tu manera · 💾 Guardado automático','🌎 Your world, your way · 💾 Auto-saved')));
+ const guide=el('div','arrival-guide');guide.append(el('div','arrival-turtle'),el('span','',text('¡Por aquí!','This way!')));section.append(copy);
  const travel=el('div','arrival-caption');travel.hidden=true;travel.setAttribute('role','status');travel.append(el('span','arrival-orbit','🇵🇦'),el('p','',text('¡Llegamos a Playa Gorgona!','Playa Gorgona is just ahead!')));section.append(travel);
  const skip=button(text('Saltar llegada','Skip arrival'),'skip-arrival',()=>entrance?.skip());skip.hidden=true;section.append(skip);app.append(section);
  entrance=createEntrance(section,{motion:motionOn,label:tr(text('Panamá de fantasía con Gorgona, Taboga, Bocas, Boquete y Casco Viejo.','A fantasy Panama with Gorgona, Taboga, Bocas, Boquete, and Casco Viejo.'))});

@@ -1,6 +1,6 @@
-import {canalWater} from './geography.js?v=211';
-import {HIGHWAY_CURVES,HIGHWAY_WIDTH,bridgeDeckHeight,terrainHeight,isletHeight} from './explore-state.js?v=211';
-import {roadRibbon,surfaceMesh} from './road-surfaces.js?v=211';
+import {canalWater} from './geography.js?v=213';
+import {HIGHWAY_CURVES,HIGHWAY_WIDTH,bridgeDeckHeight,terrainHeight,isletHeight} from './explore-state.js?v=213';
+import {roadRibbon,surfaceMesh} from './road-surfaces.js?v=213';
 // Water stays at sea level; the road is a separate supported span above it.
 export function createCanalBridges({T,scene,geometry,mat,make,box}){
  const root=new T.Group();root.name='Canal highway bridges · open shipping clearance';scene.add(root);

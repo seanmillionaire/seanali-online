@@ -1,5 +1,5 @@
-import {BUILDER_SITES} from './builder-projects.js?v=211';
-import {worldIslands,isletHeight,inWater,roadDistance,HIGHWAY_WIDTH,explorePlaces,exploreItems} from './explore-state.js?v=211';
+import {BUILDER_SITES} from './builder-projects.js?v=213';
+import {worldIslands,isletHeight,inWater,roadDistance,HIGHWAY_WIDTH,explorePlaces,exploreItems} from './explore-state.js?v=213';
 // Shared render, forest exclusion and collision footprints. No saved destinations move.
 let cached;
 export function regionalParcels(){

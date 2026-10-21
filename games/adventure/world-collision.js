@@ -1,10 +1,10 @@
-import {homeLot} from './mansion-state.js?v=211';
-import {regionalBlocked} from './regional-layout.js?v=211';
-import {CITY_ALL_PLOTS} from './city-layout.js?v=211';
-import {districtVehicleBlocked} from './expanded-districts.js?v=211';
-import {ruralBlocks} from './rural-towns.js?v=211';
-import {estateBlocked} from './estate.js?v=211';
-import {traversable} from './explore-state.js?v=211';
+import {homeLot} from './mansion-state.js?v=213';
+import {regionalBlocked} from './regional-layout.js?v=213';
+import {CITY_ALL_PLOTS} from './city-layout.js?v=213';
+import {districtVehicleBlocked} from './expanded-districts.js?v=213';
+import {ruralBlocks} from './rural-towns.js?v=213';
+import {estateBlocked} from './estate.js?v=213';
+import {traversable} from './explore-state.js?v=213';
 
 // Shared walking/skating solids; speed never changes which objects are solid.
 export function createWorldCollision({state,trees=[],rocks=[]}){

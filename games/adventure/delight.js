@@ -1,16 +1,17 @@
-/* Local recorded foley and vehicle audio, with lightweight UI/music support. */
+import {createSoundtrack} from './soundtrack.js?v=213';
+/* Recorded foley, activity-aware soundtrack, and independent music/effects mix. */
 export function createDelight({soundEnabled,motionEnabled}) {
-  let context,master,ambience,scene='quiet',unlocked=false,ambientTimer=null,phrase=0;
+  let context,master,ambience,limiter,scene='quiet',unlocked=false,ambientTimer=null,phrase=0;
   const voices=new Set();
   let boatRequested=false,boatPosition=0,boatBus=null,boatNodes=[],boatMotor=null,boatHarmonic=null;
+  let preferences={music:.58,effects:.8};try{const stored=JSON.parse(localStorage.getItem('panama-audio-v1'));for(const k of ['music','effects'])if(Number.isFinite(stored?.[k]))preferences[k]=Math.max(0,Math.min(1,stored[k]));}catch{}
+  const soundtrack=createSoundtrack({enabled:()=>unlocked&&soundEnabled()&&!destroyed,volume:()=>preferences.music,environment:()=>context?{context,output:limiter}:null});
+  function setAudioLevels(values){for(const k of ['music','effects'])if(Number.isFinite(values[k]))preferences[k]=Math.max(0,Math.min(1,values[k]));try{localStorage.setItem('panama-audio-v1',JSON.stringify(preferences));}catch{}sync();}
   function ready(){
     if(!soundEnabled()||document.hidden)return false;
     try {
-      if(!context){const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)return false;context=new Audio();master=context.createGain();master.gain.value=.65;master.connect(context.destination);ambience=context.createGain();ambience.gain.value=.24;ambience.connect(master);
-        musicBus=context.createGain();musicBus.gain.value=.0001;musicBus.connect(master);
-        musicNoise=context.createBuffer(1,Math.ceil(context.sampleRate*.12),context.sampleRate);
-        const noiseData=musicNoise.getChannelData(0);
-        for(let i=0;i<noiseData.length;i++)noiseData[i]=Math.random()*2-1;}
+      if(!context){const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)return false;context=new Audio();master=context.createGain();master.gain.value=preferences.effects;limiter=context.createDynamicsCompressor();limiter.threshold.value=-12;limiter.knee.value=18;limiter.ratio.value=4;limiter.attack.value=.008;limiter.release.value=.22;master.connect(limiter);limiter.connect(context.destination);ambience=context.createGain();ambience.gain.value=.24;ambience.connect(master);
+      }
       if(context.state==='suspended')context.resume().catch(()=>{});
       return true;
     }catch{return false;}
@@ -18,12 +19,12 @@ export function createDelight({soundEnabled,motionEnabled}) {
   const recordings=new Map(),loading=new Map();let destroyed=false,engineSource=null,engineGain=null,footIndex=0;
   function loadRecording(name){
    if(loading.has(name))return loading.get(name);
-   const job=fetch(new URL('./assets/audio/'+name+'.mp3',import.meta.url)).then(r=>{if(!r.ok)throw Error('audio unavailable');return r.arrayBuffer();}).then(b=>context.decodeAudioData(b)).then(b=>{if(!destroyed)recordings.set(name,b);return b;}).catch(()=>null);
+   const job=fetch(new URL('./assets/audio/'+name+(['door','whoosh','rain','thunder','coins','body-impact','celebration'].includes(name)?'.m4a':'.mp3'),import.meta.url)).then(r=>{if(!r.ok)throw Error('audio unavailable');return r.arrayBuffer();}).then(b=>context.decodeAudioData(b)).then(b=>{if(!destroyed)recordings.set(name,b);return b;}).catch(()=>null);
    loading.set(name,job);return job;
   }
   function recordedSound(name,{volume=.35,rate=1,offset=0,duration=null}={}){
    if(!unlocked||!soundEnabled()||document.hidden||destroyed||volume<.005||!ready()||voices.size>32)return false;
-   const buffer=recordings.get(name);if(!buffer){loadRecording(name);return false;}
+   const buffer=recordings.get(name);if(!buffer){const requested=performance.now();loadRecording(name).then(b=>{if(b&&performance.now()-requested<900)recordedSound(name,{volume,rate,offset,duration});});return false;}
    const source=context.createBufferSource(),gain=context.createGain();source.buffer=buffer;source.playbackRate.value=Math.max(.7,Math.min(1.4,rate));
    const from=Math.min(Math.max(0,offset),Math.max(0,buffer.duration-.05)),length=Math.min(duration??buffer.duration,buffer.duration-from),now=context.currentTime;
    gain.gain.setValueAtTime(0,now);gain.gain.linearRampToValueAtTime(Math.min(.65,volume),now+.01);gain.gain.setValueAtTime(Math.min(.65,volume),now+Math.max(.015,length/rate-.08));gain.gain.linearRampToValueAtTime(0,now+length/rate);
@@ -50,22 +51,13 @@ export function createDelight({soundEnabled,motionEnabled}) {
     g.gain.setValueAtTime(.0001,at);g.gain.linearRampToValueAtTime(volume,at+Math.min(duration/3,.6));g.gain.exponentialRampToValueAtTime(.0001,at+duration);
     o.connect(f).connect(g).connect(ambient?ambience:master);o.start();voices.add(o);o.onended=()=>{voices.delete(o);o.disconnect();f.disconnect();g.disconnect();};
   }
-  // A small procedural soundscape: outboard harmonics, hull wash and gull calls.
-  // One looping mono buffer is shared by the water layer; no large sound downloads.
-  function stopBoat(){for(const n of boatNodes){try{n.stop?.();}catch{}n.disconnect();}boatNodes=[];boatMotor=boatHarmonic=null;if(boatBus){boatBus.disconnect();boatBus=null;}}
-  function startBoat(){if(boatBus||!boatRequested||!unlocked||!ready())return;const at=context.currentTime;boatBus=context.createGain();boatBus.gain.value=.72;boatBus.connect(master);
-    const attach=n=>{boatNodes.push(n);return n;};
-    const motorGain=attach(context.createGain()),low=attach(context.createBiquadFilter());low.type='lowpass';low.frequency.value=420;motorGain.gain.value=.032;low.connect(motorGain).connect(boatBus);
-    boatMotor=attach(context.createOscillator());boatMotor.type='sawtooth';boatMotor.connect(low);boatMotor.start();
-    const harmonicGain=attach(context.createGain());harmonicGain.gain.value=.018;harmonicGain.connect(boatBus);boatHarmonic=attach(context.createOscillator());boatHarmonic.type='sine';boatHarmonic.connect(harmonicGain);boatHarmonic.start();
-    const buffer=context.createBuffer(1,Math.ceil(context.sampleRate*2),context.sampleRate),data=buffer.getChannelData(0);let brown=0;for(let i=0;i<data.length;i++){const white=Math.random()*2-1;brown=(brown+.025*white)/1.025;data[i]=(brown*3+white*.18)*(.65+.25*Math.sin(i/context.sampleRate*Math.PI*2));}
-    const water=attach(context.createBufferSource()),wash=attach(context.createBiquadFilter()),waterGain=attach(context.createGain());water.buffer=buffer;water.loop=true;wash.type='lowpass';wash.frequency.value=1900;waterGain.gain.value=.24;water.connect(wash).connect(waterGain).connect(boatBus);water.start();
-    // Uneven two-part gull cries, with a quieter overtone, away from the motor.
-    for(const offset of [.6,3.4,6.8]){if(offset<boatPosition*9)continue;const when=at+offset-boatPosition*9;for(const harmonic of [1,2]){const bird=attach(context.createOscillator()),gain=attach(context.createGain());bird.type='sine';bird.frequency.setValueAtTime(950*harmonic,when);bird.frequency.exponentialRampToValueAtTime(1450*harmonic,when+.15);bird.frequency.exponentialRampToValueAtTime(780*harmonic,when+.55);bird.frequency.exponentialRampToValueAtTime(1100*harmonic,when+.7);bird.frequency.exponentialRampToValueAtTime(650*harmonic,when+1);gain.gain.setValueAtTime(.0001,when);gain.gain.linearRampToValueAtTime(harmonic===1?.024:.004,when+.1);gain.gain.exponentialRampToValueAtTime(.0001,when+1);bird.connect(gain).connect(boatBus);bird.start(when);bird.stop(when+1.05);}}
-    tuneBoat();
-  }
-  function tuneBoat(){if(!boatMotor||!context)return;const speed=Math.min(1,Math.max(0,boatPosition)),at=context.currentTime;boatMotor.frequency.setTargetAtTime(42+speed*48,at,.18);boatHarmonic.frequency.setTargetAtTime(84+speed*96,at,.18);}
+  function stopBoat(){for(const n of boatNodes){try{n.stop?.();}catch{}n.disconnect();}boatNodes=[];boatMotor=null;boatBus=null;}
+  function startBoat(){if(boatBus||!boatRequested||!unlocked||!ready())return;const buffer=recordings.get('engine');if(!buffer){loadRecording('engine');return;}boatBus=context.createGain();boatBus.gain.value=.1;const filter=context.createBiquadFilter();filter.type='lowpass';filter.frequency.value=650;boatMotor=context.createBufferSource();boatMotor.buffer=buffer;boatMotor.loop=true;boatMotor.connect(filter).connect(boatBus).connect(master);boatNodes=[boatMotor,filter,boatBus];boatMotor.start();tuneBoat();}
+  function tuneBoat(){if(!boatMotor||!context)return;const speed=Math.min(1,Math.max(0,boatPosition));boatMotor.playbackRate.setTargetAtTime(.7+speed*.6,context.currentTime,.2);boatBus.gain.setTargetAtTime(.09+speed*.15,context.currentTime,.2);}
   function boat(active,position=0){boatRequested=active;boatPosition=position;if(!active){stopBoat();return;}if(!soundEnabled()||document.hidden)return;startBoat();tuneBoat();}
+  let rainSource=null,rainGain=null;
+  function rainSound(amount=0){if(!unlocked||!soundEnabled()||document.hidden)amount=0;if(amount<.025){if(rainSource){rainSource.stop();rainSource.disconnect();rainGain.disconnect();rainSource=rainGain=null;}return;}if(!ready())return;const b=recordings.get('rain');if(!b){loadRecording('rain');return;}if(!rainSource){rainSource=context.createBufferSource();rainSource.buffer=b;rainSource.loop=true;rainGain=context.createGain();rainGain.gain.value=0;rainSource.connect(rainGain).connect(master);rainSource.start();}rainGain.gain.setTargetAtTime(Math.min(.26,amount*.28),context.currentTime,.7);}
+  function soundscape(info){soundtrack.update(info);rainSound(info.active===false?0:info.rain||0);}
   const scale=[261.63,293.66,329.63,392,440,523.25,659.25];
   function note(n=0,duration=.3,kind='sine'){
     const f=scale[((n%7)+7)%7];voice(f,duration,{volume:.15,type:kind});voice(f*2,duration*.55,{volume:.034});voice(f*3,duration*.32,{volume:.013});
@@ -74,160 +66,25 @@ export function createDelight({soundEnabled,motionEnabled}) {
   const lastEffect=new Map();
   function effect(name,{strength=1}={}){
     if(!unlocked||!soundEnabled()||document.hidden)return;
-    const stamp=performance.now()/1000,cooldown=({footstep:.23,swim:.55,skate:.55,crash:.8,impact:.3,land:.25,fall:1.2,splash:.4})[name]||0;
+    const stamp=performance.now()/1000,cooldown=({footstep:.23,swim:.55,skate:.55,crash:.8,impact:.3,land:.25,fall:1.2,splash:.4,finish:2,treasure:2,thunder:12,door:.4,tap:.08})[name]||0;
     if(stamp-(lastEffect.get(name)??-Infinity)<cooldown)return;
     lastEffect.set(name,stamp);const power=Math.max(.15,Math.min(1,strength));
-    if(['crash','impact','land','footstep','swim','splash','skate','drive','jump','fall'].includes(name)){
-     const sound=['crash','impact'].includes(name)?'crash':['swim','splash'].includes(name)?'splash':name==='drive'?'engine':'footsteps';
-     const duration=name==='crash'?2:name==='splash'?1.7:name==='drive'?.6:.28;
-     recordedSound(sound,{volume:(name==='footstep'?.16:name==='crash'?.5:.25)*power,duration,offset:sound==='footsteps'?(footIndex++%30)*.55:0,rate:.94+(footIndex%4)*.035});return;
-    }
-    if(['tap','correct','coin','wrong','pair','friend','travel'].includes(name))return;
-
-    if(name==='crash'){noise(.24,.24*power,'lowpass',1800);voice(105,.35,{end:28,volume:.22*power,type:'triangle'});noise(.12,.10*power,'highpass',2600);return;}
-    if(name==='impact'||name==='land'){noise(.13,.11*power,'lowpass',700);voice(110,.19,{end:35,volume:.13*power});return;}
-    if(name==='footstep'){noise(.055,.045*power,'bandpass',850);voice(95,.06,{end:60,volume:.018*power});return;}
-    if(name==='skate'){noise(.25,.035*power,'highpass',1200);return;}
-    if(name==='swim'){noise(.24,.065*power,'bandpass',1300);return;}
-    if(name==='splash'){noise(.55,.19*power,'lowpass',2100);voice(180,.18,{end:55,volume:.055*power});return;}
-    if(name==='fall'){noise(.6,.07*power,'bandpass',800);voice(360,.65,{end:70,volume:.045*power,type:'triangle'});return;}
-    if(name==='jump'){voice(180,.12,{end:330,volume:.035,type:'triangle'});return;}
-    if(name==='boat'){voice(95,.9,{end:75,volume:.11,type:'sawtooth'});return;}
-
-    if(name==='giant-stomp'){noise(.28,.12,'lowpass',220);voice(90,.38,{end:28,volume:.14,type:'sine'});return;}
-    if(name==='balloon-pop'){noise(.12,.13,'highpass',900);voice(160,.16,{end:45,volume:.1,type:'triangle'});return;}
-    if(name==='arrival'){noise(2.8,.055,'lowpass',1200);[0,2,4,5,6].forEach((n,i)=>voice(scale[n],1.1,{delay:i*.42,volume:.09}));return;}
-    if(name==='coin'){voice(1260,.12,{volume:.07});voice(1880,.22,{delay:.07,volume:.055});return;}
-    if(name==='tap'){voice(570,.065,{end:820,volume:.045});return;}
-    if(name==='correct'){[0,2,4].forEach((n,i)=>voice(scale[n]*2,.42,{delay:i*.085,volume:.09}));voice(523.25,.6,{volume:.04});return;}
-    if(name==='treasure'||name==='finish'){[0,2,4,5,6].forEach((n,i)=>{voice(scale[n]*2,.65,{delay:i*.11,volume:.085});voice(scale[n],.75,{delay:i*.11,volume:.035});});return;}
-    if(name==='pair'){voice(660,.15,{volume:.09});voice(990,.24,{volume:.08,delay:.09});return;}
-    if(name==='wrong'){voice(220,.17,{end:165,volume:.075,type:'triangle'});return;}
-    if(name==='drive'){voice(85,.23,{end:150,volume:.07,type:'triangle'});noise(.18,.018,'lowpass',700);return;}
-    if(name==='friend'){voice(600,.12,{end:850,volume:.055});voice(740,.19,{end:1100,volume:.045,delay:.12});return;}
-    if(name==='travel'){[0,2,5].forEach((n,i)=>voice(scale[n],.25,{delay:i*.07,volume:.06}));}
+    const cues={crash:['crash',.62,2.5],impact:['body-impact',.48,.8],land:['body-impact',.26,.55],footstep:['footsteps',.15,.28],skate:['footsteps',.08,.4],swim:['splash',.22,.7],splash:['splash',.5,1.7],drive:['engine',.25,1],jump:['whoosh',.16,.45],fall:['whoosh',.4,.7],boat:['engine',.2,1.8],'giant-stomp':['body-impact',.62,.8],'balloon-pop':['body-impact',.5,.5],door:['door',.4,2],thunder:['thunder',.5,9],coin:['coins',.28,.8],treasure:['celebration',.5,4],finish:['celebration',.48,4],arrival:['celebration',.35,4],correct:['coins',.2,.7],pair:['coins',.16,.5],friend:['door',.12,.18],travel:['whoosh',.2,.7],tap:['door',.09,.09],wrong:['body-impact',.08,.12]};
+    const cue=cues[name];if(!cue)return;const [sound,volume,duration]=cue;
+    recordedSound(sound,{volume:volume*power,duration,offset:sound==='footsteps'?(footIndex++%30)*.55:0,rate:name==='thunder'?1:.96+(footIndex%4)*.025});
+    if(['crash','treasure','finish','thunder'].includes(name))soundtrack.duck(name==='thunder'?3:1.8);
   }
-  // Light, upbeat island-adventure theme. Synthesized locally: no audio downloads,
-  // no licensing dependencies, and no music before a user gesture.
-  const THEME_BEAT=60/116;
-  const themeMelodies=[
-    [72,76,79,76,74,79,81,79],
-    [69,72,77,81,79,77,76,null],
-    [71,74,79,83,81,79,74,71],
-    [76,72,69,72,76,79,76,null],
-    [79,76,72,74,76,79,81,79],
-    [81,77,76,72,76,77,79,null],
-    [79,74,71,74,79,81,83,79],
-    [76,72,69,72,74,76,72,null]
-  ];
-  const themeHarmony=[
-    {bass:48,chord:[60,64,67]}, // C
-    {bass:41,chord:[60,65,69]}, // F
-    {bass:43,chord:[59,62,67]}, // G
-    {bass:45,chord:[60,64,69]}, // Am
-    {bass:48,chord:[60,64,67]},
-    {bass:41,chord:[60,65,69]},
-    {bass:43,chord:[59,62,67]},
-    {bass:48,chord:[60,64,67]}
-  ];
-  let musicBus=null,musicNoise=null,musicTimer=null,nextMusicTime=0,musicBar=0,cityAmbient=false,lastStreetSound=0;
-  const musicNodes=new Set();
-  const midi=n=>440*Math.pow(2,(n-69)/12);
-  function musicSound(freq,at,len,volume,type='sine',drop=1){
-    if(!context||!musicBus||musicNodes.size>110)return;
-    const oscillator=context.createOscillator(),gain=context.createGain();
-    oscillator.type=type;
-    oscillator.frequency.setValueAtTime(freq,at);
-    if(drop!==1)oscillator.frequency.exponentialRampToValueAtTime(Math.max(25,freq*drop),at+len);
-    gain.gain.setValueAtTime(.0001,at);
-    gain.gain.exponentialRampToValueAtTime(volume,at+.008);
-    gain.gain.exponentialRampToValueAtTime(.0001,at+len);
-    oscillator.connect(gain).connect(musicBus);
-    oscillator.start(at);oscillator.stop(at+len+.02);
-    musicNodes.add(oscillator);
-    oscillator.onended=()=>{musicNodes.delete(oscillator);oscillator.disconnect();gain.disconnect();};
-  }
-  function musicHat(at,volume=.035){
-    if(!musicNoise||!musicBus||musicNodes.size>110)return;
-    const source=context.createBufferSource(),filter=context.createBiquadFilter(),gain=context.createGain(),duration=.075;
-    source.buffer=musicNoise;filter.type='highpass';filter.frequency.value=4700;
-    gain.gain.setValueAtTime(.0001,at);
-    gain.gain.linearRampToValueAtTime(volume,at+.003);
-    gain.gain.exponentialRampToValueAtTime(.0001,at+duration);
-    source.connect(filter).connect(gain).connect(musicBus);
-    source.start(at);source.stop(at+duration+.01);
-    musicNodes.add(source);
-    source.onended=()=>{musicNodes.delete(source);source.disconnect();filter.disconnect();gain.disconnect();};
-  }
-  function scheduleTheme(at){
-    for(let offset=0;offset<2;offset++){
-      const bar=(musicBar+offset)%8,start=at+offset*4*THEME_BEAT;
-      const melody=themeMelodies[bar],harmony=themeHarmony[bar];
-      // Bright marimba/steelpan-like lead with deliberate gaps so effects stay audible.
-      melody.forEach((note,i)=>{
-        if(note===null)return;
-        musicSound(midi(note),start+i*THEME_BEAT/2,.22, i%2===0?.09:.07,'sine');
-        if(i===0||i===4)musicSound(midi(note+12),start+i*THEME_BEAT/2,.11,.016,'triangle');
-      });
-      // Off-beat island chords, warm bouncing bass and light hand percussion.
-      for(const point of [0.5,2.5])
-        for(const note of harmony.chord)musicSound(midi(note),start+point*THEME_BEAT,.24,.027,'triangle');
-      for(let beat=0;beat<4;beat++){
-        musicSound(midi(harmony.bass+(beat===2?7:0)),start+beat*THEME_BEAT,.34,beat===0?.115:.084,'sine');
-        if(beat%2===0)musicSound(125,start+beat*THEME_BEAT,.16,.08,'sine',.4);
-        else musicHat(start+beat*THEME_BEAT,.065);
-        musicHat(start+(beat+.5)*THEME_BEAT,beat===3?.055:.038);
-      }
-    }
-    musicBar=(musicBar+2)%8;
-  }
-  function stopTheme(){
-    if(musicTimer!==null)clearTimeout(musicTimer);
-    musicTimer=null;nextMusicTime=0;musicBar=0;
-    if(context&&musicBus){
-      const now=context.currentTime;
-      musicBus.gain.cancelScheduledValues(now);
-      musicBus.gain.setTargetAtTime(.0001,now,.025);
-      for(const node of musicNodes){try{node.stop(now+.08);}catch{}}
-    }
-  }
-  function runTheme(){
-    musicTimer=null;
-    if(!unlocked||!soundEnabled()||document.hidden||(scene!=='explore'||cityAmbient)||!ready())return;
-    const now=context.currentTime;
-    if(nextMusicTime<now-.4)nextMusicTime=now+.1;
-    while(nextMusicTime<now+.7){
-      scheduleTheme(nextMusicTime);
-      nextMusicTime+=8*THEME_BEAT;
-    }
-    musicTimer=setTimeout(runTheme,250);
-  }
-  function startTheme(){
-    if(!unlocked||scene!=='explore'||cityAmbient||!ready())return;
-    if(musicTimer!==null)return;
-    const now=context.currentTime;
-    musicBus.gain.cancelScheduledValues(now);
-    musicBus.gain.setTargetAtTime(.4,now,.15);
-    if(nextMusicTime===0)nextMusicTime=now+.15;
-    runTheme();
-  }
+  let cityAmbient=false,lastStreetSound=0;
+  function stopTheme(){soundtrack.sync();}
   function stopAmbient(){clearTimeout(ambientTimer);ambientTimer=null;}
-  function ambientPhrase(){
-    stopAmbient();if(!unlocked||!soundEnabled()||document.hidden||!['map','home','welcome'].includes(scene)||!ready())return;
-    // Quiet surf, a few distant birds, and a sparse five-note music-box phrase.
-    noise(3.8,.1,'lowpass',450,true);
-    const melody=[[0,2,4,2],[2,4,5,4],[0,4,2,0],[4,5,2,0]][phrase++%4];
-    melody.forEach((n,i)=>voice(scale[n],1.6,{volume:.035,delay:1+i*.65,ambient:true}));
-    voice(1700,.12,{end:2400,volume:.028,delay:.5,ambient:true});voice(2200,.16,{end:1600,volume:.02,delay:.7,ambient:true});
-    ambientTimer=setTimeout(ambientPhrase,6500);
-  }
+  function ambientPhrase(){soundtrack.sync();}
   function sync(){
-    if(!soundEnabled()||document.hidden){carEngine(0,false);stopBoat();stopAmbient();stopTheme();if(context){for(const o of voices){try{o.stop();o.disconnect();}catch{}}voices.clear();context.suspend().catch(()=>{});}return;}
-    if(unlocked&&ready()){master.gain.setValueAtTime(.65,context.currentTime);if(scene!=='explore')ambientPhrase();if(boatRequested)startBoat();}
+    if(!soundEnabled()||document.hidden){carEngine(0,false);stopBoat();rainSound(0);stopAmbient();soundtrack.sync();if(context){for(const o of voices){try{o.stop();o.disconnect();}catch{}}voices.clear();context.suspend().catch(()=>{});}return;}
+    if(unlocked&&ready()){master.gain.setTargetAtTime(preferences.effects,context.currentTime,.04);soundtrack.sync();if(boatRequested)startBoat();}
   }
-  function gesture(){if(!unlocked){unlocked=true;sync();if(ready())for(const name of ['horn','siren','engine','footsteps','crash','splash'])loadRecording(name);}}
+  function gesture(){const first=!unlocked;unlocked=true;if(ready()){soundtrack.unlock();if(first)for(const name of ['horn','engine','footsteps','crash','splash','whoosh','body-impact','coins','door','celebration'])loadRecording(name);}sync();}
   function setScene(next){if(next!==scene)stopTheme();if(next!=='explore'){carEngine(0,false);boatRequested=false;stopBoat();}scene=next;stopAmbient();if(ambience&&context){ambience.gain.cancelScheduledValues(context.currentTime);ambience.gain.setTargetAtTime(['map','home','welcome'].includes(scene)?.24:.0001,context.currentTime,.12);}if(unlocked){if(scene!=='explore')ambientPhrase();}}
-  function duck(){if(!ambience||!context)return;const at=context.currentTime;if(boatBus){boatBus.gain.cancelScheduledValues(at);boatBus.gain.setTargetAtTime(.18,at,.08);boatBus.gain.setTargetAtTime(.72,at+4,.4);}ambience.gain.cancelScheduledValues(at);ambience.gain.setTargetAtTime(.025,at,.08);if(['map','home','welcome'].includes(scene))ambience.gain.setTargetAtTime(.24,at+4,.7);if(musicBus&&scene==='explore'){musicBus.gain.cancelScheduledValues(at);musicBus.gain.setTargetAtTime(.07,at,.08);musicBus.gain.setTargetAtTime(.4,at+5,.55);}}
+  function duck(){soundtrack.duck(5);}
   const visibility=()=>{if(document.hidden)window.speechSynthesis?.cancel();sync();};document.addEventListener('visibilitychange',visibility);
   function setCityAmbient(isCity){
     const next=!!isCity;if(cityAmbient===next)return;
@@ -244,11 +101,10 @@ export function createDelight({soundEnabled,motionEnabled}) {
   function panamaSound({music=0,horn=0,step=0,cheer=0}={}){
    if(music<=.005&&horn<=.005&&cheer<=.04)return;
    if(!unlocked||!soundEnabled()||document.hidden||!ready())return;
-   if(music>.005&&!cityAmbient){const v=Math.min(1,music);if([0,6,8,14].includes(step))voice(78,.16,{volume:v*.32,end:38});if([4,10,12].includes(step))noise(.075,v*.15,'highpass',1500);if(step%2===0)noise(.035,v*.055,'highpass',5500);if([0,3,8,11].includes(step))voice([110,110,98,123][Math.floor(step/4)],.16,{volume:v*.11,type:'triangle',end:55});}
    if(horn>.005)recordedSound('horn',{volume:Math.min(.5,horn*.55),rate:.88+Math.random()*.22});
-   if(cheer>.04&&step===0)voice(780,.15,{volume:cheer*.08,end:1100,type:'triangle'});
+
   }
-  return {recordedSound,carEngine,panamaSound,setCityAmbient,streetSound,boat,get boatActive(){return !!boatBus;},note,drum,effect,gesture,sync,setScene,duck,get voiceCount(){return voices.size;},get ambientScheduled(){return ambientTimer!==null;},destroy(){destroyed=true;carEngine(0,false);recordings.clear();boatRequested=false;stopBoat();stopAmbient();stopTheme();document.removeEventListener('visibilitychange',visibility);context?.close();}};
+  return {soundscape,setAudioLevels,get audioLevels(){return {...preferences};},get soundtrackStatus(){return soundtrack.status;},nextTrack(){soundtrack.next();},recordedSound,carEngine,panamaSound,setCityAmbient,streetSound,boat,get boatActive(){return !!boatBus;},note,drum,effect,gesture,sync,setScene,duck,get voiceCount(){return voices.size;},get ambientScheduled(){return ambientTimer!==null;},destroy(){destroyed=true;soundtrack.destroy();rainSound(0);carEngine(0,false);recordings.clear();boatRequested=false;stopBoat();stopAmbient();stopTheme();document.removeEventListener('visibilitychange',visibility);context?.close();}};
 }
 export function burst(target,{motion=true,big=false}={}){
   if(!motion||!target?.isConnected)return;

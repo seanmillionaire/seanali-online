@@ -1,4 +1,4 @@
-import {regionalPalette} from './regional-palette.js?v=211';
+import {regionalPalette} from './regional-palette.js?v=213';
 // World-space material blending preserves every existing terrain/collision vertex.
 export function landscapeMaterial({T,mat,surfaces,vertexColors=true,base='grass',region='mainland'}){
  const palette=regionalPalette(region);

@@ -1,6 +1,6 @@
-import {mainlandContains,canalWater,gatunWater} from './geography.js?v=211';
-import {CITY_HOSPITAL} from './volcano-safety.js?v=211';
-import {worldIslands,roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=211';
+import {mainlandContains,canalWater,gatunWater} from './geography.js?v=213';
+import {CITY_HOSPITAL} from './volcano-safety.js?v=213';
+import {worldIslands,roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=213';
 const mainland=[
  {id:'gorgona',x:-25,z:-3,rx:76,rz:34,icon:'🏖️',es:'Nueva Gorgona · Pueblo y Playa',en:'Nueva Gorgona · Town and Beach'},
  {id:'volcanTown',x:-385,z:-30,rx:15,rz:13,icon:'🏘️',es:'Volcán · Chiriquí',en:'Volcán Town · Chiriquí'}

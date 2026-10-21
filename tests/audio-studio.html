@@ -1,0 +1,14 @@
+<!doctype html><html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Panama audio studio</title><style>body{background:#102e38;color:white;font:18px system-ui;padding:24px}button{font:inherit;padding:14px;margin:5px;border-radius:10px}output{display:block;white-space:pre-wrap;margin:24px 0}</style><h1>🎧 Panama soundtrack & effects</h1><button id="play">▶ Play soundtrack</button><button id="drive">🚙 Driving</button><button id="home">🏡 Home</button><button id="ocean">⛵ Ocean</button><button id="storm">⛈ Storm</button><button id="effects">💥 Test recorded effects</button><button id="next">⏭ Next track</button><button id="mute">🔇 Mute</button><button id="verify">✅ Verify loaded audio</button><output id="status">Ready — sound starts only after Play.</output><script type="module">
+import {createDelight} from '/games/adventure/delight.js?v=213';
+let enabled=true,info={x:350,z:-60,active:true},sourceCount=0,decoded=0,error=[];
+const Native=window.AudioContext;window.AudioContext=class extends Native{createBufferSource(){sourceCount++;return super.createBufferSource();}decodeAudioData(...args){return super.decodeAudioData(...args).then(b=>{decoded++;return b;});}};
+const joy=createDelight({soundEnabled:()=>enabled,motionEnabled:()=>true});joy.setScene('explore');const out=document.querySelector('#status');window.addEventListener('error',e=>error.push(e.message));window.addEventListener('unhandledrejection',e=>error.push(String(e.reason)));
+const report=()=>{out.textContent=JSON.stringify({...joy.soundtrackStatus,decoded,sourceCount,errors:error},null,2);};
+document.querySelector('#play').onclick=()=>{joy.gesture();report();};
+for(const [id,data]of Object.entries({drive:{driving:true},home:{indoors:true},ocean:{boating:true},storm:{rain:.9}}))document.querySelector('#'+id).onclick=()=>{joy.gesture();info={...data,active:true};report();};
+document.querySelector('#next').onclick=()=>{joy.gesture();joy.nextTrack();report();};
+document.querySelector('#mute').onclick=e=>{enabled=!enabled;joy.sync();e.target.textContent=enabled?'🔇 Mute':'🔊 Unmute';report();};
+document.querySelector('#effects').onclick=async()=>{joy.gesture();for(const n of ['door','footstep','jump','land','crash','splash','coin','finish','thunder']){joy.effect(n);await new Promise(r=>setTimeout(r,1400));}report();};
+document.querySelector('#verify').onclick=()=>{report();if(!error.length&&decoded>=8&&sourceCount>5&&joy.soundtrackStatus.playing)out.textContent='PASS recorded foley decoded and played; full soundtrack playing; no audio errors.\n'+out.textContent;else out.textContent='NOT READY\n'+out.textContent;};
+setInterval(()=>joy.soundscape(info),250);window.addEventListener('pagehide',()=>joy.destroy());
+</script></html>

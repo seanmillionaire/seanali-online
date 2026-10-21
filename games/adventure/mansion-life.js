@@ -1,5 +1,5 @@
-import {HOME_LOTS,HOME_STAGES,HOME_OUTFITS,homeAvailable,chooseHome,constructHome,homeLot,homeReady,homePath,homeCanWalk} from './mansion-state.js?v=211';
-import {exteriorMansion,mansionInterior} from './mansion-models.js?v=211';
+import {HOME_LOTS,HOME_STAGES,HOME_OUTFITS,homeAvailable,chooseHome,constructHome,homeLot,homeReady,homePath,homeCanWalk} from './mansion-state.js?v=213';
+import {exteriorMansion,mansionInterior} from './mansion-models.js?v=213';
 export function createMansionLife(o){
  const {T,scene,state,host,panel,save,refresh,joy,prepare,navigate,enter,leave,coinBalance,roadDistance,canPark,onPark,dress,onMeal,walkRoom,isHome}=o,h=state.world.mansion,es=state.lang==='es',say=(a,b)=>es?a:b;
  let exterior=null,room=null,timer=null,mode='earn',homeStep=0,selected=HOME_LOTS[0].id,fetchTime=0,time=0,bathTime=0,laundryTime=0,dogRoute=[],dogPlan=0;

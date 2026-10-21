@@ -1,44 +1,44 @@
-import {createCanalBridges} from './canal-bridges.js?v=211';
-import {createMansionLife} from './mansion-life.js?v=211';
-import {HOME_OUTFITS} from './mansion-state.js?v=211';
-import {sailingSpeedLimit,sailingVelocity} from './ocean-travel.js?v=211';
-import {regionalClearing} from './regional-layout.js?v=211';
-import {createRegionalScenery} from './regional-scenery.js?v=211';
-import {FLIGHT_SPEED,birdTravelSpeed,flightStep} from './flight-travel.js?v=211';
-import {createWorldCollision,createRoadSurfaceSampler} from './world-collision.js?v=211';
-import {adventureIcon} from './adventure-icons.js?v=211';
-import {createTouchJoystick} from './touch-joystick.js?v=211';
-import {groundTravelSpeed,groundTravelStep,impactPose} from './travel-mode.js?v=211';
-import {createRuralTowns,ruralBlocks} from './rural-towns.js?v=211';
-import {roadRibbon,surfaceMesh} from './road-surfaces.js?v=211';
-import {touchesLava,returnToHospital,createCityHospital} from './volcano-safety.js?v=211';
-import {locationLabel} from './location-label.js?v=211';
-import {waterFriend,animalStep} from './animal-boundaries.js?v=211';
-import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,mainlandAt,mainlandRoadRoute,roadDistance,roadsidePoint} from './explore-state.js?v=211';
-import {planHighwayGuardrails} from './highway-rails.js?v=211';
-import {createPanamaLife} from './panama-life.js?v=211';
-import {createCloseCamera} from './close-camera.js?v=211';
-import {WORLD_BOUNDS,freshwaterHabitat} from './geography.js?v=211';
-import {createExtendedDistricts} from './expanded-districts.js?v=211';
-import {createCampaign} from './campaign.js?v=211';
-import {createColonAdventure} from './colon-adventure.js?v=211';
-import {createCanalCruise} from './canal-cruise.js?v=211';
-import {createRealms} from './realms.js?v=211';
-import {createJourney} from './journey.js?v=211';
-import {oceanModel} from './ocean-models.js?v=211';
-import {createIslandLife,naturalSharkPatrol as sharkPatrol} from './island-life.js?v=211';
-import {createWorldStory,islandStories} from './world-story.js?v=211';
-import {REGION_PROJECTS,regionForPosition,missionStatus,restoreRegions,createRegionProjectWorld} from './region-projects.js?v=211';
-import {createWorldMap} from './world-map.js?v=211';
-import {createWildlifeFriends} from './wildlife-friends.js?v=211';
-import {createVillageBuilders} from './village-builders.js?v=211';
-import {createHouseInteriors} from './house-interiors.js?v=211';
-import {createPizzaCity} from './pizza-city.js?v=211';
-import {driveByDirection} from './directional-drive.js?v=211';
-import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=211';
-import {ESTATE_PLANS,estateCosts,estateMissing,findEstateSite,canBuildEstate,buildEstate,canUpgradeEstate,upgradeEstate,estateBlocked,createEstateWorld} from './estate.js?v=211';
-import {buildIsland} from './entrance.js?v=211';
-import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=211';
+import {createCanalBridges} from './canal-bridges.js?v=213';
+import {createMansionLife} from './mansion-life.js?v=213';
+import {HOME_OUTFITS} from './mansion-state.js?v=213';
+import {sailingSpeedLimit,sailingVelocity} from './ocean-travel.js?v=213';
+import {regionalClearing} from './regional-layout.js?v=213';
+import {createRegionalScenery} from './regional-scenery.js?v=213';
+import {FLIGHT_SPEED,birdTravelSpeed,flightStep} from './flight-travel.js?v=213';
+import {createWorldCollision,createRoadSurfaceSampler} from './world-collision.js?v=213';
+import {adventureIcon} from './adventure-icons.js?v=213';
+import {createTouchJoystick} from './touch-joystick.js?v=213';
+import {groundTravelSpeed,groundTravelStep,impactPose} from './travel-mode.js?v=213';
+import {createRuralTowns,ruralBlocks} from './rural-towns.js?v=213';
+import {roadRibbon,surfaceMesh} from './road-surfaces.js?v=213';
+import {touchesLava,returnToHospital,createCityHospital} from './volcano-safety.js?v=213';
+import {locationLabel} from './location-label.js?v=213';
+import {waterFriend,animalStep} from './animal-boundaries.js?v=213';
+import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,mainlandAt,mainlandRoadRoute,roadDistance,roadsidePoint} from './explore-state.js?v=213';
+import {planHighwayGuardrails} from './highway-rails.js?v=213';
+import {createPanamaLife} from './panama-life.js?v=213';
+import {createCloseCamera} from './close-camera.js?v=213';
+import {WORLD_BOUNDS,freshwaterHabitat} from './geography.js?v=213';
+import {createExtendedDistricts} from './expanded-districts.js?v=213';
+import {createCampaign} from './campaign.js?v=213';
+import {createColonAdventure} from './colon-adventure.js?v=213';
+import {createCanalCruise} from './canal-cruise.js?v=213';
+import {createRealms} from './realms.js?v=213';
+import {createJourney} from './journey.js?v=213';
+import {oceanModel} from './ocean-models.js?v=213';
+import {createIslandLife,naturalSharkPatrol as sharkPatrol} from './island-life.js?v=213';
+import {createWorldStory,islandStories} from './world-story.js?v=213';
+import {REGION_PROJECTS,regionForPosition,missionStatus,restoreRegions,createRegionProjectWorld} from './region-projects.js?v=213';
+import {createWorldMap} from './world-map.js?v=213';
+import {createWildlifeFriends} from './wildlife-friends.js?v=213';
+import {createVillageBuilders} from './village-builders.js?v=213';
+import {createHouseInteriors} from './house-interiors.js?v=213';
+import {createPizzaCity} from './pizza-city.js?v=213';
+import {driveByDirection} from './directional-drive.js?v=213';
+import {createIslandWorkshop,BUILD_RECIPES,RESOURCE_INFO} from './island-workshop.js?v=213';
+import {ESTATE_PLANS,estateCosts,estateMissing,findEstateSite,canBuildEstate,buildEstate,canUpgradeEstate,upgradeEstate,estateBlocked,createEstateWorld} from './estate.js?v=213';
+import {buildIsland} from './entrance.js?v=213';
+import {islandPoint,remoteAccess,worldIslands,explorePlaces,exploreItems,volcanoTrailPoint,normalizeExplore,spendFood,harvestFood,collectExplore,badgeExplore,countExplore,islandPath,walkable,inWater,onDock,sharkStep,recoverShark,boatStep,recoverBoat,traversable,nextIslandAdventure,coinBalance,earnCoins,syncWallet,islandShop,buyIslandItem} from './explore-state.js?v=213';
 export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>false,welcomeMessage=null,openLessons=()=>{},openNext=()=>{},motion,openBook,openHome,load=()=>import('./vendor/three.module.min.js')}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,s=state.world=normalizeExplore(state.world);syncWallet(state);
  let disposed=false,engine=null,control=null,builderSystem=null,friendSystem=null,houseSystem=null,mansionLife=null,wildLife=null,cityLife=null,panamaLife=null,cruiseLife=null,colonLife=null,workshop=null,estateWorld=null,regionWorld=null,carDriving=false,carSpeed=0,mountId=null,birdAltitude=0,birdTarget=0,birdLanding=false,near=null,ride=s.flight?1:0,flightY=s.flight||0,flightTarget=s.flight||0,flightVX=0,flightVZ=0,route=[],targetPoint=null,keys=new Set(),music=[],messageTime=0,autosave=0;
@@ -843,7 +843,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
   estateWorld=createEstateWorld({T,scene,state,make,mat,geometry,ball,box,cylinder,cone,height,joy,save,refresh,tell,spark});
   regionWorld=createRegionProjectWorld({T,scene,state,make,mat,ball,box,cone,cylinder,height});
   refresh();
-  houseSystem=createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,height,surfaces,language:state.lang,companionId:()=>s.friends?.companion,onPizza:()=>cityLife?.order(),
+  houseSystem=createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,height,surfaces,joy,language:state.lang,companionId:()=>s.friends?.companion,onPizza:()=>cityLife?.order(),
     buildCustom:cfg=>mansionLife.buildInterior(cfg),extraHouses:()=>[...(mansionLife?.houses()||[]),...colonLife.houses(),...(panamaLife?.homes()||[])],treehouseLevel:()=>s.colon.level,onTreehouseUpgrade:()=>colonLife.expand(),estateBuildings:()=>s.estate?.buildings||[],
     workshopBuildings:()=>workshop?.recipes?.filter(b=>workshop.isBuilt(b.id))||[],
     onUseWorkshop:id=>{const r=workshop?.recipes?.find(r=>r.id===id);if(!r)return false;const result=useWorkshop(id);if(!result)tell('🛠️ ¡Usa el taller!','🛠️ Use your workshop!');return result;},
@@ -1208,6 +1208,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    }
    act.classList.toggle('has-target',!act.hidden&&panel.hidden);
    panamaLife?.update(dt,active,{x:s.x,z:s.z,indoors:!!houseSystem?.isInside()||inside});
+   joy.soundscape?.({x:s.x,z:s.z,indoors:!!houseSystem?.isInside()||inside,driving:carDriving,boating:boating||cruising,flying:!!ride,night:(s.dayTime||0)>145,rain:scene.userData.regionalWeather?.rain||0,active});
    festivalParts.forEach((p,i)=>p.visible=i<s.campaign.chapter);festivalTable.visible=s.campaign.chapter===9;
    campaign.update();host.classList.toggle('inside-mansion',!!houseSystem?.current()?.mansion);houseSystem?.presentation(usingClose);houseSystem?.hideOutside();
    for(const [button,words] of buttonUpdates)paintButton(button,words);buttonUpdates.clear();

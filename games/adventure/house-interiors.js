@@ -1,4 +1,4 @@
-import {homeMove,homePath} from './mansion-state.js?v=211';
+import {homeMove,homePath} from './mansion-state.js?v=213';
 // Five real walkable, furnished interiors. Exterior coordinates are never
 // overwritten while inside, so old saves and world navigation remain safe.
 export const villageHouses=[
@@ -10,7 +10,7 @@ export const villageHouses=[
  {id:'cozy',x:9,z:-4,es:'Casita de Juegos de Gorgona',en:'Gorgona Playhouse',icon:'🧸',theme:'play'},
  {id:'pizzeria',x:136,z:-36,es:'Pizzería de Angelique · Casco Viejo',en:'Angelique’s Pizzeria · Casco Viejo',icon:'🍕',theme:'pizza'}
 ];
-export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,surfaces=null,language='en',companionId=()=>null,onEnter=()=>{},onPizza=()=>{},onMessage,estateBuildings=()=>[],onUpgrade=()=>false,workshopBuildings=()=>[],onUseWorkshop=()=>false,extraHouses=()=>[],buildCustom=null,treehouseLevel=()=>1,onTreehouseUpgrade=()=>false}){
+export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,surfaces=null,joy=null,language='en',companionId=()=>null,onEnter=()=>{},onPizza=()=>{},onMessage,estateBuildings=()=>[],onUpgrade=()=>false,workshopBuildings=()=>[],onUseWorkshop=()=>false,extraHouses=()=>[],buildCustom=null,treehouseLevel=()=>1,onTreehouseUpgrade=()=>false}){
  const es=language==='es';
  const rooms=new Map(),originZ=280;
  const cssButton=document.createElement('button');
@@ -163,7 +163,7 @@ export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geomet
   const workshops=workshopBuildings().map(b=>({id:'workshop-'+b.id,workshopId:b.id,x:b.x,z:b.z,es:b.es,en:b.en,icon:b.icon,theme:'play'}));
   return [...villageHouses,...owned,...workshops,...extraHouses()].filter(h=>Math.hypot(x-h.x,z-h.z)<4.6).sort((a,b)=>Math.hypot(x-a.x,z-a.z)-Math.hypot(x-b.x,z-b.z))[0]||null;}
  function enter(cfg){
-  if(!cfg||active)return false;
+  if(!cfg||active)return false;joy?.effect('door');
   lastSpot={x:cfg.x,z:cfg.z};active=rooms.get(cfg.id)||build(cfg);localX=0;localZ=cfg.mansion?12:2.2;
   active.saved=new Map();
   for(const o of scene.children){
@@ -177,7 +177,7 @@ export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geomet
   return true;
  }
  function leave(){
-  if(!active)return;
+  if(!active)return;joy?.effect('door');
   active.root.visible=false;
   for(const [o,visible]of active.saved)o.visible=visible;
   active=null;indoorRoute=[];cssButton.hidden=true;

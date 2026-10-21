@@ -1,4 +1,4 @@
-import {createHuman} from './character-model.js?v=211';
+import {createHuman} from './character-model.js?v=213';
 // Shared recognizable street people, vehicles and plated food; no image downloads.
 export function panamaModels({T,make,mat,box,ball,cylinder,cone,geometry}){
  const white=mat('#eeeae3'),dark=mat('#25333e'),glass=mat('#536c73',{metalness:.12,roughness:.17,transparent:true,opacity:.80}),skin=[mat('#a96e43'),mat('#c99465'),mat('#744830')],blue=mat('#204b78'),red=mat('#da363b'),yellow=mat('#f5c857'),silver=mat('#bfc9cb',{metalness:.78,roughness:.23}),foodGold=mat('#e6b347'),fishSkin=mat('#b5a477'),green=mat('#79a752');

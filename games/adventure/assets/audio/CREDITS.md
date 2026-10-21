@@ -10,3 +10,26 @@ All files are Freesound high-quality MP3 previews distributed under CC0 1.0 (htt
 | footsteps.mp3 | Footsteps_Gravel_01.wav — BenDrain | https://freesound.org/people/BenDrain/sounds/488075/ |
 | crash.mp3 | Car Crash — squareal | https://freesound.org/people/squareal/sounds/237375/ |
 | splash.mp3 | Water splash, emptying a bucket 8 — wormer2 | https://freesound.org/people/wormer2/sounds/417992/ |
+
+
+## Full soundtrack · October 2026
+
+All seven compositions by Kevin MacLeod (incompetech.com), licensed under Creative Commons Attribution 4.0: https://creativecommons.org/licenses/by/4.0/. Full recordings transcoded to AAC 128 kbps for streaming. Celebration cue is an adapted four-second excerpt of Heroic Age (19–23 seconds). These are licensed game scores, not represented as traditional Panamanian recordings.
+
+- Beachfront Celebration — 00:03:07 — https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1200022
+- Chee Zee Beach — 00:03:23 — https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100686
+- Casa Bossa Nova — 00:04:02 — https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1600012
+- Carefree — 00:03:25 — https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1400037
+- Heroic Age — 00:01:37 — https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100848
+- Rising Tide — 00:04:37 — https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1900010
+- Easy Lemon — 00:02:06 — https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1200076
+
+## Additional recorded effects
+
+CC0 1.0; trimmed, faded at playback, and transcoded to AAC.
+- door.m4a — Freesound - Modern Front Door Inside and Outside DonFX.wav by Donmann — https://freesound.org/s/237334/
+- whoosh.m4a — Freesound - Short Whoosh, 13x by Kinoton — https://freesound.org/s/427979/
+- rain.m4a — Freesound - Rain_and_thunder_2.mp3 by SoundAppProject — https://freesound.org/s/537555/
+- thunder.m4a — Freesound - THunder_recorded_2021_Summer_02.wav by benmerrill328 — https://freesound.org/s/613276/
+- coins.m4a — Freesound - Cash Register Purchase by Zott820 — https://freesound.org/s/209578/
+- body-impact.m4a — Freesound - Power Kick, Body Impact, 7x by Kinoton — https://freesound.org/s/586841/

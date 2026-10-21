@@ -4,8 +4,8 @@ export const GORGONA_BUILDER_FINISHED={
  sofia:[[7,-1],[12,-1],[18,-10]]
 };
 // Two independent builders who finish permanent structures across Panama.
-import {BUILDER_SITES,builderCycleSite,builderVisibleProjects} from './builder-projects.js?v=211';
-import {builderSailPosition} from './builder-ferry.js?v=211';
+import {BUILDER_SITES,builderCycleSite,builderVisibleProjects} from './builder-projects.js?v=213';
+import {builderSailPosition} from './builder-ferry.js?v=213';
 export function createVillageBuilders({T,scene,host,state,make,mat,ball,box,cylinder,height,save,onTravel,language}){
  const es=language==='es',tr=(a,b)=>es?a:b;
  const specs=[
