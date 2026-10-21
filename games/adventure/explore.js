@@ -132,6 +132,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    else label=label.split(' · ')[0];
   }
   if(!label)label=say('Jugar','Play');
+  b.dataset.uiKind=/🏡|Casa|Home|mansión|mansion/i.test(icon+' '+label)?'home':/🫶|📱|Amigos|Friends|amigas/i.test(icon+' '+label)?'friends':/🍧|🍕|🍳|🍌|🥥|Comida|Food|Eat|Comer/.test(icon+' '+label)?'food':/🎮|🎨|Activities|Actividades/.test(icon+' '+label)?'play':'explore';
   b.classList.add('picture-button');
   b.setAttribute('aria-label',text);b.title=text;
   if(b.firstElementChild?.classList.contains('button-picture')){
@@ -145,6 +146,7 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
   b.replaceChildren(picture,caption,full);
  }
  const btn=(txt,cls,fn)=>{const b=makeEl('button',cls);b.type='button';paintButton(b,txt);b.onclick=()=>{joy.gesture();fn();};return b;};
+ const loading=makeEl('div','world-loading');loading.setAttribute('role','status');loading.setAttribute('aria-live','polite');loading.append(makeEl('span','loading-sun','☀️'),makeEl('div','loading-postcard','🇵🇦 '+say('¡Tu Panamá te espera!','Your Panama awaits!')),makeEl('div','loading-note',say('🌴 Preparando tu aventura…','🌴 Getting your adventure ready…')));host.append(loading);
  let canvas=makeEl('canvas','explore-canvas');canvas.setAttribute('aria-label',say('Explora con Angelique. Usa flechas o WASD, o toca el suelo.','Explore as Angelique. Use arrows or WASD, or tap the ground.'));canvas.tabIndex=0;
  const hud=makeEl('div','explore-hud'),title=makeEl('div','explore-location','🏖️ '+say('Playa Gorgona','Playa Gorgona')),bag=makeEl('div','explore-bag'),quest=makeEl('div','explore-hint',say('¡Panamá te espera! Busca a Pip en Gorgona o explora a tu aire.','Panama awaits! Find Pip in Gorgona or explore anywhere.'));
  const goalCard=makeEl('section','island-goal'),goalTitle=makeEl('strong',''),goalText=makeEl('p',''),goalButton=btn('','goal-next',()=>{if(regionFocusMode)showRegionProject();else followGoal();});goalCard.setAttribute('aria-label',say('Tu siguiente aventura','Your next adventure'));goalCard.append(goalTitle,goalText,goalButton);
@@ -448,7 +450,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    makeEl('p','',say('🌴 Tu Panamá, a tu ritmo. Elige algo divertido.','🌴 Your Panama, your pace. Pick something fun.')));
   if(!focusId){
    const hub=makeEl('div','backpack-world-hub');
-   const card=(icon,label,detail,fn)=>{const b=btn(icon+' '+label,'backpack-world-tile',fn);b.append(makeEl('small','play-benefit',detail));hub.append(b);};
+   const card=(icon,label,detail,fn)=>{const b=btn(icon+' '+label,'backpack-world-tile',fn);b.dataset.uiKind=({'🏡':'home','📱':'friends','🍌':'food','🛼':'gear','🎮':'play'})[icon]||'explore';b.append(makeEl('small','play-benefit',detail));hub.append(b);};
    card('🗺️',say('Explorar','Explore'),say('📍 Elige playa, ciudad o montaña','📍 Choose beach, city or mountains'),()=>{panel.hidden=true;adventureMap.open();});
    card('🏡',say('Mi mansión','My mansion'),say('🐶 Cocina, juega y cuida a tu perro','🐶 Cook, play and care for your dog'),()=>mansionLife?.show());
    card('🛼',say('Mis herramientas','My gear'),say('⚡ Muévete rápido y mira de cerca','⚡ Move faster and look closer'),showGear);
@@ -638,7 +640,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
  const retry=btn(say('Volver a abrir la isla','Reopen the island'),'world-small',()=>start(true));retry.hidden=true;menu.append(retry);
  function ready(){if(disposed)return;recovering=false;clearTimeout(recoveryTimer);host.classList.remove('explore-fallback');host.classList.add('explore-ready');pad.hidden=actions.hidden=directions.hidden=false;menu.firstChild.hidden=false;retry.hidden=true;if(!welcomed){welcomed=true;guide((welcomeMessage?welcomeMessage+' ':'')+goalWords(),true);}}
  function failed(error){if(disposed)return;console.warn('Island exploration unavailable',error||'Graphics context unavailable');recovering=false;clearTimeout(recoveryTimer);engine?.dispose();engine=null;host.classList.remove('explore-ready');host.classList.add('explore-fallback');canvas.hidden=true;quest.hidden=false;quest.textContent=say('La isla no terminó de cargar. Vuelve a abrirla; tu progreso está guardado.','The island did not finish loading. Reopen it; your progress is saved.');pad.hidden=actions.hidden=directions.hidden=true;menu.firstChild.hidden=true;retry.hidden=false;}
- function start(light=false){if(disposed)return;const current=++generation;clearTimeout(startTimer);clearTimeout(recoveryTimer);recovering=true;blur();canvas.removeEventListener('webglcontextlost',contextLost);canvas.removeEventListener('webglcontextrestored',contextRestored);engine?.dispose();engine=null;control=null;const next=canvas.cloneNode(false);canvas.replaceWith(next);canvas=next;canvas.hidden=false;quest.hidden=false;canvas.addEventListener('webglcontextlost',contextLost);canvas.addEventListener('webglcontextrestored',contextRestored);attempt=light?1:0;retry.hidden=true;host.classList.remove('explore-ready','explore-fallback');quest.textContent=say('Abriendo tu isla…','Opening your island…');
+ function start(light=false){if(disposed)return;const current=++generation;clearTimeout(startTimer);clearTimeout(recoveryTimer);recovering=true;blur();canvas.removeEventListener('webglcontextlost',contextLost);canvas.removeEventListener('webglcontextrestored',contextRestored);engine?.dispose();engine=null;control=null;const next=canvas.cloneNode(false);canvas.replaceWith(next);canvas=next;canvas.hidden=false;quest.hidden=false;canvas.addEventListener('webglcontextlost',contextLost);canvas.addEventListener('webglcontextrestored',contextRestored);attempt=light?1:0;retry.hidden=true;host.classList.remove('explore-ready','explore-fallback');quest.textContent=say('☀️ Preparando tu Panamá…','☀️ Getting Panama ready…');
   // Give the previous entrance/world context time to release before allocating another.
   startTimer=setTimeout(()=>{Promise.resolve().then(()=>load()).then(T=>{if(disposed||current!==generation)return;try{engine=buildIsland(T,canvas,motion,setup,{light,onError:failed});ready();}catch(error){if(!light)start(true);else failed(error);}}).catch(error=>{if(disposed||current!==generation)return;if(!light)start(true);else failed(error);});},light?250:0);
  }

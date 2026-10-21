@@ -63,7 +63,7 @@ body[data-scene="explore"] :is(.world-small,.world-action,.world-jump,.camera-vi
 /* Keep the identity legible against both bright skies and dark foliage. */
 body:is([data-scene="explore"],[data-scene="islandQuest"]) .topbar .brand{color:#fff!important;background:#102e38f5;border:1px solid #ffffff40;border-radius:12px;padding:8px 12px;text-shadow:0 1px 2px #000;line-height:1.15;flex-shrink:1}
 body:is([data-scene="explore"],[data-scene="islandQuest"]) .topbar .brand small{color:#e2efee!important}
-body[data-scene="entry"] .world-entry:before{background:linear-gradient(90deg,#103c48d9,#438c9644),url('./island.webp') center/cover;opacity:1}
+body[data-scene="entry"] .world-entry:before{background:linear-gradient(90deg,#103c48d9,#438c9644),url('./assets/panama-welcome.jpg') center/cover;opacity:1}
 .welcome-world{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
 .welcome-world>:not(canvas){display:none!important}
 .welcome-world canvas{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;opacity:1!important;visibility:visible!important}
@@ -92,3 +92,72 @@ body[data-scene="entry"] .topbar .brand{color:#fff!important;background:#102e38e
 
 .explore-world>.world-clock{position:absolute;z-index:12;top:14px;left:50%;transform:translateX(-50%);margin:0}
 @media(max-width:760px){.explore-world>.world-clock{top:112px;left:auto;right:12px;transform:none;max-width:calc(100% - 24px)}}
+
+/* Panama color language: ocean = explore, mango = actions, coral = friends,
+   rose = home. Labels and icons always accompany color. */
+body:is([data-scene="explore"],[data-scene="islandQuest"]){--exp-ink:#123e50;--exp-accent:#087c99;--exp-panel:#fffdf5f5;--exp-line:#148eaa55}
+body:is([data-scene="entry"],[data-scene="explore"],[data-scene="islandQuest"]) button{font-weight:750}
+body[data-scene="entry"] .world-entry{background:#1a9ba8 url('./assets/panama-welcome.jpg') center/cover}
+body[data-scene="entry"] .world-entry:before{background:linear-gradient(100deg,#064f69e6,#08768a22)!important;filter:none!important}
+body[data-scene="entry"] .world-entry:after{background:linear-gradient(90deg,#043c5a99,transparent 85%)!important}
+body[data-scene="entry"] .welcome-copy{padding:24px 0}
+body[data-scene="entry"] .eyebrow{color:#ffe17f;letter-spacing:.12em}
+body[data-scene="entry"] .world-entry h1{font-weight:850;line-height:1.04;color:#fffdf2;text-shadow:0 3px 0 #075770}
+body[data-scene="entry"] .world-entry h1 em{color:#ffe179;font-weight:750;letter-spacing:0}
+body[data-scene="entry"] .world-entry .welcome-feature{background:#fff8eaf5!important;color:#123e50!important;border:2px solid #fff!important;border-bottom:5px solid #00a2b3!important;border-radius:18px!important;box-shadow:0 4px 0 #06445c40}
+body[data-scene="entry"] .world-entry .welcome-feature:nth-child(2){border-bottom-color:#eead24!important}
+body[data-scene="entry"] .world-entry .welcome-feature:nth-child(3){border-bottom-color:#d74791!important}
+body[data-scene="entry"] .world-entry .welcome-feature:nth-child(4){border-bottom-color:#e55266!important}
+body[data-scene="entry"] .welcome-feature-icon{color:#087d99;font-size:29px}
+body[data-scene="entry"] .world-entry .primary.enter-world{background:#ffda53!important;color:#123e50!important;border:3px solid #fff8d5!important;border-radius:24px!important;box-shadow:0 6px 0 #be861c,0 10px 26px #063c5344!important;font-weight:900}
+body:is([data-scene="entry"],[data-scene="explore"]) .topbar .brand{background:#056b8ff5!important;border:2px solid #fff9!important;border-bottom:4px solid #ed536b!important;border-radius:17px!important;letter-spacing:0}
+body[data-scene="explore"] .tools button,body[data-scene="entry"] .tools button{background:#fff9e9;color:#075678;border:1px solid #84ced6;border-radius:12px;box-shadow:0 3px 0 #07577535}
+body:is([data-scene="entry"],[data-scene="explore"]) .tools .lang button.active{background:#ffda53;color:#133e50}
+body[data-scene="explore"] .explore-world :is(.world-small,.world-action,.world-jump,.world-catch,.camera-view-toggle,.movement-speed,.mobile-game-dock button,.mansion-launch,.car-horn){background:#e8fbfff5!important;color:#074d70!important;border:2px solid #fff!important;border-bottom:4px solid #1486a8!important;border-radius:18px!important;box-shadow:0 3px 10px #05465b33!important;font-weight:800!important}
+body[data-scene="explore"] .explore-world button:is(.world-action,.world-jump,.world-catch){background:#ffdc66!important;color:#493608!important;border-bottom-color:#c38b20!important}
+body[data-scene="explore"] .explore-world .mobile-game-dock .mobile-dock-build{background:#ffe3a3!important;color:#5a3b05!important;border-bottom-color:#d19624!important}
+body[data-scene="explore"] .explore-world .mobile-game-dock :is(.mobile-dock-friend,.mobile-dock-phone){background:#ffe1e5!important;color:#88283f!important;border-bottom-color:#e3526c!important}
+body[data-scene="explore"] .explore-world button.mansion-launch{background:#ffe2f1!important;color:#84245a!important;border-bottom-color:#ca418b!important}
+body[data-scene="explore"] .explore-world :is(.button-picture,.mobile-dock-icon){color:inherit!important;font-size:26px!important}
+body[data-scene="explore"] .explore-world :is(.button-picture,.mobile-dock-icon) svg{width:28px;height:28px;stroke-width:1.8}
+body[data-scene="explore"] .explore-world :is(.button-caption,.mobile-dock-caption){font-weight:800!important;font-size:13px!important;line-height:1.2}
+body[data-scene="explore"] .explore-world .explore-location{background:#fffaf0f5!important;color:#075574!important;border-left:5px solid #ed536b!important;border-radius:13px!important}
+body[data-scene="explore"] .world-clock{background:#075773f0;border:2px solid #89e2e8;border-radius:18px;color:#fff}
+body[data-scene="explore"] .world-clock-time{color:#ffdf73}
+body[data-scene="explore"] .explore-stick{background:#137e9a88!important;border:2px solid #e8fcff!important}
+body[data-scene="explore"] .stick-knob{background:#ffda62!important;border:3px solid #fff4c4!important;color:#154957!important}
+body[data-scene="explore"] .world-arrows button{background:#d8f7fc;border-color:#149bb0;color:#075773;border-radius:10px}
+body[data-scene="explore"] .explore-world :is(.explore-panel,.friend-panel,.realm-panel,.journey-panel){background:#fffdf3!important;color:#153f50!important;border:3px solid #fff!important;border-top:7px solid #129faf!important;border-radius:24px!important;box-shadow:0 14px 45px #07445c55!important}
+body[data-scene="explore"] .explore-world .mansion-panel{border-top-color:#d74991!important}
+body[data-scene="explore"] .explore-world .explore-panel h2{color:#075773!important;font-weight:850!important}
+body[data-scene="explore"] .explore-world .explore-panel :is(p,h3){color:#355765!important}
+body[data-scene="explore"] .explore-world :is(.discover-place,.backpack-world-tile,.mansion-panel button:not(.panel-close)){background:#e3f7f6!important;color:#075773!important;border:1px solid #8ecdd1!important;border-bottom:3px solid #2997a4!important;border-radius:15px!important;font-weight:750!important}
+body[data-scene="explore"] .explore-world .mansion-panel button:not(.panel-close){background:#fff0f7!important;border-color:#e7b6d0!important;border-bottom-color:#ca6c9d!important;color:#793654!important}
+body[data-scene="explore"] .explore-world .panel-close{background:#ffe2e2!important;color:#922d43!important;border:1px solid #e899a8!important;border-radius:14px!important;min-width:44px;min-height:44px}
+body[data-scene="explore"] .explore-world button:disabled{opacity:.48!important;filter:saturate(.35);box-shadow:none!important}
+body[data-scene="explore"] .explore-world button:focus-visible{outline:3px solid #0854a2;outline-offset:3px}
+.world-loading{position:absolute;inset:0;z-index:80;display:grid;place-content:center;justify-items:center;gap:18px;padding:24px;text-align:center;background:linear-gradient(155deg,#087c9d,#10aaa7 65%,#97dfbd);color:#fffdf1}
+.world-loading .loading-postcard{font:900 clamp(26px,6vw,42px)/1.1 system-ui;text-shadow:0 3px 0 #05516d}
+.world-loading .loading-note{font:750 17px/1.5 system-ui;max-width:360px;background:#fff9e8;color:#14556b;padding:16px 22px;border-radius:22px;border-bottom:5px solid #ffce58}
+.world-loading .loading-sun{font-size:66px;animation:panama-sun 3s ease-in-out infinite}
+.explore-ready .world-loading,.explore-fallback .world-loading{display:none}
+@keyframes panama-sun{50%{transform:translateY(-7px) rotate(8deg)}}
+@media(max-width:780px){body[data-scene="entry"] .world-entry:after{background:linear-gradient(0deg,#03445be8,#07566e99 70%,transparent)!important}body[data-scene="entry"] .world-entry .welcome-copy{padding:12px 0}body[data-scene="explore"] .explore-world .mobile-game-dock button{border-radius:15px!important}body[data-scene="explore"] .explore-world :is(.button-caption,.mobile-dock-caption){font-size:12px!important}}
+@media(prefers-reduced-motion:reduce){.world-loading .loading-sun{animation:none}}
+/* An empty pre-Play renderer stage must not cover the lightweight welcome art. */
+body[data-scene="entry"] .world-entry .welcome-world{display:none}
+
+body[data-scene="explore"] .explore-world button:is(.picture-button,.backpack-world-tile)[data-ui-kind="home"]{background:#ffe4f2!important;color:#7e2856!important;border-color:#e8a6ca!important;border-bottom-color:#ca4c8b!important}
+body[data-scene="explore"] .explore-world button:is(.picture-button,.backpack-world-tile)[data-ui-kind="friends"]{background:#ffe4e6!important;color:#862d43!important;border-color:#e9a7b0!important;border-bottom-color:#df536c!important}
+body[data-scene="explore"] .explore-world button:is(.picture-button,.backpack-world-tile)[data-ui-kind="food"]{background:#ffebba!important;color:#63400d!important;border-color:#edcb7d!important;border-bottom-color:#ce9323!important}
+body[data-scene="explore"] .explore-world button:is(.picture-button,.backpack-world-tile)[data-ui-kind="gear"]{background:#d9f5df!important;color:#225f44!important;border-color:#9ed3b1!important;border-bottom-color:#32936b!important}
+body[data-scene="explore"] .explore-world button:is(.picture-button,.backpack-world-tile)[data-ui-kind="play"]{background:#ece5ff!important;color:#533b80!important;border-color:#c6b3e8!important;border-bottom-color:#8d6ac2!important}
+
+/* Calm arrival: the world first, a single greeting, then the controls. */
+body[data-scene="explore"]:has(.guided-arrival) .topbar{opacity:0;visibility:hidden;pointer-events:none}
+body[data-scene="explore"] .explore-world.guided-arrival>:not(canvas):not(.world-loading):not(.arrival-guide-card):not(.arrival-skip){opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+.explore-world :is(.mobile-game-dock,.explore-actions,.mansion-launch,.explore-location,.world-clock),body[data-scene="explore"] .topbar{transition:opacity .8s ease}
+.arrival-guide-card{position:absolute;z-index:85;left:50%;bottom:13%;transform:translateX(-50%);width:max-content;max-width:calc(100% - 36px);padding:16px 23px;border:2px solid #fff;border-bottom:5px solid #e7b53d;border-radius:22px;background:#fff8e8f2;color:#12546a;text-align:center;font:800 clamp(17px,3vw,23px)/1.4 system-ui;box-shadow:0 8px 24px #16495a30}
+.arrival-skip{position:absolute;z-index:86;right:20px;bottom:22px;min-height:44px;padding:10px 17px;border-radius:16px;border:2px solid #fff;background:#e9f9fc;color:#095576;font:750 15px system-ui}
+.guided-arrival:not(.explore-ready) :is(.arrival-guide-card,.arrival-skip){display:none}
+@media(prefers-reduced-motion:reduce){.explore-world :is(.mobile-game-dock,.explore-actions,.mansion-launch,.explore-location,.world-clock),body[data-scene="explore"] .topbar{transition:none}}
