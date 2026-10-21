@@ -16,12 +16,14 @@ export function createCanalCruise({T,scene,host,state,make,mat,box,ball,cylinder
    piece(box,gold,x,7.6,(-70)+side*16,4.8,.4,4.8);
   }
  }
- // Open lock gates and a promenade connect the existing city to the terminal.
+ // The original lock remains on the interior canal; boarding now takes place
+ // at the connected Pacific waterfront entrance in Panama City.
  for(const side of [-1,1])piece(box,dark,(60),1.8,(-70)+side*12,1,3.6,5);
  const by=height(CRUISE_BOARD.x,CRUISE_BOARD.z);
- piece(box,stone,(68),by-.1,(-65),10,.3,10);
- piece(box,white,(68),by+3,(-65),11,.4,8);
- for(const x of [(64),(72)])for(const z of [(-68),(-62)])piece(cylinder,gold,x,by+1.5,z,.15,3,.15);
+ const bx=CRUISE_BOARD.x,bz=CRUISE_BOARD.z;
+ piece(box,stone,bx,by-.1,bz,10,.3,10);
+ piece(box,white,bx,by+3,bz,11,.4,8);
+ for(const x of [bx-4,bx+4])for(const z of [bz-3,bz+3])piece(cylinder,gold,x,by+1.5,z,.15,3,.15);
  const signCanvas=document.createElement('canvas');signCanvas.width=1024;signCanvas.height=256;
  const ctx=signCanvas.getContext('2d');
  ctx.fillStyle='#16364e';ctx.fillRect(0,0,1024,256);ctx.textAlign='center';
@@ -29,7 +31,7 @@ export function createCanalCruise({T,scene,host,state,make,mat,box,ball,cylinder
  ctx.fillStyle='#fff8e5';ctx.font='bold 43px sans-serif';ctx.fillText(choose('CRUCERO · 10 MONEDAS','GRAND CRUISE · 10 COINS'),512,165);
  ctx.font='30px sans-serif';ctx.fillText(choose('ESCLUSAS · CANAL DE PANAMÁ','LOCKS · PANAMA CANAL'),512,220);
  const signTexture=new T.CanvasTexture(signCanvas),signMaterial=new T.SpriteMaterial({map:signTexture,depthTest:false});
- const sign=new T.Sprite(signMaterial);sign.position.set((68),by+7,(-65));sign.scale.set(14,3.5,1);root.add(sign);
+ const sign=new T.Sprite(signMaterial);sign.position.set(bx,by+7,bz);sign.scale.set(14,3.5,1);root.add(sign);
  // The only cruise ship: 34 units long, five decks and a broad open sun deck.
  const ship=new T.Group();ship.name='Angelique · enormous Panama cruise ship';root.add(ship);
  piece(box,navy,0,1.4,0,11,2.8,30,ship);

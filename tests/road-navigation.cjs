@@ -5,6 +5,13 @@ const assert=require('node:assert/strict');
  const {cityBlocksVehicle,CITY_STREET_X,CITY_STREET_Z}=await import('../games/adventure/city-layout.js');
  const {districtVehicleBlocked,districtDriveable}=await import('../games/adventure/expanded-districts.js');
  const {driveByDirection}=await import('../games/adventure/directional-drive.js');
+ const {MAINLAND_ROADS}=await import('../games/adventure/explore-state.js');
+ const road=MAINLAND_ROADS.cityToGorgona;
+ for(let i=1;i<road.length-1;i++){
+  const a=road[i-1],b=road[i],c=road[i+1],u=[b[0]-a[0],b[1]-a[1]],v=[c[0]-b[0],c[1]-b[1]];
+  const cos=(u[0]*v[0]+u[1]*v[1])/(Math.hypot(...u)*Math.hypot(...v));
+  assert(Math.acos(Math.max(-1,Math.min(1,cos)))<Math.PI/4,'no sharp kink along city-to-Gorgona road waypoint '+i);
+ }
  const canDrive=(x,z)=>(Math.hypot((x-cityX(120))/58,(z+50)/48)<.91||roadDistance(x,z)<HIGHWAY_WIDTH/2-.7||districtDriveable(x,z))&&!cityBlocksVehicle(x,z)&&!districtVehicleBlocked(x,z);
  for(const path of Object.values(HIGHWAY_CURVES))for(const [x,z]of path.filter((_,i)=>i%10===0)){
   const p=roadsidePoint(x,z,3);assert(!nearRoad(p.x,p.z,HIGHWAY_WIDTH/2+4),'scenery footprint outside road');
