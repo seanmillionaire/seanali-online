@@ -57,7 +57,8 @@ export function planForestPatches(density=1){
  const plants=[],factor=Math.max(.25,Math.min(1,Number(density)||1));
  let seed=943017;const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
  for(const patch of FOREST_PATCHES){
-  const target=Math.round(patch.n*factor);
+  // Fill established groves more densely, without expanding forest boundaries.
+  const target=Math.round(patch.n*factor*1.36);
   // Three broad woodland lobes with open meadows between them.
   const groves=Array.from({length:3},(_,j)=>{
    const a=j*2.399963+patch.x*.025;
@@ -66,7 +67,7 @@ export function planForestPatches(density=1){
   // Allocate separate slots for tall canopy and smaller understory FIRST.
   // This prevents ferns winning every spacing check in dense locations.
   for(let slot=0;slot<target;slot++){
-   const understory=slot%5===3||slot%5===4;
+   const understory=slot%6===4||slot%6===5;
    const roll=random();
    const kind=understory?'fern':patch.biome==='montane'?(roll<.52?'pine':roll<.92?'natural':'palm')
     :patch.biome==='mixed'?(roll<.25?'pine':roll<.75?'natural':'palm')
@@ -80,8 +81,9 @@ export function planForestPatches(density=1){
     const x=lobe.x+Math.cos(a)*r*patch.rx*.64*shape+(random()-.5)*1.4;
     const z=lobe.z+Math.sin(a)*r*patch.rz*.64*shape+(random()-.5)*1.4;
     if(!forestSiteClear(x,z,patch.biome)||r>.87&&random()<.4)continue;
-    const clearance=kind==='fern'?2.7:3.3+size*1.12;
-    if(plants.some(t=>Math.hypot(t.x-x,t.z-z)<clearance+(t.kind==='fern'?0:.9)))continue;
+    // Keep the trunks separate but let the layered crowns form thicker shade.
+    const clearance=kind==='fern'?2.45:2.7+size*.86;
+    if(plants.some(t=>Math.hypot(t.x-x,t.z-z)<clearance+(t.kind==='fern'?0:.65)))continue;
     plants.push({x,z,kind,size,heading:random()*Math.PI*2,tint:random(),patch:patch.id});
     break;
    }

@@ -32,8 +32,9 @@ export function remoteAccess(from,to){const p=worldIslands.find(i=>i.vehicleOnly
 // Gorgona → Volcán → Barú. Offshore island footprints remain separate.
 export const MAINLAND_ROADS={
  cityToColon:[[cityX(77),-61],[cityX(77),-85],[255,-99],[190,-108],[125,-104],[63,-88],[30,-116],[26,-144],[24,-175],[25,-243],[24,-351],[14,-379],[-18,-392],[-47,-389],[-50,-365]],
- // Intercity traffic bypasses the beach. Turn off onto Gorgona's access road.
- cityToGorgona:[[cityX(105),-35],[cityX(85),-26],[260,-26],[205,-43],[150,-54],[100,-48],[64,-19],[48,-45],[32,-80]],
+ // Intercity traffic bypasses the beach. The formerly sharp inland zigzag is
+  // now a gradual, connected bend ending at the existing Gorgona beach turnoff.
+ cityToGorgona:[[cityX(105),-35],[cityX(85),-26],[260,-26],[205,-43],[150,-54],[100,-48],[76,-55],[54,-66],[32,-80]],
  gorgonaBeachAccess:[[32,-80],[25,-63],[38,-40],[36,-15],[31,1],[21,1]],
  cityToBaru:[[32,-80],[-30,-60],[-75,-45],[-155,-35],[-240,-42],[-300,-32],[-385,-30],[-400,-70],[-385,-110],[-350,-65-51.8*.925]],
  boquete:[[-300,-32],[-290,-50]],

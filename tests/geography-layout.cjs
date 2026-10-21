@@ -1,12 +1,19 @@
 const assert=require('node:assert/strict');
 (async()=>{
- const {cityX,DESTINATIONS,movePoint,moveLegacyPoint,GEOGRAPHY_VERSION,WORLD_BOUNDS,COLON_OFFSET}=await import('../games/adventure/geography.js');
+ const {cityX,DESTINATIONS,movePoint,moveLegacyPoint,GEOGRAPHY_VERSION,WORLD_BOUNDS,COLON_OFFSET,CANAL_WATERWAY,canalWater}=await import('../games/adventure/geography.js');
  const {worldIslands,explorePlaces,isletHeight,inWater,normalizeExplore,freshExplore,MAINLAND_ROADS,roadDistance}=await import('../games/adventure/explore-state.js');
  const {CITY}=await import('../games/adventure/pizza-city.js');const {CITY_SITES}=await import('../games/adventure/city-expansion.js');const {COLON_SITES,COLON_BRIDGE}=await import('../games/adventure/colon-state.js');
- const {CRUISE_BOARD,CRUISE_LENGTH,cruisePose,CRUISE_SPEED}=await import('../games/adventure/cruise-route.js');const {CITY_HOSPITAL,BARU,touchesLava,LAVA_POOLS,lavaPoolPose}=await import('../games/adventure/volcano-safety.js');
+ const {CRUISE_BOARD,CRUISE_DOCK,CRUISE_LENGTH,cruisePose,CRUISE_SPEED}=await import('../games/adventure/cruise-route.js');const {CITY_HOSPITAL,BARU,touchesLava,LAVA_POOLS,lavaPoolPose}=await import('../games/adventure/volcano-safety.js');
  const at=id=>worldIslands.find(p=>p.id===id);assert.equal(CITY.x,at('pizzaCity').x);assert.equal(CITY.z,at('pizzaCity').z);
  assert(at('sunset').x<0&&at('sunset').z<0);assert(at('wilds').x>at('sunset').x&&at('wilds').z<at('sunset').z,'Bocas NE of Barú');assert(at('colon').x<CITY.x&&at('colon').z<CITY.z);assert(at('islet').x<CITY.x&&at('islet').z>CITY.z);assert(at('coconutCoast').x>CITY.x&&at('coconutCoast').z>CITY.z);assert(at('crystalCove').x>CITY.x&&at('crystalCove').z<CITY.z);
  for(const p of worldIslands)assert(Math.hypot(p.x/WORLD_BOUNDS.x,p.z/WORLD_BOUNDS.z)<1,'destination reachable inside world bounds: '+p.id);
+ assert(CANAL_WATERWAY[0][0]>CITY.x-75&&CANAL_WATERWAY[0][1]>CITY.z,'Pacific mouth begins at Panama City');
+ assert(CANAL_WATERWAY.at(-1)[1]<at('colon').z-60,'Caribbean outlet reaches north of Colón');
+ assert.deepEqual(CRUISE_DOCK,{x:CANAL_WATERWAY[0][0],z:CANAL_WATERWAY[0][1]});
+ for(let i=1;i<CANAL_WATERWAY.length;i++)for(const t of [0,.25,.5,.75,1]){
+  const a=CANAL_WATERWAY[i-1],b=CANAL_WATERWAY[i];
+  assert(canalWater(a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t),'waterway stays navigable');
+ }
  assert(!inWater(CRUISE_BOARD.x,CRUISE_BOARD.z),'dry cruise boarding dock');assert(!inWater(CITY_HOSPITAL.spawn.x,CITY_HOSPITAL.spawn.z));assert.equal(BARU.x,at('sunset').x);
  assert.equal(CITY_SITES.find(p=>p.id==='canal').x,CRUISE_BOARD.x);for(const p of COLON_SITES)assert(Math.hypot(p.x+COLON_OFFSET.x-at('colon').x,p.z+COLON_OFFSET.z-at('colon').z)<35);
  assert(Math.hypot(COLON_BRIDGE.b.x+COLON_OFFSET.x-at('monkeyIslet').x,COLON_BRIDGE.b.z+COLON_OFFSET.z-at('monkeyIslet').z)<1);

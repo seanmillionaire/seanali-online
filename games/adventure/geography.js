@@ -28,7 +28,14 @@ export function moveLegacyPoint(x,z,version=GEOGRAPHY_VERSION){
 // A wide western mainland and a long Caribbean peninsula. Keep the city's
 // authored blocks, Gorgona beach, canal entrance and San Blas intact.
 export const MAINLAND_OUTLINE=[[-425,-110],[-365,-130],[-290,-118],[-220,-100],[-145,-110],[-85,-133],[-45,-145],[-58,-235],[-103,-330],[-112,-366],[-99,-398],[-60,-417],[-27,-409],[12,-397],[29,-371],[37,-336],[44,-262],[48,-148],[55,-140],[62,-136],[75,-136],[90,-110],[145,-85],[190,-75],[260,-75],[265,-40],[200,-15],[145,-12],[115,-14],[65,-8],[45,14],[25,18],[15,9],[-15,9],[-45,10],[-120,16],[-205,8],[-290,12],[-385,26],[-435,0],[-440,-55]].map(([x,z])=>[x>65?cityX(x):x,z]);
-export const CANAL_WATERWAY=[[40,-70],[15,-70],[5,-75],[-30,-85],[-55,-105],[-58,-130],[-55,-165],[-47,-215],[-43,-265],[-55,-285]];
+// One continuous Pacific-to-Caribbean waterway, used for terrain, map, and cruise.
+// The Pacific mouth opens beside Panama City; the north exit skirts Colón.
+export const CANAL_WATERWAY=[
+ [319,10],[280,19],[225,24],[165,23],[110,15],[82,-4],[62,-31],
+ [40,-70],[15,-70],[5,-75],[-30,-85],[-55,-105],[-58,-130],
+ [-55,-165],[-47,-215],[-43,-265],[-55,-285],[-54,-310],
+ [-76,-338],[-98,-370],[-105,-408],[-109,-443]
+];
 export const WORLD_EXTENT={left:-WORLD_BOUNDS.x,top:-WORLD_BOUNDS.z,width:WORLD_BOUNDS.x*2,height:WORLD_BOUNDS.z*2};
 // Scenic low hills separate towns; the road grader uses this same collision
 // height field, so countryside never becomes a decorative floating backdrop.

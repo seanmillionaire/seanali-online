@@ -1,4 +1,5 @@
 import {cityX} from './geography.js?v=188';
+import {CRUISE_BOARD} from './cruise-route.js?v=188';
 import {roadRibbon,surfaceMesh,cityStreetSurface} from './road-surfaces.js?v=188';
 import {STREET_VENDORS,BARRIO_HOMES} from './city-street-life.js?v=188';
 import {CITY_EXPANSION_PLOTS,CITY_STREET_X,CITY_STREET_Z} from './city-layout.js?v=188';
@@ -17,7 +18,7 @@ export const CITY_SITES=[
  {id:'museum2',x:cityX(131),z:(-81),icon:'🚢',en:'Canal exhibit',es:'Exhibición del Canal'},
  {id:'wash',x:cityX(88),z:-48,icon:'🫧',en:'Drive-through car wash',es:'Lavado de autos'},
  {id:'plaza',x:cityX(120),z:-73,icon:'⛲',en:'Plaza de la Independencia',es:'Plaza de la Independencia'},
- {id:'canal',x:66,z:-65,icon:'🚢',en:'Panama Canal cruise terminal',es:'Terminal de cruceros del Canal de Panamá'}
+ {id:'canal',...CRUISE_BOARD,icon:'🚢',en:'Panama Canal cruise terminal',es:'Terminal de cruceros del Canal de Panamá'}
 ];
 export const CITY_RALLY=[
  {x:cityX(147),z:(-67)},{x:cityX(107),z:(-83)},{x:cityX(77),z:(-58)},{x:cityX(114),z:(-23)}

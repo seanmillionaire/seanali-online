@@ -4,8 +4,9 @@ const assert=require('node:assert/strict');
  const {roadDistance,HIGHWAY_WIDTH,isletHeight}=await import('../games/adventure/explore-state.js');
  const full=planForestPatches(),mobile=planForestPatches(.63);
  assert(FOREST_PATCHES.length>=10,'separate forest regions');
- assert(full.length>=200&&full.length<800,'mixed, open vegetation rather than a wall');
+ assert(full.length>=280&&full.length<1400,'denser trees in existing green reserves with bounded counts');
  assert(mobile.length>=120&&mobile.length<full.length,'mobile forest is lighter');
+ assert(full.filter(t=>t.kind!=='fern').length>full.length*.58,'full canopy must dominate forest plots');
  assert.deepEqual(full,planForestPatches(),'stable deterministic layouts');
  for(const kind of ['palm','pine','natural','fern'])
   assert(full.filter(t=>t.kind===kind).length>=5,'preserve mixed '+kind+' vegetation');

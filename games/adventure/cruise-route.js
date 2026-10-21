@@ -1,7 +1,8 @@
 import {CANAL_WATERWAY} from './geography.js?v=188';
 export const CRUISE_FARE=10;
-export const CRUISE_BOARD={x:66,z:-65};
-export const CRUISE_DOCK={x:40,z:-70};
+// Board on dry Panama City Pacific waterfront; the ship begins at the mouth.
+export const CRUISE_BOARD={x:330,z:-17};
+export const CRUISE_DOCK={x:CANAL_WATERWAY[0][0],z:CANAL_WATERWAY[0][1]};
 // One closed circuit around every island, in navigable open water.
 export const CRUISE_STOPS=[...CANAL_WATERWAY,...CANAL_WATERWAY.slice(0,-1).reverse()].map(([x,z])=>({x,z}));
 const segments=CRUISE_STOPS.slice(1).map((p,i)=>Math.hypot(p.x-CRUISE_STOPS[i].x,p.z-CRUISE_STOPS[i].z));
