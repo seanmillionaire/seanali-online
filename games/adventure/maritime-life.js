@@ -1,7 +1,9 @@
+import {sanBlasWaters} from './costa-arriba-layout.js?v=225';
 import {marineWater,worldIslands,isletHeight} from './explore-state.js?v=225';
 import {WORLD_BOUNDS} from './geography.js?v=225';
 // Full-length footprints are checked before accepting a fishing circuit.
 export function fishingHullClear(x,z,heading){
+ if(sanBlasWaters(x,z,5))return false;
  if(Math.hypot(x/(WORLD_BOUNDS.x-5),z/(WORLD_BOUNDS.z-5))>=1)return false;
  return [-3,0,3].every(f=>[-.9,0,.9].every(s=>marineWater(x+Math.sin(heading)*f+Math.cos(heading)*s,z+Math.cos(heading)*f-Math.sin(heading)*s)));
 }
@@ -21,7 +23,7 @@ export function fishingRoutes(){
  }
  return routes;
 }
-export function createMaritimeLife({T,scene,make,mat,geometry,box,ball,cylinder}){
+export function createMaritimeLife({T,scene,make,mat,geometry,box,ball,cylinder,waterMaterial}){
  const root=new T.Group();root.name='Panama coastal fishing fleet';scene.add(root);
  const white=mat('#e9e6d3'),wood=mat('#8a5737',{side:T.DoubleSide}),dark=mat('#263c41'),glass=mat('#456875'),steel=mat('#8c9590'),net=mat('#b7a789'),colors=['#318994','#ba6447','#e8c368'].map(c=>mat(c,{side:T.DoubleSide}));
  // Tapered open hull with raised gunwales and a distinct bow.
@@ -47,7 +49,7 @@ export function createMaritimeLife({T,scene,make,mat,geometry,box,ball,cylinder}
  });
  function update(dt,active,{x=0,z=0,indoors=false}={}){
   root.visible=!indoors;
-  for(const b of vessels){if(active){b.t+=dt;const fishing=b.t%100>65;if(!fishing)b.d+=dt*(b.r.kind==='cayuco'?1.1:2.3);b.wake.visible=!fishing;}const p=fishingPose(b.r,b.d);b.g.position.set(p.x,.06+Math.sin(b.t*1.4+b.r.phase)*.045,p.z);b.g.rotation.set(Math.sin(b.t*.8)*.018,p.heading,Math.sin(b.t*.9+b.r.phase)*.025);b.g.visible=Math.hypot(x-p.x,z-p.z)<180;}
+  for(const b of vessels){if(active){b.t+=dt;const fishing=b.t%100>65;if(!fishing)b.d+=dt*(b.r.kind==='cayuco'?1.1:2.3);b.wake.visible=!fishing;}const p=fishingPose(b.r,b.d);b.g.position.set(p.x,.06+Math.sin(b.t*1.4+b.r.phase)*.045+(waterMaterial?.userData.surfaceHeight?.(p.x,p.z)||0),p.z);b.g.rotation.set(Math.sin(b.t*.8)*.018,p.heading,Math.sin(b.t*.9+b.r.phase)*.025);b.g.visible=Math.hypot(x-p.x,z-p.z)<180;}
  }
  function blocks(x,z){return vessels.some(b=>{const dx=x-b.g.position.x,dz=z-b.g.position.z,a=b.g.rotation.y;return Math.abs(dx*Math.cos(a)-dz*Math.sin(a))<2&&Math.abs(dx*Math.sin(a)+dz*Math.cos(a))<4;});}
  update(0,false);return {root,vessels,blocks,update,dispose(){scene.remove(root);}};

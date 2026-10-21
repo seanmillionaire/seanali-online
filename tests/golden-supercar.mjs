@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import * as T from '../games/adventure/vendor/three.module.min.js';
+import {createGoldenSupercar} from '../games/adventure/golden-supercar.js';
+import {driveByDirection} from '../games/adventure/directional-drive.js';
+import {HOME_LOTS,homeYard,homeReserved} from '../games/adventure/mansion-state.js';
+import {canDriveOnLand} from '../games/adventure/pizza-city.js';
+import {districtBuildings} from '../games/adventure/expanded-districts.js';
+import {ROAD_REWARDS} from '../games/adventure/road-rewards.js';
+assert(districtBuildings().every(p=>!homeReserved(p.x,p.z,Math.hypot(p.w,p.d)/2)),'district infill leaves mansion yards clear');
+const scene=new T.Scene(),make=(g,m,x,y,z,a,b,c,parent=scene)=>{const mesh=new T.Mesh(g,m);mesh.position.set(x,y,z);mesh.scale.set(a,b,c);parent.add(mesh);return mesh;};
+const o={T,scene,make,mat:(color,opts)=>new T.MeshStandardMaterial({color,...opts}),geometry:g=>g,box:new T.BoxGeometry(),ball:new T.SphereGeometry(),cylinder:new T.CylinderGeometry()};
+const car=createGoldenSupercar(o);assert.equal(car.paint.color.getHexString(),'bc36ff');assert.equal(scene.children.length,1);assert.equal(car.wheels.length,4);assert.equal(car.flames.length,2);car.update(0,1/60);assert(car.flames.every(f=>!f.visible));car.update(52,1/60);assert(car.flames.every(f=>f.visible&&f.scale.z>1));car.update(0,1/60);assert(car.flames.every(f=>!f.visible));scene.updateMatrixWorld(true);scene.traverse(m=>assert(m.matrixWorld.elements.every(Number.isFinite)));
+for(const lot of HOME_LOTS){const p=homeYard(lot).car;assert(canDriveOnLand(p.x,p.z),'driveway '+lot.id);}
+assert.equal(ROAD_REWARDS.find(r=>r.id==='baru').kind,'scooter');
+let s={x:0,z:0,heading:0},speed=0;for(let i=0;i<120;i++)speed=driveByDirection(s,0,1,speed,1/60,true,()=>true);assert(speed>51);assert.equal(driveByDirection(s,0,0,speed,1/60,true,()=>true),0);s={x:0,z:0};speed=0;for(let i=0;i<120;i++)speed=driveByDirection(s,0,1,speed,1/60,true,(x,z)=>z<5);assert(s.z<5,'fast car respects swept collision');
+console.log('PASS single bright purple supercar, 4 wheels, twin speed-linked exhaust flames, all estate driveways, volcano scooter, 52-unit boost and swept collision/braking');
+assert(scene.getObjectByName('Violet neon underglow'),'soft underbody glow');
+assert(scene.getObjectByName('Black shield with white bull emblem'),'readable monochrome badge');
+let diamondRims=0;scene.traverse(o=>{if(o.name==='Diamond-cut rim highlights'){diamondRims++;assert.equal(o.count,20);}if(o.isMesh)assert(o.position.toArray().every(Number.isFinite));});assert.equal(diamondRims,4);
+console.log('PASS monochrome badge, neon underglow, four instanced diamond-cut rims and finite detail geometry');

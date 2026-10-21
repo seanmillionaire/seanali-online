@@ -1,3 +1,4 @@
+import {createGoldenSupercar} from './golden-supercar.js?v=225';
 import {cityX} from './geography.js?v=225';
 import {ruralBlocks} from './rural-towns.js?v=225';
 import {CITY_SHOP_PLOTS,cityBlocksVehicle,cityPropSite} from './city-layout.js?v=225';
@@ -70,68 +71,13 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
   piece(ball,gold,x,y+4.15,z,.48,.48,.48);
   piece(cylinder,asphalt,x,y+.12,z,1.12,.24,1.12);
  }
- // The only drivable car: layered body panels, windows, lights and rolling wheels.
- const car=new T.Group();car.name='Only drivable car — Casco Viejo';scene.add(car);
- const carBlue=mat('#47626e',{metalness:.4,roughness:.31}),
-  carShade=mat('#35464e',{metalness:.23,roughness:.38}),
-  chrome=mat('#d8d9d0',{metalness:.6,roughness:.24}),
-  seat=mat('#875b4f',{roughness:.95}),
-  frontLight=mat('#ffefb8',{emissive:'#e8d479',emissiveIntensity:.5});
- if(city.activities?.carWashes>0)carBlue.roughness=.20;
- const wheelRigs=[];
- const rimPolish=mat('#f5f7fc',{metalness:.91,roughness:.12}),rimDark=mat('#252b37',{metalness:.62,roughness:.24}),accent=mat('#9cabb0',{metalness:.55,roughness:.28}),tailLamp=mat('#f44761',{emissive:'#e32648',emissiveIntensity:.45});
- const bevelShape=new T.Shape();bevelShape.moveTo(-.46,-.46);bevelShape.lineTo(.46,-.46);bevelShape.lineTo(.46,.46);bevelShape.lineTo(-.46,.46);bevelShape.closePath();
- const bevelBody=geometry(new T.ExtrudeGeometry(bevelShape,{depth:.92,bevelEnabled:true,bevelThickness:.04,bevelSize:.04,bevelSegments:3,steps:1}));bevelBody.translate(0,0,-.46);
- // Bumper-height frame, distinct hood and raised passenger cabin.
- piece(bevelBody,carShade,0,-.05,0,2.16,.41,3.55,car);
- piece(bevelBody,carBlue,0,.26,0,2.12,.66,3.52,car);
- piece(bevelBody,carBlue,0,.58,1.10,2.03,.26,1.22,car); // bonnet
- piece(bevelBody,carBlue,0,.77,-.69,1.8,.81,1.55,car); // cabin
- piece(bevelBody,carBlue,0,1.19,-.64,1.87,.13,1.46,car); // roof
- const windscreen=piece(box,glass,0,.86,.26,1.68,.52,.07,car);
- windscreen.rotation.x=-.33;windscreen.castShadow=false;
- const rearGlass=piece(box,glass,0,.81,-1.52,1.63,.46,.07,car);
- rearGlass.rotation.x=.28;rearGlass.castShadow=false;
- piece(box,seat,0,.42,-.54,1.37,.28,.55,car);
- // Grille, license plate, chrome bumpers, and body seam accents.
- piece(box,accent,0,.625,1.02,1.68,.045,.85,car);
- piece(box,carShade,0,1.285,-.74,1.56,.06,1.03,car);
- piece(box,chrome,0,.45,-1.9,1.96,.075,.17,car);
- piece(box,accent,0,.62,-1.91,1.18,.06,.11,car);
- piece(box,chrome,0,.19,1.87,1.62,.18,.11,car);
- piece(box,carShade,0,.18,1.94,1.01,.27,.07,car);
- for(let k=0;k<5;k++)piece(box,chrome,-.44+k*.22,.19,1.997,.035,.22,.018,car);
- piece(box,chrome,0,-.13,-1.87,1.76,.15,.13,car);
- piece(box,white,0,.09,-1.97,.85,.2,.027,car);
- for(const side of [-1,1]){
-  // Windows, handles, side mirrors and outline of each door.
-  piece(box,glass,side*.932,.82,-.72,.05,.44,1.05,car).castShadow=false;
-  piece(box,carShade,side*1.087,.30,-.45,.028,.38,.06,car);
-  piece(box,chrome,side*1.10,.41,-.56,.045,.045,.35,car);
-  piece(box,chrome,side*1.14,.73,.54,.27,.16,.22,car);
-  piece(ball,frontLight,side*.77,.39,1.86,.22,.15,.10,car);
-  piece(ball,tailLamp,side*.78,.25,-1.86,.24,.15,.09,car);
-  piece(box,chrome,side*.90,.08,0,.045,.065,3.08,car);
-  piece(box,accent,side*1.074,.50,-.39,.026,.038,1.75,car);
-  for(const z of [-1.16,1.18]){
-   const rig=new T.Group();rig.position.set(side*1.12,-.18,z);car.add(rig);wheelRigs.push(rig);
-   // Exclusive large alloy rims on Angelique's car; traffic wheels stay stock.
-   const rubber=piece(cylinder,tire,0,0,0,.58,.34,.58,rig);rubber.rotation.z=Math.PI/2;
-   const lip=piece(cylinder,rimPolish,side*.20,0,0,.455,.045,.455,rig);lip.rotation.z=Math.PI/2;
-   const inset=piece(cylinder,rimDark,side*.245,0,0,.402,.052,.402,rig);inset.rotation.z=Math.PI/2;
-   for(let spoke=0;spoke<10;spoke++){
-    const angle=spoke*Math.PI/5;
-    const arm=piece(box,rimPolish,side*.294,Math.cos(angle)*.21,Math.sin(angle)*.21,.042,.34,.052,rig);
-    arm.rotation.x=-angle;
-   }
-   const cap=piece(cylinder,accent,side*.329,0,0,.095,.07,.095,rig);cap.rotation.z=Math.PI/2;
-  }
- }
+ // One authoritative personal vehicle; its saved position is shared with the mansion.
+ const supercar=createGoldenSupercar({T,scene,make:piece,mat,geometry,box,ball,cylinder});
+ const car=supercar.root;const carBlue=supercar.paint;if(city.activities?.carWashes>0)carBlue.roughness=.16;
  const updateCar=(speed=0,dt=0)=>{
   const p=city.car;
-  car.position.set(p.x,height(p.x,p.z)+.72+Math.min(speed/20,1)*Math.sin(p.heading*4)*.012,p.z);
-  car.rotation.y=p.heading||0;
-  if(speed>0&&dt>0)for(const w of wheelRigs)w.rotation.x+=speed*dt/.58;
+  car.position.set(p.x,height(p.x,p.z)+.72,p.z);car.rotation.y=p.heading||0;
+  supercar.update(speed,dt);
  };
  updateCar();
  // Unicode emoji billboards belong to collectible bags, not abstract gemstones.

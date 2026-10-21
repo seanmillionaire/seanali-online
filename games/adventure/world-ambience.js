@@ -1,3 +1,5 @@
+import {trafficYield} from './traffic-yield.js?v=225';
+import {FOUR_LANE_ROADS,highwayLane} from './highway-layout.js?v=225';
 import {vehicleOverlap} from './vehicle-contact.js?v=225';
 import {regionalBlocked} from './regional-layout.js?v=225';
 import {HIGHWAY_CURVES,roadDistance,HIGHWAY_WIDTH,worldIslands,inWater,traversable,isletHeight} from './explore-state.js?v=225';
@@ -7,11 +9,12 @@ import {routePose} from './panama-state.js?v=225';
 
 // Return along the opposite lane, turning inside the road at each terminus.
 export function trafficLoop(points,lane=1.8){
+ const laneAt=i=>typeof lane==='function'?lane(...points[i]):lane;
  const side=(i)=>{const a=points[Math.max(0,i-1)],b=points[Math.min(points.length-1,i+1)],d=Math.hypot(b[0]-a[0],b[1]-a[1])||1;return {x:(b[1]-a[1])/d,z:-(b[0]-a[0])/d};};
- const path=points.map((p,i)=>{const n=side(i);return {x:p[0]+n.x*lane,z:p[1]+n.z*lane};});
- function turn(i,sign){const p=points[i],n=side(i);for(let j=1;j<=12;j++){const a=(sign<0?Math.PI:0)+j*Math.PI/12;path.push({x:p[0]+lane*(n.x*Math.cos(a)+-n.z*Math.sin(a)),z:p[1]+lane*(n.z*Math.cos(a)+n.x*Math.sin(a))});}}
+ const path=points.map((p,i)=>{const n=side(i),lane=laneAt(i);return {x:p[0]+n.x*lane,z:p[1]+n.z*lane};});
+ function turn(i,sign){const p=points[i],n=side(i),lane=laneAt(i);for(let j=1;j<=12;j++){const a=(sign<0?Math.PI:0)+j*Math.PI/12;path.push({x:p[0]+lane*(n.x*Math.cos(a)+-n.z*Math.sin(a)),z:p[1]+lane*(n.z*Math.cos(a)+n.x*Math.sin(a))});}}
  turn(points.length-1,1);
- for(let i=points.length-2;i>=0;i--){const n=side(i);path.push({x:points[i][0]-n.x*lane,z:points[i][1]-n.z*lane});}
+ for(let i=points.length-2;i>=0;i--){const n=side(i),lane=laneAt(i);path.push({x:points[i][0]-n.x*lane,z:points[i][1]-n.z*lane});}
  turn(0,-1);return path;
 }
 export const AMBIENT_ROADS=['cityToGorgona','gorgonaBeachAccess','cityToColon','cityToBaru','panamaEast'];
@@ -21,7 +24,7 @@ export const VISITOR_HABITATS=[{id:'Gorgona beach',x:4,z:10,rx:13,rz:3},{id:'Nue
 
 export function createWorldAmbience({T,scene,models,make,mat,box,ball,cone,height,state,forest}){
  const root=new T.Group();root.name='Living Panama · visitors traffic and flyovers';scene.add(root);
- const cars=[],people=[],routes=AMBIENT_ROADS.map(id=>({id,path:trafficLoop(HIGHWAY_CURVES[id])}));
+ const cars=[],people=[],routes=AMBIENT_ROADS.flatMap(id=>(FOUR_LANE_ROADS.has(id)?[0,1]:[0]).map(lane=>({id,lane,path:trafficLoop(HIGHWAY_CURVES[id],(x,z)=>highwayLane(id,lane,x,z))})));
  for(const r of routes){const total=routePose(r.path,0).length,count=r.id==='gorgonaBeachAccess'?2:r.id==='panamaEast'?2:4;
   for(let i=0;i<count;i++){const bus=r.id!=='gorgonaBeachAccess'&&i===0,g=bus?models.bus(root):models.sedan(root,false,i%3===0);g.name=(bus?'Diablo Rojo route · ':'Roaming car · ')+r.id+' '+(i+1);cars.push({g,route:r.path,distance:total*(i+.2)/count,bus,speed:r.id==='gorgonaBeachAccess'?4:7+i*.65,id:r.id});}}
  // Keep each walk on dry, unobstructed ground with room for the whole body.
@@ -55,7 +58,7 @@ export function createWorldAmbience({T,scene,models,make,mat,box,ball,cone,heigh
   const poses=cars.map(c=>routePose(c.route,c.distance));
   cars.forEach((c,i)=>{const p=poses[i],ahead=(q)=>{const dx=q.x-p.x,dz=q.z-p.z;return dx*Math.sin(p.heading)+dz*Math.cos(p.heading)>0&&Math.hypot(dx,dz)<(c.bus?12:9)&&Math.abs(dx*Math.cos(p.heading)-dz*Math.sin(p.heading))<1.8;};
    const blocked=(!indoors&&ahead({x,z}))||poses.some((q,j)=>j!==i&&ahead(q)&&(Math.cos(q.heading-p.heading)>.5||j<i));
-   const next=routePose(c.route,c.distance+dt*c.speed);if(!blocked&&!vehicleOverlap({...next,length:c.bus?4.8:1.8,width:c.bus?1.15:.9},state.world.city.car))c.distance+=dt*c.speed;
+   const yielding=trafficYield(c,cars,state.world.city.car,dt);const next=routePose(c.route,c.distance+dt*c.speed);if(yielding!==null)c.distance=yielding;else if(!blocked&&!vehicleOverlap({...next,length:c.bus?4.8:1.8,width:c.bus?1.15:.9},state.world.city.car))c.distance+=dt*c.speed;
    const q=routePose(c.route,c.distance);c.g.position.set(q.x,height(q.x,q.z)+.15,q.z);c.g.rotation.y=q.heading;const dx=Math.sin(q.heading)*1.4,dz=Math.cos(q.heading)*1.4;c.g.rotation.x=-Math.atan2(height(q.x+dx,q.z+dz)-height(q.x-dx,q.z-dz),2.8);
    const detail=c.g.userData.visualDetail;if(detail)detail.visible=Math.hypot(q.x-x,q.z-z)<28;c.g.visible=Math.hypot(q.x-x,q.z-z)<155;
   });

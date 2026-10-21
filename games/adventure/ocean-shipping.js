@@ -1,8 +1,9 @@
+import {sanBlasWaters} from './costa-arriba-layout.js?v=225';
 import {shipDetails,shipWake} from './ship-details.js?v=225';
 import {marineWater} from './explore-state.js?v=225';
 import {WORLD_BOUNDS} from './geography.js?v=225';
 export function shippingPose(r,distance){const a=distance/r.rx;return {x:r.x+Math.cos(a)*r.rx,z:r.z+Math.sin(a)*r.rz,heading:Math.atan2(-Math.sin(a)*r.rx,Math.cos(a)*r.rz)};}
-export function shippingClear(x,z,heading,length,width){return [-length/2,0,length/2].every(f=>[-width/2,0,width/2].every(s=>{const px=x+Math.sin(heading)*f+Math.cos(heading)*s,pz=z+Math.cos(heading)*f-Math.sin(heading)*s;return Math.hypot(px/(WORLD_BOUNDS.x-8),pz/(WORLD_BOUNDS.z-8))<1&&marineWater(px,pz);}));}
+export function shippingClear(x,z,heading,length,width){if(sanBlasWaters(x,z,Math.hypot(length,width)/2))return false;return [-length/2,0,length/2].every(f=>[-width/2,0,width/2].every(s=>{const px=x+Math.sin(heading)*f+Math.cos(heading)*s,pz=z+Math.cos(heading)*f-Math.sin(heading)*s;return Math.hypot(px/(WORLD_BOUNDS.x-8),pz/(WORLD_BOUNDS.z-8))<1&&marineWater(px,pz);}));}
 let cached;
 export function shippingRoutes(){
  if(cached)return cached;const result=[];
@@ -15,7 +16,7 @@ export function shippingRoutes(){
  }
  return cached=result;
 }
-export function createOceanShipping({T,scene,make,mat,geometry,ball,box,cylinder}){
+export function createOceanShipping({T,scene,make,mat,geometry,ball,box,cylinder,waterMaterial}){
  const root=new T.Group();root.name='Open ocean · tankers and luxury yachts';scene.add(root);
  const navy=mat('#243f4c'),red=mat('#8e4539'),white=mat('#ecebe0'),glass=mat('#254c5b'),steel=mat('#9ca7a9'),wood=mat('#bfa47c'),yellow=mat('#cbb06b');
  const smoothBall=geometry(new T.SphereGeometry(1,24,16)),smoothCylinder=geometry(new T.CylinderGeometry(1,1,1,32));
@@ -43,7 +44,7 @@ export function createOceanShipping({T,scene,make,mat,geometry,ball,box,cylinder
   return {g,r,d:i*75,wake};
  });
  let time=0;
- function update(dt,active,{x=0,z=0,indoors=false}={}){if(active)time+=dt;root.visible=!indoors;for(const b of ships){if(active)b.d+=dt*(b.r.kind==='tanker'?2.4:4.8);b.wake.uniforms.time.value=time;const p=shippingPose(b.r,b.d);b.g.position.set(p.x,.05+Math.sin(time*.55)*.025,p.z);b.g.rotation.set(Math.sin(time*.4)*.005,p.heading,Math.sin(time*.6)*.009);b.g.visible=Math.hypot(x-p.x,z-p.z)<360;}}
+ function update(dt,active,{x=0,z=0,indoors=false}={}){if(active)time+=dt;root.visible=!indoors;for(const b of ships){if(active)b.d+=dt*(b.r.kind==='tanker'?2.4:4.8);b.wake.uniforms.time.value=time;const p=shippingPose(b.r,b.d);b.g.position.set(p.x,.05+Math.sin(time*.55)*.025+(waterMaterial?.userData.surfaceHeight?.(p.x,p.z)||0),p.z);b.g.rotation.set(Math.sin(time*.4)*.005,p.heading,Math.sin(time*.6)*.009);b.g.visible=Math.hypot(x-p.x,z-p.z)<360;}}
  function blocks(x,z,margin=1.3){return ships.some(b=>{const p=b.g.position,a=b.g.rotation.y,dx=x-p.x,dz=z-p.z;return Math.abs(dx*Math.cos(a)-dz*Math.sin(a))<b.r.width/2+margin&&Math.abs(dx*Math.sin(a)+dz*Math.cos(a))<b.r.length/2+margin;});}
  update(0,false);return {root,ships,blocks,update,dispose(){for(const b of ships)b.wake.dispose();root.traverse(o=>{if(o.isInstancedMesh)o.dispose();});scene.remove(root);}};
 }

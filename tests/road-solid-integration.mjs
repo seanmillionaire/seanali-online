@@ -1,3 +1,4 @@
+import {highwayWidth} from '../games/adventure/highway-layout.js';
 import assert from 'node:assert/strict';
 import * as T from '../games/adventure/vendor/three.module.min.js';
 import {HIGHWAY_CURVES,HIGHWAY_WIDTH,isletHeight,freshExplore,MAINLAND_STOPS} from '../games/adventure/explore-state.js';
@@ -10,7 +11,7 @@ import {driveByDirection} from '../games/adventure/directional-drive.js';
 import {planForestPatches} from '../games/adventure/forest-patches.js';
 const scene=new T.Scene(),geometries=[],geometry=g=>(geometries.push(g),g),material=new T.MeshStandardMaterial(),solids=createWorldCollision({state:{world:freshExplore()},trees:planForestPatches(1)});
 let samples=0;for(const [id,path]of Object.entries(HIGHWAY_CURVES)){
- scene.add(surfaceMesh(T,geometry,roadRibbon(path,HIGHWAY_WIDTH,isletHeight),material,'Smooth connected highway asphalt'));
+ scene.add(surfaceMesh(T,geometry,roadRibbon(path,(x,z)=>highwayWidth(id,x,z),isletHeight),material,'Smooth connected highway asphalt'));
  for(let i=0;i<path.length;i++){
   const [x,z]=path[i];assert(solids.clear(x,z),'road has solid obstruction '+id+' '+x+','+z);
   assert(!(canalWater(x,z)||gatunWater(x,z))||isletHeight(x,z)>0,'road is submerged in canal '+id);samples++;

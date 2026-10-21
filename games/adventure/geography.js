@@ -1,8 +1,10 @@
+import {jungleContains} from './east-jungle-layout.js';
+import {costaContains} from './costa-arriba-layout.js?v=225';
 import {sanBlasLayout,relocateSanBlasPoint,SAN_BLAS_LAYOUT_VERSION} from './san-blas-layout.js?v=225';
 export const CITY_EAST_SHIFT=240;
 export const cityX=x=>x+CITY_EAST_SHIFT;
 export const CITY_CENTER={x:cityX(120),z:-50};
-export const MAINLAND_EAST=272+CITY_EAST_SHIFT;
+export const MAINLAND_EAST=800;
 // North is -Z and east is +X. Distances are compressed for play, not a scale map.
 export const GEOGRAPHY_VERSION=3;
 // Colón's adventure is authored in local coordinates and placed far north.
@@ -37,6 +39,8 @@ export const WORLD_EXTENT={left:-WORLD_BOUNDS.x,top:-WORLD_BOUNDS.z,width:WORLD_
 // Scenic low hills separate towns; the road grader uses this same collision
 // height field, so countryside never becomes a decorative floating backdrop.
 export function mainlandRelief(x,z){
+ if(x> -112&&x< -20&&z>0){const shore=19+2.7*Math.sin((x+85)*.038),t=Math.max(0,Math.min(1,(shore-z)/12));return .04+1.06*t*t*(3-2*t);}
+ if(jungleContains(x,z))return 1.1+Math.max(0,Math.min(1,(x-490)/75))*(2+1.2*Math.sin(x*.035)*Math.cos(z*.028));
  if(x> -45||z< -150)return 1.1;
  const ridge=Math.exp(-(((x+210)/140)**2+((z+55)/38)**2));
  const hills=(Math.sin(x*.028+z*.017)+Math.cos(z*.043-x*.011)+2)*.6;
@@ -82,7 +86,8 @@ for(let i=0,j=SMOOTH_MAINLAND.length-1;i<SMOOTH_MAINLAND.length;j=i++){
 }
 export function mainlandContains(x,z){
  // World-scale ocean sampling dominates startup; reject distant water cheaply.
- if(x<-452||x>MAINLAND_EAST||z<-430||z>38)return false;
+ if(x<-452||x>MAINLAND_EAST||z<-455||z>38)return false;
+ if(costaContains(x,z)||jungleContains(x,z))return true;
  // Subtle coordinate warping adds small coastline irregularities without moving
  // roads, saved progress, boats, or the map's major Panama landmarks.
  const px=x+1.35*Math.sin(z*.12+x*.009)+.55*Math.sin(z*.34-x*.025),

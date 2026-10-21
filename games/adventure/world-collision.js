@@ -1,3 +1,4 @@
+import {GORGONA_FISH_SHACK} from './gorgona-coast.js';
 import {homeLot} from './mansion-state.js?v=225';
 import {regionalBlocked} from './regional-layout.js?v=225';
 import {CITY_ALL_PLOTS} from './city-layout.js?v=225';
@@ -12,7 +13,8 @@ export function createWorldCollision({state,trees=[],rocks=[]}){
  const add=(p)=>{const r=p.r+.32;for(let ix=Math.floor((p.x-r)/size);ix<=Math.floor((p.x+r)/size);ix++)for(let iz=Math.floor((p.z-r)/size);iz<=Math.floor((p.z+r)/size);iz++){const key=ix+','+iz;if(!cells.has(key))cells.set(key,[]);cells.get(key).push(p);}};
  trees.forEach(t=>add({x:t.x,z:t.z,r:Math.max(.16,(t.scale??t.size??1)*.28)}));rocks.forEach(add);
  return {clear(x,z){
-  const lot=homeLot(state.world);if(lot&&state.world.mansion.stage>0&&Math.abs(x-lot.x)<10.4&&Math.abs(z-lot.z)<8.7)return false;
+  if(Math.abs(x-GORGONA_FISH_SHACK.x)<GORGONA_FISH_SHACK.w/2+.3&&Math.abs(z-GORGONA_FISH_SHACK.z)<GORGONA_FISH_SHACK.d/2+.3)return false;
+  const lot=homeLot(state.world);if(lot&&state.world.mansion.stage>=3&&x-lot.x> -19.9&&x-lot.x< -15&&z-lot.z> -2.35&&z-lot.z<14.35)return false;if(lot&&state.world.mansion.stage>0&&Math.abs(x-lot.x)<10.4&&Math.abs(z-lot.z)<8.7)return false;
   if(regionalBlocked(x,z,state.world)||!traversable(x,z)||ruralBlocks(x,z,.32)||estateBlocked(state.world,x,z)||districtVehicleBlocked(x,z))return false;
   if(CITY_ALL_PLOTS.some(p=>p.solid!==false&&p.id!=='football'&&Math.abs(x-p.x)<p.w/2+.30&&Math.abs(z-p.z)<p.d/2+.30))return false;
   return !(cells.get(Math.floor(x/size)+','+Math.floor(z/size))||[]).some(p=>Math.hypot(p.x-x,p.z-z)<p.r+.32);
@@ -49,5 +51,5 @@ export function createCityAirCollision(T,scene,height){
   const x=(bounds.min.x+bounds.max.x)/2,z=(bounds.min.z+bounds.max.z)/2;
   for(const p of boxes)if(Math.abs(x-p.x)<p.w/2&&Math.abs(z-p.z)<p.d/2&&bounds.max.x-bounds.min.x<p.w*1.6&&bounds.max.z-bounds.min.z<p.d*1.6&&bounds.max.y>p.bottom+1)p.top=Math.max(p.top,bounds.max.y);
  });
- return {boxes,clear(x,y,z,radius=1.35){return !boxes.some(p=>y+2>p.bottom&&y-radius<p.top&&Math.abs(x-p.x)<p.w/2+radius&&Math.abs(z-p.z)<p.d/2+radius);}};
+ return {boxes,clear(x,y,z,radius=1.35){return ![...boxes,...(scene.userData.gorgonaAir||[]),...(scene.userData.costaAir||[]),...(scene.userData.ghostAir||[]),...(scene.userData.mansionAir?[scene.userData.mansionAir]:[])].some(p=>y+2>p.bottom&&y-radius<p.top&&Math.abs(x-p.x)<p.w/2+radius&&Math.abs(z-p.z)<p.d/2+radius);}};
 }

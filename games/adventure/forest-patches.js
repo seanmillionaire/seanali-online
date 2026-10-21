@@ -1,3 +1,4 @@
+import {jungleTrailClear,snakeCorridorContains} from './east-jungle-layout.js';
 import {homeReserved} from './mansion-state.js?v=225';
 import {regionalClearing,regionalTrailClear} from './regional-layout.js?v=225';
 import {cityX} from './geography.js?v=225';
@@ -6,6 +7,11 @@ import {ruralParcels} from './rural-towns.js?v=225';
 import {mainlandContains,canalWater,gatunWater} from './geography.js?v=225';
 import {worldIslands,isletHeight,roadDistance,HIGHWAY_WIDTH,volcanoTrailPoint} from './explore-state.js?v=225';
 export const FOREST_PATCHES=[
+ {id:'darien-jungle-west',x:555,z:-63,rx:63,rz:54,n:150,biome:'tropical'},
+ {id:'darien-jungle-heart',x:644,z:-73,rx:78,rz:75,n:235,biome:'tropical'},
+ {id:'darien-jungle-east',x:722,z:-100,rx:56,rz:77,n:195,biome:'tropical'},
+ {id:"costa-arriba-rainforest",x:112,z:-365,rx:66,rz:17,n:48,biome:"tropical"},
+ {id:"isla-grande-palms",x:175,z:-502,rx:52,rz:32,n:75,biome:"island"},
  {id:'coiba-moist-forest',x:-480,z:160,rx:35,rz:29,n:65,biome:'island'},
  {id:'rey-island-forest',x:680,z:260,rx:31,rz:27,n:45,biome:'island'},
  {id:'escudo-coastal-forest',x:-340,z:-310,rx:29,rz:26,n:50,biome:'island'},
@@ -49,8 +55,8 @@ function nearTrail(x,z){
   if(Math.hypot(x-a.x-t*dx,z-a.z-t*dz)<5.8)return true;
  }return false;
 }
-export function forestSiteClear(x,z,biome='tropical'){
- if(homeReserved(x,z,5)||!regionalTrailClear(x,z)||regionalClearing(x,z)||roadDistance(x,z)<HIGHWAY_WIDTH/2+10||townPlots.some(p=>Math.abs(x-p.x)<p.w/2+5&&Math.abs(z-p.z)<p.d/2+5))return false;
+export function forestSiteClear(x,z,biome='tropical',kind=null){
+ if((kind!=='fern'&&snakeCorridorContains(x,z))||!jungleTrailClear(x,z)||homeReserved(x,z,5)||!regionalTrailClear(x,z)||regionalClearing(x,z)||roadDistance(x,z)<HIGHWAY_WIDTH/2+10||townPlots.some(p=>Math.abs(x-p.x)<p.w/2+5&&Math.abs(z-p.z)<p.d/2+5))return false;
  if(FOREST_CLEARINGS.some(p=>Math.hypot(x-p.x,z-p.z)<p.r))return false;
  if(Math.hypot((x-cityX(120))/67,(z+50)/57)<1.09)return false;
  // Giant rainforest canopy belongs inland, never on offshore beaches.
@@ -87,10 +93,10 @@ export function planForestPatches(density=1){
     const shape=.83+.12*Math.sin(a*3+patch.x*.06)+.08*Math.cos(a*7+patch.z*.13);
     const x=lobe.x+Math.cos(a)*r*patch.rx*.64*shape+(random()-.5)*1.4;
     const z=lobe.z+Math.sin(a)*r*patch.rz*.64*shape+(random()-.5)*1.4;
-    if(!forestSiteClear(x,z,patch.biome)||r>.87&&random()<.4)continue;
+    if(!forestSiteClear(x,z,patch.biome,kind)||r>.87&&random()<.4)continue;
     const clearance=kind==='fern'?2.7:3.3+size*1.12;
     if(plants.some(t=>Math.hypot(t.x-x,t.z-z)<clearance+(t.kind==='fern'?0:.9)))continue;
-    plants.push({x,z,kind,size,heading:random()*Math.PI*2,tint:random(),patch:patch.id});
+    plants.push({x,z,kind,size:kind==='fern'&&snakeCorridorContains(x,z)?Math.min(.4,size):size,heading:random()*Math.PI*2,tint:random(),patch:patch.id});
     break;
    }
   }

@@ -1,3 +1,5 @@
+import {JUNGLE_LOBES} from './east-jungle-layout.js';
+import {COSTA_LAND} from './costa-arriba-layout.js?v=225';
 import {homeLot} from './mansion-state.js?v=225';
 import {SMOOTH_MAINLAND_OUTLINE,CANAL_WATERWAY,mainlandContains,WORLD_EXTENT} from './geography.js?v=225';
 /* Shared, coordinate-accurate archipelago map for the open-world explorer.
@@ -12,7 +14,7 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
  const svgEl=(tag,attrs={},text)=>{const n=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,String(v));if(text!==undefined)n.textContent=text;return n;};
  const elem=(tag,cls,txt)=>{const n=document.createElement(tag);n.className=cls;if(txt!==undefined)n.textContent=txt;return n;};
  const currentPlace=()=>{const p=land.filter(i=>Math.hypot((world.x-i.x)/i.rx,(world.z-i.z)/i.rz)<1.22).sort((a,b)=>Math.hypot(world.x-a.x,world.z-a.z)-Math.hypot(world.x-b.x,world.z-b.z))[0];return p?name(p):mainlandContains(world.x,world.z)?say('Tierra firme de Panamá','Panama mainland'):say('En el mar','At sea');};
- const islandTarget=id=>places.find(p=>p.id===id)||(id==='home'?places.find(p=>p.id==='pip'):null);
+ const islandTarget=id=>places.find(p=>p.id===id)||(id==='islaGrande'?islands.find(p=>p.id===id):null)||(id==='home'?places.find(p=>p.id==='pip'):null);
  function drawing(mini){
   const svg=svgEl('svg',{class:'island-map-art',viewBox:[WORLD_EXTENT.left,WORLD_EXTENT.top,WORLD_EXTENT.width,WORLD_EXTENT.height].join(' '),role:'img',
     'aria-label':say('Mapa del archipiélago con la posición actual','Archipelago map with your current position')});
@@ -21,6 +23,8 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
   defs.append(gradient);svg.append(defs);
   svg.append(svgEl('ellipse',{cx:0,cy:0,rx:WORLD_EXTENT.width/2,ry:WORLD_EXTENT.height/2,fill:'url(#'+(mini?'ocean-mini':'ocean-big')+')'}));
   svg.append(svgEl('path',{d:SMOOTH_MAINLAND_OUTLINE.map((p,i)=>(i?'L':'M')+p[0]+' '+p[1]).join(' ')+' Z',fill:'#86b574',stroke:'#e9d7a6','stroke-width':3}));
+  for(const p of JUNGLE_LOBES)svg.append(svgEl('ellipse',{cx:p.x,cy:p.z,rx:p.rx,ry:p.rz,fill:'#3d7749'}));
+  for(const p of COSTA_LAND)svg.append(svgEl('ellipse',{cx:p.x,cy:p.z,rx:p.rx,ry:p.rz,fill:'#86b574'}));
   svg.append(svgEl('path',{d:Array.from({length:49},(_,i)=>{const a=i/48*Math.PI*2;return (i?'L':'M')+(-35+Math.cos(a)*37)+' '+(-335+Math.sin(a)*22);}).join(' ')+' Z',fill:'#77cfd4'}));svg.append(svgEl('path',{d:CANAL_WATERWAY.map((p,i)=>(i?'L':'M')+p[0]+' '+p[1]).join(' '),stroke:'#77cfd4','stroke-width':46,fill:'none','stroke-linecap':'round','stroke-linejoin':'round'}));
   if(!mini){svg.append(svgEl('text',{x:45,y:-174,'font-size':12,'text-anchor':'middle',fill:'#16475e'},say('MAR CARIBE','CARIBBEAN SEA')));svg.append(svgEl('text',{x:65,y:90,'font-size':12,'text-anchor':'middle',fill:'#16475e'},say('OCÉANO PACÍFICO','PACIFIC OCEAN')));svg.append(svgEl('text',{x:-195,y:-170,'font-size':13,fill:'#16475e'},'N ↑'));}
   for(const i of land){

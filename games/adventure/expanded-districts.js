@@ -1,3 +1,4 @@
+import {homeReserved} from './mansion-state.js?v=225';
 import {cityX} from './geography.js?v=225';
 // Space-first city districts beyond the original Casco Viejo loop.
 // All plots are deterministic, stay on dry land and leave existing gameplay
@@ -40,7 +41,7 @@ export function districtBuildings(){
   // Preserve the waterfall walkway and lookout already owned by the Colón quests.
   if(area.id==='colon-port'&&(Math.hypot(x+59,z+356)<8||Math.hypot(x+48,z+379)<7))continue;
   const dims=sizeFor(area,i,j);
-  if(!districtGround(x,z)||roadDistance(x,z)<HIGHWAY_WIDTH/2+Math.hypot(dims.w,dims.d)*.5+1.3)continue;
+  if(homeReserved(x,z,Math.hypot(dims.w,dims.d)/2)||!districtGround(x,z)||roadDistance(x,z)<HIGHWAY_WIDTH/2+Math.hypot(dims.w,dims.d)*.5+1.3)continue;
   if([[1,1],[-1,1],[1,-1],[-1,-1]].some(([sx,sz])=>!districtGround(x+sx*(dims.w/2+.2),z+sz*(dims.d/2+.2))))continue;
   // Keep at least 1m of daylight between the facade and the road edge.
   const clearX=(area.xs[i+1]-area.xs[i])/2-dims.w/2-2.8;

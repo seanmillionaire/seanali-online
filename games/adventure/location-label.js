@@ -1,7 +1,9 @@
+import {jungleContains} from './east-jungle-layout.js';
 import {mainlandContains,canalWater,gatunWater} from './geography.js?v=225';
 import {CITY_HOSPITAL} from './volcano-safety.js?v=225';
 import {worldIslands,roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=225';
 const mainland=[
+ {id:"costaArriba",x:110,z:-399,rx:110,rz:66,icon:"🏘️",es:"Costa Arriba · Colón",en:"Costa Arriba · Colón"},
  {id:'gorgona',x:-25,z:-3,rx:76,rz:34,icon:'🏖️',es:'Nueva Gorgona · Pueblo y Playa',en:'Nueva Gorgona · Town and Beach'},
  {id:'volcanTown',x:-385,z:-30,rx:15,rz:13,icon:'🏘️',es:'Volcán · Chiriquí',en:'Volcán Town · Chiriquí'}
 ];
@@ -9,6 +11,7 @@ const icons={islet:'🦋',wilds:'🌴',coconutCoast:'🏖️',sunset:'🌋',crys
 const places=[...mainland,{id:'boquete',x:-290,z:-50,rx:13,rz:12,icon:'🌿',es:'Boquete · Chiriquí',en:'Boquete · Chiriquí'},...worldIslands];
 export function locationLabel(x,z,lang='es',{cruising=false,interior=null,tower=false}={}){
  const es=lang==='es',name=p=>p[es?'es':'en'],label=p=>(p.icon||icons[p.id]||'🏝️')+' '+name(p);
+ if(jungleContains(x,z)&&x>490)return es?'🌳 Darién · Selva del Este':'🌳 Darién · Eastern Jungle';
  if(Math.hypot(x-CITY_HOSPITAL.spawn.x,z-CITY_HOSPITAL.spawn.z)<4)return '🏥 '+(es?'Hospital · Ciudad de Panamá':'Hospital · Panama City');
  if(interior)return '🏠 '+interior;
  if(tower)return '🗼 '+(es?'Faro · Playa Gorgona':'Lighthouse · Gorgona Beach');

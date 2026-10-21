@@ -18,7 +18,7 @@ export function createDelight({soundEnabled,motionEnabled}) {
       return true;
     }catch{return false;}
   }
-  const recordings=new Map(),loading=new Map();let destroyed=false,engineSource=null,engineGain=null,footIndex=0;
+  const recordings=new Map(),loading=new Map();let destroyed=false,engineSource=null,engineGain=null,engineBass=null,engineBassGain=null,footIndex=0;
   function loadRecording(name){
    if(loading.has(name))return loading.get(name);
    const job=fetch(new URL('./assets/audio/'+name+(['door','whoosh','rain','thunder','coins','body-impact','celebration'].includes(name)?'.m4a':'.mp3'),import.meta.url)).then(r=>{if(!r.ok)throw Error('audio unavailable');return r.arrayBuffer();}).then(b=>context.decodeAudioData(b)).then(b=>{if(!destroyed)recordings.set(name,b);return b;}).catch(()=>null);
@@ -33,10 +33,10 @@ export function createDelight({soundEnabled,motionEnabled}) {
    source.connect(gain).connect(master);voices.add(source);source.onended=()=>{voices.delete(source);source.disconnect();gain.disconnect();};source.start(now,from,length);return true;
   }
   function carEngine(speed=0,active=false){
-   if(!active||!unlocked||!soundEnabled()||document.hidden||destroyed){if(engineSource){try{engineSource.stop();}catch{}engineSource.disconnect();engineGain.disconnect();engineSource=engineGain=null;}return;}
+   if(!active||!unlocked||!soundEnabled()||document.hidden||destroyed){if(engineSource){try{engineSource.stop();}catch{}engineSource.disconnect();engineGain.disconnect();if(engineBass){try{engineBass.stop();}catch{}engineBass.disconnect();engineBassGain.disconnect();}engineSource=engineGain=engineBass=engineBassGain=null;}return;}
    if(!ready())return;const b=recordings.get('engine');if(!b){loadRecording('engine');return;}
-   if(!engineSource){engineSource=context.createBufferSource();engineSource.buffer=b;engineSource.loop=true;engineGain=context.createGain();engineGain.gain.value=0;engineSource.connect(engineGain).connect(master);engineSource.start();}
-   engineSource.playbackRate.setTargetAtTime(.8+Math.min(27,Math.abs(speed))/45,context.currentTime,.15);engineGain.gain.setTargetAtTime(.09+Math.min(27,Math.abs(speed))*.003,context.currentTime,.12);
+   if(!engineSource){engineSource=context.createBufferSource();engineSource.buffer=b;engineSource.loop=true;engineGain=context.createGain();engineGain.gain.value=0;engineSource.connect(engineGain).connect(master);engineSource.start();engineBass=context.createBufferSource();engineBass.buffer=b;engineBass.loop=true;engineBassGain=context.createGain();engineBassGain.gain.value=0;engineBass.connect(engineBassGain).connect(master);engineBass.start();}
+   const rev=Math.min(1,Math.abs(speed)/52);engineSource.playbackRate.setTargetAtTime(.75+rev*1.25,context.currentTime,.12);engineGain.gain.setTargetAtTime(.16+rev*.23,context.currentTime,.12);engineBass.playbackRate.setTargetAtTime(.48+rev*.4,context.currentTime,.15);engineBassGain.gain.setTargetAtTime(.08+rev*.10,context.currentTime,.15);
   }
   function voice(freq,duration=.2,{volume=.11,type='sine',delay=0,end=freq,ambient=false}={}){
     if(!ready()||voices.size>40)return;

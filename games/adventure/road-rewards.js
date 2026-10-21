@@ -1,6 +1,7 @@
 import {HIGHWAY_CURVES,HIGHWAY_WIDTH,roadDistance,traversable,inWater} from './explore-state.js?v=225';
 export const ROAD_REWARDS=[
- {id:'baru',road:'cityToBaru',kind:'balloon',icon:'🎈',es:'Vuelo sobre Barú',en:'Barú sky ride'},
+ {id:"costa-arriba",road:"costaArriba",water:{x:180,z:-449},kind:"jetski",icon:"🌊",es:"Isla Grande · Moto acuática",en:"Isla Grande · Jet ski"},
+ {id:'baru',road:'cityToBaru',kind:'scooter',icon:'🛴',es:'Scooter de Barú',en:'Barú summit scooter'},
  {id:'volcan',road:'volcanTownStreet',kind:'scooter',icon:'🛴',es:'Scooter de Volcán',en:'Volcán scooter'},
  {id:'boquete',road:'boqueteStreet',kind:'scooter',icon:'🛴',es:'Scooter de Boquete',en:'Boquete scooter'},
  {id:'gorgona',road:'gorgonaBeachAccess',kind:'jetski',icon:'🌊',es:'Moto acuática',en:'Jet ski'},

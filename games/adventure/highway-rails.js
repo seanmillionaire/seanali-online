@@ -1,3 +1,4 @@
+import {highwayWidth} from './highway-layout.js?v=225';
 // Selected remote barriers stay outside drivable lanes and away from turnoffs.
 import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,roadDistance} from './explore-state.js?v=225';
 const eligible=new Set(['cityToColon','cityToBaru']);
@@ -15,7 +16,7 @@ export function routePointDistance(x,z,points){
  return best;
 }
 export function planHighwayGuardrails(){
- const rails=[],offset=HIGHWAY_WIDTH/2+1.05;
+ const rails=[];
  const shoulder=HIGHWAY_WIDTH/2+.55,crossing=HIGHWAY_WIDTH/2+6;
  for(const [road,points] of Object.entries(HIGHWAY_CURVES)){
   if(!eligible.has(road))continue;
@@ -25,6 +26,7 @@ export function planHighwayGuardrails(){
    for(let i=1;i<points.length;i++){
     const [ax,az]=points[i-1],[bx,bz]=points[i],dx=bx-ax,dz=bz-az,len=Math.hypot(dx,dz);
     if(len<.001){flush();continue;}
+    const offset=highwayWidth(road,(ax+bx)/2,(az+bz)/2)/2+1.05;
     const angle=Math.atan2(dx,dz),ox=Math.cos(angle)*side*offset,oz=-Math.sin(angle)*side*offset;
     const item={road,side,x:(ax+bx)/2+ox,z:(az+bz)/2+oz,angle,length:len+.12,index:i};
     // No barriers on the city exit, Gorgona connector, town, or beach road.

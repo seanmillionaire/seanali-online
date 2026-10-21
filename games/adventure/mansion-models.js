@@ -1,5 +1,6 @@
+import {mansionGym,mansionStairs} from './mansion-gym-models.js?v=236';
 import {botanicalGeometry} from './botanical-geometry.js?v=225';
-import {HOME_WALLS} from './mansion-state.js?v=225';
+import {HOME_WALLS,homeYard} from './mansion-state.js?v=225';
 export function mansionPalette({mat,surfaces}){return {wall:mat('#eee9de',{map:surfaces?.plaster,roughness:.8}),stone:mat('#c5c0b4',{roughness:.7}),wood:mat('#9b7653',{map:surfaces?.wood,roughness:.55}),glass:mat('#416578',{metalness:.25,roughness:.18}),white:mat('#faf7ef',{roughness:.45}),black:mat('#20292e',{roughness:.35}),gold:mat('#ac9561',{metalness:.7,roughness:.25}),fabric:mat('#d9a2c7',{roughness:1}),water:mat('#54bdc7',{metalness:.2,roughness:.15}),green:mat('#426c49'),steel:mat('#bac6ca',{metalness:.8,roughness:.22})};}
 export function makeDog({T,make,box,ball,cylinder,mat},parent){const g=new T.Group();g.name='Coco · Angelique’s dog';parent.add(g);const fur=mat('#c49b66'),cream=mat('#e7d4ad'),dark=mat('#302820');const p=(geo,m,x,y,z,a,b,c)=>make(geo,m,x,y,z,a,b,c,g);p(ball,fur,0,.53,0,.28,.29,.55);p(ball,cream,0,.86,.38,.25,.26,.28);p(ball,cream,0,.76,.64,.17,.13,.19);p(ball,dark,0,.8,.81,.09,.07,.05);for(const x of [-.15,.15]){p(ball,dark,x,.94,.59,.035,.04,.035);p(ball,fur,x*1.65,.83,.32,.11,.25,.16);}const legs=[];for(const x of [-.19,.19])for(const z of [-.35,.3])legs.push(p(cylinder,fur,x,.25,z,.07,.45,.08));const tail=p(cylinder,fur,0,.67,-.64,.07,.5,.07);tail.rotation.x=-.9;return {g,legs,tail};}
 export function mansionBase(height,lot){let y=0;for(let x=-13;x<=13;x+=6.5)for(let z=-12;z<=12;z+=6)y=Math.max(y,height(lot.x+x,lot.z+z));return y;}
@@ -11,22 +12,30 @@ export function exteriorMansion(o,lot,stage,style){const {T,scene,make,box,cylin
  for(const x of [-10,10])b(wall,x,2.1,0,.4,4.2,17);b(wall,0,2.1,-8.4,20,4.2,.4);
  for(const x of [-7,7])b(wall,x,1.95,7.9,6,3.9,.35);
  if(stage<2){for(const x of [-10,-5,0,5,10])p(cylinder,m.steel,x,4,0,.08,3,.08);return root;}
- b(m.stone,0,4.35,0,22,.32,18);b(m.white,-6,5,-3,8,.3,8);b(m.glass,6,3.2,-3,7,1.6,9);b(m.stone,6,4.2,-3,8,.2,10);
+ b(m.stone,0,4.35,0,22,.32,18);if(stage<3)b(m.white,-6,5,-3,8,.3,8);b(m.glass,6,3.2,-3,7,1.6,9);b(m.stone,6,4.2,-3,8,.2,10);
  for(const x of [-7,7]){b(m.glass,x,2.1,8.12,4.5,2.7,.07);for(const dx of [-2.3,0,2.3])b(m.gold,x+dx,2.1,8.2,.09,2.8,.09);}
  b(m.wood,0,1.7,8.3,2.3,3.2,.18);b(m.gold,.7,1.5,8.43,.08,.8,.08);b(m.stone,0,.3,10,5,.3,3);
  for(const x of [-3.8,3.8]){p(cylinder,m.stone,x,2.2,9,.2,4,.2);b(m.wood,x,4.3,9,1,.2,4);}
- b(m.white,0,4.5,9,10,.25,4);for(let x=-4.5;x<5;x+=.55)b(m.wood,x,4.75,9,.12,.18,4);
+ b(m.white,0,3.85,9,10,.25,4);for(let x=-4.5;x<5;x+=.55)b(m.wood,x,4.1,9,.12,.18,4);
  if(stage<3)return root;
+ const upstairs=mansionGym(o,root,m,()=>{},true);upstairs.root.scale.set(.8,1,.8);mansionStairs(o,root,m,true);
+ const stairApproach=height(lot.x-17.4,lot.z+19)-root.position.y;
+ for(let i=0;i<10;i++){const top=stairApproach*(i+.5)/10;b(m.stone,-17.4,top-.15,14+(i+.5)*.5,3.4,.3,.52);}
+ // Low roof rails leave the hatch and its landing clear.
+ for(const x of [-11.7,11.7])b(m.gold,x,8.65,0,.07,.9,23);
+ for(const z of [-11.4,11.4])b(m.gold,0,8.65,z,23.4,.9,.07);
  b(m.stone,9,.45,10,6,.2,4);b(m.water,9,.58,10,5.3,.08,3.3);
  for(const x of [-11,11])for(const z of [-10,4]){b(m.stone,x,.5,z,1.6,1,1.6);p(ball,m.green,x,1.4,z,.9,1,.9);}
 
  // Clear private forecourt, driveway and tethered sightseeing balloon.
- for(let z=18;z<34;z+=2){const y=height(lot.x,lot.z+z)-root.position.y;b(m.stone,0,y+.03,z,4,.08,1.8);}const driveY=height(lot.x+16,lot.z+20)-root.position.y;b(m.stone,16,driveY-.08,20,6,.16,9);
- for(const x of [-22,22])for(let z=15;z<34;z+=5){b(m.white,x,.45,z,1.5,.9,1.5);p(ball,m.green,x,1.6,z,1,1.1,1);}
+ for(let z=18;z<34;z+=2){const y=height(lot.x,lot.z+z)-root.position.y;b(m.stone,0,y+.03,z,4,.08,1.8);}const yard=homeYard(lot),driveY=height(yard.car.x,yard.car.z)-root.position.y;b(m.stone,yard.car.x-lot.x,driveY-.08,yard.car.z-lot.z,5,.16,7);
+ for(const x of [-22,22])for(let z=15;z<34;z+=5){const y=height(lot.x+x,lot.z+z)-root.position.y;b(m.white,x,y+.45,z,1.5,.9,1.5);p(ball,m.green,x,y+1.6,z,1,1.1,1);}
+ root.userData.balloon=yard.balloon;const balloonRoot=new T.Group();balloonRoot.name='Mansion yard balloon';balloonRoot.position.set(yard.balloon.x-lot.x,height(yard.balloon.x,yard.balloon.z)-root.position.y,yard.balloon.z-lot.z);root.add(balloonRoot);
+ const bp=(geo,mat,x,y,z,a,b,c)=>make(geo,mat,x,y,z,a,b,c,balloonRoot);
  const canopy=o.mat('#e992bf'),basket=o.mat('#aa784b');
- p(ball,canopy,-18,11,23,3.7,4.7,3.7);p(ball,m.white,-18,7.7,23,1.7,1.4,1.7);
- b(basket,-18,3,23,2.3,1.2,2);for(const dx of [-.9,.9])for(const dz of [-.8,.8])p(cylinder,m.gold,-18+dx,5,23+dz,.025,3.7,.025);
- for(const dx of [-2,2]){const rope=p(cylinder,m.white,-18+dx,2,23,.025,4,.025);rope.rotation.z=dx*.2;}
+ bp(ball,canopy,0,11,0,3.7,4.7,3.7);bp(ball,m.white,0,7.7,0,1.7,1.4,1.7);
+ bp(box,basket,0,3,0,2.3,1.2,2);for(const dx of [-.9,.9])for(const dz of [-.8,.8])bp(cylinder,m.gold,dx,5,dz,.025,3.7,.025);
+ for(const dx of [-2,2]){const rope=bp(cylinder,m.white,dx,2,0,.025,4,.025);rope.rotation.z=dx*.2;}
  if(stage<4)return root;
  for(const x of [-8,-6]){b(m.wood,x,.7,10,1.4,.18,2.8);b(m.white,x,.9,10,1.2,.2,2.6);}
  b(m.black,-7,2,-8.65,4,2,.15);for(let i=0;i<8;i++)b(m.gold,-8.8+i*.5,2,-8.78,.05,1.9,.1);
@@ -35,7 +44,7 @@ export function mansionInterior(o,cfg,onUse){const {T,scene,make,box,cylinder,ba
  function spot(id,x,z,en,es){props.push({id,x,z,enName:en,esName:es,fn:()=>onUse(id)});}
  // Cutaway roof gives a clear third-person view; walls and doorways remain solid.
  b(m.stone,0,-.15,0,30,.3,29);for(const x of [-9,9])for(const z of [-9,0,9])b(m.wood,x,.015,z,11.6,.025,8.5);
- for(const x of [-15,15])b(m.wall,x,1.6,0,.25,3.2,29);for(const x of [-8.5,8.5])b(m.wall,x,1.6,-14.5,13,3.2,.25);
+ b(m.wall,15,1.6,0,.25,3.2,29);b(m.wall,-15,1.6,-1.5,.25,3.2,26);for(const x of [-8.5,8.5])b(m.wall,x,1.6,-14.5,13,3.2,.25);
  const partitions=[];for(const wall of HOME_WALLS)partitions.push(b(m.wall,wall.x,.7,wall.z,wall.w,1.4,wall.d));const ceiling=b(m.white,0,3.65,0,30,.2,29);ceiling.visible=false;
  // Trim, glazing and framed outdoor views.
  for(const x of [-10,0,10]){b(m.gold,x,2,-14.3,3.8,2,.08);b(m.glass,x,2,-14.2,3.6,1.8,.08);b(m.white,x,2,-14.1,.05,1.85,.06);}
@@ -117,5 +126,7 @@ export function mansionInterior(o,cfg,onUse){const {T,scene,make,box,cylinder,ba
  for(const x of [5.3,6.7])for(const y of [1.3,1.8,2.3])p(ball,m.white,x,y,1.98,.065,.065,.065);
  for(let i=0;i<4;i++)p(cylinder,i%2?pink:m.gold,5.5+i*.3,1,1.7,.07,.22,.07);
  for(const x of [-14.7,14.7])for(const z of [-12,-8,0,8,12])b(pink,x,.15,z,.08,.25,2.5);
+ mansionStairs(o,root,m);spot('stairsUp',-14,13,'⬆️ Walk upstairs to the gym','⬆️ Subir al gimnasio');
+ const upstairs=mansionGym(o,root,m,onUse);upstairs.root.visible=false;props.push(...upstairs.props);
  const dog=makeDog(o,root);dog.g.position.set(-1.5,0,11);
- return {root,props,cfg,bounds:{x:14.5,z:35.5},dog,lamps,meal,fetchBall,steam,washer,partitions,ceiling};}
+ return {root,upstairs,props,cfg,bounds:{x:14.5,z:35.5},dog,lamps,meal,fetchBall,steam,washer,partitions,ceiling};}

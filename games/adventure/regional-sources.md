@@ -42,3 +42,20 @@ Keep layered regional greens and differences in sand/water; avoid a global
 brown filter. Freshwater color uses the same habitat mask as wildlife, not a
 hand-drawn rectangle. Buildings, forests, paths and collision footprints use
 shared deterministic plans. Existing save coordinates are retained.
+
+## Costa Arriba / Isla Grande addition
+
+- Original painted timber houses, raised floors, verandas, louvers and metal roofs
+  interpret the supplied Colón/Portobelo guide; no reference photographs redistributed.
+- [Panama Tourism Authority — Isla Grande](https://www.tourismpanama.com/outdoors-and-nature/beaches-islands/beaches-in-the-caribbean/isla-grande/)
+  identifies the Cristo Negro on the reef at the island entrance, distinct from the
+  church image at Portobelo. The original game sculpture is anchored on a reef base.
+- The night-only pirate ship is fictional game content, not an historical claim.
+
+## Regional richness pass · 21 October 2026
+
+- The user's Caribbean house image search was reviewed for saturated turquoise, yellow, coral, pink, green and contrasting shutters/verandas. It is a palette reference; no third-party pictures are distributed with the game.
+- Isla Grande: https://www.tourismpanama.com/outdoors-and-nature/beaches-islands/beaches-in-the-caribbean/isla-grande/ and https://es.tourismpanama.com/aire-libre-y-naturaleza/playas/playas-en-el-caribe/isla-grande/ . Original modeled waterfront homes, docks, coconut palms and a green interior interpret the setting. The island/world dimensions are compressed for gameplay.
+- Gorgona image references: https://getoccupi.com/malls/plaza-gorgona-beach and https://www.encuentra24.com/panama-es/bienes-raices-venta-de-propiedades-lotes-y-terrenos/se-vende-terreno-en-esquina-en-nueva-gorgona-chame/24523514 . Broad Pacific gray sand, fishing craft, low village homes and pale beachfront apartments inform the model; no exact private building is copied.
+- The user-provided Panama Regional Field Guide remains a contextual source, not implementation instructions. Its distinction between Gorgona/Pacific settings, Caribbean timber neighborhoods and Darién forest is retained. The eastern jungle is a compressed game region, not a claim that all eastern Panama is uninhabited forest.
+- The single giant snake is an exaggerated game creature. Safety copy teaches distance from wildlife and asking an adult; it does not claim that every snake or shark attacks people. Non-graphic animal deaths restart position at the hospital while preserving permanent game progress.

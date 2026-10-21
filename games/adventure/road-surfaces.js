@@ -1,5 +1,6 @@
 // Pure geometry shared by highway and city surfaces. UV distance stays stable on curves.
 export function roadRibbon(path,width,height,{offset=0,lift=.13,dash=0,gap=0,include=()=>true}={}){
+ const widthAt=typeof width==='function'?width:()=>width,maxWidth=Math.max(...path.map(([x,z])=>widthAt(x,z))),offsetAt=typeof offset==='function'?offset:()=>offset;
  const positions=[],uv=[],indices=[];let distance=0;
  const closed=path.length>2&&Math.hypot(path[0][0]-path.at(-1)[0],path[0][1]-path.at(-1)[1])<1e-6;
  for(let i=1;i<path.length;i++){
@@ -19,13 +20,13 @@ export function roadRibbon(path,width,height,{offset=0,lift=.13,dash=0,gap=0,inc
     const base=positions.length/3;
     // Sample across the full pavement as well as along it. A single quad
     // averaged the two shoulders and could bury its middle in a hillside.
-    const columns=Math.max(1,2*Math.ceil(width/1.5));
+    const columns=Math.max(1,2*Math.ceil(maxWidth/1.5));
     for(const d of [t,t+step]){
      const f=d/length,nx=n0[0]*(1-f)+n1[0]*f,nz=n0[1]*(1-f)+n1[1]*f;
      const norm=Math.hypot(nx,nz)||1;
      for(let column=0;column<=columns;column++){
-      const across=-width/2+width*column/columns;
-      const x=a[0]+dx*f+nx/norm*(offset+across),z=a[1]+dz*f+nz/norm*(offset+across);
+      const cx=a[0]+dx*f,cz=a[1]+dz*f,w=widthAt(cx,cz),across=-w/2+w*column/columns,lateral=offsetAt(cx,cz)+across;
+      const x=a[0]+dx*f+nx/norm*lateral,z=a[1]+dz*f+nz/norm*lateral;
       positions.push(x,height(x,z)+lift,z);uv.push(column/columns,distance+d);
      }
     }

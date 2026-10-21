@@ -1,3 +1,4 @@
+import {sanBlasWaters} from '../games/adventure/costa-arriba-layout.js';
 import assert from 'node:assert/strict';
 import * as T from '../games/adventure/vendor/three.module.min.js';
 import {SAN_BLAS_ISLANDS} from '../games/adventure/panama-state.js';
@@ -12,7 +13,7 @@ for(const p of SAN_BLAS_ISLANDS){assert(!inWater(p.x,p.z));for(const q of SAN_BL
 const c=SAN_BLAS_ISLANDS[0],old={...freshExplore(),sanBlasGeographyVersion:2,x:c.oldX,z:c.oldZ,food:{banana:8,coconut:4},panama:{treasures:[0,2]},boat:{x:c.oldX+5,z:c.oldZ+2,heading:1},estate:{buildings:[{id:81,x:c.oldX,z:c.oldZ,level:3}]},builders:{mateo:{completed:[{id:'a',x:c.oldX,z:c.oldZ}]}}};
 const moved=migrateGeography(old);assert.equal(moved.x,c.x);assert.equal(moved.estate.buildings[0].x,c.x);assert.equal(moved.builders.mateo.completed[0].x,c.x);assert.deepEqual(moved.food,old.food);assert.deepEqual(moved.panama,old.panama);assert.deepEqual(migrateGeography(moved),moved,'relocates once');const saved=normalizeExplore(moved);assert.equal(saved.sanBlasGeographyVersion,4);assert.deepEqual(normalizeExplore(saved),saved);
 for(const r of fishingRoutes())for(let j=0;j<800;j++){const p=fishingPose(r,j/800*Math.PI*2*r.rx);assert(fishingHullClear(p.x,p.z,p.heading),'fisher full route clear');}
-assert(fishingRoutes().length>=20);assert.equal(new Set(fishingRoutes().map(p=>p.kind)).size,3);
+assert(fishingRoutes().length>=10);for(const r of fishingRoutes())assert(!sanBlasWaters(r.x,r.z,5),'no incidental boats in San Blas');assert.equal(new Set(fishingRoutes().map(p=>p.kind)).size,3);
 for(const r of shippingRoutes())for(let j=0;j<1200;j++){const p=shippingPose(r,j/1200*Math.PI*2*r.rx);assert(shippingClear(p.x,p.z,p.heading,r.length,r.width),'large vessel full hull remains marine');}
 assert(shippingRoutes().some(p=>p.kind==='tanker'));assert(shippingRoutes().some(p=>p.kind==='yacht'));
 const scene=new T.Scene(),geometries=[],materials=[],geometry=g=>(geometries.push(g),g),mat=(c,o)=>(materials.push(new T.MeshStandardMaterial({color:c,...o})),materials.at(-1));

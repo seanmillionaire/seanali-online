@@ -171,7 +171,7 @@ export function createColonAdventure({T,scene,host,state,make,geometry,mat,box,b
   const result=recordMonkeyJump(play,clock);if(!result.scored)return;joy.note(play.score,.2);
   if(result.complete){c.monkeyGames=Math.min(9999,c.monkeyGames+1);const coins=earnCoins(state,'colon-monkey-play');save();refresh();joy.effect('finish');tell(say('🐒 ¡Jugaste con los monos!','🐒 You played with the monkeys!')+(coins?' +'+coins+' 🪙':''));}
  }
- return {update,prompt:(x,z)=>prompt(x-offsetX,z-offsetZ),
+ return {hazards:()=>wildlife.crocs.filter(c=>c.g.visible&&c.g.parent.visible).map(c=>({kind:'crocodile',x:c.g.position.x+offsetX,z:c.g.position.z+offsetZ,y:0,radius:.8,length:4.6,heading:c.g.rotation.y})),update,prompt:(x,z)=>prompt(x-offsetX,z-offsetZ),
   interact:(x,z)=>interact(x-offsetX,z-offsetZ),onPlayerJump,
   canWalk:(x,z)=>{x-=offsetX;z-=offsetZ;return c.bridge||bridgeDistance(x,z)>1.45||Math.hypot(x-2,z+108)<2;},
   houses:()=>c.treehouse?[{id:'colon-treehouse',colonTreehouse:true,x:(-59),z:(-247),es:'Mi casa del árbol de Colón',en:'My Colón jungle treehouse',icon:'🌳',theme:'play'}]:[],

@@ -1,3 +1,5 @@
+import {COSTA_ROAD,ISLA_GRANDE,costaDock,costaContains} from './costa-arriba-layout.js?v=225';
+import {highwayExtra} from './highway-layout.js?v=225';
 import {normalizeMansion} from './mansion-state.js?v=225';
 import {cityX,freshwaterHabitat} from './geography.js?v=225';
 import {normalizeTravelMode} from './travel-mode.js?v=225';
@@ -17,7 +19,7 @@ export const worldIslands=[
  {id:'pizzaCity',x:DESTINATIONS.pizzaCity.at[0],z:DESTINATIONS.pizzaCity.at[1],rx:58,rz:48,h:3.3,ox:-100,oz:-74,spread:1,en:'Panama City · Casco Viejo',es:'Ciudad de Panamá · Casco Viejo'},
  {id:'colon',x:DESTINATIONS.colon.at[0],z:DESTINATIONS.colon.at[1],rx:40,rz:37,h:4,ox:110,oz:-56,spread:1,en:'Colón · Caribbean Coast',es:'Colón · Costa del Caribe'},
  {id:'monkeyIslet',x:DESTINATIONS.monkeyIslet.at[0],z:DESTINATIONS.monkeyIslet.at[1],rx:8,rz:7,h:1.8,ox:130,oz:-25,spread:1,en:'Monkey Island · Gatún Lake',es:'Isla de los Monos · Lago Gatún'},
- ...SAN_BLAS_ISLANDS,
+ ...SAN_BLAS_ISLANDS,ISLA_GRANDE,
  // Remote open-world islands occupy the empty ocean without relocating the
  // established roads, save coordinates, city buildings or children's quests.
  {id:'coiba',x:-480,z:160,rx:49,rz:42,h:6,ox:-260,oz:140,spread:1,en:'Isla Coiba · Pacific Wilderness',es:'Isla Coiba · Selva del Pacífico'},
@@ -32,11 +34,16 @@ export function remoteAccess(from,to){const p=worldIslands.find(i=>i.vehicleOnly
 // A connected mainland corridor: Panama City → Gorgona → Colón and
 // Gorgona → Volcán → Barú. Offshore island footprints remain separate.
 export const MAINLAND_ROADS={
+ costaArriba:COSTA_ROAD,
+ costaBarrio:[[80,-388],[86,-369],[114,-374],[114,-401]],
  cityToColon:[[cityX(77),-61],[cityX(77),-85],[255,-99],[190,-108],[125,-104],[90,-110],[45,-120],[26,-144],[24,-175],[25,-243],[24,-351],[14,-379],[-18,-392],[-47,-389],[-50,-365]],
  // Intercity traffic bypasses the beach. Turn off onto Gorgona's access road.
  cityToGorgona:[[cityX(105),-35],[cityX(85),-26],[260,-26],[205,-43],[150,-54],[100,-48],[64,-19]],
+ mansionGorgona:[[-106,4],[-103,-5],[-95,-10],[-82,-14]],
+ mansionHighlands:[[-275,-78],[-275,-65],[-270,-58],[-265,-50]],
+ mansionCity:[[420,-18.5],[414,-18.5],[414,-35],[414,-52],[414,-57],[421,-57]],
  gorgonaBeachAccess:[[64,-19],[48,-24],[36,-15],[31,1],[21,1]],
- cityToBaru:[[64,-19],[48,-20],[24,-25],[-5,-35],[-30,-45],[-75,-45],[-155,-35],[-240,-42],[-300,-32],[-385,-30],[-400,-70],[-385,-110],[-350,-65-51.8*.925]],
+ cityToBaru:[[64,-19],[48,-20],[24,-25],[-5,-35],[-30,-49],[-75,-49],[-155,-41],[-240,-42],[-300,-32],[-385,-30],[-400,-70],[-385,-110],[-350,-65-51.8*.925]],
  gorgonaTownStreet:[[31,1],[25,-10],[8,-19],[-22,-20],[-55,-16],[-82,-14]],
  boquete:[[-300,-32],[-290,-50]],
  volcanTownStreet:[[-385,-30],[-385,-8],[-408,-8]],
@@ -88,10 +95,10 @@ export function smoothHighway(points){
 export const HIGHWAY_CURVES=Object.fromEntries(Object.entries(MAINLAND_ROADS).map(([id,points])=>[id,smoothHighway(points)]));
 // Flatten road polylines once, rather than rebuilding vectors every terrain
 // query. Broad-phase boxes prevent distant roads slowing land generation.
-const ROAD_SEGMENTS=Object.values(HIGHWAY_CURVES).flatMap(nodes=>nodes.slice(1).map(([bx,bz],i)=>{
- const [ax,az]=nodes[i],dx=bx-ax,dz=bz-az;
- return {ax,az,dx,dz,inv:1/Math.max(.000001,dx*dx+dz*dz),
-  minX:Math.min(ax,bx),maxX:Math.max(ax,bx),minZ:Math.min(az,bz),maxZ:Math.max(az,bz)};
+const ROAD_SEGMENTS=Object.entries(HIGHWAY_CURVES).flatMap(([id,nodes])=>nodes.slice(1).map(([bx,bz],i)=>{
+ const [ax,az]=nodes[i],dx=bx-ax,dz=bz-az,pad=Math.max(highwayExtra(id,ax,az),highwayExtra(id,bx,bz));
+ return {ax,az,dx,dz,pad,private:id.startsWith('mansion'),inv:1/Math.max(.000001,dx*dx+dz*dz),
+  minX:Math.min(ax,bx)-pad,maxX:Math.max(ax,bx)+pad,minZ:Math.min(az,bz)-pad,maxZ:Math.max(az,bz)+pad};
 }));
 // Immutable bounding-volume tree: terrain queries visit nearby road segments
 // instead of scanning every metre of every highway across the expanded world.
@@ -105,6 +112,9 @@ function roadTree(segments){
  return {...bounds,left:roadTree(segments.slice(0,mid)),right:roadTree(segments.slice(mid))};
 }
 const ROAD_TREE=roadTree([...ROAD_SEGMENTS]);
+const PUBLIC_ROAD_TREE=roadTree(ROAD_SEGMENTS.filter(s=>!s.private));
+function publicRoadDistance(x,z){return Math.sqrt(nearestRoadSquared(PUBLIC_ROAD_TREE,x,z,Infinity));}
+function nearPublicRoad(x,z,buffer){return nearestRoadSquared(PUBLIC_ROAD_TREE,x,z,buffer*buffer)<buffer*buffer;}
 function boundsDistance(q,x,z){const dx=Math.max(q.minX-x,0,x-q.maxX),dz=Math.max(q.minZ-z,0,z-q.maxZ);return dx*dx+dz*dz;}
 function nearestRoadSquared(q,x,z,best){
  if(boundsDistance(q,x,z)>=best)return best;
@@ -112,7 +122,7 @@ function nearestRoadSquared(q,x,z,best){
   for(const s of q.segments){
    if(boundsDistance(s,x,z)>=best)continue;
    const t=Math.max(0,Math.min(1,((x-s.ax)*s.dx+(z-s.az)*s.dz)*s.inv)),dx=x-s.ax-t*s.dx,dz=z-s.az-t*s.dz;
-   best=Math.min(best,dx*dx+dz*dz);
+   const distance=Math.max(0,Math.hypot(dx,dz)-s.pad);best=Math.min(best,distance*distance);
   }
   return best;
  }
@@ -134,6 +144,7 @@ export function roadsidePoint(x,z,radius=1,available=()=>true){
 export function nearRoad(x,z,buffer=HIGHWAY_WIDTH/2){
  return buffer>=0&&nearestRoadSquared(ROAD_TREE,x,z,buffer*buffer)<buffer*buffer;
 }
+// Nominal-width distance: wider lanes reserve their full extra footprint in every existing setback query.
 export function roadDistance(x,z){return Math.sqrt(nearestRoadSquared(ROAD_TREE,x,z,Infinity));}
 export function mainlandRoadRoute(from,to){
  const vertices=new Map(),edges=new Map();
@@ -214,7 +225,7 @@ function ungradedHeight(x,z){
    onBaru=volcanoDistance2<1.21&&volcanoDistance2<Math.pow(organicIslandRadius(BARU_LAND,Math.atan2(vv,vu)),2),
    homeDistance=Math.hypot(x/20,z/14),
    inHome=homeDistance<1.11&&homeDistance<homeShoreRadius(Math.atan2(z/14,x/20))*.98;
-  if(!onBaru&&!inHome&&nearRoad(x,z,HIGHWAY_WIDTH/2+5)){
+  if(!onBaru&&!inHome&&nearPublicRoad(x,z,HIGHWAY_WIDTH/2+5)){
    // The terrain grid spans 3m cells. A level shoulder keeps neighboring
    // triangles from cutting through the pavement edge between sample points.
    // Blend city approaches down to the mainland instead of a 1.44m step.
@@ -244,7 +255,7 @@ function ungradedHeight(x,z){
   h=Math.max(h,elevation);
  }
  if(roadFloor!==null){
-  const t=Math.max(0,Math.min(1,(roadDistance(x,z)-HIGHWAY_WIDTH/2-3)/2)),blend=t*t*(3-2*t);
+  const t=Math.max(0,Math.min(1,(publicRoadDistance(x,z)-HIGHWAY_WIDTH/2-3)/2)),blend=t*t*(3-2*t);
   return roadFloor*(1-blend)+h*blend;
  }
  return h;
@@ -253,7 +264,7 @@ let gradedRoads,gradeCells;
 let bridgeCells;
 export function bridgeDeckHeight(x,z){
  if(!bridgeCells){
-  const profiles=Object.values(HIGHWAY_CURVES).map(path=>({path,ys:path.map(([x,z])=>canalWater(x,z)?18:0)}));
+  const profiles=Object.entries(HIGHWAY_CURVES).map(([id,path])=>({id,path,ys:path.map(([x,z])=>canalWater(x,z)?18:0)}));
   // Propagate gentle approach grades along the connected road graph.
   for(let pass=0;pass<profiles.length;pass++){
    const shared=new Map();
@@ -265,13 +276,13 @@ export function bridgeDeckHeight(x,z){
    }
   }
   bridgeCells=new Map();
-  for(const {path,ys}of profiles)for(let i=1;i<path.length;i++){
-   if(Math.max(ys[i-1],ys[i])<=0)continue;const a=path[i-1],b=path[i],q={a,b,ya:ys[i-1],yb:ys[i]};
-   for(let ix=Math.floor((Math.min(a[0],b[0])-8)/16);ix<=Math.floor((Math.max(a[0],b[0])+8)/16);ix++)for(let iz=Math.floor((Math.min(a[1],b[1])-8)/16);iz<=Math.floor((Math.max(a[1],b[1])+8)/16);iz++){const key=ix+','+iz;if(!bridgeCells.has(key))bridgeCells.set(key,[]);bridgeCells.get(key).push(q);}
+  for(const {id,path,ys}of profiles)for(let i=1;i<path.length;i++){
+   if(Math.max(ys[i-1],ys[i])<=0)continue;const a=path[i-1],b=path[i],q={a,b,ya:ys[i-1],yb:ys[i],pad:Math.max(highwayExtra(id,...a),highwayExtra(id,...b))};
+   for(let ix=Math.floor((Math.min(a[0],b[0])-12)/16);ix<=Math.floor((Math.max(a[0],b[0])+12)/16);ix++)for(let iz=Math.floor((Math.min(a[1],b[1])-12)/16);iz<=Math.floor((Math.max(a[1],b[1])+12)/16);iz++){const key=ix+','+iz;if(!bridgeCells.has(key))bridgeCells.set(key,[]);bridgeCells.get(key).push(q);}
   }
  }
- let best=HIGHWAY_WIDTH/2+1,deck=0;
- for(const {a,b,ya,yb}of bridgeCells.get(Math.floor(x/16)+','+Math.floor(z/16))||[]){const dx=b[0]-a[0],dz=b[1]-a[1],t=Math.max(0,Math.min(1,((x-a[0])*dx+(z-a[1])*dz)/(dx*dx+dz*dz||1))),d=Math.hypot(x-a[0]-dx*t,z-a[1]-dz*t);if(d<best){best=d;deck=ya+(yb-ya)*t;}}
+ let best=Infinity,deck=0;
+ for(const {a,b,ya,yb,pad}of bridgeCells.get(Math.floor(x/16)+','+Math.floor(z/16))||[]){const dx=b[0]-a[0],dz=b[1]-a[1],t=Math.max(0,Math.min(1,((x-a[0])*dx+(z-a[1])*dz)/(dx*dx+dz*dz||1))),d=Math.hypot(x-a[0]-dx*t,z-a[1]-dz*t);if(d<HIGHWAY_WIDTH/2+1+pad&&d<best){best=d;deck=ya+(yb-ya)*t;}}
  return deck;
 }
 export function isletHeight(x,z){return Math.max(terrainHeight(x,z),bridgeDeckHeight(x,z));}
@@ -282,7 +293,7 @@ export function terrainHeight(x,z){
  if(base<=0)return base;
  if(!nearRoad(x,z,HIGHWAY_WIDTH/2+5))return base;
  if(!gradedRoads){
-  const profiles=Object.values(HIGHWAY_CURVES).map(path=>({path,ys:path.map(([x,z])=>ungradedHeight(x,z))}));
+  const profiles=Object.entries(HIGHWAY_CURVES).map(([id,path])=>({id,path,ys:path.map(([x,z])=>ungradedHeight(x,z))}));
   // Share endpoint/control-anchor grades before constraining each road. This
   // prevents an otherwise smooth branch from stepping at a shared junction.
   for(let pass=0;pass<profiles.length;pass++){
@@ -294,27 +305,27 @@ export function terrainHeight(x,z){
     for(let i=path.length-2;i>=0;i--)ys[i]=Math.min(ys[i],ys[i+1]+.18*Math.hypot(path[i][0]-path[i+1][0],path[i][1]-path[i+1][1]));
    }
   }
-  gradedRoads=profiles.flatMap(({path,ys})=>path.slice(1).map((b,i)=>({a:path[i],b,ya:ys[i],yb:ys[i+1]})));
+  gradedRoads=profiles.flatMap(({id,path,ys})=>path.slice(1).map((b,i)=>({a:path[i],b,ya:ys[i],yb:ys[i+1],pad:Math.max(highwayExtra(id,...path[i]),highwayExtra(id,...b))})));
   // Keep the original segment order in each cell so junction ties retain their
   // original grade. Ten metres matches the exact shoulder search below.
   gradeCells=new Map();
   for(const q of gradedRoads){
    const {a,b}=q;
-   for(let ix=Math.floor((Math.min(a[0],b[0])-10)/16);ix<=Math.floor((Math.max(a[0],b[0])+10)/16);ix++)
-   for(let iz=Math.floor((Math.min(a[1],b[1])-10)/16);iz<=Math.floor((Math.max(a[1],b[1])+10)/16);iz++){
+   for(let ix=Math.floor((Math.min(a[0],b[0])-14)/16);ix<=Math.floor((Math.max(a[0],b[0])+14)/16);ix++)
+   for(let iz=Math.floor((Math.min(a[1],b[1])-14)/16);iz<=Math.floor((Math.max(a[1],b[1])+14)/16);iz++){
     const key=ix+','+iz;if(!gradeCells.has(key))gradeCells.set(key,[]);gradeCells.get(key).push(q);
    }
   }
  }
  let best=Infinity,grade=base,gradeWeight=0,gradeTotal=0;
- for(const {a,b,ya,yb} of gradeCells.get(Math.floor(x/16)+','+Math.floor(z/16))||[]){
-  if(x<Math.min(a[0],b[0])-10||x>Math.max(a[0],b[0])+10||z<Math.min(a[1],b[1])-10||z>Math.max(a[1],b[1])+10)continue;
+ for(const {a,b,ya,yb,pad} of gradeCells.get(Math.floor(x/16)+','+Math.floor(z/16))||[]){
+  if(x<Math.min(a[0],b[0])-14||x>Math.max(a[0],b[0])+14||z<Math.min(a[1],b[1])-14||z>Math.max(a[1],b[1])+14)continue;
   const dx=b[0]-a[0],dz=b[1]-a[1],t=Math.max(0,Math.min(1,((x-a[0])*dx+(z-a[1])*dz)/(dx*dx+dz*dz||1)));
-  const d=Math.hypot(x-a[0]-dx*t,z-a[1]-dz*t);
+  const centerDistance=Math.hypot(x-a[0]-dx*t,z-a[1]-dz*t),d=Math.max(0,centerDistance-pad);
   if(d<best)best=d;
   // Blend nearby road profiles through a junction. Choosing only the nearest
   // branch made the ground jump between different grades at the midline.
-  const weight=Math.exp(-d*d/8);gradeWeight+=weight;gradeTotal+=(ya+(yb-ya)*t)*weight;
+  const weight=Math.exp(-centerDistance*centerDistance/8);gradeWeight+=weight;gradeTotal+=(ya+(yb-ya)*t)*weight;
  }
  if(gradeWeight>1e-9)grade=gradeTotal/gradeWeight;
  // Keep a 3m engineering shoulder for the renderer's coarse terrain cells.
@@ -322,6 +333,8 @@ export function terrainHeight(x,z){
  return grade*(1-blend)+base*blend;
 }
 export const explorePlaces=[
+ {id:"costaArriba",x:114,z:-401,icon:"🏘️",kind:"mainland",es:"Costa Arriba · Colón",en:"Costa Arriba · Colón"},
+ {id:'darienJungle',x:492,z:-58,icon:'🐒',es:'Darién · Selva del Este',en:'Darién · Eastern Jungle',kind:'mainland'},
  {id:'gorgonaTown',x:-55,z:-16,icon:'🏖️',es:'Nueva Gorgona · Pueblo y Playa',en:'Nueva Gorgona · Town and Beach',kind:'mainland'},
  {id:'colonCity',x:-67,z:-374,icon:'🏙️',es:'Ciudad de Colón · Costa Caribe',en:'Colón City · Caribbean Waterfront',kind:'mainland'},
  {id:'colonCivic',x:11,z:-372,icon:'🏘️',es:'Colón · Distrito Cívico y Puerto',en:'Colón · Port and Civic District',kind:'mainland'},
@@ -346,8 +359,9 @@ export const explorePlaces=[
  {id:'chest',x:-15,z:-1,icon:'🎁',es:'Tesoro del Pacífico',en:'Pacific Treasure Chest',kind:'chest'}
 ];
 for(const [id,land] of Object.entries({coveBalloon:'crystalCove',islet:'islet',mila:'wilds',luna:'crystalCove',garden:'islet'})){const p=explorePlaces.find(p=>p.id===id);Object.assign(p,islandPoint(land,p.x,p.z));}
+// wildGem4-* are legacy Taboga IDs; never generate a second copy in Colón.
 export const exploreItems=[
- ...worldIslands.slice(1).filter(p=>p.id!=='pizzaCity').flatMap((p,j)=>Array.from({length:5},(_,i)=>{
+ ...worldIslands.slice(1).filter(p=>p.id!=='pizzaCity').flatMap((p,j)=>j===4?[]:Array.from({length:5},(_,i)=>{
    const angle=(j*5+i)*2.399963229728653,rad=.30+.095*(i%4);
    return {id:'wildGem'+j+'-'+i,x:p.x+Math.cos(angle)*p.rx*rad,z:p.z+Math.sin(angle)*p.rz*rad,
     kind:'islandTreasure',es:'gema de la isla',en:'island gem'};
@@ -364,7 +378,7 @@ export const exploreItems=[
 ];
 for(const p of exploreItems){const land={fruit:'wilds',glow:'sunset'}[p.kind];if(land)Object.assign(p,islandPoint(land,p.x,p.z));}
 export function normalizeStory(raw){return Object.fromEntries(Object.entries({shells:3,picnic:4,seed:3,song:4,care:2,light:4}).map(([id,length])=>[id,Number.isInteger(raw?.[id])?Math.max(0,Math.min(length,raw[id])):0]));}
-export function freshExplore(){return {mansion:normalizeMansion(null),panama:normalizePanama(null),campaign:normalizeCampaign(null),colon:normalizeColon(null),estate:normalizeEstate(null),inventoryVersion:1,foodTotal:{banana:0,coconut:0},worldVersion:3,travelMode:'walk',geographyVersion:GEOGRAPHY_VERSION,sanBlasGeographyVersion:4,colonLayoutVersion:COLON_LAYOUT_VERSION,realms:{found:[],turtle:0,bird:0},journey:{visited:[],meals:0,swim:0,fly:0,rings:[]},x:4,z:10,dayTime:40,story:normalizeStory(null),collected:[],badges:[],hat:0,pet:false,flowers:0,catches:0,pops:0,flight:0,growth:1,food:{coconut:0,banana:0},harvested:{},boat:{x:6.5,z:16,heading:0},regionalProjects:{helped:[]},craft:{built:[],spent:{}},city:{cruise:normalizeCruise(null),bags:[],pizzas:0,car:{x:cityX(114),z:-50,heading:0},activities:{deliveries:[],deliveryActive:false,rallyBest:0,rallyWins:0,soccerGoals:0,soccerShots:0,marketTrades:0,muralColors:0,museum:[],carWashes:0}},friends:{visits:[],completed:[],companion:null}};}
+export function freshExplore(){return {mansion:normalizeMansion(null),panama:normalizePanama(null),campaign:normalizeCampaign(null),colon:normalizeColon(null),estate:normalizeEstate(null),inventoryVersion:1,foodTotal:{banana:0,coconut:0,mango:0},worldVersion:3,travelMode:'walk',geographyVersion:GEOGRAPHY_VERSION,sanBlasGeographyVersion:4,colonLayoutVersion:COLON_LAYOUT_VERSION,realms:{found:[],turtle:0,bird:0},journey:{visited:[],meals:0,swim:0,fly:0,rings:[]},x:4,z:10,dayTime:40,story:normalizeStory(null),collected:[],badges:[],hat:0,pet:false,flowers:0,catches:0,pops:0,flight:0,growth:1,food:{coconut:0,banana:0,mango:0},harvested:{},boat:{x:6.5,z:16,heading:0},regionalProjects:{helped:[]},craft:{built:[],spent:{}},city:{cruise:normalizeCruise(null),bags:[],pizzas:0,car:{x:cityX(114),z:-50,heading:0},activities:{deliveries:[],deliveryActive:false,rallyBest:0,rallyWins:0,soccerGoals:0,soccerShots:0,marketTrades:0,muralColors:0,museum:[],carWashes:0}},friends:{visits:[],completed:[],companion:null}};}
 export function normalizeExplore(raw){raw=migrateGeography(raw);const s=freshExplore();if(!raw||typeof raw!=='object')return s;s.travelMode=normalizeTravelMode(raw.travelMode);const rr=raw.realms||{};s.realms={found:[...new Set((Array.isArray(rr.found)?rr.found:[]).filter(id=>/^(reef-[0-5]|pearl-[0-4]|wind-[0-4]|star-[0-4]|seaChest-0|skyLight-0)$/.test(id)))],turtle:Math.max(0,Math.min(5,Math.floor(Number(rr.turtle)||0))),bird:Math.max(0,Math.min(4,Math.floor(Number(rr.bird)||0)))};const j=raw.journey||{};s.journey={visited:[...new Set((Array.isArray(j.visited)?j.visited:[]).filter(id=>worldIslands.some(p=>p.id===id)))],meals:Math.max(0,Math.min(999,Number(j.meals)||0)),swim:Math.max(0,Math.min(100000,Number(j.swim)||0)),fly:Math.max(0,Math.min(100000,Number(j.fly)||0)),rings:[...new Set((Array.isArray(j.rings)?j.rings:[]).filter(id=>/^(swim|fly)-[0-9]+$/.test(id)))]};// Preserve friendship, a chosen companion, and first-time play rewards across saves.
 const FRIEND_IDS=['pip','dori','mila','ollie','luna','kai'],savedFriends=raw.friends||{};
 s.friends={
@@ -406,11 +420,11 @@ s.dayTime=Number.isFinite(raw.dayTime)?((raw.dayTime%240)+240)%240:40;s.story=no
   const old=worldIslands.find(p=>Math.hypot((s.x-p.ox)/(p.rx/p.spread),(s.z-p.oz)/(p.rz/p.spread))<1);
   if(old)Object.assign(s,islandPoint(old.id,s.x,s.z));
  }
-}s.hat=Number.isInteger(raw.hat)?Math.max(0,Math.min(6,raw.hat)):0;s.pet=raw.pet===true;s.flowers=Math.max(0,Math.min(6,Math.floor(Number(raw.flowers)||0)));for(const k of ['catches','pops'])s[k]=Math.max(0,Math.min(9999,Math.floor(Number(raw[k])||0)));s.growth=Number.isFinite(raw.growth)?Math.max(1,Math.min(6,raw.growth)):1;s.flight=Number.isFinite(raw.flight)?Math.max(0,Math.min(40,raw.flight)):0;for(const kind of ['coconut','banana'])s.food[kind]=Math.min(9999,inventoryCount(raw.food?.[kind]));for(const [id,n] of Object.entries(raw.harvested||{})){if(/^(coconut|banana)\d+$/.test(id))s.harvested[id]=Math.max(0,Math.min(6,Math.floor(Number(n)||0)));}if(Number.isFinite(raw.boat?.x)&&Number.isFinite(raw.boat?.z)&&Math.hypot(raw.boat.x/WORLD_BOUNDS.x,raw.boat.z/WORLD_BOUNDS.z)<1&&inWater(raw.boat.x,raw.boat.z)){s.boat={x:raw.boat.x,z:raw.boat.z,heading:Number.isFinite(raw.boat.heading)?raw.boat.heading:0};}Object.assign(s.boat,recoverBoat(s.boat.x,s.boat.z));
+}s.hat=Number.isInteger(raw.hat)?Math.max(0,Math.min(6,raw.hat)):0;s.pet=raw.pet===true;s.flowers=Math.max(0,Math.min(6,Math.floor(Number(raw.flowers)||0)));for(const k of ['catches','pops'])s[k]=Math.max(0,Math.min(9999,Math.floor(Number(raw[k])||0)));s.growth=Number.isFinite(raw.growth)?Math.max(1,Math.min(6,raw.growth)):1;s.flight=Number.isFinite(raw.flight)?Math.max(0,Math.min(40,raw.flight)):0;for(const kind of ['coconut','banana','mango'])s.food[kind]=Math.min(9999,inventoryCount(raw.food?.[kind]));for(const [id,n] of Object.entries(raw.harvested||{})){if(/^(coconut|banana|mango)\d+$/.test(id))s.harvested[id]=Math.max(0,Math.min(24,Math.floor(Number(n)||0)));}if(Number.isFinite(raw.boat?.x)&&Number.isFinite(raw.boat?.z)&&Math.hypot(raw.boat.x/WORLD_BOUNDS.x,raw.boat.z/WORLD_BOUNDS.z)<1){s.boat={x:raw.boat.x,z:raw.boat.z,heading:Number.isFinite(raw.boat.heading)?raw.boat.heading:0};}Object.assign(s.boat,recoverBoat(s.boat.x,s.boat.z));
 // Legacy ground bananas and tree/reward food were independent stocks. Merge only
 // the unspent ground stock once; collected IDs remain discovery history.
 if(raw.inventoryVersion!==1)s.food.banana+=Math.max(0,countExplore(s,'fruit')-s.craft.spent.fruit);
-for(const kind of ['banana','coconut'])s.foodTotal[kind]=Math.max(s.food[kind]+(kind==='banana'?s.craft.spent.fruit:0),raw.inventoryVersion===1?inventoryCount(raw.foodTotal?.[kind]):0);
+for(const kind of ['banana','coconut','mango'])s.foodTotal[kind]=Math.max(s.food[kind]+(kind==='banana'?s.craft.spent.fruit:0),raw.inventoryVersion===1?inventoryCount(raw.foodTotal?.[kind]):0);
 s.mansion=normalizeMansion(raw.mansion);
 s.estate=normalizeEstate(raw.estate,s.collected.filter(id=>['islandTreasure','seaTreasure','glow'].includes(exploreItems.find(item=>item.id===id)?.kind)).length);
  relocateEstateRoadObstructions(s.estate);
@@ -422,17 +436,17 @@ return s;}
 // Food is the single spendable stock. Collection history never gets spent.
 function inventoryCount(value){const n=Number(value);return Number.isFinite(n)?Math.max(0,Math.min(1000000,Math.floor(n))):0;}
 export function addFood(world,kind,amount=1){
- if(!['banana','coconut'].includes(kind)||!Number.isInteger(amount)||amount<=0)return false;
- world.food??={banana:0,coconut:0};world.foodTotal??={...world.food};
+ if(!['banana','coconut','mango'].includes(kind)||!Number.isInteger(amount)||amount<=0)return false;
+ world.food??={banana:0,coconut:0};world.foodTotal??={...world.food};world.food[kind]??=0;
  if(world.food[kind]+amount>9999)return false;
  world.food[kind]+=amount;world.foodTotal[kind]=inventoryCount(world.foodTotal[kind])+amount;return true;
 }
 export function spendFood(world,kind,amount=1){
- if(!['banana','coconut'].includes(kind)||!Number.isInteger(amount)||amount<=0||(world.food?.[kind]||0)<amount)return false;
+ if(!['banana','coconut','mango'].includes(kind)||!Number.isInteger(amount)||amount<=0||(world.food?.[kind]||0)<amount)return false;
  world.food[kind]-=amount;return true;
 }
 export function harvestFood(world,tree){
- if(!tree||!['banana','coconut'].includes(tree.kind)||!new RegExp('^'+tree.kind+'\\d+$').test(tree.id))return false;
+ if(!tree||!['banana','coconut','mango'].includes(tree.kind)||!new RegExp('^'+tree.kind+'\\d+$').test(tree.id))return false;
  const n=world.harvested[tree.id]||0;
  if(n>=tree.fruits.length||!addFood(world,tree.kind))return false;
  world.harvested[tree.id]=n+1;return true;
@@ -444,11 +458,11 @@ export function countExplore(s,kind){return s.collected.filter(id=>exploreItems.
 export const worldObstacles=[[-10,5,1.55],[-13,2,1.3],[10,2,1.55],[12,-1,1.2],[9,-4,1.1],[-1,-5,1.5]];
 export function walkable(x,z){return (isletHeight(x,z)>0||Math.hypot(x/20,z/14)<=homeShoreRadius(Math.atan2(z/14,x/20)))&&worldObstacles.every(([a,b,r])=>Math.hypot(x-a,z-b)>r+.3);}
 // Match the sculpted shoreline; the wider lagoon is navigable, but buildings stay solid.
-export function onDock(x,z){return x>=3&&x<=5&&z>=11.8&&z<=17.4;}
+export function onDock(x,z){return costaDock(x,z)||(x>=3&&x<=5&&z>=11.8&&z<=17.4);}
 export function inWater(x,z){if(onDock(x,z)||isletHeight(x,z)>0)return false;const a=Math.atan2(z/14,x/20);return Math.hypot(x/20,z/14)>homeShoreRadius(a);}
 // Keep the hull clear, including saved boats that overlap a shore or world boundary.
 export function boatClear(x,z){if(Math.hypot(x/(WORLD_BOUNDS.x-1),z/(WORLD_BOUNDS.z-1))>=1||!navigableWater(x,z))return false;for(let i=0;i<8;i++){const a=i*Math.PI/4;if(!navigableWater(x+Math.sin(a)*1.1,z+Math.cos(a)*1.1))return false;}return true;}
-export function recoverBoat(x,z){if(boatClear(x,z))return {x,z};for(let r=.15;r<=6;r+=.15)for(let i=0;i<32;i++){const a=i*Math.PI/16,nx=x+Math.sin(a)*r,nz=z+Math.cos(a)*r;if(boatClear(nx,nz))return {x:nx,z:nz};}return {x:6.5,z:16};}
+export function recoverBoat(x,z){if(boatClear(x,z))return {x,z};for(let r=.15;r<=6;r+=.15)for(let i=0;i<32;i++){const a=i*Math.PI/16,nx=x+Math.sin(a)*r,nz=z+Math.cos(a)*r;if(boatClear(nx,nz))return {x:nx,z:nz};}if(mainlandContains(x,z)||worldIslands.some(p=>p.id==='islaGrande'&&Math.hypot((x-p.x)/p.rx,(z-p.z)/p.rz)<1.2))for(let r=7;r<=90;r++)for(let i=0;i<64;i++){const a=i*Math.PI/32,nx=x+Math.sin(a)*r,nz=z+Math.cos(a)*r;if(boatClear(nx,nz))return {x:nx,z:nz};}return {x:6.5,z:16};}
 export function boatStep(x,z,dx,dz,extraClear=()=>true){const start=recoverBoat(x,z);x=start.x;z=start.z;const steps=Math.max(1,Math.ceil(Math.hypot(dx,dz)/.15));dx/=steps;dz/=steps;
  for(let i=0;i<steps;i++){const candidates=[[dx,dz],...(Math.abs(dx)>=Math.abs(dz)?[[dx,0],[0,dz]]:[[0,dz],[dx,0]])];for(const a of [Math.PI/6,-Math.PI/6,Math.PI/3,-Math.PI/3,Math.PI/2,-Math.PI/2])candidates.push([dx*Math.cos(a)-dz*Math.sin(a),dx*Math.sin(a)+dz*Math.cos(a)]);for(const [mx,mz] of candidates){if(Math.hypot(mx,mz)>.00001&&boatClear(x+mx,z+mz)&&extraClear(x+mx,z+mz)){x+=mx;z+=mz;break;}}}return {x,z};}
 // Sharks steer around shores with clearance for their whole body, not just their center.
