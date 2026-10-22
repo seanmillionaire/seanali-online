@@ -1,5 +1,9 @@
-<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/games/adventure/style.css?v=227"><link rel="stylesheet" href="/games/adventure/mobile-play.css"><link rel="stylesheet" href="/games/adventure/expedition.css?v=246"><body data-scene="explore"><main class="explore-world"></main><button id="finish" style="position:fixed;left:12px;top:12px;z-index:1000">Finish loading</button><script type="module">
+<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/games/adventure/style.css?v=227"><link rel="stylesheet" href="/games/adventure/mobile-play.css"><link rel="stylesheet" href="/games/adventure/expedition.css?v=248"><body data-scene="explore"><main class="explore-world"></main><button id="finish" style="position:fixed;left:12px;top:12px;z-index:1000">Finish loading</button><script type="module">
 import {createExplore} from '/games/adventure/explore.js';import {fresh} from '/games/adventure/state.js';
 const state=fresh();state.lang='en';let release;const gate=new Promise(r=>release=r);document.querySelector('#finish').onclick=e=>{e.target.remove();release();};
-createExplore(document.querySelector('main'),{state,save(){},motion:()=>true,joy:{effect(){},gesture(){},note(){},boat(){}},load:async()=>{await gate;return import('/games/adventure/vendor/three.module.min.js');},openBook(){},openHome(){}});
+createExplore(document.querySelector('main'),{state,save(){},motion:()=>true,joy:{effect(){},gesture(){},note(){},boat(){}},load:async()=>{await gate;if(new URLSearchParams(location.search).has('fail'))throw Error('Simulated loading failure');return import('/games/adventure/vendor/three.module.min.js');},openBook(){},openHome(){}});
+</script>
+
+<script>
+const history=[0],host=document.querySelector('main');document.body.dataset.percentHistory=JSON.stringify(history);new MutationObserver(()=>{const n=Number(document.querySelector('.loading-track')?.getAttribute('aria-valuenow'));if(history.at(-1)!==n)history.push(n);document.body.dataset.percentHistory=JSON.stringify(history);document.body.dataset.ready=String(host.classList.contains('explore-ready'));}).observe(host,{subtree:true,attributes:true,attributeFilter:['aria-valuenow','class']});
 </script>

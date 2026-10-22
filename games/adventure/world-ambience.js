@@ -62,24 +62,24 @@ export function createWorldAmbience({T,scene,models,make,mat,box,ball,cone,heigh
   cars.forEach((c,i)=>{const p=poses[i],ahead=(q)=>{const dx=q.x-p.x,dz=q.z-p.z;return dx*Math.sin(p.heading)+dz*Math.cos(p.heading)>0&&Math.hypot(dx,dz)<(c.bus?12:9)&&Math.abs(dx*Math.cos(p.heading)-dz*Math.sin(p.heading))<1.8;};
    const blocked=(!indoors&&ahead({x,z}))||poses.some((q,j)=>j!==i&&ahead(q)&&(Math.cos(q.heading-p.heading)>.5||j<i));
    const yielding=trafficYield(c,cars,ownedCars(state.world.city),dt);const next=routePose(c.route,c.distance+dt*c.speed);if(yielding!==null)c.distance=yielding;else if(!blocked&&ownedCars(state.world.city).every(p=>!vehicleOverlap({...next,length:c.bus?4.8:1.8,width:c.bus?1.15:.9},p)))c.distance+=dt*c.speed;
-   const q=routePose(c.route,c.distance);placeGroundVehicle(c.g,q,roadHeight,c.bus?'bus':'sedan');
+   const q=routePose(c.route,c.distance),nearby=Math.hypot(q.x-x,q.z-z);if(nearby<165)placeGroundVehicle(c.g,q,roadHeight,c.bus?'bus':'sedan');else{c.g.position.x=q.x;c.g.position.z=q.z;c.g.rotation.y=q.heading;}
    const detail=c.g.userData.visualDetail;if(detail)detail.visible=Math.hypot(q.x-x,q.z-z)<28;c.g.visible=Math.hypot(q.x-x,q.z-z)<155;
   });
-  for(const p of people){const pos=p.g.position,near=Math.hypot(pos.x-x,pos.z-z);p.g.visible=near<105;
+  for(const p of people){const pos=p.g.position,near=Math.hypot(pos.x-x,pos.z-z);p.g.visible=near<105;p.pending=(p.pending||0)+dt;if(near>120&&p.pending<.5)continue;const visitorDt=near>120?Math.min(.5,p.pending):dt;p.pending=0;
    // Revalidate after player construction; never place a visitor inside a new home.
    if(!clear(pos.x,pos.z)){p.g.visible=false;p.goal=null;continue;}
    let moving=false;
-   if(p.wait>0)p.wait-=dt;
+   if(p.wait>0)p.wait-=visitorDt;
    else{
     if(!p.goal){for(let j=0;j<10;j++){const a=random(p)*Math.PI*2,d=2+random(p)*5,tx=pos.x+Math.sin(a)*d,tz=pos.z+Math.cos(a)*d,h=p.habitat;
       if(Math.hypot((tx-h.x)/h.rx,(tz-h.z)/h.rz)<1&&clear(tx,tz)&&Array.from({length:12},(_,i)=>clear(pos.x+(tx-pos.x)*(i+1)/12,pos.z+(tz-pos.z)*(i+1)/12)).every(Boolean)){p.goal={x:tx,z:tz};break;}}
      if(!p.goal)p.wait=2+random(p)*3;
     }
-    if(p.goal){const dx=p.goal.x-pos.x,dz=p.goal.z-pos.z,d=Math.hypot(dx,dz),step=Math.min(d,dt*(p.child?1.05:.65));
+    if(p.goal){const dx=p.goal.x-pos.x,dz=p.goal.z-pos.z,d=Math.hypot(dx,dz),step=Math.min(d,visitorDt*(p.child?1.05:.65));
      if(d<.12){p.goal=null;p.wait=3+random(p)*8;}
      else{const nx=pos.x+dx/d*step,nz=pos.z+dz/d*step;
       if(clear(nx,nz)&&people.every(q=>q===p||Math.hypot(q.g.position.x-nx,q.g.position.z-nz)>.8)&&(indoors||Math.hypot(nx-x,nz-z)>1)){
-       pos.set(nx,height(nx,nz),nz);const heading=Math.atan2(dx,dz);p.g.rotation.y+=Math.atan2(Math.sin(heading-p.g.rotation.y),Math.cos(heading-p.g.rotation.y))*Math.min(1,dt*4);p.walk+=dt*5;moving=true;
+       pos.set(nx,height(nx,nz),nz);const heading=Math.atan2(dx,dz);p.g.rotation.y+=Math.atan2(Math.sin(heading-p.g.rotation.y),Math.cos(heading-p.g.rotation.y))*Math.min(1,visitorDt*4);p.walk+=visitorDt*5;moving=true;
       }else{p.goal=null;p.wait=1.5;}
      }
     }

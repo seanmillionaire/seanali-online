@@ -9,9 +9,10 @@ export function createBirdFlocks({T,scene,geometry,mat,ball,box}){
  const tint=new T.Color();let bird=0;for(const [fi,f]of BIRD_FLOCKS.entries())for(let i=0;i<f.count;i++,bird++){const forest=fi===3||fi===4||fi===5||fi===11,color=forest?'#375c42':fi%3===0?'#d2d4c8':'#47534a',wing=forest?'#304d3a':fi%3===0?'#6d786f':'#303f38';body.setColorAt(bird,tint.set(color));heads.setColorAt(bird,tint.set(color));tails.setColorAt(bird,tint.set(wing));for(let j=0;j<2;j++)wings.setColorAt(bird*2+j,tint.set(wing));}
  const d=new T.Object3D();let clock=0;
  function put(m,i,x,y,z,sx,sy,sz,heading=0,roll=0){d.position.set(x,y,z);d.scale.set(sx,sy,sz);d.rotation.set(0,heading,roll);d.updateMatrix();m.setMatrixAt(i,d.matrix);}
- function update(dt,active,{x=0,z=0,indoors=false}={}){if(active)clock+=dt;root.visible=!indoors;let index=0;
-  for(const f of BIRD_FLOCKS){const p=flockPose(f,clock),visible=Math.hypot(x-p.x,z-p.z)<280;
+ function update(dt,active,{x=0,z=0,indoors=false}={}){if(active)clock+=dt;root.visible=!indoors;if(indoors)return;let index=0;
+  for(const [fi,f]of BIRD_FLOCKS.entries()){if(Math.hypot(x-f.x,z-f.z)>280+Math.max(f.rx,f.rz))continue;const p=flockPose(f,clock),visible=Math.hypot(x-p.x,z-p.z)<280;if(!visible)continue;const forest=fi===3||fi===4||fi===5||fi===11,birdColor=forest?'#375c42':fi%3===0?'#d2d4c8':'#47534a',wingColor=forest?'#304d3a':fi%3===0?'#6d786f':'#303f38';
    for(let i=0;i<f.count;i++,index++){
+    for(const m of [body,heads])m.setColorAt(index,tint.set(birdColor));tails.setColorAt(index,tint.set(wingColor));for(let k=0;k<2;k++)wings.setColorAt(index*2+k,tint.set(wingColor));
     const family=Math.floor(i/6),member=i%6,side=member%2?1:-1,rank=Math.ceil(member/2),scale=(member>3?.65:1)*(visible?1:0),angle=family*2.4;
     const ox=Math.cos(angle)*(3+family*2)+side*rank*1.8,oz=Math.sin(angle)*(3+family*2)-rank*2,px=p.x+Math.cos(p.heading)*ox+Math.sin(p.heading)*oz,pz=p.z-Math.sin(p.heading)*ox+Math.cos(p.heading)*oz,py=p.y+Math.sin(clock*.8+family)*.7+(family%3)*1.8;
     const phase=clock*(member>3?5.8:4.2)+family*.8+member*.25,gliding=Math.sin(clock*.34+family+i*.11)>.28,flap=gliding?.08:Math.sin(phase)*.56;
@@ -25,7 +26,7 @@ export function createBirdFlocks({T,scene,geometry,mat,ball,box}){
     for(const s of [-1,1])put(wings,index*2+(s>0?1:0),px+Math.cos(p.heading)*s*.12*scale,py+.035*scale,pz-Math.sin(p.heading)*s*.12*scale,s*.72*scale,.85*scale,.67*scale,p.heading,s*flap);
 
    }
-  }for(const m of root.children)m.instanceMatrix.needsUpdate=true;
+  }for(const m of root.children){m.count=m===wings?index*2:index;m.instanceMatrix.needsUpdate=true;if(m.instanceColor)m.instanceColor.needsUpdate=true;}
  }
  update(0,false);return {root,count,update,get clock(){return clock;},dispose(){scene.remove(root);}};
 }

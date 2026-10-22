@@ -1,3 +1,4 @@
+import {CITY_FREEWAY_STOP} from './city-freeway-layout.js';
 import {HIGHWAY_CURVES,smoothHighway} from './explore-state.js';
 import {CITY_STREET_X,CITY_STREET_Z} from './city-layout.js';
 import {homeLot,homeYard} from './mansion-state.js';
@@ -22,7 +23,7 @@ export function drivingDestination(p,world,model='lamborghini'){
  const roadStop={islaGrande:{x:176,z:-437},crystalCove:{x:176,z:-437},sunset:{x:-385,z:-30},volcanoSummit:{x:-385,z:-30},volcanoTrail:{x:-385,z:-30},chiriquiFalls:{x:-408,z:-8}}[p.id];if(roadStop)return {...p,...roadStop,walkLast:true};
  return {...p};
 }
-export function autoDrivePlaces(world){const places=[{id:'gorgonaTown',icon:'🌴',x:-55,z:-16,en:'Chame',es:'Chame'},{id:'pizzaCity',icon:'🏙️',x:360,z:-50,en:'Panama City',es:'Ciudad de Panamá'},{id:'volcanTown',icon:'🌋',x:-385,z:-30,en:'Volcán',es:'Volcán'},{id:'colonCity',icon:'🌴',x:-67,z:-374,en:'Colón',es:'Colón'},{id:'boquete',icon:'🌿',x:-290,z:-50,en:'Boquete',es:'Boquete'},{id:'costaArriba',icon:'🌊',x:114,z:-401,en:'Costa Arriba',es:'Costa Arriba'}];if(homeLot(world))places.unshift({id:'myHome',...homeYard(homeLot(world)).car,icon:'🏡',en:'My mansion',es:'Mi mansión'});return places;}
+export function autoDrivePlaces(world){const places=[CITY_FREEWAY_STOP,{id:'gorgonaTown',icon:'🌴',x:-55,z:-16,en:'Chame',es:'Chame'},{id:'pizzaCity',icon:'🏙️',x:360,z:-50,en:'Panama City',es:'Ciudad de Panamá'},{id:'volcanTown',icon:'🌋',x:-385,z:-30,en:'Volcán',es:'Volcán'},{id:'colonCity',icon:'🌴',x:-67,z:-374,en:'Colón',es:'Colón'},{id:'boquete',icon:'🌿',x:-290,z:-50,en:'Boquete',es:'Boquete'},{id:'costaArriba',icon:'🌊',x:114,z:-401,en:'Costa Arriba',es:'Costa Arriba'}];if(homeLot(world))places.unshift({id:'myHome',...homeYard(homeLot(world)).car,icon:'🏡',en:'My mansion',es:'Mi mansión'});return places;}
 function segmentClear(a,b,clear){const h=angle(a,b),length=distance(a,b),n=Math.max(1,Math.ceil(length/.65));for(let i=1;i<=n;i++)if(!clear({x:a.x+(b.x-a.x)*i/n,z:a.z+(b.z-a.z)*i/n,heading:h}))return false;return true;}
 // Local access around parked cars, trees and forecourt furniture, never through water.
 function accessPath(from,to,clear,step=1.5){if(segmentClear(from,to,clear))return [from,to];if(distance(from,to)>55)return null;const origin={x:from.x,z:from.z},open=new Heap(),seen=new Map(),prev=new Map(),point=(x,z)=>({x:origin.x+x*step,z:origin.z+z*step});open.push({x:0,z:0,cost:distance(from,to)});seen.set('0,0',0);let found=null,count=0;

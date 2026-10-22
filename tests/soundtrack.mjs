@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {createSoundtrack,musicRegion,TRACKS} from '../games/adventure/soundtrack.js';
+import {createSoundtrack,musicRegion,TRACKS,REGIONAL_PLAYLISTS} from '../games/adventure/soundtrack.js';
 let time=0,enabled=true,volume=.6,hidden=false,tick;
 globalThis.document={get hidden(){return hidden;}};globalThis.setInterval=f=>(tick=f,1);globalThis.clearInterval=()=>{tick=null;};
 const gain=()=>({gain:{value:0,setTargetAtTime(v){assert(v>=0&&v<=1);}},connect(n){return n;},disconnect(){}});
@@ -9,6 +9,19 @@ const music=createSoundtrack({enabled:()=>enabled,volume:()=>volume,environment:
 assert.equal(audios.length,0);music.update('home');music.sync();assert.equal(audios.length,0,'gesture required');music.unlock();music.sync();await Promise.resolve();assert.equal(music.status.players,1,'only one initial stream');assert(music.status.playing);
 time=16;music.update('drive');time=19;music.update('drive');assert.equal(music.status.mood,'west','brief boundary crossing does not change playlist');time=28;music.update('drive');await Promise.resolve();assert.equal(music.status.mood,'drive');assert.equal(music.status.players,1,'region changes must not interrupt the current song');assert.equal(music.status.title,TRACKS.cumbia.title);
 audios.at(-1).currentTime=178;tick();await Promise.resolve();assert.equal(music.status.players,2,'next recording starts before the previous song ends');time+=4;tick();assert.equal(music.status.players,1);
+
+// Colón selects the supplied song at a natural boundary, without restarting it on every update.
+const beforeColon=music.status.title;
+time=40;music.update({x:-50,z:-365});time=51;music.update({x:-50,z:-365});
+assert.equal(music.status.mood,'colon');assert.equal(music.status.title,beforeColon,'Colón entry preserves the current song');
+audios.at(-1).currentTime=178;tick();await Promise.resolve();
+assert.equal(music.status.title,'Todo Va');assert(audios.at(-1).src.endsWith('/music/todo-va.mp3'));assert.equal(music.status.players,2);
+time=55;tick();assert.equal(music.status.players,1);const colonAudio=audios.at(-1);
+for(time=56;time<70;time++)music.update({x:-50,z:-365});
+assert.equal(audios.at(-1),colonAudio,'staying in Colón must not restart the song');
+colonAudio.currentTime=178;tick();await Promise.resolve();assert.equal(music.status.title,TRACKS.reggae.title,'Colón keeps its existing music in the mix');
+time+=4;tick();
+for(const region of ['city','west','bocas'])assert(REGIONAL_PLAYLISTS[region].includes('todoVa'));
 
 for(let i=0;i<8;i++)music.next();await Promise.resolve();assert(music.status.players<=2,'rapid skips bounded');
 enabled=false;music.sync();assert(audios.every(a=>a.paused),'mute pauses every stream');enabled=true;music.sync();assert(music.status.playing);hidden=true;music.sync();assert(audios.every(a=>a.paused));hidden=false;music.sync();volume=0;music.sync();assert(!music.status.playing);volume=.8;music.sync();assert(music.status.playing);

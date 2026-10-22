@@ -1,3 +1,4 @@
+import {freewayDistance} from './city-freeway-layout.js';
 import {gorgonaShoreZ} from './gorgona-shore.js';
 import {districtNeighborhood} from './expanded-districts.js';
 import {jungleContains} from './east-jungle-layout.js';
@@ -13,6 +14,7 @@ const icons={islet:'🦋',wilds:'🌴',coconutCoast:'🏖️',sunset:'🌋',crys
 const places=[...mainland,{id:'boquete',x:-289,z:-79,rx:47,rz:50,icon:'🌿',es:'Boquete · Chiriquí',en:'Boquete · Chiriquí'},...worldIslands];
 export function locationLabel(x,z,lang='es',{cruising=false,interior=null,tower=false}={}){
  const es=lang==='es',name=p=>p[es?'es':'en'],label=p=>(p.icon||icons[p.id]||'🏝️')+' '+name(p);
+ if(!interior&&!tower&&!cruising&&freewayDistance(x,z)<9)return es?'🛣️ Anillo de la Ciudad · Crucero':'🛣️ City Freeway · Cruise Loop';
  if(!interior&&!tower&&districtNeighborhood(x,z)==='panama-east')return '🌆 Costa del Este · '+(es?'Ciudad de Panamá':'Panama City');
  if(jungleContains(x,z)&&x>490)return es?'🌳 Darién · Selva del Este':'🌳 Darién · Eastern Jungle';
  if(Math.hypot(x-CITY_HOSPITAL.spawn.x,z-CITY_HOSPITAL.spawn.z)<4)return '🏥 '+(es?'Hospital · Ciudad de Panamá':'Hospital · Panama City');

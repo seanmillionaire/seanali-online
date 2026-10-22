@@ -1,3 +1,4 @@
+import {freewayLand} from './city-freeway-layout.js';
 import {darienRelief} from './darien-terrain.js';
 import {chiriquiContains,inlandFreshwater} from './rainforest-layout.js';
 import {jungleContains} from './east-jungle-layout.js';
@@ -89,8 +90,8 @@ for(let i=0,j=SMOOTH_MAINLAND.length-1;i<SMOOTH_MAINLAND.length;j=i++){
 }
 export function mainlandContains(x,z){
  // World-scale ocean sampling dominates startup; reject distant water cheaply.
- if(x<-492||x>MAINLAND_EAST||z<-455||z>38)return false;
- if(chiriquiContains(x,z)||costaContains(x,z)||jungleContains(x,z))return true;
+ if(x<-492||x>MAINLAND_EAST||z<-455||z>50)return false;
+ if(freewayLand(x,z)||chiriquiContains(x,z)||costaContains(x,z)||jungleContains(x,z))return true;
  // Subtle coordinate warping adds small coastline irregularities without moving
  // roads, saved progress, boats, or the map's major Panama landmarks.
  const px=x+1.35*Math.sin(z*.12+x*.009)+.55*Math.sin(z*.34-x*.025),

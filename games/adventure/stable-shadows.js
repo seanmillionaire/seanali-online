@@ -6,10 +6,11 @@ export function createStableShadows({T,sun,renderer,scene}){
  const up=new T.Vector3().crossVectors(direction,right).normalize();
  const center=new T.Vector3(),snapped=new T.Vector3();
  scene.add(sun.target);
- renderer.shadowMap.autoUpdate=renderer.shadowMap.enabled;
+ renderer.shadowMap.autoUpdate=false;let lastShadow=-Infinity;
  const camera=sun.shadow.camera;camera.near=.5;camera.far=150;camera.updateProjectionMatrix();
- function update(x,y,z){
+ function update(x,y,z,time=performance.now()/1000){
   if(!renderer.shadowMap.enabled||![x,y,z].every(Number.isFinite))return;
+  const interval=scene.userData.renderBudget?.shadowInterval||0;if(time-lastShadow<interval)return;lastShadow=time;renderer.shadowMap.needsUpdate=true;
   center.set(x,y,z);
   const texelX=(camera.right-camera.left)/sun.shadow.mapSize.x;
   const texelY=(camera.top-camera.bottom)/sun.shadow.mapSize.y;

@@ -28,18 +28,19 @@ export function createButterflyLife({T,scene,geometry,mat,ball}){
  const wingGeo=geometry(new T.ShapeGeometry(shape,7));wingGeo.rotateX(-Math.PI/2);
  const wings=new T.InstancedMesh(wingGeo,mat('#ffffff',{side:T.DoubleSide,roughness:.7}),count*2),spots=new T.InstancedMesh(ball,mat('#f4e9bf'),count*4),bodies=new T.InstancedMesh(ball,mat('#27231a'),count);
  root.add(wings,spots,bodies);root.children.forEach(m=>{m.frustumCulled=false;m.castShadow=false;});
- const palette=['#168be0','#e08a20','#e9ce54','#dcebc4'],d=new T.Object3D(),rotation=new T.Quaternion(),offset=new T.Vector3();let clock=0;
+ const dummyColor=new T.Color(),palette=['#168be0','#e08a20','#e9ce54','#dcebc4'],d=new T.Object3D(),rotation=new T.Quaternion(),offset=new T.Vector3();let clock=0;
  habitats.forEach((h,i)=>{for(let side=0;side<2;side++)wings.setColorAt(i*2+side,new T.Color(palette[h.color]));});
  function put(mesh,i,x,y,z,sx,sy,sz,heading,roll=0){d.position.set(x,y,z);d.scale.set(sx,sy,sz);d.rotation.set(0,heading,roll);d.updateMatrix();mesh.setMatrixAt(i,d.matrix);}
  function update(dt,active,{x=0,z=0,indoors=false}={}){
-  if(active&&!indoors)clock+=Math.min(dt,.1);root.visible=!indoors;
-  habitats.forEach((h,i)=>{const p=butterflyPose(h,clock),size=Math.hypot(x-p.x,z-p.z)<85?.8:0;
+  if(active&&!indoors)clock+=Math.min(dt,.1);root.visible=!indoors;if(indoors)return;
+  let i=0;for(const h of habitats){if(Math.hypot(x-h.x,z-h.z)>89)continue;const p=butterflyPose(h,clock),size=.8;for(let k=0;k<2;k++)wings.setColorAt(i*2+k,dummyColor.set(palette[h.color]));
    put(bodies,i,p.x,p.y,p.z,.035*size,.035*size,.19*size,p.heading);
    for(const side of [-1,1]){const index=i*2+(side>0?1:0),roll=side*p.flap;
     put(wings,index,p.x,p.y,p.z,side*size,size,size,p.heading,roll);rotation.copy(d.quaternion);
     for(let k=0;k<2;k++){offset.set(side*(k?.16:.31)*size,0,(k?.12:-.10)*size).applyQuaternion(rotation);put(spots,index*2+k,p.x+offset.x,p.y+offset.y+.007,p.z+offset.z,.042*size,.009*size,.055*size,p.heading,roll);}
    }
-  });root.children.forEach(m=>m.instanceMatrix.needsUpdate=true);
+   i++;}
+  wings.count=i*2;spots.count=i*4;bodies.count=i;root.children.forEach(m=>{m.instanceMatrix.needsUpdate=true;if(m.instanceColor)m.instanceColor.needsUpdate=true;});
  }
  update(0,false);return {root,count,habitats,update,get clock(){return clock;},dispose(){scene.remove(root);}};
 }

@@ -141,12 +141,12 @@ body[data-scene="explore"] .explore-world button:focus-visible{outline:3px solid
 .world-loading .loading-note{font:750 17px/1.5 system-ui;max-width:360px;background:#fff9e8;color:#14556b;padding:16px 22px;border-radius:22px;border-bottom:5px solid #ffce58}
 .world-loading .loading-sun{font-size:66px;animation:panama-sun 3s ease-in-out infinite}
 .world-loading .loading-track{width:min(280px,70vw);height:16px;overflow:hidden;border:2px solid #fff9e8;border-radius:999px;background:#055773;box-shadow:0 4px 0 #05516d55}
-.world-loading .loading-traveler{display:block;width:38%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#ffd459,#fff3a5,#ffb847);animation:panama-loading 1.45s ease-in-out infinite alternate;will-change:transform}
-@keyframes panama-loading{from{transform:translateX(-100%)}to{transform:translateX(265%)}}
+.world-loading .loading-traveler{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,#ffd459,#fff3a5,#ffb847);transition:width .15s linear}
+.world-loading .loading-percent{font:900 clamp(42px,10vw,64px)/1 system-ui;font-variant-numeric:tabular-nums;color:#fff2a3;text-shadow:0 3px 0 #05516d}
 .explore-ready .world-loading,.explore-fallback .world-loading{display:none}
 @keyframes panama-sun{50%{transform:translateY(-7px) rotate(8deg)}}
 @media(max-width:780px){body[data-scene="entry"] .world-entry:after{background:linear-gradient(0deg,#03445be8,#07566e99 70%,transparent)!important}body[data-scene="entry"] .world-entry .welcome-copy{padding:12px 0}body[data-scene="explore"] .explore-world .mobile-game-dock button{border-radius:15px!important}body[data-scene="explore"] .explore-world :is(.button-caption,.mobile-dock-caption){font-size:12px!important}}
-@media(prefers-reduced-motion:reduce){.world-loading .loading-sun,.world-loading .loading-traveler{animation:none}.world-loading .loading-traveler{width:100%;will-change:auto}}
+@media(prefers-reduced-motion:reduce){.world-loading .loading-sun,.world-loading .loading-traveler{animation:none}.world-loading .loading-traveler{transition:none}}
 /* An empty pre-Play renderer stage must not cover the lightweight welcome art. */
 body[data-scene="entry"] .world-entry .welcome-world{display:none}
 
@@ -192,3 +192,6 @@ body[data-scene="explore"] .explore-world.guided-arrival>:not(canvas):not(.world
 /* A laptop remains keyboard/mouse driven even in a narrow app window. */
 @media(hover:hover) and (pointer:fine){body[data-scene="explore"] .world-arrows{display:flex!important;pointer-events:auto!important}body[data-scene="explore"] .world-arrows [data-direction]{display:inline-flex!important;align-items:center;justify-content:center}}
 @media(max-width:780px) and (hover:hover) and (pointer:fine){body[data-scene="explore"] .world-arrows{position:absolute!important;left:12px!important;right:auto!important;top:auto!important;bottom:84px!important;width:max-content!important;height:44px!important;gap:5px!important;z-index:23}body[data-scene="explore"] .world-arrows [data-direction]{min-width:40px!important;min-height:42px!important;font-size:22px!important;padding:4px!important}body[data-scene="explore"] .explore-world.explore-ready .explore-stick{bottom:150px!important}body[data-scene="explore"] .world-arrows .movement-speed{left:135px!important;bottom:72px!important;min-width:84px!important}body[data-scene="explore"] .mansion-launch{bottom:270px!important}}
+
+/* Compact laptops retain arrows without stacking the two home shortcuts. */
+@media(max-width:780px) and (hover:hover) and (pointer:fine){body[data-scene="explore"] .mansion-garage-launch{bottom:326px}}

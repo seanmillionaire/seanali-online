@@ -1,3 +1,4 @@
+import {createRenderBudget} from './render-budget.js';
 import {buildMainlandData,buildCoastData} from './mainland-data.js';
 import {SWELL_GLSL,swellHeight} from './ocean-swells.js?v=225';
 import {roundedOceanGeometry} from './world-horizon.js?v=225';
@@ -27,13 +28,16 @@ export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import(
     dispose(){if(disposed)return;disposed=true;pending=null;canvas.removeEventListener('webglcontextlost',lost);world?.dispose();world=null;canvas.remove();}
   };
 }
-export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{},mainland=null}={}) {
+export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{},mainland=null,onProgress=()=>{}}={}) {
   const startupAt=performance.now();
-  const renderer=new T.WebGLRenderer({canvas,antialias:!light,alpha:false,powerPreference:'default'});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,light?1:1.5));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.02;
+  const compact=canvas.parentElement.getBoundingClientRect().width<780||window.matchMedia?.('(pointer: coarse)').matches,budget=createRenderBudget({ratio:window.devicePixelRatio||1,compact,cores:navigator.hardwareConcurrency||8,memory:navigator.deviceMemory||8});
+  const renderer=new T.WebGLRenderer({canvas,antialias:!light&&!compact,alpha:false,powerPreference:'high-performance'});
+  renderer.setPixelRatio(light?1:budget.settings.pixelRatio);renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.02;
   renderer.shadowMap.enabled=!light;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=!light;renderer.shadowMap.needsUpdate=true;
   const scene=new T.Scene();scene.background=new T.Color('#b0d3e2');scene.fog=new T.FogExp2('#b8d6dd',.0022);
   const camera=new T.PerspectiveCamera(48,1,.2,1800),sun=new T.DirectionalLight('#fff0d2',3.0);sun.position.set(-22,38,18);sun.castShadow=true;sun.shadow.mapSize.set(light?1024:2048,light?1024:2048);sun.shadow.camera.left=-30;sun.shadow.camera.right=30;sun.shadow.camera.top=30;sun.shadow.camera.bottom=-30;sun.shadow.normalBias=.055;sun.shadow.bias=-.00015;const ambient=new T.HemisphereLight('#c9edff','#58623c',1.45);scene.add(sun,ambient);
+  function applyBudget(){const q=budget.settings;scene.userData.renderBudget=q;scene.userData.performanceQuality={...q,workMs:budget.workMs};renderer.setPixelRatio(light?Math.min(1,q.pixelRatio):q.pixelRatio);renderer.shadowMap.enabled=!light&&q.shadows;renderer.shadowMap.autoUpdate=false;if(sun.shadow.mapSize.x!==q.shadowSize){sun.shadow.map?.dispose();sun.shadow.map=null;sun.shadow.mapSize.set(q.shadowSize,q.shadowSize);}renderer.shadowMap.needsUpdate=true;}
+  applyBudget();
   const shadows=createStableShadows({T,sun,renderer,scene});
   const textures=new Set(),geometries=new Set(),materials=new Set(),clouds=[],bobbing=[],volcanoes=[];let seed=4107;
   const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
@@ -507,21 +511,23 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{},ma
   function resize(){const r=canvas.parentElement.getBoundingClientRect();width=Math.max(1,r.width);heightPx=Math.max(1,r.height);renderer.setSize(width,heightPx,false);camera.aspect=width/heightPx;camera.setViewOffset(width,heightPx,width>780?-width*.17:0,width>780?0:heightPx*.13,width,heightPx);if(setup)camera.clearViewOffset();camera.updateProjectionMatrix();if(!motion())draw();}
   function pose(){const phone=width<780;camera.position.set(phone?39:35,phone?34:25,phone?66:51);target.set(0,3,0);}
   function draw(){if(renderer.getContext?.().isContextLost())return;renderer.render(scene,camera);}
-  function tick(stamp){frame=0;if(disposed||document.hidden||renderer.getContext?.().isContextLost())return;if(lastDraw&&stamp-lastDraw<1000/30-.5){frame=requestAnimationFrame(tick);return;}lastDraw=stamp;const elapsed=last?(stamp-last)/1000:0,dt=Math.min(elapsed,.1);last=stamp;const moving=motion();if(moving)time+=dt;if(explorer||moving)volcanoTime+=dt;
+  function tick(stamp){frame=0;if(disposed||document.hidden||renderer.getContext?.().isContextLost())return;const previousDraw=lastDraw,frameStart=performance.now();lastDraw=stamp;const elapsed=last?(stamp-last)/1000:0,dt=Math.min(elapsed,.1);last=stamp;const moving=motion();if(moving)time+=dt;if(explorer||moving)volcanoTime+=dt;
     try{
     if(flight!==null){flight+=elapsed;const p=moving?Math.min(flight/3.2,1):1,e=p*p*(3-2*p);camera.position.lerpVectors(startCam,endCam,e);target.lerpVectors(startLook,endLook,e);camera.clearViewOffset();camera.updateProjectionMatrix();canvas.parentElement.style.setProperty('--arrival',String(p));if(p===1){const done=finish;finish=null;flight=null;done?.();if(disposed)return;}}
     else if(!explorer){pose();if(moving){camera.position.x+=Math.sin(time*.13)*1.3+px*1.2;camera.position.y+=Math.sin(time*.24)*.4-py*.5;}}
-    if(explorer)explorer.update(dt,time);atmosphere.update(time);waterMaterial.uniforms.oceanFocus.value.set(camera.position.x,-camera.position.z);const player=explorer?.playerPosition?.();if(player){shadows.update(player.x,player.y??height(player.x,player.z),player.z);forestLandscape.updateFocus(player.x,player.z,camera);}camera.lookAt(target);volcanoes.forEach(v=>v.update(volcanoTime));tropical.update(motion()?time:0);waterMaterial.uniforms.time.value=time;crystal.rotation.y=time*.35;beam.rotation.y=time*.22;
+    if(explorer)explorer.update(dt,time);atmosphere.update(time);waterMaterial.uniforms.oceanFocus.value.set(camera.position.x,-camera.position.z);const player=explorer?.playerPosition?.();if(player){shadows.update(player.x,player.y??height(player.x,player.z),player.z,stamp/1000);forestLandscape.updateFocus(player.x,player.z,camera);}camera.lookAt(target);volcanoes.forEach(v=>v.update(volcanoTime));tropical.update(motion()?time:0);waterMaterial.uniforms.time.value=time;crystal.rotation.y=time*.35;beam.rotation.y=time*.22;
     clouds.forEach(c=>{c.g.position.x=c.x+Math.sin(time*.03+c.z)*3;});bobbing.forEach((b,i)=>{b.g.position.y=b.y+Math.sin(time*1.2+i)*.12+(waterMaterial.userData.surfaceHeight?.(b.g.position.x,b.g.position.z)||0);b.g.rotation.z=Math.sin(time+i)*.025;});sailboat.position.x=-18+Math.sin(time*.04)*4;motes.rotation.y=Math.sin(time*.1)*.03;
-    draw();}catch(error){onError(error);return;}if(explorer||moving||flight!==null)frame=requestAnimationFrame(tick);
+    const updateMs=performance.now()-frameStart;draw();const work=performance.now()-frameStart;scene.userData.frameTiming={updateMs,renderMs:work-updateMs};if(!light&&budget.sample(work,previousDraw?stamp-previousDraw:16.7,stamp)){applyBudget();resize();}scene.userData.performanceQuality={...budget.settings,workMs:budget.workMs};}catch(error){onError(error);return;}if(explorer||moving||flight!==null)frame=requestAnimationFrame(tick);
   }
   function wake(){if(!disposed&&!document.hidden&&!frame){last=0;frame=requestAnimationFrame(tick);}}
   function visibility(){if(document.hidden){cancelAnimationFrame(frame);frame=0;last=0;}else wake();}
   function pointer(e){if(!motion()||flight!==null)return;const r=canvas.getBoundingClientRect();px=(e.clientX-r.left)/r.width-.5;py=(e.clientY-r.top)/r.height-.5;}
   const observer=new ResizeObserver(resize),bodyObserver=new MutationObserver(wake);observer.observe(canvas.parentElement);bodyObserver.observe(document.body,{attributes:true,attributeFilter:['class']});document.addEventListener('visibilitychange',visibility);canvas.parentElement.addEventListener('pointermove',pointer,{passive:true});
   let explorer,polyhaven;
+  onProgress(75);
   scene.userData.startupTimings={baseScene:performance.now()-startupAt,prebuilt:!!mainland};
   try{explorer=setup?.({T,scene,camera,target,height,make,geometry,mat,ball,cone,cylinder,box,renderer,tropical,tower,beam,crystal,dockBoat,sun,ambient,waterMaterial,surfaces});
+  onProgress(95);
   scene.userData.startupTimings.setup=performance.now()-startupAt;
   pose();camera.lookAt(target);resize();if(explorer){camera.clearViewOffset();camera.updateProjectionMatrix();explorer.update(0,0);}draw();wake();
   // Optional environment textures arrive after the world is already playable.

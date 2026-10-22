@@ -1,5 +1,6 @@
 // Full-length recordings stream on demand; only two players exist during a crossfade.
 export const TRACKS={
+ todoVa:{file:'todo-va',extension:'mp3',title:'Todo Va'},
  salsa:{file:'no-frills-salsa',extension:'mp3',title:'No Frills Salsa'},
  reggae:{file:'montego',extension:'mp3',title:'Montego'},
  cumbia:{file:'no-frills-cumbia',extension:'mp3',title:'No Frills Cumbia'},
@@ -12,10 +13,11 @@ export const TRACKS={
  night:{file:'easy-lemon',title:'Easy Lemon'}
 };
 // Regional identity wins over transport, weather and time of day.
-// These are licensed instrumental selections, not claims of local folk recordings.
+// Game scoring includes licensed instrumentals and the owner-supplied Todo Va recording.
+// Colón leads with Todo Va at the next natural song boundary; entering a region never cuts a song short.
 export const REGIONAL_PLAYLISTS={
- city:['salsa','reggae'],colon:['reggae','salsa'],bocas:['reggae','ocean','city'],
- west:['cumbia','salsa','reggae'],interior:['cumbia'],chiriqui:['cumbia','salsa'],
+ city:['salsa','todoVa','reggae'],colon:['todoVa','reggae','salsa'],bocas:['reggae','todoVa','ocean','city'],
+ west:['cumbia','salsa','todoVa','reggae'],interior:['cumbia'],chiriqui:['cumbia','salsa'],
  guna:['ocean','night'],pacific:['ocean','city'],home:['home','night']
 };
 export const MUSIC_LABELS={city:'🏙️ Panamá · Salsa / reggae',colon:'🚢 Colón · Reggae / salsa',bocas:'🏝️ Bocas · Reggae / island grooves',west:'🏖️ Panamá Oeste · Cumbia / salsa',interior:'🌿 Interior · Cumbia',chiriqui:'🌋 Chiriquí · Cumbia / salsa',guna:'🐚 Guna Yala · Island instrumental',pacific:'⛵ Pacífico · Island instrumental',home:'🏡 Casa · Bossa nova'};

@@ -1,0 +1,2 @@
+import {spawnSync} from 'node:child_process';
+const r=spawnSync(process.env.ESBUILD_BIN||'esbuild',['tests/fruit-emoji-preview.js','--bundle','--format=esm','--target=es2022','--external:../games/adventure/vendor/*','--external:./vendor/*','--define:import.meta.url=__PANAMA_ASSET_BASE__',"--banner:js=const __PANAMA_ASSET_BASE__=new URL('/games/adventure/app.bundle.js',location.href).href;",'--outfile=tests/.fruit-emoji-qa.js'],{stdio:'inherit'});if(r.error)throw r.error;if(r.status)process.exit(r.status);

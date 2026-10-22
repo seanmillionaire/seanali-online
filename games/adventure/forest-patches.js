@@ -72,6 +72,7 @@ export function forestSiteClear(x,z,biome='tropical',kind=null){
  return biome!=='island'||island;
 }
 export function planForestPatches(density=1){
+ const cells=new Map(),cellSize=8;
  const plants=[],factor=Math.max(.25,Math.min(1,Number(density)||1));
  let seed=943017;const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
  for(const patch of FOREST_PATCHES){
@@ -99,8 +100,11 @@ export function planForestPatches(density=1){
     const z=lobe.z+Math.sin(a)*r*patch.rz*.64*shape+(random()-.5)*1.4;
     if(!forestSiteClear(x,z,patch.biome,kind)||r>.87&&random()<.4)continue;
     const clearance=kind==='fern'?2.7:3.3+size*1.12;
-    if(plants.some(t=>Math.hypot(t.x-x,t.z-z)<clearance+(t.kind==='fern'?0:.9)))continue;
+    const cellX=Math.floor(x/cellSize),cellZ=Math.floor(z/cellSize),range=Math.ceil((clearance+.9)/cellSize);let blocked=false;
+    for(let dx=-range;dx<=range&&!blocked;dx++)for(let dz=-range;dz<=range&&!blocked;dz++)if((cells.get((cellX+dx)+','+(cellZ+dz))||[]).some(t=>Math.hypot(t.x-x,t.z-z)<clearance+(t.kind==='fern'?0:.9)))blocked=true;
+    if(blocked)continue;
     plants.push({x,z,kind,size:kind==='fern'&&snakeCorridorContains(x,z)?Math.min(.4,size):size,heading:random()*Math.PI*2,tint:random(),patch:patch.id});
+    const key=cellX+','+cellZ;if(!cells.has(key))cells.set(key,[]);cells.get(key).push(plants.at(-1));
     break;
    }
   }

@@ -56,3 +56,15 @@ These are general sound-design recordings, not field recordings made in Panama.
 - `music/panama-menu-theme.mp3` — supplied as `panama_aventura_menu_instrumental.mp3`, 62.72 seconds. Menu/pause and accomplishment theme.
 
 These two recordings were supplied directly by the game owner for installation; they are not part of the third-party CC libraries listed above.
+
+## Personal sports-car engine and braking · October 22, 2026
+
+CC0 source pages and licenses verified. These are edited recordings, not synthesized effects.
+- sports-start.m4a, sports-idle.m4a, sports-roar.m4a — Sound of a Lamborghini Engine Start up and Kick Down — florianreichelt — https://freesound.org/people/florianreichelt/sounds/457559/ — CC0. HQ preview excerpts: startup 9.25–11.8 s joined to rev 23–25.5 s, idle 19–22.5 s, roar 23.65–24.7 s; normalized mono AAC 96 kbps with fades/loop crossfades. Ferrari uses an alternative pitch/mix of the same recording; not an authenticated Ferrari recording.
+- tire-screech.m4a — Car Brakes sqeak screech squeal stop.wav — WavJunction.com — https://freesound.org/people/WavJunction.com/sounds/456764/ — CC0; 0.2–1.55 s excerpt, normalized mono AAC 96 kbps.
+
+## Todo Va (user supplied, October 22, 2026)
+
+- `music/todo-va.mp3` — supplied as `Todo Va.mp3`, 162.744 seconds. Full recording in the regional mix, leading the Colón playlist.
+
+Supplied directly by the game owner for installation. Artist and license metadata were not provided; this recording is separate from the CC libraries above.

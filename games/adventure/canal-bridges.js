@@ -6,7 +6,7 @@ import {roadRibbon,surfaceMesh} from './road-surfaces.js?v=225';
 export function createCanalBridges({T,scene,geometry,mat,make,box}){
  const root=new T.Group();root.name='Canal highway bridges · open shipping clearance';scene.add(root);
  const concrete=mat('#a5aaa5',{roughness:.92}),metal=mat('#819799',{metalness:.35,roughness:.6});
- for(const id of ['cityToGorgona','cityToColon']){
+ for(const id of ['cityToGorgona','cityToColon','cityFreeway']){
   const path=HIGHWAY_CURVES[id],raised=(x,z)=>bridgeDeckHeight(x,z)>terrainHeight(x,z)+.5;
   root.add(surfaceMesh(T,geometry,roadRibbon(path,(x,z)=>highwayWidth(id,x,z)+.3,isletHeight,{lift:-.55,include:raised}),concrete,id+' bridge underside'));
   for(const side of [-1,1]){

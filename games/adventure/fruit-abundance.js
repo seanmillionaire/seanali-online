@@ -4,7 +4,7 @@ import {homeReserved} from './mansion-state.js?v=225';
 import {regionalClearing} from './regional-layout.js?v=225';
 import {ruralBlocks} from './rural-towns.js?v=225';
 import {botanicalGeometry} from './botanical-geometry.js?v=225';
-import {createNatureDecor} from './nature-decor.js?v=225';
+import {createFruitEmojis} from './fruit-emojis.js';
 export const MANGO_VARIETIES=[{name:'red',color:'#c74535'},{name:'green',color:'#70a32b'},{name:'yellow',color:'#efc53b'}];
 export function fruitGroves(){
  const sites=[];
@@ -24,24 +24,26 @@ export function fruitGroves(){
 // Tree crowns and hundreds of harvestable fruit clusters share GPU batches.
 export function createFruitAbundance({T,scene,geometry,mat,ball,cylinder,height,state}){
  const root=new T.Group();root.name='Abundant Panama fruit groves';scene.add(root);const sites=fruitGroves().filter(p=>!(state?.world?.estate?.buildings||[]).some(b=>Math.hypot(p.x-b.x,p.z-b.z)<10)),batches=new Map(),dummy=new T.Object3D(),resources=[];
- const bark=mat('#806344'),leaf=mat('#ffffff',{vertexColors:true,side:T.DoubleSide,roughness:.8}),yellow=mat('#ffdb18',{vertexColors:true,roughness:.7}),green=mat('#8fc62f'),mango=MANGO_VARIETIES.map(v=>mat(v.color,{roughness:.58})),brown=mat('#805331'),white=mat('#fff7e5');
- const crowns=Object.fromEntries(['palm','banana','natural'].map(k=>[k,botanicalGeometry(T,geometry,k)])),banana=geometry(createNatureDecor(T,g=>g)(7)),half=geometry(new T.SphereGeometry(1,10,6,0,Math.PI*2,Math.PI/2,Math.PI/2));
- function part(g,m,x,y,z,w,h,d,ry=0){const key=g.uuid+m.uuid;if(!batches.has(key))batches.set(key,{g,m,items:[]});const b=batches.get(key),item={x,y,z,w,h,d,ry,visible:true};b.items.push(item);return item;}
+ const emojis=createFruitEmojis(T),fruitBatches=new Map();
+ const bark=mat('#806344'),leaf=mat('#ffffff',{vertexColors:true,side:T.DoubleSide,roughness:.8});
+ const crowns=Object.fromEntries(['palm','banana','natural'].map(k=>[k,botanicalGeometry(T,geometry,k)]));
+ function part(g,m,x,y,z,w,h,d,ry=0){const key=g.uuid+m.uuid+Math.floor(x/64)+","+Math.floor(z/64);if(!batches.has(key))batches.set(key,{g,m,items:[]});const b=batches.get(key),item={x,y,z,w,h,d,ry,visible:true};b.items.push(item);return item;}
  const foodTrees=[];
  for(const [i,p]of sites.entries()){
   const ground=height(p.x,p.z),s=p.scale,kind=p.kind==='coconut'?'palm':p.kind==='mango'?'natural':'banana',h=kind==='palm'?7:kind==='natural'?6:3.1;
   part(cylinder,bark,p.x,ground+h*s/2,p.z,.27*s,h*s,.27*s);part(crowns[kind],leaf,p.x,ground+h*s,p.z,s,s,s,i*2.4);
   const fruits=[];
   for(let j=0;j<(p.kind==='banana'?12:18);j++){const a=j*2.399963,ring=p.kind==='mango'?1.7+(j%3)*.5:.42+(j%3)*.16,x=p.x+Math.cos(a)*ring*s,z=p.z+Math.sin(a)*ring*s,y=ground+(h-(p.kind==='mango'?.4:1.05)-(j%4)*.27)*s;
-   const item=part(p.kind==='banana'?banana:ball,p.kind==='banana'?yellow:p.kind==='mango'?mango[(i+j)%mango.length]:green,x,y,z,p.kind==='banana'?.9:.28,p.kind==='banana'?1.0:.36,p.kind==='banana'?.9:.28,a);
+   const item={x,y,z,size:(p.kind==='banana'?.9:.78)*s,visible:true};if(!fruitBatches.has(p.kind))fruitBatches.set(p.kind,[]);fruitBatches.get(p.kind).push(item);
    fruits.push(item);
   }
-  if(p.kind==='coconut')for(let j=0;j<4;j++){const x=p.x+1.5+j*.36,z=p.z+1.15,y=height(x,z)+.18;if(j<2)part(ball,brown,x,y,z,.24,.27,.24);else{part(half,brown,x,y,z,.28,.28,.28);part(cylinder,white,x,y+.015,z,.245,.025,.245);part(cylinder,brown,x,y+.031,z,.10,.027,.10);}}
+  if(p.kind==='coconut')for(let j=0;j<4;j++){const x=p.x+1.25+j*.65,z=p.z+1.15;fruitBatches.get('coconut').push({x,y:height(x,z)+.4,z,size:.72,visible:true});}
   foodTrees.push({...p,fruits});
  }
- for(const b of batches.values()){const mesh=new T.InstancedMesh(b.g,b.m,b.items.length);mesh.name='Batched '+(b.m===yellow?'ripe banana bunches':mango.includes(b.m)?MANGO_VARIETIES[mango.indexOf(b.m)].name+' mango fruit':b.m===green?'green coconuts':b.m===white?'split coconut flesh':'fruit grove detail');
+ for(const b of batches.values()){const mesh=new T.InstancedMesh(b.g,b.m,b.items.length);mesh.name='Batched fruit grove trees';
   b.items.forEach((item,index)=>{const put=()=>{dummy.position.set(item.x,item.y,item.z);dummy.rotation.set(0,item.ry,0);dummy.scale.set(item.visible?item.w:0,item.visible?item.h:0,item.visible?item.d:0);dummy.updateMatrix();mesh.setMatrixAt(index,dummy.matrix);mesh.instanceMatrix.needsUpdate=true;};put();Object.defineProperty(item,'visible',{get(){return this.shown!==false;},set(v){this.shown=!!v;put();},configurable:true});item.getWorldPosition=target=>target.set(item.x,item.y,item.z);});mesh.computeBoundingSphere();root.add(mesh);
  }
+ for(const [kind,items]of fruitBatches)emojis.batch(kind,items,root);
  root.userData.solidTrees=sites.map(p=>({...p,size:p.scale}));
- return {root,foodTrees,update(indoors){root.visible=!indoors;},dispose(){scene.remove(root);resources.forEach(x=>x.dispose());}};
+ return {root,foodTrees,update(indoors){root.visible=!indoors;},dispose(){scene.remove(root);emojis.dispose();resources.forEach(x=>x.dispose());}};
 }

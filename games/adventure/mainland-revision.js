@@ -1,1 +1,1 @@
-export const MAINLAND_REVISION='aa8dc9a6a97e';
+export const MAINLAND_REVISION='e4c0fd679637';

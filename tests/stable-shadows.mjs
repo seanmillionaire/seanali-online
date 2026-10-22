@@ -3,7 +3,7 @@ import * as T from '../games/adventure/vendor/three.module.min.js';
 import {createStableShadows} from '../games/adventure/stable-shadows.js';
 const scene=new T.Scene(),sun=new T.DirectionalLight(),renderer={shadowMap:{enabled:true,autoUpdate:false}};
 sun.shadow.camera.left=-30;sun.shadow.camera.right=30;sun.shadow.camera.top=30;sun.shadow.camera.bottom=-30;sun.shadow.mapSize.set(2048,2048);
-const rig=createStableShadows({T,scene,sun,renderer});assert(renderer.shadowMap.autoUpdate,'animated casters update every render, independent of decorative motion clock');
+const rig=createStableShadows({T,scene,sun,renderer});assert.equal(renderer.shadowMap.autoUpdate,false,'shadow budget controls refreshes');
 const offset=new T.Vector3(-22,38,18),right=new T.Vector3().crossVectors(new T.Vector3(0,1,0),offset.clone().normalize()).normalize(),up=new T.Vector3().crossVectors(offset.clone().normalize(),right).normalize(),texel=60/2048;
 let previous=null;
 for(let i=0;i<1200;i++){
@@ -14,4 +14,4 @@ for(let i=0;i<1200;i++){
  assert(target.distanceTo(new T.Vector3(x,y,z))<texel,'player remains centered including raised terrain');
  if(previous)assert(target.distanceTo(previous)<.17,'no seven-metre shadow jumps');previous=target.clone();
 }
-const before=sun.position.clone();rig.update(NaN,0,0);assert(sun.position.equals(before));renderer.shadowMap.enabled=false;rig.update(9,10,11);assert(sun.position.equals(before),'mobile fallback does not move disabled light maps');rig.dispose();assert(!sun.target.parent);console.log('PASS continuous terrain-aware shadow tracking, stable light direction, texel alignment over 1200 walking frames, disabled-shadow fallback and cleanup');
+scene.userData.renderBudget={shadowInterval:.1};rig.update(2,1,3,10);const held=sun.position.clone();renderer.shadowMap.needsUpdate=false;rig.update(3,1,4,10.03);assert(sun.position.equals(held));assert(!renderer.shadowMap.needsUpdate);rig.update(3,1,4,10.11);assert(renderer.shadowMap.needsUpdate,'budget refresh resumes');const before=sun.position.clone();rig.update(NaN,0,0);assert(sun.position.equals(before));renderer.shadowMap.enabled=false;rig.update(9,10,11);assert(sun.position.equals(before),'mobile fallback does not move disabled light maps');rig.dispose();assert(!sun.target.parent);console.log('PASS continuous terrain-aware shadow tracking, stable light direction, texel alignment over 1200 walking frames, disabled-shadow fallback and cleanup');

@@ -36,17 +36,20 @@ export function createNaturalTrees({T,geometry,mat,make,height,scene,surfaces=nu
   trees.push(tree);return tree;
  }
  function update(time){
+  const ground=focus?height(focus.x,focus.z):0,rayX=focus?.camera?focus.camera.x-focus.x:0,rayZ=focus?.camera?focus.camera.z-focus.z:0,rayLength=rayX*rayX+rayZ*rayZ;
   for(const t of trees){
+   if(t.root.parent?.visible===false)continue;
    t.root.visible=true;t.crown.visible=true;
+   if(focus&&(t.x-focus.x)**2+(t.z-focus.z)**2>120**2){t.crown.material.opacity=1;t.crown.material.depthWrite=true;continue;}
    t.crown.rotation.z=Math.sin(time*.9+t.phase)*(t.kind==='palm'?.035:.012);
    const distance=focus?Math.hypot(t.x-focus.x,t.z-focus.z):100;
    let opacity=distance<4?.2:distance<7?.2+(distance-4)*.266:1;
    if(focus?.camera){
-    const dx=focus.camera.x-focus.x,dz=focus.camera.z-focus.z,length=dx*dx+dz*dz;
+    const dx=rayX,dz=rayZ,length=rayLength;
     const u=length?((t.x-focus.x)*dx+(t.z-focus.z)*dz)/length:0;
     const lateral=Math.hypot(t.x-focus.x-u*dx,t.z-focus.z-u*dz);
-    const rayY=height(focus.x,focus.z)+1.6+(focus.camera.y-height(focus.x,focus.z)-1.6)*u;
-    if(u>0&&u<=1.08&&lateral<3.8*t.scale&&rayY<height(t.x,t.z)+t.tip.y*t.scale+2){opacity=.05;t.crown.visible=false;}
+    const rayY=ground+1.6+(focus.camera.y-ground-1.6)*u;
+    if(u>0&&u<=1.08&&lateral<3.8*t.scale&&rayY<t.root.position.y+.05+t.tip.y*t.scale+2){opacity=.05;t.crown.visible=false;}
    }
    t.crown.material.opacity+=(opacity-t.crown.material.opacity)*.22;t.crown.material.depthWrite=t.crown.material.opacity>.95;
   }

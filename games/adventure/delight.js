@@ -1,3 +1,4 @@
+import {createCarAudio} from './car-audio.js';
 import {createThemeAudio,morningThemeDue,normalizeMorningTheme} from './theme-audio.js';
 import {createRegionalAmbience} from './regional-ambience.js';
 import {createSoundtrack} from './soundtrack.js?v=225';
@@ -7,14 +8,14 @@ export function createDelight({soundEnabled,motionEnabled,storage}) {
   const voices=new Set();
   let boatRequested=false,boatPosition=0,boatBus=null,boatNodes=[],boatMotor=null,boatHarmonic=null;
   let welcomeHeld=false,musicRevealAt=-Infinity,welcomeMusicPending=false,theme=null;
-  let audioMenu=false,carVoiceSerial=0,carSpeaking=false,carVoiceState='idle';
+  let audioMenu=false,carGreetingTimer=null,carVoiceSerial=0,carSpeaking=false,carVoiceState='idle';
   function welcomeAudio(held){welcomeHeld=held;welcomeMusicPending=!held;if(!held)musicRevealAt=performance.now()/1000+1;sync();}
   let preferences={music:.58,effects:.8};try{const stored=JSON.parse((storage??localStorage).getItem('panama-audio-v1'));for(const k of ['music','effects'])if(Number.isFinite(stored?.[k]))preferences[k]=Math.max(0,Math.min(1,stored[k]));}catch{}
   const soundtrack=createSoundtrack({enabled:()=>unlocked&&soundEnabled()&&!destroyed&&!welcomeHeld&&scene!=='welcome',volume:()=>preferences.music*Math.max(0,Math.min(1,(performance.now()/1000-musicRevealAt)/6)),environment:()=>context?{context,output:limiter}:null});
   theme=createThemeAudio({allowed:()=>unlocked&&soundEnabled()&&!destroyed&&!welcomeHeld&&ready(),volume:()=>preferences.music,environment:()=>context?{context,output:limiter}:null,onPriority:(held,exclusive)=>{soundtrack.hold(held);if(master&&context){master.gain.cancelScheduledValues(context.currentTime);master.gain.setValueAtTime(exclusive||welcomeHeld?0:preferences.effects,context.currentTime);}if(exclusive)window.speechSynthesis?.cancel();}});
   function worldTheme(world,save,active=true){world.morningTheme??=normalizeMorningTheme();const day=world.morningTheme.day;if(active&&scene==='explore'&&!welcomeHeld&&morningThemeDue(world)&&!theme.exclusive)theme.morning(()=>{world.morningTheme.played=Math.max(world.morningTheme.played,day);save?.();});}
-  function cancelCarGreeting(){carVoiceSerial++;if(carSpeaking)window.speechSynthesis?.cancel();carSpeaking=false;carVoiceState='idle';}
-  function carGreeting(language='en'){const token=++carVoiceSerial;carVoiceState='queued';theme.afterMorning(()=>{if(token!==carVoiceSerial||!soundEnabled()||document.hidden||destroyed||!('speechSynthesis'in window))return;window.speechSynthesis.cancel();soundtrack.duck(5);theme.duck(5);const u=new SpeechSynthesisUtterance(language==='es'?'Hola, Angelique. ¿Adónde quieres ir?':'Hi, Angelique. Where do you want to go?');u.lang=language==='es'?'es-PA':'en-US';const voices=window.speechSynthesis.getVoices();u.voice=voices.find(v=>v.localService&&v.lang.startsWith(language))||voices.find(v=>v.lang.startsWith(language))||null;u.rate=.95;u.volume=preferences.effects;u.onstart=()=>{carVoiceState='speaking';};u.onend=()=>{carSpeaking=false;carVoiceState='spoken';};u.onerror=()=>{carSpeaking=false;carVoiceState='unavailable';};carSpeaking=true;window.speechSynthesis.speak(u);});}
+  function cancelCarGreeting(){clearTimeout(carGreetingTimer);carGreetingTimer=null;carVoiceSerial++;if(carSpeaking)window.speechSynthesis?.cancel();carSpeaking=false;carVoiceState='idle';}
+  function carGreeting(language='en',delay=0){clearTimeout(carGreetingTimer);const token=++carVoiceSerial;carVoiceState='queued';const greet=()=>theme.afterMorning(()=>{if(token!==carVoiceSerial||!soundEnabled()||document.hidden||destroyed||!('speechSynthesis'in window))return;window.speechSynthesis.cancel();soundtrack.duck(5);theme.duck(5);const u=new SpeechSynthesisUtterance(language==='es'?'Hola, Angelique. ¿Adónde quieres ir?':'Hi, Angelique. Where do you want to go?');u.lang=language==='es'?'es-PA':'en-US';const voices=window.speechSynthesis.getVoices();u.voice=voices.find(v=>v.localService&&v.lang.startsWith(language))||voices.find(v=>v.lang.startsWith(language))||null;u.rate=.95;u.volume=preferences.effects;u.onstart=()=>{carVoiceState='speaking';};u.onend=()=>{carSpeaking=false;carVoiceState='spoken';};u.onerror=()=>{carSpeaking=false;carVoiceState='unavailable';};carSpeaking=true;window.speechSynthesis.speak(u);});if(delay>0)carGreetingTimer=setTimeout(greet,delay);else greet();}
   function setAudioLevels(values){for(const k of ['music','effects'])if(Number.isFinite(values[k]))preferences[k]=Math.max(0,Math.min(1,values[k]));try{(storage??localStorage).setItem('panama-audio-v1',JSON.stringify(preferences));}catch{}sync();}
   function ready(){
     if(!soundEnabled()||document.hidden)return false;
@@ -25,10 +26,10 @@ export function createDelight({soundEnabled,motionEnabled,storage}) {
       return true;
     }catch{return false;}
   }
-  const recordings=new Map(),loading=new Map();let destroyed=false,engineSource=null,engineGain=null,engineBass=null,engineBassGain=null,footIndex=0;
+  const recordings=new Map(),loading=new Map();let destroyed=false,footIndex=0;
   function loadRecording(name){
    if(loading.has(name))return loading.get(name);
-   const job=fetch(new URL('./assets/audio/'+name+(['city-ambience','surf-ambience','birds-ambience','door','whoosh','rain','thunder','coins','body-impact','celebration'].includes(name)?'.m4a':'.mp3'),import.meta.url)).then(r=>{if(!r.ok)throw Error('audio unavailable');return r.arrayBuffer();}).then(b=>context.decodeAudioData(b)).then(b=>{if(!destroyed)recordings.set(name,b);return b;}).catch(()=>null);
+   const job=fetch(new URL('./assets/audio/'+name+(['city-ambience','surf-ambience','birds-ambience','door','whoosh','rain','thunder','coins','body-impact','celebration','sports-start','sports-idle','sports-roar','tire-screech'].includes(name)?'.m4a':'.mp3'),import.meta.url)).then(r=>{if(!r.ok)throw Error('audio unavailable');return r.arrayBuffer();}).then(b=>context.decodeAudioData(b)).then(b=>{if(!destroyed)recordings.set(name,b);return b;}).catch(()=>null);
    loading.set(name,job);return job;
   }
   function recordedSound(name,{volume=.35,rate=1,offset=0,duration=null}={}){
@@ -39,12 +40,10 @@ export function createDelight({soundEnabled,motionEnabled,storage}) {
    gain.gain.setValueAtTime(0,now);gain.gain.linearRampToValueAtTime(Math.min(.65,volume),now+.01);gain.gain.setValueAtTime(Math.min(.65,volume),now+Math.max(.015,length/rate-.08));gain.gain.linearRampToValueAtTime(0,now+length/rate);
    source.connect(gain).connect(master);voices.add(source);source.onended=()=>{voices.delete(source);source.disconnect();gain.disconnect();};source.start(now,from,length);return true;
   }
-  function carEngine(speed=0,active=false){
-   if(!active||!unlocked||!soundEnabled()||document.hidden||destroyed){if(engineSource){try{engineSource.stop();}catch{}engineSource.disconnect();engineGain.disconnect();if(engineBass){try{engineBass.stop();}catch{}engineBass.disconnect();engineBassGain.disconnect();}engineSource=engineGain=engineBass=engineBassGain=null;}return;}
-   if(!ready())return;const b=recordings.get('engine');if(!b){loadRecording('engine');return;}
-   if(!engineSource){engineSource=context.createBufferSource();engineSource.buffer=b;engineSource.loop=true;engineGain=context.createGain();engineGain.gain.value=0;engineSource.connect(engineGain).connect(master);engineSource.start();engineBass=context.createBufferSource();engineBass.buffer=b;engineBass.loop=true;engineBassGain=context.createGain();engineBassGain.gain.value=0;engineBass.connect(engineBassGain).connect(master);engineBass.start();}
-   const rev=Math.min(1,Math.abs(speed)/52);engineSource.playbackRate.setTargetAtTime(.75+rev*1.25,context.currentTime,.12);engineGain.gain.setTargetAtTime(.16+rev*.23,context.currentTime,.12);engineBass.playbackRate.setTargetAtTime(.48+rev*.4,context.currentTime,.15);engineBassGain.gain.setTargetAtTime(.08+rev*.10,context.currentTime,.15);
-  }
+  const carAudio=createCarAudio({environment:()=>({context,output:master}),load:name=>recordings.get(name)||loadRecording(name),allowed:()=>unlocked&&soundEnabled()&&!document.hidden&&!destroyed&&!welcomeHeld&&!theme.exclusive&&preferences.effects>0&&ready(),duck:seconds=>{soundtrack.duck(seconds);theme.duck(seconds);}});
+  function carEnter(model){if(unlocked&&ready())carAudio.enter(model);}
+  function carLeave(){carAudio.leave();}
+  function carEngine(speed=0,active=false,options={}){carAudio.update(speed,active,options);}
   function voice(freq,duration=.2,{volume=.11,type='sine',delay=0,end=freq,ambient=false}={}){
     if(theme.exclusive||welcomeHeld||!ready()||voices.size>40)return;
     const at=context.currentTime+delay,o=context.createOscillator(),g=context.createGain();
@@ -91,7 +90,7 @@ export function createDelight({soundEnabled,motionEnabled,storage}) {
   function ambientPhrase(){soundtrack.sync();}
   function sync(){
     theme.sync();
-    if(!soundEnabled()||document.hidden){regional.stop();carEngine(0,false);stopBoat();rainSound(0);stopAmbient();soundtrack.sync();if(context){for(const o of voices){try{o.stop();o.disconnect();}catch{}}voices.clear();context.suspend().catch(()=>{});}return;}
+    if(!soundEnabled()||document.hidden||preferences.effects===0){carAudio.silence();}if(!soundEnabled()||document.hidden){regional.stop();carEngine(0,false);stopBoat();rainSound(0);stopAmbient();soundtrack.sync();if(context){for(const o of voices){try{o.stop();o.disconnect();}catch{}}voices.clear();context.suspend().catch(()=>{});}return;}
     if(unlocked&&ready()){master.gain.setTargetAtTime(welcomeHeld||theme.exclusive?0:preferences.effects,context.currentTime,welcomeHeld?.04:1.2);soundtrack.sync();if(boatRequested)startBoat();}
   }
   function gesture(){const first=!unlocked;unlocked=true;if(ready()){soundtrack.unlock();if(first)for(const name of ['horn','engine','footsteps','crash','splash','whoosh','body-impact','coins','door'])loadRecording(name);}sync();}
@@ -116,7 +115,7 @@ export function createDelight({soundEnabled,motionEnabled,storage}) {
    if(horn>.005)recordedSound('horn',{volume:Math.min(.5,horn*.55),rate:.88+Math.random()*.22});
 
   }
-  return {worldTheme,carGreeting,cancelCarGreeting,get carAssistantStatus(){return carVoiceState;},get themeStatus(){return theme.status;},get morningExclusive(){return theme.exclusive;},welcomeAudio,soundscape,setAudioLevels,get audioLevels(){return {...preferences};},get ambienceStatus(){return regional.status;},get soundtrackStatus(){return soundtrack.status;},nextTrack(){soundtrack.next();},recordedSound,carEngine,panamaSound,setCityAmbient,streetSound,boat,get boatActive(){return !!boatBus;},note,drum,effect,gesture,sync,setScene,duck,get voiceCount(){return voices.size;},get ambientScheduled(){return ambientTimer!==null;},destroy(){destroyed=true;cancelCarGreeting();theme.destroy();regional.dispose();soundtrack.destroy();rainSound(0);carEngine(0,false);recordings.clear();boatRequested=false;stopBoat();stopAmbient();stopTheme();document.removeEventListener('visibilitychange',visibility);context?.close();}};
+  return {worldTheme,carGreeting,cancelCarGreeting,carEnter,carLeave,prepareCarAudio(){if(unlocked&&ready())carAudio.preload();},get carAudioStatus(){return carAudio.status;},get carAssistantStatus(){return carVoiceState;},get themeStatus(){return theme.status;},get morningExclusive(){return theme.exclusive;},welcomeAudio,soundscape,setAudioLevels,get audioLevels(){return {...preferences};},get ambienceStatus(){return regional.status;},get soundtrackStatus(){return soundtrack.status;},nextTrack(){soundtrack.next();},recordedSound,carEngine,panamaSound,setCityAmbient,streetSound,boat,get boatActive(){return !!boatBus;},note,drum,effect,gesture,sync,setScene,duck,get voiceCount(){return voices.size;},get ambientScheduled(){return ambientTimer!==null;},destroy(){destroyed=true;carAudio.destroy();cancelCarGreeting();theme.destroy();regional.dispose();soundtrack.destroy();rainSound(0);carEngine(0,false);recordings.clear();boatRequested=false;stopBoat();stopAmbient();stopTheme();document.removeEventListener('visibilitychange',visibility);context?.close();}};
 }
 export function burst(target,{motion=true,big=false}={}){
   if(!motion||!target?.isConnected)return;

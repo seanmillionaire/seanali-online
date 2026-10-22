@@ -1,0 +1,10 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Todo Va · Regional audio check</title><style>body{font:18px/1.6 system-ui;background:#123f4b;color:white;max-width:620px;padding:24px;margin:auto}button{padding:16px;margin:8px;font:inherit}output{display:block;overflow-wrap:anywhere}audio{max-width:100%}</style><h1>🎶 Colón · Todo Va</h1><p>Full recording in the regional soundtrack. Songs finish before the next selection fades in.</p><button id="play">Play Colón mix</button><button id="hold">Pause / resume</button><output></output><script type="module">
+import {createSoundtrack} from '../games/adventure/soundtrack.js';
+let ctx,clock=0,held=false;const media=[];const errors=[];
+const music=createSoundtrack({enabled:()=>true,volume:()=>.7,now:()=>clock+performance.now()/1000,environment:()=>({context:ctx,output:ctx.destination}),createAudio:()=>{const a=new Audio();media.push(a);return a;}});
+document.querySelector('#play').onclick=async()=>{ctx??=new AudioContext();await ctx.resume();music.update('colon');clock+=12;music.update('colon');music.unlock();};
+document.querySelector('#hold').onclick=()=>music.hold(held=!held);
+addEventListener('error',e=>errors.push(e.message));addEventListener('unhandledrejection',e=>errors.push(String(e.reason)));
+setInterval(()=>{const a=media.at(-1);const status={...music.status,duration:a?.duration||0,source:a?.src||'',errors};document.body.dataset.checks=JSON.stringify(status);document.querySelector('output').textContent=JSON.stringify(status,null,2);},250);
+addEventListener('pagehide',()=>music.destroy());
+</script></html>

@@ -1,6 +1,6 @@
 // Shared pavement, terrain clearance and traffic layout for the intercity corridor.
 export const BASE_ROAD_WIDTH=9.5,FOUR_LANE_WIDTH=17.5;
-export const FOUR_LANE_ROADS=new Set(['cityToGorgona','cityToBaru','cityToColon']);
+export const FOUR_LANE_ROADS=new Set(['cityToGorgona','cityToBaru','cityToColon','cityFreeway','cityFreewayEast']);
 export function highwayWidth(id,x=0,z=0){
  if(id.startsWith('mansion'))return 5.6;
  if(!FOUR_LANE_ROADS.has(id))return BASE_ROAD_WIDTH;

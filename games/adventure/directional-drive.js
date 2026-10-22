@@ -4,7 +4,9 @@ export function driveByDirection(car,dx,dz,previousSpeed,dt,fast,canDrive,facing
  if(force<=.12||dt<=0)return 0;
  const vx=dx/length,vz=dz/length,desired=(fast?52:32)*force;
  const heading=facingHeading??Math.atan2(vx,vz);
- const speed=previousSpeed+(desired-previousSpeed)*Math.min(1,dt*7);
+ // Hold the control to build speed; short taps stay gentle instead of jumping to cruise.
+ const change=desired-previousSpeed,rate=change>=0?(fast?19:12):40;
+ const speed=previousSpeed+Math.sign(change)*Math.min(Math.abs(change),rate*Math.min(.1,dt));
  const distance=speed*dt,steps=Math.max(1,Math.ceil(distance/.15)),step=distance/steps;
  for(let i=0;i<steps;i++){
   const nx=car.x+vx*step,nz=car.z+vz*step;

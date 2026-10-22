@@ -1,3 +1,5 @@
+import {freewayDistance} from './city-freeway-layout.js';
+import {HIGHWAY_CURVES} from './explore-state.js';
 import {DARIEN_RIVERS,JUNGLE_PONDS,CHIRIQUI_FALL} from './rainforest-layout.js';
 import {JUNGLE_LOBES} from './east-jungle-layout.js';
 import {COSTA_LAND} from './costa-arriba-layout.js?v=225';
@@ -14,7 +16,7 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
  const name=i=>es?i.es:i.en;
  const svgEl=(tag,attrs={},text)=>{const n=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,String(v));if(text!==undefined)n.textContent=text;return n;};
  const elem=(tag,cls,txt)=>{const n=document.createElement(tag);n.className=cls;if(txt!==undefined)n.textContent=txt;return n;};
- const currentPlace=()=>{const p=land.filter(i=>Math.hypot((world.x-i.x)/i.rx,(world.z-i.z)/i.rz)<1.22).sort((a,b)=>Math.hypot(world.x-a.x,world.z-a.z)-Math.hypot(world.x-b.x,world.z-b.z))[0];return p?name(p):mainlandContains(world.x,world.z)?say('Tierra firme de Panamá','Panama mainland'):say('En el mar','At sea');};
+ const currentPlace=()=>{if(freewayDistance(world.x,world.z)<10)return say('Anillo de la ciudad','City freeway loop');const p=land.filter(i=>Math.hypot((world.x-i.x)/i.rx,(world.z-i.z)/i.rz)<1.22).sort((a,b)=>Math.hypot(world.x-a.x,world.z-a.z)-Math.hypot(world.x-b.x,world.z-b.z))[0];return p?name(p):mainlandContains(world.x,world.z)?say('Tierra firme de Panamá','Panama mainland'):say('En el mar','At sea');};
  const islandTarget=id=>places.find(p=>p.id===id)||(id==='islaGrande'?islands.find(p=>p.id===id):null)||(id==='home'?places.find(p=>p.id==='pip'):null);
  function drawing(mini){
   const svg=svgEl('svg',{class:'island-map-art',viewBox:[WORLD_EXTENT.left,WORLD_EXTENT.top,WORLD_EXTENT.width,WORLD_EXTENT.height].join(' '),role:'img',
@@ -24,6 +26,7 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
   defs.append(gradient);svg.append(defs);
   svg.append(svgEl('ellipse',{cx:0,cy:0,rx:WORLD_EXTENT.width/2,ry:WORLD_EXTENT.height/2,fill:'url(#'+(mini?'ocean-mini':'ocean-big')+')'}));
   svg.append(svgEl('path',{d:SMOOTH_MAINLAND_OUTLINE.map((p,i)=>(i?'L':'M')+p[0]+' '+p[1]).join(' ')+' Z',fill:'#86b574',stroke:'#e9d7a6','stroke-width':3}));
+  svg.append(svgEl('path',{d:HIGHWAY_CURVES.cityFreeway.map((p,i)=>(i?'L':'M')+p.join(' ')).join(' ')+' Z',fill:'#86b574',stroke:'#86b574','stroke-width':32}));
   svg.append(svgEl('ellipse',{cx:-444,cy:-80,rx:43,ry:43,fill:'#487b47'}));
   for(const p of JUNGLE_LOBES)svg.append(svgEl('ellipse',{cx:p.x,cy:p.z,rx:p.rx,ry:p.rz,fill:'#3d7749'}));
   for(const p of [...JUNGLE_PONDS,CHIRIQUI_FALL.pool])svg.append(svgEl('ellipse',{cx:p.x,cy:p.z,rx:p.rx,ry:p.rz,fill:'#3d9eae'}));for(const path of DARIEN_RIVERS)svg.append(svgEl('polyline',{points:path.map(p=>p.join(',')).join(' '),fill:'none',stroke:'#3d9eae','stroke-width':7}));
@@ -69,6 +72,7 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
   const target=svgEl('circle',{r:6,fill:'none',stroke:'#fff3a1','stroke-width':2,
     'stroke-dasharray':'3 2',visibility:'hidden'});
   svg.append(target);
+  svg.append(svgEl('polyline',{points:HIGHWAY_CURVES.cityFreeway.map(p=>p.join(',')).join(' '),fill:'none',stroke:'#56616b','stroke-width':10,'stroke-linejoin':'round'}));
   const group=svgEl('g',{class:'island-map-player','aria-label':say('Estás aquí','You are here')});
   group.append(svgEl('circle',{r:mini?10:12,fill:'#fff4b4',stroke:'#144753','stroke-width':2.5}));
   group.append(svgEl('circle',{r:mini?7:9,fill:'#fffdf4',stroke:'#ee7e44','stroke-width':1}));

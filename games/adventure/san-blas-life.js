@@ -3,15 +3,18 @@ import {SAN_BLAS_ISLANDS,routePose} from './panama-state.js?v=225';
 export const SAN_BLAS_SERVICES={vendor:{x:cityX(285),z:-422},cook:{x:cityX(293),z:-422},fish:{x:cityX(290),z:-418}};
 export function createSanBlasLife({T,scene,make,mat,geometry,box,ball,cylinder,cone,height,inWater,forest,models,state,surfaces}){
  const root=new T.Group();root.name='San Blas · separated white-sand cays and living beaches';scene.add(root);const main={x:cityX(290),z:(-425),rx:10,rz:8,community:true},islands=[main,...SAN_BLAS_ISLANDS],wood=mat('#916c46',{map:surfaces?.wood,bumpMap:surfaces?.wood,bumpScale:.05}),thatch=mat('#a89565',{map:surfaces?.grass,bumpMap:surfaces?.grass,bumpScale:.12}),white=mat('#f4eacb'),dark=mat('#513c2f');
- const piece=(g,m,x,y,z,w,h,d,parent=root)=>make(g,m,x,y,z,w,h,d,parent);
+ let detailParent=root;const islandDetails=[];
+ const piece=(g,m,x,y,z,w,h,d,parent=detailParent)=>make(g,m,x,y,z,w,h,d,parent);
  const cane=mat('#baa37b',{map:surfaces?.wood,roughness:1});
  const roof=geometry(new T.BufferGeometry());roof.setAttribute('position',new T.Float32BufferAttribute([-1.2,0,-1.1,1.2,0,-1.1,0,.8,-.8,-1.2,0,1.1,1.2,0,1.1,0,.8,.8],3));roof.setIndex([0,2,1,3,4,5,0,3,5,0,5,2,2,5,4,2,4,1]);roof.computeVertexNormals();
  for(const [i,p]of islands.entries()){
-  for(let k=0;k<(p.community?4:2+i%5);k++){const a=k*2.4+i,x=p.x+Math.sin(a)*p.rx*.46,z=p.z+Math.cos(a)*p.rz*.43;forest.addTree('palm',x,z,.57+(i%3)*.08,i*3+k,root);}
-  if(p.community){for(let k=0;k<2;k++){const x=p.x+(k?1.3:-1.3),z=p.z-.8,y=height(x,z);piece(box,wood,x,y+1.0,z,1.8,2,1.7);piece(roof,thatch,x,y+2.05,z,1,1,1);piece(box,dark,x,y+.7,z+.86,.5,1.4,.03);for(let j=0;j<11;j++){const wx=x-.84+j*.168;if(Math.abs(wx-x)<.32)continue;piece(box,cane,wx,y+1,z+.87,.055,1.9,.04);}}models.person(root,p.x,height(p.x,p.z),p.z+1.4,i);}
+  const detail=new T.Group();detail.name='San Blas cay detail '+i;root.add(detail);islandDetails.push({p,detail});detailParent=detail;
+  for(let k=0;k<(p.community?4:2+i%5);k++){const a=k*2.4+i,x=p.x+Math.sin(a)*p.rx*.46,z=p.z+Math.cos(a)*p.rz*.43;forest.addTree('palm',x,z,.57+(i%3)*.08,i*3+k,detail);}
+  if(p.community){for(let k=0;k<2;k++){const x=p.x+(k?1.3:-1.3),z=p.z-.8,y=height(x,z);piece(box,wood,x,y+1.0,z,1.8,2,1.7);piece(roof,thatch,x,y+2.05,z,1,1,1);piece(box,dark,x,y+.7,z+.86,.5,1.4,.03);for(let j=0;j<11;j++){const wx=x-.84+j*.168;if(Math.abs(wx-x)<.32)continue;piece(box,cane,wx,y+1,z+.87,.055,1.9,.04);}}models.person(detail,p.x,height(p.x,p.z),p.z+1.4,i);}
   // Light submerged sand and coral patches remain underwater between cays.
   for(let k=0;k<3;k++){const a=k*2.1+i,x=p.x+Math.cos(a)*(p.rx+1.8),z=p.z+Math.sin(a)*(p.rz+1.8);if(!inWater(x,z))continue;piece(cylinder,white,x,-.7,z,1.3,.08,1.0);const coral=piece(ball,mat(['#de9a83','#a899c9','#d6bb77'][(i+k)%3]),x,-.43,z,.35,.35,.3);coral.name='Shallow-water coral';}
  }
+ detailParent=root;
  const crabBodyMat=mat('#aa5538'),clawMat=mat('#c47248'),eyeMat=mat('#201f22'),holeMat=mat('#5a4531');
  const crabs=islands.flatMap((p,i)=>Array.from({length:i===0?6:2},(_,k)=>({p,a:i*1.3+k*2.8,phase:k*1.7+i,hide:1,flee:0})));
  const bodies=new T.InstancedMesh(ball,crabBodyMat,crabs.length),claws=new T.InstancedMesh(ball,clawMat,crabs.length*2),legs=new T.InstancedMesh(box,clawMat,crabs.length*8),eyes=new T.InstancedMesh(ball,eyeMat,crabs.length*2),holes=new T.InstancedMesh(cylinder,holeMat,crabs.length);for(const m of [bodies,claws,legs,eyes,holes]){m.name='San Blas beach crabs';m.frustumCulled=false;root.add(m);}
@@ -20,7 +23,7 @@ export function createSanBlasLife({T,scene,make,mat,geometry,box,ball,cylinder,c
  const boats=[]; // Regional fishing traffic is owned by maritime-life.js.
 
  const treasures=SAN_BLAS_ISLANDS.filter((p,i)=>i%5===0).map((p,i)=>{const x=p.x+p.rx*.4,z=p.z,y=height(x,z),mesh=new T.Group();root.add(mesh);piece(box,wood,x,y+.22,z,.6,.42,.4,mesh);piece(box,models.colors.yellow,x,y+.43,z,.62,.07,.42,mesh);return {x,z,id:i,mesh};});
- let clock=0;function update(dt,active,{x,z,indoors=false}={}){root.visible=!indoors;if(!active||indoors||Math.hypot(x-cityX(290),z-(-425))>230)return;clock+=dt;
+ let clock=0;function update(dt,active,{x,z,indoors=false}={}){root.visible=!indoors&&islands.some(p=>Math.hypot(x-p.x,z-p.z)<220);for(const {p,detail}of islandDetails)detail.visible=Math.hypot(x-p.x,z-p.z)<200;if(!active||!root.visible)return;clock+=dt;
   crabs.forEach((c,i)=>{const px=c.p.x+Math.cos(c.a)*c.p.rx*.83,pz=c.p.z+Math.sin(c.a)*c.p.rz*.83,near=Math.hypot(x-px,z-pz)<3.5;if(near)c.flee=3;else c.flee=Math.max(0,c.flee-dt);const delta=Math.atan2(Math.sin(c.phase-c.a),Math.cos(c.phase-c.a));c.a+=c.flee?delta*Math.min(1,dt*8):dt*.065*(i%2?1:-1);c.hide+=((c.flee&&Math.abs(delta)<.15?.04:1)-c.hide)*Math.min(1,dt*4);const scale=.12+.88*c.hide,y=height(px,pz)+.1;instance(bodies,i,px,y,pz,.19*scale,.11*scale,.15*scale);instance(holes,i,c.p.x+Math.cos(c.phase)*c.p.rx*.88,height(c.p.x+Math.cos(c.phase)*c.p.rx*.88,c.p.z+Math.sin(c.phase)*c.p.rz*.88)+.012,c.p.z+Math.sin(c.phase)*c.p.rz*.88,.19,.014,.16);
    for(const sign of [-1,1]){const k=sign<0?0:1;instance(claws,i*2+k,px+sign*.24*scale,y+.08,pz+.13*scale,.10*scale,.07*scale,.08*scale);instance(eyes,i*2+k,px+sign*.07*scale,y+.12*scale,pz+.1*scale,.027*scale,.04*scale,.025*scale);for(let leg=0;leg<4;leg++)instance(legs,i*8+k*4+leg,px+sign*(.2+.025*Math.sin(clock*(near?18:5)+leg))*scale,y-.025,pz+(leg-1.5)*.08*scale,.24*scale,.025*scale,.027*scale,sign*(.25+(leg-1.5)*.22));}
   });for(const mesh of [bodies,claws,legs,eyes,holes])mesh.instanceMatrix.needsUpdate=true;

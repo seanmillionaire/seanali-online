@@ -14,7 +14,13 @@ export const TRAFFIC_ROUTES=[
  [[77,-61],[105,-61],[105,-35],[77,-35]],
  [[135,-61],[163,-61],[163,-35],[135,-35]]
 ].map(points=>points.map(([x,z])=>({x:cityX(x),z})));
-export function routePose(route,distance){let length=0;const lengths=route.map((p,i)=>{const q=route[(i+1)%route.length],n=Math.hypot(q.x-p.x,q.z-p.z);length+=n;return n;});let d=((distance%length)+length)%length;for(let i=0;i<route.length;i++){if(d<=lengths[i]){const p=route[i],q=route[(i+1)%route.length],t=d/lengths[i],heading=Math.atan2(q.x-p.x,q.z-p.z);return {x:p.x+(q.x-p.x)*t,z:p.z+(q.z-p.z)*t,heading,remaining:lengths[i]-d,length};}d-=lengths[i];}return {...route[0],heading:0,remaining:0,length};}
+const routeMetrics=new WeakMap();
+// Authored traffic routes are immutable; cache arc lengths instead of rebuilding them per car/frame.
+export function routePose(route,distance){
+ let data=routeMetrics.get(route);if(!data||data.count!==route.length){const ends=[],lengths=[];let length=0;for(let i=0;i<route.length;i++){const p=route[i],q=route[(i+1)%route.length],n=Math.hypot(q.x-p.x,q.z-p.z);length+=n;lengths.push(n);ends.push(length);}data={ends,lengths,length,count:route.length};routeMetrics.set(route,data);}
+ const {length,ends,lengths}=data;if(!length)return {...route[0],heading:0,remaining:0,length:0};const d=((distance%length)+length)%length;let lo=0,hi=ends.length-1;while(lo<hi){const mid=(lo+hi)>>1;if(ends[mid]>=d)hi=mid;else lo=mid+1;}const i=lo,p=route[i],q=route[(i+1)%route.length],along=d-(i?ends[i-1]:0),t=lengths[i]?along/lengths[i]:0;return {x:p.x+(q.x-p.x)*t,z:p.z+(q.z-p.z)*t,heading:Math.atan2(q.x-p.x,q.z-p.z),remaining:lengths[i]-along,length};
+}
+
 export function trafficAdvance(car,cars,time,dt){
  const step=Math.min(.08,Math.max(0,Number.isFinite(dt)?dt:0));
  if(!step)return car.distance;

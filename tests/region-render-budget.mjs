@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import * as T from '../games/adventure/vendor/three.module.min.js';
+import {createSanBlasLife,SAN_BLAS_SERVICES} from '../games/adventure/san-blas-life.js';
+import {freshExplore,isletHeight,inWater} from '../games/adventure/explore-state.js';
+const scene=new T.Scene(),geometry=g=>g,mat=(color,o)=>new T.MeshStandardMaterial({color,...Object.fromEntries(Object.entries(o||{}).filter(([,v])=>v!==undefined))}),box=new T.BoxGeometry(),ball=new T.SphereGeometry(1,6,4),cylinder=new T.CylinderGeometry(1,1,1,6),cone=new T.ConeGeometry(1,1,6);
+const make=(g,m,x=0,y=0,z=0,w=1,h=w,d=w,parent=scene)=>{const mesh=new T.Mesh(g,m);mesh.position.set(x,y,z);mesh.scale.set(w,h,d);parent.add(mesh);return mesh;};
+let palms=0;const models={colors:{yellow:mat('yellow')},person(parent){const g=new T.Group();parent.add(g);return {g};},meal(){}},forest={addTree(kind,x,z,scale,seed,parent){palms++;const g=new T.Group();g.position.set(x,0,z);parent.add(g);}};
+const life=createSanBlasLife({T,scene,geometry,mat,make,box,ball,cylinder,cone,height:isletHeight,inWater,models,forest,state:{world:freshExplore()},surfaces:{}}),details=life.root.children.filter(g=>g.name.startsWith('San Blas cay detail'));
+assert.equal(details.length,life.islands.length);assert(palms>60);assert.equal(life.fish.length,36);const crabCount=life.crabs.length;
+life.update(.1,true,{x:455,z:-48});assert(!life.root.visible);
+life.update(.1,true,{x:610,z:-80});assert(details.every(g=>!g.visible),'Darién avoids distant island architecture and palm draws');
+life.update(.1,true,life.islands[0]);assert(life.root.visible);assert(details[0].visible);life.update(.1,true,life.islands[1]);assert(details.some(g=>!g.visible),'island-local detail groups');
+assert.equal(life.near(SAN_BLAS_SERVICES.vendor.x,SAN_BLAS_SERVICES.vendor.z).type,'islandVendor');assert.equal(life.crabs.length,crabCount);assert.equal(life.fish.length,36);assert.equal(details.length,life.islands.length);
+life.update(0,false,{...life.islands[0],indoors:true});assert(!life.root.visible);life.update(0,false,life.islands[0]);assert(life.root.visible&&details[0].visible);life.dispose();assert(!scene.children.includes(life.root));
+console.log('PASS all San Blas cays, palms, fish, crabs and vendor retained; distant region/island detail culled, restored on approach and cleaned up');

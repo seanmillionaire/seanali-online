@@ -1,6 +1,7 @@
+import {spatialInstances} from './render-budget.js';
 import {botanicalGeometry,mergeNatureGeometry,leafSurface} from './botanical-geometry.js?v=225';
-// High-canopy vegetation batched into just six shared GPU draws, even for
-// thousands of individual pines, palms and broadleaf tropical trees.
+// Shared vegetation geometry in spatial batches: offscreen forest chunks can
+// be culled without removing individual pines, palms or tropical trees.
 import {planForestPatches} from './forest-patches.js?v=225';
 
 export function createForestLandscape({T,scene,mat,geometry,height,light=false}){
@@ -40,7 +41,7 @@ export function createForestLandscape({T,scene,mat,geometry,height,light=false})
  const crowns={palm:palmCrown,pine:pineCrown,natural:naturalCrown,fern:fernCrown};
  const dummy=new T.Object3D(),color=new T.Color(),counts={},visibility=[];
  let focusTick=0;
- for(const [kind,items]of Object.entries(byKind)){
+ for(const [kind,allItems]of Object.entries(byKind))for(const items of spatialInstances(allItems)){
   if(!items.length)continue;
   const stems=kind==='fern'?null:new T.InstancedMesh(trunks[kind],bark,items.length);
   const foliage=new T.InstancedMesh(crowns[kind],crown,items.length);
@@ -50,7 +51,7 @@ export function createForestLandscape({T,scene,mat,geometry,height,light=false})
   foliage.receiveShadow=false;foliage.userData.cameraFoliage=true;
   for(let i=0;i<items.length;i++){
    const t=items[i];
-   dummy.position.set(t.x,height(t.x,t.z)-.035,t.z);
+   dummy.position.set(t.x,(t.groundY??=height(t.x,t.z)-.035),t.z);
    dummy.rotation.set(0,t.heading,0);
    dummy.scale.setScalar(t.size);
    dummy.updateMatrix();
@@ -64,7 +65,7 @@ export function createForestLandscape({T,scene,mat,geometry,height,light=false})
   if(foliage.instanceColor)foliage.instanceColor.needsUpdate=true;
   stems?.computeBoundingSphere?.();
   foliage.computeBoundingSphere?.();
-  if(stems)group.add(stems);group.add(foliage);counts[kind]=items.length;
+  if(stems)group.add(stems);group.add(foliage);counts[kind]=(counts[kind]||0)+items.length;
   visibility.push({items,foliage,stems,factors:new Float32Array(items.length).fill(1)});
  }
  // Never shrink or collide the entire tree. Only fade its leafy canopy when
@@ -87,14 +88,13 @@ export function createForestLandscape({T,scene,mat,geometry,height,light=false})
     // Smooth appearance between individual canopies without sudden popping.
     const prev=layer.factors[i],next=prev+(fade-prev)*.42;
     if(Math.abs(next-prev)<.007&&Math.abs(next-fade)<.025)continue;
-    layer.factors[i]=next;dummy.position.set(t.x,height(t.x,t.z)-.035,t.z);
+    layer.factors[i]=next;dummy.position.set(t.x,(t.groundY??=height(t.x,t.z)-.035),t.z);
     dummy.rotation.set(0,t.heading,0);dummy.scale.setScalar(t.size*Math.max(.045,next));
     dummy.updateMatrix();layer.foliage.setMatrixAt(i,dummy.matrix);
-    if(layer.stems){dummy.scale.setScalar(t.size);dummy.updateMatrix();layer.stems.setMatrixAt(i,dummy.matrix);}
     changed=true;
    }
-   if(changed){layer.foliage.instanceMatrix.needsUpdate=true;
-    layer.foliage.computeBoundingSphere?.();if(layer.stems){layer.stems.instanceMatrix.needsUpdate=true;layer.stems.computeBoundingSphere?.();}}
+   if(changed)layer.foliage.instanceMatrix.needsUpdate=true;
+   // Initial full-size bounds remain valid when a canopy shrinks; trunks never move.
   }
  }
  return {group,trees,counts,updateFocus};

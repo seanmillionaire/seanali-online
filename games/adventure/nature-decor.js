@@ -22,25 +22,6 @@ export function createNatureDecor(T,geometry){
    const rock=new T.IcosahedronGeometry(1,2),p=rock.attributes.position;
    for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i),z=p.getZ(i),n=1+.09*Math.sin(x*9+z*5)*Math.cos(y*7);p.setXYZ(i,x*n,y*n,z*n);}rock.computeVertexNormals();
    add(rock,'#8f9484',0,.35,0,1,.65,.77);sphere('#76836a',-.23,.77,-.12,.45,.055,.28);
-  }else if(tile===4){
-   sphere('#826949',0,.48,0,.43,.49,.40);
-   for(let i=0;i<18;i++){const a=i*2.399963;stem([Math.sin(a)*.38,.13,Math.cos(a)*.34],[Math.sin(a)*.40,.77,Math.cos(a)*.35],.006,'#a58e61');}
-   for(let i=0;i<3;i++)sphere('#443d2c',(i-1)*.07,.87,.15,.022,.013,.025);
-  }else if(tile===5){
-   sphere('#d09b45',0,.4,0,.31,.39,.28);sphere('#c9794d',.09,.47,.12,.23,.28,.19);
-   stem([0,.70,0],[.03,.88,0],.025,'#675639');
-   add(botanicalGeometry(T,g=>g,'banana',true),null,.03,.84,0,.17,.17,.17,0,0,.45);
-  }else if(tile===6){
-   sphere('#b29345',0,.43,0,.29,.43,.28);
-   const rind=new T.SphereGeometry(1,24,16),positions=rind.attributes.position,colors=[];
-   for(let i=0;i<positions.count;i++){const y=positions.getY(i),angle=Math.atan2(positions.getZ(i),positions.getX(i)),row=Math.floor((y+1)*6),diamond=Math.cos(angle*11+(row%2)*Math.PI);const tint=diamond>.6?.75:1;colors.push(.42*tint,.31*tint,.09*tint);}
-   rind.setAttribute('color',new T.Float32BufferAttribute(colors,3));add(rind,null,0,.43,0,.295,.435,.285);
-   add(botanicalGeometry(T,g=>g,'banana',true),null,0,.85,0,.25,.25,.25);
-  }else if(tile===7){
-   for(let i=0;i<4;i++){
-    const x=(i-1.5)*.14,curve=new T.CatmullRomCurve3([new T.Vector3(x,.65,0),new T.Vector3(x-.14,.45,.03),new T.Vector3(x-.10,.18,.06),new T.Vector3(x+.12,.10,.06)]);
-    add(new T.TubeGeometry(curve,12,.075,6,false),'#d6b851');sphere('#695838',x,.66,0,.038,.055,.039);
-   }
   }else if(tile===9){
    sphere('#ac6749',0,.23,0,.33,.17,.25);
    for(const sign of [-1,1]){
