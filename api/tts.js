@@ -39,7 +39,7 @@ async function reserveTtsQuota(req) {
   ];
 
   try {
-    const response = await fetch(redisUrl.replace(/\\/$/, '') + '/pipeline', {
+    const response = await fetch(redisUrl.replace(/[/]$/, '') + '/pipeline', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + redisToken,
