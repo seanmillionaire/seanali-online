@@ -1,3 +1,5 @@
+import {createRainforestWorld} from './rainforest-world.js';
+import {ownedCars,carName} from './estate-cars.js';
 import {safeVehicleExit} from './vehicle-contact.js';
 import {jungleContains} from './east-jungle-layout.js';
 import {createEastJungleLife} from './east-jungle-life.js';
@@ -116,6 +118,8 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
    else if(/Intercambiar|Trade|market|Mercado/i.test(text))named('🥭',say('Vender','Trade'));
    else if(/Pizza|pizza|Pizzería|Pizzeria/i.test(text))named('🍕',say('Pizza','Pizza'));
    else if(/Construir|Build/.test(text))named('🛠️',say('Construir','Build'));
+   else if(/Drive.*Ferrari|Conducir.*Ferrari/.test(text))named('🏎️','Ferrari');
+   else if(/Drive.*Lamborghini|Conducir.*Lamborghini/.test(text))named('🏎️','Lamborghini');
    else if(/Carro|auto|car|Drive/.test(text))named('🚙',/salir|out|exit/i.test(text)?say('Salir','Exit'):say('Conducir','Drive'));
    else if(/Recoger|Pick/.test(text))named(/coco|coconut|🥥/i.test(text)?'🥥':/plátano|banana|🍌/i.test(text)?'🍌':'🐚',say('Recoger','Pick up'));
    else if(/Board|Subir al|Ride/.test(text))named(/barco|boat|⛵/i.test(text)?'⛵':'🐢',say('Subir','Ride'));
@@ -317,8 +321,8 @@ export function createExplore(host,{state,save,joy,speak=()=>false,paused=()=>fa
  function leaveHouse(){if(houseSystem?.current()?.mansion)mansionLife.exitToYard();else houseSystem?.leave();host.classList.remove('inside-cottage');}
  function hop(){if(mansionLife?.workoutActive())return;if(cruiseLife?.isActive())return;if(!control||panel.hidden===false||paused())return;if(carDriving){exitCar();return;}if(houseSystem?.isInside()){leaveHouse();return;}if(birdMount()){birdLanding=false;birdTarget=Math.min(32,Math.max(birdAltitude,birdTarget)+4);return;}if(mountId){friendSystem?.dismount();return;}if(ride){flightTarget=Math.min(130,flightTarget+12);return;}if(boating){control.disembark();return;}if(swimming){fastMode=!fastMode;swimBoost=0;return;}colonLife?.onPlayerJump();control.hop();joy.effect('jump');}
  function boardCar(){if(carDriving||!cityLife?.nearCar(s.x,s.z)||boating||ride||inside||houseSystem?.isInside()||mountId)return;
-  carDriving=true;carSpeed=0;swimming=false;control?.normalizeRider?.();s.x=s.city.car.x;s.z=s.city.car.z;targetPoint=null;route=[];blur();joy.effect('friend');
-  tell('🏎️ Lamborghini morado brillante · ⚡ Velocidad extra','🏎️ Purple Lamborghini · ⚡ Extra speed');save();
+  cityLife.selectNearby(s.x,s.z);carDriving=true;carSpeed=0;swimming=false;control?.normalizeRider?.();s.x=s.city.car.x;s.z=s.city.car.z;targetPoint=null;route=[];blur();joy.effect('friend');
+  tell('🏎️ '+carName(s.city.car.model,true)+' · ⚡ Velocidad extra','🏎️ '+carName(s.city.car.model)+' · ⚡ Extra speed');save();
  }
  function exitCar(){if(!carDriving)return;
   const spot=control?.carExit?.();if(!spot){tell('🚙 Busca espacio para bajar','🚙 Move to an open space to get out');return;}
@@ -660,6 +664,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
  canvas.addEventListener('webglcontextlost',contextLost);canvas.addEventListener('webglcontextrestored',contextRestored);
  start();
  function setup({T,scene,camera,target,height,make,geometry,mat,ball,cone,cylinder,box,renderer,tropical,tower,beam,crystal,dockBoat,sun,ambient,waterMaterial,surfaces}){
+  let pavement=null;const vehicleRoadHeight=(x,z)=>Math.max(height(x,z),pavement?.height(x,z)??-Infinity,mansionLife?.parkingHeight(x,z)??-Infinity);
   createRuralTowns({T,scene,make,mat,box,geometry,height,state});
   const regionalScenery=createRegionalScenery({T,scene,geometry,mat,box,ball,cylinder,height,surfaces,state});let detailedDistricts=null;
   function loadNearbyScenery(){if(!detailedDistricts&&s.x>200)detailedDistricts=createExtendedDistricts({T,scene,make,mat,box,cylinder,height,surfaces});}
@@ -880,9 +885,9 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
   camera.fov=60;camera.updateProjectionMatrix();
   control={cancelLook:()=>{lookPointer=null;},resetCamera:()=>{closeCamera.reset(avatar.rotation.y);lookPointer=null;},catchNearest,showBuild:(b)=>{if(!b)return;buildReveal={x:b.x,z:b.z,remaining:3.8};blur();targetPoint=null;route=[];},falling:()=>airborne,normalizeRider:()=>{bodyScale=1;},boardBalloon,popBalloon,board,disembark,boatNear,harvest,snack:(kind)=>{coconutSnack.visible=kind==='coconut';bananaSnack.visible=kind==='banana';mangoSnack.visible=kind==='mango';spark(s.x,s.z,16,avatar.position.y+bodyScale*1.4);},enterTower,leaveTower,lightBeacon,bubbles:blowBubbles,hop:(v=5)=>{if(inside){if(towerV===0)towerV=v;}else if(!airborne&&jumpY<.1)velocity=v+(s.growth>=2?Math.min(4,s.growth-1):0);},spark,bloom,dress,demo:()=>{music=[];spark(pads[1].x,pads[1].z,8);}};bloom(s.flowers);dress();
   const life=createIslandLife({T,scene,camera,state,make,mat,geometry,ball,cone,box,sun,ambient,waterMaterial,inWater,sharkStep});wildLife=life;
-  cityLife=createPizzaCity({T,scene,camera,state,height,make,mat,geometry,ball,box,cylinder,cone,surfaces,joy,save,refresh,tell:(msg)=>tell(msg,msg)});
+  cityLife=createPizzaCity({T,scene,camera,state,height,roadHeight:vehicleRoadHeight,make,mat,geometry,ball,box,cylinder,cone,surfaces,joy,save,refresh,tell:(msg)=>tell(msg,msg)});
   // Focused headlights let the road remain visible without brightening the night sky.
-  const drivingLamps=[-1,1].map(side=>{const light=new T.SpotLight('#fff0d2',95,42,.38,.65,1.5);light.name='Lamborghini night headlight';light.visible=false;scene.add(light,light.target);return {side,light};});
+  const driverSeat=new T.Vector3();const drivingLamps=[-1,1].map(side=>{const light=new T.SpotLight('#fff0d2',95,42,.38,.65,1.5);light.name='Lamborghini night headlight';light.visible=false;scene.add(light,light.target);return {side,light};});
   const hospital=createCityHospital({T,scene,make,mat,box,height});
   cruiseLife=createCanalCruise({T,scene,host,state,make,mat,box,ball,cylinder,height,save,refresh,joy,tell:(msg)=>tell(msg,msg)});
   colonLife=createColonAdventure({T,scene,host,state,make,geometry,mat,box,ball,cylinder,cone,height,save,refresh,joy,tell:msg=>tell(msg,msg),forest:tropical.forest,motion});
@@ -906,7 +911,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
   mansionLife=createMansionLife({T,scene,avatar,arms,legs,state,host,panel,make,mat,geometry,box,ball,cylinder,height,surfaces,save,refresh,joy,coinBalance,roadDistance,isDriving:()=>carDriving,canPark:(x,z)=>cityLife.canDrive(x,z),onPark:()=>cityLife.updateCar(),launchBalloon:()=>boardBalloon(18),dress,
    prepare:()=>{if(friendSystem?.isOpen())friendSystem.close();if(adventureMap.isOpen())adventureMap.close(false);setHelpers(false);blur();targetPoint=null;route=[];},
    navigate:p=>{if(carDriving)exitCar();if(mountId)friendSystem?.dismount();if(inside)leaveTower();boating=false;ride=0;s.flight=0;swimming=false;s.x=p.x;s.z=p.z;lastShore={x:p.x,z:p.z};cameraSnap=true;save();},
-   placeRoom:(x,z,floor=0)=>houseSystem.place(x,z,floor),canWalk:(x,z)=>solids.clear(x,z)&&!inWater(x,z),walkRoom:(x,z,floor=0)=>houseSystem.walkTo(x,z,floor),isHome:()=>houseSystem.current()?.mansion,enter:cfg=>houseSystem.enter(cfg),leave:()=>{houseSystem.leave();host.classList.remove('inside-cottage');},onMeal:()=>{energy=30;eating=2;s.journey.meals++;}});
+   selectCar:model=>cityLife.selectModel(model),placeRoom:(x,z,floor=0)=>houseSystem.place(x,z,floor),canWalk:(x,z)=>solids.clear(x,z)&&!inWater(x,z),walkRoom:(x,z,floor=0)=>houseSystem.walkTo(x,z,floor),isHome:()=>houseSystem.current()?.mansion,enter:cfg=>houseSystem.enter(cfg),leave:()=>{houseSystem.leave();host.classList.remove('inside-cottage');},onMeal:()=>{energy=30;eating=2;s.journey.meals++;}});
   builderSystem=createVillageBuilders({T,scene,host,state,make,mat,ball,box,cylinder,height,save,onTravel:p=>travelTo(p),language:state.lang});
   friendSystem=createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,geometry,ball,cone,cylinder,box,height,joy,save,refresh,motion,airClear:(x,y,z)=>airSolids.clear(x,y,z),
     onMount:(id,position)=>{if(!id)wildLife?.unmark();
@@ -928,7 +933,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
   for(let i=0;i<9;i++){const x=-5+i*1.4,z=11.5+Math.sin(i*.8),y=height(x,z);const part=new T.Group();festival.add(part);make(cylinder,mat('#79553a'),x,y+1.6,z,.07,3.2,.07,part);make(ball,mat(['#f7ce62','#f29a86','#85c6ad'][i%3]),x,y+3.1,z,.27,.36,.27,part);festivalParts.push(part);}
   const festivalTable=new T.Group();festival.add(festivalTable);make(box,mat('#a87549'),1,height(1,12)+.9,12,3,.18,1.3,festivalTable);for(const x of [0,2])make(box,mat('#79553a'),x,height(1,12)+.4,12,.12,.8,.7,festivalTable);
 
-  panamaLife=createPanamaLife({T,scene,renderer,sun,waterMaterial,surfaces,host,panel,state,save,refresh,joy,tell,make,mat,geometry,box,ball,cylinder,cone,height,inWater,forest:tropical.forest,prepare:prepareStory,navigate:travelTo,football:()=>cityLife.soccerPosition(),npcKick:()=>cityLife.npcKick(),onEat:()=>{energy=30;eating=2;tell('🍌 Impulso de fruta · 30 segundos','🍌 Fruit boost · 30 seconds');s.journey.meals++;control?.snack('panama');},eatLegacy:kind=>{if(!spendFood(s,kind))return false;energy=30;eating=2;tell('🍌 Impulso de fruta · 30 segundos','🍌 Fruit boost · 30 seconds');s.journey.meals++;s.growth=Math.min(6,s.growth+.45);control?.snack(kind);save();refresh();return true;}});
+  panamaLife=createPanamaLife({roadHeight:vehicleRoadHeight,T,scene,renderer,sun,waterMaterial,surfaces,host,panel,state,save,refresh,joy,tell,make,mat,geometry,box,ball,cylinder,cone,height,inWater,forest:tropical.forest,prepare:prepareStory,navigate:travelTo,football:()=>cityLife.soccerPosition(),npcKick:()=>cityLife.npcKick(),onEat:()=>{energy=30;eating=2;tell('🍌 Impulso de fruta · 30 segundos','🍌 Fruit boost · 30 seconds');s.journey.meals++;control?.snack('panama');},eatLegacy:kind=>{if(!spendFood(s,kind))return false;energy=30;eating=2;tell('🍌 Impulso de fruta · 30 segundos','🍌 Fruit boost · 30 seconds');s.journey.meals++;s.growth=Math.min(6,s.growth+.45);control?.snack(kind);save();refresh();return true;}});
   const realms=createRealms({T,scene,host,state,make,geometry,mat,ball,box,cylinder,height,save,joy,spark,refresh,tell,navigate:(realm,dest)=>{if(!dest)return;setHelpers(false);if(dest.action==='food'){if(s.food.banana+s.food.coconut+(s.food.mango||0))showFood();else travelTo(explorePlaces.find(p=>p.id==='wilds'));return;}if(dest.action==='learn'){followGoal();return;}if(realm==='sky'){if(boating)disembark();if(ride){targetPoint={x:dest.x,z:dest.z};route=[];flightTarget=dest.y||12;}else{pendingRealm=dest;const launch=explorePlaces.filter(p=>p.kind==='balloon').sort((a,b)=>Math.hypot(a.x-s.x,a.z-s.z)-Math.hypot(b.x-s.x,b.z-s.z))[0];route=islandPath(s,launch);targetPoint=route.shift()||null;tell('🎈 Sube al globo para explorar el cielo','🎈 Board the balloon to explore the sky');}return;}if(realm==='islands'){travelTo(dest);return;}if(ride){waterLanding=dest;targetPoint={x:dest.x,z:dest.z};route=[];flightTarget=Math.max(8,flightY);return;}if(boating)disembark();route=islandPath(s,dest);targetPoint=route.shift()||null;tell('🌊 Sigue el brillo · Nada para descubrir','🌊 Follow the glow · Swim to discover');}});
   const journey=createJourney({T,scene,host,state,avatar,make,geometry,mat,height,save,joy,spark,refresh,realms,seek:kind=>{if(kind==='explore')showDiscover();else if(kind==='food'){if(s.food.banana+s.food.coconut+(s.food.mango||0))showFood();else travelTo(explorePlaces.find(p=>p.id==='wilds'));}else if(kind==='learn')followGoal();else{const dest=kind==='fly'?explorePlaces.find(p=>p.id==='balloon'):{x:11,z:20};route=islandPath(s,dest);targetPoint=route.shift()||null;}}});
    let closeWalkX=0,closeWalkZ=0;
@@ -946,8 +951,9 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
 
   }
   const jungleLife=createEastJungleLife({T,scene,geometry,mat,make,ball,cylinder,box,height,inWater});let wildlifeWarningTime=0;
-  const pavement=createRoadSurfaceSampler(T,scene),solidTrees=[...tropical.forest.trees],solidRocks=[];
+  pavement=createRoadSurfaceSampler(T,scene);cityLife.updateCar();const solidTrees=[...tropical.forest.trees],solidRocks=[];
   scene.traverse(o=>{if(o.userData.solidTrees)solidTrees.push(...o.userData.solidTrees);if(o.userData.solidRock){const b=new T.Box3().setFromObject(o),c=b.getCenter(new T.Vector3());solidRocks.push({x:c.x,z:c.z,r:Math.min(2,Math.max(b.max.x-b.min.x,b.max.z-b.min.z)*.42)});}});
+  const rainforestWorld=createRainforestWorld({T,scene,geometry,mat,make,ball,box,cylinder,height,state,save,refresh,tell,trees:solidTrees,onBoost:()=>{energy=45;eating=2;}});
   const solids=createWorldCollision({state,trees:solidTrees,rocks:solidRocks});jungleLife.setClear((x,z)=>solids.clear(x,z));
   // New land/homes can surround an older saved position. Start beside the
   // obstruction instead of trapping an existing player inside a new trunk/wall.
@@ -961,13 +967,12 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
   control.useRoadReward=p=>{blur();targetPoint=null;route=[];if(p.kind==='scooter'){s.travelMode='scooter';save();tell('🛴 ¡A pasear! · 👟 Caminar para bajar','🛴 Let’s ride! · 👟 Walk to hop off');}
    else if(p.kind==='balloon')boardBalloon();else{const start=recoverBoat(p.water?.x??p.x,p.water?.z??p.z);rewardReturn={x:s.x,z:s.z};Object.assign(s.boat,start);s.x=start.x;s.z=start.z;rewardJet=true;s.travelMode='walk';board();tell('🌊 ¡Moto acuática! · ⤴ Volver a la orilla','🌊 Jet ski! · ⤴ Return to shore');}joy.effect('friend');};
   function vehicleBlocks(x,z){
-   const vehicles=[...(panamaLife?.ambience?.cars||[]),...(panamaLife?.city?.vehicles||[])];
+   const vehicles=[...(panamaLife?.ambience?.cars||[]),...(panamaLife?.city?.vehicles||[]),...jungleLife.vehicles];
    for(const vehicle of vehicles){const p=vehicle.g.position,angle=vehicle.g.rotation.y,dx=x-p.x,dz=z-p.z;
     const across=dx*Math.cos(angle)-dz*Math.sin(angle),along=dx*Math.sin(angle)+dz*Math.cos(angle);
     if(Math.abs(across)<(vehicle.bus?1.5:1.2)&&Math.abs(along)<(vehicle.bus?4:2.0))return true;
    }
-   const p=s.city.car,dx=x-p.x,dz=z-p.z,angle=p.heading||0;
-   return Math.abs(dx*Math.cos(angle)-dz*Math.sin(angle))<1.4&&Math.abs(dx*Math.sin(angle)+dz*Math.cos(angle))<2.2;
+   return ownedCars(s.city).some(p=>{const dx=x-p.x,dz=z-p.z,angle=p.heading||0;return Math.abs(dx*Math.cos(angle)-dz*Math.sin(angle))<1.4&&Math.abs(dx*Math.sin(angle)+dz*Math.cos(angle))<2.2;});
   }
   control.carExit=()=>safeVehicleExit(s.city.car,(x,z)=>solids.clear(x,z)&&!inWater(x,z)&&!vehicleBlocks(x,z)&&colonLife.canWalk(x,z));
   const groundHeight=(x,z)=>Math.max(height(x,z),pavement.height(x,z),mansionLife?.surface(x,z)??-Infinity);
@@ -1000,7 +1005,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    }
    if(targetPoint&&panel.hidden&&!cruising){const x=targetPoint.x-s.x,z=targetPoint.z-s.z,d=Math.hypot(x,z);if(d<.25){targetPoint=route.shift()||null;marker.visible=!!targetPoint;}else{dx=x/d;dz=z/d;}}
    if(paused()||document.hidden||!panel.hidden||host.classList.contains('helpers-open')||friendSystem?.isOpen()||journey.isOpen()||document.querySelector('dialog[open]')){blur();dx=dz=0;}if(mansionLife?.workoutActive())dx=dz=0;const worldActive=!paused()&&!document.hidden&&panel.hidden&&!journey.isOpen()&&!document.querySelector('dialog[open]'),active=!cruising&&worldActive;if(active){crashCooldown=Math.max(0,crashCooldown-dt);crashRemaining=Math.max(0,crashRemaining-dt);host.classList.toggle('collision-impact',crashRemaining>0);currentHint=Math.max(0,currentHint-dt);swimBoost=Math.max(0,swimBoost-dt);rescueCooldown=Math.max(0,rescueCooldown-dt);}const speed=crashRemaining>0?0:houseSystem?.isInside()?0:carDriving?0:mountId?(birdMount()?birdTravelSpeed(birdAltitude,fastMode||down('Shift')):mountId==='dori'?10.5:8):inside?2:swimming?(swimBoost>0||fastMode||down('Shift')?6:3.3):groundTravelSpeed(skating?s.travelMode:'walk',{running:fastMode||down('Shift'),boosted:energy>0}),len=Math.hypot(dx,dz);if(active&&houseSystem?.isInside()){const p=houseSystem.move(dx,dz,dt);if(p?.moving&&!len){avatar.rotation.y=p.heading;step+=dt*10;}if(len)avatar.rotation.y=closeControls?closeCamera.heading():Math.atan2(dx,dz);}
-   if(len>0&&active&&!carDriving&&!ride&&!inside&&!boating&&!houseSystem?.isInside()){dx/=Math.max(1,len);dz/=Math.max(1,len);const moved=flightStep(s.x,s.z,dx*speed,dz*speed,dt,targetPoint);let nx=moved.x,nz=moved.z;const edge=Math.hypot(nx/WORLD_BOUNDS.x,nz/WORLD_BOUNDS.z);if(edge>1){nx/=edge;nz/=edge;}if(!airborne&&!mountId&&!remoteAccess(s,{x:nx,z:nz})){nx=s.x;nz=s.z;if(currentHint===0){tell('🌊 Corrientes fuertes · ⛵ 🎈','🌊 Strong currents · ⛵ 🎈');currentHint=5;}}const canMove=(px,pz)=>(mansionLife?.outsideWalk(px,pz)??solids.clear(px,pz))&&!vehicleBlocks(px,pz)&&colonLife.canWalk(px,pz);if(waterFriend(mountId)){const next=animalStep(mountId,s.x,s.z,nx,nz,3.3);s.x=next.x;s.z=next.z;}else if(airborne){s.x=nx;s.z=nz;}else if(birdMount()){const y=height(s.x,s.z)+birdAltitude+1;const next=groundTravelStep(s.x,s.z,nx-s.x,nz-s.z,(px,pz)=>airSolids.clear(px,y,pz));s.x=next.x;s.z=next.z;if(next.hit)impact(next.normalX,next.normalZ,speed);}else{const next=groundTravelStep(s.x,s.z,nx-s.x,nz-s.z,canMove);s.x=next.x;s.z=next.z;if(next.hit)impact(next.normalX,next.normalZ,speed);}const facing=Math.atan2(dx,dz);const turn=Math.atan2(Math.sin(facing-avatar.rotation.y),Math.cos(facing-avatar.rotation.y));avatar.rotation.y+=turn*Math.min(1,dt*11);if(closeView&&targetPoint)closeCamera.face(avatar.rotation.y);step+=dt*12;autosave+=dt;if(autosave>2){save();autosave=0;}}
+   if(len>0&&active&&!carDriving&&!ride&&!inside&&!boating&&!houseSystem?.isInside()){dx/=Math.max(1,len);dz/=Math.max(1,len);const moved=flightStep(s.x,s.z,dx*speed,dz*speed,dt,targetPoint);let nx=moved.x,nz=moved.z;const edge=Math.hypot(nx/WORLD_BOUNDS.x,nz/WORLD_BOUNDS.z);if(edge>1){nx/=edge;nz/=edge;}if(!airborne&&!mountId&&!remoteAccess(s,{x:nx,z:nz})){nx=s.x;nz=s.z;if(currentHint===0){tell('🌊 Corrientes fuertes · ⛵ 🎈','🌊 Strong currents · ⛵ 🎈');currentHint=5;}}const canMove=(px,pz)=>(mansionLife?.outsideWalk(px,pz)??solids.clear(px,pz))&&!vehicleBlocks(px,pz)&&rainforestWorld.clear(px,pz)&&colonLife.canWalk(px,pz);if(waterFriend(mountId)){const next=animalStep(mountId,s.x,s.z,nx,nz,3.3);s.x=next.x;s.z=next.z;}else if(airborne){s.x=nx;s.z=nz;}else if(birdMount()){const y=height(s.x,s.z)+birdAltitude+1;const next=groundTravelStep(s.x,s.z,nx-s.x,nz-s.z,(px,pz)=>airSolids.clear(px,y,pz));s.x=next.x;s.z=next.z;if(next.hit)impact(next.normalX,next.normalZ,speed);}else{const next=groundTravelStep(s.x,s.z,nx-s.x,nz-s.z,canMove);s.x=next.x;s.z=next.z;if(next.hit)impact(next.normalX,next.normalZ,speed);}const facing=Math.atan2(dx,dz);const turn=Math.atan2(Math.sin(facing-avatar.rotation.y),Math.cos(facing-avatar.rotation.y));avatar.rotation.y+=turn*Math.min(1,dt*11);if(closeView&&targetPoint)closeCamera.face(avatar.rotation.y);step+=dt*12;autosave+=dt;if(autosave>2){save();autosave=0;}}
    let landed=false,landingSpeed=0;if(active&&dt>0&&(jumpY>0||velocity>0)){const aboveGround=jumpY>0;velocity-=15*dt;jumpY=Math.max(0,jumpY+velocity*dt);if(jumpY===0){landingSpeed=Math.abs(velocity);velocity=0;landed=aboveGround;}}
    if(birdMount()&&active){
     const roof=mansionLife?.roofAt(s.x,s.z),roofAltitude=roof==null?null:Math.max(0,roof-height(s.x,s.z)-2),landingRoof=birdLanding&&roofAltitude!==null&&birdAltitude>=roofAltitude;
@@ -1012,16 +1017,17 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    const wasSwimming=swimming;swimming=!cruising&&!inside&&!ride&&!boating&&!carDriving&&!airborne&&!mountId&&!houseSystem?.isInside()&&inWater(s.x,s.z);if(!cruising&&!swimming&&!inside&&!ride&&walkable(s.x,s.z))lastShore={x:s.x,z:s.z};
    host.classList.toggle('is-swimming',swimming);if(swimming&&!wasSwimming){if(active)joy.effect('splash');if(freshwaterHabitat(s.x,s.z))tell('🐊 Lago de agua dulce · Observa los cocodrilos desde la orilla.','🐊 Freshwater lake · Watch crocodiles from the shore.');else tell('🏊 Nada · 🦈 ¡Cuidado con las aletas!','🏊 Swim · 🦈 Watch for fins!');}
    if(active){energy=Math.max(0,energy-dt);eating=Math.max(0,eating-dt);}host.classList.toggle("snack-moment",eating>0);
-   drivingLamps.forEach(({side,light})=>{light.visible=carDriving&&worldClock(s.dayTime).night;const p=s.city.car,h=p.heading||0,y=height(p.x,p.z);light.position.set(p.x+Math.sin(h)*2+Math.cos(h)*side*.68,y+.85,p.z+Math.cos(h)*2-Math.sin(h)*side*.68);light.target.position.set(p.x+Math.sin(h)*24,y-.4,p.z+Math.cos(h)*24);});
+
    if(carDriving){
     if(active){const car=s.city.car;const incoming=carSpeed;const wanted=Math.hypot(dx,dz);
      // Thumb stick and arrow keys mean the actual direction of travel.
-     carSpeed=driveByDirection(car,crashRemaining>0?0:dx,crashRemaining>0?0:dz,carSpeed,dt,fastMode,(x,z,heading,from)=>cityLife.canDrive(x,z)&&solids.clear(x,z)&&(panamaLife?.trafficClear(x,z,heading,from)??true));
+     carSpeed=driveByDirection(car,crashRemaining>0?0:dx,crashRemaining>0?0:dz,carSpeed,dt,fastMode,(x,z,heading,from)=>cityLife.canDrive(x,z)&&cityLife.parkedClear(x,z,heading,from)&&jungleLife.trafficClear(x,z,heading,from)&&rainforestWorld.clear(x,z)&&solids.clear(x,z)&&(panamaLife?.trafficClear(x,z,heading,from)??true));
      if(carSpeed===0&&incoming>8&&wanted>.12)impact(-Math.sin(car.heading),-Math.cos(car.heading),incoming);s.x=car.x;s.z=car.z;avatar.rotation.y=car.heading;
      autosave+=dt;if(autosave>2){save();autosave=0;}
     }
     cityLife.updateCar(active?carSpeed:0,active?dt:0);
    }
+   drivingLamps.forEach(({side,light})=>{light.visible=carDriving&&worldClock(s.dayTime).night;const car=cityLife.car;driverSeat.set(side*.68,.15,1.94).applyQuaternion(car.quaternion).add(car.position);light.position.copy(driverSeat);driverSeat.set(side*.68,-.30,24).applyQuaternion(car.quaternion).add(car.position);light.target.position.copy(driverSeat);});
    const soundTravel=Math.hypot(s.x-soundX,s.z-soundZ);soundX=s.x;soundZ=s.z;
    if(active&&!carDriving&&!ride&&!mountId&&!boating&&!cruising&&!airborne&&jumpY===0&&soundTravel<5){
     stepDistance+=soundTravel;const stride=swimming?2.2:skating?5:.95;
@@ -1060,7 +1066,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    if(boating||swimming)ay+=waterMaterial?.userData.surfaceHeight?.(s.x,s.z)||0;
    if(cruising){ax=cruise.x;az=cruise.z;ay=cruise.y;avatar.rotation.y=cruise.heading;}
    if(houseSystem?.isInside()){const p=houseSystem.position();ax=p.x;az=p.z;ay=p.y;}
-   if(carDriving){const h=s.city.car.heading;ay=height(s.city.car.x,s.city.car.z)-.25;ax=s.x-Math.cos(h)*.38-Math.sin(h)*.25;az=s.z+Math.sin(h)*.38-Math.cos(h)*.25;}
+   if(carDriving){const car=cityLife.car;driverSeat.set(-.38,-.97,-.25).applyQuaternion(car.quaternion).add(car.position);ax=driverSeat.x;ay=driverSeat.y;az=driverSeat.z;}
    if(mountId){ay=(inWater(s.x,s.z)?0:height(s.x,s.z))+birdAltitude+
       (mountId==='dori'?1.28:mountId==='pip'?.98:mountId==='luna'?1.4:birdMount()?2.0:2.25);}
    if(boating){ax-=Math.sin(s.boat.heading)*.45;az-=Math.cos(s.boat.heading)*.45;}
@@ -1073,7 +1079,8 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    host.classList.toggle('shark-nearby',danger);ripple.visible=swimming;ripple.position.set(ax,-.03,az);ripple.scale.setScalar(1+(motion()?Math.sin(time*4)*.12:0));arms.forEach((arm,i)=>{arm.rotation.x=mountId?-.7:swimming&&motion()?Math.sin(time*7+i*Math.PI)*.9:0;});
 
    if(ride){if(active){const ease=1-Math.exp(-dt*6);flightVX+=(dx/Math.max(1,len)*FLIGHT_SPEED.balloon-flightVX)*ease;flightVZ+=(dz/Math.max(1,len)*FLIGHT_SPEED.balloon-flightVZ)*ease;const moved=flightStep(s.x,s.z,flightVX,flightVZ,dt,targetPoint);let nx=moved.x,nz=moved.z;if(moved.arrived)flightVX=flightVZ=0;const edge=Math.max(1,Math.hypot(nx/(WORLD_BOUNDS.x-1),nz/(WORLD_BOUNDS.z-1)));s.x=nx/edge;s.z=nz/edge;if(len)avatar.rotation.y=Math.atan2(dx,dz);if(waterLanding&&Math.hypot(s.x-waterLanding.x,s.z-waterLanding.z)<3){flightTarget=.4;waterLanding=null;}const roof=mansionLife?.roofAt(s.x,s.z),floor=roof!=null&&flightY>=roof-.1?roof:inWater(s.x,s.z)?.4:onDock(s.x,s.z)?.58:groundHeight(s.x,s.z);const clearance=Math.hypot(s.x+1,s.z+5)<2.5?height(-1,-5)+9:floor;const destination=Math.max(flightTarget,clearance+.5);flightY+=Math.sign(destination-flightY)*Math.min(Math.abs(destination-flightY),dt*FLIGHT_SPEED.balloonClimb);s.flight=flightY;autosave+=dt;if(autosave>2){save();autosave=0;}if(flightTarget<=floor+.5&&flightY<=floor+.6){if(roof!=null&&floor===roof)mansionLife.landRoof(s.x,s.z);ride=0;s.flight=0;clearLanding();swimming=inWater(s.x,s.z);tell('🎈 ¡Aterrizaste!','🎈 Landed!');save();}}ax=s.x;az=s.z;ay=ride?flightY+.68:swimming?-.95:groundHeight(ax,az);}
-   jungleLife.update(dt,active,{x:ax,y:ay,z:az,indoors:!!houseSystem?.isInside()||inside});
+   jungleLife.update(dt,active,{x:ax,y:ay,z:az,indoors:!!houseSystem?.isInside()||inside,protected:!!(ride||boating||carDriving||airborne||mountId)});
+   rainforestWorld.update(dt,active,{x:ax,y:ay,z:az,indoors:!!houseSystem?.isInside()||inside,protected:!!(ride||boating||carDriving||airborne||mountId)});
    if(active){wildlifeWarningTime=Math.max(0,wildlifeWarningTime-dt);const encounter=wildlifeEncounter({x:ax,y:ay,z:az},[...(colonLife?.hazards()||[]),...jungleLife.hazards()],{protected:!!(ride||boating||carDriving||airborne||mountId||inside||houseSystem?.isInside())||rescueCooldown>0});if(encounter){if(encounter.hit){respawnAtHospital(encounter.kind);ax=s.x;az=s.z;ay=height(ax,az);landed=false;}else if(wildlifeWarningTime===0){const lesson=SAFETY_LESSONS[encounter.kind];tell('⚠️ '+lesson.icon+' '+lesson.es,'⚠️ '+lesson.icon+' '+lesson.en);wildlifeWarningTime=8;}}}
    if(active&&touchesLava(ax,ay,az,height)){respawnAtHospital();ax=s.x;az=s.z;ay=height(ax,az);landed=false;}
    if(active){impactLeft=Math.max(0,impactLeft-dt);if(landed){joy.effect(inWater(ax,az)?'splash':'land',{strength:Math.min(1,landingSpeed/15)});fallSoundPlayed=false;giantLanding();}}
@@ -1108,6 +1115,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
     const pose=impactPose(crashRemaining);avatar.rotation.x=pose.lean;avatar.rotation.z=pose.roll;
     if(active&&!carDriving&&!mountId&&!ride&&!airborne){const n=groundTravelStep(s.x,s.z,crashX*dt*2,crashZ*dt*2,(x,z)=>solids.clear(x,z)&&!inWater(x,z));s.x=n.x;s.z=n.z;ax=s.x;az=s.z;ay=groundHeight(ax,az)+jumpY;}
    }else{avatar.rotation.x=0;avatar.rotation.z=0;}
+   if(carDriving){avatar.quaternion.copy(cityLife.car.quaternion);if(crashRemaining>0){const recoil=impactPose(crashRemaining);avatar.rotateX(recoil.lean);avatar.rotateZ(recoil.roll);}}
    avatar.position.set(ax,ay,az);shadow.position.set(ax,houseSystem?.isInside()?0:height(ax,az)+.05,az);shadow.visible=!renderer.shadowMap.enabled&&!cruising&&!ride&&!swimming&&!inside&&!boating&&!airborne&&!mountId&&!carDriving&&!houseSystem?.isInside();legs.forEach((l,i)=>{l.visible=!swimming;l.rotation.x=scooter.visible?0:carDriving?-.58:mountId?-.65:len>0?Math.sin(step+i*Math.PI)*(skating?.14:.55):0;});rideBalloon.visible=!!ride;rideBalloon.position.set(s.x,flightY,s.z);rideBalloon.rotation.z=motion()?Math.sin(time*1.2)*.035:0;snack.visible=eating>0;snack.position.y=1.45+(motion()?Math.sin(eating*10)*.08:0);snack.scale.setScalar(.55+.45*Math.min(1,eating/2));arms.forEach((arm,i)=>{arm.rotation.x=crashRemaining>0?-1.0:eating>0&&i===1?-1.4:scooter.visible?-.65:carDriving?-.55:len>0&&!mountId?-Math.sin(step+i*Math.PI)*.30:0;});
    mansionLife?.pose(time);
    rainbow.visible=s.badges.includes('song');picnic.visible=s.badges.includes('picnic');wish.visible=s.badges.includes('beacon');wish.rotation.y=time*.2;pet.visible=false;if(pet.visible){const p=animalStep('pip',petX,petZ,petX+(s.x-1-petX)*Math.min(1,dt*3),petZ+(s.z+1-petZ)*Math.min(1,dt*3));petX=p.x;petZ=p.z;}pet.position.set(petX,inWater(petX,petZ)?-.05:height(petX,petZ)+Math.abs(Math.sin(step))*.1,petZ);pet.rotation.y=avatar.rotation.y;
@@ -1195,7 +1203,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    if(prize){act.hidden=false;setText(act,prize.icon+' '+say('Usar ','Use ')+prize[es?'es':'en']);}
    else if(!cruising&&!inside&&!boating&&!ride&&!mountId&&!carDriving&&!houseSystem?.isInside()&&colonLife?.prompt(s.x,s.z)){act.hidden=false;setText(act,colonLife.prompt(s.x,s.z));}
    else if(!cruising&&!inside&&!boating&&!ride&&!mountId&&!carDriving&&!houseSystem?.isInside()&&cruiseLife?.near(s.x,s.z)){act.hidden=false;setText(act,cruiseLife.prompt());}
-   else if(!inside&&!boating&&!ride&&!mountId&&!carDriving&&!houseSystem?.isInside()&&cityLife?.nearCar(s.x,s.z)){act.hidden=false;setText(act,say('🏎️ Conducir Lamborghini','🏎️ Drive Lamborghini'));}
+   else if(!inside&&!boating&&!ride&&!mountId&&!carDriving&&!houseSystem?.isInside()&&cityLife?.nearCar(s.x,s.z)){act.hidden=false;setText(act,'🏎️ '+say('Conducir ','Drive ')+cityLife.carName(s.x,s.z));}
    else if(!inside&&!boating&&!ride&&!mountId&&!carDriving&&!houseSystem?.isInside()&&boatNear()){act.hidden=false;setText(act,say('⛵ Subir al barco','⛵ Board boat'));}
    else if(!inside&&!boating&&!ride&&!mountId&&!houseSystem?.isInside()&&houseSystem?.near(s.x,s.z)){const h=houseSystem.near(s.x,s.z);act.hidden=false;setText(act,h.icon+' '+say('Entrar a casa','Enter house')+(h.entryFloor===1?say(' · gimnasio',' · Upstairs gym'):''));}
 
@@ -1246,7 +1254,7 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
    workshop?.update(dt,time);estateWorld?.update(dt);builderSystem?.update(dt,time,active);builderSystem?.projectLabels(camera);
    cityLife?.update(dt,active,{x:s.x,z:s.z,driving:carDriving,flying:!!ride||birdAltitude>2,indoors:inside||houseSystem?.isInside()});
    cityGuideButton.hidden=!cityLife?.isHere(s.x,s.z)||inside||houseSystem?.isInside();
-   abundance.update(!!houseSystem?.isInside()||inside);life.update(dt,worldActive,motion(),{x:ax,y:ay,z:az,indoors:!!houseSystem?.isInside()||inside});
+   abundance.update(!!houseSystem?.isInside()||inside);life.update(dt,worldActive,motion(),{x:ax,y:ay,z:az,indoors:!!houseSystem?.isInside()||inside,protected:!!(ride||boating||carDriving||airborne||mountId)});
   const clockNow=worldClock(s.dayTime);setText(clockTime,`${clockNow.icon} ${clockNow.time}`);clockTime.dateTime=clockNow.isoTime;clockTime.setAttribute('aria-label',say('Hora del mundo: ','World time: ')+clockNow.time);realms.update(dt,active,ride?'fly':swimming?'swim':boating?'boat':'walk',ay);journey.update(dt,active,ride?'fly':swimming?'swim':boating?'boat':'walk',ay);story.update(dt,time);realms.setTourView(cruising);journey.setTourView(cruising);if(host.classList.contains("story-nearby")){lesson.hidden=true;guideBeacon.visible=false;}
    // The previous small chapter lessons are still playable, but they now
    // contribute to a single tangible project in each Panama location.
@@ -1281,13 +1289,13 @@ if(paused()||!panel.hidden||host.querySelector('.journey-panel:not([hidden]),.re
     goalButton.disabled=false;
    }
    act.classList.toggle('has-target',!act.hidden&&panel.hidden);
-   panamaLife?.update(dt,active,{x:s.x,z:s.z,indoors:!!houseSystem?.isInside()||inside});
+   panamaLife?.update(dt,active,{x:s.x,z:s.z,indoors:!!houseSystem?.isInside()||inside,protected:!!(ride||boating||carDriving||airborne||mountId)});
    joy.soundscape?.({x:s.x,z:s.z,indoors:!!houseSystem?.isInside()||inside,driving:carDriving,boating:boating||cruising,flying:!!ride,night:worldClock(s.dayTime).night,rain:scene.userData.regionalWeather?.rain||0,active});
    festivalParts.forEach((p,i)=>p.visible=i<s.campaign.chapter);festivalTable.visible=s.campaign.chapter===9;
    campaign.update();host.classList.toggle('inside-mansion',!!houseSystem?.current()?.mansion);houseSystem?.presentation(usingClose);houseSystem?.hideOutside();
    for(const [button,words] of buttonUpdates)paintButton(button,words);buttonUpdates.clear();
   }
-  return {update,playerPosition:()=>({x:s.x,y:avatar.position.y,z:s.z}),dispose(){jungleLife.dispose();abundance.dispose();roadRewards?.dispose();scene.remove(jet);regionalScenery?.dispose();detailedDistricts?.dispose();hospital.dispose();scene.remove(festival);panamaLife?.dispose();panamaLife=null;builderSystem?.dispose();builderSystem=null;estateWorld?.dispose();estateWorld=null;regionWorld?.dispose();regionWorld=null;workshop?.dispose();workshop=null;volcanoStatus.remove();colonLife?.dispose();colonLife=null;cruiseLife?.dispose();cruiseLife=null;cityLife?.dispose();cityLife=null;mansionLife?.dispose();mansionLife=null;houseSystem?.dispose();houseSystem=null;friendSystem?.dispose();friendSystem=null;wildLife=null;realms.dispose();journey.dispose();life.dispose();story.dispose();canvas.removeEventListener('pointerdown',lookDown);canvas.removeEventListener('pointermove',lookMove);canvas.removeEventListener('pointerup',lookUp);canvas.removeEventListener('pointercancel',lookUp);canvas.removeEventListener('lostpointercapture',lookUp);control=null;}};
+  return {update,playerPosition:()=>({x:s.x,y:avatar.position.y,z:s.z}),dispose(){rainforestWorld.dispose();jungleLife.dispose();abundance.dispose();roadRewards?.dispose();scene.remove(jet);regionalScenery?.dispose();detailedDistricts?.dispose();hospital.dispose();scene.remove(festival);panamaLife?.dispose();panamaLife=null;builderSystem?.dispose();builderSystem=null;estateWorld?.dispose();estateWorld=null;regionWorld?.dispose();regionWorld=null;workshop?.dispose();workshop=null;volcanoStatus.remove();colonLife?.dispose();colonLife=null;cruiseLife?.dispose();cruiseLife=null;cityLife?.dispose();cityLife=null;mansionLife?.dispose();mansionLife=null;houseSystem?.dispose();houseSystem=null;friendSystem?.dispose();friendSystem=null;wildLife=null;realms.dispose();journey.dispose();life.dispose();story.dispose();canvas.removeEventListener('pointerdown',lookDown);canvas.removeEventListener('pointermove',lookMove);canvas.removeEventListener('pointerup',lookUp);canvas.removeEventListener('pointercancel',lookUp);canvas.removeEventListener('lostpointercapture',lookUp);control=null;}};
  }
  function dispose(){if(disposed)return;joy.carEngine?.(0,false);hornButton.remove();cameraButton.remove();host.classList.remove('close-camera-view');campaign.dispose();adventureMap.dispose();host.classList.remove('inside-lighthouse','is-swimming','shark-nearby');joy.boat?.(false);disposed=true;joystickControl.dispose();generation++;clearTimeout(startTimer);clearTimeout(recoveryTimer);canvas.removeEventListener('webglcontextlost',contextLost);canvas.removeEventListener('webglcontextrestored',contextRestored);save();engine?.dispose();engine=null;document.removeEventListener('keydown',keydown);document.removeEventListener('keyup',keyup);window.removeEventListener('blur',blur);document.removeEventListener('visibilitychange',blur);window.removeEventListener('pointerup',releaseDirection);window.removeEventListener('pointercancel',releaseDirection);window.removeEventListener('pagehide',blur);blur();}
  return {dispose};

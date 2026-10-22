@@ -1,15 +1,16 @@
+import {cityX,CITY_RESTAURANT} from './geography.js';
 import {floorHeight} from './mansion-floors.js?v=236';
 import {homeMove,homePath} from './mansion-state.js?v=225';
 // Five real walkable, furnished interiors. Exterior coordinates are never
 // overwritten while inside, so old saves and world navigation remain safe.
 export const villageHouses=[
- {id:'purple-apartment',x:98,z:-75.8,es:'Gran Torre Morada · Apartamentos',en:'Grand Purple Apartment Tower',icon:'🏢',theme:'play'},
+ {id:'purple-apartment',x:cityX(98),z:-75.8,es:'Gran Torre Morada · Apartamentos',en:'Grand Purple Apartment Tower',icon:'🏢',theme:'play'},
  {id:'seaside',x:-10,z:5,es:'Casita de Playa Gorgona',en:'Gorgona Beach Cottage',icon:'🐚',theme:'sea'},
  {id:'books',x:-13,z:2,es:'Biblioteca de El Valle',en:'El Valle Storybook House',icon:'📚',theme:'books'},
  {id:'music',x:10,z:2,es:'Casa del Tamborito',en:'Tamborito Music House',icon:'🎶',theme:'music'},
  {id:'art',x:12,z:-1,es:'Taller de Arte Panameño',en:'Panamanian Art Studio',icon:'🎨',theme:'art'},
  {id:'cozy',x:9,z:-4,es:'Casita de Juegos de Gorgona',en:'Gorgona Playhouse',icon:'🧸',theme:'play'},
- {id:'pizzeria',x:136,z:-36,es:'Pizzería de Angelique · Casco Viejo',en:'Angelique’s Pizzeria · Casco Viejo',icon:'🍕',theme:'pizza'}
+ {id:'pizzeria',x:CITY_RESTAURANT.x,z:CITY_RESTAURANT.doorZ,es:'Pizzería de Angelique · Casco Viejo',en:'Angelique’s Pizzeria · Casco Viejo',icon:'🍕',theme:'pizza'}
 ];
 export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geometry,box,ball,cone,cylinder,surfaces=null,joy=null,language='en',contextAction=false,companionId=()=>null,onEnter=()=>{},onPizza=()=>{},onMessage,estateBuildings=()=>[],onUpgrade=()=>false,workshopBuildings=()=>[],onUseWorkshop=()=>false,extraHouses=()=>[],buildCustom=null,treehouseLevel=()=>1,onTreehouseUpgrade=()=>false}){
  const es=language==='es';

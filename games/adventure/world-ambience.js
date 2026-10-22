@@ -1,3 +1,5 @@
+import {placeGroundVehicle} from './vehicle-grounding.js';
+import {ownedCars} from './estate-cars.js';
 import {trafficYield} from './traffic-yield.js?v=225';
 import {FOUR_LANE_ROADS,highwayLane} from './highway-layout.js?v=225';
 import {vehicleOverlap} from './vehicle-contact.js?v=225';
@@ -22,7 +24,7 @@ export const VISITOR_HABITATS=[{id:'Gorgona beach',x:4,z:10,rx:13,rz:3},{id:'Nue
  ...worldIslands.filter(p=>!['sunset','pizzaCity','monkeyIslet'].includes(p.id)&&(!p.guna||p.community)).map(p=>({id:p.en||p.id,x:p.x,z:p.z,rx:p.rx*.76,rz:p.rz*.76})),
  {id:'Boquete walkers',x:-290,z:-42,rx:18,rz:16},{id:'Volcán visitors',x:-385,z:-18,rx:18,rz:14}];
 
-export function createWorldAmbience({T,scene,models,make,mat,box,ball,cone,height,state,forest}){
+export function createWorldAmbience({T,scene,models,make,mat,box,ball,cone,height,roadHeight=height,state,forest}){
  const root=new T.Group();root.name='Living Panama · visitors traffic and flyovers';scene.add(root);
  const cars=[],people=[],routes=AMBIENT_ROADS.flatMap(id=>(FOUR_LANE_ROADS.has(id)?[0,1]:[0]).map(lane=>({id,lane,path:trafficLoop(HIGHWAY_CURVES[id],(x,z)=>highwayLane(id,lane,x,z))})));
  for(const r of routes){const total=routePose(r.path,0).length,count=r.id==='gorgonaBeachAccess'?2:r.id==='panamaEast'?2:4;
@@ -58,8 +60,8 @@ export function createWorldAmbience({T,scene,models,make,mat,box,ball,cone,heigh
   const poses=cars.map(c=>routePose(c.route,c.distance));
   cars.forEach((c,i)=>{const p=poses[i],ahead=(q)=>{const dx=q.x-p.x,dz=q.z-p.z;return dx*Math.sin(p.heading)+dz*Math.cos(p.heading)>0&&Math.hypot(dx,dz)<(c.bus?12:9)&&Math.abs(dx*Math.cos(p.heading)-dz*Math.sin(p.heading))<1.8;};
    const blocked=(!indoors&&ahead({x,z}))||poses.some((q,j)=>j!==i&&ahead(q)&&(Math.cos(q.heading-p.heading)>.5||j<i));
-   const yielding=trafficYield(c,cars,state.world.city.car,dt);const next=routePose(c.route,c.distance+dt*c.speed);if(yielding!==null)c.distance=yielding;else if(!blocked&&!vehicleOverlap({...next,length:c.bus?4.8:1.8,width:c.bus?1.15:.9},state.world.city.car))c.distance+=dt*c.speed;
-   const q=routePose(c.route,c.distance);c.g.position.set(q.x,height(q.x,q.z)+.15,q.z);c.g.rotation.y=q.heading;const dx=Math.sin(q.heading)*1.4,dz=Math.cos(q.heading)*1.4;c.g.rotation.x=-Math.atan2(height(q.x+dx,q.z+dz)-height(q.x-dx,q.z-dz),2.8);
+   const yielding=trafficYield(c,cars,ownedCars(state.world.city),dt);const next=routePose(c.route,c.distance+dt*c.speed);if(yielding!==null)c.distance=yielding;else if(!blocked&&ownedCars(state.world.city).every(p=>!vehicleOverlap({...next,length:c.bus?4.8:1.8,width:c.bus?1.15:.9},p)))c.distance+=dt*c.speed;
+   const q=routePose(c.route,c.distance);placeGroundVehicle(c.g,q,roadHeight,c.bus?'bus':'sedan');
    const detail=c.g.userData.visualDetail;if(detail)detail.visible=Math.hypot(q.x-x,q.z-z)<28;c.g.visible=Math.hypot(q.x-x,q.z-z)<155;
   });
   for(const p of people){const pos=p.g.position,near=Math.hypot(pos.x-x,pos.z-z);p.g.visible=near<105;

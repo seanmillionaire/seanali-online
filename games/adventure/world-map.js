@@ -1,3 +1,4 @@
+import {DARIEN_RIVERS,JUNGLE_PONDS,CHIRIQUI_FALL} from './rainforest-layout.js';
 import {JUNGLE_LOBES} from './east-jungle-layout.js';
 import {COSTA_LAND} from './costa-arriba-layout.js?v=225';
 import {homeLot} from './mansion-state.js?v=225';
@@ -23,7 +24,9 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
   defs.append(gradient);svg.append(defs);
   svg.append(svgEl('ellipse',{cx:0,cy:0,rx:WORLD_EXTENT.width/2,ry:WORLD_EXTENT.height/2,fill:'url(#'+(mini?'ocean-mini':'ocean-big')+')'}));
   svg.append(svgEl('path',{d:SMOOTH_MAINLAND_OUTLINE.map((p,i)=>(i?'L':'M')+p[0]+' '+p[1]).join(' ')+' Z',fill:'#86b574',stroke:'#e9d7a6','stroke-width':3}));
+  svg.append(svgEl('ellipse',{cx:-444,cy:-80,rx:43,ry:43,fill:'#487b47'}));
   for(const p of JUNGLE_LOBES)svg.append(svgEl('ellipse',{cx:p.x,cy:p.z,rx:p.rx,ry:p.rz,fill:'#3d7749'}));
+  for(const p of [...JUNGLE_PONDS,CHIRIQUI_FALL.pool])svg.append(svgEl('ellipse',{cx:p.x,cy:p.z,rx:p.rx,ry:p.rz,fill:'#3d9eae'}));for(const path of DARIEN_RIVERS)svg.append(svgEl('polyline',{points:path.map(p=>p.join(',')).join(' '),fill:'none',stroke:'#3d9eae','stroke-width':7}));
   for(const p of COSTA_LAND)svg.append(svgEl('ellipse',{cx:p.x,cy:p.z,rx:p.rx,ry:p.rz,fill:'#86b574'}));
   svg.append(svgEl('path',{d:Array.from({length:49},(_,i)=>{const a=i/48*Math.PI*2;return (i?'L':'M')+(-35+Math.cos(a)*37)+' '+(-335+Math.sin(a)*22);}).join(' ')+' Z',fill:'#77cfd4'}));svg.append(svgEl('path',{d:CANAL_WATERWAY.map((p,i)=>(i?'L':'M')+p[0]+' '+p[1]).join(' '),stroke:'#77cfd4','stroke-width':46,fill:'none','stroke-linecap':'round','stroke-linejoin':'round'}));
   if(!mini){svg.append(svgEl('text',{x:45,y:-174,'font-size':12,'text-anchor':'middle',fill:'#16475e'},say('MAR CARIBE','CARIBBEAN SEA')));svg.append(svgEl('text',{x:65,y:90,'font-size':12,'text-anchor':'middle',fill:'#16475e'},say('OCÉANO PACÍFICO','PACIFIC OCEAN')));svg.append(svgEl('text',{x:-195,y:-170,'font-size':13,fill:'#16475e'},'N ↑'));}

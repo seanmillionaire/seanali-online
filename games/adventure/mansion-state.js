@@ -28,4 +28,4 @@ export function homePath(from,to){
 }
 
 // City estate meets the coast: keep the driveway and balloon on its dry side.
-export function homeYard(lot){return {car:{x:lot.x+(lot.id==='city'?-19:16),z:lot.z+(lot.id==='city'?17.5:20)},balloon:{x:lot.x+(lot.id==='city'?-19:-18),z:lot.z+(lot.id==='city'?-8:23)}};}
+export function homeYard(lot){const car={x:lot.x+(lot.id==='city'?-19:16),z:lot.z+(lot.id==='city'?17.5:20)};return {car,cars:{lamborghini:car,ferrari:{x:car.x+6,z:car.z}},balloon:{x:lot.x+(lot.id==='city'?-19:-18),z:lot.z+(lot.id==='city'?-8:23)}};}

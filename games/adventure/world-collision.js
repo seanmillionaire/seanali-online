@@ -24,7 +24,7 @@ export function createWorldCollision({state,trees=[],rocks=[]}){
 // Query the actual rendered road triangles, not the soil below them. Includes
 // sloped/curved highway ribbons and city surfaces made by surfaceMesh().
 export function createRoadSurfaceSampler(T,scene){
- const cells=new Map(),size=12,a=new T.Vector3(),b=new T.Vector3(),c=new T.Vector3();let count=0;
+ const cells=new Map(),size=4,a=new T.Vector3(),b=new T.Vector3(),c=new T.Vector3();let count=0;
  scene.updateMatrixWorld(true);
  scene.traverse(mesh=>{
   if(!mesh.isMesh||!mesh.userData.roadSurface)return;

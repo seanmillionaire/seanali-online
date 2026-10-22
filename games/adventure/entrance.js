@@ -1,3 +1,4 @@
+import {inlandFreshwater,chiriquiContains} from './rainforest-layout.js';
 import {jungleContains} from './east-jungle-layout.js';
 import {costaContains} from './costa-arriba-layout.js?v=225';
 import {SWELL_GLSL,swellHeight} from './ocean-swells.js?v=225';
@@ -479,12 +480,12 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   const beamMat=new T.MeshBasicMaterial({color:'#ffe9ad',transparent:true,opacity:.07,depthWrite:false,side:T.DoubleSide});materials.add(beamMat);const beam=make(geometry(new T.ConeGeometry(4,32,24,1,true)),beamMat,0,7.1,0,1,1,1,tower);beam.geometry.translate(0,-16,0);beam.rotation.z=Math.PI/2;beam.castShadow=false;beam.receiveShadow=false;
   // Low-cost mainland mesh connects the real regions; lake and canal cuts stay open.
   const mainlandVertices=[],mainlandUV=[];
-  const dryMainland=(x,z)=>mainlandContains(x,z)&&!canalWater(x,z)&&!gatunWater(x,z);
+  const dryMainland=(x,z)=>mainlandContains(x,z)&&!canalWater(x,z)&&!gatunWater(x,z)&&!inlandFreshwater(x,z);
   const inland=(x,z)=>dryMainland(x,z)&&Math.hypot(x/20,z/14)>.90&&!worldIslands.some(p=>Math.hypot((x-p.x)/p.rx,(z-p.z)/p.rz)<.90);
   // Overlap the existing region meshes slightly from below: no empty moat or z-fighting.
   // Subdivide waterline edges fivefold to remove blocky land endings without
   // multiplying all inland polygons; clip the final boundary precisely.
-  for(let x=-454;x<MAINLAND_EAST+1;x+=3)for(let z=x>520?-216:-456;z<39;z+=3)
+  for(let x=-493;x<MAINLAND_EAST+1;x+=3)for(let z=x>520?-216:-456;z<39;z+=3)
   if(z>=-167||(x>=-125&&x<=80)||costaContains(x,z)||jungleContains(x,z))for(const [sx,sz,size] of shorelineTiles(x,z,3,inland,light?3:5)){
    const corners=[[sx,0,sz],[sx+size,0,sz],[sx,0,sz+size],[sx+size,0,sz+size]];
    for(const tri of [[0,2,1],[1,2,3]]){

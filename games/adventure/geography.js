@@ -1,9 +1,11 @@
+import {chiriquiContains,inlandFreshwater} from './rainforest-layout.js';
 import {jungleContains} from './east-jungle-layout.js';
 import {costaContains} from './costa-arriba-layout.js?v=225';
 import {sanBlasLayout,relocateSanBlasPoint,SAN_BLAS_LAYOUT_VERSION} from './san-blas-layout.js?v=225';
 export const CITY_EAST_SHIFT=240;
 export const cityX=x=>x+CITY_EAST_SHIFT;
 export const CITY_CENTER={x:cityX(120),z:-50};
+export const CITY_RESTAURANT={x:cityX(120),z:-48,doorZ:-42.1};
 export const MAINLAND_EAST=800;
 // North is -Z and east is +X. Distances are compressed for play, not a scale map.
 export const GEOGRAPHY_VERSION=3;
@@ -59,7 +61,7 @@ export function canalWater(x,z){
 }
 export function gatunWater(x,z){return z>-368&&z<-301&&Math.hypot((x+50)/40,(z+365)/37)>=1&&Math.hypot((x+35)/37,(z+335)/22)<1;}
 // Inland wildlife uses this shared boundary; navigable water alone is not an ocean habitat.
-export const freshwaterHabitat=(x,z)=>gatunWater(x,z)||canalWater(x,z);
+export const freshwaterHabitat=(x,z)=>gatunWater(x,z)||canalWater(x,z)||inlandFreshwater(x,z);
 // Coastlines have smooth bays, small headlands, and no straight polygon corners.
 // Build the smoothed outline once. Gameplay and rendering call the same predicate.
 const SMOOTH_MAINLAND=[];
@@ -86,8 +88,8 @@ for(let i=0,j=SMOOTH_MAINLAND.length-1;i<SMOOTH_MAINLAND.length;j=i++){
 }
 export function mainlandContains(x,z){
  // World-scale ocean sampling dominates startup; reject distant water cheaply.
- if(x<-452||x>MAINLAND_EAST||z<-455||z>38)return false;
- if(costaContains(x,z)||jungleContains(x,z))return true;
+ if(x<-492||x>MAINLAND_EAST||z<-455||z>38)return false;
+ if(chiriquiContains(x,z)||costaContains(x,z)||jungleContains(x,z))return true;
  // Subtle coordinate warping adds small coastline irregularities without moving
  // roads, saved progress, boats, or the map's major Panama landmarks.
  const px=x+1.35*Math.sin(z*.12+x*.009)+.55*Math.sin(z*.34-x*.025),

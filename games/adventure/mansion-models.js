@@ -28,8 +28,8 @@ export function exteriorMansion(o,lot,stage,style){const {T,scene,make,box,cylin
  for(const x of [-11,11])for(const z of [-10,4]){b(m.stone,x,.5,z,1.6,1,1.6);p(ball,m.green,x,1.4,z,.9,1,.9);}
 
  // Clear private forecourt, driveway and tethered sightseeing balloon.
- for(let z=18;z<34;z+=2){const y=height(lot.x,lot.z+z)-root.position.y;b(m.stone,0,y+.03,z,4,.08,1.8);}const yard=homeYard(lot),driveY=height(yard.car.x,yard.car.z)-root.position.y;b(m.stone,yard.car.x-lot.x,driveY-.08,yard.car.z-lot.z,5,.16,7);
- for(const x of [-22,22])for(let z=15;z<34;z+=5){const y=height(lot.x+x,lot.z+z)-root.position.y;b(m.white,x,y+.45,z,1.5,.9,1.5);p(ball,m.green,x,y+1.6,z,1,1.1,1);}
+ for(let z=18;z<34;z+=2){const y=height(lot.x,lot.z+z)-root.position.y;b(m.stone,0,y+.03,z,4,.08,1.8);}const yard=homeYard(lot);root.userData.parkingSurfaces=[];for(const spot of Object.values(yard.cars)){const driveY=height(spot.x,spot.z)-root.position.y;b(m.stone,spot.x-lot.x,driveY-.08,spot.z-lot.z,5,.16,7);root.userData.parkingSurfaces.push({x:spot.x,z:spot.z,y:driveY+root.position.y,w:5,d:7});}
+ for(const x of [-22,22])for(let z=15;z<34;z+=5){if(Object.values(yard.cars).some(p=>Math.hypot(lot.x+x-p.x,lot.z+z-p.z)<3.3))continue;const y=height(lot.x+x,lot.z+z)-root.position.y;b(m.white,x,y+.45,z,1.5,.9,1.5);p(ball,m.green,x,y+1.6,z,1,1.1,1);}
  root.userData.balloon=yard.balloon;const balloonRoot=new T.Group();balloonRoot.name='Mansion yard balloon';balloonRoot.position.set(yard.balloon.x-lot.x,height(yard.balloon.x,yard.balloon.z)-root.position.y,yard.balloon.z-lot.z);root.add(balloonRoot);
  const bp=(geo,mat,x,y,z,a,b,c)=>make(geo,mat,x,y,z,a,b,c,balloonRoot);
  const canopy=o.mat('#e992bf'),basket=o.mat('#aa784b');

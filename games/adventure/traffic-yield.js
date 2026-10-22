@@ -4,10 +4,10 @@ const footprint=(car,distance=car.distance)=>({...routePose(car.route,distance),
 // A taxi caught touching the player creeps away along its road instead of
 // remaining a permanent obstacle. No teleporting or passing through another car.
 export function trafficYield(car,cars,player,dt){
- const current=footprint(car);if(!vehicleOverlap(current,player))return null;
+ const obstacles=(Array.isArray(player)?player:[player]).filter(Boolean),current=footprint(car);if(!obstacles.some(p=>vehicleOverlap(current,p)))return null;
  const step=Math.min(.1,Math.max(0,dt))*4;
  for(const sign of [1,-1]){const distance=car.distance+step*sign,next=footprint(car,distance);
-  if(vehicleEscapeClear(next,player,current)&&cars.every(other=>other===car||vehicleEscapeClear(next,footprint(other),current)))return distance;
+  if(obstacles.every(p=>vehicleEscapeClear(next,p,current))&&cars.every(other=>other===car||vehicleEscapeClear(next,footprint(other),current)))return distance;
  }
  return car.distance;
 }

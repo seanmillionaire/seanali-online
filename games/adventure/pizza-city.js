@@ -1,5 +1,8 @@
+import {placeGroundVehicle} from './vehicle-grounding.js';
+import {ensureEstateCars,ownedCars,selectEstateCar,nearestEstateCar,carName} from './estate-cars.js';
+import {vehicleEscapeClear} from './vehicle-contact.js';
 import {createGoldenSupercar} from './golden-supercar.js?v=225';
-import {cityX} from './geography.js?v=225';
+import {cityX,CITY_RESTAURANT} from './geography.js?v=225';
 import {ruralBlocks} from './rural-towns.js?v=225';
 import {CITY_SHOP_PLOTS,cityBlocksVehicle,cityPropSite} from './city-layout.js?v=225';
 import {roadDistance,HIGHWAY_WIDTH,inWater,traversable} from './explore-state.js?v=225';
@@ -7,7 +10,7 @@ import {createCityExpansion} from './city-expansion.js?v=225';
 import {districtDriveable,districtVehicleBlocked,districtNeighborhood} from './expanded-districts.js?v=225';
 /* Casco Viejo · Ciudad de Panamá — the largest fantasy island: real road grid, drivable mini car,
    walk-in pizzeria, and sixteen persistent 💰 money-bag pickups. */
-export const CITY={x:cityX(120),z:(-50),rx:58,rz:48,restaurant:{x:cityX(120),z:-48}};
+export const CITY={x:cityX(120),z:(-50),rx:58,rz:48,restaurant:CITY_RESTAURANT};
 export const MONEY_BAGS=Array.from({length:24},(_,i)=>{
  if(i<16){
   const a=i/16*Math.PI*2,r=i%4===0?.62:i%3===0?.43:.77;
@@ -19,7 +22,7 @@ export const MONEY_BAGS=Array.from({length:24},(_,i)=>{
  return {id:'bag-'+i,x:CITY.x+Math.cos(a)*45,z:CITY.z+Math.sin(a)*36};
 });
 export function canDriveOnLand(x,z){return traversable(x,z)&&!inWater(x,z)&&!cityBlocksVehicle(x,z)&&!districtVehicleBlocked(x,z)&&!ruralBlocks(x,z);}
-export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,ball,box,cylinder,cone,surfaces=null,joy,save,refresh,tell}){
+export function createPizzaCity({T,scene,camera,state,height,roadHeight=height,make,mat,geometry,ball,box,cylinder,cone,surfaces=null,joy,save,refresh,tell}){
  const s=state.world,city=s.city,es=state.lang==='es';
  const group=new T.Group();group.name='Casco Viejo · Panama City buildings and money bags';scene.add(group);
  const asphalt=mat('#404956',{map:surfaces?.asphalt,bumpMap:surfaces?.asphalt,bumpScale:.045,roughness:1}),pavement=mat('#c7d4d4',{map:surfaces?.stone,bumpMap:surfaces?.stone,bumpScale:.05}),line=mat('#f7e4a3'),white=mat('#f8f6ec'),
@@ -71,14 +74,14 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
   piece(ball,gold,x,y+4.15,z,.48,.48,.48);
   piece(cylinder,asphalt,x,y+.12,z,1.12,.24,1.12);
  }
- // One authoritative personal vehicle; its saved position is shared with the mansion.
- const supercar=createGoldenSupercar({T,scene,make:piece,mat,geometry,box,ball,cylinder});
- const car=supercar.root;const carBlue=supercar.paint;if(city.activities?.carWashes>0)carBlue.roughness=.16;
- const updateCar=(speed=0,dt=0)=>{
-  const p=city.car;
-  car.position.set(p.x,height(p.x,p.z)+.72,p.z);car.rotation.y=p.heading||0;
-  supercar.update(speed,dt);
- };
+ // Two independent cars share the established active-driver adapter.
+ ensureEstateCars(city,{x:cityX(107),z:-50});
+ const models=Object.fromEntries(['lamborghini','ferrari'].map(model=>[model,createGoldenSupercar({T,scene,make:piece,mat,geometry,box,ball,cylinder,model})]));
+ if(city.activities?.carWashes>0)for(const m of Object.values(models))m.paint.roughness=.16;
+ const updateCar=(speed=0,dt=0)=>{for(const p of ownedCars(city)){const m=models[p.model];placeGroundVehicle(m.root,p,roadHeight,'supercar');m.update(p===city.car?speed:0,dt);}};
+ function selectModel(model){const changed=selectEstateCar(city,model);if(changed){updateCar();save();}return changed;}
+ function selectNearby(x,z){const p=nearestEstateCar(city,x,z);if(p)selectModel(p.model);return p;}
+ function parkedClear(x,z,heading=0,from=city.car){return vehicleEscapeClear({x,z,heading,length:2.35,width:1.25},{...city.parkedCar,length:2.35,width:1.25},from);}
  updateCar();
  // Unicode emoji billboards belong to collectible bags, not abstract gemstones.
  const iconCanvas=document.createElement('canvas');iconCanvas.width=128;iconCanvas.height=128;
@@ -104,7 +107,7 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
  }
  let coinAward=()=>0;
  const expansion=createCityExpansion({T,group,scene,state,make,mat,box,ball,cylinder,cone,height,surfaces,
-   save,refresh,joy,tell:(a,b)=>tell(a,b),coinAward:id=>coinAward(id),onWash:()=>{carBlue.roughness=.16;carBlue.needsUpdate=true;}});
+   save,refresh,joy,tell:(a,b)=>tell(a,b),coinAward:id=>coinAward(id),onWash:()=>{const paint=models[city.car.model].paint;paint.roughness=.16;paint.needsUpdate=true;}});
  if(cityBlocksVehicle(city.car.x,city.car.z)){city.car.x=cityX(105);city.car.z=-50;city.car.heading=0;save();}
  const status=document.createElement('div');status.className='pizza-city-status';status.hidden=true;
  status.setAttribute('aria-live','polite'); 
@@ -112,9 +115,9 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
  // Host is supplied by the caller to anchor UI on top of the WebGL canvas.
  function attach(host){if(host){host.append(status,sign);}}
  function isHere(x,z){return Math.hypot((x-CITY.x)/CITY.rx,(z-CITY.z)/CITY.rz)<1.0||districtNeighborhood(x,z)==='panama-east';}
- function nearCar(x,z){return Math.hypot(x-city.car.x,z-city.car.z)<4;}
+ function nearCar(x,z){return nearestEstateCar(city,x,z);}
  const canDrive=canDriveOnLand;
- function hitCar(raycaster,x,z){return Math.hypot(x-city.car.x,z-city.car.z)<13&&raycaster.intersectObject(car,true).length>0;}
+ function hitCar(raycaster,x,z){for(const p of ownedCars(city))if(Math.hypot(x-p.x,z-p.z)<13&&raycaster.intersectObject(models[p.model].root,true).length){selectModel(p.model);return true;}return false;}
  function hitBag(raycaster,x,z){
   for(const bag of bags){
    if(Math.hypot(bag.x-x,bag.z-z)>45)continue;
@@ -130,7 +133,7 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
     '🍕 Pizza is ready! '+(coins?'+3 🪙':'')+' Time to deliver!');
   expansion.beginDelivery();return city.pizzas;}
  function update(dt,active,{x,z,driving=false,flying=false,indoors=false}={}){
-  if(driving)car.rotation.y=city.car.heading;
+
   const here=isHere(x,z)&&!indoors;
   status.hidden=!here;
   expansion.update(dt,active,{x,z,driving,flying,indoors});
@@ -155,7 +158,7 @@ export function createPizzaCity({T,scene,camera,state,height,make,mat,geometry,b
    }
   }
  }
- function dispose(){expansion.dispose();status.remove();sign.remove();scene.remove(group,car,pizzaSign);for(const b of bags)scene.remove(b.root);spriteMaterial.dispose();texture.dispose();pizzaMaterial.dispose();pizzaTexture.dispose();}
- return {soccerPosition:expansion.soccerPosition,npcKick:expansion.npcKick,attach,update,nearCar,canDrive,hitCar,hitBag,updateCar,order,setCoinAward,isHere,car,activityPrompt:expansion.activityPrompt,interactActivity:expansion.interactAt,activityNear:expansion.near,activityGoal:expansion.goal,activitySites:expansion.sites,setWaypoint:expansion.setWaypoint,dispose};
+ function dispose(){expansion.dispose();status.remove();sign.remove();scene.remove(group,pizzaSign);for(const m of Object.values(models)){scene.remove(m.root);m.dispose();}for(const b of bags)scene.remove(b.root);spriteMaterial.dispose();texture.dispose();pizzaMaterial.dispose();pizzaTexture.dispose();}
+ return {soccerPosition:expansion.soccerPosition,npcKick:expansion.npcKick,attach,update,nearCar,canDrive,hitCar,hitBag,updateCar,order,setCoinAward,isHere,selectModel,selectNearby,parkedClear,carName:(x,z)=>carName(nearCar(x,z)?.model||city.car.model,es),get car(){return models[city.car.model].root;},activityPrompt:expansion.activityPrompt,interactActivity:expansion.interactAt,activityNear:expansion.near,activityGoal:expansion.goal,activitySites:expansion.sites,setWaypoint:expansion.setWaypoint,dispose};
 }
 

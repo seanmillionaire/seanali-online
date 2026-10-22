@@ -13,6 +13,7 @@ export function wildlifeEncounter(player,animals,{protected:protectedMode=false}
  return warning;
 }
 export const SAFETY_LESSONS={
+ jaguar:{icon:'🐆',en:'Give wild cats space. Keep your distance and return to the track with an adult.',es:'Dale espacio al jaguar. Mantén distancia y vuelve al sendero con un adulto.'},
  shark:{icon:'🦈',en:'Give sharks space. Leave the water calmly and tell an adult.',es:'Dale espacio al tiburón. Sal del agua con calma y avisa a un adulto.'},
  crocodile:{icon:'🐊',en:'Stay back from crocodiles and lake edges. Watch from a safe distance.',es:'Aléjate de los cocodrilos y del borde del lago. Observa desde lejos.'},
  snake:{icon:'🐍',en:'Never touch a wild snake. Step back and tell an adult.',es:'Nunca toques una serpiente silvestre. Aléjate y avisa a un adulto.'}

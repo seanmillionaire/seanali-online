@@ -1,0 +1,28 @@
+import assert from 'node:assert/strict';
+import * as T from '../games/adventure/vendor/three.module.min.js';
+import {CHIRIQUI_FALL,JUNGLE_PONDS,DARIEN_RIVERS,WATERFALL_CRYSTALS,inlandFreshwater,inlandWaterDistance,claimWaterfall,replenishWaterfall,normalizeWaterfall} from '../games/adventure/rainforest-layout.js';
+import {freshExplore,normalizeExplore,inWater,marineWater,isletHeight,coinBalance,countExplore,worldIslands} from '../games/adventure/explore-state.js';
+import {freshwaterHabitat,mainlandContains,CITY_RESTAURANT} from '../games/adventure/geography.js';
+import {craftInventory,commitCraft,BUILD_RECIPES} from '../games/adventure/island-workshop.js';
+import {villageHouses} from '../games/adventure/house-interiors.js';
+import {repairCoastalSites} from '../games/adventure/coastal-sites.js';
+import {planForestPatches} from '../games/adventure/forest-patches.js';
+import {createEastJungleLife} from '../games/adventure/east-jungle-life.js';
+import {SAN_BLAS_SERVICES} from '../games/adventure/san-blas-life.js';
+import {createRainforestWorld} from '../games/adventure/rainforest-world.js';
+import {wildlifeEncounter,SAFETY_LESSONS} from '../games/adventure/wildlife-safety.js';
+for(const p of [...JUNGLE_PONDS,CHIRIQUI_FALL.pool,...DARIEN_RIVERS.flat().map(([x,z])=>({x,z}))]){assert(inWater(p.x,p.z),'pond/river is real water');assert(freshwaterHabitat(p.x,p.z));assert(!marineWater(p.x,p.z));}
+assert(mainlandContains(-479,-90));assert(!inWater(-477,-60),'dry waterfall arrival');assert(WATERFALL_CRYSTALS.every(p=>!inWater(p.x,p.z)&&isletHeight(p.x,p.z)<2),'walkable grotto floor');
+const world=freshExplore(),state={world,lang:'en',wallet:{rewards:[],items:[]}};for(let i=0;i<36;i++){assert(claimWaterfall(world,i));assert(!claimWaterfall(world,i));}assert.equal(craftInventory(world).available.islandTreasure,108);assert.equal(countExplore(world,'islandTreasure'),108);assert.equal(coinBalance(state),180);assert.equal(world.estate.charms,72);
+const recipe=BUILD_RECIPES.find(r=>r.id==='treehouse');world.food.banana=2;assert(commitCraft(world,recipe.id,recipe.x,recipe.z),'waterfall gems spend through real crafting');assert.equal(craftInventory(world).available.islandTreasure,106);assert(!commitCraft(world,recipe.id,recipe.x,recipe.z),'no double spend');
+const saved=normalizeExplore(JSON.parse(JSON.stringify(world)));assert.equal(saved.waterfall.diamonds,108);assert.equal(saved.waterfall.claimed.length,36);assert.equal(saved.estate.charms,72);assert(!claimWaterfall(saved,0));for(let i=0;i<901;i++)replenishWaterfall(saved,.1);assert.equal(saved.waterfall.claimed.length,0);assert(claimWaterfall(saved,0));assert.equal(saved.waterfall.diamonds,111);
+assert.deepEqual(normalizeWaterfall({claimed:'bad',diamonds:-2}),normalizeWaterfall());
+assert(villageHouses.every(p=>!inWater(p.x,p.z)));assert.equal(villageHouses.find(p=>p.id==='pizzeria').x,CITY_RESTAURANT.x);
+for(const p of Object.values(SAN_BLAS_SERVICES))for(const dx of [-1.5,1.5])for(const dz of [-1.5,1.5])assert(!inWater(p.x+dx,p.z+dz),'entire San Blas food/cooking station on current island');
+const orphan=freshExplore();orphan.estate.buildings=[{id:7,type:'market',x:535,z:-330,level:2,coins:8}];assert(inWater(535,-330));assert.equal(repairCoastalSites(orphan,{islands:worldIslands,inWater}),1);assert.equal(orphan.estate.buildings[0].id,7);assert.equal(orphan.estate.buildings[0].level,2);assert(!inWater(orphan.estate.buildings[0].x,orphan.estate.buildings[0].z));assert.equal(repairCoastalSites(orphan,{islands:worldIslands,inWater}),0);
+const trees=planForestPatches();assert(trees.filter(p=>p.patch.startsWith('darien')).length>450);assert(trees.filter(p=>p.patch.startsWith('darien')).every(p=>p.kind!=='pine'));
+const scene=new T.Scene(),geometry=g=>g,mat=(color,extra)=>new T.MeshStandardMaterial({color,...extra}),make=(g,m,x,y,z,a,b,c,parent=scene)=>{const mesh=new T.Mesh(g,m);mesh.position.set(x,y,z);mesh.scale.set(a,b,c);parent.add(mesh);return mesh;},opts={T,scene,geometry,mat,make,ball:new T.SphereGeometry(1,8,6),box:new T.BoxGeometry(),cylinder:new T.CylinderGeometry(1,1,1,8),height:isletHeight,inWater};
+const life=createEastJungleLife(opts);life.update(.1,true,{x:650,z:-110});assert(!scene.children.some(o=>o.name.includes('monkey')));const root=scene.getObjectByName('Darién eastern jungle · living wildlife');assert(root);assert.equal(root.children.filter(o=>o.name.startsWith('Darien jaguar patrol')).length,4);assert.equal(life.vehicles.length,2);let last=life.vehicles.map(a=>a.g.position.clone());
+for(let i=0;i<200;i++){life.update(.1,true,{x:700,z:-65,protected:true});for(const a of life.vehicles)assert(!inWater(a.g.position.x,a.g.position.z));for(const a of life.hazards().filter(a=>a.kind==='crocodile'))assert(inlandWaterDistance(a.x,a.z)<-2.5);}
+assert(life.vehicles.some((a,i)=>a.g.position.distanceTo(last[i])>2));assert(life.hazards().some(a=>a.kind==='jaguar'));assert(SAFETY_LESSONS.jaguar);assert(wildlifeEncounter({x:0,y:0,z:0},[{kind:'jaguar',x:0,z:0,y:0,radius:1}]).hit);
+const rainforest=createRainforestWorld({...opts,state,trees,save(){},refresh(){},tell(){}});rainforest.update(.1,true,{x:-477,y:1,z:-60});assert.equal(rainforest.falls.length,1);assert(rainforest.perches.length>10);assert(rainforest.sloths.length>0);for(const a of rainforest.sloths)assert(a.g.position.y-isletHeight(a.t.x,a.t.z)>3,'sloths in branches');rainforest.update(.1,true,{x:734,y:2,z:-145,protected:true});assert.equal(rainforest.falls.length,2);life.dispose();rainforest.dispose();console.log('PASS real freshwater/land extension, four jaguars, six pond crocodiles, two dry-track 4x4s, tree sloths, replenishing gems/coins/charms and legacy restaurant/structure relocation');

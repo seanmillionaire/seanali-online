@@ -1,3 +1,4 @@
+import {natureSiteClear,chiriquiContains,waterfallTrailClear} from './rainforest-layout.js';
 import {jungleTrailClear,snakeCorridorContains} from './east-jungle-layout.js';
 import {homeReserved} from './mansion-state.js?v=225';
 import {regionalClearing,regionalTrailClear} from './regional-layout.js?v=225';
@@ -7,6 +8,7 @@ import {ruralParcels} from './rural-towns.js?v=225';
 import {mainlandContains,canalWater,gatunWater} from './geography.js?v=225';
 import {worldIslands,isletHeight,roadDistance,HIGHWAY_WIDTH,volcanoTrailPoint} from './explore-state.js?v=225';
 export const FOREST_PATCHES=[
+ {id:'chiriqui-waterfall-cloudforest',x:-452,z:-86,rx:32,rz:33,n:90,biome:'montane'},
  {id:'darien-jungle-west',x:555,z:-63,rx:63,rz:54,n:150,biome:'tropical'},
  {id:'darien-jungle-heart',x:644,z:-73,rx:78,rz:75,n:235,biome:'tropical'},
  {id:'darien-jungle-east',x:722,z:-100,rx:56,rz:77,n:195,biome:'tropical'},
@@ -56,6 +58,7 @@ function nearTrail(x,z){
  }return false;
 }
 export function forestSiteClear(x,z,biome='tropical',kind=null){
+ if(!waterfallTrailClear(x,z)||!natureSiteClear(x,z,1))return false;
  if((kind!=='fern'&&snakeCorridorContains(x,z))||!jungleTrailClear(x,z)||homeReserved(x,z,5)||!regionalTrailClear(x,z)||regionalClearing(x,z)||roadDistance(x,z)<HIGHWAY_WIDTH/2+10||townPlots.some(p=>Math.abs(x-p.x)<p.w/2+5&&Math.abs(z-p.z)<p.d/2+5))return false;
  if(FOREST_CLEARINGS.some(p=>Math.hypot(x-p.x,z-p.z)<p.r))return false;
  if(Math.hypot((x-cityX(120))/67,(z+50)/57)<1.09)return false;
@@ -71,7 +74,7 @@ export function planForestPatches(density=1){
  const plants=[],factor=Math.max(.25,Math.min(1,Number(density)||1));
  let seed=943017;const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
  for(const patch of FOREST_PATCHES){
-  const target=Math.round(patch.n*factor);
+  const target=Math.round(patch.n*factor*(patch.id.startsWith('darien-')?1.5:1));
   // Three broad woodland lobes with open meadows between them.
   const groves=Array.from({length:3},(_,j)=>{
    const a=j*2.399963+patch.x*.025;
@@ -82,7 +85,7 @@ export function planForestPatches(density=1){
   for(let slot=0;slot<target;slot++){
    const understory=slot%5===3||slot%5===4;
    const roll=random();
-   const kind=understory?'fern':patch.biome==='montane'?(roll<.52?'pine':roll<.92?'natural':'palm')
+   const kind=understory?'fern':patch.id.startsWith('darien-')?(roll<.83?'natural':'palm'):patch.biome==='montane'?(roll<.52?'pine':roll<.92?'natural':'palm')
     :patch.biome==='mixed'?(roll<.25?'pine':roll<.75?'natural':'palm')
     :patch.biome==='island'?(roll<.06?'pine':roll<.55?'natural':'palm')
     :(roll<.09?'pine':roll<.57?'natural':'palm');

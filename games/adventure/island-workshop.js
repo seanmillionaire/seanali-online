@@ -21,6 +21,7 @@ export const BUILD_RECIPES=[
 export function craftInventory(world){
  const collected=[...new Set(world.collected||[])],spent=world.craft?.spent||{};
  const total=Object.fromEntries(Object.keys(RESOURCE_INFO).map(k=>[k,k==='fruit'?(world.foodTotal?.banana??world.food?.banana??0):k==='moneyBag'?new Set(world.city?.bags||[]).size:collected.filter(id=>exploreItems.some(item=>item.id===id&&item.kind===k)).length]));
+ total.islandTreasure+=(world.waterfall?.diamonds||0);
  const available=Object.fromEntries(Object.keys(total).map(k=>[k,Math.max(0,total[k]-(spent[k]||0))]));
  available.fruit=world.food?.banana||0;
  return {total,spent:{...spent,fruit:Math.max(0,total.fruit-available.fruit)},available};

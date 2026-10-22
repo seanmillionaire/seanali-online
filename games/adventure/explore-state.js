@@ -1,3 +1,6 @@
+import {repairCoastalSites} from './coastal-sites.js';
+import {rainforestTerrain,normalizeWaterfall} from './rainforest-layout.js';
+import {ensureEstateCars} from './estate-cars.js';
 import {COSTA_ROAD,ISLA_GRANDE,costaDock,costaContains} from './costa-arriba-layout.js?v=225';
 import {highwayExtra} from './highway-layout.js?v=225';
 import {normalizeMansion} from './mansion-state.js?v=225';
@@ -287,7 +290,8 @@ export function bridgeDeckHeight(x,z){
 }
 export function isletHeight(x,z){return Math.max(terrainHeight(x,z),bridgeDeckHeight(x,z));}
 export const navigableWater=(x,z)=>canalWater(x,z)||inWater(x,z);
-export function terrainHeight(x,z){
+export function terrainHeight(x,z){return rainforestTerrain(x,z,gradedTerrainHeight(x,z));}
+function gradedTerrainHeight(x,z){
  const base=ungradedHeight(x,z);
  // Road shoulders must not fill the canal or navigable open water.
  if(base<=0)return base;
@@ -333,8 +337,9 @@ export function terrainHeight(x,z){
  return grade*(1-blend)+base*blend;
 }
 export const explorePlaces=[
+ {id:'chiriquiFalls',x:-477,z:-60,icon:'🌊',es:'Cascada escondida · Chiriquí',en:'Hidden waterfall · Chiriquí',kind:'mainland'},
  {id:"costaArriba",x:114,z:-401,icon:"🏘️",kind:"mainland",es:"Costa Arriba · Colón",en:"Costa Arriba · Colón"},
- {id:'darienJungle',x:492,z:-58,icon:'🐒',es:'Darién · Selva del Este',en:'Darién · Eastern Jungle',kind:'mainland'},
+ {id:'darienJungle',x:492,z:-58,icon:'🌳',es:'Darién · Selva del Este',en:'Darién · Eastern Jungle',kind:'mainland'},
  {id:'gorgonaTown',x:-55,z:-16,icon:'🏖️',es:'Nueva Gorgona · Pueblo y Playa',en:'Nueva Gorgona · Town and Beach',kind:'mainland'},
  {id:'colonCity',x:-67,z:-374,icon:'🏙️',es:'Ciudad de Colón · Costa Caribe',en:'Colón City · Caribbean Waterfront',kind:'mainland'},
  {id:'colonCivic',x:11,z:-372,icon:'🏘️',es:'Colón · Distrito Cívico y Puerto',en:'Colón · Port and Civic District',kind:'mainland'},
@@ -378,7 +383,7 @@ export const exploreItems=[
 ];
 for(const p of exploreItems){const land={fruit:'wilds',glow:'sunset'}[p.kind];if(land)Object.assign(p,islandPoint(land,p.x,p.z));}
 export function normalizeStory(raw){return Object.fromEntries(Object.entries({shells:3,picnic:4,seed:3,song:4,care:2,light:4}).map(([id,length])=>[id,Number.isInteger(raw?.[id])?Math.max(0,Math.min(length,raw[id])):0]));}
-export function freshExplore(){return {mansion:normalizeMansion(null),panama:normalizePanama(null),campaign:normalizeCampaign(null),colon:normalizeColon(null),estate:normalizeEstate(null),inventoryVersion:1,foodTotal:{banana:0,coconut:0,mango:0},worldVersion:3,travelMode:'walk',geographyVersion:GEOGRAPHY_VERSION,sanBlasGeographyVersion:4,colonLayoutVersion:COLON_LAYOUT_VERSION,realms:{found:[],turtle:0,bird:0},journey:{visited:[],meals:0,swim:0,fly:0,rings:[]},x:4,z:10,dayTime:40,story:normalizeStory(null),collected:[],badges:[],hat:0,pet:false,flowers:0,catches:0,pops:0,flight:0,growth:1,food:{coconut:0,banana:0,mango:0},harvested:{},boat:{x:6.5,z:16,heading:0},regionalProjects:{helped:[]},craft:{built:[],spent:{}},city:{cruise:normalizeCruise(null),bags:[],pizzas:0,car:{x:cityX(114),z:-50,heading:0},activities:{deliveries:[],deliveryActive:false,rallyBest:0,rallyWins:0,soccerGoals:0,soccerShots:0,marketTrades:0,muralColors:0,museum:[],carWashes:0}},friends:{visits:[],completed:[],companion:null}};}
+export function freshExplore(){return {waterfall:normalizeWaterfall(),mansion:normalizeMansion(null),panama:normalizePanama(null),campaign:normalizeCampaign(null),colon:normalizeColon(null),estate:normalizeEstate(null),inventoryVersion:1,foodTotal:{banana:0,coconut:0,mango:0},worldVersion:3,travelMode:'walk',geographyVersion:GEOGRAPHY_VERSION,sanBlasGeographyVersion:4,colonLayoutVersion:COLON_LAYOUT_VERSION,realms:{found:[],turtle:0,bird:0},journey:{visited:[],meals:0,swim:0,fly:0,rings:[]},x:4,z:10,dayTime:40,story:normalizeStory(null),collected:[],badges:[],hat:0,pet:false,flowers:0,catches:0,pops:0,flight:0,growth:1,food:{coconut:0,banana:0,mango:0},harvested:{},boat:{x:6.5,z:16,heading:0},regionalProjects:{helped:[]},craft:{built:[],spent:{}},city:{cruise:normalizeCruise(null),bags:[],pizzas:0,car:{model:'lamborghini',x:cityX(114),z:-50,heading:0},parkedCar:{model:'ferrari',x:cityX(107),z:-50,heading:0},activities:{deliveries:[],deliveryActive:false,rallyBest:0,rallyWins:0,soccerGoals:0,soccerShots:0,marketTrades:0,muralColors:0,museum:[],carWashes:0}},friends:{visits:[],completed:[],companion:null}};}
 export function normalizeExplore(raw){raw=migrateGeography(raw);const s=freshExplore();if(!raw||typeof raw!=='object')return s;s.travelMode=normalizeTravelMode(raw.travelMode);const rr=raw.realms||{};s.realms={found:[...new Set((Array.isArray(rr.found)?rr.found:[]).filter(id=>/^(reef-[0-5]|pearl-[0-4]|wind-[0-4]|star-[0-4]|seaChest-0|skyLight-0)$/.test(id)))],turtle:Math.max(0,Math.min(5,Math.floor(Number(rr.turtle)||0))),bird:Math.max(0,Math.min(4,Math.floor(Number(rr.bird)||0)))};const j=raw.journey||{};s.journey={visited:[...new Set((Array.isArray(j.visited)?j.visited:[]).filter(id=>worldIslands.some(p=>p.id===id)))],meals:Math.max(0,Math.min(999,Number(j.meals)||0)),swim:Math.max(0,Math.min(100000,Number(j.swim)||0)),fly:Math.max(0,Math.min(100000,Number(j.fly)||0)),rings:[...new Set((Array.isArray(j.rings)?j.rings:[]).filter(id=>/^(swim|fly)-[0-9]+$/.test(id)))]};// Preserve friendship, a chosen companion, and first-time play rewards across saves.
 const FRIEND_IDS=['pip','dori','mila','ollie','luna','kai'],savedFriends=raw.friends||{};
 s.friends={
@@ -390,7 +395,7 @@ s.friends={
 const savedCity=raw.city||{},car=savedCity.car||{},withinCity=(x,z)=>Number.isFinite(x)&&Number.isFinite(z)&&Math.hypot((x-cityX(120))/58,(z+50)/48)<.86;
 s.city={cruise:normalizeCruise(savedCity.cruise),bags:[...new Set((Array.isArray(savedCity.bags)?savedCity.bags:[]).filter(id=>/^bag-(?:[0-9]|1[0-9]|2[0-3])$/.test(id)))],
  pizzas:Math.max(0,Math.min(999,Math.floor(Number(savedCity.pizzas)||0))),
- car:(withinCity(car.x,car.z)||(Number.isFinite(car.x)&&Number.isFinite(car.z)&&Math.hypot(car.x/WORLD_BOUNDS.x,car.z/WORLD_BOUNDS.z)<1&&roadDistance(car.x,car.z)<HIGHWAY_WIDTH/2-.7))?{x:car.x,z:car.z,heading:Number.isFinite(car.heading)?car.heading:0}:{x:cityX(114),z:-50,heading:0},
+ car:(withinCity(car.x,car.z)||(Number.isFinite(car.x)&&Number.isFinite(car.z)&&Math.hypot(car.x/WORLD_BOUNDS.x,car.z/WORLD_BOUNDS.z)<1&&traversable(car.x,car.z)&&!inWater(car.x,car.z)))?{x:car.x,z:car.z,heading:Number.isFinite(car.heading)?car.heading:0}:{x:cityX(114),z:-50,heading:0},
  activities:{
   deliveries:[...new Set((Array.isArray(savedCity.activities?.deliveries)?savedCity.activities.deliveries:[]).filter(n=>Number.isInteger(n)&&n>=0&&n<3))],
   deliveryActive:savedCity.activities?.deliveryActive===true,
@@ -403,6 +408,7 @@ s.city={cruise:normalizeCruise(savedCity.cruise),bags:[...new Set((Array.isArray
   museum:[...new Set((Array.isArray(savedCity.activities?.museum)?savedCity.activities.museum:[]).filter(n=>Number.isInteger(n)&&n>=0&&n<3))],
   carWashes:Math.max(0,Math.min(999,Math.floor(Number(savedCity.activities?.carWashes)||0)))
  }};
+s.city.car.model=car.model;const parked=savedCity.parkedCar;if(Number.isFinite(parked?.x)&&Number.isFinite(parked?.z)&&Math.hypot(parked.x/WORLD_BOUNDS.x,parked.z/WORLD_BOUNDS.z)<1&&!inWater(parked.x,parked.z))s.city.parkedCar=parked;ensureEstateCars(s.city,{x:cityX(107),z:-50});
 s.panama=normalizePanama(raw.panama);s.colon=normalizeColon(raw.colon);s.campaign=normalizeCampaign(raw.campaign);
 s.regionalProjects={helped:[...new Set((Array.isArray(raw.regionalProjects?.helped)?raw.regionalProjects.helped:[]).filter(id=>['home','islet','wilds','coconutCoast','sunset','crystalCove','pizzaCity','colon'].includes(id)))]};
 const savedCraft=raw.craft||{},allowedResource=['shell','fruit','glow','islandTreasure','seaTreasure','moneyBag'];
@@ -425,9 +431,9 @@ s.dayTime=Number.isFinite(raw.dayTime)?((raw.dayTime%240)+240)%240:40;s.story=no
 // the unspent ground stock once; collected IDs remain discovery history.
 if(raw.inventoryVersion!==1)s.food.banana+=Math.max(0,countExplore(s,'fruit')-s.craft.spent.fruit);
 for(const kind of ['banana','coconut','mango'])s.foodTotal[kind]=Math.max(s.food[kind]+(kind==='banana'?s.craft.spent.fruit:0),raw.inventoryVersion===1?inventoryCount(raw.foodTotal?.[kind]):0);
-s.mansion=normalizeMansion(raw.mansion);
+s.mansion=normalizeMansion(raw.mansion);s.waterfall=normalizeWaterfall(raw.waterfall);
 s.estate=normalizeEstate(raw.estate,s.collected.filter(id=>['islandTreasure','seaTreasure','glow'].includes(exploreItems.find(item=>item.id===id)?.kind)).length);
- relocateEstateRoadObstructions(s.estate);
+ relocateEstateRoadObstructions(s.estate);repairCoastalSites(s,{islands:worldIslands,inWater});
 s.lighthouseOn=typeof raw.lighthouseOn==='boolean'?raw.lighthouseOn:(Array.isArray(raw.badges)&&raw.badges.includes('beacon'));
 s.gardenWatered=raw.gardenWatered===true;s.chestOpen=raw.chestOpen===true;
 // NPC projects persist across island re-entry and page reloads.
@@ -453,7 +459,7 @@ export function harvestFood(world,tree){
 }
 export function collectExplore(s,id){const item=exploreItems.find(x=>x.id===id);if(!item||s.collected.includes(id))return false;if(item.kind==='fruit'&&!addFood(s,'banana',1))return false;s.collected.push(id);if(['islandTreasure','seaTreasure','glow'].includes(item.kind)&&s.estate)s.estate.charms=Math.min(9999,s.estate.charms+1);return true;}
 export function badgeExplore(s,id){if(s.badges.includes(id))return false;s.badges.push(id);return true;}
-export function countExplore(s,kind){return s.collected.filter(id=>exploreItems.find(x=>x.id===id)?.kind===kind).length;}
+export function countExplore(s,kind){return s.collected.filter(id=>exploreItems.find(x=>x.id===id)?.kind===kind).length+(kind==='islandTreasure'?(s.waterfall?.diamonds||0):0);}
 // Small navigation grid: a tap walks around cottages instead of through them.
 export const worldObstacles=[[-10,5,1.55],[-13,2,1.3],[10,2,1.55],[12,-1,1.2],[9,-4,1.1],[-1,-5,1.5]];
 export function walkable(x,z){return (isletHeight(x,z)>0||Math.hypot(x/20,z/14)<=homeShoreRadius(Math.atan2(z/14,x/20)))&&worldObstacles.every(([a,b,r])=>Math.hypot(x-a,z-b)>r+.3);}
@@ -546,7 +552,7 @@ export function coinValue(id){if(id==='colon-monkey-play')return 12;if(/^region-
  if(/^city-museum-[0-2]$/.test(id))return 6;
  if(/^craft-build-(sandcastle|butterflyGarden|treehouse|beachCabana|volcanoCamp|coralNursery|pizzaStand)$/.test(id))return 10;if(/^craft-use-(sandcastle|butterflyGarden|treehouse|beachCabana|volcanoCamp|coralNursery|pizzaStand)$/.test(id))return 3;if(/^city-bag-(?:[0-9]|1[0-9]|2[0-3])$/.test(id))return 5;if(id==='city-pizza')return 3;if(/^friend-(pip|dori|mila|ollie|luna|kai)$/.test(id))return 12;if(/^realm-(islands|water|sky)$/.test(id))return 20;if(/^realm-(visit|fruit|butterfly|friends|reef|pearls|turtle|seaChest|wind|stars|bird|skyLight)$/.test(id))return 10;if(/^journey-(explore|food|learn|swim|fly)$/.test(id))return 20;if(/^ring-(swim|fly)-([0-9]|1[0-9])$/.test(id))return 2;if(/^story-(shells|picnic|seed|song|care|light)$/.test(id))return 10;if(/^(harbor|market|jungle|music|garden|summit)-[0-7]$/.test(id))return 10;if(/^flower-[1-6]$/.test(id))return 2;if(['picnic','glow','song'].includes(id))return 15;if(id==='beacon')return 25;if(id==='pet')return 3;if(exploreItems.some(i=>i.id===id))return 1;return 0;}
 export function normalizeWallet(raw){const rewards=[...new Set(Array.isArray(raw?.rewards)?raw.rewards.filter(id=>typeof id==='string'&&coinValue(id)>0):[])];let balance=rewards.reduce((n,id)=>n+coinValue(id),0);const items=[];for(const id of Array.isArray(raw?.items)?raw.items:[]){const item=islandShop.find(x=>x.id===id);if(item&&!items.includes(id)&&balance>=item.cost){items.push(id);balance-=item.cost;}}return {rewards,items};}
-export function coinBalance(state){const w=state.wallet||{rewards:[],items:[]};return w.rewards.reduce((n,id)=>n+coinValue(id),0)-w.items.reduce((n,id)=>n+(islandShop.find(x=>x.id===id)?.cost||0),0)-estateCoinCost(state.world)-(state.world?.city?.cruise?.tickets||0)*CRUISE_FARE-(state.world?.panama?.spent||0)-(state.world?.mansion?.spent||0);}
+export function coinBalance(state){const w=state.wallet||{rewards:[],items:[]};return (state.world?.waterfall?.coins||0)+w.rewards.reduce((n,id)=>n+coinValue(id),0)-w.items.reduce((n,id)=>n+(islandShop.find(x=>x.id===id)?.cost||0),0)-estateCoinCost(state.world)-(state.world?.city?.cruise?.tickets||0)*CRUISE_FARE-(state.world?.panama?.spent||0)-(state.world?.mansion?.spent||0);}
 export function earnCoins(state,id){state.wallet??=normalizeWallet(null);const amount=coinValue(id);if(!amount||state.wallet.rewards.includes(id))return 0;state.wallet.rewards.push(id);return amount;}
 export function syncWallet(state){state.wallet=normalizeWallet(state.wallet);for(const id of Object.keys({...state.completed,...state.islandLessons?.completed}))earnCoins(state,id);for(let i=1;i<=(state.world?.flowers||0);i++)earnCoins(state,'flower-'+i);for(const id of state.world?.badges||[])earnCoins(state,id);for(const id of state.world?.collected||[])earnCoins(state,id);for(const id of state.world?.city?.bags||[])earnCoins(state,'city-'+id);if(state.world?.city?.pizzas)earnCoins(state,'city-pizza');if(state.world?.pet)earnCoins(state,'pet');for(const id of state.world?.friends?.completed||[])earnCoins(state,'friend-'+id);for(const [id,n] of Object.entries(state.world?.story||{})){if(n>=({shells:3,picnic:4,seed:3,song:4,care:2,light:4})[id])earnCoins(state,"story-"+id);}return state.wallet;}
 export function buyIslandItem(state,id){const item=islandShop.find(x=>x.id===id);if(!item)return false;state.wallet??=normalizeWallet(null);if(state.wallet.items.includes(id)){state.world.hat=item.hat;return true;}if(coinBalance(state)<item.cost)return false;state.wallet.items.push(id);state.world.hat=item.hat;return true;}

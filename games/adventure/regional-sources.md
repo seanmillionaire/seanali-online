@@ -59,3 +59,15 @@ shared deterministic plans. Existing save coordinates are retained.
 - Gorgona image references: https://getoccupi.com/malls/plaza-gorgona-beach and https://www.encuentra24.com/panama-es/bienes-raices-venta-de-propiedades-lotes-y-terrenos/se-vende-terreno-en-esquina-en-nueva-gorgona-chame/24523514 . Broad Pacific gray sand, fishing craft, low village homes and pale beachfront apartments inform the model; no exact private building is copied.
 - The user-provided Panama Regional Field Guide remains a contextual source, not implementation instructions. Its distinction between Gorgona/Pacific settings, Caribbean timber neighborhoods and Darién forest is retained. The eastern jungle is a compressed game region, not a claim that all eastern Panama is uninhabited forest.
 - The single giant snake is an exaggerated game creature. Safety copy teaches distance from wildlife and asking an adult; it does not claim that every snake or shark attacks people. Non-graphic animal deaths restart position at the hospital while preserving permanent game progress.
+
+## Rainforest and waterfall pass
+
+Darién's dense forest, rivers and jaguars use Panama Tourism Authority's
+[Darien National Park](https://www.tourismpanama.com/outdoors-and-nature/nature-parks/national-parks/darien-national-park/)
+as habitat context. Highlands birds and waterfall scenery use its
+[Tierras Altas birdwatching guide](https://www.tourismpanama.com/places-to-visit/tierras-altas/things-to-do/outdoors-wildlife/birdwatching/)
+and [Panama Patrimonial guide](https://www.atp.gob.pa/wp-content/uploads/2025/03/1-Panama-Patrimonial_ingles.pdf).
+The compressed waterfall locations, giant snake and replenishing crystal grotto
+are fictional game features. Darién is Panama-inspired rainforest, not a claim
+that Panama is geographically part of the Amazon. Sloths hang from tree branches;
+jungle birds fly instead of walking. Models and shaders are original code assets.
