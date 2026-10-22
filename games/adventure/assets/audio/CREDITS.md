@@ -68,3 +68,7 @@ CC0 source pages and licenses verified. These are edited recordings, not synthes
 - `music/todo-va.mp3` — supplied as `Todo Va.mp3`, 162.744 seconds. Full recording in the regional mix, leading the Colón playlist.
 
 Supplied directly by the game owner for installation. Artist and license metadata were not provided; this recording is separate from the CC libraries above.
+
+## Fruta Tropical (user supplied, October 22, 2026)
+
+- `music/fruta-tropical.mp3` — supplied as `Fruta Tropical.mp3`, 157.224 seconds. Regional mix selection after at least two minutes of instrumental listening. Supplied by the game owner; artist and license metadata were not provided. Separate from the CC libraries above.

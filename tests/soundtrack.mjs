@@ -30,3 +30,13 @@ for(const [point,region] of [[{x:350,z:-60},'city'],[{x:-50,z:-365},'colon'],[{x
  assert.equal(musicRegion({...point,indoors:true}),'home');
 }
 music.hold(true);music.next();assert(audios.every(a=>a.paused),'queued region skip does not interrupt a theme');music.hold(false);await Promise.resolve();assert(music.status.playing,'queued region skip starts after theme');music.destroy();assert(audios.every(a=>a.paused));assert.equal(tick,null);console.log('PASS regional soundtrack: gesture, adaptive moods, stable transitions, bounded crossfade/skip, independent music mute, hidden-tab silence and disposal');
+// Fruta Tropical needs real instrumental listening, across region changes and manual skips.
+time=0;enabled=true;volume=.6;hidden=false;
+const late=createSoundtrack({enabled:()=>enabled,volume:()=>volume,environment:()=>({context,output:{}}),createAudio:()=>new Media(),now:()=>time});
+late.unlock();await Promise.resolve();late.update('home');time=12;late.update('home');
+for(let i=0;i<12;i++){late.next();await Promise.resolve();assert.notEqual(late.status.title,'Fruta Tropical','skipping cannot bypass instrumental warm-up');time+=4;tick();}
+for(let i=0;i<121;i++){audios.at(-1).currentTime+=1;time++;tick();}
+assert(late.status.instrumentalSeconds>=120);
+for(let i=0;i<3&&late.status.title!=='Fruta Tropical';i++){late.next();await Promise.resolve();time+=4;tick();}
+assert.equal(late.status.title,'Fruta Tropical');assert(audios.at(-1).src.endsWith('/fruta-tropical.mp3'));
+late.destroy();console.log('PASS Fruta Tropical follows at least two minutes of audible instrumentals; skips cannot unlock it early');

@@ -132,5 +132,15 @@
     "bytes": 3824633,
     "source": "User-supplied Todo Va.mp3",
     "rightsNote": "Supplied directly by the game owner for installation; not part of the CC libraries."
+  },
+  {
+    "id": "fruta-tropical",
+    "title": "Fruta Tropical",
+    "duration": "00:02:37",
+    "durationSeconds": 157.224,
+    "file": "fruta-tropical.mp3",
+    "bytes": 3533889,
+    "source": "User-supplied Fruta Tropical.mp3",
+    "rightsNote": "Supplied directly by the game owner for installation; not part of the CC libraries."
   }
 ]

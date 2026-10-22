@@ -11,3 +11,11 @@ audios.at(-1).onended();await Promise.resolve();assert(!theme.exclusive);assert.
 advanceThemeClock(world,239.9,.1);assert.equal(world.morningTheme.day,1);world.dayTime=10;assert(morningThemeDue(world),'next 7AM triggers another day');world.dayTime=9.99;assert(!morningThemeDue(world),'not before 7AM');world.dayTime=60;assert(!morningThemeDue(world),'no surprise midday song');
 const sleeping={dayTime:210,morningTheme:{day:3,played:3}};wakeThemeMorning(sleeping);assert.equal(sleeping.dayTime,20);assert.equal(sleeping.morningTheme.day,4);assert(morningThemeDue(sleeping));sleeping.morningTheme.played=4;sleeping.dayTime=10;wakeThemeMorning(sleeping);assert(!morningThemeDue(sleeping),'early-morning nap never duplicates the same day');
 blocked=true;let claims=0;await theme.morning(()=>claims++);assert.equal(claims,0,'blocked audio is never marked played');assert(!theme.active);blocked=false;volume=0;await theme.morning(()=>claims++);assert.equal(claims,0);volume=.5;await theme.morning(()=>claims++);assert.equal(claims,1);theme.destroy();assert(audios.every(a=>a.paused));assert.deepEqual(priority.at(-1),[false,false]);assert.deepEqual(normalizeMorningTheme({day:Infinity,played:NaN}),{day:0,played:-1});console.log('PASS gesture-only themes, exclusive full morning song, persistent once-per-day/reload, next dawn, autoplay failure retry, menu/accomplishment reuse, mute/visibility, deferred greeting and cleanup');
+// All theme recordings begin silent, then rise gently; morning keeps exclusive priority.
+let gainNodes=[];const fadeContext={...context,createGain(){const n=node();gainNodes.push(n);return n;}};
+time=0;volume=.6;allowed=true;hidden=false;
+const faded=createThemeAudio({allowed:()=>allowed,volume:()=>volume,hidden:()=>hidden,now:()=>time,environment:()=>({context:fadeContext,output:{}}),createAudio:()=>new Media()});
+await faded.morning();assert.equal(gainNodes.at(-1).gain.value,0,'opening theme starts silent');
+time=2.4;faded.sync();assert(Math.abs(gainNodes.at(-1).gain.value-.18)<1e-6,'halfway through gentle fade');
+time=4.8;faded.sync();assert(Math.abs(gainNodes.at(-1).gain.value-.36)<1e-6,'quieter final theme gain');
+assert(faded.exclusive);faded.destroy();console.log('PASS silent theme start, 4.8-second fade and softer theme level');

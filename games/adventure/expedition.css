@@ -156,6 +156,7 @@ body[data-scene="explore"] .explore-world button:is(.picture-button,.backpack-wo
 body[data-scene="explore"] .explore-world button:is(.picture-button,.backpack-world-tile)[data-ui-kind="gear"]{background:#d9f5df!important;color:#225f44!important;border-color:#9ed3b1!important;border-bottom-color:#32936b!important}
 body[data-scene="explore"] .explore-world button:is(.picture-button,.backpack-world-tile)[data-ui-kind="play"]{background:#ece5ff!important;color:#533b80!important;border-color:#c6b3e8!important;border-bottom-color:#8d6ac2!important}
 
+.explore-world.guided-arrival canvas{opacity:var(--welcome-view,0)}
 /* Calm arrival: the world first, a single greeting, then the controls. */
 body[data-scene="explore"]:has(.guided-arrival) .topbar{opacity:0;visibility:hidden;pointer-events:none}
 body[data-scene="explore"] .explore-world.guided-arrival>:not(canvas):not(.world-loading):not(.arrival-guide-card):not(.arrival-skip){opacity:0!important;visibility:hidden!important;pointer-events:none!important}
