@@ -71,3 +71,11 @@ The compressed waterfall locations, giant snake and replenishing crystal grotto
 are fictional game features. Darién is Panama-inspired rainforest, not a claim
 that Panama is geographically part of the Amazon. Sloths hang from tree branches;
 jungle birds fly instead of walking. Models and shaders are original code assets.
+
+## Gorgona family beach revision
+
+The user's open Royal Palm / Playa Gorgona reference photographs guide the two
+white-and-glass beachfront tower silhouettes, broad Pacific sand and palm shade.
+The compressed scene is not a replica of an individual property. Reference photos
+were inspected only and are not shipped. Family groups picnic, swim and play beach
+football; the old turtle companion and generic beach walkers are removed.

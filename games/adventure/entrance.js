@@ -1,16 +1,14 @@
-import {inlandFreshwater,chiriquiContains} from './rainforest-layout.js';
-import {jungleContains} from './east-jungle-layout.js';
-import {costaContains} from './costa-arriba-layout.js?v=225';
+import {buildMainlandData,buildCoastData} from './mainland-data.js';
 import {SWELL_GLSL,swellHeight} from './ocean-swells.js?v=225';
 import {roundedOceanGeometry} from './world-horizon.js?v=225';
 import {createStableShadows} from './stable-shadows.js?v=225';
 import {landscapeMaterial} from './landscape-material.js?v=225';
 import {createAtmosphere} from './atmosphere.js?v=225';
-import {MAINLAND_EAST,cityX} from './geography.js?v=225';
-import {clipLandTriangle,coastDistanceField,shorelineTiles} from './terrain-surface.js?v=225';
-import {mainlandContains,canalWater,gatunWater,freshwaterHabitat,organicIslandRadius,homeShoreRadius,WORLD_EXTENT} from './geography.js?v=225';
+import {cityX} from './geography.js?v=225';
+import {clipLandTriangle} from './terrain-surface.js?v=225';
+import {freshwaterHabitat,organicIslandRadius,homeShoreRadius,WORLD_EXTENT} from './geography.js?v=225';
 import {createActiveVolcano} from './active-volcano.js?v=225';
-import {worldIslands,isletHeight,terrainHeight,volcanoTrailPoint,roadsidePoint,nearRoad,HIGHWAY_WIDTH} from './explore-state.js?v=225';
+import {worldIslands,isletHeight,volcanoTrailPoint,roadsidePoint,nearRoad,HIGHWAY_WIDTH} from './explore-state.js?v=225';
 import {createTropical} from './tropical.js?v=225';
 import {createForestLandscape} from './forest-landscape.js?v=225';
 import {createSurfaceTextures} from './surface-textures.js?v=225';
@@ -29,7 +27,8 @@ export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import(
     dispose(){if(disposed)return;disposed=true;pending=null;canvas.removeEventListener('webglcontextlost',lost);world?.dispose();world=null;canvas.remove();}
   };
 }
-export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={}) {
+export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{},mainland=null}={}) {
+  const startupAt=performance.now();
   const renderer=new T.WebGLRenderer({canvas,antialias:!light,alpha:false,powerPreference:'default'});
   renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,light?1:1.5));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.02;
   renderer.shadowMap.enabled=!light;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=!light;renderer.shadowMap.needsUpdate=true;
@@ -322,12 +321,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   // Transparent lagoon, a visible sandy seabed, and small irregular wave highlights.
   // Layered moving water: soft vertex swell + screen-space foam/caustics.
   // Compact shader avoids reflection render passes and protects mobile FPS.
-  const coast=coastDistanceField((x,z)=>terrainHeight(x,z)>0||Math.hypot(x/20,z/14)<homeShoreRadius(Math.atan2(z/14,x/20)),512,448,WORLD_EXTENT);
-  // Reuse the coast texture's green channel for the authoritative freshwater boundary.
-  for(let j=0;j<coast.height;j++)for(let i=0;i<coast.width;i++){
-   const x=WORLD_EXTENT.left+(i+.5)*WORLD_EXTENT.width/coast.width,z=WORLD_EXTENT.top+(j+.5)*WORLD_EXTENT.height/coast.height;
-   coast.pixels[(j*coast.width+i)*4+1]=freshwaterHabitat(x,z)?255:0;
-  }
+  const coast=mainland?.coast||buildCoastData();
   const coastTexture=new T.DataTexture(coast.pixels,coast.width,coast.height,T.RGBAFormat);
   coastTexture.magFilter=coastTexture.minFilter=T.LinearFilter;coastTexture.needsUpdate=true;textures.add(coastTexture);
   const waterMaterial=new T.ShaderMaterial({
@@ -431,7 +425,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
         water=mix(water,vec3(.51,.78,.89),fresnel*.38);
         float crest=smoothstep(2.8,3.8,largeSwell(p))*offshore*swellPass*pow(.5+.5*sin(p.x*3.+p.y*2.-time*3.),2.);
         water=mix(water,vec3(.78,.89,.91),crest*.55);
-        water*=mix(vec3(.012,.027,.065),vec3(1.),daylight);
+        water*=mix(vec3(.18,.30,.46),vec3(1.),daylight);
         float alpha=mix(.29,.94,smoothstep(.6,18.,shoreDistance));
         gl_FragColor=vec4(water,alpha);
         #include <tonemapping_fragment>
@@ -479,52 +473,8 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   for(let i=0;i<4;i++){const a=i/4*Math.PI*2;make(cylinder,wood,Math.sin(a),7.1,Math.cos(a),.07,1.4,.07,tower);}make(box,wood,0,1,1.2,.6,1.8,.1,tower);
   const beamMat=new T.MeshBasicMaterial({color:'#ffe9ad',transparent:true,opacity:.07,depthWrite:false,side:T.DoubleSide});materials.add(beamMat);const beam=make(geometry(new T.ConeGeometry(4,32,24,1,true)),beamMat,0,7.1,0,1,1,1,tower);beam.geometry.translate(0,-16,0);beam.rotation.z=Math.PI/2;beam.castShadow=false;beam.receiveShadow=false;
   // Low-cost mainland mesh connects the real regions; lake and canal cuts stay open.
-  const mainlandVertices=[],mainlandUV=[];
-  const dryMainland=(x,z)=>mainlandContains(x,z)&&!canalWater(x,z)&&!gatunWater(x,z)&&!inlandFreshwater(x,z);
-  const inland=(x,z)=>dryMainland(x,z)&&Math.hypot(x/20,z/14)>.90&&!worldIslands.some(p=>Math.hypot((x-p.x)/p.rx,(z-p.z)/p.rz)<.90);
-  // Overlap the existing region meshes slightly from below: no empty moat or z-fighting.
-  // Subdivide waterline edges fivefold to remove blocky land endings without
-  // multiplying all inland polygons; clip the final boundary precisely.
-  for(let x=-493;x<MAINLAND_EAST+1;x+=3)for(let z=x>520?-216:-456;z<39;z+=3)
-  if(z>=-167||(x>=-125&&x<=80)||costaContains(x,z)||jungleContains(x,z))for(const [sx,sz,size] of shorelineTiles(x,z,3,inland,light?3:5)){
-   const corners=[[sx,0,sz],[sx+size,0,sz],[sx,0,sz+size],[sx+size,0,sz+size]];
-   for(const tri of [[0,2,1],[1,2,3]]){
-    const vertices=clipLandTriangle(tri.map(i=>corners[i]),inland);
-    const emit=(px,py,pz)=>{mainlandVertices.push(px,py,pz);mainlandUV.push(px*.18,pz*.18);};
-    for(const [px,,pz] of vertices)emit(px,Math.max(.025,terrainHeight(px,pz)-.075),pz);
-    // Close the exposed shore down to the seabed instead of leaving a floating sheet.
-    for(let k=0;k<vertices.length;k+=3)for(let e=0;e<3;e++){
-     const a=vertices[k+e],b=vertices[k+(e+1)%3],dx=b[0]-a[0],dz=b[2]-a[2],len=Math.hypot(dx,dz);
-     if(len<.001)continue;
-     const mx=(a[0]+b[0])/2,mz=(a[2]+b[2])/2,nx=-dz/len*.015,nz=dx/len*.015;
-     if(dryMainland(mx+nx,mz+nz)===dryMainland(mx-nx,mz-nz))continue;
-     const ay=Math.max(.025,terrainHeight(a[0],a[2])-.075),by=Math.max(.025,terrainHeight(b[0],b[2])-.075);
-     for(const v of [[a[0],ay,a[2]],[a[0],-1.4,a[2]],[b[0],by,b[2]],[b[0],by,b[2]],[a[0],-1.4,a[2]],[b[0],-1.4,b[2]]])emit(...v);
-    }
-   }
-  }
-  const mainlandGeo=geometry(new T.BufferGeometry());mainlandGeo.setAttribute('position',new T.Float32BufferAttribute(mainlandVertices,3));mainlandGeo.setAttribute('uv',new T.Float32BufferAttribute(mainlandUV,2));mainlandGeo.computeVertexNormals();
-  // The mainland also shows between the city's organic edge and its streets.
-  // Select a material per existing triangle, without moving land or collision heights.
-  const cityLand=worldIslands.find(p=>p.id==='pizzaCity');
-  const mainlandIndices=[[],[]];
-  for(let i=0;i<mainlandVertices.length;i+=9){
-   const x=(mainlandVertices[i]+mainlandVertices[i+3]+mainlandVertices[i+6])/3,
-    z=(mainlandVertices[i+2]+mainlandVertices[i+5]+mainlandVertices[i+8])/3;
-   // Curved district edges replace the old square asphalt cutouts while
-   // keeping the downtown highway and every saved structure in place.
-   const eastCoast=Math.hypot((x-cityX(216))/61,(z+51)/41),
-    colonCoast=Math.min(Math.hypot((x+55)/35,(z+246)/26),Math.hypot((x-7)/43,(z+249)/29));
-   const eastEdge=.99+.022*Math.sin(x*.21+z*.14),
-    colonEdge=1+.024*Math.cos(x*.24-z*.16);
-   const urban=Math.hypot((x-cityLand.x)/cityLand.rx,(z-cityLand.z)/cityLand.rz)<=1||
-    eastCoast<eastEdge||colonCoast<colonEdge;
-   mainlandIndices[urban?1:0].push(i/3,i/3+1,i/3+2);
-  }
-  // Two draw groups preserve every triangle while keeping mobile rendering cheap.
-  mainlandGeo.setIndex(mainlandIndices.flat());
-  mainlandGeo.addGroup(0,mainlandIndices[0].length,0);
-  mainlandGeo.addGroup(mainlandIndices[0].length,mainlandIndices[1].length,1);
+  const landData=mainland||buildMainlandData(),mainlandGeo=geometry(new T.BufferGeometry());
+  mainlandGeo.setAttribute('position',new T.BufferAttribute(landData.positions,3));mainlandGeo.setAttribute('uv',new T.BufferAttribute(landData.uv,2));mainlandGeo.setIndex(new T.BufferAttribute(landData.indices,1));mainlandGeo.addGroup(0,landData.firstCount,0);mainlandGeo.addGroup(landData.firstCount,landData.indices.length-landData.firstCount,1);mainlandGeo.computeVertexNormals();
   const mainlandMaterials=[landscapeMaterial({T,mat,surfaces,vertexColors:false}),
    mat('#3c424c',{map:surfaces.asphalt,bumpMap:surfaces.asphalt,bumpScale:.035,roughness:1})];
   const mainlandMesh=make(mainlandGeo,mainlandMaterials,0,0,0,1,1,1);mainlandMesh.name='Connected Panama mainland · Pacific and Caribbean coasts';mainlandMesh.castShadow=false;
@@ -570,7 +520,9 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{}}={
   function pointer(e){if(!motion()||flight!==null)return;const r=canvas.getBoundingClientRect();px=(e.clientX-r.left)/r.width-.5;py=(e.clientY-r.top)/r.height-.5;}
   const observer=new ResizeObserver(resize),bodyObserver=new MutationObserver(wake);observer.observe(canvas.parentElement);bodyObserver.observe(document.body,{attributes:true,attributeFilter:['class']});document.addEventListener('visibilitychange',visibility);canvas.parentElement.addEventListener('pointermove',pointer,{passive:true});
   let explorer,polyhaven;
+  scene.userData.startupTimings={baseScene:performance.now()-startupAt,prebuilt:!!mainland};
   try{explorer=setup?.({T,scene,camera,target,height,make,geometry,mat,ball,cone,cylinder,box,renderer,tropical,tower,beam,crystal,dockBoat,sun,ambient,waterMaterial,surfaces});
+  scene.userData.startupTimings.setup=performance.now()-startupAt;
   pose();camera.lookAt(target);resize();if(explorer){camera.clearViewOffset();camera.updateProjectionMatrix();explorer.update(0,0);}draw();wake();
   // Optional environment textures arrive after the world is already playable.
   polyhaven=installPolyHavenMaterials(T,{surfaces,scene,materials,renderer,redraw:wake});

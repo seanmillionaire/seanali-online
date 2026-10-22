@@ -20,8 +20,8 @@ export function regionalParcels(){
   plots.push({id:region+'-'+plots.length,region,x,z,w,d,floors,style,base:Math.max(...ys),color:style==='coastal-apartments'?'#f4f1e7':colors[plots.length%colors.length]});return true;
  }
  // Streets run behind a broad crescent of beach; the original home cove stays open.
- for(const [x,z]of [[-56,8],[-73,8]])offer('gorgona',x,z,7.2,6.4,7,'coastal-apartments');
- for(const z of [-2,-30,7])for(let x=-85;x<=-28;x+=9)offer('gorgona',x,z,4.8,4.6,1+(plots.length%4===0?1:0));
+ for(const [x,z]of [[-56,8],[-73,8]])offer('gorgona',x,z,12,9,x===-56?21:17,'coastal-apartments');
+ for(const z of [-2,-30])for(let x=-85;x<=-28;x+=9)offer('gorgona',x,z,4.8,4.6,1+(plots.length%4===0?1:0));
  for(const [id,count,style]of [['islet',6,'plaster'],['wilds',5,'timber'],['coconutCoast',4,'veranda'],['delRey',2,'timber']]){
   const land=worldIslands.find(p=>p.id===id);let n=0;
   for(let i=0;i<120&&n<count;i++){

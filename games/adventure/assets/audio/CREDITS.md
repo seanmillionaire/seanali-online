@@ -41,3 +41,11 @@ Original MP3 recordings; CC BY 4.0. Regional playlists follow the player’s sup
 - Montego — Kevin MacLeod — CC BY 4.0 — https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100808
 - No Frills Salsa — Kevin MacLeod — CC BY 4.0 — https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100133
 - No Frills Cumbia — Kevin MacLeod — CC BY 4.0 — https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100275
+
+## Continuous regional environments
+
+CC0 recordings, excerpted/faded and encoded to AAC 96 kbps, loaded lazily.
+These are general sound-design recordings, not field recordings made in Panama.
+- city-ambience.m4a — Seamless City Loop — qubodup — https://freesound.org/people/qubodup/sounds/223093/ — 30-second loop.
+- surf-ambience.m4a — Gentle Ocean Waves Mix (2018) — esh9419 — https://freesound.org/people/esh9419/sounds/417797/ — 30-second excerpt.
+- birds-ambience.m4a — Forest birds - ambient seamless loop — Magnesus — https://freesound.org/people/Magnesus/sounds/723913/ — 27-second excerpt; generic background, not a Panama species-identification recording.

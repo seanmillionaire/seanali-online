@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import * as T from '../games/adventure/vendor/three.module.min.js';
 import {createCanalCruise} from '../games/adventure/canal-cruise.js';
-import {freshExplore,inWater,isletHeight,coinBalance} from '../games/adventure/explore-state.js';
+import {freshExplore,navigableWater,isletHeight,coinBalance} from '../games/adventure/explore-state.js';
 import {CRUISE_BOARD} from '../games/adventure/cruise-route.js';
 class Element{constructor(){this.style={};this.classList={toggle(){},remove(){}};}append(){}setAttribute(){}remove(){}getContext(){return {fillRect(){},fillText(){}};}}
 globalThis.document={createElement:()=>new Element()};
@@ -12,7 +12,7 @@ for(let i=0;i<150;i++)cruise.update(.1,true);assert(cruise.ambientDistance>0,'si
 Object.assign(state.world,CRUISE_BOARD);assert.equal(cruise.board(),false,'no teleport to a moving vessel');assert.equal(state.world.city.cruise.tickets,0,'queued ticket not charged');const before=coinBalance(state);let boarded=false;
 for(let i=0;i<5000;i++){
  const result=cruise.update(.1,true),p=cruise.ship.position,a=cruise.ship.rotation.y;
- for(const f of [-17,0,18])for(const s of [-6,0,6])assert(inWater(p.x+Math.sin(a)*f+Math.cos(a)*s,p.z+Math.cos(a)*f-Math.sin(a)*s),'ambient turning hull stays in water');
+ for(const f of [-17,0,18])for(const s of [-6,0,6])assert(navigableWater(p.x+Math.sin(a)*f+Math.cos(a)*s,p.z+Math.cos(a)*f-Math.sin(a)*s),'ambient turning hull stays in water');
  if(result.active){boarded=true;break;}
 }
 assert(boarded,'waiting passenger boards on return');assert.equal(state.world.city.cruise.tickets,1);assert.equal(coinBalance(state),before-10);assert.equal(cruise.ambientDistance,0);assert.equal(cruise.root.children.filter(o=>o.name==='Angelique · enormous Panama cruise ship').length,1);

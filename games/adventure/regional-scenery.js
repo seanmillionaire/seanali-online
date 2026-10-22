@@ -23,7 +23,7 @@ export function createRegionalScenery({T,scene,geometry,mat,box,ball,cylinder,he
   for(const sx of [-1,1])for(const sz of [-1,1]){const px=x+sx*(w/2-.3),pz=z+sz*(d/2-.3),floor=height(px,pz),depth=Math.max(.18,y-floor+.18);part(box,wood,px,y-depth/2,pz,.35,depth,.35);}
   part(box,trim,x,y+.12,z,w,.24,d);
   part(box,wall,x,y+h/2+.22,z,w-.55,h,d-1.0);
-  if(p.style==='coastal-apartments'){part(box,trim,x,y+h+.35,z,w,.23,d);for(const side of [-1,1])for(let floor=0;floor<p.floors;floor++){const fy=y+floor*storey;part(box,trim,x+side*(w/2-.22),fy+.4,z,.65,.12,d-.35);part(box,glass,x+side*(w/2+.1),fy+.95,z,.06,.95,d-.5);for(const zz of [-d*.34,0,d*.34])part(box,glass,x+side*(w/2+.08),fy+1.5,z+zz,.07,1.5,1.2);}part(box,glass,x,y+h+.75,z,1.5,.6,1.5);}
+  if(p.style==='coastal-apartments'){part(box,trim,x,y+h+.35,z,w,.23,d);for(let floor=0;floor<p.floors;floor++){const fy=y+floor*storey;part(box,trim,x,fy+.35,z+d/2-.2,w+.35,.16,1.0);part(box,glass,x,fy+1.0,z+d/2+.24,w,.94,.035);}part(box,trim,x,y+h+.7,z,w*.7,.55,d*.7);for(const side of [-1,1])for(let floor=0;floor<p.floors;floor++){const fy=y+floor*storey;part(box,trim,x+side*(w/2-.22),fy+.4,z,.65,.12,d-.35);part(box,glass,x+side*(w/2+.1),fy+.95,z,.06,.95,d-.5);for(const zz of [-d*.34,0,d*.34])part(box,glass,x+side*(w/2+.08),fy+1.5,z+zz,.07,1.5,1.2);}part(box,glass,x,y+h+.75,z,1.5,.6,1.5);}
   else part(roofGeo,p.style==='timber'?metal:tile,x,y+h+.25,z,w+.15,Math.min(w,5),d+.15);
   for(let floor=0;floor<p.floors;floor++){
    const fy=y+floor*storey,front=z+(d-1)/2+.025;

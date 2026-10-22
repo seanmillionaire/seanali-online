@@ -5,7 +5,6 @@ import {oceanModel} from './ocean-models.js?v=225';
 import {createAnimalDetails} from './animal-details.js?v=225';
 // Repeatable, optional play with six friends in the 3D world.
 export const islandFriends=[
- {id:'pip',icon:'🐢',name:'Pip',where:['Playa Gorgona','Playa Gorgona'],game:['Sendero de conchas','Shell trail'],hello:['Explora el sendero sin molestar a los animales.','Explore the trail and give the animals space.']},
  {id:'dori',icon:'🐬',name:'Dori',where:['Mar abierto de Gorgona','Offshore Gorgona'],game:['Observación marina','Marine observation'],hello:['Observa desde lejos y deja espacio a la fauna marina.','Watch from a distance and give marine wildlife space.']},
  {id:'mila',icon:'🦜',name:'Mila',where:['Bocas del Toro','Bocas del Toro'],game:['Música de loro','Parrot music'],hello:['¡Pío, pío! ¡Hagamos una canción!','Squawk, squawk! Let’s make a song!']},
  {id:'ollie',icon:'🪶',name:'Ollie',where:['Boquete · Chiriquí','Boquete · Chiriquí'],game:['Luces escondidas','Find the fireflies'],hello:['¡Mis luciérnagas se escondieron!','My firefly friends are hiding!']},
@@ -324,7 +323,7 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
    if(temp.z>1||temp.z< -1||Math.abs(temp.x)>1.05||Math.abs(temp.y)>1.05){label.hidden=true;return;}
    label.hidden=false;label.style.left=(temp.x*.5+.5)*100+'%';label.style.top=(-temp.y*.5+.5)*100+'%';
   });
-  directory.textContent='🫶 '+say('AMIGOS','FRIENDS')+' '+friends.completed.length+'/'+islandFriends.length;
+  directory.textContent='🫶 '+say('AMIGOS','FRIENDS')+' '+friends.completed.filter(id=>islandFriends.some(f=>f.id===id)).length+'/'+islandFriends.length;
  }
  function ride(id,origin=null){
   if(!['mila','ollie','luna'].includes(id))return false;

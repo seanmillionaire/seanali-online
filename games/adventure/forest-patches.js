@@ -1,3 +1,4 @@
+import {darienBoulderClear} from './darien-terrain.js';
 import {natureSiteClear,chiriquiContains,waterfallTrailClear} from './rainforest-layout.js';
 import {jungleTrailClear,snakeCorridorContains} from './east-jungle-layout.js';
 import {homeReserved} from './mansion-state.js?v=225';
@@ -59,7 +60,7 @@ function nearTrail(x,z){
 }
 export function forestSiteClear(x,z,biome='tropical',kind=null){
  if(!waterfallTrailClear(x,z)||!natureSiteClear(x,z,1))return false;
- if((kind!=='fern'&&snakeCorridorContains(x,z))||!jungleTrailClear(x,z)||homeReserved(x,z,5)||!regionalTrailClear(x,z)||regionalClearing(x,z)||roadDistance(x,z)<HIGHWAY_WIDTH/2+10||townPlots.some(p=>Math.abs(x-p.x)<p.w/2+5&&Math.abs(z-p.z)<p.d/2+5))return false;
+ if(!darienBoulderClear(x,z,1.8)||(kind!=='fern'&&snakeCorridorContains(x,z))||!jungleTrailClear(x,z)||homeReserved(x,z,5)||!regionalTrailClear(x,z)||regionalClearing(x,z)||roadDistance(x,z)<HIGHWAY_WIDTH/2+10||townPlots.some(p=>Math.abs(x-p.x)<p.w/2+5&&Math.abs(z-p.z)<p.d/2+5))return false;
  if(FOREST_CLEARINGS.some(p=>Math.hypot(x-p.x,z-p.z)<p.r))return false;
  if(Math.hypot((x-cityX(120))/67,(z+50)/57)<1.09)return false;
  // Giant rainforest canopy belongs inland, never on offshore beaches.

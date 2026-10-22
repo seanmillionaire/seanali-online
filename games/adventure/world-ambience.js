@@ -22,7 +22,7 @@ export function trafficLoop(points,lane=1.8){
 export const AMBIENT_ROADS=['cityToGorgona','gorgonaBeachAccess','cityToColon','cityToBaru','panamaEast'];
 export const VISITOR_HABITATS=[{id:'Gorgona beach',x:4,z:10,rx:13,rz:3},{id:'Nueva Gorgona town',x:-55,z:-8,rx:34,rz:12},{id:'Gorgona western beach',x:-48,z:15,rx:24,rz:3},
  ...worldIslands.filter(p=>!['sunset','pizzaCity','monkeyIslet'].includes(p.id)&&(!p.guna||p.community)).map(p=>({id:p.en||p.id,x:p.x,z:p.z,rx:p.rx*.76,rz:p.rz*.76})),
- {id:'Boquete walkers',x:-290,z:-42,rx:18,rz:16},{id:'Volcán visitors',x:-385,z:-18,rx:18,rz:14}];
+ {id:'Boquete walkers',x:-290,z:-42,rx:18,rz:16},{id:'Volcán visitors',x:-385,z:-18,rx:18,rz:14}].filter(h=>!h.id.startsWith('Gorgona')&&h.id!=='Nueva Gorgona town'&&h.id!=='Playa Gorgona');
 
 export function createWorldAmbience({T,scene,models,make,mat,box,ball,cone,height,roadHeight=height,state,forest}){
  const root=new T.Group();root.name='Living Panama · visitors traffic and flyovers';scene.add(root);
@@ -36,6 +36,7 @@ export function createWorldAmbience({T,scene,models,make,mat,box,ball,cone,heigh
   const y=height(x,z);return [[.55,0],[-.55,0],[0,.55],[0,-.55]].every(([dx,dz])=>!inWater(x+dx,z+dz)&&Math.abs(height(x+dx,z+dz)-y)<.38);
  }
  for(const [hi,h]of VISITOR_HABITATS.entries()){
+  if(h.id.startsWith('Gorgona')||h.id==='Nueva Gorgona town'||h.id==='Playa Gorgona')continue; // Dedicated families now use this beach.
   const count=h.rx>15?3:2;
   for(let k=0;k<count;k++){
    let spawn=null;

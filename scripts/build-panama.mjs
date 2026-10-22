@@ -4,6 +4,7 @@ import {readFileSync,writeFileSync,mkdtempSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {createHash} from 'node:crypto';
+const terrainBuild=spawnSync(process.execPath,['scripts/build-mainland-data.mjs'],{stdio:'inherit'});if(terrainBuild.status!==0)throw Error('Mainland build failed');
 const dir=mkdtempSync(join(tmpdir(),'panama-build-')),meta=join(dir,'meta.json'),bundle='games/adventure/app.bundle.js';
 const hash=p=>createHash('sha256').update(readFileSync(p)).digest('hex');
 try{

@@ -1,3 +1,4 @@
+import {gorgonaShoreHeight} from './gorgona-shore.js';
 import {repairCoastalSites} from './coastal-sites.js';
 import {rainforestTerrain,normalizeWaterfall} from './rainforest-layout.js';
 import {ensureEstateCars} from './estate-cars.js';
@@ -290,7 +291,7 @@ export function bridgeDeckHeight(x,z){
 }
 export function isletHeight(x,z){return Math.max(terrainHeight(x,z),bridgeDeckHeight(x,z));}
 export const navigableWater=(x,z)=>canalWater(x,z)||inWater(x,z);
-export function terrainHeight(x,z){return rainforestTerrain(x,z,gradedTerrainHeight(x,z));}
+export function terrainHeight(x,z){return gorgonaShoreHeight(x,z,rainforestTerrain(x,z,gradedTerrainHeight(x,z)));}
 function gradedTerrainHeight(x,z){
  const base=ungradedHeight(x,z);
  // Road shoulders must not fill the canal or navigable open water.
@@ -350,7 +351,7 @@ export const explorePlaces=[
  {id:'volcanoSummit',...volcanoTrailPoint(1),icon:'🌋',es:'Mirador de la Cima · Volcán Barú',en:'Volcán Barú Summit Lookout',kind:'volcano'},
  {id:'coveBalloon',x:0,z:53,icon:'🎈',es:'Globo de Guna Yala',en:'Guna Yala return balloon',kind:'balloon'},
  {id:'islet',x:24,z:-8,icon:'🦋',es:'Isla Taboga · Flores',en:'Taboga · Island of Flowers',kind:'islet'},
- {id:'pip',x:4,z:9,icon:'🐢',es:'Pip · Playa Gorgona',en:'Pip · Playa Gorgona',kind:'friend'},
+ {id:'pip',x:4,z:9,icon:'🐚',es:'Conchas · Playa Gorgona',en:'Shells · Playa Gorgona',kind:'activity'},
  {id:'mila',x:0,z:-26,icon:'🦜',es:'Mila · Bocas del Toro',en:'Mila · Bocas del Toro',kind:'friend'},
  {id:'ollie',x:-290,z:-50,icon:'🪶',es:'Ollie · Boquete',en:'Ollie · Boquete',kind:'friend'},
  {id:'luna',x:0,z:49.3,icon:'🦀',es:'Luna · Guna Yala',en:'Luna · Guna Yala',kind:'friend'},

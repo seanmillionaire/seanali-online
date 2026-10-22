@@ -1,3 +1,4 @@
+import {createRegionalAmbience} from './regional-ambience.js';
 import {createSoundtrack} from './soundtrack.js?v=225';
 /* Recorded foley, activity-aware soundtrack, and independent music/effects mix. */
 export function createDelight({soundEnabled,motionEnabled}) {
@@ -21,7 +22,7 @@ export function createDelight({soundEnabled,motionEnabled}) {
   const recordings=new Map(),loading=new Map();let destroyed=false,engineSource=null,engineGain=null,engineBass=null,engineBassGain=null,footIndex=0;
   function loadRecording(name){
    if(loading.has(name))return loading.get(name);
-   const job=fetch(new URL('./assets/audio/'+name+(['door','whoosh','rain','thunder','coins','body-impact','celebration'].includes(name)?'.m4a':'.mp3'),import.meta.url)).then(r=>{if(!r.ok)throw Error('audio unavailable');return r.arrayBuffer();}).then(b=>context.decodeAudioData(b)).then(b=>{if(!destroyed)recordings.set(name,b);return b;}).catch(()=>null);
+   const job=fetch(new URL('./assets/audio/'+name+(['city-ambience','surf-ambience','birds-ambience','door','whoosh','rain','thunder','coins','body-impact','celebration'].includes(name)?'.m4a':'.mp3'),import.meta.url)).then(r=>{if(!r.ok)throw Error('audio unavailable');return r.arrayBuffer();}).then(b=>context.decodeAudioData(b)).then(b=>{if(!destroyed)recordings.set(name,b);return b;}).catch(()=>null);
    loading.set(name,job);return job;
   }
   function recordedSound(name,{volume=.35,rate=1,offset=0,duration=null}={}){
@@ -59,7 +60,8 @@ export function createDelight({soundEnabled,motionEnabled}) {
   function boat(active,position=0){boatRequested=active;boatPosition=position;if(!active){stopBoat();return;}if(!soundEnabled()||document.hidden)return;startBoat();tuneBoat();}
   let rainSource=null,rainGain=null;
   function rainSound(amount=0){if(!unlocked||!soundEnabled()||document.hidden)amount=0;if(amount<.025){if(rainSource){rainSource.stop();rainSource.disconnect();rainGain.disconnect();rainSource=rainGain=null;}return;}if(!ready())return;const b=recordings.get('rain');if(!b){loadRecording('rain');return;}if(!rainSource){rainSource=context.createBufferSource();rainSource.buffer=b;rainSource.loop=true;rainGain=context.createGain();rainGain.gain.value=0;rainSource.connect(rainGain).connect(master);rainSource.start();}rainGain.gain.setTargetAtTime(Math.min(.26,amount*.28),context.currentTime,.7);}
-  function soundscape(info){if(welcomeMusicPending&&!welcomeHeld&&performance.now()/1000>musicRevealAt){soundtrack.sync();welcomeMusicPending=false;}soundtrack.update(info);rainSound(info.active===false?0:info.rain||0);}
+  const regional=createRegionalAmbience({environment:()=>context?{context,output:master}:null,load:name=>{const b=recordings.get(name);if(!b)loadRecording(name);return b;},allowed:()=>!destroyed&&!welcomeHeld&&unlocked&&soundEnabled()&&!document.hidden&&scene==='explore'&&ready()});
+  function soundscape(info){regional.update(info);if(welcomeMusicPending&&!welcomeHeld&&performance.now()/1000>musicRevealAt){soundtrack.sync();welcomeMusicPending=false;}soundtrack.update(info);rainSound(info.active===false?0:info.rain||0);}
   const scale=[261.63,293.66,329.63,392,440,523.25,659.25];
   function note(n=0,duration=.3,kind='sine'){
     const f=scale[((n%7)+7)%7];voice(f,duration,{volume:.15,type:kind});voice(f*2,duration*.55,{volume:.034});voice(f*3,duration*.32,{volume:.013});
@@ -81,11 +83,11 @@ export function createDelight({soundEnabled,motionEnabled}) {
   function stopAmbient(){clearTimeout(ambientTimer);ambientTimer=null;}
   function ambientPhrase(){soundtrack.sync();}
   function sync(){
-    if(!soundEnabled()||document.hidden){carEngine(0,false);stopBoat();rainSound(0);stopAmbient();soundtrack.sync();if(context){for(const o of voices){try{o.stop();o.disconnect();}catch{}}voices.clear();context.suspend().catch(()=>{});}return;}
+    if(!soundEnabled()||document.hidden){regional.stop();carEngine(0,false);stopBoat();rainSound(0);stopAmbient();soundtrack.sync();if(context){for(const o of voices){try{o.stop();o.disconnect();}catch{}}voices.clear();context.suspend().catch(()=>{});}return;}
     if(unlocked&&ready()){master.gain.setTargetAtTime(welcomeHeld?0:preferences.effects,context.currentTime,welcomeHeld?.04:1.2);soundtrack.sync();if(boatRequested)startBoat();}
   }
   function gesture(){const first=!unlocked;unlocked=true;if(ready()){soundtrack.unlock();if(first)for(const name of ['horn','engine','footsteps','crash','splash','whoosh','body-impact','coins','door','celebration'])loadRecording(name);}sync();}
-  function setScene(next){if(next!==scene)stopTheme();if(next!=='explore'){carEngine(0,false);boatRequested=false;stopBoat();}scene=next;stopAmbient();if(ambience&&context){ambience.gain.cancelScheduledValues(context.currentTime);ambience.gain.setTargetAtTime(['map','home','welcome'].includes(scene)?.24:.0001,context.currentTime,.12);}if(unlocked){if(scene!=='explore')ambientPhrase();}}
+  function setScene(next){if(next!==scene)stopTheme();if(next!=='explore'){regional.stop();carEngine(0,false);boatRequested=false;stopBoat();}scene=next;stopAmbient();if(ambience&&context){ambience.gain.cancelScheduledValues(context.currentTime);ambience.gain.setTargetAtTime(['map','home','welcome'].includes(scene)?.24:.0001,context.currentTime,.12);}if(unlocked){if(scene!=='explore')ambientPhrase();}}
   function duck(){soundtrack.duck(5);}
   const visibility=()=>{if(document.hidden)window.speechSynthesis?.cancel();sync();};document.addEventListener('visibilitychange',visibility);
   function setCityAmbient(isCity){
@@ -106,7 +108,7 @@ export function createDelight({soundEnabled,motionEnabled}) {
    if(horn>.005)recordedSound('horn',{volume:Math.min(.5,horn*.55),rate:.88+Math.random()*.22});
 
   }
-  return {welcomeAudio,soundscape,setAudioLevels,get audioLevels(){return {...preferences};},get soundtrackStatus(){return soundtrack.status;},nextTrack(){soundtrack.next();},recordedSound,carEngine,panamaSound,setCityAmbient,streetSound,boat,get boatActive(){return !!boatBus;},note,drum,effect,gesture,sync,setScene,duck,get voiceCount(){return voices.size;},get ambientScheduled(){return ambientTimer!==null;},destroy(){destroyed=true;soundtrack.destroy();rainSound(0);carEngine(0,false);recordings.clear();boatRequested=false;stopBoat();stopAmbient();stopTheme();document.removeEventListener('visibilitychange',visibility);context?.close();}};
+  return {welcomeAudio,soundscape,setAudioLevels,get audioLevels(){return {...preferences};},get ambienceStatus(){return regional.status;},get soundtrackStatus(){return soundtrack.status;},nextTrack(){soundtrack.next();},recordedSound,carEngine,panamaSound,setCityAmbient,streetSound,boat,get boatActive(){return !!boatBus;},note,drum,effect,gesture,sync,setScene,duck,get voiceCount(){return voices.size;},get ambientScheduled(){return ambientTimer!==null;},destroy(){destroyed=true;regional.dispose();soundtrack.destroy();rainSound(0);carEngine(0,false);recordings.clear();boatRequested=false;stopBoat();stopAmbient();stopTheme();document.removeEventListener('visibilitychange',visibility);context?.close();}};
 }
 export function burst(target,{motion=true,big=false}={}){
   if(!motion||!target?.isConnected)return;

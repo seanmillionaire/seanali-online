@@ -5,7 +5,7 @@ import {homeLot} from './mansion-state.js?v=225';
 import {SMOOTH_MAINLAND_OUTLINE,CANAL_WATERWAY,mainlandContains,WORLD_EXTENT} from './geography.js?v=225';
 /* Shared, coordinate-accurate archipelago map for the open-world explorer.
    X is east/right and Z is south/down, matching ArrowUp (negative Z). */
-export function createWorldMap({host,panel,world,islands,places,language,onTravel,onOpen}){
+export function createWorldMap({host,panel,world,islands,places,language,onTravel,onOpen,isDriving=()=>false}){
  const es=language==='es',say=(a,b)=>es?a:b,ns='http://www.w3.org/2000/svg';
  const land=[{id:'home',x:0,z:0,rx:20,rz:14,es:'Playa Gorgona',en:'Playa Gorgona',icon:'🏡'}]
    .concat(islands.map(i=>({id:i.id,guna:i.guna,x:i.x,z:i.z,rx:i.rx,rz:i.rz,es:i.es,en:i.en,
@@ -105,7 +105,7 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
   const frame=elem('div','island-map-frame');
   full=drawing(false);frame.append(full.svg);
   panel.append(frame,drawControls());
-  panel.append(elem('p','island-map-guide',say('🧭 La flecha naranja eres tú. Toca un destino para visitarlo.','🧭 The orange arrow is you. Tap a destination to visit it.')));
+  panel.append(elem('p','island-map-guide',isDriving()?say('🚘 Elige tu destino. Te llevamos por carretera.','🚘 Pick a destination. We’ll drive you there by road.'):say('🧭 La flecha naranja eres tú. Toca un destino para visitarlo.','🧭 The orange arrow is you. Tap a destination to visit it.')));
   const destinations=elem('div','island-map-destinations');
   for(const island of land){
     const destination=islandTarget(island.id);if(!destination)continue;

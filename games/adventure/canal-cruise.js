@@ -1,3 +1,4 @@
+import {createCruiseHelm,cruiseHullClear} from './cruise-helm.js';
 import {CRUISE_LENGTH,CRUISE_FARE,CRUISE_BOARD,CRUISE_DOCK,cruisePose,buyCruise,advanceCruise} from './cruise-route.js?v=225';
 import {coinBalance} from './explore-state.js?v=225';
 export function createCanalCruise({T,scene,host,state,make,mat,box,ball,cylinder,height,save,refresh,joy,tell}){
@@ -58,15 +59,15 @@ export function createCanalCruise({T,scene,host,state,make,mat,box,ball,cylinder
  // A clear play court on the upper deck; passengers use ship-local coordinates.
  piece(box,wood,0,8.55,3,7.5,.12,7.2,ship);
  const beachBall=piece(ball,orange,0,9.1,3,.38,.38,.38,ship);beachBall.name='Friends upper-deck beach ball';
- const controls=document.createElement('div');controls.hidden=true;controls.setAttribute('aria-label',choose('Juegos en cubierta','Top deck games'));
+ const controls=document.createElement('div');controls.hidden=true;controls.className='cruise-deck-controls';controls.setAttribute('aria-label',choose('Controles del crucero','Cruise controls'));
  Object.assign(controls.style,{position:'absolute',bottom:'max(20px, env(safe-area-inset-bottom))',left:'16px',right:'16px',zIndex:'32',display:'flex',justifyContent:'center',gap:'10px',flexWrap:'wrap'});
  host.append(controls);
- let game='ball',playTime=0,autosave=0,ambientDistance=0,berthWait=10,queued=false;
+ const helm=createCruiseHelm();let game='ball',playTime=0,autosave=0,ambientDistance=0,berthWait=10,queued=false;
  const gameButtons=[];
- for(const [id,label]of [['ball',choose('⚽ Jugar a la pelota','⚽ Play ball')],['dance',choose('💃 Bailar con amigos','💃 Dance with friends')]]){
+ for(const [id,label]of [['helm',choose('⚓ Tomar el timón','⚓ Take the helm')],['ball',choose('⚽ Jugar a la pelota','⚽ Play ball')],['dance',choose('💃 Bailar con amigos','💃 Dance with friends')]]){
   const b=document.createElement('button');b.type='button';b.textContent=label;
   Object.assign(b.style,{minHeight:'48px',padding:'12px 16px',border:'2px solid #ffe7a7',borderRadius:'16px',background:'#16364e',color:'#fff8e5',fontSize:'17px',fontWeight:'800'});
-  b.onclick=()=>{game=id;joy.gesture?.();joy.effect('friend');};controls.append(b);gameButtons.push([id,b]);
+  b.onclick=()=>{game=id==='helm'&&game==='helm'?'ball':id;joy.gesture?.();joy.effect('friend');};controls.append(b);gameButtons.push([id,b]);
  }
  function deckPoint(x,z,y=0){const a=ship.rotation.y;return {x:ship.position.x+Math.cos(a)*x+Math.sin(a)*z,z:ship.position.z-Math.sin(a)*x+Math.cos(a)*z,y:ship.position.y+8.62+y};}
  function near(x,z){return Math.hypot(x-CRUISE_BOARD.x,z-CRUISE_BOARD.z)<8;}
@@ -75,10 +76,11 @@ export function createCanalCruise({T,scene,host,state,make,mat,box,ball,cylinder
   if(!buyCruise(c,coinBalance(state))){
    tell(choose('🚢 El crucero cuesta 10 🪙. Recoge bolsas de dinero en la ciudad.','🚢 The cruise costs 10 coins. Collect money bags in the city.'));return false;
   }
-  playTime=0;game='ball';Object.assign(s,CRUISE_DOCK);save();refresh();joy.effect('boat');
+  playTime=0;game='ball';helm.reset();Object.assign(s,CRUISE_DOCK);save();refresh();joy.effect('boat');
   tell(choose('🚢 ¡Todos tus amigos a bordo! Jueguen en la cubierta mientras navegamos.','🚢 All your friends are aboard! Play on the top deck while we cruise.'));return true;
  }
- function update(dt,active){
+ function update(dt,active,input={x:0,z:0}){
+  if(c.active&&active&&Math.hypot(input.x,input.z)>.15)game='helm';
   if(queued&&!near(s.x,s.z))queued=false;
   if(!c.active&&active){
    if(ambientDistance>0){ambientDistance=Math.min(CRUISE_LENGTH,ambientDistance+Math.min(dt,.1)*3.2);if(ambientDistance>=CRUISE_LENGTH){ambientDistance=0;berthWait=25;if(queued){queued=false;board();}}}
@@ -86,20 +88,21 @@ export function createCanalCruise({T,scene,host,state,make,mat,box,ball,cylinder
    else if(!queued)ambientDistance=.01;
   }
   if(c.active&&active)playTime+=dt;
-  const finished=advanceCruise(c,dt,active);
-  const p=cruisePose(c.active?c.distance:ambientDistance);
+  helm.step(c.distance,dt,game==='helm',input,c.active&&active);
+  const finished=advanceCruise(c,dt,active,helm.speed);
+  const p=c.active?helm.step(c.distance,0,game==='helm',input,active):cruisePose(ambientDistance);
   ship.position.set(p.x,.12,p.z);
   // Smooth the vessel's heading while keeping the passenger fixed on deck.
   const turn=Math.atan2(Math.sin(p.heading-ship.rotation.y),Math.cos(p.heading-ship.rotation.y));
-  ship.rotation.y+=turn*(dt===0?1:Math.min(1,dt*1.8));
+  if(active||dt===0)ship.rotation.y+=turn*(dt===0?1:Math.min(1,dt*1.8));if(!cruiseHullClear({...p,heading:ship.rotation.y}))ship.rotation.y=p.heading;
   if(c.active){s.x=p.x;s.z=p.z;autosave+=active?dt:0;if(autosave>2){autosave=0;save();}}
   if(finished){berthWait=25;Object.assign(s,CRUISE_BOARD);save();refresh();joy.effect('finish');tell(choose('🚢 ¡Vuelta completa! De regreso en el Canal de Panamá.','🚢 Full tour complete! Back at the Panama Canal.'));}
   host.classList.toggle('on-cruise',c.active);status.hidden=!c.active;controls.hidden=!c.active;controls.style.display=c.active?'flex':'none';
-  for(const [id,b]of gameButtons)b.setAttribute('aria-pressed',String(id===game));
+  for(const [id,b]of gameButtons){const pressed=String(id===game);if(b.getAttribute?.('aria-pressed')!==pressed)b.setAttribute('aria-pressed',pressed);if(id==='helm'){const text=game==='helm'?choose('🚢 Paseo automático','🚢 Auto cruise'):choose('⚓ Tomar el timón','⚓ Take the helm');if(b.textContent!==text)b.textContent=text;}}
   beachBall.visible=c.active&&game==='ball';beachBall.position.set(Math.sin(playTime*1.4)*2,9.1+Math.abs(Math.sin(playTime*2.8))*1.1,3+Math.cos(playTime*1.4)*1.8);
-  if(c.active)status.textContent='🚢 '+(p.progress<.5?choose('Pacífico → Atlántico','Pacific → Atlantic'):choose('Atlántico → Pacífico','Atlantic → Pacific'))+' · '+Math.floor(p.progress*100)+'% · '+choose('🫶 Todos los amigos · Juegos en cubierta','🫶 All friends · Top deck play');
-  const passenger=deckPoint(0,5.7,game==='dance'?Math.abs(Math.sin(playTime*4))*.25:0);
-  return {active:c.active,finished,...passenger,heading:ship.rotation.y+(game==='dance'?Math.sin(playTime*3)*.5:0),game,playTime,playing:active,deckPoint};
+  if(c.active){const text='🚢 '+(p.progress<.5?choose('Pacífico → Atlántico','Pacific → Atlantic'):choose('Atlántico → Pacífico','Atlantic → Pacific'))+' · '+Math.floor(p.progress*100)+'% · '+(game==='helm'?choose('⚓ ← → Girar · ↑ Rápido · ↓ Frenar','⚓ ← → Steer · ↑ Faster · ↓ Brake'):choose('🫶 Amigos · Juega o toma el timón','🫶 Friends · Play or take the helm'));if(status.textContent!==text)status.textContent=text;}
+  const passenger=deckPoint(0,game==='helm'?9:5.7,game==='dance'?Math.abs(Math.sin(playTime*4))*.25:0);
+  return {active:c.active,helm:game==='helm',finished,...passenger,heading:ship.rotation.y+(game==='dance'?Math.sin(playTime*3)*.5:0),game,playTime,playing:active,deckPoint};
  }
  update(0,false);
  function blocks(x,z){const dx=x-ship.position.x,dz=z-ship.position.z,a=ship.rotation.y;return Math.abs(dx*Math.cos(a)-dz*Math.sin(a))<7&&Math.abs(dx*Math.sin(a)+dz*Math.cos(a))<20;}

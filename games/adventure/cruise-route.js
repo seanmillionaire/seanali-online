@@ -25,9 +25,9 @@ export function buyCruise(cruise,balance){
  if(cruise.active||cruise.tickets>=9999||balance<CRUISE_FARE)return false;
  cruise.tickets++;cruise.active=true;cruise.distance=0;return true;
 }
-export function advanceCruise(cruise,dt,active){
+export function advanceCruise(cruise,dt,active,speed=CRUISE_SPEED){
  if(!cruise.active||!active)return false;
- cruise.distance=Math.min(CRUISE_LENGTH,cruise.distance+Math.max(0,Math.min(dt,.1))*CRUISE_SPEED);
+ cruise.distance=Math.min(CRUISE_LENGTH,cruise.distance+Math.max(0,Math.min(dt,.1))*Math.max(0,Math.min(12,Number.isFinite(speed)?speed:CRUISE_SPEED)));
  if(cruise.distance<CRUISE_LENGTH)return false;
  cruise.active=false;cruise.completed++;cruise.distance=0;return true;
 }

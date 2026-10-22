@@ -1,3 +1,4 @@
+import {darienRelief} from './darien-terrain.js';
 import {chiriquiContains,inlandFreshwater} from './rainforest-layout.js';
 import {jungleContains} from './east-jungle-layout.js';
 import {costaContains} from './costa-arriba-layout.js?v=225';
@@ -42,7 +43,7 @@ export const WORLD_EXTENT={left:-WORLD_BOUNDS.x,top:-WORLD_BOUNDS.z,width:WORLD_
 // height field, so countryside never becomes a decorative floating backdrop.
 export function mainlandRelief(x,z){
  if(x> -112&&x< -20&&z>0){const shore=19+2.7*Math.sin((x+85)*.038),t=Math.max(0,Math.min(1,(shore-z)/12));return .04+1.06*t*t*(3-2*t);}
- if(jungleContains(x,z))return 1.1+Math.max(0,Math.min(1,(x-490)/75))*(2+1.2*Math.sin(x*.035)*Math.cos(z*.028));
+ if(jungleContains(x,z))return darienRelief(x,z);
  if(x> -45||z< -150)return 1.1;
  const ridge=Math.exp(-(((x+210)/140)**2+((z+55)/38)**2));
  const hills=(Math.sin(x*.028+z*.017)+Math.cos(z*.043-x*.011)+2)*.6;

@@ -1,7 +1,7 @@
 import {addFood,islandPoint} from './explore-state.js?v=225';
 // Tiny, physical story puzzles. These never gate movement or mark a lesson complete.
 export const islandStories=[
- {id:'shells',region:'harbor',x:2,z:7,friend:'🐢',es:'Conchas de Playa Gorgona',en:'Gorgona Shell Trail',hintEs:'Pisa las conchas en orden',hintEn:'Step on shells in order',icons:['1 🐚','2 🐚','3 🐚'],order:[0,1,2],color:'#f4cc78',winEs:'¡Pip tiene un camino!',winEn:'Pip has a path!'},
+ {id:'shells',region:'harbor',x:-20,z:12,friend:'🐚',es:'Conchas de Playa Gorgona',en:'Gorgona Shell Trail',hintEs:'Pisa las conchas en orden',hintEn:'Step on shells in order',icons:['1 🐚','2 🐚','3 🐚'],order:[0,1,2],color:'#f4cc78',winEs:'¡Sendero de conchas completo!',winEn:'Shell trail complete!'},
  {id:'picnic',region:'market',x:0,z:-31,friend:'🦜',es:'Merienda en Bocas del Toro',en:'Bocas del Toro Picnic',hintEs:'Sigue la receta',hintEn:'Follow the recipe',icons:['🍌','🥣','🍯'],order:[0,1,0,2],color:'#eeaa70',winEs:'¡Picnic listo! +3 plátanos',winEn:'Picnic ready! +3 bananas'},
  {id:'seed',region:'jungle',x:-42,z:7,friend:'🪶',es:'Flores de Boquete',en:'Boquete Forest Flowers',hintEs:'Semilla, agua, sol',hintEn:'Seed, water, sun',icons:['🌱','💧','☀️'],order:[0,1,2],color:'#91cd8e',winEs:'¡Nació una flor!',winEn:'A flower has grown!'},
  {id:'song',region:'music',x:0,z:46,friend:'🦀',es:'La canción de Luna · Guna Yala',en:'Luna’s Guna Yala Song',hintEs:'Sigue los colores',hintEn:'Follow the colors',icons:['🩷 ♪','💛 ♪','💙 ♪'],order:[0,2,1,0],color:'#bca4ea',winEs:'¡La isla tiene una canción!',winEn:'The island has a song!'},

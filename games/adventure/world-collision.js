@@ -1,3 +1,4 @@
+import {JUNGLE_BOULDERS} from './darien-terrain.js';
 import {GORGONA_FISH_SHACK} from './gorgona-coast.js';
 import {homeLot} from './mansion-state.js?v=225';
 import {regionalBlocked} from './regional-layout.js?v=225';
@@ -11,7 +12,7 @@ import {traversable} from './explore-state.js?v=225';
 export function createWorldCollision({state,trees=[],rocks=[]}){
  const cells=new Map(),size=12;
  const add=(p)=>{const r=p.r+.32;for(let ix=Math.floor((p.x-r)/size);ix<=Math.floor((p.x+r)/size);ix++)for(let iz=Math.floor((p.z-r)/size);iz<=Math.floor((p.z+r)/size);iz++){const key=ix+','+iz;if(!cells.has(key))cells.set(key,[]);cells.get(key).push(p);}};
- trees.forEach(t=>add({x:t.x,z:t.z,r:Math.max(.16,(t.scale??t.size??1)*.28)}));rocks.forEach(add);
+ trees.forEach(t=>add({x:t.x,z:t.z,r:Math.max(.16,(t.scale??t.size??1)*.28)}));rocks.forEach(add);JUNGLE_BOULDERS.forEach(add);
  return {clear(x,z){
   if(Math.abs(x-GORGONA_FISH_SHACK.x)<GORGONA_FISH_SHACK.w/2+.3&&Math.abs(z-GORGONA_FISH_SHACK.z)<GORGONA_FISH_SHACK.d/2+.3)return false;
   const lot=homeLot(state.world);if(lot&&state.world.mansion.stage>=3&&x-lot.x> -19.9&&x-lot.x< -15&&z-lot.z> -2.35&&z-lot.z<14.35)return false;if(lot&&state.world.mansion.stage>0&&Math.abs(x-lot.x)<10.4&&Math.abs(z-lot.z)<8.7)return false;

@@ -16,7 +16,7 @@ for(const [i,a]of all.entries())assert(distances[i]>1,a.g.name+' keeps moving wi
 const before=all.map(a=>a.g.position.clone());wildlife.update(.1,false,20,options);all.forEach((a,j)=>assert(a.g.position.distanceTo(before[j])<1e-8,'explicit pause works'));
 const source=fs.readFileSync(new URL('../games/adventure/explore.js',import.meta.url),'utf8');
 const expression=source.match(/const worldActive=.*?,active=!cruising&&worldActive;/)[0];
-const ctx=vm.createContext({cruising:true,paused:()=>false,document:{hidden:false,querySelector:()=>null},panel:{hidden:true},journey:{isOpen:()=>false}});
+const ctx=vm.createContext({host:{classList:{contains:()=>false}},friendSystem:null,cruising:true,paused:()=>false,document:{hidden:false,querySelector:()=>null},panel:{hidden:true},journey:{isOpen:()=>false}});
 vm.runInContext(expression,ctx);assert.equal(vm.runInContext('worldActive',ctx),true);assert.equal(vm.runInContext('active',ctx),false);
 assert(source.includes('colonLife.update(dt,worldActive,'));assert(source.includes('life.update(dt,worldActive,motion(),'));
 const colon=fs.readFileSync(new URL('../games/adventure/colon-adventure.js',import.meta.url),'utf8');assert(colon.includes('wildlife.update(dt,active,clock,'));

@@ -1,8 +1,11 @@
+import {loadMainlandData} from './mainland-loader.js';
 import {createExplore} from './explore.js?v=225';
 import {fresh} from './state.js?v=225';
 // Warm the actual game once. The welcome camera is only a temporary view;
 // entering hands ownership of the same canvas, scene and GPU resources to Play.
 export function createWelcomeWorld(host,{motion=()=>true,state:initial,options={}}={}){
+ // Fetch the small compressed terrain while the welcome page is visible.
+ loadMainlandData();
  const stage=document.createElement('main');stage.className='explore-world welcome-world';stage.setAttribute('aria-hidden','true');stage.inert=true;host.prepend(stage);
  const state=initial?JSON.parse(JSON.stringify(initial)):fresh(),savedTime=state.world.dayTime;state.world.dayTime=60;
  let preview=true,taken=false,disposed=false,elapsed=0,last=0,arriving=true,arrivalTime=0;

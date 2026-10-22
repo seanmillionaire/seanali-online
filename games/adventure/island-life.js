@@ -1,3 +1,4 @@
+import {nightLighting} from './night-lighting.js';
 import {worldClock,DAY_CYCLE_SECONDS} from './world-clock.js?v=225';
 export {DAY_CYCLE_SECONDS} from './world-clock.js?v=225';
 import {cityX} from './geography.js?v=225';
@@ -46,7 +47,7 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
  const sunBody=new T.Mesh(ball,basic('#ffe39c')),moon=new T.Mesh(ball,basic('#e3f1ff'));sunBody.name='Sun';moon.name='Moon';sunBody.scale.setScalar(12);moon.scale.setScalar(18);sky.add(sunBody,moon);sunBody.renderOrder=30;moon.renderOrder=30;for(let i=0;i<10;i++){const a=i*Math.PI/5,ray=new T.Mesh(cone,basic('#ffd16e'));ray.position.set(Math.sin(a)*1.4,Math.cos(a)*1.4,0);ray.rotation.z=-a;ray.scale.set(.13,.45,.1);ray.renderOrder=30;sunBody.add(ray);}
  for(let i=0;i<4;i++){const crater=new T.Mesh(ball,basic('#a6bad1'));crater.scale.set(.2,.15,.025);crater.renderOrder=31;crater.position.set(Math.sin(i*2)*.55,Math.cos(i*2)*.5,.85);moon.add(crater);}
  const starDome=new T.Group();starDome.name='Slowly drifting stars';sky.add(starDome);let skyTime=0;
- const focus=new T.SpotLight('#e0edff',0,105,Math.PI*.34,1,1);focus.name='Cinematic night action light';focus.castShadow=false;scene.add(focus,focus.target);
+ const focus=new T.SpotLight('#e0edff',0,105,Math.PI*.34,1,1);focus.name='Cinematic night action light';focus.castShadow=false;focus.decay=0;focus.distance=450;focus.angle=Math.PI*.42;const fill=new T.HemisphereLight('#d8e8ff','#778882',0);fill.name='Night visibility fill';scene.add(focus,focus.target,fill);
  const starMaterial=basic('#dceeff',{transparent:true,opacity:0}),stars=[];for(let i=0;i<64;i++){const star=new T.Mesh(ball,starMaterial);star.position.set(Math.sin(i*9.7)*550,100+(i%11)*36,Math.cos(i*9.7)*550);star.scale.setScalar(.65+(i%3)*.25);starDome.add(star);stars.push(star);}
  // Sky follows position only: turning the camera keeps the sun fixed on the horizon.
  function nearestRideable(x,z,limit=6.8){
@@ -65,10 +66,11 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
  function unmark(){ridden=null;}
  return {nearestRideable,hit,markRidden,unmark,update(dt,active,motion,player=null){if(!Number.isFinite(s.dayTime))s.dayTime=40;if(active&&Number.isFinite(dt)&&dt>0)s.dayTime=(s.dayTime+dt*240/DAY_CYCLE_SECONDS)%240;const {phase,day,night,twilight}=islandDaylight(s.dayTime),sunset=twilight;
   if(scene.background?.isColor)scene.background.copy(nightSky).lerp(daySky,day).lerp(dusk,sunset*.35);if(scene.fog)scene.fog.color.copy(scene.background);
-  if(sun){sun.intensity=.42+day*2.58;sun.color.copy(moonLight).lerp(dayLight,day).lerp(sunsetLight,twilight*.5);}if(ambient){ambient.intensity=.62+day*.83;ambient.color.copy(nightAmbient).lerp(dayAmbient,day);}if(waterMaterial?.uniforms.daylight)waterMaterial.uniforms.daylight.value=day;
+  const lighting=nightLighting(day);fill.intensity=lighting.fill;
+  if(sun){sun.intensity=lighting.moon;sun.color.copy(moonLight).lerp(dayLight,day).lerp(sunsetLight,twilight*.5);}if(ambient){ambient.intensity=lighting.ambient;ambient.color.copy(nightAmbient).lerp(dayAmbient,day);}if(waterMaterial?.uniforms.daylight)waterMaterial.uniforms.daylight.value=day;
   sky.position.copy(camera.position);
   if(active)skyTime+=Math.max(0,dt);starDome.rotation.y=skyTime*.006;starDome.rotation.z=Math.sin(skyTime*.012)*.025;
-  focus.intensity=player&&!player.indoors?(1-day)*90:0;focus.position.set(player?.x??0,(player?.y??0)+23,(player?.z??0)+12);focus.target.position.set(player?.x??0,(player?.y??0)+.5,player?.z??0);
+  focus.intensity=player&&!player.indoors?lighting.focus:0;focus.position.set(player?.x??0,(player?.y??0)+23,(player?.z??0)+12);focus.target.position.set(player?.x??0,(player?.y??0)+.5,player?.z??0);
   const angle=phase*Math.PI*2;
   sunBody.position.set(-Math.cos(angle)*650,Math.sin(angle)*650,-290);
   // Keep the large moon in the upper view at night, including when steering.
@@ -164,7 +166,7 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
     else f.rotation.y=motion?Math.sin(phase)*.16:0;
    });
   }
- },dispose(){scene.remove(sky,group,focus,focus.target);focus.dispose();owned.forEach(m=>m.dispose());}};
+ },dispose(){scene.remove(sky,group,focus,focus.target,fill);focus.dispose();fill.dispose();owned.forEach(m=>m.dispose());}};
 }
 
 // Sharks choose individual safe goals rather than replaying a ring of waypoints.

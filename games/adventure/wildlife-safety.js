@@ -8,7 +8,7 @@ export function wildlifeEncounter(player,animals,{protected:protectedMode=false}
   const along=Math.max(-(a.length||0)/2,Math.min((a.length||0)/2,dx*Math.sin(heading)+dz*Math.cos(heading)));
   const distance=Math.hypot(dx-Math.sin(heading)*along,dz-Math.cos(heading)*along),radius=a.radius||1;
   if(distance<radius+.35)return {kind:a.kind,hit:true,distance};
-  if(distance<radius+8&&(!warning||distance<warning.distance))warning={kind:a.kind,hit:false,distance};
+  if(distance<(a.warningRadius||radius+8)&&(!warning||distance<warning.distance))warning={kind:a.kind,hit:false,distance};
  }
  return warning;
 }
