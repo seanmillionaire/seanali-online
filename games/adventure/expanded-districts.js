@@ -1,4 +1,4 @@
-import {homeReserved} from './mansion-state.js?v=225';
+import {homeReserved,HOME_LOTS} from './mansion-state.js?v=225';
 import {cityX} from './geography.js?v=225';
 // Space-first city districts beyond the original Casco Viejo loop.
 // All plots are deterministic, stay on dry land and leave existing gameplay
@@ -7,8 +7,8 @@ import {mainlandContains,canalWater,gatunWater} from './geography.js?v=225';
 import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=225';
 
 export const EXPANDED_DISTRICTS=[
- {id:'panama-east',name:'Panama City · modern eastern neighborhoods',
-  xs:[174,187,201,216,231,246,261].map(cityX),zs:[-83,-68,-52,-35,-19],
+ {id:'panama-east',name:'Costa del Este · Panama City',
+  xs:[174,187,201,216,231,246,261].map(cityX),zs:[-76,-63,-49,-35,-19],
   kind:'modern'},
  {id:'colon-civic',name:'Colón · spaced civic and port neighborhoods',
   xs:[-25,-10,5,20,35],zs:[-388,-374,-360],kind:'civic'},
@@ -25,17 +25,15 @@ export function districtGround(x,z){return mainlandContains(x,z)&&!canalWater(x,
 function nearStreet(area,x,z){return area.xs.some(k=>Math.abs(k-x)<3.25)||area.zs.some(k=>Math.abs(k-z)<3.25);}
 const sizeFor=(area,i,j)=>{
  const modern=area.kind==='modern',signature=(i*11+j*7)%9;
- const landmark=modern&&i>=2&&signature%3===0;
- const w=landmark?5.3:modern?5.0:4.5,d=landmark?6.2:modern?5.7:5.3;
- const floors=landmark?11+((i+j)%5)*2:modern?3+((i*3+j*5)%5):2+((i*5+j)%3);
- return {w,d,h:floors*(landmark?2.45:2.25),floors,landmark,signature};
+ if(modern){const housing=signature===1||signature===2||signature===7?'mansion':signature%3===0?'tower':'condo',floors=housing==='mansion'?2:housing==='tower'?12+((i+j)%4)*2:4+((i+j)%3),w=housing==='mansion'?6.3:5.8,d=6.3;return {w,d,h:floors*(housing==='mansion'?3:2.65),floors,landmark:housing==='tower',signature,housing};}
+ const floors=2+((i*5+j)%3);return {w:4.5,d:5.3,h:floors*2.25,floors,landmark:false,signature,housing:null};
 };
 export function districtBuildings(){
  const plots=[];
  for(const area of EXPANDED_DISTRICTS)for(let i=0;i<area.xs.length-1;i++)for(let j=0;j<area.zs.length-1;j++){
   // More room between destinations: leave about a third of the blocks
   // as civic squares, pedestrian courtyards and landscaped pockets.
-  if(area.kind==='modern'&&((i*7+j*5)%7===0||(i+2*j)%11===5||i===0))continue;
+  if(area.kind==='modern'&&((i*3+j*5)%11===0))continue;
   if(area.kind==='civic'&&(i+j*2)%7===0)continue;
   const x=(area.xs[i]+area.xs[i+1])/2,z=(area.zs[j]+area.zs[j+1])/2;
   // Preserve the waterfall walkway and lookout already owned by the Colón quests.
@@ -63,7 +61,7 @@ export function districtNeighborhood(x,z){
 }
 export function createExtendedDistricts({T,scene,make,mat,box,cylinder,height,surfaces={}}){
  const group=new T.Group();
- group.name='Panama detailed districts · eastern skyline, civic plazas and Colón waterfront';
+ group.name='Panama detailed districts · Costa del Este luxury residences and Colón waterfront';group.userData.luxuryHousing=DISTRICT_PLOTS.filter(p=>p.district==='panama-east');
  scene.add(group);
  const buildings=DISTRICT_PLOTS,counts={city:0,colon:0,parks:0};
  const walls=[
@@ -97,27 +95,68 @@ export function createExtendedDistricts({T,scene,make,mat,box,cylinder,height,su
  // Roads are built in one instanced draw per material; corner samples must
  // be dry so no artificial squares hang over the sea or the canal.
  function street(m,x,z,w,d){
-  if(!districtGround(x,z)||!districtGround(x+w*.43,z+d*.43)||!districtGround(x-w*.43,z-d*.43))return;
+  if(homeReserved(x,z,1)||!districtGround(x,z)||!districtGround(x+w*.43,z+d*.43)||!districtGround(x-w*.43,z-d*.43))return;
   boxAt(m,x,height(x,z)+.074,z,w,.13,d);
  }
  for(const area of EXPANDED_DISTRICTS){
   const minZ=area.zs[0],maxZ=area.zs.at(-1),minX=area.xs[0],maxX=area.xs.at(-1);
   for(const x of area.xs)for(let z=minZ;z<=maxZ;z+=2.6){
    street(asphalt,x,z,5.7,2.75);
-   if(Math.round((z-minZ)/2.6)%6===2&&districtGround(x,z))boxAt(yellow,x,height(x,z)+.157,z,.12,.018,1.05);
+   if(Math.round((z-minZ)/2.6)%6===2&&districtGround(x,z)&&!homeReserved(x,z,1))boxAt(yellow,x,height(x,z)+.157,z,.12,.018,1.05);
   }
   for(const z of area.zs)for(let x=minX;x<=maxX;x+=2.6){
    street(asphalt,x,z,2.75,5.7);
-   if(Math.round((x-minX)/2.6)%6===2&&districtGround(x,z))boxAt(line,x,height(x,z)+.158,z,1.05,.018,.12);
+   if(Math.round((x-minX)/2.6)%6===2&&districtGround(x,z)&&!homeReserved(x,z,1))boxAt(line,x,height(x,z)+.158,z,1.05,.018,.12);
   }
   // Zebra crossings identify full intersections rather than random white tiles.
   for(const x of area.xs)for(const z of area.zs){
-   if(!districtGround(x,z))continue;
+   if(!districtGround(x,z)||homeReserved(x,z,3))continue;
    const y=height(x,z);
    for(let k=-2;k<=2;k++)boxAt(line,x+k*.68,y+.173,z+4.3,.35,.021,1.16);
   }
  }
+ // The reserved city mansion parcel is landscaped, never an empty asphalt lot.
+ const cityEstate=HOME_LOTS.find(l=>l.id==='city'),lawn=mat('#78946a',{map:surfaces.grass,roughness:1});
+ for(let x=cityEstate.x-22;x<=cityEstate.x+22;x+=4)for(let z=cityEstate.z-17;z<=cityEstate.z+36;z+=4){if(roadDistance(x,z)<3.8||!districtGround(x,z)||!districtGround(x+2,z+2)||!districtGround(x-2,z-2))continue;boxAt(lawn,x,height(x,z)+.035,z,4.04,.035,4.04);}
  const seed=(i,j)=>((i*29+j*17+13)%17)/17;
+ function luxuryFrontage(b,y){
+  const front=b.z+b.d/2,wall=b.style%2?pale:line;
+  boxAt(wall,b.x,y+b.h/2,b.z,b.w,b.h,b.d);
+  if(b.housing==='mansion'){
+   boxAt(reflective,b.x,y+1.7,front+.02,b.w*.72,2.1,.10);
+   boxAt(charcoal,b.x-1.7,y+1.5,front+.14,.95,2.8,.18);
+   boxAt(pale,b.x,y+3.1,b.z,b.w+.38,.22,b.d+.34);
+   boxAt(glass,b.x+.8,y+4.5,front+.04,b.w*.52,1.65,.12);
+   boxAt(pale,b.x,y+6.1,b.z,b.w+.35,.22,b.d+.35);
+   boxAt(stone,b.x+1,y+.16,front+.6,2.3,.22,1.1);
+   boxAt(reflective,b.x+1.7,y+6.26,b.z-1.2,1.6,.08,2.2);
+   // Roof terrace/pergola and slim glass balcony rails.
+   for(const x of [-1.8,1.8])boxAt(charcoal,b.x+x,y+6.7,b.z,.055,1.2,.055);
+   for(let x=-2;x<=2;x+=.55)boxAt(pale,b.x+x,y+7.25,b.z,.09,.10,2.2);
+   boxAt(glass,b.x+.7,y+3.75,front+.48,b.w*.55,.70,.07);
+   boxAt(stone,b.x+.7,y+3.28,front+.27,b.w*.60,.12,.65);
+   return;
+  }
+  // Tall glazing on three sides; repeated white slabs and deep private balconies.
+  boxAt(reflective,b.x,y+b.h*.51,b.z,b.w+.045,b.h*.97,b.d+.045);
+  for(let floor=0;floor<b.floors;floor++){
+   const fy=y+floor*2.65;
+   boxAt(wall,b.x,fy+.18,b.z,b.w+.18,.20,b.d+.18);
+   for(const side of [-1,1]){
+    const wx=b.x+side*b.w*.34;
+    boxAt(pale,wx,y+b.h/2,front+.08,.13,b.h,.15);
+    boxAt(stone,wx,fy+.32,front+.36,b.w*.30,.15,.80);
+    boxAt(glass,wx,fy+.85,front+.73,b.w*.29,.90,.055);
+    boxAt(charcoal,wx,fy+1.34,front+.74,b.w*.30,.045,.055);
+    boxAt(pale,b.x+side*(b.w/2+.03),fy+1.40,b.z,.08,.10,b.d);
+   }
+  }
+  boxAt(pale,b.x,y+b.h+.20,b.z,b.w+.28,.28,b.d+.28);
+  boxAt(reflective,b.x,y+b.h+1.15,b.z,b.w*.70,1.65,b.d*.66);
+  boxAt(pale,b.x,y+b.h+2.05,b.z,b.w*.76,.17,b.d*.72);
+  boxAt(charcoal,b.x,y+1.15,front+.14,1.25,2.05,.19);
+  boxAt(pale,b.x,y+2.55,front+.30,2.1,.18,.75);
+ }
  function frontage(b,y){
   const caribbean=b.district!=='panama-east',wall=(caribbean?colonWalls:walls)[b.style],front=b.z+b.d/2;
   boxAt(wall,b.x,y+b.h/2,b.z,b.w,b.h,b.d);
@@ -159,9 +198,9 @@ export function createExtendedDistricts({T,scene,make,mat,box,cylinder,height,su
  for(const b of buildings){
   const y=height(b.x,b.z),modern=b.district==='panama-east';
   pavement(b.x,b.z,b.w+1.25,b.d+1.25);
-  frontage(b,y);
+  if(modern)luxuryFrontage(b,y);else frontage(b,y);
   // Shop fronts are distinct from upper stories.
-  if(!b.landmark&&b.signature%3===1){
+  if(!modern&&!b.landmark&&b.signature%3===1){
    boxAt(glass,b.x+1.35,y+1.2,b.z+b.d/2+.13,1.13,1.65,.15);
    boxAt(rust,b.x,y+2.95,b.z+b.d/2+.38,b.w*.85,.37,.59);
   }
@@ -169,12 +208,12 @@ export function createExtendedDistricts({T,scene,make,mat,box,cylinder,height,su
  }
  // Irregular open plazas: blank lots deliberately remain walkable.
  for(const area of EXPANDED_DISTRICTS)for(let i=0;i<area.xs.length-1;i++)for(let j=0;j<area.zs.length-1;j++){
-  if(!(area.kind==='modern'?((i*7+j*5)%7===0||(i+2*j)%11===5||i===0):
+  if(!(area.kind==='modern'?((i*3+j*5)%11===0):
        area.kind==='civic'?(i+j*2)%7===0:(i+j)%4===0))continue;
   const x=(area.xs[i]+area.xs[i+1])/2,z=(area.zs[j]+area.zs[j+1])/2;
   if(!districtGround(x,z)||roadDistance(x,z)<HIGHWAY_WIDTH/2+5.5)continue;
   const y=height(x,z),spanX=area.xs[i+1]-area.xs[i]-6,spanZ=area.zs[j+1]-area.zs[j]-6;
-  if(spanX<6||spanZ<6)continue;
+  if(spanX<6||spanZ<6||homeReserved(x,z,Math.hypot(spanX,spanZ)/2))continue;
   pavement(x,z,spanX,spanZ);counts.parks++;
   const modern=area.kind==='modern';
   // Seating plazas and palms are limited to each square, not sprinkled
@@ -209,7 +248,7 @@ export function createExtendedDistricts({T,scene,make,mat,box,cylinder,height,su
  // Two handfuls of street lights, bollards and shaded bus shelters.
  for(const area of EXPANDED_DISTRICTS)for(let i=1;i<area.xs.length-1;i+=2)for(let j=1;j<area.zs.length-1;j+=2){
   const x=area.xs[i]+4.25,z=area.zs[j]+4.5;
-  if(!districtGround(x,z)||roadDistance(x,z)<9)continue;
+  if(!districtGround(x,z)||homeReserved(x,z,4)||roadDistance(x,z)<9)continue;
   const y=height(x,z);
   put(cylinder,charcoal,x,y+2.15,z,.14,4.3,.14);
   boxAt(yellow,x,y+4.33,z,.70,.21,.68);

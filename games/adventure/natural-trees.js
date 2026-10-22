@@ -37,7 +37,7 @@ export function createNaturalTrees({T,geometry,mat,make,height,scene,surfaces=nu
  }
  function update(time){
   for(const t of trees){
-   t.root.visible=true;
+   t.root.visible=true;t.crown.visible=true;
    t.crown.rotation.z=Math.sin(time*.9+t.phase)*(t.kind==='palm'?.035:.012);
    const distance=focus?Math.hypot(t.x-focus.x,t.z-focus.z):100;
    let opacity=distance<4?.2:distance<7?.2+(distance-4)*.266:1;
@@ -46,7 +46,7 @@ export function createNaturalTrees({T,geometry,mat,make,height,scene,surfaces=nu
     const u=length?((t.x-focus.x)*dx+(t.z-focus.z)*dz)/length:0;
     const lateral=Math.hypot(t.x-focus.x-u*dx,t.z-focus.z-u*dz);
     const rayY=height(focus.x,focus.z)+1.6+(focus.camera.y-height(focus.x,focus.z)-1.6)*u;
-    if(u>0&&u<=1.08&&lateral<3.8*t.scale&&rayY<height(t.x,t.z)+t.tip.y*t.scale+2){opacity=.05;t.root.visible=false;}
+    if(u>0&&u<=1.08&&lateral<3.8*t.scale&&rayY<height(t.x,t.z)+t.tip.y*t.scale+2){opacity=.05;t.crown.visible=false;}
    }
    t.crown.material.opacity+=(opacity-t.crown.material.opacity)*.22;t.crown.material.depthWrite=t.crown.material.opacity>.95;
   }

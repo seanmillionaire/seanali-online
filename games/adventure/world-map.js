@@ -7,7 +7,7 @@ import {SMOOTH_MAINLAND_OUTLINE,CANAL_WATERWAY,mainlandContains,WORLD_EXTENT} fr
    X is east/right and Z is south/down, matching ArrowUp (negative Z). */
 export function createWorldMap({host,panel,world,islands,places,language,onTravel,onOpen,isDriving=()=>false}){
  const es=language==='es',say=(a,b)=>es?a:b,ns='http://www.w3.org/2000/svg';
- const land=[{id:'home',x:0,z:0,rx:20,rz:14,es:'Playa Gorgona',en:'Playa Gorgona',icon:'🏡'}]
+ const land=[{id:'home',x:0,z:0,rx:20,rz:14,es:'Playa Gorgona',en:'Gorgona Beach',icon:'🏡'}]
    .concat(islands.map(i=>({id:i.id,guna:i.guna,x:i.x,z:i.z,rx:i.rx,rz:i.rz,es:i.es,en:i.en,
      icon:({coiba:'🌳',delRey:'🏝️',escudo:'🐢',cebaco:'🌴',islet:'🦋',wilds:'🍌',coconutCoast:'🥥',sunset:'🌋',crystalCove:'🏝️',pizzaCity:'🍕',colon:'🌧️',monkeyIslet:'🐒'})[i.id]||'🏝️'}))).concat(places.filter(p=>p.kind==='mainland').map(p=>({...p,rx:5,rz:5})));
  const point=(x,z)=>({x:Number(x)||0,z:Number(z)||0});
@@ -49,7 +49,7 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
       const icon=svgEl('text',{x:i.x,y:i.z+2,'font-size':i.id==='home'?24:26,'text-anchor':'middle',
         'dominant-baseline':'central','pointer-events':'none'},i.icon);
       g.append(icon);
-      const short={coiba:'Coiba',delRey:'Isla del Rey',escudo:'Escudo',cebaco:'Cébaco',home:'Gorgona',islet:'Taboga',wilds:'Bocas del Toro',coconutCoast:'Contadora',sunset:'Barú',crystalCove:'Guna Yala',pizzaCity:es?'Panamá':'Panama City',colon:'Colón',monkeyIslet:es?'Isla de los Monos':'Monkey Island',volcanTown:'Volcán',boquete:'Boquete'}[i.id]||name(i);
+      const short={coiba:'Coiba',delRey:'Isla del Rey',escudo:'Escudo',cebaco:'Cébaco',home:es?'Playa Gorgona':'Gorgona Beach',islet:'Taboga',wilds:'Bocas del Toro',coconutCoast:'Contadora',sunset:'Barú',crystalCove:'Guna Yala',pizzaCity:es?'Panamá':'Panama City',colon:'Colón',monkeyIslet:es?'Isla de los Monos':'Monkey Island',volcanTown:'Volcán',boquete:'Boquete'}[i.id]||name(i);
       g.append(svgEl('text',{x:i.x,y:i.z+25,'font-size':14,'font-weight':700,'text-anchor':'middle',fill:'#173e42',stroke:'#fff6dc','stroke-width':1.6,'paint-order':'stroke','pointer-events':'none'},short));
       if(islandTarget(i.id)){
         g.setAttribute('class','island-map-land island-map-target');

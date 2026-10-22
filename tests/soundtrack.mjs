@@ -16,4 +16,4 @@ for(const [point,region] of [[{x:350,z:-60},'city'],[{x:-50,z:-365},'colon'],[{x
  for(const activity of [{},{driving:true},{boating:true},{flying:true},{night:true},{rain:.9}])assert.equal(musicRegion({...point,...activity}),region);
  assert.equal(musicRegion({...point,indoors:true}),'home');
 }
-music.destroy();assert(audios.every(a=>a.paused));assert.equal(tick,null);console.log('PASS regional soundtrack: gesture, adaptive moods, stable transitions, bounded crossfade/skip, independent music mute, hidden-tab silence and disposal');
+music.hold(true);music.next();assert(audios.every(a=>a.paused),'queued region skip does not interrupt a theme');music.hold(false);await Promise.resolve();assert(music.status.playing,'queued region skip starts after theme');music.destroy();assert(audios.every(a=>a.paused));assert.equal(tick,null);console.log('PASS regional soundtrack: gesture, adaptive moods, stable transitions, bounded crossfade/skip, independent music mute, hidden-tab silence and disposal');

@@ -1,3 +1,4 @@
+import {animalBuilder} from './animal-craft.js';
 import {COLON_OFFSET,freshwaterHabitat} from './geography.js?v=225';
 const lakeWater=(isWater)=>(x,z)=>isWater(x,z)&&freshwaterHabitat(x+COLON_OFFSET.x,z+COLON_OFFSET.z);
 export const BLACK_MONKEY_COUNT=28;
@@ -104,15 +105,18 @@ export function stepCrocodile(n,dt,isWater,player=null,neighbors=[]){
  }
  n.phase+=dt*(.7+n.speed*1.7);return n;
 }
+// Tree placement may move away from roads; perches must use its final transform.
+export function treeCanopyAnchor(tree,offset={x:0,z:0}){tree.root.updateWorldMatrix(true,false);const p=tree.root.position.clone().set(tree.tip.x,tree.tip.y,tree.tip.z);tree.root.localToWorld(p);return {x:p.x-offset.x,y:p.y,z:p.z-offset.z};}
 export function stepMonkey(m,dt,anchors){
- m.t+=Math.max(0,Math.min(dt,.1))/m.duration;
+ const elapsed=Math.max(0,Math.min(dt,.1));if(m.rest>0){m.rest=Math.max(0,m.rest-elapsed);return {...m.a,heading:Math.atan2(m.b.x-m.a.x,m.b.z-m.a.z),air:0,stride:0,resting:true};}
+ m.t+=elapsed/m.duration;
  if(m.t>=1){
-  m.previous=m.a;m.a=m.b;m.t%=1;m.seed=(m.seed*1664525+1013904223)>>>0;
-  const choices=anchors.map((p,i)=>({p,i,d:Math.hypot(p.x-m.a.x,p.z-m.a.z)+Math.abs(p.y-m.a.y)*.3})).filter(p=>p.d>1&&p.d<16&&p.p!==m.previous).sort((a,b)=>a.d-b.d).slice(0,6);
+  m.previous=m.a;m.a=m.b;m.t=0;m.rest=.8+(m.seed%13)*.10;m.seed=(m.seed*1664525+1013904223)>>>0;
+  const choices=anchors.map((p,i)=>({p,i,d:Math.hypot(p.x-m.a.x,p.z-m.a.z)+Math.abs(p.y-m.a.y)*.3})).filter(p=>p.d>1&&p.d<10&&p.p!==m.previous).sort((a,b)=>a.d-b.d).slice(0,6);
   m.b=choices.length?choices[m.seed%choices.length].p:anchors[(m.seed>>>8)%anchors.length];
   m.duration=Math.max(.8,Math.min(2.1,Math.hypot(m.b.x-m.a.x,m.b.z-m.a.z)/(6.5+(m.seed%23)/10)));
  }
- const t=m.t,e=t*t*(3-2*t),arc=Math.sin(t*Math.PI)*(1.5+(m.seed%4)*.35);
+ const t=m.t,e=t*t*(3-2*t),arc=Math.sin(t*Math.PI)*(.40+(m.seed%4)*.14);
  return {x:m.a.x+(m.b.x-m.a.x)*e,z:m.a.z+(m.b.z-m.a.z)*e,y:m.a.y+(m.b.y-m.a.y)*e+arc,
   heading:Math.atan2(m.b.x-m.a.x,m.b.z-m.a.z),air:Math.sin(t*Math.PI),stride:t*Math.PI*2};
 }
@@ -123,14 +127,14 @@ export function createColonWildlife({T,root,make,geometry,mat,ball,box,cylinder,
  for(let i=0;i<size*size;i++){const v=42+((i*73+(i%size)*31)%39);data.set([v,v+2,v+4,255],i*4);}
  const furMap=new T.DataTexture(data,size,size);furMap.wrapS=furMap.wrapT=T.RepeatWrapping;furMap.needsUpdate=true;
  const fur=mat('#282d2d',{map:furMap,bumpMap:furMap,bumpScale:.035,roughness:.97}),skin=mat('#3d3f3b',{roughness:.85}),muzzle=mat('#55564b',{roughness:.87}),black=mat('#080c0b'),iris=mat('#ad823d'),shine=mat('#ebe4bf'),nail=mat('#62675e');
- const small=geometry(new T.SphereGeometry(1,10,8)),tailGeo=geometry(new T.CylinderGeometry(.045,.06,.3,6));
+ const small=geometry(new T.SphereGeometry(1,16,10)),{link,finish}=animalBuilder({T,geometry,mat,make,ball,cylinder});
  const piece=(g,m,x,y,z,sx,sy,sz,parent)=>make(g,m,x,y,z,sx,sy,sz,parent);
  function limb(parent,x,y,z,length,upper=true){
   const pivot=new T.Group();pivot.position.set(x,y,z);parent.add(pivot);
-  piece(cylinder,fur,0,-length*.46,0,.085,length,.085,pivot);
+  link(fur,[0,0,0],[0,-length,0],.085,.055,pivot);piece(small,fur,0,-length*.28,0,.09,length*.32,.085,pivot);
   const joint=piece(small,fur,0,-length,0,.105,.115,.105,pivot);
   const lower=new T.Group();lower.position.y=-length;lower.rotation.x=upper?-.35:.35;pivot.add(lower);
-  piece(cylinder,fur,0,-length*.36,0,.065,length*.8,.065,lower);
+  link(fur,[0,0,0],[0,-length*.8,0],.062,.037,lower);
   piece(small,skin,0,-length*.83,.055,.1,.07,.16,lower);
   for(let i=0;i<3;i++){const finger=piece(cylinder,skin,(i-1)*.045,-length*.85,.16,.018,.15,.018,lower);finger.rotation.x=Math.PI/2;}
   return {pivot,lower};
@@ -142,10 +146,10 @@ export function createColonWildlife({T,root,make,geometry,mat,ball,box,cylinder,
   piece(ball,fur,0,.87,0,.27,.4,.23,body);piece(ball,fur,0,.61,-.06,.26,.22,.23,body);
   piece(small,skin,0,1.01,.2,.15,.25,.035,body); // exposed chest and throat
   const head=new T.Group();head.position.set(0,1.4,.08);body.add(head);
-  piece(ball,fur,0,0,0,.26,.27,.24,head);piece(small,skin,0,-.035,.205,.19,.19,.065,head);
+  piece(ball,fur,0,0,0,.23,.25,.23,head);piece(small,skin,0,-.035,.205,.19,.19,.065,head);
   piece(small,muzzle,0,-.105,.25,.125,.09,.07,head);
   for(const side of [-1,1]){
-   piece(small,fur,side*.255,-.015,0,.105,.13,.065,head);piece(small,skin,side*.27,-.015,.04,.06,.085,.025,head);
+   piece(small,fur,side*.23,-.015,0,.077,.098,.053,head);piece(small,skin,side*.245,-.015,.035,.045,.06,.020,head);
    piece(small,black,side*.084,.018,.263,.055,.049,.025,head);piece(small,iris,side*.084,.018,.285,.029,.032,.012,head);
    piece(small,black,side*.084,.018,.296,.015,.022,.006,head);piece(small,shine,side*.075,.03,.3,.008,.009,.004,head);
    const brow=piece(small,fur,side*.087,.085,.25,.09,.037,.04,head);brow.rotation.z=side*-.16;
@@ -156,11 +160,11 @@ export function createColonWildlife({T,root,make,geometry,mat,ball,box,cylinder,
   const legs=[limb(body,-.14,.58,-.02,.3,false),limb(body,.14,.58,-.02,.3,false)];
   const tail=[];
   let parent=body;
-  for(let j=0;j<8;j++){const t=new T.Group();t.position.set(0,j===0?.6:0,j===0?-.21:-.25);parent.add(t);const mesh=piece(tailGeo,fur,0,0,-.12,1,1,1,t);mesh.rotation.x=Math.PI/2;tail.push(t);parent=t;}
+  for(let j=0;j<8;j++){const t=new T.Group();t.position.set(0,j===0?.6:0,j===0?-.21:-.25);parent.add(t);link(fur,[0,0,0],[0,0,-.25],.062-j*.005,.057-j*.005,t);tail.push(t);parent=t;}
   const group=i<19?anchors.main:anchors.monkey,start=group[(i*3)%group.length],next=group[(i*3+1)%group.length];
-  const motion={a:start,b:next,t:(i*.17)%1,duration:1.2,seed:123+i*7919};
+  const motion={a:start,b:next,t:0,rest:(i%7)*.32,duration:1.2,seed:123+i*7919};
   const scale=.84+(i%5)*.055;g.scale.setScalar(scale);
-  monkeys.push({g,body,head,arms,legs,tail,motion,group,index:i});
+  finish(g);monkeys.push({g,body,head,arms,legs,tail,motion,group,index:i});
  }
  // Detailed, low-slung crocodiles live exclusively in water around Colón.
  const crocRoot=new T.Group();crocRoot.name='Gatún Lake crocodiles';root.add(crocRoot);
@@ -189,7 +193,7 @@ export function createColonWildlife({T,root,make,geometry,mat,ball,box,cylinder,
   const tail=[];let parent=g;
   for(let j=0;j<5;j++){const rig=new T.Group();rig.position.z=j===0?-1.05:-.49;parent.add(rig);piece(ball,hide,0,0,-.2,.39-j*.058,.18-j*.025,.43,rig);piece(cone,ridge,0,.17-j*.025,-.22,.09,.16,.16,rig);tail.push(rig);parent=rig;}
   const wake=piece(wakeGeo,ripple,0,-.045,-.7,1,1.9,1,g);wake.rotation.x=-Math.PI/2;
-  const scale=.85+(i%3)*.1;g.scale.setScalar(scale);crocs.push({g,tail,jaw,wake,index:i,nav:createCrocodileMotion(i,inWater,crocs.map(c=>c.nav))});
+  const scale=.85+(i%3)*.1;g.scale.setScalar(scale);g.remove(wake);finish(g);g.add(wake);crocs.push({g,tail,jaw,wake,index:i,nav:createCrocodileMotion(i,inWater,crocs.map(c=>c.nav))});
  }
  function update(dt,active,time,{player,playing=false,signal=false,reducedMotion=false}={}){
   const nearby=Math.hypot(player.x-(-10),player.z+(125))<100||Math.hypot(player.x-(10),player.z+(94))<80;

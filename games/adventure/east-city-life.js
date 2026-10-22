@@ -36,7 +36,7 @@ export function createEastCityLife(options){
  function update(dt,active,{x=0,z=0,indoors=false}={}){if(active&&!indoors)clock+=Math.min(dt,.1);root.visible=!indoors;
   walkers.forEach(({r,person,dog,leash,points,geo},i)=>{const phase=clock*.16+i*1.3,pz=r.z+Math.cos(phase)*4,moving=Math.abs(Math.sin(phase))>.12,heading=Math.sin(phase)>0?Math.PI:0,visible=Math.hypot(r.x-x,pz-z)<125;person.g.visible=dog.g.visible=leash.visible=visible;
    person.g.position.set(r.x,height(r.x,pz),pz);person.g.rotation.y+=Math.atan2(Math.sin(heading-person.g.rotation.y),Math.cos(heading-person.g.rotation.y))*Math.min(1,dt*3);person.animate?.(clock*4+i,moving);
-   dog.g.position.set(r.x+1,height(r.x+1,pz),pz+.5);dog.g.rotation.y=person.g.rotation.y;dog.legs.forEach((l,j)=>l.rotation.x=moving?Math.sin(clock*6+j*Math.PI)*.3:0);dog.tail.rotation.z=Math.sin(clock*4+i)*.25;
+   dog.g.position.set(r.x+1,height(r.x+1,pz),pz+.5);dog.g.rotation.y=person.g.rotation.y;dog.legs.forEach((l,j)=>l.rotation.x=moving?Math.sin(clock*6+[0,Math.PI,Math.PI,0][j])*.3:0);dog.tail.rotation.z=Math.sin(clock*4+i)*.25;
    const y=person.g.position.y;points.set([r.x+.2,y+.95,pz,r.x+.65,y+.65,pz+.25,r.x+1,dog.g.position.y+.6,pz+.5]);geo.attributes.position.needsUpdate=true;
   });for(let i=0;i<vertices.count;i++){const x=vertices.getX(i),y=vertices.getY(i);vertices.setZ(i,(x/18)*(.8*Math.sin(x*.55-clock*2.1)+.25*Math.sin(y*.8+x*.7-clock*2.7)));}vertices.needsUpdate=true;cloth.computeVertexNormals();
  }

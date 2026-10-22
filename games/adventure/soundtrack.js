@@ -31,10 +31,10 @@ export function musicRegion({indoors=false,x=0,z=0}={}){
  return 'west';
 }
 export function createSoundtrack({enabled,volume,environment,createAudio=()=>new Audio(),now=()=>performance.now()/1000}){
- let players=[],current=null,mood='west',candidate=mood,candidateAt=0,lastChange=-Infinity,unlocked=false,destroyed=false,duckUntil=0,timer=null,error='',serial=0;
+ let held=false,queuedNext=false;let players=[],current=null,mood='west',candidate=mood,candidateAt=0,lastChange=-Infinity,unlocked=false,destroyed=false,duckUntil=0,timer=null,error='',serial=0;
  const rotations={...REGIONAL_PLAYLISTS,explore:['explore','city'],ocean:['ocean','city'],adventure:['adventure','explore'],drive:['drive','city'],night:['night','home']};let sequence=0,nightLevel=1;
  function release(p){p.audio.pause();p.audio.removeAttribute('src');p.audio.load();p.node.disconnect();p.gain.disconnect();players=players.filter(v=>v!==p);}
- function running(){return unlocked&&!destroyed&&enabled()&&!document.hidden&&volume()>0;}
+ function running(){return !held&&unlocked&&!destroyed&&enabled()&&!document.hidden&&volume()>0;}
  function tick(){if(!running()){for(const p of players)p.audio.pause();return;}
   if(current&&!current.pending&&Number.isFinite(current.audio.duration)&&current.audio.duration-current.audio.currentTime<3.5&&players.length===1)start(rotations[mood][++sequence%rotations[mood].length]);
   const t=now(),level=volume()*nightLevel*(t<duckUntil?.24:1)*.65;
@@ -53,5 +53,5 @@ export function createSoundtrack({enabled,volume,environment,createAudio=()=>new
  function sync(){if(!running()){serial++;for(const p of [...players]){if(p!==current)release(p);else p.audio.pause();}return;}if(!current&&!players.some(p=>p.pending))start(rotations[mood][0]);else tick();}
  function unlock(){unlocked=true;if(timer===null)timer=setInterval(tick,100);sync();}
  function update(info){if(typeof info==='object')nightLevel=info.night?.72:1;const next=typeof info==='string'?info:musicRegion(info);if(!rotations[next])return;if(next!==candidate){candidate=next;candidateAt=now();}if(next!==mood&&now()-candidateAt>10){mood=next;sequence=-1;}}
- return {unlock,sync,update,duck(seconds=4){duckUntil=now()+seconds;},next(){if(!unlocked)unlock();else start(rotations[mood][++sequence%rotations[mood].length]);},get status(){return {mood,region:MUSIC_LABELS[mood]||'',title:current?TRACKS[current.key].title:'',playing:!!current&&!current.audio.paused,players:players.length,time:current?.audio.currentTime||0,readyState:current?.audio.readyState||0,error};},destroy(){destroyed=true;serial++;clearInterval(timer);for(const p of [...players])release(p);current=null;}};
+ return {hold(value){held=!!value;if(!held&&queuedNext){queuedNext=false;start(rotations[mood][++sequence%rotations[mood].length]);}else sync();},unlock,sync,update,duck(seconds=4){duckUntil=now()+seconds;},next(){if(held){queuedNext=true;return;}if(!unlocked)unlock();else start(rotations[mood][++sequence%rotations[mood].length]);},get status(){return {mood,region:MUSIC_LABELS[mood]||'',title:current?TRACKS[current.key].title:'',playing:!!current&&!current.audio.paused,players:players.length,time:current?.audio.currentTime||0,readyState:current?.audio.readyState||0,error};},destroy(){destroyed=true;serial++;clearInterval(timer);for(const p of [...players])release(p);current=null;}};
 }

@@ -1,4 +1,5 @@
-import {createColonWildlife,monkeyJumpPhase,recordMonkeyJump} from './colon-wildlife.js?v=225';
+import {landAnimalModels} from './land-animal-models.js';
+import {createColonWildlife,treeCanopyAnchor,monkeyJumpPhase,recordMonkeyJump} from './colon-wildlife.js?v=225';
 import {COLON_SITES,COLON_BRIDGE,bridgeDistance,buildColon,expandColon} from './colon-state.js?v=225';
 import {addFood,inWater as worldInWater,earnCoins} from './explore-state.js?v=225';
 import {COLON_OFFSET} from './geography.js?v=225';
@@ -23,9 +24,9 @@ export function createColonAdventure({T,scene,host,state,make,geometry,mat,box,b
   if(paths.some(([a,b])=>lineDistance(x,z,a,b)<2.6)||COLON_SITES.some(p=>Math.hypot(x-p.x,z-p.z)<3))continue;
   const kind=i%9===0?'pine':i%7===0?'natural':'palm',scale=.9+(i%4)*.13;
   const tree=forest.addTree(kind,x,z,scale,i,root);crowns.push(tree);
-  anchors.main.push({x,z,y:height(x,z)+(kind==='palm'?6:kind==='pine'?6.8:5)*scale});
+  anchors.main.push(treeCanopyAnchor(tree,{x:offsetX,z:offsetZ}));
  }
- for(const p of COLON_SITES)anchors.main.push({x:p.x,z:p.z,y:height(p.x,p.z)});
+
  // Ferns line paths without occupying their walking surface.
  for(let i=0;i<40;i++){
   const a=i*2.4,r=.4+(i%4)*.12,x=(-10)+Math.sin(a)*25*r,z=(-125)+Math.cos(a)*22*r;
@@ -58,26 +59,16 @@ export function createColonAdventure({T,scene,host,state,make,geometry,mat,box,b
  piece(ball,darkWater,(-23),height((-23),(-112))+.1,(-112),4,.12,2.7);
  for(let i=0;i<16;i++){const t=i/15,x=(-28)+t*11,z=(-115.5),y=height(x,z)+.3;piece(box,wood,x,y,z,.8,.17,2);if(i%3===0)for(const side of [-1,1])piece(cylinder,wood,x,y+.6,z+side,.05,1.2,.05);}
  const animals=[];
- function reptile(kind,x,z,index){
-  const g=new T.Group();g.name=kind;root.add(g);const scale=kind==='crocodile'?1.1:.65;
-  piece(ball,green,0,.27,0,.5,.22,1.2,g);piece(ball,lime,0,.36,1.05,.3,.16,.45,g);
-  for(const side of [-1,1]){piece(ball,eye,side*.18,.49,1.12,.045,.045,.045,g);for(const forward of [-.6,.6])piece(ball,green,side*.48,.12,forward,.3,.1,.15,g);}
-  const tail=piece(cone,green,0,.2,-1.3,.35,1.4,.35,g);tail.rotation.x=Math.PI/2;
-  g.scale.setScalar(scale);g.position.set(x,height(x,z)+.2,z);animals.push({g,x,z,index,kind});
- }
+ const land=landAnimalModels({T,geometry,mat,make,ball,cylinder});
+ function reptile(kind,x,z,index){const {g}=land.reptile(root);g.scale.setScalar(.65);g.position.set(x,height(x,z)+.03,z);animals.push({g,x,z,index,kind});}
  reptile('iguana',-2,-135,2);reptile('iguana',-25,-133,3);
- for(let i=0;i<3;i++){
-  const x=(8)+i*.9,z=(-128)+i*.6,g=new T.Group();g.name='Beach nesting turtle';root.add(g);
-  piece(ball,green,0,.25,0,.55,.3,.7,g);piece(ball,lime,0,.25,.7,.18,.15,.2,g);
-  for(const side of [-1,1])for(const front of [-.4,.4])piece(ball,lime,side*.5,.1,front,.3,.06,.15,g);
-  g.position.set(x,height(x,z)+.05,z);
- }
+ for(let i=0;i<3;i++){const x=8+i*.9,z=-128+i*.6,{g}=land.turtle(root);g.position.set(x,height(x,z)+.02,z);}
  for(let i=0;i<10;i++){
   const a=i*2.4,x=(10)+Math.sin(a)*5,z=(-94)+Math.cos(a)*4;
   const tree=forest.addTree(i%6===0?'natural':'palm',x,z,.85+(i%3)*.12,i+100,root);crowns.push(tree);
-  anchors.monkey.push({x,z,y:height(x,z)+5.5*tree.scale});
+  anchors.monkey.push(treeCanopyAnchor(tree,{x:offsetX,z:offsetZ}));
  }
- anchors.monkey.push({x:(10),z:(-94),y:height((10),(-94))});
+
  const wildlife=createColonWildlife({T,root,make,geometry,mat,ball,box,cylinder,cone,height,inWater,anchors});
  const house=new T.Group();house.name='Player-built enterable Colón treehouse';root.add(house);
  const hy=height((-19),(-127));

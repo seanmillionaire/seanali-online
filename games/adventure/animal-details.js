@@ -1,4 +1,5 @@
-/* Lightweight, stylized-natural animal detailing. Mesh primitives, no downloads.
+import {createDetailedBird} from './bird-models.js';
+/* Lightweight articulated animal detailing. Mesh primitives, no downloads.
    Rig returns animate() to articulate feathers/flippers based on movement and flight. */
 export function createAnimalDetails({T,id,root,make,mat,geometry,ball,cone,cylinder}){
  const sphere=(m,x,y,z,sx,sy,sz,p=root)=>make(ball,m,x,y,z,sx,sy,sz,p);
@@ -54,64 +55,7 @@ export function createAnimalDetails({T,id,root,make,mat,geometry,ball,cone,cylin
   animateParts.push((t,movement)=>{tailGroup.rotation.x=Math.sin(t*8)*(movement?.28:.12);root.rotation.z=movement?Math.sin(t*1.7)*.035:0;});
  }
  if(id==='mila'||id==='ollie'){
-  const parrot=id==='mila';
-  const primary=shades(parrot?'#1f876a':'#a7b6ca');
-  const light=shades(parrot?'#86cf5e':'#e4e9df');
-  const contrast=shades(parrot?'#efbd56':'#7f8da6');
-  const dark=shades(parrot?'#1d5d59':'#53677e');
-  const bright=shades(parrot?'#f2d178':'#f7f4ec');
-  const wings=[];
-  const body=sphere(primary,0,1.09,-.10,parrot?.54:.45,parrot?.64:.78,.41);
-  // Distinctive breast bib and long fan of real feather-shaped meshes.
-  sphere(light,0,1.02,.23,.32,.50,.17);
-  for(let i=-2;i<=2;i++){
-   const tail=sphere(i%2?contrast:primary,i*.14,.73,-.60-Math.abs(i)*.06,.11,.15,.9-Math.abs(i)*.12);
-   tail.rotation.x=.35;tail.rotation.z=i*.14;
-  }
-  for(const sign of [-1,1]){
-   const pivot=new T.Group();pivot.position.set(sign*.46,1.32,-.17);root.add(pivot);
-   // Feathers span outward in the wing's local coordinate system.
-   const humerus=sphere(primary,sign*.55,-.06,0,.67,.16,.31,pivot);
-   humerus.rotation.z=sign*-.12;
-   const tip=new T.Group();tip.position.set(sign*.92,-.04,0);pivot.add(tip);
-   for(let j=0;j<9;j++){
-    const f=sphere(j%3===0?contrast:j%2?primary:light,sign*(.25+j*.135),-.07-j*.016,-.22-(j%3)*.04,.14,.065,.66-j*.029,tip);
-    f.rotation.y=sign*(.14+j*.075);f.rotation.z=-sign*.11;
-   }
-   for(let j=0;j<6;j++){
-    const cover=sphere(j%2?primary:light,sign*(.18+j*.18),.06,-.05,.20,.073,.32,tip);
-    cover.rotation.y=sign*j*.12;
-   }
-   wings.push({pivot,tip,sign});
-  }
-  // Head detailing: bright eyes, arched brows, crest, segmented beak.
-  for(const sign of [-1,1]){
-   sphere(bright,sign*.205,parrot?1.82:2.12,.53,.105,.11,.06);
-   sphere(dark,sign*.212,parrot?1.825:2.125,.585,.055,.067,.025);
-   sphere(highlight,sign*.23,parrot?1.855:2.155,.61,.019,.023,.013);
-   sphere(primary,sign*.25,parrot?1.96:2.27,-.03,.16,.22,.10);
-  }
-  if(parrot){
-   for(let i=0;i<3;i++){
-    const crest=sphere(i===1?contrast:primary,(i-1)*.16,2.1+((i+1)%2)*.15,-.08,.09,.33,.13);
-    crest.rotation.z=(i-1)*.3;
-   }
-   sphere(bright,0,1.50,.72,.18,.16,.29);
-  }else{
-   sphere(light,0,2.39,-.13,.31,.13,.25);
-   sphere(bright,0,1.81,.53,.28,.15,.32);
-  }
-  animateParts.push((t,movement,flying)=>{
-   const phase=t*(flying?8.6:movement?4.2:2.1);
-   const sweep=flying?Math.sin(phase)*.65+.17:Math.sin(phase)*.10+.17;
-   for(const w of wings){
-    // Wings lift by rotation about each shoulder; tips lag for a natural stroke.
-    w.pivot.rotation.z=w.sign*(.22+sweep);
-    w.pivot.rotation.x=flying?Math.sin(phase+.35)*.11:0;
-    w.tip.rotation.z=w.sign*(flying?Math.sin(phase-.8)*.34:-.09);
-   }
-   body.rotation.x=flying?Math.sin(t*1.7)*.04:0;
-  });
+  const bird=createDetailedBird({T,geometry,mat,make,ball,cylinder},root,id==='mila'?'parrot':'owl');bird.g.scale.setScalar(1.6);animateParts.push((t,moving,flying)=>bird.animate(t,{moving,flying}));
  }
  if(id==='luna'){
   const red=shades('#a9654c'),shell=shades('#bf8260'),sand=shades('#dac295'),joint=shades('#855842'),walkingLegs=[];

@@ -31,13 +31,7 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
    g.add(aquatic.g);aquatic.g.scale.setScalar(friend.id==='pip'?1.45:1.3);moving.push(...aquatic.moving);
    // The shared marine model includes its complete anatomy and markings.
   }else if(friend.id==='mila'||friend.id==='ollie'){
-   const parrot=friend.id==='mila',body=mat(parrot?'#42b86d':'#ecf2df'),wings=mat(parrot?'#f3c052':'#b7cae8');
-   sphere(g,body,0,parrot?1.72:2.02,.2,.41,.4,.42);
-   const beak=make(cone,yellow,0,parrot?1.55:1.92,.63,.24,.36,.26,g);beak.rotation.x=Math.PI/2;
-   for(const sign of [-1,1]){
-    // Detailed articulated feather wings are supplied by createAnimalDetails.
-    sphere(g,yellow,sign*.23,.18,.14,.07,.21,.07);
-   }
+   // Complete bird anatomy comes from the shared rig below.
   }else if(friend.id==='luna'){
    // One complete articulated crab comes from the shared detail rig below.
   }else{

@@ -1,3 +1,4 @@
+import {advanceThemeClock} from './theme-audio.js';
 import {nightLighting} from './night-lighting.js';
 import {worldClock,DAY_CYCLE_SECONDS} from './world-clock.js?v=225';
 export {DAY_CYCLE_SECONDS} from './world-clock.js?v=225';
@@ -64,7 +65,7 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
  }
  function markRidden(a){ridden=a;if(a)a.g.visible=false;}
  function unmark(){ridden=null;}
- return {nearestRideable,hit,markRidden,unmark,update(dt,active,motion,player=null){if(!Number.isFinite(s.dayTime))s.dayTime=40;if(active&&Number.isFinite(dt)&&dt>0)s.dayTime=(s.dayTime+dt*240/DAY_CYCLE_SECONDS)%240;const {phase,day,night,twilight}=islandDaylight(s.dayTime),sunset=twilight;
+ return {nearestRideable,hit,markRidden,unmark,update(dt,active,motion,player=null){if(!Number.isFinite(s.dayTime))s.dayTime=40;if(active&&Number.isFinite(dt)&&dt>0){const previous=s.dayTime;s.dayTime=(s.dayTime+dt*240/DAY_CYCLE_SECONDS)%240;advanceThemeClock(s,previous,s.dayTime);}const {phase,day,night,twilight}=islandDaylight(s.dayTime),sunset=twilight;
   if(scene.background?.isColor)scene.background.copy(nightSky).lerp(daySky,day).lerp(dusk,sunset*.35);if(scene.fog)scene.fog.color.copy(scene.background);
   const lighting=nightLighting(day);fill.intensity=lighting.fill;
   if(sun){sun.intensity=lighting.moon;sun.color.copy(moonLight).lerp(dayLight,day).lerp(sunsetLight,twilight*.5);}if(ambient){ambient.intensity=lighting.ambient;ambient.color.copy(nightAmbient).lerp(dayAmbient,day);}if(waterMaterial?.uniforms.daylight)waterMaterial.uniforms.daylight.value=day;

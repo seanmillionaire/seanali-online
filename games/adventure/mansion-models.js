@@ -1,8 +1,10 @@
+import {detailedDog} from './land-animal-models.js';
+import {inWater} from './explore-state.js';
 import {mansionGym,mansionStairs} from './mansion-gym-models.js?v=236';
 import {botanicalGeometry} from './botanical-geometry.js?v=225';
 import {HOME_WALLS,homeYard} from './mansion-state.js?v=225';
 export function mansionPalette({mat,surfaces}){return {wall:mat('#eee9de',{map:surfaces?.plaster,roughness:.8}),stone:mat('#c5c0b4',{roughness:.7}),wood:mat('#9b7653',{map:surfaces?.wood,roughness:.55}),glass:mat('#416578',{metalness:.25,roughness:.18}),white:mat('#faf7ef',{roughness:.45}),black:mat('#20292e',{roughness:.35}),gold:mat('#ac9561',{metalness:.7,roughness:.25}),fabric:mat('#d9a2c7',{roughness:1}),water:mat('#54bdc7',{metalness:.2,roughness:.15}),green:mat('#426c49'),steel:mat('#bac6ca',{metalness:.8,roughness:.22})};}
-export function makeDog({T,make,box,ball,cylinder,mat},parent){const g=new T.Group();g.name='Coco · Angelique’s dog';parent.add(g);const fur=mat('#c49b66'),cream=mat('#e7d4ad'),dark=mat('#302820');const p=(geo,m,x,y,z,a,b,c)=>make(geo,m,x,y,z,a,b,c,g);p(ball,fur,0,.53,0,.28,.29,.55);p(ball,cream,0,.86,.38,.25,.26,.28);p(ball,cream,0,.76,.64,.17,.13,.19);p(ball,dark,0,.8,.81,.09,.07,.05);for(const x of [-.15,.15]){p(ball,dark,x,.94,.59,.035,.04,.035);p(ball,fur,x*1.65,.83,.32,.11,.25,.16);}const legs=[];for(const x of [-.19,.19])for(const z of [-.35,.3])legs.push(p(cylinder,fur,x,.25,z,.07,.45,.08));const tail=p(cylinder,fur,0,.67,-.64,.07,.5,.07);tail.rotation.x=-.9;return {g,legs,tail};}
+export function makeDog(options,parent){return detailedDog(options,parent);}
 export function mansionBase(height,lot){let y=0;for(let x=-13;x<=13;x+=6.5)for(let z=-12;z<=12;z+=6)y=Math.max(y,height(lot.x+x,lot.z+z));return y;}
 export function exteriorMansion(o,lot,stage,style){const {T,scene,make,box,cylinder,ball,height}=o,m=mansionPalette(o),root=new T.Group();root.name='Angelique’s mansion · '+lot.id;root.position.set(lot.x,mansionBase(height,lot),lot.z);scene.add(root);const p=(geo,mat,x,y,z,a,b,c)=>make(geo,mat,x,y,z,a,b,c,root),b=(mat,x,y,z,a,b,c)=>p(box,mat,x,y,z,a,b,c);const wall=style==='sand'?o.mat('#d8c3a2'):m.wall;root.userData.wallMaterial=wall;
  b(m.stone,0,-3,0,27,6,25);b(m.stone,0,.12,0,27,.25,25);b(m.wood,0,.3,0,23,.3,20);
@@ -28,8 +30,8 @@ export function exteriorMansion(o,lot,stage,style){const {T,scene,make,box,cylin
  for(const x of [-11,11])for(const z of [-10,4]){b(m.stone,x,.5,z,1.6,1,1.6);p(ball,m.green,x,1.4,z,.9,1,.9);}
 
  // Clear private forecourt, driveway and tethered sightseeing balloon.
- for(let z=18;z<34;z+=2){const y=height(lot.x,lot.z+z)-root.position.y;b(m.stone,0,y+.03,z,4,.08,1.8);}const yard=homeYard(lot);root.userData.parkingSurfaces=[];for(const spot of Object.values(yard.cars)){const driveY=height(spot.x,spot.z)-root.position.y;b(m.stone,spot.x-lot.x,driveY-.08,spot.z-lot.z,5,.16,7);root.userData.parkingSurfaces.push({x:spot.x,z:spot.z,y:driveY+root.position.y,w:5,d:7});}
- for(const x of [-22,22])for(let z=15;z<34;z+=5){if(Object.values(yard.cars).some(p=>Math.hypot(lot.x+x-p.x,lot.z+z-p.z)<3.3))continue;const y=height(lot.x+x,lot.z+z)-root.position.y;b(m.white,x,y+.45,z,1.5,.9,1.5);p(ball,m.green,x,y+1.6,z,1,1.1,1);}
+ for(let z=18;z<34;z+=2){if(inWater(lot.x,lot.z+z))continue;const y=height(lot.x,lot.z+z)-root.position.y;b(m.stone,0,y+.03,z,4,.08,1.8);}const yard=homeYard(lot);root.userData.parkingSurfaces=[];for(const spot of Object.values(yard.cars)){const driveY=height(spot.x,spot.z)-root.position.y;b(m.stone,spot.x-lot.x,driveY-.08,spot.z-lot.z,5,.16,7);root.userData.parkingSurfaces.push({x:spot.x,z:spot.z,y:driveY+root.position.y,w:5,d:7});}
+ for(const x of [-22,22])for(let z=15;z<34;z+=5){if(inWater(lot.x+x,lot.z+z)||(o.roadDistance?.(lot.x+x,lot.z+z)??Infinity)<4||Object.values(yard.cars).some(p=>Math.hypot(lot.x+x-p.x,lot.z+z-p.z)<3.3))continue;const y=height(lot.x+x,lot.z+z)-root.position.y;b(m.white,x,y+.45,z,1.5,.9,1.5);p(ball,m.green,x,y+1.6,z,1,1.1,1);}
  root.userData.balloon=yard.balloon;const balloonRoot=new T.Group();balloonRoot.name='Mansion yard balloon';balloonRoot.position.set(yard.balloon.x-lot.x,height(yard.balloon.x,yard.balloon.z)-root.position.y,yard.balloon.z-lot.z);root.add(balloonRoot);
  const bp=(geo,mat,x,y,z,a,b,c)=>make(geo,mat,x,y,z,a,b,c,balloonRoot);
  const canopy=o.mat('#e992bf'),basket=o.mat('#aa784b');

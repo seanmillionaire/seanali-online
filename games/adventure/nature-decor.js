@@ -49,16 +49,12 @@ export function createNatureDecor(T,geometry){
     stem([sign*.12,.3,.12],[sign*.13,.42,.14],.023,'#ac6749');sphere('#26352d',sign*.13,.44,.15,.039,.045,.031);
    }
   }else if(tile===10||tile===11){
-   const heron=tile===10,color=heron?'#d9ddd0':'#2e4941';
-   sphere(color,0,.67,0,.20,.30,.32);sphere(heron?'#bdc9ba':'#b7b86b',0,.65,.23,.16,.23,.11);
-   sphere(color,0,heron?1.12:1.02,.12,heron?.07:.17,heron?.31:.17,.12);
-   sphere(color,0,heron?1.43:1.08,.22,.13,.13,.15);
-   const beak=new T.ConeGeometry(1,1,12);add(beak,heron?'#a18a4a':'#baab50',0,heron?1.40:1.05,.42,.07,heron?.35:.40,.08,Math.PI/2);
-   for(const sign of [-1,1]){
-    sphere('#778879',sign*.16,.72,-.01,.08,.23,.28);sphere('#172822',sign*.105,heron?1.46:1.14,.31,.025,.028,.018);
-    const foot=sign*.095;stem([foot,.45,0],[foot,.09,.03],.016,'#7d7152');stem([foot,.09,.03],[foot,.01,.16],.014,'#7d7152');
-   }
-   sphere(color,0,.47,-.32,.09,.07,.35);
+   const heron=tile===10,color=heron?'#adb7ad':'#24302a',pale=heron?'#d9dbca':'#d4b53e';
+   sphere(color,0,.66,-.08,.18,.27,.35);sphere(pale,0,.66,.18,.13,.22,.075);
+   if(heron){const neck=new T.CatmullRomCurve3([new T.Vector3(0,.81,.12),new T.Vector3(0,1.0,-.03),new T.Vector3(0,1.18,.18),new T.Vector3(0,1.38,.20)]);add(new T.TubeGeometry(neck,18,.052,8,false),pale);sphere(color,0,1.41,.24,.105,.10,.15);add(new T.ConeGeometry(.042,.43,10),'#a68f53',0,1.40,.53,1,1,1,Math.PI/2);}
+   else{sphere(color,0,1.0,.12,.17,.18,.18);sphere('#8aa84e',0,1.00,.42,.10,.12,.30);sphere('#b45d3e',0,.985,.64,.068,.085,.10);sphere('#d2b751',0,.90,.43,.083,.025,.23);}
+   for(const sign of [-1,1]){for(let feather=0;feather<5;feather++)sphere(heron?'#8e9c91':'#35473a',sign*(.16+feather*.006),.73-feather*.032,-.03-feather*.05,.045,.13,.21);sphere('#171f1b',sign*(heron?.082:.137),heron?1.44:1.04,heron?.31:.235,.017,.021,.011);const x=sign*.08;stem([x,.45,-.04],[x,.23,-.08],.017,'#73785c');stem([x,.23,-.08],[x,.06,.04],.012,'#73785c');for(let toe=0;toe<3;toe++)stem([x,.06,.04],[x+(toe-1)*.035,.015,.16],.009,'#73785c');}
+   for(let i=-2;i<=2;i++)sphere(color,i*.027,.44,-.40,.035,.033,.24-Math.abs(i)*.02);
   }else if(tile===14){
    for(let i=0;i<11;i++){
     const a=i*2.399963,x=Math.sin(a)*(.16+i%3*.08),z=Math.cos(a)*(.16+i%3*.08),y=.40+(i%4)*.15;

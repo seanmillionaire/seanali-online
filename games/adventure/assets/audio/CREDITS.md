@@ -49,3 +49,10 @@ These are general sound-design recordings, not field recordings made in Panama.
 - city-ambience.m4a — Seamless City Loop — qubodup — https://freesound.org/people/qubodup/sounds/223093/ — 30-second loop.
 - surf-ambience.m4a — Gentle Ocean Waves Mix (2018) — esh9419 — https://freesound.org/people/esh9419/sounds/417797/ — 30-second excerpt.
 - birds-ambience.m4a — Forest birds - ambient seamless loop — Magnesus — https://freesound.org/people/Magnesus/sounds/723913/ — 27-second excerpt; generic background, not a Panama species-identification recording.
+
+## Panamá Aventura themes (user supplied, October 22, 2026)
+
+- `music/panama-morning-theme.mp3` — supplied as `panama_aventura_jingle_40s_website_es.mp3`, 40.05 seconds. Morning signature song.
+- `music/panama-menu-theme.mp3` — supplied as `panama_aventura_menu_instrumental.mp3`, 62.72 seconds. Menu/pause and accomplishment theme.
+
+These two recordings were supplied directly by the game owner for installation; they are not part of the third-party CC libraries listed above.

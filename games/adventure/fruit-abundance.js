@@ -17,6 +17,8 @@ export function fruitGroves(){
   for(let i=0;i<n;i++){const a=i*2.399963,r=.32+(i%4)*.105;offer(land.x+Math.cos(a)*land.rx*r,land.z+Math.sin(a)*land.rz*r,land.guna?'coconut':['banana','coconut','mango'][i%3],land.id);}
  }
  for(let i=0;i<40;i++)offer(535+(i%8)*27,-145+Math.floor(i/8)*30,['banana','mango','coconut'][i%3],'jungle');
+ // Roadside banana gardens are visible throughout Colón and Costa Arriba.
+ for(let z=-419;z<=-337;z+=9)for(let x=-86;x<=206;x+=9){const i=Math.round((x+86)/9)+Math.round((z+419)/9);offer(x+(i%3)*.7,z,i%6<4?'banana':i%6===4?'coconut':'mango',x<20?'colon':'costaArriba');}
  return sites;
 }
 // Tree crowns and hundreds of harvestable fruit clusters share GPU batches.

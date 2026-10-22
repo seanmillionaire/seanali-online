@@ -1,7 +1,7 @@
 import {stairAccess,floorAt,floorHeight,upperCanWalk} from './mansion-floors.js?v=236';
 import {normalizeHomeDay} from './home-activities.js?v=225';
 export const HOME_LOTS=[
- {id:'gorgona',x:-122,z:-16,en:'Gorgona Garden Estate',es:'Residencia Jardín de Gorgona',description:'A private tropical garden close to the Pacific coast.',descripcion:'Un jardín tropical privado cerca de la costa del Pacífico.'},
+ {id:'gorgona',x:-122,z:-16,en:'Chame Garden Estate',es:'Residencia Jardín de Chame',description:'A private tropical garden close to the Pacific coast.',descripcion:'Un jardín tropical privado cerca de la costa del Pacífico.'},
  {id:'boquete',x:-291,z:-98,en:'Boquete Highland Estate',es:'Residencia de las Tierras Altas',description:'A quiet green hillside retreat near Boquete.',descripcion:'Un refugio verde y tranquilo cerca de Boquete.'},
  {id:'city',x:439,z:-36,en:'Panama City Residence',es:'Residencia de Ciudad de Panamá',description:'City living with a landscaped courtyard and private terrace.',descripcion:'Vida urbana con jardín y terraza privada.'}
 ];
@@ -28,4 +28,4 @@ export function homePath(from,to){
 }
 
 // City estate meets the coast: keep the driveway and balloon on its dry side.
-export function homeYard(lot){const car={x:lot.x+(lot.id==='city'?-19:16),z:lot.z+(lot.id==='city'?17.5:20)};return {car,cars:{lamborghini:car,ferrari:{x:car.x+6,z:car.z}},balloon:{x:lot.x+(lot.id==='city'?-19:-18),z:lot.z+(lot.id==='city'?-8:23)}};}
+export function homeYard(lot){const city=lot.id==='city',car={x:lot.x+(city?-23:16),z:lot.z+(city?14.5:20),heading:city?-Math.PI/2:lot.id==='boquete'?0:Math.PI};return {car,cars:{lamborghini:car,ferrari:{x:city?car.x:car.x+6,z:city?car.z-8:car.z,heading:city?-Math.PI/2:lot.id==='boquete'?0:Math.PI}},balloon:{x:lot.x+(city?-19:-18),z:lot.z+(city?-8:23)}};}

@@ -1,6 +1,6 @@
 import {HIGHWAY_CURVES,smoothHighway} from './explore-state.js';
 import {CITY_STREET_X,CITY_STREET_Z} from './city-layout.js';
-import {homeLot,homeYard,HOME_LOTS} from './mansion-state.js';
+import {homeLot,homeYard} from './mansion-state.js';
 import {highwayWidth} from './highway-layout.js';
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z),angle=(a,b)=>Math.atan2(b.x-a.x,b.z-a.z),turn=(a,b)=>Math.atan2(Math.sin(b-a),Math.cos(b-a));
 export function vehiclePoseClear(p,clear){const c=Math.cos(p.heading||0),s=Math.sin(p.heading||0);return [[0,0],[-1.15,-2.35],[1.15,-2.35],[-1.15,2.35],[1.15,2.35],[0,-2.4],[0,2.4],[-1.2,0],[1.2,0]].every(([x,z])=>clear(p.x+x*c+z*s,p.z-x*s+z*c));}
@@ -8,7 +8,8 @@ class Heap{constructor(){this.a=[];}push(v){let i=this.a.length;this.a.push(v);w
 const key=(x,z)=>Math.round(x*1000)+','+Math.round(z*1000);let cached;
 export function automaticRoadGraph(){if(cached)return cached;const nodes=[],byKey=new Map(),edges=[],paths=Object.entries(HIGHWAY_CURVES).map(([id,p])=>({id,p}));
  for(const x of CITY_STREET_X)paths.push({id:'city-street',p:smoothHighway(CITY_STREET_Z.map(z=>[x,z]))});for(const z of CITY_STREET_Z)paths.push({id:'city-street',p:smoothHighway(CITY_STREET_X.map(x=>[x,z]))});
- for(const lot of HOME_LOTS){const yard=homeYard(lot),a=yard.cars.lamborghini,b=yard.cars.ferrari;paths.push({id:'mansion-parking',p:smoothHighway(lot.id==='city'?[[b.x,b.z],[b.x,-42],[414,-42]]:lot.id==='gorgona'?[[b.x,b.z],[b.x,a.z-9],[a.x+3,a.z-9]]:[[a.x,a.z],[a.x,a.z+5.5],[b.x,b.z+5.5],[b.x,b.z]])});}
+ // Each mansion car now has its own authored, rendered road in HIGHWAY_CURVES.
+ // Do not add the former invisible parking shortcuts across the garden.
  const add=(x,z,id)=>{const k=key(x,z);if(byKey.has(k))return byKey.get(k);const i=nodes.length;nodes.push({x,z,id});edges.push([]);byKey.set(k,i);return i;};
  const link=(a,b)=>{if(a!==b&&!edges[a].some(e=>e.i===b)){const length=distance(nodes[a],nodes[b]);edges[a].push({i:b,length});edges[b].push({i:a,length});}};
  for(const {id,p}of paths){let previous=null;for(const [x,z]of p){const i=add(x,z,id);if(previous!==null)link(previous,i);previous=i;}}
@@ -21,20 +22,23 @@ export function drivingDestination(p,world,model='lamborghini'){
  const roadStop={islaGrande:{x:176,z:-437},crystalCove:{x:176,z:-437},sunset:{x:-385,z:-30},volcanoSummit:{x:-385,z:-30},volcanoTrail:{x:-385,z:-30},chiriquiFalls:{x:-408,z:-8}}[p.id];if(roadStop)return {...p,...roadStop,walkLast:true};
  return {...p};
 }
-export function autoDrivePlaces(world){const places=[{id:'gorgonaTown',icon:'🏖️',x:-55,z:-16,en:'Gorgona beach',es:'Playa Gorgona'},{id:'pizzaCity',icon:'🏙️',x:360,z:-50,en:'Panama City',es:'Ciudad de Panamá'},{id:'volcanTown',icon:'🌋',x:-385,z:-30,en:'Volcán',es:'Volcán'},{id:'colonCity',icon:'🌴',x:-67,z:-374,en:'Colón',es:'Colón'},{id:'boquete',icon:'🌿',x:-290,z:-50,en:'Boquete',es:'Boquete'},{id:'costaArriba',icon:'🌊',x:114,z:-401,en:'Costa Arriba',es:'Costa Arriba'}];if(homeLot(world))places.unshift({id:'myHome',...homeYard(homeLot(world)).car,icon:'🏡',en:'My mansion',es:'Mi mansión'});return places;}
+export function autoDrivePlaces(world){const places=[{id:'gorgonaTown',icon:'🌴',x:-55,z:-16,en:'Chame',es:'Chame'},{id:'pizzaCity',icon:'🏙️',x:360,z:-50,en:'Panama City',es:'Ciudad de Panamá'},{id:'volcanTown',icon:'🌋',x:-385,z:-30,en:'Volcán',es:'Volcán'},{id:'colonCity',icon:'🌴',x:-67,z:-374,en:'Colón',es:'Colón'},{id:'boquete',icon:'🌿',x:-290,z:-50,en:'Boquete',es:'Boquete'},{id:'costaArriba',icon:'🌊',x:114,z:-401,en:'Costa Arriba',es:'Costa Arriba'}];if(homeLot(world))places.unshift({id:'myHome',...homeYard(homeLot(world)).car,icon:'🏡',en:'My mansion',es:'Mi mansión'});return places;}
 function segmentClear(a,b,clear){const h=angle(a,b),length=distance(a,b),n=Math.max(1,Math.ceil(length/.65));for(let i=1;i<=n;i++)if(!clear({x:a.x+(b.x-a.x)*i/n,z:a.z+(b.z-a.z)*i/n,heading:h}))return false;return true;}
 // Local access around parked cars, trees and forecourt furniture, never through water.
 function accessPath(from,to,clear,step=1.5){if(segmentClear(from,to,clear))return [from,to];if(distance(from,to)>55)return null;const origin={x:from.x,z:from.z},open=new Heap(),seen=new Map(),prev=new Map(),point=(x,z)=>({x:origin.x+x*step,z:origin.z+z*step});open.push({x:0,z:0,cost:distance(from,to)});seen.set('0,0',0);let found=null,count=0;
- while(open.length&&count++<6000){const p=open.pop(),a=point(p.x,p.z),id=p.x+','+p.z;if(distance(a,to)<2.5&&segmentClear(a,to,clear)){found=id;break;}for(const [dx,dz]of [[1,0],[-1,0],[0,1],[0,-1],[1,1],[-1,1],[1,-1],[-1,-1]]){const x=p.x+dx,z=p.z+dz,b=point(x,z),k=x+','+z;if(Math.hypot(x,z)>60/step||!segmentClear(a,b,clear))continue;const g=seen.get(id)+Math.hypot(dx,dz)*step;if(g>=(seen.get(k)??Infinity))continue;seen.set(k,g);prev.set(k,id);open.push({x,z,cost:g+distance(b,to)});}}
+ while(open.length&&count++<6000){const p=open.pop(),a=point(p.x,p.z),id=p.x+','+p.z;if(distance(a,to)<2.5&&segmentClear(a,to,clear)){found=id;break;}for(const [dx,dz]of [[1,0],[-1,0],[0,1],[0,-1],[1,1],[-1,1],[1,-1],[-1,-1]]){const x=p.x+dx,z=p.z+dz,b=point(x,z),k=x+','+z,g=seen.get(id)+Math.hypot(dx,dz)*step;if(g>=(seen.get(k)??Infinity)||Math.hypot(x,z)>60/step||!segmentClear(a,b,clear))continue;seen.set(k,g);prev.set(k,id);open.push({x,z,cost:g+distance(b,to)});}}
  if(!found)return null;const route=[to];while(found){const [x,z]=found.split(',').map(Number);route.unshift(point(x,z));found=prev.get(found);}return route;
 }
 export function planAutomaticDrive(from,wanted,{world,model=from.model,clear=()=>true,centered=false}={}){
+ // Static collision results are reusable during this single synchronous plan.
+ // Release the cache on return; moving traffic remains checked by the driver.
+ if(!centered){const check=clear,memo=new Map();clear=p=>{const k=p.x+','+p.z+','+(p.heading||0);if(memo.has(k))return memo.get(k);const allowed=check(p);memo.set(k,allowed);return allowed;};}
  const fallback=()=>centered?null:planAutomaticDrive(from,wanted,{world,model,clear,centered:true});
  const destination=drivingDestination(wanted,world,model),{nodes,edges}=automaticRoadGraph(),nearest=p=>nodes.map((n,i)=>({i,d:distance(n,p)})).sort((a,b)=>a.d-b.d);
  const starts=nearest(from),ends=nearest(destination);const last=ends.find(a=>clear({...nodes[a.i],heading:from.heading||0}));if(!last)return null;
  let first=null,access=null;for(const candidate of starts.slice(0,18)){if(candidate.d>65)break;const p=nodes[candidate.i];if(segmentClear(from,p,clear)){first=candidate;access=[from,p];break;}}
  if(!first){first=starts[0];access=accessPath(from,nodes[first.i],clear);}if(!access)return null;
- const open=new Heap(),cost=new Map([[first.i,0]]),prev=new Map();open.push({i:first.i,cost:0});const done=new Set();while(open.length){const p=open.pop();if(done.has(p.i))continue;done.add(p.i);if(p.i===last.i)break;for(const e of edges[p.i]){if(!segmentClear(nodes[p.i],nodes[e.i],clear))continue;const g=cost.get(p.i)+e.length;if(g>=(cost.get(e.i)??Infinity))continue;cost.set(e.i,g);prev.set(e.i,p.i);open.push({i:e.i,cost:g+distance(nodes[e.i],nodes[last.i])});}}
+ const open=new Heap(),cost=new Map([[first.i,0]]),prev=new Map();open.push({i:first.i,cost:0});const done=new Set();while(open.length){const p=open.pop();if(done.has(p.i))continue;done.add(p.i);if(p.i===last.i)break;for(const e of edges[p.i]){if(done.has(e.i))continue;const g=cost.get(p.i)+e.length;if(g>=(cost.get(e.i)??Infinity)||!segmentClear(nodes[p.i],nodes[e.i],clear))continue;cost.set(e.i,g);prev.set(e.i,p.i);open.push({i:e.i,cost:g+distance(nodes[e.i],nodes[last.i])});}}
  if(!done.has(last.i))return null;const ids=[last.i];while(ids[0]!==first.i)ids.unshift(prev.get(ids[0]));const center=ids.map(i=>nodes[i]);const road=center.map((p,i)=>{const a=center[Math.max(0,i-3)],b=center[Math.min(center.length-1,i+3)],h=angle(a,b),lane=centered||p.id.startsWith('mansion')?0:p.id==='city-street'?1.2*Math.min(1,Math.min(...(Math.abs(Math.sin(h))>.7?CITY_STREET_X.map(x=>Math.abs(p.x-x)):CITY_STREET_Z.map(z=>Math.abs(p.z-z))))/6):highwayWidth(p.id,p.x,p.z)>12?2.4:1.7;for(const d of [lane,lane*.55,0]){const q={x:p.x+Math.cos(h)*d,z:p.z-Math.sin(h)*d,heading:h};if(clear(q))return q;}return {...p,heading:h};});
  const startAccess=accessPath(from,road[0],clear);if(!startAccess)return null;let points=[...startAccess,...road.slice(1)];
  // Validate the full hull across every metre. Repair a tight junction locally.

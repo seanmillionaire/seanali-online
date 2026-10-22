@@ -1,15 +1,21 @@
+import {createThemeAudio,morningThemeDue,normalizeMorningTheme} from './theme-audio.js';
 import {createRegionalAmbience} from './regional-ambience.js';
 import {createSoundtrack} from './soundtrack.js?v=225';
 /* Recorded foley, activity-aware soundtrack, and independent music/effects mix. */
-export function createDelight({soundEnabled,motionEnabled}) {
+export function createDelight({soundEnabled,motionEnabled,storage}) {
   let context,master,ambience,limiter,scene='quiet',unlocked=false,ambientTimer=null,phrase=0;
   const voices=new Set();
   let boatRequested=false,boatPosition=0,boatBus=null,boatNodes=[],boatMotor=null,boatHarmonic=null;
-  let welcomeHeld=false,musicRevealAt=-Infinity,welcomeMusicPending=false;
+  let welcomeHeld=false,musicRevealAt=-Infinity,welcomeMusicPending=false,theme=null;
+  let audioMenu=false,carVoiceSerial=0,carSpeaking=false,carVoiceState='idle';
   function welcomeAudio(held){welcomeHeld=held;welcomeMusicPending=!held;if(!held)musicRevealAt=performance.now()/1000+1;sync();}
-  let preferences={music:.58,effects:.8};try{const stored=JSON.parse(localStorage.getItem('panama-audio-v1'));for(const k of ['music','effects'])if(Number.isFinite(stored?.[k]))preferences[k]=Math.max(0,Math.min(1,stored[k]));}catch{}
+  let preferences={music:.58,effects:.8};try{const stored=JSON.parse((storage??localStorage).getItem('panama-audio-v1'));for(const k of ['music','effects'])if(Number.isFinite(stored?.[k]))preferences[k]=Math.max(0,Math.min(1,stored[k]));}catch{}
   const soundtrack=createSoundtrack({enabled:()=>unlocked&&soundEnabled()&&!destroyed&&!welcomeHeld&&scene!=='welcome',volume:()=>preferences.music*Math.max(0,Math.min(1,(performance.now()/1000-musicRevealAt)/6)),environment:()=>context?{context,output:limiter}:null});
-  function setAudioLevels(values){for(const k of ['music','effects'])if(Number.isFinite(values[k]))preferences[k]=Math.max(0,Math.min(1,values[k]));try{localStorage.setItem('panama-audio-v1',JSON.stringify(preferences));}catch{}sync();}
+  theme=createThemeAudio({allowed:()=>unlocked&&soundEnabled()&&!destroyed&&!welcomeHeld&&ready(),volume:()=>preferences.music,environment:()=>context?{context,output:limiter}:null,onPriority:(held,exclusive)=>{soundtrack.hold(held);if(master&&context){master.gain.cancelScheduledValues(context.currentTime);master.gain.setValueAtTime(exclusive||welcomeHeld?0:preferences.effects,context.currentTime);}if(exclusive)window.speechSynthesis?.cancel();}});
+  function worldTheme(world,save,active=true){world.morningTheme??=normalizeMorningTheme();const day=world.morningTheme.day;if(active&&scene==='explore'&&!welcomeHeld&&morningThemeDue(world)&&!theme.exclusive)theme.morning(()=>{world.morningTheme.played=Math.max(world.morningTheme.played,day);save?.();});}
+  function cancelCarGreeting(){carVoiceSerial++;if(carSpeaking)window.speechSynthesis?.cancel();carSpeaking=false;carVoiceState='idle';}
+  function carGreeting(language='en'){const token=++carVoiceSerial;carVoiceState='queued';theme.afterMorning(()=>{if(token!==carVoiceSerial||!soundEnabled()||document.hidden||destroyed||!('speechSynthesis'in window))return;window.speechSynthesis.cancel();soundtrack.duck(5);theme.duck(5);const u=new SpeechSynthesisUtterance(language==='es'?'Hola, Angelique. ¿Adónde quieres ir?':'Hi, Angelique. Where do you want to go?');u.lang=language==='es'?'es-PA':'en-US';const voices=window.speechSynthesis.getVoices();u.voice=voices.find(v=>v.localService&&v.lang.startsWith(language))||voices.find(v=>v.lang.startsWith(language))||null;u.rate=.95;u.volume=preferences.effects;u.onstart=()=>{carVoiceState='speaking';};u.onend=()=>{carSpeaking=false;carVoiceState='spoken';};u.onerror=()=>{carSpeaking=false;carVoiceState='unavailable';};carSpeaking=true;window.speechSynthesis.speak(u);});}
+  function setAudioLevels(values){for(const k of ['music','effects'])if(Number.isFinite(values[k]))preferences[k]=Math.max(0,Math.min(1,values[k]));try{(storage??localStorage).setItem('panama-audio-v1',JSON.stringify(preferences));}catch{}sync();}
   function ready(){
     if(!soundEnabled()||document.hidden)return false;
     try {
@@ -26,7 +32,7 @@ export function createDelight({soundEnabled,motionEnabled}) {
    loading.set(name,job);return job;
   }
   function recordedSound(name,{volume=.35,rate=1,offset=0,duration=null}={}){
-   if(welcomeHeld||!unlocked||!soundEnabled()||document.hidden||destroyed||volume<.005||!ready()||voices.size>32)return false;
+   if(theme.exclusive||welcomeHeld||!unlocked||!soundEnabled()||document.hidden||destroyed||volume<.005||!ready()||voices.size>32)return false;
    const buffer=recordings.get(name);if(!buffer){const requested=performance.now();loadRecording(name).then(b=>{if(b&&performance.now()-requested<900)recordedSound(name,{volume,rate,offset,duration});});return false;}
    const source=context.createBufferSource(),gain=context.createGain();source.buffer=buffer;source.playbackRate.value=Math.max(.7,Math.min(1.4,rate));
    const from=Math.min(Math.max(0,offset),Math.max(0,buffer.duration-.05)),length=Math.min(duration??buffer.duration,buffer.duration-from),now=context.currentTime;
@@ -40,7 +46,7 @@ export function createDelight({soundEnabled,motionEnabled}) {
    const rev=Math.min(1,Math.abs(speed)/52);engineSource.playbackRate.setTargetAtTime(.75+rev*1.25,context.currentTime,.12);engineGain.gain.setTargetAtTime(.16+rev*.23,context.currentTime,.12);engineBass.playbackRate.setTargetAtTime(.48+rev*.4,context.currentTime,.15);engineBassGain.gain.setTargetAtTime(.08+rev*.10,context.currentTime,.15);
   }
   function voice(freq,duration=.2,{volume=.11,type='sine',delay=0,end=freq,ambient=false}={}){
-    if(!ready()||voices.size>40)return;
+    if(theme.exclusive||welcomeHeld||!ready()||voices.size>40)return;
     const at=context.currentTime+delay,o=context.createOscillator(),g=context.createGain();
     o.type=type;o.frequency.setValueAtTime(freq,at);o.frequency.exponentialRampToValueAtTime(Math.max(20,end),at+duration);
     g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(volume,at+.015);g.gain.exponentialRampToValueAtTime(.0001,at+duration);
@@ -48,7 +54,7 @@ export function createDelight({soundEnabled,motionEnabled}) {
     o.onended=()=>{voices.delete(o);o.disconnect();g.disconnect();};
   }
   function noise(duration,volume,filter,frequency,ambient=false){
-    if(!ready()||voices.size>40)return;const at=context.currentTime,buffer=context.createBuffer(1,Math.ceil(context.sampleRate*duration),context.sampleRate),data=buffer.getChannelData(0);
+    if(theme.exclusive||welcomeHeld||!ready()||voices.size>40)return;const at=context.currentTime,buffer=context.createBuffer(1,Math.ceil(context.sampleRate*duration),context.sampleRate),data=buffer.getChannelData(0);
     for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1);
     const o=context.createBufferSource(),f=context.createBiquadFilter(),g=context.createGain();o.buffer=buffer;f.type=filter;f.frequency.value=frequency;
     g.gain.setValueAtTime(.0001,at);g.gain.linearRampToValueAtTime(volume,at+Math.min(duration/3,.6));g.gain.exponentialRampToValueAtTime(.0001,at+duration);
@@ -61,7 +67,7 @@ export function createDelight({soundEnabled,motionEnabled}) {
   let rainSource=null,rainGain=null;
   function rainSound(amount=0){if(!unlocked||!soundEnabled()||document.hidden)amount=0;if(amount<.025){if(rainSource){rainSource.stop();rainSource.disconnect();rainGain.disconnect();rainSource=rainGain=null;}return;}if(!ready())return;const b=recordings.get('rain');if(!b){loadRecording('rain');return;}if(!rainSource){rainSource=context.createBufferSource();rainSource.buffer=b;rainSource.loop=true;rainGain=context.createGain();rainGain.gain.value=0;rainSource.connect(rainGain).connect(master);rainSource.start();}rainGain.gain.setTargetAtTime(Math.min(.26,amount*.28),context.currentTime,.7);}
   const regional=createRegionalAmbience({environment:()=>context?{context,output:master}:null,load:name=>{const b=recordings.get(name);if(!b)loadRecording(name);return b;},allowed:()=>!destroyed&&!welcomeHeld&&unlocked&&soundEnabled()&&!document.hidden&&scene==='explore'&&ready()});
-  function soundscape(info){regional.update(info);if(welcomeMusicPending&&!welcomeHeld&&performance.now()/1000>musicRevealAt){soundtrack.sync();welcomeMusicPending=false;}soundtrack.update(info);rainSound(info.active===false?0:info.rain||0);}
+  function soundscape(info){audioMenu=info.active===false;theme.setMenu(audioMenu);theme.sync();regional.update(info);if(welcomeMusicPending&&!welcomeHeld&&performance.now()/1000>musicRevealAt){soundtrack.sync();welcomeMusicPending=false;}soundtrack.update(info);rainSound(info.active===false?0:info.rain||0);}
   const scale=[261.63,293.66,329.63,392,440,523.25,659.25];
   function note(n=0,duration=.3,kind='sine'){
     const f=scale[((n%7)+7)%7];voice(f,duration,{volume:.15,type:kind});voice(f*2,duration*.55,{volume:.034});voice(f*3,duration*.32,{volume:.013});
@@ -69,11 +75,12 @@ export function createDelight({soundEnabled,motionEnabled}) {
   function drum(n){if(n%3===0)voice(140,.22,{end:45,volume:.26});else if(n%3===1){noise(.14,.13,'highpass',1800);voice(185,.1,{type:'triangle',volume:.06});}else noise(.065,.095,'highpass',6500);}
   const lastEffect=new Map();
   function effect(name,{strength=1}={}){
-    if(!unlocked||!soundEnabled()||document.hidden)return;
+    if(theme.exclusive||!unlocked||!soundEnabled()||document.hidden)return;
+    if(['finish','treasure','arrival'].includes(name)){theme.celebrate();return;}
     const stamp=performance.now()/1000,cooldown=({footstep:.23,swim:.55,skate:.55,crash:.8,impact:.3,land:.25,fall:1.2,splash:.4,finish:2,treasure:2,thunder:12,door:.4,tap:.08})[name]||0;
     if(stamp-(lastEffect.get(name)??-Infinity)<cooldown)return;
     lastEffect.set(name,stamp);const power=Math.max(.15,Math.min(1,strength));
-    const cues={crash:['crash',.62,2.5],impact:['body-impact',.48,.8],land:['body-impact',.26,.55],footstep:['footsteps',.15,.28],skate:['footsteps',.08,.4],swim:['splash',.22,.7],splash:['splash',.5,1.7],drive:['engine',.25,1],jump:['whoosh',.16,.45],fall:['whoosh',.4,.7],boat:['engine',.2,1.8],'giant-stomp':['body-impact',.62,.8],'balloon-pop':['body-impact',.5,.5],door:['door',.4,2],thunder:['thunder',.5,9],coin:['coins',.28,.8],treasure:['celebration',.5,4],finish:['celebration',.48,4],arrival:['celebration',.35,4],correct:['coins',.2,.7],pair:['coins',.16,.5],friend:['door',.12,.18],travel:['whoosh',.2,.7],tap:['door',.09,.09],wrong:['body-impact',.08,.12]};
+    const cues={crash:['crash',.62,2.5],impact:['body-impact',.48,.8],land:['body-impact',.26,.55],footstep:['footsteps',.15,.28],skate:['footsteps',.08,.4],swim:['splash',.22,.7],splash:['splash',.5,1.7],drive:['engine',.25,1],jump:['whoosh',.16,.45],fall:['whoosh',.4,.7],boat:['engine',.2,1.8],'giant-stomp':['body-impact',.62,.8],'balloon-pop':['body-impact',.5,.5],door:['door',.4,2],thunder:['thunder',.5,9],coin:['coins',.28,.8],correct:['coins',.2,.7],pair:['coins',.16,.5],friend:['door',.12,.18],travel:['whoosh',.2,.7],tap:['door',.09,.09],wrong:['body-impact',.08,.12]};
     const cue=cues[name];if(!cue)return;const [sound,volume,duration]=cue;
     recordedSound(sound,{volume:volume*power,duration,offset:sound==='footsteps'?(footIndex++%30)*.55:0,rate:name==='thunder'?1:.96+(footIndex%4)*.025});
     if(['crash','treasure','finish','thunder'].includes(name))soundtrack.duck(name==='thunder'?3:1.8);
@@ -83,11 +90,12 @@ export function createDelight({soundEnabled,motionEnabled}) {
   function stopAmbient(){clearTimeout(ambientTimer);ambientTimer=null;}
   function ambientPhrase(){soundtrack.sync();}
   function sync(){
+    theme.sync();
     if(!soundEnabled()||document.hidden){regional.stop();carEngine(0,false);stopBoat();rainSound(0);stopAmbient();soundtrack.sync();if(context){for(const o of voices){try{o.stop();o.disconnect();}catch{}}voices.clear();context.suspend().catch(()=>{});}return;}
-    if(unlocked&&ready()){master.gain.setTargetAtTime(welcomeHeld?0:preferences.effects,context.currentTime,welcomeHeld?.04:1.2);soundtrack.sync();if(boatRequested)startBoat();}
+    if(unlocked&&ready()){master.gain.setTargetAtTime(welcomeHeld||theme.exclusive?0:preferences.effects,context.currentTime,welcomeHeld?.04:1.2);soundtrack.sync();if(boatRequested)startBoat();}
   }
-  function gesture(){const first=!unlocked;unlocked=true;if(ready()){soundtrack.unlock();if(first)for(const name of ['horn','engine','footsteps','crash','splash','whoosh','body-impact','coins','door','celebration'])loadRecording(name);}sync();}
-  function setScene(next){if(next!==scene)stopTheme();if(next!=='explore'){regional.stop();carEngine(0,false);boatRequested=false;stopBoat();}scene=next;stopAmbient();if(ambience&&context){ambience.gain.cancelScheduledValues(context.currentTime);ambience.gain.setTargetAtTime(['map','home','welcome'].includes(scene)?.24:.0001,context.currentTime,.12);}if(unlocked){if(scene!=='explore')ambientPhrase();}}
+  function gesture(){const first=!unlocked;unlocked=true;if(ready()){soundtrack.unlock();if(first)for(const name of ['horn','engine','footsteps','crash','splash','whoosh','body-impact','coins','door'])loadRecording(name);}sync();}
+  function setScene(next){if(next!==scene)stopTheme();if(next!=='explore'){regional.stop();carEngine(0,false);boatRequested=false;stopBoat();}scene=next;audioMenu=['welcome','map','home','journal','reward','ending'].includes(scene);theme.setMenu(audioMenu);stopAmbient();if(ambience&&context){ambience.gain.cancelScheduledValues(context.currentTime);ambience.gain.setTargetAtTime(['map','home','welcome'].includes(scene)?.24:.0001,context.currentTime,.12);}if(unlocked){if(scene!=='explore')ambientPhrase();}}
   function duck(){soundtrack.duck(5);}
   const visibility=()=>{if(document.hidden)window.speechSynthesis?.cancel();sync();};document.addEventListener('visibilitychange',visibility);
   function setCityAmbient(isCity){
@@ -108,7 +116,7 @@ export function createDelight({soundEnabled,motionEnabled}) {
    if(horn>.005)recordedSound('horn',{volume:Math.min(.5,horn*.55),rate:.88+Math.random()*.22});
 
   }
-  return {welcomeAudio,soundscape,setAudioLevels,get audioLevels(){return {...preferences};},get ambienceStatus(){return regional.status;},get soundtrackStatus(){return soundtrack.status;},nextTrack(){soundtrack.next();},recordedSound,carEngine,panamaSound,setCityAmbient,streetSound,boat,get boatActive(){return !!boatBus;},note,drum,effect,gesture,sync,setScene,duck,get voiceCount(){return voices.size;},get ambientScheduled(){return ambientTimer!==null;},destroy(){destroyed=true;regional.dispose();soundtrack.destroy();rainSound(0);carEngine(0,false);recordings.clear();boatRequested=false;stopBoat();stopAmbient();stopTheme();document.removeEventListener('visibilitychange',visibility);context?.close();}};
+  return {worldTheme,carGreeting,cancelCarGreeting,get carAssistantStatus(){return carVoiceState;},get themeStatus(){return theme.status;},get morningExclusive(){return theme.exclusive;},welcomeAudio,soundscape,setAudioLevels,get audioLevels(){return {...preferences};},get ambienceStatus(){return regional.status;},get soundtrackStatus(){return soundtrack.status;},nextTrack(){soundtrack.next();},recordedSound,carEngine,panamaSound,setCityAmbient,streetSound,boat,get boatActive(){return !!boatBus;},note,drum,effect,gesture,sync,setScene,duck,get voiceCount(){return voices.size;},get ambientScheduled(){return ambientTimer!==null;},destroy(){destroyed=true;cancelCarGreeting();theme.destroy();regional.dispose();soundtrack.destroy();rainSound(0);carEngine(0,false);recordings.clear();boatRequested=false;stopBoat();stopAmbient();stopTheme();document.removeEventListener('visibilitychange',visibility);context?.close();}};
 }
 export function burst(target,{motion=true,big=false}={}){
   if(!motion||!target?.isConnected)return;

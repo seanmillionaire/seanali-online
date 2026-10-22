@@ -90,7 +90,7 @@ export function createForestLandscape({T,scene,mat,geometry,height,light=false})
     layer.factors[i]=next;dummy.position.set(t.x,height(t.x,t.z)-.035,t.z);
     dummy.rotation.set(0,t.heading,0);dummy.scale.setScalar(t.size*Math.max(.045,next));
     dummy.updateMatrix();layer.foliage.setMatrixAt(i,dummy.matrix);
-    if(layer.stems){dummy.scale.setScalar(t.size*(fade===0?0:1));dummy.updateMatrix();layer.stems.setMatrixAt(i,dummy.matrix);}
+    if(layer.stems){dummy.scale.setScalar(t.size);dummy.updateMatrix();layer.stems.setMatrixAt(i,dummy.matrix);}
     changed=true;
    }
    if(changed){layer.foliage.instanceMatrix.needsUpdate=true;
