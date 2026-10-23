@@ -1,5 +1,5 @@
 import {animalBuilder} from './animal-craft.js';
-import {COLON_OFFSET,freshwaterHabitat} from './geography.js?v=225';
+import {COLON_OFFSET,freshwaterHabitat} from './geography.js';
 const lakeWater=(isWater)=>(x,z)=>isWater(x,z)&&freshwaterHabitat(x+COLON_OFFSET.x,z+COLON_OFFSET.z);
 export const BLACK_MONKEY_COUNT=28;
 export const COAST_CROCODILE_COUNT=8;
@@ -161,7 +161,7 @@ export function createColonWildlife({T,root,make,geometry,mat,ball,box,cylinder,
   const tail=[];
   let parent=body;
   for(let j=0;j<8;j++){const t=new T.Group();t.position.set(0,j===0?.6:0,j===0?-.21:-.25);parent.add(t);link(fur,[0,0,0],[0,0,-.25],.062-j*.005,.057-j*.005,t);tail.push(t);parent=t;}
-  const group=i<19?anchors.main:anchors.monkey,start=group[(i*3)%group.length],next=group[(i*3+1)%group.length];
+  const group=i<19?anchors.main:anchors.monkey;const local=i<19?i:i-19;const base=group[local%group.length],angle=local*2.399963;let start={...base,x:base.x+Math.cos(angle)*1.1,z:base.z+Math.sin(angle)*1.1};for(let trial=0;trial<40&&monkeys.some(m=>Math.hypot(m.motion.a.x-start.x,m.motion.a.y-start.y,m.motion.a.z-start.z)<1.25);trial++){const a=angle+trial*.8;start={...base,x:base.x+Math.cos(a)*(1.1+trial*.04),z:base.z+Math.sin(a)*(1.1+trial*.04)};}const next=start;g.position.set(start.x,start.y,start.z);
   const motion={a:start,b:next,t:0,rest:(i%7)*.32,duration:1.2,seed:123+i*7919};
   const scale=.84+(i%5)*.055;g.scale.setScalar(scale);
   finish(g);monkeys.push({g,body,head,arms,legs,tail,motion,group,index:i});
@@ -206,7 +206,7 @@ export function createColonWildlife({T,root,make,geometry,mat,ball,box,cylinder,
     m.motion.t=0;m.motion.duration=1.3;
    }
    m.following=playing&&m.index<3;
-   const p=stepMonkey(m.motion,active?dt:0,m.group);
+   const before={...m.motion},old=m.g.position.clone();const free=m.group.filter(a=>!monkeys.some(other=>other!==m&&[other.motion.a,other.motion.b].some(b=>Math.hypot(a.x-b.x,a.y-b.y,a.z-b.z)<1.35)));const p=stepMonkey(m.motion,active?dt:0,free.length?free:[m.motion.a]);
    if(playing&&m.index<3){
     const a=m.index*Math.PI*2/3,ease=Math.min(1,dt*7),tx=player.x+Math.sin(a)*2.5,tz=player.z+Math.cos(a)*2.5;
     p.x=m.g.position.x+((inWater(tx,tz)?player.x:tx)-m.g.position.x)*ease;
@@ -214,7 +214,7 @@ export function createColonWildlife({T,root,make,geometry,mat,ball,box,cylinder,
     const ty=height(p.x,p.z)+(signal&&!reducedMotion?Math.abs(Math.sin(time*Math.PI/1.25))*2:0);
     p.y=m.g.position.y+(ty-m.g.position.y)*ease;p.heading=Math.atan2(player.x-p.x,player.z-p.z);
    }
-   m.g.position.set(p.x,p.y,p.z);m.g.rotation.y=p.heading;
+   if(monkeys.some(other=>other!==m&&Math.hypot(p.x-other.g.position.x,p.y-other.g.position.y,p.z-other.g.position.z)<1.2)){Object.assign(m.motion,before);p.x=old.x;p.y=old.y;p.z=old.z;p.air=0;p.stride=0;if(before.rest>0){m.motion.rest=Math.max(.15,before.rest);m.motion.b=m.motion.a;}}m.g.position.set(p.x,p.y,p.z);m.g.rotation.y=p.heading;
    m.body.rotation.x=-.22+Math.sin(p.stride)*.13;
    m.arms.forEach((a,i)=>{a.pivot.rotation.x=-.45+Math.sin(p.stride+i*Math.PI)*.8;a.pivot.rotation.z=(i?1:-1)*(.2+p.air*.3);a.lower.rotation.x=-.4-p.air*.5;});
    m.legs.forEach((a,i)=>{a.pivot.rotation.x=Math.sin(p.stride+i*Math.PI)*.65;a.lower.rotation.x=.35+p.air*.5;});
@@ -235,3 +235,4 @@ export function createColonWildlife({T,root,make,geometry,mat,ball,box,cylinder,
  }
  return {update,monkeys,crocs,dispose(){furMap.dispose();scales.dispose();}};
 }
+

@@ -26,3 +26,4 @@ export function installPolyHavenMaterials(T,{surfaces,scene,materials,renderer,r
  }
  return {dispose(){disposed=true;for(const t of loaded)t.dispose();loaded.clear();}};
 }
+

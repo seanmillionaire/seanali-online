@@ -20,3 +20,4 @@ export function adventureIcon(symbol){
  const key=({'🌋':'compass','🐬':'leaf','🗺️':'map','📍':'compass','🎒':'bag','🛠️':'tool','🫶':'people','🐢':'people','👮':'people','🏡':'home','🚪':'home','🚙':'vehicle','🏙️':'vehicle','⛵':'boat','🍕':'food','🥥':'food','🥭':'food','🔥':'food','🦘':'jump','⬆️':'jump','⬇️':'jump','🪙':'coin','📖':'book','📱':'phone','☰':'menu','✕':'close','🧭':'compass','🦋':'leaf','🔎':'compass','👣':'compass'})[symbol]||'interact';
  return `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[key]}</svg>`;
 }
+

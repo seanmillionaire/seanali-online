@@ -6,3 +6,4 @@ export function stairAccess(x,z,floor){if(stairZone(x,z))return true;return x> -
 export function upperCanWalk(x,z){return Math.abs(x)<14.55&&Math.abs(z)<13.55&&!GYM_OBSTACLES.some(b=>Math.abs(x-b.x)<b.w/2+.28&&Math.abs(z-b.z)<b.d/2+.28);}
 export function floorAt(x,z,floor=0){return stairZone(x,z)?z<=0?1:z>=12?0:floor:floor;}
 export function floorHeight(x,z,floor=0){return stairHeight(x,z)??(floor===1?GYM_HEIGHT:0);}
+

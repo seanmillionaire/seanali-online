@@ -1,4 +1,4 @@
-import {HIGHWAY_CURVES,HIGHWAY_WIDTH,roadDistance,traversable,inWater} from './explore-state.js?v=225';
+import {HIGHWAY_CURVES,HIGHWAY_WIDTH,roadDistance,traversable,inWater} from './explore-state.js';
 export const ROAD_REWARDS=[
  {id:"costa-arriba",road:"costaArriba",water:{x:180,z:-449},kind:"jetski",icon:"🌊",es:"Isla Grande · Moto acuática",en:"Isla Grande · Jet ski"},
  {id:'baru',road:'cityToBaru',kind:'scooter',icon:'🛴',es:'Scooter de Barú',en:'Barú summit scooter'},
@@ -28,3 +28,4 @@ export function createRoadRewards(o){
  }
  return {root,stations,nearest(x,z){return stations.find(p=>Math.hypot(x-p.x,z-p.z)<4.8);},dispose(){scene.remove(root);resources.forEach(r=>r.dispose());}};
 }
+

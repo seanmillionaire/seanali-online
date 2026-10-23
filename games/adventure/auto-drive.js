@@ -4,7 +4,8 @@ import {CITY_STREET_X,CITY_STREET_Z} from './city-layout.js';
 import {homeLot,homeYard} from './mansion-state.js';
 import {highwayWidth} from './highway-layout.js';
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z),angle=(a,b)=>Math.atan2(b.x-a.x,b.z-a.z),turn=(a,b)=>Math.atan2(Math.sin(b-a),Math.cos(b-a));
-export function vehiclePoseClear(p,clear){const c=Math.cos(p.heading||0),s=Math.sin(p.heading||0);return [[0,0],[-1.15,-2.35],[1.15,-2.35],[-1.15,2.35],[1.15,2.35],[0,-2.4],[0,2.4],[-1.2,0],[1.2,0]].every(([x,z])=>clear(p.x+x*c+z*s,p.z-x*s+z*c));}
+const VEHICLE_PROBES=[[0,0],[-1.15,-2.35],[1.15,-2.35],[-1.15,2.35],[1.15,2.35],[0,-2.4],[0,2.4],[-1.2,0],[1.2,0]];
+export function vehiclePoseClear(p,clear){const c=Math.cos(p.heading||0),s=Math.sin(p.heading||0);return VEHICLE_PROBES.every(([x,z])=>clear(p.x+x*c+z*s,p.z-x*s+z*c));}
 class Heap{constructor(){this.a=[];}push(v){let i=this.a.length;this.a.push(v);while(i){const p=(i-1)>>1;if(this.a[p].cost<=v.cost)break;this.a[i]=this.a[p];i=p;}this.a[i]=v;}pop(){const first=this.a[0],last=this.a.pop();if(this.a.length){let i=0;while(i*2+1<this.a.length){let c=i*2+1;if(c+1<this.a.length&&this.a[c+1].cost<this.a[c].cost)c++;if(this.a[c].cost>=last.cost)break;this.a[i]=this.a[c];i=c;}this.a[i]=last;}return first;}get length(){return this.a.length;}}
 const key=(x,z)=>Math.round(x*1000)+','+Math.round(z*1000);let cached;
 export function automaticRoadGraph(){if(cached)return cached;const nodes=[],byKey=new Map(),edges=[],paths=Object.entries(HIGHWAY_CURVES).map(([id,p])=>({id,p}));
@@ -53,3 +54,4 @@ export function createAutomaticDriver(){let plan=null,progress=0,speed=0,waiting
  const here=automaticPose(plan,progress),ahead=automaticPose(plan,Math.min(plan.total,progress+7)),curve=Math.abs(turn(here.heading,ahead.heading))/7;let limit=Math.min(20,Math.sqrt(3.5/Math.max(.008,curve)),Math.sqrt(2*6*left));const scan=Math.min(left,Math.max(5,speed*speed/12+4));let free=scan;for(let d=.25;d<=scan;d+=.5)if(!clear(automaticPose(plan,progress+d),car)){free=Math.max(0,d-1.5);break;}limit=Math.min(limit,Math.sqrt(12*free));speed+=Math.max(-8*dt,Math.min(4*dt,limit-speed));if(speed<.05)speed=0;const advance=Math.min(left,speed*dt);let moved=0;
  for(let d=Math.min(.12,advance);d<=advance+.0001&&advance>0;d=Math.min(advance,d+.12)){const pose=automaticPose(plan,progress+d),h=pose.heading;if(!clear({...pose,heading:h},car)){speed=0;break;}Object.assign(car,{x:pose.x,z:pose.z,heading:h});moved=d;if(d===advance)break;}
  progress+=moved;waiting=moved<.001?waiting+dt:0;status=waiting>.8?'waiting':'driving';return speed;}};}
+

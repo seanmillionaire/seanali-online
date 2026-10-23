@@ -7,3 +7,4 @@ export function mansionAccess(dx,dz,rooftop=false){
  if(dx> -16&&dx< -11.4&&dz> -1.9&&dz<-.1)return {height:4.2+.35*Math.max(0,Math.min(1,(dx+14)/2)),stairs:true};
  return null;
 }
+

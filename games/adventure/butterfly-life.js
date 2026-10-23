@@ -1,5 +1,5 @@
-import {FOREST_PATCHES,forestSiteClear} from './forest-patches.js?v=225';
-import {isletHeight} from './explore-state.js?v=225';
+import {FOREST_PATCHES,forestSiteClear} from './forest-patches.js';
+import {isletHeight} from './explore-state.js';
 // Small resident populations: sheltered clearings, never a player-following swarm.
 export function butterflyHabitats(){
  const habitats=[];
@@ -44,3 +44,4 @@ export function createButterflyLife({T,scene,geometry,mat,ball}){
  }
  update(0,false);return {root,count,habitats,update,get clock(){return clock;},dispose(){scene.remove(root);}};
 }
+

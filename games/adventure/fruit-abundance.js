@@ -1,10 +1,10 @@
 import {fruitSiteId} from './fruit-site-ids.js';
 import {snakeCorridorContains} from './east-jungle-layout.js';
-import {worldIslands,HIGHWAY_CURVES,roadDistance,inWater,isletHeight} from './explore-state.js?v=225';
-import {homeReserved} from './mansion-state.js?v=225';
-import {regionalClearing} from './regional-layout.js?v=225';
-import {ruralBlocks} from './rural-towns.js?v=225';
-import {botanicalGeometry} from './botanical-geometry.js?v=225';
+import {worldIslands,HIGHWAY_CURVES,roadDistance,inWater,isletHeight} from './explore-state.js';
+import {homeReserved} from './mansion-state.js';
+import {regionalClearing} from './regional-layout.js';
+import {ruralBlocks} from './rural-towns.js';
+import {botanicalGeometry} from './botanical-geometry.js';
 import {createFruitEmojis} from './fruit-emojis.js';
 export const MANGO_VARIETIES=[{name:'red',color:'#c74535'},{name:'green',color:'#70a32b'},{name:'yellow',color:'#efc53b'}];
 export function fruitGroves(){
@@ -53,3 +53,4 @@ export function createFruitAbundance({T,scene,geometry,mat,ball,cylinder,height,
  root.userData.solidTrees=sites.map(p=>({...p,size:p.scale}));
  return {root,foodTrees,update(indoors){root.visible=!indoors;},dispose(){scene.remove(root);emojis.dispose();resources.forEach(x=>x.dispose());}};
 }
+

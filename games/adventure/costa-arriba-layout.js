@@ -19,3 +19,4 @@ export const costaClearing=(x,z,margin=4)=>Math.hypot(x-ISLA_LIGHTHOUSE.x,z-ISLA
 export const sanBlasWaters=(x,z,margin=0)=>Math.hypot((x-530)/(235+margin),(z+425)/(165+margin))<1;
 
 export const ISLA_LIGHTHOUSE={x:ISLA_GRANDE.x+14,z:ISLA_GRANDE.z-9};
+

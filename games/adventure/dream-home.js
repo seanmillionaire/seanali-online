@@ -1,7 +1,7 @@
-import {RECIPES,INGREDIENTS,recipeById,startRecipe,addIngredient,prepRecipe,finishHeat,plateRecipe,takeMeal,eatMeal,inHomePool} from './home-activities.js?v=225';
-import {mountHomeArcade} from './home-arcade.js?v=225';
-import {createHuman} from './character-model.js?v=225';
-import {DESTINATIONS,cityX,CITY_RESTAURANT} from './geography.js?v=225';
+import {RECIPES,INGREDIENTS,recipeById,startRecipe,addIngredient,prepRecipe,finishHeat,plateRecipe,takeMeal,eatMeal,inHomePool} from './home-activities.js';
+import {mountHomeArcade} from './home-arcade.js';
+import {createHuman} from './character-model.js';
+import {DESTINATIONS,cityX,CITY_RESTAURANT} from './geography.js';
 const FRIENDS=[['sofia','🌸 Sofía'],['mia','🦋 Mía'],['lucia','🌻 Lucía']];
 export function createDreamHome(o,ui){
  const {state,T,avatar,scene,make,mat,box,ball,cylinder,geometry,joy,dress,walkRoom,navigate,enter,leave,onMeal}=o,h=state.world.mansion,d=h.day,{page,button,el,panel,close,persist,goHome,cleanup}=ui,say=(a,b)=>state.lang==='es'?a:b;
@@ -41,3 +41,4 @@ export function createDreamHome(o,ui){
  function pose(time){if(seated>0&&seat){o.placeRoom(seat.x,seat.z);avatar.position.set(seat.x,-.02,280+seat.z);avatar.rotation.y=Math.PI;o.legs.forEach(l=>l.rotation.x=-1.2);o.arms.forEach(a=>a.rotation.x=-.9);}else if(o.isHome()&&inHomePool(avatar.position.x,avatar.position.z-280)){avatar.position.y=-.45+Math.sin(time*3)*.04;avatar.rotation.x=-.4;o.arms.forEach((a,i)=>a.rotation.x=Math.sin(time*6+i*Math.PI)*.9);o.legs.forEach((l,i)=>l.rotation.x=Math.sin(time*6+i*Math.PI)*.4);}else if(d.carrying)o.arms.forEach(a=>a.rotation.x=-.85);}
  return {use,update:animate,pose,dispose(){carry.removeFromParent();party.forEach(f=>f.g.removeFromParent());}};
 }
+

@@ -1,6 +1,6 @@
-import {ruralBlocks} from './rural-towns.js?v=225';
-import {regionalParcels,regionalParcelActive,regionalClearing} from './regional-layout.js?v=225';
-import {worldIslands,roadDistance,HIGHWAY_WIDTH,inWater} from './explore-state.js?v=225';
+import {ruralBlocks} from './rural-towns.js';
+import {regionalParcels,regionalParcelActive,regionalClearing} from './regional-layout.js';
+import {worldIslands,roadDistance,HIGHWAY_WIDTH,inWater} from './explore-state.js';
 // Grounded built forms interpreted from reference settings, not exact replicas
 // of private properties. Shared instancing keeps fine details inexpensive.
 export function createRegionalScenery({T,scene,geometry,mat,box,ball,cylinder,height,surfaces,state}){
@@ -101,3 +101,4 @@ export function createRegionalScenery({T,scene,geometry,mat,box,ball,cylinder,he
  }
  return {root,plots,coffee,paths,batchCount:batches.size,dispose(){scene.remove(root);}};
 }
+

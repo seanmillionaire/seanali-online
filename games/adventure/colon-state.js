@@ -28,3 +28,4 @@ export function expandColon(world){
  const c=world.colon;if(!c?.treehouse||c.level>=3||world.food.banana<3||world.food.coconut<2)return false;
  world.food.banana-=3;world.food.coconut-=2;c.level++;return true;
 }
+

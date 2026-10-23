@@ -1,25 +1,27 @@
 import {JUNGLE_BOULDERS} from './darien-terrain.js';
 import {GORGONA_FISH_SHACK} from './gorgona-coast.js';
-import {homeLot} from './mansion-state.js?v=225';
-import {regionalBlocked} from './regional-layout.js?v=225';
-import {CITY_ALL_PLOTS} from './city-layout.js?v=225';
-import {districtVehicleBlocked} from './expanded-districts.js?v=225';
-import {ruralBlocks} from './rural-towns.js?v=225';
-import {estateBlocked} from './estate.js?v=225';
-import {traversable} from './explore-state.js?v=225';
+import {homeLot} from './mansion-state.js';
+import {regionalBlocked} from './regional-layout.js';
+import {CITY_ALL_PLOTS} from './city-layout.js';
+import {districtVehicleBlocked} from './expanded-districts.js';
+import {ruralBlocks} from './rural-towns.js';
+import {estateBlocked} from './estate.js';
+import {traversable} from './explore-state.js';
 
 // Shared walking/skating solids; speed never changes which objects are solid.
-export function createWorldCollision({state,trees=[],rocks=[]}){
+export function createWorldCollision({state,trees=[],rocks=[],extraClear=()=>true}){
  const cells=new Map(),size=12;
  const add=(p)=>{const r=p.r+.32;for(let ix=Math.floor((p.x-r)/size);ix<=Math.floor((p.x+r)/size);ix++)for(let iz=Math.floor((p.z-r)/size);iz<=Math.floor((p.z+r)/size);iz++){const key=ix+','+iz;if(!cells.has(key))cells.set(key,[]);cells.get(key).push(p);}};
  trees.filter(t=>t.kind!=='fern').forEach(t=>add({x:t.x,z:t.z,r:t.collisionRadius??Math.max(.08,(t.scale??t.size??1)*({palm:.19,pine:.24,natural:.30,banana:.10,coconut:.19,mango:.26}[t.kind]??.22)),soft:true}));rocks.forEach(add);JUNGLE_BOULDERS.forEach(add);
+ const plotCells=new Map();for(const p of CITY_ALL_PLOTS){if(p.solid===false||p.id==='football')continue;for(let x=Math.floor((p.x-p.w/2-.3)/size);x<=Math.floor((p.x+p.w/2+.3)/size);x++)for(let z=Math.floor((p.z-p.d/2-.3)/size);z<=Math.floor((p.z+p.d/2+.3)/size);z++){const k=x+','+z;if(!plotCells.has(k))plotCells.set(k,[]);plotCells.get(k).push(p);}}
  const nearby=(x,z)=>(cells.get(Math.floor(x/size)+','+Math.floor(z/size))||[]);
  const touching=(p,x,z)=>Math.hypot(p.x-x,p.z-z)<p.r+(p.soft?.16:.32);
  function hardClear(x,z){
+  if(!extraClear(x,z))return false;
   if(Math.abs(x-GORGONA_FISH_SHACK.x)<GORGONA_FISH_SHACK.w/2+.3&&Math.abs(z-GORGONA_FISH_SHACK.z)<GORGONA_FISH_SHACK.d/2+.3)return false;
   const lot=homeLot(state.world);if(lot&&state.world.mansion.stage>=3&&x-lot.x> -19.9&&x-lot.x< -15&&z-lot.z> -2.35&&z-lot.z<14.35)return false;if(lot&&state.world.mansion.stage>0&&Math.abs(x-lot.x)<10.4&&Math.abs(z-lot.z)<8.7)return false;
   if(regionalBlocked(x,z,state.world)||!traversable(x,z)||ruralBlocks(x,z,.32)||estateBlocked(state.world,x,z)||districtVehicleBlocked(x,z))return false;
-  if(CITY_ALL_PLOTS.some(p=>p.solid!==false&&p.id!=='football'&&Math.abs(x-p.x)<p.w/2+.30&&Math.abs(z-p.z)<p.d/2+.30))return false;
+  if((plotCells.get(Math.floor(x/size)+','+Math.floor(z/size))||[]).some(p=>Math.abs(x-p.x)<p.w/2+.30&&Math.abs(z-p.z)<p.d/2+.30))return false;
   return !nearby(x,z).some(p=>!p.soft&&touching(p,x,z));
  }
  return {hardClear,sceneryAt:(x,z)=>nearby(x,z).find(p=>p.soft&&touching(p,x,z)),clear:(x,z)=>hardClear(x,z)&&!nearby(x,z).some(p=>p.soft&&touching(p,x,z))};
@@ -57,3 +59,4 @@ export function createCityAirCollision(T,scene,height){
  });
  return {boxes,clear(x,y,z,radius=1.35){return ![...boxes,...(scene.userData.gorgonaAir||[]),...(scene.userData.costaAir||[]),...(scene.userData.ghostAir||[]),...(scene.userData.mansionAir?[scene.userData.mansionAir]:[])].some(p=>y+2>p.bottom&&y-radius<p.top&&Math.abs(x-p.x)<p.w/2+radius&&Math.abs(z-p.z)<p.d/2+radius);}};
 }
+

@@ -1,6 +1,6 @@
 import {loadMainlandData} from './mainland-loader.js';
-import {createExplore} from './explore.js?v=225';
-import {fresh} from './state.js?v=225';
+import {createExplore} from './explore.js';
+import {fresh} from './state.js';
 // Warm the actual game once. The welcome camera is only a temporary view;
 // entering hands ownership of the same canvas, scene and GPU resources to Play.
 export function createWelcomeWorld(host,{motion=()=>true,state:initial,options={}}={}){
@@ -12,14 +12,15 @@ export function createWelcomeWorld(host,{motion=()=>true,state:initial,options={
  const caption=document.createElement('div');caption.className='arrival-guide-card';caption.setAttribute('role','status');caption.textContent=state.lang==='es'?'🇵🇦 Bienvenida a tu Panamá, Angelique':'🇵🇦 Welcome to your Panama, Angelique';
  const skip=document.createElement('button');skip.type='button';skip.className='arrival-skip';skip.textContent=state.lang==='es'?'👣 Jugar ahora':'👣 Play now';skip.onclick=finishArrival;
  function finishArrival(){if(!arriving)return;arriving=false;stage.classList.remove('guided-arrival');stage.style.setProperty('--welcome-view','1');caption.remove();skip.remove();options.joy?.welcomeAudio?.(false);}
+ const saveWorld=()=>{if(!preview)options.save?.();};saveWorld.defer=()=>{if(!preview){if(options.save?.defer)options.save.defer();else options.save?.();}};
  let game=null;
- function ensureGame(){if(game)return;stage.classList.add('guided-arrival');stage.style.setProperty('--welcome-view','0');game=createExplore(stage,{...options,state,save(){if(!preview)options.save?.();},paused:()=>preview||arriving||!!options.paused?.(),motion,joy:options.joy||{effect(){},gesture(){},note(){},boat(){}},openBook:options.openBook||(()=>{}),openHome:options.openHome||(()=>{}),load:async()=>{
+ function ensureGame(){if(game)return;stage.classList.add('guided-arrival');stage.style.setProperty('--welcome-view','0');game=createExplore(stage,{...options,state,save:saveWorld,paused:()=>preview||arriving||!!options.paused?.(),motion,joy:options.joy||{effect(){},gesture(){},note(){},boat(){}},openBook:options.openBook||(()=>{}),openHome:options.openHome||(()=>{}),load:async()=>{
   const T=await import('./vendor/three.module.min.js');
   return {...T,WebGLRenderer:class extends T.WebGLRenderer{constructor(settings){super(settings);const render=this.render.bind(this),view=new T.PerspectiveCamera();this.render=(scene,camera)=>{
    if(!preview){
     if(!arriving){render(scene,camera);return;}
     const now=performance.now();if(last&&!document.hidden)arrivalTime+=Math.min((now-last)/1000,.1);last=now;
-    const duration=motion()?4.8:.7,t=Math.min(1,arrivalTime/duration),ease=t*t*(3-2*t),avatar=scene.getObjectByName('Angelique');
+    const duration=motion()?(matchMedia('(pointer: coarse), (max-width: 780px)').matches?.65:1.2):.1,t=Math.min(1,arrivalTime/duration),ease=t*t*(3-2*t),avatar=scene.getObjectByName('Angelique');
     stage.style.setProperty('--welcome-view',String(ease));options.joy?.welcomeReveal?.(ease);options.joy?.worldTheme?.(state.world,options.save,true);
     view.copy(camera);if(motion()){view.position.y+=(1-ease)*20;view.position.z+=(1-ease)*12;if(avatar){const focus=avatar.position.clone();focus.y+=1;view.lookAt(focus);view.quaternion.slerp(camera.quaternion,ease);}}
     const visible=avatar?.visible;if(avatar)avatar.visible=true;render(scene,view);if(avatar)avatar.visible=visible;
@@ -33,3 +34,4 @@ export function createWelcomeWorld(host,{motion=()=>true,state:initial,options={
  }});stage.append(caption,skip);}
  return {flyIn(done){ensureGame();done();},skip(){finishArrival();},takeGame(){if(taken||disposed)return null;ensureGame();taken=true;preview=false;last=0;arrivalTime=0;state.world.dayTime=savedTime;stage.classList.remove('welcome-world');stage.removeAttribute('aria-hidden');stage.inert=false;return {host:stage,game,state};},dispose(){disposed=true;if(!taken){game?.dispose();stage.remove();options.joy?.welcomeAudio?.(false);}host.classList.remove('showcase-ready');}};
 }
+

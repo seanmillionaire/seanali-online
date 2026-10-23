@@ -3,6 +3,7 @@ export const driveOverdrive=car=>overdrives.get(car)?.active===true;
 export const resetOverdrive=car=>overdrives.delete(car);
 // A movement command means "go there" in world/screen directions, not gas/steering.
 export function driveByDirection(car,dx,dz,previousSpeed,dt,fast,canDrive,facingHeading=null,secretGear=false){
+ dt=Math.min(Math.max(0,dt),1/30);
  const length=Math.hypot(dx,dz),force=Math.min(1,length);
  if(force<=.12||dt<=0){resetOverdrive(car);return 0;}
  const vx=dx/length,vz=dz/length,base=fast?52:32;
@@ -25,3 +26,4 @@ export function driveByDirection(car,dx,dz,previousSpeed,dt,fast,canDrive,facing
  }
  return speed;
 }
+

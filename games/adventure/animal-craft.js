@@ -39,3 +39,4 @@ export function animalLoft(T,geometry,stations,rings=65,sides=16){
  const g=geometry(new T.BufferGeometry());g.setAttribute('position',new T.Float32BufferAttribute(pos,3));g.setAttribute('uv',new T.Float32BufferAttribute(uv,2));g.setIndex(ix);g.computeVertexNormals();g.name='Continuous anatomical sculpture';return g;
 }
 export function groundAnimal(g,height,length=2,width=.7){const {x,z}=g.position,h=g.rotation.y,s=Math.sin(h),c=Math.cos(h),front=height(x+s*length*.5,z+c*length*.5),rear=height(x-s*length*.5,z-c*length*.5),left=height(x-c*width*.5,z+s*width*.5),right=height(x+c*width*.5,z-s*width*.5);g.rotation.order='YXZ';g.rotation.x=-Math.max(-.6,Math.min(.6,Math.atan2(front-rear,length)));g.rotation.z=Math.max(-.4,Math.min(.4,Math.atan2(right-left,width)));}
+

@@ -2,12 +2,12 @@ import {freewayDistance} from './city-freeway-layout.js';
 import {HIGHWAY_CURVES} from './explore-state.js';
 import {DARIEN_RIVERS,JUNGLE_PONDS,CHIRIQUI_FALL} from './rainforest-layout.js';
 import {JUNGLE_LOBES} from './east-jungle-layout.js';
-import {COSTA_LAND} from './costa-arriba-layout.js?v=225';
-import {homeLot} from './mansion-state.js?v=225';
-import {SMOOTH_MAINLAND_OUTLINE,CANAL_WATERWAY,mainlandContains,WORLD_EXTENT} from './geography.js?v=225';
+import {COSTA_LAND} from './costa-arriba-layout.js';
+import {homeLot} from './mansion-state.js';
+import {SMOOTH_MAINLAND_OUTLINE,CANAL_WATERWAY,mainlandContains,WORLD_EXTENT} from './geography.js';
 /* Shared, coordinate-accurate archipelago map for the open-world explorer.
    X is east/right and Z is south/down, matching ArrowUp (negative Z). */
-export function createWorldMap({host,panel,world,islands,places,language,onTravel,onOpen,isDriving=()=>false}){
+export function createWorldMap({host,panel,world,islands,places,language,onTravel,onOpen,isDriving=()=>false,canTravel=()=>true}){
  const es=language==='es',say=(a,b)=>es?a:b,ns='http://www.w3.org/2000/svg';
  const land=[{id:'home',x:0,z:0,rx:20,rz:14,es:'Playa Gorgona',en:'Gorgona Beach',icon:'🏡'}]
    .concat(islands.map(i=>({id:i.id,guna:i.guna,x:i.x,z:i.z,rx:i.rx,rz:i.rz,es:i.es,en:i.en,
@@ -19,7 +19,7 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
  const currentPlace=()=>{if(freewayDistance(world.x,world.z)<10)return say('Anillo de la ciudad','City freeway loop');const p=land.filter(i=>Math.hypot((world.x-i.x)/i.rx,(world.z-i.z)/i.rz)<1.22).sort((a,b)=>Math.hypot(world.x-a.x,world.z-a.z)-Math.hypot(world.x-b.x,world.z-b.z))[0];return p?name(p):mainlandContains(world.x,world.z)?say('Tierra firme de Panamá','Panama mainland'):say('En el mar','At sea');};
  const islandTarget=id=>places.find(p=>p.id===id)||(id==='islaGrande'?islands.find(p=>p.id===id):null)||(id==='home'?places.find(p=>p.id==='pip'):null);
  function drawing(mini){
-  const svg=svgEl('svg',{class:'island-map-art',viewBox:[WORLD_EXTENT.left,WORLD_EXTENT.top,WORLD_EXTENT.width,WORLD_EXTENT.height].join(' '),role:'img',
+  const svg=svgEl('svg',{class:'island-map-art',viewBox:[WORLD_EXTENT.left,WORLD_EXTENT.top,WORLD_EXTENT.width,WORLD_EXTENT.height].join(' '),role:mini?'img':'group',
     'aria-label':say('Mapa del archipiélago con la posición actual','Archipelago map with your current position')});
   const defs=svgEl('defs'),gradient=svgEl('linearGradient',{id:mini?'ocean-mini':'ocean-big',x1:'0%',y1:'0%',x2:'100%',y2:'100%'});
   gradient.append(svgEl('stop',{offset:'0%','stop-color':'#77cfd4'}),svgEl('stop',{offset:'100%','stop-color':'#267eac'}));
@@ -53,7 +53,7 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
         'dominant-baseline':'central','pointer-events':'none'},i.icon);
       g.append(icon);
       const short={coiba:'Coiba',delRey:'Isla del Rey',escudo:'Escudo',cebaco:'Cébaco',home:es?'Playa Gorgona':'Gorgona Beach',islet:'Taboga',wilds:'Bocas del Toro',coconutCoast:'Contadora',sunset:'Barú',crystalCove:'Guna Yala',pizzaCity:es?'Panamá':'Panama City',colon:'Colón',monkeyIslet:es?'Isla de los Monos':'Monkey Island',volcanTown:'Volcán',boquete:'Boquete'}[i.id]||name(i);
-      g.append(svgEl('text',{x:i.x,y:i.z+25,'font-size':14,'font-weight':700,'text-anchor':'middle',fill:'#173e42',stroke:'#fff6dc','stroke-width':1.6,'paint-order':'stroke','pointer-events':'none'},short));
+      g.append(svgEl('text',{x:i.x,y:i.z+25,class:'map-place-label','font-size':14,'font-weight':700,'text-anchor':'middle',fill:'#173e42',stroke:'#fff6dc','stroke-width':1.6,'paint-order':'stroke','pointer-events':'none'},short));
       if(islandTarget(i.id)){
         g.setAttribute('class','island-map-land island-map-target');
         g.setAttribute('role','button');g.setAttribute('tabindex','0');
@@ -65,7 +65,7 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
     }
     svg.append(g);
   }
-  if(!mini)for(const p of places.filter(p=>['friend','boat','balloon'].includes(p.kind))){
+  if(false)for(const p of places.filter(p=>['friend','boat','balloon'].includes(p.kind))){
     svg.append(svgEl('circle',{cx:p.x,cy:p.z,r:3.5,fill:'#fff9de',stroke:'#3d6775','stroke-width':1}));
   }
   const homeMarker=svgEl('g',{'aria-label':say('Mi propiedad','My property')});homeMarker.append(svgEl('circle',{r:12,fill:'#f9edc5',stroke:'#355c4d','stroke-width':2}),svgEl('text',{x:0,y:5,'font-size':17,'text-anchor':'middle'},'⌂'));svg.append(homeMarker);
@@ -88,7 +88,8 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
  preview.svg.setAttribute('aria-hidden','true');
  mini.append(preview.svg,label);host.append(mini);
  function close(focus=true){opened=false;panel.hidden=true;panel.classList.remove('island-map-open');if(focus)mini.focus({preventScroll:true});}
- function choose(id){const dest=islandTarget(id);if(!dest)return;close(false);onTravel(dest);}
+ function choose(id){const dest=islandTarget(id);if(!dest)return;chosen=id;panel.querySelector('.map-destination-card')?.remove();const card=elem('div','map-destination-card'),allowed=canTravel(dest.x,dest.z);card.append(elem('strong','',name(land.find(i=>i.id===id))));const action=elem('button','chapter-action',allowed?say('👣 Vamos','👣 Let’s go'):say('🔒 Sigue tu misión con Pip','🔒 Follow your mission with Pip'));action.type='button';action.disabled=!allowed;action.onclick=()=>{close(false);onTravel(dest);};card.append(action);panel.append(card);}
+
  function drawControls(){
   const buttons=elem('div','island-map-controls');
   function control(txt,label,fn){const b=elem('button','island-map-control',txt);b.type='button';b.setAttribute('aria-label',label);b.addEventListener('click',fn);buttons.append(b);return b;}
@@ -100,28 +101,15 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
  }
  function open(){
   onOpen?.();
-  opened=true;zoom=3;chosen=null;center=point(world.x,world.z);
+  opened=true;zoom=1;chosen=null;center=point(0,0);
   panel.replaceChildren();panel.hidden=false;panel.classList.add('island-map-open');
   const title=elem('h2','island-map-heading','🗺️ '+say('Mapa de Panamá','Panama Adventure Map'));
   const closeButton=elem('button','panel-close','×');closeButton.type='button';
   closeButton.setAttribute('aria-label',say('Cerrar mapa','Close map'));closeButton.addEventListener('click',()=>close());panel.append(title,closeButton);
-  placeReadout=elem('p','island-map-you-are');panel.append(placeReadout);
+  placeReadout=null;
   const frame=elem('div','island-map-frame');
   full=drawing(false);frame.append(full.svg);
   panel.append(frame,drawControls());
-  panel.append(elem('p','island-map-guide',isDriving()?say('🚘 Elige tu destino. Te llevamos por carretera.','🚘 Pick a destination. We’ll drive you there by road.'):say('🧭 La flecha naranja eres tú. Toca un destino para visitarlo.','🧭 The orange arrow is you. Tap a destination to visit it.')));
-  const destinations=elem('div','island-map-destinations');
-  for(const island of land){
-    const destination=islandTarget(island.id);if(!destination)continue;
-    const b=elem('button','island-map-destination',island.icon+' '+name(island));
-    b.type='button';b.addEventListener('click',()=>choose(island.id));
-    destinations.append(b);
-  }
-  const lot=homeLot({mansion:world.mansion});if(lot){const b=elem('button','island-map-destination',say('🏡 Mi propiedad','🏡 My property'));b.type='button';b.onclick=()=>{close(false);onTravel({x:lot.x,z:lot.z+16,en:lot.en,es:lot.es});};destinations.prepend(b);}
-  const placesToggle=elem('details','island-map-places');
-  const placesHeading=elem('summary','island-map-places-toggle',say('📍 Ver lista de destinos','📍 Show destination list'));
-  placesToggle.append(placesHeading,destinations);
-  panel.append(placesToggle);
   update(true);closeButton.focus({preventScroll:true});
  }
  mini.addEventListener('click',open);
@@ -137,13 +125,14 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
   if(!opened||!full)return;
   place(full);
   if(placeReadout)placeReadout.textContent='📍 '+say('ESTÁS AQUÍ: ','YOU ARE HERE: ')+currentPlace();
-  full.svg.parentElement.classList.toggle('map-globe',zoom===1);
+  full.svg.parentElement.classList.toggle('map-globe',zoom===1);full.svg.classList.toggle('map-overview',zoom===1);
   const w=WORLD_EXTENT.width/zoom,h=WORLD_EXTENT.height/zoom;
   const cx=zoom===1?0:center.x,cz=zoom===1?0:center.z;
-  full.svg.setAttribute('viewBox',(cx-w/2)+' '+(cz-h/2)+' '+w+' '+h);
+  full.svg.setAttribute('viewBox',(cx-w/2)+' '+(cz-h/2)+' '+w+' '+h);for(const icon of full.svg.querySelectorAll('[data-fixed-map-icon]'))icon.setAttribute('font-size',String(Number(icon.dataset.fixedMapIcon)*w/(full.svg.getBoundingClientRect().width||350)));
  }
  function dispose(){mini.remove();if(opened)close(false);full=null;}
  update(true);
  return {open,close,update,dispose,isOpen:()=>opened};
 }
+
 

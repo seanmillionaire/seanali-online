@@ -3,8 +3,8 @@ import {freewayLand} from './city-freeway-layout.js';
 import {darienRelief} from './darien-terrain.js';
 import {chiriquiContains,inlandFreshwater} from './rainforest-layout.js';
 import {jungleContains} from './east-jungle-layout.js';
-import {costaContains} from './costa-arriba-layout.js?v=225';
-import {sanBlasLayout,relocateSanBlasPoint,SAN_BLAS_LAYOUT_VERSION} from './san-blas-layout.js?v=225';
+import {costaContains} from './costa-arriba-layout.js';
+import {sanBlasLayout,relocateSanBlasPoint,SAN_BLAS_LAYOUT_VERSION} from './san-blas-layout.js';
 export const CITY_EAST_SHIFT=240;
 export const cityX=x=>x+CITY_EAST_SHIFT;
 export const CITY_CENTER={x:cityX(120),z:-50};
@@ -201,3 +201,4 @@ export function migrateGeography(raw){
  }
  return moved;
 }
+

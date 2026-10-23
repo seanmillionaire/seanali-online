@@ -34,3 +34,4 @@ export function createFruitEmojis(T){
  }
  return {sprite,batch,dispose(){for(const m of meshes){m.removeFromParent();m.dispose();}for(const m of [...materials.values(),...sprites.values()])m.dispose();for(const t of textures.values())t.dispose();for(const g of geometries)g.dispose();}};
 }
+

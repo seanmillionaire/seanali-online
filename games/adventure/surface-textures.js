@@ -1,7 +1,7 @@
 // Isla Aventura procedural material library: no external downloads or paid assets.
 // Reused compact DataTextures. Mipmapped and deterministic on every visit.
-export function createSurfaceTextures(T){
- const size=256,resources=[];
+export function createSurfaceTextures(T,{size=256}={}){
+ const resources=[];
  function frac(x){return x-Math.floor(x);}
  function hash(x,y,seed){return frac(Math.sin(x*127.1+y*311.7+seed*74.7)*43758.5453123);}
  function noise(x,y,seed){
@@ -74,3 +74,4 @@ export function createSurfaceTextures(T){
   roof:create('roof',67),plaster:create('plaster',79)};
  return {...surfaces,dispose(){for(const texture of resources)texture.dispose();}};
 }
+

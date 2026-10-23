@@ -22,3 +22,4 @@ export function plateRecipe(day){if(day.cooking?.stage!==4||day.meals.length+(da
 export function takeMeal(day){if(day.carrying||!day.meals.length)return false;day.carrying=day.meals.shift();return true;}
 export function eatMeal(day){if(!day.carrying)return false;day.carrying=null;day.eaten++;return true;}
 export const inHomePool=(x,z)=>Math.abs(x)<10.1&&z< -20.5&&z> -31.5;
+

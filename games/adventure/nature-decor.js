@@ -1,4 +1,4 @@
-import {botanicalGeometry,mergeNatureGeometry} from './botanical-geometry.js?v=225';
+import {botanicalGeometry,mergeNatureGeometry} from './botanical-geometry.js';
 // Replaces photographic billboard props with coherent, lit three-dimensional
 // specimens. Each finished prop is one shared geometry and one material draw.
 export function createNatureDecor(T,geometry){
@@ -58,3 +58,4 @@ export function createNatureDecor(T,geometry){
   result.name='Sculpted natural prop '+tile;cache.set(tile,result);return result;
  };
 }
+

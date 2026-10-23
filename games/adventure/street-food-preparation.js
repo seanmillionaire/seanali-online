@@ -35,3 +35,4 @@ export function watchFoodPreparation({panel,id,es=false,onCollect,onCancel}){
  take.onclick=()=>{if(collected||elapsed<6.4)return;collected=true;dispose();onCollect();};skip.onclick=()=>{elapsed=6.4;};cancel.onclick=()=>{dispose();onCancel();};
  function dispose(){disposed=true;cancelAnimationFrame(frame);}frame=requestAnimationFrame(tick);return dispose;
 }
+

@@ -1,8 +1,8 @@
 import {spatialInstances} from './render-budget.js';
-import {botanicalGeometry,mergeNatureGeometry,leafSurface} from './botanical-geometry.js?v=225';
+import {botanicalGeometry,mergeNatureGeometry,leafSurface} from './botanical-geometry.js';
 // Shared vegetation geometry in spatial batches: offscreen forest chunks can
 // be culled without removing individual pines, palms or tropical trees.
-import {planForestPatches} from './forest-patches.js?v=225';
+import {planForestPatches} from './forest-patches.js';
 
 export function createForestLandscape({T,scene,mat,geometry,height,light=false}){
  const trees=planForestPatches(light ? .63 : 1),group=new T.Group();
@@ -66,7 +66,7 @@ export function createForestLandscape({T,scene,mat,geometry,height,light=false})
   stems?.computeBoundingSphere?.();
   foliage.computeBoundingSphere?.();
   if(stems)group.add(stems);group.add(foliage);counts[kind]=(counts[kind]||0)+items.length;
-  visibility.push({items,foliage,stems,factors:new Float32Array(items.length).fill(1)});
+  visibility.push({items,foliage,stems,factors:new Float32Array(items.length).fill(1),fading:false,minX:Math.min(...items.map(t=>t.x)),maxX:Math.max(...items.map(t=>t.x)),minZ:Math.min(...items.map(t=>t.z)),maxZ:Math.max(...items.map(t=>t.z)),padding:Math.max(6.2,...items.map(t=>2.5+t.size*.75))});
  }
  // Never shrink or collide the entire tree. Only fade its leafy canopy when
  // the player or a third-person sightline moves beneath it; keep its trunk
@@ -74,28 +74,30 @@ export function createForestLandscape({T,scene,mat,geometry,height,light=false})
  function updateFocus(x,z,camera=null){
   if(!Number.isFinite(x)||!Number.isFinite(z))return;
   focusTick++;if(focusTick%2)return;
+  const rayX=camera?camera.position.x-x:0,rayZ=camera?camera.position.z-z:0,rayLength=rayX*rayX+rayZ*rayZ;
   for(const layer of visibility){
-   let changed=false;
+   const pad=layer.padding;if(!layer.fading&&(layer.maxX<Math.min(x,x+rayX)-pad||layer.minX>Math.max(x,x+rayX)+pad||layer.maxZ<Math.min(z,z+rayZ)-pad||layer.minZ>Math.max(z,z+rayZ)+pad))continue;
+   let changed=false,fading=false;
    for(let i=0;i<layer.items.length;i++){
     const t=layer.items[i],dx=t.x-x,dz=t.z-z,dist=Math.hypot(dx,dz);
     let fade=dist<3.8? .065:dist<6.2?.22:1;
     if(camera){
-     const rayX=camera.position.x-x,rayZ=camera.position.z-z,len=rayX*rayX+rayZ*rayZ;
-     const progress=len?Math.max(0,Math.min(1,(dx*rayX+dz*rayZ)/len)):0;
+     const progress=rayLength?Math.max(0,Math.min(1,(dx*rayX+dz*rayZ)/rayLength)):0;
      const width=Math.hypot(dx-rayX*progress,dz-rayZ*progress);
      if(progress>.02&&progress<=1&&width<2.5+t.size*.75)fade=0;
     }
     // Smooth appearance between individual canopies without sudden popping.
-    const prev=layer.factors[i],next=prev+(fade-prev)*.42;
+    const prev=layer.factors[i],next=prev+(fade-prev)*.42;if(fade<1||next<.98)fading=true;
     if(Math.abs(next-prev)<.007&&Math.abs(next-fade)<.025)continue;
     layer.factors[i]=next;dummy.position.set(t.x,(t.groundY??=height(t.x,t.z)-.035),t.z);
     dummy.rotation.set(0,t.heading,0);dummy.scale.setScalar(t.size*Math.max(.045,next));
     dummy.updateMatrix();layer.foliage.setMatrixAt(i,dummy.matrix);
     changed=true;
    }
-   if(changed)layer.foliage.instanceMatrix.needsUpdate=true;
+   layer.fading=fading;if(changed)layer.foliage.instanceMatrix.needsUpdate=true;
    // Initial full-size bounds remain valid when a canopy shrinks; trunks never move.
   }
  }
  return {group,trees,counts,updateFocus};
 }
+

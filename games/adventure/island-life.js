@@ -1,11 +1,11 @@
 import {createFruitEmojis} from './fruit-emojis.js';
 import {advanceThemeClock} from './theme-audio.js';
 import {nightLighting} from './night-lighting.js';
-import {worldClock,DAY_CYCLE_SECONDS} from './world-clock.js?v=225';
-export {DAY_CYCLE_SECONDS} from './world-clock.js?v=225';
-import {cityX} from './geography.js?v=225';
-import {worldIslands,marineWater,roadDistance,HIGHWAY_WIDTH,sharkClearance,sharkStep,recoverShark} from './explore-state.js?v=225';
-import {oceanModel} from './ocean-models.js?v=225';
+import {worldClock,DAY_CYCLE_SECONDS} from './world-clock.js';
+export {DAY_CYCLE_SECONDS} from './world-clock.js';
+import {cityX} from './geography.js';
+import {worldIslands,marineWater,roadDistance,HIGHWAY_WIDTH,sharkClearance,sharkStep,recoverShark} from './explore-state.js';
+import {oceanModel} from './ocean-models.js';
 // Saved clock keeps its original 240-unit format; one full day takes 20 minutes.
 export const NIGHT_MODE_ENABLED=true;
 export function positionMoon(moon,camera,sideSign=1){
@@ -199,3 +199,4 @@ export function naturalSharkPatrol(p,dt,target=null){
  if(p.roamWatch>2){if(p.roamAnchor&&Math.hypot(next.x-p.roamAnchor.x,next.z-p.roamAnchor.z)<.5){p.roamGoal=null;p.side=-(p.side||1);p.detour=3;}p.roamAnchor={...next};p.roamWatch=0;}
  return next;
 }
+

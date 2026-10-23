@@ -1,6 +1,6 @@
-import {sanBlasWaters} from './costa-arriba-layout.js?v=225';
-import {marineWater,worldIslands,isletHeight} from './explore-state.js?v=225';
-import {WORLD_BOUNDS} from './geography.js?v=225';
+import {sanBlasWaters} from './costa-arriba-layout.js';
+import {marineWater,worldIslands,isletHeight} from './explore-state.js';
+import {WORLD_BOUNDS} from './geography.js';
 // Full-length footprints are checked before accepting a fishing circuit.
 export function fishingHullClear(x,z,heading){
  if(sanBlasWaters(x,z,5))return false;
@@ -54,3 +54,4 @@ export function createMaritimeLife({T,scene,make,mat,geometry,box,ball,cylinder,
  function blocks(x,z){return vessels.some(b=>{const dx=x-b.g.position.x,dz=z-b.g.position.z,a=b.g.rotation.y;return Math.abs(dx*Math.cos(a)-dz*Math.sin(a))<2&&Math.abs(dx*Math.sin(a)+dz*Math.cos(a))<4;});}
  update(0,false);return {root,vessels,blocks,update,dispose(){scene.remove(root);}};
 }
+

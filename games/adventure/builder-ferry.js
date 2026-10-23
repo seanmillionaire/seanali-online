@@ -1,8 +1,8 @@
-import {WORLD_EXTENT} from './geography.js?v=225';
+import {WORLD_EXTENT} from './geography.js';
 // Water-only ferry navigation for Mateo and Sofia. Coastal ports and ocean
 // routes are cached; there is never a boat or building traveling over terrain.
-import {inWater} from './explore-state.js?v=225';
-import {BUILDER_AREAS} from './builder-projects.js?v=225';
+import {inWater} from './explore-state.js';
+import {BUILDER_AREAS} from './builder-projects.js';
 const GRID=12,LEFT=WORLD_EXTENT.left,RIGHT=-WORLD_EXTENT.left,TOP=WORLD_EXTENT.top,BOTTOM=-WORLD_EXTENT.top;
 const W=Math.floor((RIGHT-LEFT)/GRID)+1,H=Math.floor((BOTTOM-TOP)/GRID)+1;
 let wet=null;
@@ -93,3 +93,4 @@ export function builderSailPosition(from,to,progress){
  }
  return null;
 }
+

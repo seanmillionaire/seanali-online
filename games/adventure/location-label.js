@@ -2,9 +2,9 @@ import {freewayDistance} from './city-freeway-layout.js';
 import {gorgonaShoreZ} from './gorgona-shore.js';
 import {districtNeighborhood} from './expanded-districts.js';
 import {jungleContains} from './east-jungle-layout.js';
-import {mainlandContains,canalWater,gatunWater} from './geography.js?v=225';
-import {CITY_HOSPITAL} from './volcano-safety.js?v=225';
-import {worldIslands,roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=225';
+import {mainlandContains,canalWater,gatunWater} from './geography.js';
+import {CITY_HOSPITAL} from './volcano-safety.js';
+import {worldIslands,roadDistance,HIGHWAY_WIDTH} from './explore-state.js';
 const mainland=[
  {id:"costaArriba",x:110,z:-399,rx:110,rz:66,icon:"🏘️",es:"Costa Arriba · Colón",en:"Costa Arriba · Colón"},
  {id:'chame',x:-35,z:-3,rx:118,rz:55,icon:'🌴',es:'Chame · Panamá Oeste',en:'Chame · Panamá Oeste'},
@@ -13,7 +13,7 @@ const mainland=[
 const icons={islet:'🦋',wilds:'🌴',coconutCoast:'🏖️',sunset:'🌋',crystalCove:'🏝️',pizzaCity:'🏙️',colon:'🌴',monkeyIslet:'🐒'};
 const places=[...mainland,{id:'boquete',x:-289,z:-79,rx:47,rz:50,icon:'🌿',es:'Boquete · Chiriquí',en:'Boquete · Chiriquí'},...worldIslands];
 export function locationLabel(x,z,lang='es',{cruising=false,interior=null,tower=false}={}){
- if(x> -188&&x< -64&&z> -430&&z< -360)return '🛍️ Margarita · Colón 2000';
+ if(x> -188&&x< -64&&z> -430&&z< -360)return '🛍️ Margarita · Plaza del Sol';
  const es=lang==='es',name=p=>p[es?'es':'en'],label=p=>(p.icon||icons[p.id]||'🏝️')+' '+name(p);
  if(!interior&&!tower&&!cruising&&freewayDistance(x,z)<9)return es?'🛣️ Anillo de la Ciudad · Crucero':'🛣️ City Freeway · Cruise Loop';
  if(!interior&&!tower&&districtNeighborhood(x,z)==='panama-east')return '🌆 Costa del Este · '+(es?'Ciudad de Panamá':'Panama City');
@@ -42,3 +42,4 @@ export function locationLabel(x,z,lang='es',{cruising=false,interior=null,tower=
  },null).place;
  return (cruising?'🚢 ':'🌊 ')+(es?'Frente a ':'Off ')+name(nearest);
 }
+

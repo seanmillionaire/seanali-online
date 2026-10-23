@@ -35,3 +35,4 @@ const n=v=>Math.max(0,Math.min(999999,Math.floor(Number(v)||0)));
 export function normalizeWaterfall(raw){return {diamonds:n(raw?.diamonds),coins:n(raw?.coins),elapsed:Math.max(0,Math.min(90,Number(raw?.elapsed)||0)),claimed:[...new Set((Array.isArray(raw?.claimed)?raw.claimed:[]).filter(i=>Number.isInteger(i)&&i>=0&&i<36))]};}
 export function claimWaterfall(world,id){const w=world.waterfall??=normalizeWaterfall();if(!WATERFALL_CRYSTALS.some(p=>p.id===id)||w.claimed.includes(id))return false;w.claimed.push(id);w.diamonds=Math.min(999999,w.diamonds+3);w.coins=Math.min(999999,w.coins+5);if(world.estate)world.estate.charms=Math.min(9999,world.estate.charms+2);return true;}
 export function replenishWaterfall(world,dt){const w=world.waterfall??=normalizeWaterfall();if(!w.claimed.length)return false;w.elapsed+=Math.max(0,Math.min(.1,dt));if(w.elapsed<90)return false;w.elapsed=0;w.claimed=[];return true;}
+

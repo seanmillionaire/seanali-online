@@ -42,3 +42,4 @@ export function shorelineTiles(x,z,size,isLand,coastDivisions=5){
   tiles.push([x+i*step,z+j*step,step]);
  return tiles;
 }
+

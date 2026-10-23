@@ -1,4 +1,4 @@
-import {CITY_BARRIO_PLOTS} from './city-layout.js?v=225';
+import {CITY_BARRIO_PLOTS} from './city-layout.js';
 // Panama street art direction: shared materials and GPU batches for small details.
 export function createPanamaVisuals({T,scene,make,mat,geometry,box,ball,cylinder,height,surfaces,models,renderer,sun}){
  const root=new T.Group();root.name='Panama architectural craftsmanship';scene.add(root);
@@ -24,3 +24,4 @@ export function createPanamaVisuals({T,scene,make,mat,geometry,box,ball,cylinder
  for(const [geo,materials]of batches)for(const [material,items]of materials){const mesh=new T.InstancedMesh(geo,material,items.length),dummy=new T.Object3D();mesh.name='Batched Panama facade details';mesh.castShadow=false;mesh.receiveShadow=true;items.forEach(([x,y,z,w,h,d],i)=>{dummy.position.set(x,y,z);dummy.scale.set(w,h,d);dummy.updateMatrix();mesh.setMatrixAt(i,dummy.matrix);});mesh.instanceMatrix.needsUpdate=true;root.add(mesh);}
  return {update(x,z,indoors){root.visible=!indoors;},dispose(){scene.remove(root);textures.forEach(t=>t.dispose());}};
 }
+

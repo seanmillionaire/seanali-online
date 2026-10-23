@@ -1,4 +1,4 @@
-import {addFood,islandPoint} from './explore-state.js?v=225';
+import {addFood,islandPoint} from './explore-state.js';
 // Tiny, physical story puzzles. These never gate movement or mark a lesson complete.
 export const islandStories=[
  {id:'shells',region:'harbor',x:-20,z:12,friend:'🐚',es:'Conchas de Playa Gorgona',en:'Gorgona Shell Trail',hintEs:'Pisa las conchas en orden',hintEn:'Step on shells in order',icons:['1 🐚','2 🐚','3 🐚'],order:[0,1,2],color:'#f4cc78',winEs:'¡Sendero de conchas completo!',winEn:'Shell trail complete!'},
@@ -41,3 +41,4 @@ export function createWorldStory({T,scene,host,state,height,save,joy,spark,refre
   lastTile=key;const view=q.id+':'+progress[q.id]+':'+(nextLesson(q)||'done');if(view!==lastView){draw(current);lastView=view;}
  },dispose(){host.classList.remove('story-nearby');card.remove();scene.remove(group);geometry.dispose();orbGeometry.dispose();materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());}};
 }
+

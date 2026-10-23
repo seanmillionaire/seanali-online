@@ -1,7 +1,7 @@
-import {sanBlasWaters} from './costa-arriba-layout.js?v=225';
-import {shipDetails,shipWake} from './ship-details.js?v=225';
-import {marineWater} from './explore-state.js?v=225';
-import {WORLD_BOUNDS} from './geography.js?v=225';
+import {sanBlasWaters} from './costa-arriba-layout.js';
+import {shipDetails,shipWake} from './ship-details.js';
+import {marineWater} from './explore-state.js';
+import {WORLD_BOUNDS} from './geography.js';
 export function shippingPose(r,distance){const a=distance/r.rx;return {x:r.x+Math.cos(a)*r.rx,z:r.z+Math.sin(a)*r.rz,heading:Math.atan2(-Math.sin(a)*r.rx,Math.cos(a)*r.rz)};}
 export function shippingClear(x,z,heading,length,width){if(sanBlasWaters(x,z,Math.hypot(length,width)/2))return false;return [-length/2,0,length/2].every(f=>[-width/2,0,width/2].every(s=>{const px=x+Math.sin(heading)*f+Math.cos(heading)*s,pz=z+Math.cos(heading)*f-Math.sin(heading)*s;return Math.hypot(px/(WORLD_BOUNDS.x-8),pz/(WORLD_BOUNDS.z-8))<1&&marineWater(px,pz);}));}
 let cached;
@@ -48,3 +48,4 @@ export function createOceanShipping({T,scene,make,mat,geometry,ball,box,cylinder
  function blocks(x,z,margin=1.3){return ships.some(b=>{const p=b.g.position,a=b.g.rotation.y,dx=x-p.x,dz=z-p.z;return Math.abs(dx*Math.cos(a)-dz*Math.sin(a))<b.r.width/2+margin&&Math.abs(dx*Math.sin(a)+dz*Math.cos(a))<b.r.length/2+margin;});}
  update(0,false);return {root,ships,blocks,update,dispose(){for(const b of ships)b.wake.dispose();root.traverse(o=>{if(o.isInstancedMesh)o.dispose();});scene.remove(root);}};
 }
+

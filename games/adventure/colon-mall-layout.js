@@ -8,3 +8,4 @@ export const MALL_WALLS=MALL_SHOPS.flatMap(p=>[{x:p.x,z:-411,w:13,d:.4},{x:p.x-6
 export const mallBlocked=(x,z,m=.32)=>MALL_WALLS.some(p=>Math.abs(x-p.x)<p.w/2+m&&Math.abs(z-p.z)<p.d/2+m);
 export const insideMall=(x,z)=>x> -177&&x< -78&&z> -414&&z< -387;
 export const MALL_LIFT={x:-172,z:-392};
+

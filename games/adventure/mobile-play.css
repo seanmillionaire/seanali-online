@@ -648,3 +648,8 @@ body[data-scene="explore"] .animal-ride-quick:not([hidden]){
  .campaign-hud{top:136px}
  .explore-world:has(.campaign-hud:not([hidden])) .camera-view-toggle{top:218px}
 }
+
+
+/* Keep speed above the joystick; legacy mobile offsets must not overlap it. */
+body[data-scene="explore"] .explore-world.phone-interface.explore-ready .explore-stick{left:max(24px,env(safe-area-inset-left))!important;bottom:calc(24px + env(safe-area-inset-bottom))!important;width:104px!important;height:104px!important}
+body[data-scene="explore"] .explore-world.phone-interface.explore-ready .world-arrows .movement-speed{left:max(24px,env(safe-area-inset-left))!important;bottom:calc(140px + env(safe-area-inset-bottom))!important;pointer-events:auto!important;z-index:23}

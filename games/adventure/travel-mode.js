@@ -20,3 +20,4 @@ export function impactPose(remaining,duration=.75){
  const progress=Math.max(0,Math.min(1,1-remaining/duration)),strength=Math.sin(progress*Math.PI);
  return {lean:-strength*.40,roll:Math.sin(progress*Math.PI*3)*strength*.12,crouch:strength*.12,shake:Math.sin(progress*Math.PI*7)*strength*.045};
 }
+

@@ -1,5 +1,5 @@
 import {featherWingGeometry} from './animal-craft.js';
-import {isletHeight} from './explore-state.js?v=225';
+import {isletHeight} from './explore-state.js';
 // Large mixed-size family groups, rendered in three shared GPU batches.
 export const BIRD_FLOCKS=[[-400,-55],[-345,45],[-30,35],[180,70],[420,50],[-310,-80],[-220,-205],[-70,-350],[490,-425],[640,-440],[-460,155],[-200,245],[655,230],[20,-160]].map(([x,z],i)=>({x,z,count:36+(i%3)*12,rx:70+(i%4)*20,rz:38+(i%3)*14,phase:i*1.7,speed:.018+(i%3)*.004}));
 export function flockPose(f,time){const a=f.phase+time*f.speed,x=f.x+Math.cos(a)*f.rx,z=f.z+Math.sin(a)*f.rz;return {x,z,y:Math.max(24,...[[0,0],[-35,0],[35,0],[0,-35],[0,35]].map(([dx,dz])=>isletHeight(x+dx,z+dz)+26))+Math.sin(a*.7)*4,heading:Math.atan2(-Math.sin(a)*f.rx,Math.cos(a)*f.rz)};}
@@ -30,3 +30,4 @@ export function createBirdFlocks({T,scene,geometry,mat,ball,box}){
  }
  update(0,false);return {root,count,update,get clock(){return clock;},dispose(){scene.remove(root);}};
 }
+

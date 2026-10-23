@@ -54,3 +54,4 @@ function buildEastJungleLife({T,scene,geometry,mat,make,ball,cylinder,box,height
 
 // Wildlife details are built on first arrival, so a new game need not load them.
 export function createEastJungleLife(options){let life=null;return {setClear(fn){options.clear=fn;},update(dt,active,player){if(!life&&player.x>460&&player.x<825&&player.z> -230&&player.z<80&&!player.indoors)life=buildEastJungleLife(options);life?.update(dt,active,player);},get vehicles(){return life?.jeeps||[];},trafficClear:(x,z,heading,from)=>life?.trafficClear(x,z,heading,from)??true,hazards:()=>life?.hazards()||[],dispose(){life?.dispose();}};}
+

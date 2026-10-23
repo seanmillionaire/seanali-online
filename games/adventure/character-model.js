@@ -2,7 +2,8 @@ export function setHumanAge(h,age='adult',index=0){const g=h.g||h;g.userData.age
 // Shared, articulated expedition characters. All dimensions are in world metres.
 // Geometry and fabric maps are cached per renderer, not rebuilt for every visitor.
 const libraries=new WeakMap();
-export function createHuman({T,geometry,mat,make}, {index=0,ageGroup='adult',hero=false,police=false,beach=false,skinTone=null,outfitColor=null,pantsColor=null,beachWear='tee-shorts',beachHair='short'}={}){
+export function createHuman({T,geometry,mat,make}, {index=0,gender=null,ageGroup='adult',hero=false,police=false,beach=false,skinTone=null,outfitColor=null,pantsColor=null,beachWear='tee-shorts',beachHair=null,mobilityAid=null}={}){
+ const woman=gender?gender==='woman':hero||(!police&&index%2===1);if(!beachHair){beachHair=['short','bun','curls','long','short','curls'][index%6];}
  let lib=libraries.get(geometry);if(!lib){lib=new Map();libraries.set(geometry,lib);}
  const shared=(key,build)=>{if(!lib.has(key))lib.set(key,build());return lib.get(key);};
  const sphere=shared('human sphere',()=>geometry(new T.SphereGeometry(1,16,12))),cylinder=shared('human tapered limb',()=>geometry(new T.CylinderGeometry(.82,1,1,12))),box=shared('human box',()=>geometry(new T.BoxGeometry()));
@@ -11,20 +12,22 @@ export function createHuman({T,geometry,mat,make}, {index=0,ageGroup='adult',her
  const tones=['#efc6a3','#d2a582','#b98562','#ad7854','#8b6046','#75503c','#50392e'],tone=skinTone!==null?tones[Math.max(0,Math.min(6,skinTone))]:['#b98562','#d2a582','#8b6046','#ad7854','#75503c'][index%5];const skin=color('skin '+tone,tone,{roughness:.62});
  const outfit=color('outfit '+(outfitColor||'')+(beach?'beach'+index%7:hero?'hero':police?'uniform':index%7),outfitColor||(beach?['#e6a64f','#41a9ac','#c75c72','#447eae','#e6d0aa','#6c9f71','#b36d43'][index%7]:hero?'#6d777e':police?'#273e52':['#697b78','#b1a58b','#526777','#8c7666','#7c856c','#667080','#a99677'][index%7]),{map:fabric,bumpMap:fabric,bumpScale:.008});
  const pants=color('trousers '+(pantsColor||'')+(beach?'beach'+beachWear+index%3:hero?'hero':index%3),pantsColor||(beach?(beachWear==='swimsuit'?['#e6a64f','#41a9ac','#c75c72','#447eae','#e6d0aa','#6c9f71','#b36d43'][index%7]:['#277f8a','#d27054','#495c8c'][index%3]):hero?'#34474c':['#464b4d','#677063','#50596a'][index%3]),{map:fabric,bumpMap:fabric,bumpScale:.008});
- const hair=color('hair '+index%3,['#302a25','#44362b','#201e1b'][index%3],{roughness:.96}),boots=color('walking boots','#3d3831',{roughness:.92}),sole=color('shoe soles','#202624'),ivory=color('eye sclera','#c8bbae'),iris=color('eye iris','#34362c',{roughness:.4}),lip=color('lips '+index%3,'#8d5c4b'),stitch=color('seams','#b4b4a4'),metal=color('belt buckle','#8a8e87',{metalness:.55,roughness:.4});
+ const hair=color('hair '+(ageGroup==='elder'?'silver':index%3),ageGroup==='elder'?'#b8b7af':['#302a25','#44362b','#201e1b'][index%3],{roughness:.96}),boots=color('walking boots','#3d3831',{roughness:.92}),sole=color('shoe soles','#202624'),ivory=color('eye sclera','#c8bbae'),iris=color('eye iris','#34362c',{roughness:.4}),lip=color('lips '+index%3,'#8d5c4b'),stitch=color('seams','#b4b4a4'),metal=color('belt buckle','#8a8e87',{metalness:.55,roughness:.4});
  shared('fabric texture owner',()=>{outfit.addEventListener('dispose',()=>fabric.dispose());return true;});
- const g=new T.Group();g.name=hero?'Angelique':'Detailed local character';g.userData.appearance={skin:tone,beachWear,beachHair};setHumanAge(g,hero?'kid':ageGroup,index);
+ const g=new T.Group();g.name=hero?'Angelique':'Detailed local character';g.userData.appearance={skin:tone,beachWear,beachHair,gender:woman?'woman':'man'};setHumanAge(g,hero?'kid':ageGroup,index);
+ if(!hero&&!police){g.scale.x*=.89+(index%5)*.055;g.scale.z*=.94+(index%4)*.04;g.scale.y*=.96+(index%7)*.014;}
  const part=(geo,m,x,y,z,w,h,d,parent=g)=>make(geo,m,x,y,z,w,h,d,parent);
  const torso=shared('anatomical torso',()=>{const points=[[.095,-.25],[.14,-.20],[.175,-.02],[.205,.15],[.19,.22],[.10,.27]].map(([r,y])=>new T.Vector2(r,y));const geo=new T.LatheGeometry(points,18);geo.scale(1,1,.63);return geometry(geo);});
  part(torso,outfit,0,1.115,0,1,1,1);
  part(sphere,pants,0,.86,-.005,.175,.12,.115);
  part(cylinder,skin,0,1.405,0,.062,.12,.062);
+ if(!hero&&!police&&index%6===2){part(sphere,hair,0,1.49,.069,.098,.068,.08);}
  // Cranium, tapered jaw, ears, brow, nose and recessed eyes use restrained proportions.
  part(sphere,skin,0,1.60,.006,.124,.173,.116);part(sphere,skin,0,1.495,.037,.093,.072,.086);
  part(sphere,hair,0,1.689,-.025,.129,.10,.113);
- if(beach&&beachHair==='curls')for(let i=0;i<12;i++){const a=i*2.39996;part(sphere,hair,Math.cos(a)*.10,1.70+(i%3)*.026,-.03+Math.sin(a)*.085,.047,.043,.044);}
- if(beach&&['long','bun'].includes(beachHair)){part(sphere,hair,0,1.52,-.10,.11,.19,.055);if(beachHair==='bun')part(sphere,hair,0,1.79,-.035,.074,.063,.067);}
- if(beach&&beachWear==='sundress'){const skirt=shared('beach sundress skirt',()=>geometry(new T.LatheGeometry([new T.Vector2(.22,.64),new T.Vector2(.20,.75),new T.Vector2(.14,.94)],16)));part(skirt,outfit,0,0,0,1,1,.75);}
+ if(!hero&&beachHair==='curls')for(let i=0;i<12;i++){const a=i*2.39996;part(sphere,hair,Math.cos(a)*.10,1.70+(i%3)*.026,-.03+Math.sin(a)*.085,.047,.043,.044);}
+ if(!hero&&['long','bun'].includes(beachHair)){part(sphere,hair,0,1.52,-.10,.11,.19,.055);if(beachHair==='bun')part(sphere,hair,0,1.79,-.035,.074,.063,.067);}
+ if((beach&&beachWear==='sundress')||(!hero&&!police&&!beach&&woman&&index%3===0)){const skirt=shared('beach sundress skirt',()=>geometry(new T.LatheGeometry([new T.Vector2(.22,.64),new T.Vector2(.20,.75),new T.Vector2(.14,.94)],16)));part(skirt,outfit,0,0,0,1,1,.75);}
 
  for(const side of [-1,1]){
   part(sphere,skin,side*.125,1.583,.003,.023,.039,.024);
@@ -73,5 +76,7 @@ export function createHuman({T,geometry,mat,make}, {index=0,ageGroup='adult',her
  }
  batch(g);
  g.userData.humanRig={knees,elbows};
+ if(mobilityAid){const aid=new T.Group();aid.name=mobilityAid==='walker'?'Walking frame':'Walking stick';g.add(aid);if(mobilityAid==='walker'){for(const x of [-.27,.27]){for(const z of [.25,.6])part(cylinder,metal,x,.42,z,.018,.84,.018,aid);part(box,metal,x,.84,.425,.025,.025,.38,aid);}part(box,metal,0,.6,.6,.56,.025,.025,aid);}else{part(cylinder,boots,.3,.43,.2,.018,.86,.018,aid);part(box,boots,.3,.87,.24,.035,.03,.13,aid);}g.userData.mobilityAid=mobilityAid;}
  return {g,legs,arms,knees,elbows,ponytail,hat,batch:()=>batch(g),materials:{skin,outfit,pants,hair},animate(phase,moving=true){knees.forEach((k,i)=>k.rotation.x=moving?Math.max(0,-Math.sin(phase+i*Math.PI))*.55:0);elbows.forEach(e=>e.rotation.x=-.15);}};
 }
+

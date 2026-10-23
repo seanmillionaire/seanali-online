@@ -1,8 +1,9 @@
+import {createMonkeyAmbience} from './monkey-ambience.js';
 import {landAnimalModels} from './land-animal-models.js';
-import {createColonWildlife,treeCanopyAnchor,monkeyJumpPhase,recordMonkeyJump} from './colon-wildlife.js?v=225';
-import {COLON_SITES,COLON_BRIDGE,bridgeDistance,buildColon,expandColon} from './colon-state.js?v=225';
-import {addFood,inWater as worldInWater,earnCoins} from './explore-state.js?v=225';
-import {COLON_OFFSET} from './geography.js?v=225';
+import {createColonWildlife,treeCanopyAnchor,monkeyJumpPhase,recordMonkeyJump} from './colon-wildlife.js';
+import {COLON_SITES,COLON_BRIDGE,bridgeDistance,buildColon,expandColon} from './colon-state.js';
+import {addFood,inWater as worldInWater,earnCoins} from './explore-state.js';
+import {COLON_OFFSET} from './geography.js';
 export function createColonAdventure({T,scene,host,state,make,geometry,mat,box,ball,cylinder,cone,height:worldHeight,save,refresh,joy,tell,forest:worldForest,motion=()=>true}){
  const {x:offsetX,z:offsetZ}=COLON_OFFSET;
  const height=(x,z)=>worldHeight(x+offsetX,z+offsetZ);
@@ -100,7 +101,7 @@ export function createColonAdventure({T,scene,host,state,make,geometry,mat,box,b
  const play={active:false,score:0,start:0,lastCycle:-1};
  function hereAt(x,z){return !inWater(x,z)&&(Math.hypot((x-(-10))/27,(z+(125))/24)<1.05||Math.hypot((x-(10))/9,(z+(94))/8)<1.05);}
  const status=document.createElement('div');status.className='colon-status';status.hidden=true;host.append(status);
- let clock=0;
+ let clock=0;const monkeyAmbience=createMonkeyAmbience(joy);
  function nearest(x,z){
   const fruit=fruitTrees.find(t=>c[t.kind][t.index]<6&&Math.hypot(x-t.x,z-t.z)<2.5);
   if(fruit)return {type:'fruit',...fruit};
@@ -131,6 +132,7 @@ export function createColonAdventure({T,scene,host,state,make,geometry,mat,box,b
   if(active)clock+=dt;
   const localX=s.x-offsetX,localZ=s.z-offsetZ;
   const here=!inside&&!cruising&&(Math.hypot((localX+10)/29,(localZ+125)/26)<1.1||Math.hypot(localX-10,localZ+94)<12);
+  monkeyAmbience.update(dt,here,active);
   status.hidden=!here;const raining=(scene.userData.regionalWeather?.rain??1)>.12,cue=monkeyJumpPhase(clock-play.start);
   if(here)status.textContent=(raining?'🌧️ ':'☀️ ')+say('Colón · Selva e Isla de los Monos','Colón · Rainforest & Monkey Island')+' · 🐒 28 · '+COLON_SITES.filter(p=>c[p.id]).length+'/4';
   if(here&&play.active)status.textContent='🐒 '+play.score+'/3 · '+(cue.open?say('¡SALTA AHORA!','JUMP NOW!'):say('Mira el próximo salto…','Watch the next jump…'));
@@ -167,5 +169,6 @@ export function createColonAdventure({T,scene,host,state,make,geometry,mat,box,b
   canWalk:(x,z)=>{x-=offsetX;z-=offsetZ;return c.bridge||bridgeDistance(x,z)>1.45||Math.hypot(x-2,z+108)<2;},
   houses:()=>c.treehouse?[{id:'colon-treehouse',colonTreehouse:true,x:(-59),z:(-247),es:'Mi casa del árbol de Colón',en:'My Colón jungle treehouse',icon:'🌳',theme:'play'}]:[],
   expand(){const ok=expandColon(s);if(ok){save();refresh();}return ok;},
-  dispose(){land.dispose();status.remove();rain.material.dispose();wildlife.dispose();if(scene.fog&&baseFog!==undefined)scene.fog.density=baseFog;if(scene.background?.isColor&&baseSky)scene.background.copy(baseSky);if(sun)sun.intensity=baseSun;scene.remove(root,forestRoot);}};
+  dispose(){monkeyAmbience.dispose();land.dispose();status.remove();rain.material.dispose();wildlife.dispose();if(scene.fog&&baseFog!==undefined)scene.fog.density=baseFog;if(scene.background?.isColor&&baseSky)scene.background.copy(baseSky);if(sun)sun.intensity=baseSun;scene.remove(root,forestRoot);}};
 }
+

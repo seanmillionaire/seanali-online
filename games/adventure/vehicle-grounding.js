@@ -32,3 +32,4 @@ export function placeGroundVehicle(root,pose,surface,kind='sedan'){
  root.position.set(p.x,p.y,p.z);root.rotation.set(p.pitch,p.heading,p.roll,'YXZ');
  return p;
 }
+

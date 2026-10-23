@@ -1,13 +1,13 @@
 import {placeGroundVehicle} from './vehicle-grounding.js';
 import {ensureEstateCars,ownedCars,selectEstateCar,nearestEstateCar,carName} from './estate-cars.js';
 import {vehicleEscapeClear} from './vehicle-contact.js';
-import {createGoldenSupercar} from './golden-supercar.js?v=225';
-import {cityX,CITY_RESTAURANT} from './geography.js?v=225';
-import {ruralBlocks} from './rural-towns.js?v=225';
-import {CITY_SHOP_PLOTS,cityBlocksVehicle,cityPropSite} from './city-layout.js?v=225';
-import {roadDistance,HIGHWAY_WIDTH,inWater,traversable} from './explore-state.js?v=225';
-import {createCityExpansion} from './city-expansion.js?v=225';
-import {districtDriveable,districtVehicleBlocked,districtNeighborhood} from './expanded-districts.js?v=225';
+import {createGoldenSupercar} from './golden-supercar.js';
+import {cityX,CITY_RESTAURANT} from './geography.js';
+import {ruralBlocks} from './rural-towns.js';
+import {CITY_SHOP_PLOTS,cityBlocksVehicle,cityPropSite} from './city-layout.js';
+import {roadDistance,HIGHWAY_WIDTH,inWater,traversable} from './explore-state.js';
+import {createCityExpansion} from './city-expansion.js';
+import {districtDriveable,districtVehicleBlocked,districtNeighborhood} from './expanded-districts.js';
 /* Casco Viejo · Ciudad de Panamá — the largest fantasy island: real road grid, drivable mini car,
    walk-in pizzeria, and sixteen persistent 💰 money-bag pickups. */
 export const CITY={x:cityX(120),z:(-50),rx:58,rz:48,restaurant:CITY_RESTAURANT};
@@ -161,4 +161,5 @@ export function createPizzaCity({T,scene,camera,state,height,roadHeight=height,m
  function dispose(){expansion.dispose();status.remove();sign.remove();scene.remove(group,pizzaSign);for(const m of Object.values(models)){scene.remove(m.root);m.dispose();}for(const b of bags)scene.remove(b.root);spriteMaterial.dispose();texture.dispose();pizzaMaterial.dispose();pizzaTexture.dispose();}
  return {soccerPosition:expansion.soccerPosition,npcKick:expansion.npcKick,attach,update,nearCar,canDrive,hitCar,hitBag,updateCar,order,setCoinAward,isHere,selectModel,selectNearby,parkedClear,carName:(x,z)=>carName(nearCar(x,z)?.model||city.car.model,es),get car(){return models[city.car.model].root;},activityPrompt:expansion.activityPrompt,interactActivity:expansion.interactAt,activityNear:expansion.near,activityGoal:expansion.goal,activitySites:expansion.sites,setWaypoint:expansion.setWaypoint,dispose};
 }
+
 

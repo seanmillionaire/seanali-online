@@ -1,8 +1,8 @@
 import {createFruitEmojis,FRUIT_TILES} from './fruit-emojis.js';
-import {createNatureDecor} from './nature-decor.js?v=225';
-import {oceanModel} from './ocean-models.js?v=225';
-import {createNaturalTrees} from './natural-trees.js?v=225';
-import {islandPoint} from './explore-state.js?v=225';
+import {createNatureDecor} from './nature-decor.js';
+import {oceanModel} from './ocean-models.js';
+import {createNaturalTrees} from './natural-trees.js';
+import {islandPoint} from './explore-state.js';
 /* Shared sculpted props and botanical meshes, consistently lit from every angle. */
 export function createTropical({T,scene,camera,height,geometry,mat,make,ball,renderer,surfaces=null}){
  const forest=createNaturalTrees({T,geometry,mat,make,height,scene,surfaces});
@@ -41,3 +41,4 @@ export function createTropical({T,scene,camera,height,geometry,mat,make,ball,ren
  let impact={x:0,z:0,strength:0,phase:0};
  return {card,palm,forest,grain,foodTrees,setImpact(x,z,strength,phase){impact={x,z,strength,phase};},update(time){forest.update(time);for(const p of palms){const d=Math.hypot(p.root.position.x-impact.x,p.root.position.z-impact.z),wave=Math.sin(impact.phase-d*.45)*impact.strength*Math.max(0,1-d/16);p.root.rotation.z=wave*.1;p.root.rotation.x=wave*.06;p.crown.rotation.z=Math.sin(time*.65+p.phase)*.025;p.crown.rotation.x=Math.cos(time*.5+p.phase)*.018;}for(const a of wildlife){const swimming=a.tile===12,speed=swimming?.6:.08;a.g.position.x=a.x+(swimming?Math.sin(time*speed+a.phase)*1.2:0);a.g.position.z=a.z+(swimming?Math.cos(time*speed+a.phase)*.5:0);if(!swimming)a.g.rotation.y=a.phase+Math.sin(time*.23+a.phase)*.035;if(!swimming)a.g.position.y=height(a.g.position.x,a.g.position.z)+.02+Math.abs(Math.sin(impact.phase))*impact.strength*Math.max(0,1-Math.hypot(a.x-impact.x,a.z-impact.z)/14)*1.3;}},dispose(){emojis.dispose();textures.forEach(t=>t.dispose());}};
 }
+

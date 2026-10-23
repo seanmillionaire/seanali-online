@@ -10,7 +10,12 @@ export function landAnimalModels(o){
   else for(let i=0;i<12;i++){const a=i*2.4;p(mask,Math.cos(a)*.12,.34+(i%2)*.025,Math.sin(a)*.16,.023,.009,.032,g);}
   finish(g);return {g,legs,tail};
  }
- function sloth(parent){const g=new T.Group();g.name='Tree sloth hanging from a branch';g.userData.nativeEmoji='sloth';parent.add(g);emblems.sprite('sloth',0,-.2,0,1.45,g);return {g};}
+ function sloth(parent){const g=new T.Group();g.name='Living three-toed tree sloth';parent.add(g);
+  p(fur,0,-.16,0,.38,.24,.27,g);const head=new T.Group();head.position.set(.38,-.13,.03);g.add(head);p(fur,0,0,0,.20,.19,.20,head);p(face,.06,-.025,.12,.16,.13,.10,head);
+  for(const side of [-1,1]){p(mask,.07+side*.075,.005,.20,.065,.04,.018,head);p(dark,.07+side*.075,.008,.217,.016,.018,.01,head);}p(dark,.07,-.05,.218,.028,.025,.018,head);
+  const limbs=[];for(const x of [-.25,.25])for(const z of [-.20,.20]){const limb=new T.Group();limb.position.set(x,-.08,z);g.add(limb);link(fur,[0,0,0],[.06,.30,0],.08,.055,limb);link(fur,[.06,.30,0],[.10,.57,0],.055,.035,limb);for(let k=0;k<3;k++)tube(claw,[[.10,.57,(k-1)*.027],[.15,.61,(k-1)*.027],[.20,.56,(k-1)*.027]],.012,limb);limbs.push(limb);}
+  finish(g);return {g,animate(time){const cycle=time*.18;g.position.x=Math.sin(cycle*.25)*.48;g.rotation.z=Math.sin(cycle)*.025;head.rotation.y=Math.sin(cycle*.65)*.20;head.rotation.z=Math.sin(cycle*.4)*.06;limbs.forEach((l,i)=>{l.rotation.z=Math.sin(cycle+i*Math.PI*.5)*.10;l.rotation.x=Math.sin(cycle+i*Math.PI)*.035;});}};
+ }
  function turtle(parent){const g=new T.Group();g.name='Beach nesting turtle';g.userData.nativeEmoji='turtle';parent.add(g);emblems.sprite('turtle',0,.50,0,1.15,g);return {g};}
  return {reptile,sloth,turtle,dispose:()=>emblems.dispose()};
 }
@@ -19,3 +24,4 @@ export function detailedDog(o,parent){const {T,mat}=o,{p,link,tube,finish}=anima
  for(const s of [-1,1]){p(eye,s*.135,.94,.58,.041,.035,.027,g);p(nose,s*.14,.942,.603,.022,.025,.012,g);const ear=p(fur,s*.21,.83,.33,.085,.25,.15,g);ear.rotation.z=s*.15;link(dark,[s*.04,.72,.77],[s*.13,.74,.71],.006,.005,g);for(const z of [-.36,.32]){const leg=new T.Group();leg.position.set(s*.18,.48,z);g.add(leg);p(fur,0,-.08,-.015,.08,.20,.10,leg);link(fur,[0,-.17,0],[0,-.39,.03],.057,.042,leg);p(cream,0,-.42,.08,.075,.052,.12,leg);for(let j=0;j<3;j++)p(dark,(j-1)*.035,-.435,.17,.008,.012,.023,leg);legs.push(leg);}}
  const tail=new T.Group();tail.position.set(0,.64,-.49);g.add(tail);tube(fur,[[0,0,0],[0,.10,-.24],[.05,.30,-.40],[.10,.41,-.43]],.07,tail);for(let i=0;i<5;i++)p(cream,.025,.09+i*.05,-.22-i*.04,.08,.07,.12,tail);
  link(mat('#77634b'),[-.18,.69,.34],[.18,.69,.34],.026,.026,g);p(mat('#baab75',{metalness:.5,roughness:.4}),0,.66,.45,.035,.045,.012,g);finish(g);return {g,legs,tail};}
+

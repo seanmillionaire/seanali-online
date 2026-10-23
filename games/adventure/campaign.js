@@ -1,5 +1,5 @@
-import {FESTIVAL_CHAPTERS,FESTIVAL_WORK,campaignSnapshot,acceptCampaign,turnInCampaign,stepFestivalWork} from './campaign-state.js?v=225';
-import {missionStatus} from './region-projects.js?v=225';
+import {FESTIVAL_CHAPTERS,FESTIVAL_WORK,campaignSnapshot,acceptCampaign,turnInCampaign,stepFestivalWork} from './campaign-state.js';
+import {missionStatus} from './region-projects.js';
 export function createCampaign({host,panel,state,save,prepare,onObjective,onFinish,joy}){
  const es=state.lang==='es',say=(a,b)=>es?a:b,c=state.world.campaign;
  const el=(tag,text,cls='')=>{const n=document.createElement(tag);n.className=cls;n.textContent=text;return n;};
@@ -20,3 +20,4 @@ export function createCampaign({host,panel,state,save,prepare,onObjective,onFini
  let last='';function update(){const q=snapshot(),key=[c.started,c.accepted,c.chapter,q.done,q.task?.current,panel.hidden].join(':');if(key===last)return;last=key;host.classList.toggle('story-following',c.started);hud.replaceChildren(el('strong',q.finished?say('🏮 Festival completado','🏮 Festival complete'):!c.started?say('💌 Angelique: una nueva historia','💌 Angelique: a new story'):`${q.chapter.icon} ${say('Capítulo','Chapter')} ${q.index+1}/${q.total} · ${q.chapter.place}`),el('span',q.finished?say('Abre tu diario de aventuras','Open your adventure journal'):!c.accepted?say('Lee la carta y acepta la misión','Read the letter and accept the mission'):q.ready?say('🎁 Regresa para completar el capítulo','🎁 Return to finish this chapter'):say(q.task.es,q.task.en)));}
  return {open,work,update,snapshot,waypoint(){const q=snapshot();return c.started&&c.accepted&&!q.finished?(q.ready?q.chapter.home:q.task.go):null;},offerIntro(){if(c.introSeen)return;c.introSeen=true;save();open();},dispose(){hud.remove();host.classList.remove('story-following');}};
 }
+

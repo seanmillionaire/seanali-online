@@ -1,8 +1,8 @@
 import {gorgonaShoreZ} from './gorgona-shore.js';
 import {createGorgonaFamilies} from './gorgona-families.js';
-import {clipLandTriangle} from './terrain-surface.js?v=225';
-import {inWater,roadDistance} from './explore-state.js?v=225';
-import {regionalClearing} from './regional-layout.js?v=225';
+import {clipLandTriangle} from './terrain-surface.js';
+import {inWater,roadDistance} from './explore-state.js';
+import {regionalClearing} from './regional-layout.js';
 export const GORGONA_FISH_SHACK={x:-92,z:6,w:6,d:4};
 export function createGorgonaCoast(options){const {T,scene,geometry,mat,make,box,ball,cylinder,height,models,surfaces}=options;const families=createGorgonaFamilies(options);
  const solids=[];const root=new T.Group();root.name='Playa Gorgona · Chame';scene.add(root);const batches=new Map(),dummy=new T.Object3D();
@@ -24,3 +24,4 @@ export function createGorgonaCoast(options){const {T,scene,geometry,mat,make,box
  const cook=models.person(root,q.x,y,q.z+2.4,7);let time=0;
  return {root,families,kick:families.kick,near:(x,z)=>Math.hypot(x-q.x,z-(q.z+4))<2.6?{type:'vendor',kind:'market'}:families.near(x,z),update(dt,active,info){families.update(dt,active,info);root.visible=!info.indoors;if(active)time+=dt;cook.animate?.(time,true);},dispose(){families.dispose();scene.remove(root);delete scene.userData.gorgonaAir;}};
 }
+

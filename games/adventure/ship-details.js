@@ -62,3 +62,4 @@ export function shipWake({T,geometry},g,len,w,kind){
  const material=new T.ShaderMaterial({transparent:true,depthWrite:false,side:T.DoubleSide,uniforms:{time:{value:0},strength:{value:1}},vertexShader:`varying vec2 v;void main(){v=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`varying vec2 v;uniform float time;uniform float strength;void main(){float aft=v.y;float x=abs(v.x-.5)*2.;float spread=.19+aft*.7;float edge=exp(-pow((x-spread)*30.,2.));float wash=exp(-x*x/(.018+aft*.09));float churn=.55+.25*sin(v.y*86.-time*7.+sin(v.x*49.)*2.)+.2*sin(v.x*110.+v.y*63.+time*4.);float fade=pow(1.-aft,1.1)*smoothstep(0.,.055,aft);float a=clamp((edge*.7+wash*.8)*churn*fade*strength,0.,.7);gl_FragColor=vec4(.83,.96,.94,a);}`});
  const wake=new T.Mesh(geo,material);wake.name='Animated propeller wash and spreading foam';wake.renderOrder=3;g.add(wake);return material;
 }
+

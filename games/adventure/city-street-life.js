@@ -3,13 +3,13 @@ import {createResidentRoutine} from './resident-routine.js';
 import {homeReserved} from './mansion-state.js';
 import {placeGroundVehicle} from './vehicle-grounding.js';
 import {ownedCars} from './estate-cars.js';
-import {trafficYield,trafficMoveClear} from './traffic-yield.js?v=225';
-import {vehicleOverlap,trafficFootprint} from './vehicle-contact.js?v=225';
-import {cityX} from './geography.js?v=225';
-import {CITY_BARRIO_PLOTS,cityPropSite,cityPropClear} from './city-layout.js?v=225';
-import {TRAFFIC_ROUTES,routePose,trafficAdvance,soundFalloff} from './panama-state.js?v=225';
+import {trafficJamStep} from './traffic-yield.js';
+import {vehicleOverlap,trafficFootprint} from './vehicle-contact.js';
+import {cityX} from './geography.js';
+import {CITY_BARRIO_PLOTS,cityPropSite,cityPropClear} from './city-layout.js';
+import {TRAFFIC_ROUTES,routePose,trafficAdvance,soundFalloff} from './panama-state.js';
 export const STREET_VENDORS=[{id:'raspao-centro',x:cityX(129),z:-53,kind:'raspao'},{id:'raspao-barrio',x:cityX(99),z:-18,kind:'raspao'},{id:'mercado-food',x:cityX(150),z:-56,kind:'market'}];
-export const BARRIO_HOMES=[{id:'barrio-casa-1',x:CITY_BARRIO_PLOTS[0].x,z:CITY_BARRIO_PLOTS[0].z,es:'Casa del barrio · Cancha',en:'Barrio home · Football field',icon:'🏘️',theme:'sea'},{id:'barrio-casa-2',x:CITY_BARRIO_PLOTS[1].x,z:CITY_BARRIO_PLOTS[1].z,es:'Casa del barrio · Balcón',en:'Barrio balcony home',icon:'🏘️',theme:'art'}];
+export const BARRIO_HOMES=[{id:'barrio-casa-1',x:CITY_BARRIO_PLOTS[0].x,z:CITY_BARRIO_PLOTS[0].z+CITY_BARRIO_PLOTS[0].d/2+.5,es:'Casa del barrio · Cancha',en:'Barrio home · Football field',icon:'🏘️',theme:'sea'},{id:'barrio-casa-2',x:CITY_BARRIO_PLOTS[1].x,z:CITY_BARRIO_PLOTS[1].z+CITY_BARRIO_PLOTS[1].d/2+.5,es:'Casa del barrio · Balcón',en:'Barrio balcony home',icon:'🏘️',theme:'art'}];
 export function createCityStreetLife({state,T,scene,make,mat,box,ball,cylinder,height,roadHeight=height,models,joy,surfaces,football=()=>null,npcKick=()=>{},otherTraffic=()=>[]}){
  const root=new T.Group();root.name='Panama City moving traffic and barrio street life';scene.add(root);const {white,dark,blue,red,yellow,glass,green}=models.colors;
  const piece=(m,x,y,z,w,h,d,parent=root)=>make(box,m,x,y,z,w,h,d,parent);
@@ -17,9 +17,9 @@ export function createCityStreetLife({state,T,scene,make,mat,box,ball,cylinder,h
  const signals=[];for(const [x,z]of [[cityX(105),-61],[cityX(135),-61],[cityX(105),-35],[cityX(135),-35]]){const y=height(x,z);piece(dark,x+3.4,y+1.9,z+3.4,.12,3.8,.12);piece(dark,x+3.4,y+3.5,z+3.4,.55,1,.4);for(const side of [-1,1]){const m=mat(side<0?'#e53430':'#67c258',{emissive:side<0?'#e53430':'#67c258',emissiveIntensity:.5});const mesh=make(ball,m,x+3.4,y+3.5+side*.22,z+3.64,.15,.15,.08,root);signals.push({mesh,side});}}
  const people=[],police=[];
  for(let i=0;i<4;i++){const x=cityX(92)+i*15,z=-54,p=models.person(root,x,height(x,z),z,i,true);const site=cityPropSite(x,z,1);p.home=site||{x,z};p.police=true;people.push(p);police.push(p);}
- for(let i=0;i<8;i++){const x=cityX(92)+(i%4)*15,z=i<4?-30:-54,p=models.person(root,x,height(x,z),z,i);const site=cityPropSite(x,z,1);p.home=site||{x,z};people.push(p);}
+ for(let i=0;i<16;i++){const x=cityX(92)+(i%4)*15,z=-30-Math.floor(i/4)*8,p=models.person(root,x,height(x,z),z,i===14?22:i===15?23:i);const site=cityPropSite(x,z,1);p.home=site||{x,z};people.push(p);}
  for(const [i,p]of people.entries()){p.path=[p.home,p.home];p.progress=0;p.direction=1;p.pause=i*.13;p.g.position.set(p.home.x,height(p.home.x,p.home.z),p.home.z);for(const [dx,dz]of [[1,0],[0,1],[-1,0],[0,-1]]){const length=3.5+(i%3);if(Array.from({length:12},(_,k)=>({x:p.home.x+dx*length*k/11,z:p.home.z+dz*length*k/11})).every(q=>cityPropClear(q.x,q.z,.55)&&!homeReserved(q.x,q.z,1))){p.path[1]={x:p.home.x+dx*length,z:p.home.z+dz*length};break;}}}
- for(const [i,p]of people.entries())p.routine=createResidentRoutine(p,{seed:160+i*173,home:p.home,height,clear:(x,z)=>cityPropClear(x,z,.55)&&!homeReserved(x,z,1),radius:6,speed:p.police?.75:1});
+ for(const [i,p]of people.entries())p.routine=createResidentRoutine(p,{seed:160+i*173,home:p.home,height,clear:(x,z)=>cityPropClear(x,z,.55)&&!homeReserved(x,z,1),radius:6,speed:p.g.userData.ageGroup==='elder'?.45:p.police?.75:1});
  const roofs=mat('#a39a8a'),wallColors=['#d4aa91','#87aaa6','#d9c58f','#a9b59d','#b6a6b1'].map(c=>mat(c,{map:surfaces?.plaster,bumpMap:surfaces?.plaster,bumpScale:.035}));
  for(const [i,{x,z}] of CITY_BARRIO_PLOTS.entries()){
   const y=height(x,z),h=3+(i%3);piece(wallColors[i%5],x,y+h/2,z,4,h,3.1);piece(roofs,x,y+h+.12,z,4.25,.24,3.3);piece(dark,x,y+1,z+1.58,.85,2,.08);piece(glass,x-1.1,y+1.8,z+1.58,.8,.85,.08);piece(glass,x+1.1,y+1.8,z+1.58,.8,.85,.08);if(i%2===0){piece(roofs,x,y+2.25,z+2.05,3,.13,.95);piece(white,x,y+2.68,z+2.5,3,.7,.07);}
@@ -32,7 +32,7 @@ export function createCityStreetLife({state,T,scene,make,mat,box,ball,cylinder,h
  const children=[],spectators=[];for(let i=0;i<6;i++){const p=models.person(root,cityX(115)+i*1.4,height(cityX(115)+i*1.4,-23),-23,i);setHumanAge(p,'kid',i);children.push(p);}for(let i=0;i<6;i++){const p=models.person(root,i<3?cityX(109):cityX(131),height(i<3?cityX(109):cityX(131),-26+(i%3)*3),-26+(i%3)*3,i);spectators.push(p);}
  let clock=0,beat=0,hornAt=0,sirenAt=8,kickAt=0;function update(dt,active,{x,z,indoors=false}={}){root.visible=!indoors;if(!active||indoors)return;clock+=dt;
   const nearCity=Math.hypot(x-cityX(120),z+(50))<170;if(!nearCity)return;
-  for(const car of vehicles){const yielding=trafficYield(car,[...vehicles,...otherTraffic()],ownedCars(state.world.city),dt),advance=trafficAdvance(car,vehicles,clock,dt);if(yielding!==null)car.distance=yielding;else if(trafficMoveClear(car,advance,[...vehicles,...otherTraffic()],ownedCars(state.world.city)))car.distance=advance;car.queued=advance===car.distance&&car.wait>0||advance!==car.distance;const p=routePose(car.route,car.distance);const nearby=Math.hypot(x-p.x,z-p.z);if(nearby<115)placeGroundVehicle(car.g,p,roadHeight,car.bus?'bus':car.utility?'utility':'sedan');else{car.g.position.x=p.x;car.g.position.z=p.z;car.g.rotation.y=p.heading;}car.g.visible=nearby<105;if(car.police)car.g.userData.emergencyLights?.forEach((m,i)=>m.emissiveIntensity=(Math.floor(clock*7)%2===i%2)?3:.08);if(car.g.userData.visualDetail)car.g.userData.visualDetail.visible=car.police||nearby<30;}
+  for(const car of vehicles){const advance=trafficAdvance(car,vehicles,clock,dt),obstacles=[...ownedCars(state.world.city),...people.map(p=>({x:p.g.position.x,z:p.g.position.z,length:.45,width:.45})),...(!indoors?[{x,z,length:.45,width:.45}]:[])];car.distance=trafficJamStep(car,advance,[...vehicles,...otherTraffic()],obstacles,dt,{red:car.trafficRedStopped});car.queued=advance===car.distance&&car.wait>0||advance!==car.distance;const p=routePose(car.route,car.distance);const nearby=Math.hypot(x-p.x,z-p.z);if(nearby<115)placeGroundVehicle(car.g,p,roadHeight,car.bus?'bus':car.utility?'utility':'sedan');else{car.g.position.x=p.x;car.g.position.z=p.z;car.g.rotation.y=p.heading;}car.g.visible=nearby<105;if(car.police)car.g.userData.emergencyLights?.forEach((m,i)=>m.emissiveIntensity=(Math.floor(clock*7)%2===i%2)?3:.08);if(car.g.userData.visualDetail)car.g.userData.visualDetail.visible=car.police||nearby<30;}
   for(const s of signals)s.mesh.material.emissiveIntensity=((Math.floor(clock/7)%2===0)===(s.side>0))?.9:.03;
   if(clock>sirenAt){const patrol=vehicles.find(v=>v.police);joy.recordedSound?.('siren',{volume:soundFalloff(x,z,patrol.g.position,55)*.45,duration:7,offset:10});sirenAt=clock+22;}
   people.forEach(p=>p.routine.update(dt,active,(px,pz)=>Math.hypot(px-x,pz-z)<.85||people.some(q=>q!==p&&Math.hypot(q.g.position.x-px,q.g.position.z-pz)<.75)||[...vehicles,...otherTraffic()].some(v=>vehicleOverlap({x:px,z:pz,heading:0,length:.55,width:.55},trafficFootprint(v)))));
@@ -45,3 +45,4 @@ export function createCityStreetLife({state,T,scene,make,mat,box,ball,cylinder,h
  function near(x,z){const vendor=STREET_VENDORS.find(p=>Math.hypot(x-p.x,z-p.z)<2.7);if(vendor)return {...vendor,type:'vendor'};const p=police.find(p=>Math.hypot(x-p.g.position.x,z-p.g.position.z)<2.7);if(p)return {type:'police'};if(Math.hypot(x-CITY_BARRIO_PLOTS[0].x,z-CITY_BARRIO_PLOTS[0].z)<3)return {type:'barrio'};return null;}
  update(0,true,{x:cityX(120),z:(-50)});return {root,vehicles,children,people,near,update,homes:BARRIO_HOMES,dispose(){scene.remove(root);}};
 }
+

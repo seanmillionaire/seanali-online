@@ -2,8 +2,8 @@ import {homeReserved} from './mansion-state.js';
 import {createResidentRoutine} from './resident-routine.js';
 import {createCostaResident} from './costa-residents.js';
 import {createCongoGathering} from './costa-congo.js';
-import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=225';
-import {COSTA_HOMES,CARIBBEAN_HOMES,GRANDE_HOMES,CARIBBEAN_COLORS,COSTA_PIER,CRISTO_REEF,ISLA_GRANDE,ISLA_LIGHTHOUSE,costaBlocked} from './costa-arriba-layout.js?v=225';
+import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js';
+import {COSTA_HOMES,CARIBBEAN_HOMES,GRANDE_HOMES,CARIBBEAN_COLORS,COSTA_PIER,CRISTO_REEF,ISLA_GRANDE,ISLA_LIGHTHOUSE,costaBlocked} from './costa-arriba-layout.js';
 export function createCostaArriba({T,scene,make,mat,geometry,box,ball,cylinder,height,surfaces,models,inWater,forest,state,joy,motion}){
  const congo=createCongoGathering({T,scene,make,mat,geometry,box,ball,cylinder,height,surfaces,state,joy,motion});
  const root=new T.Group();root.name='Costa Arriba · Caribbean barrio and Isla Grande reef';scene.add(root);
@@ -60,3 +60,4 @@ export function createCostaArriba({T,scene,make,mat,geometry,box,ball,cylinder,h
  for(const [i,p]of residents.entries())p.routine=createResidentRoutine(p,{seed:430+i*137,home:{x:p.x,z:p.z},height,clear:safe,radius:5});
  let time=0;return {root,congo,residents,homes:CARIBBEAN_HOMES,blocks:(x,z,margin=1.3)=>Math.hypot(x-CRISTO_REEF.x,z-CRISTO_REEF.z)<1.4+margin,update(dt,active,{x,z,indoors=false}){congo.update(dt,active,{x,z,indoors});root.visible=!indoors&&Math.hypot(x-100,z+420)<300;if(active)time+=dt;if(!root.visible)return;for(const p of residents){p.routine.update(dt,active,(nx,nz)=>residents.some(q=>q!==p&&Math.hypot(q.g.position.x-nx,q.g.position.z-nz)<.75)||Math.hypot(x-nx,z-nz)<.85);p.g.visible=Math.hypot(p.x-x,p.z-z)<120;}},dispose(){congo.dispose();resources.forEach(r=>r.dispose());delete scene.userData.costaAir;scene.remove(root);}};
 }
+

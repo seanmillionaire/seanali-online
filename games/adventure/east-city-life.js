@@ -1,9 +1,9 @@
 import {createResidentRoutine} from './resident-routine.js';
 import {homeReserved} from './mansion-state.js';
-import {makeDog} from './mansion-models.js?v=225';
-import {EXPANDED_DISTRICTS,districtGround,districtVehicleBlocked} from './expanded-districts.js?v=225';
-import {cityBlocksVehicle} from './city-layout.js?v=225';
-import {inWater,roadDistance,isletHeight} from './explore-state.js?v=225';
+import {makeDog} from './mansion-models.js';
+import {EXPANDED_DISTRICTS,districtGround,districtVehicleBlocked} from './expanded-districts.js';
+import {cityBlocksVehicle} from './city-layout.js';
+import {inWater,roadDistance,isletHeight} from './explore-state.js';
 export function dogWalkRoutes(){
  const furniture=[];for(const area of EXPANDED_DISTRICTS.filter(a=>a.kind==='modern'))for(let i=0;i<area.xs.length-1;i++)for(let j=0;j<area.zs.length-1;j++){
   if(!((i*7+j*5)%7===0||(i+2*j)%11===5||i===0))continue;
@@ -43,3 +43,4 @@ export function createEastCityLife(options){
  }
  update(0,false);return {root,walkers,update,dispose(){scene.remove(root);texture.dispose();flagMaterial.dispose();metal.dispose();stone.dispose();walkers.forEach(w=>w.material.dispose());}};
 }
+

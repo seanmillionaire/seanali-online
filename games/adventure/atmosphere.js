@@ -21,3 +21,4 @@ export function createAtmosphere({T,scene,geometry,camera,waterMaterial}){
  const mesh=new T.Mesh(geometry(new T.SphereGeometry(1400,32,20)),material);mesh.name='Tropical atmospheric sky';mesh.renderOrder=-5;mesh.frustumCulled=false;scene.add(mesh);
  return {update(time){mesh.position.copy(camera.position);scene.environmentIntensity=.09+.26*waterMaterial.uniforms.daylight.value;material.uniforms.time.value=time;material.uniforms.weather.value=scene.userData.regionalWeather?.cloud||0;},dispose(){scene.remove(mesh);scene.environment=null;environment.dispose();material.dispose();}};
 }
+

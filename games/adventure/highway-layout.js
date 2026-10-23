@@ -10,3 +10,4 @@ export function highwayWidth(id,x=0,z=0){
 }
 export const highwayExtra=(id,x,z)=>Math.max(0,(highwayWidth(id,x,z)-BASE_ROAD_WIDTH)/2);
 export function highwayLane(id,outer,x,z){const expansion=(highwayWidth(id,x,z)-BASE_ROAD_WIDTH)/(FOUR_LANE_WIDTH-BASE_ROAD_WIDTH);return 1.8+expansion*(outer?4.4:.5);}
+

@@ -1,7 +1,7 @@
 import {createFruitEmojis} from './fruit-emojis.js';
 import {createGunaCommunity,createGunaResident} from './guna-community.js';
-import {cityX} from './geography.js?v=225';
-import {SAN_BLAS_ISLANDS,routePose} from './panama-state.js?v=225';
+import {cityX} from './geography.js';
+import {SAN_BLAS_ISLANDS,routePose} from './panama-state.js';
 export const SAN_BLAS_SERVICES={vendor:{x:cityX(285),z:-422},cook:{x:cityX(293),z:-422},fish:{x:cityX(290),z:-418}};
 export function createSanBlasLife({T,scene,make,mat,geometry,box,ball,cylinder,cone,height,inWater,forest,models,state,surfaces,...extra}){
  const options={T,scene,make,mat,geometry,box,ball,cylinder,cone,height,inWater,forest,models,state,surfaces,...extra};const community=createGunaCommunity(options);
@@ -39,3 +39,4 @@ export function createSanBlasLife({T,scene,make,mat,geometry,box,ball,cylinder,c
  const stand=SAN_BLAS_SERVICES.vendor,standY=height(stand.x,stand.z);const host=createGunaResident(options,4);host.g.position.set(stand.x,standY,stand.z-1);root.add(host.g);for(const dx of [-1.2,1.2])piece(cylinder,wood,stand.x+dx,standY+1.2,stand.z-1,.06,2.4,.06);piece(roof,thatch,stand.x,standY+2.5,stand.z-1,1.35,1.1,1.1);
  update(0,true,{x:cityX(290),z:(-425)});return {root,community,crabs,fish,boats,islands,near,update,dispose(){emblems.dispose();community.dispose();scene.remove(root);}};
 }
+

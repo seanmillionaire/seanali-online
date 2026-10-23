@@ -1,10 +1,11 @@
-import {normalizeExplore,normalizeWallet,syncWallet} from './explore-state.js?v=225';
+import {freshCityChapter,normalizeCityChapter,CITY_START} from './city-chapter-state.js';
+import {normalizeExplore,normalizeWallet,syncWallet} from './explore-state.js';
 import {quests} from './content.js';
 export const SAVE_KEY='isla-adventure-v1';
-export function fresh(){return {version:1,started:false,lang:'es',sound:true,motion:true,completed:{},active:null,islandLessons:{completed:{},attempts:{}},discovered:[],palette:0,song:Array(24).fill(false),seen:[],wallet:normalizeWallet(null),world:normalizeExplore(null)};}
-export function normalize(raw){const s=fresh();if(!raw||raw.version!==1)return s;s.world=normalizeExplore(raw.world);s.wallet=normalizeWallet(raw.wallet);
+export function fresh(){return {version:1,cityChapter:freshCityChapter(),playerName:'Angelique',narration:true,started:false,lang:'es',sound:true,motion:true,completed:{},active:null,islandLessons:{completed:{},attempts:{}},discovered:[],palette:0,song:Array(24).fill(false),seen:[],wallet:normalizeWallet(null),world:{...normalizeExplore(null),...CITY_START}};}
+export function normalize(raw){const s=fresh();if(!raw||raw.version!==1)return s;s.cityChapter=normalizeCityChapter(raw.cityChapter);s.adminMode=raw.adminMode===true;s.world=normalizeExplore(raw.world);s.world.adminMode=s.adminMode;s.wallet=normalizeWallet(raw.wallet,s.adminMode);
  for(const q of quests){const v=raw.islandLessons?.completed?.[q.id];if(Number.isInteger(v)&&v>=1&&v<=3)s.islandLessons.completed[q.id]=v;const a=raw.islandLessons?.attempts?.[q.id];if(a&&Number.isInteger(a.stage)&&a.stage>=0&&a.stage<3)s.islandLessons.attempts[q.id]={id:q.id,stage:a.stage,mistakes:Math.max(0,Math.min(99,Number(a.mistakes)||0))};}
-s.started=raw.started===true;s.lang=raw.lang==='en'?'en':'es';s.sound=raw.sound!==false;s.motion=raw.motion!==false;s.palette=Number.isInteger(raw.palette)&&raw.palette>=0&&raw.palette<4?raw.palette:0;
+s.playerName=typeof raw.playerName==='string'?raw.playerName.replace(/[<>\r\n]/g,'').trim().slice(0,24)||'Angelique':'Angelique';s.narration=raw.narration!==false;s.voiceURI=typeof raw.voiceURI==='string'?raw.voiceURI.slice(0,240):'';s.started=raw.started===true;s.lang=raw.lang==='en'?'en':'es';s.sound=raw.sound!==false;s.motion=raw.motion!==false;s.palette=Number.isInteger(raw.palette)&&raw.palette>=0&&raw.palette<4?raw.palette:0;
  for(const q of quests){const v=raw.completed?.[q.id];if(Number.isInteger(v)&&v>=1&&v<=3)s.completed[q.id]=v;else break;}
  s.discovered=Array.isArray(raw.discovered)?[...new Set(raw.discovered.filter(n=>Number.isInteger(n)&&n>=0&&n<6))]:[];
  s.seen=Array.isArray(raw.seen)?[...new Set(raw.seen.filter(n=>Number.isInteger(n)&&n>=0&&n<6))]:[];
@@ -13,5 +14,6 @@ s.started=raw.started===true;s.lang=raw.lang==='en'?'en':'es';s.sound=raw.sound!
 export function completedCount(s){return Object.keys(s.completed).length;}
 export function lightCount(s){return Math.floor(completedCount(s)/8);}
 export function totalStars(s){return Object.values(s.completed).reduce((a,b)=>a+b,0);}
-export function unlocked(s,index){return index<=completedCount(s);}
+export function unlocked(s,index){return s.adminMode===true||index<=completedCount(s);}
 export function award(s,id,mistakes){const rank=Math.max(1,3-Math.floor(mistakes/2));s.completed[id]=Math.max(s.completed[id]||0,rank);s.active=null;return rank;}
+

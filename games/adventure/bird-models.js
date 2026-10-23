@@ -18,3 +18,4 @@ export function createDetailedBird(o,parent,kind='toucan'){
  for(const s of [-1,1]){const w=new T.Group();w.name='Flight wing '+s;w.position.set(s*.19,.69,-.03);g.add(w);const mesh=make(wingGeo,primary,0,0,0,s*.52,.65,.65,w);mesh.material.side=T.DoubleSide;for(let j=0;j<6;j++){const cover=p(primary,s*(.12+j*.07),.005,-.02-j*.025,.085,.022,.14,w);cover.rotation.y=s*.2;}wings.push(w);}
  finish(g);cache.set(kind,g.clone(true));return birdRig(g,wings,parrot);
 }
+

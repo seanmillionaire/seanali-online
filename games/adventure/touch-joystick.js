@@ -47,3 +47,4 @@ export function createTouchJoystick({pad,knob,onStart=()=>{},enabled=()=>true,ev
   paint();return {...current};
  },dispose(){reset();pad.removeEventListener('pointerdown',start);pad.removeEventListener('contextmenu',context);eventTarget.removeEventListener('pointermove',move,true);eventTarget.removeEventListener('pointerup',end,true);eventTarget.removeEventListener('pointercancel',end,true);}};
 }
+

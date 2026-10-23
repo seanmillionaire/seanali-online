@@ -3,3 +3,4 @@ export function drivingCameraPose(x,y,z,heading,phone=false){const back=phone?19
 
 // Screen-relative chase controls: up goes forward, down reverses, left/right steer.
 export function chaseDriveInput(dx,dz,heading,dt){const steer=Math.max(-1,Math.min(1,dx));let throttle=Math.max(-1,Math.min(1,-dz));if(Math.abs(throttle)<.12&&Math.abs(steer)>.12)throttle=.32;const next=heading-steer*Math.sign(throttle||1)*Math.min(.1,dt)*1.7;return {x:Math.sin(next)*throttle,z:Math.cos(next)*throttle,heading:next};}
+

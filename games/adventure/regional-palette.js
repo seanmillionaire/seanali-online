@@ -16,3 +16,4 @@ export const REGIONAL_PALETTES={
  cebaco:{green:'#458748',sand:'#d8c6a0'}
 };
 export const regionalPalette=region=>REGIONAL_PALETTES[region]||REGIONAL_PALETTES.mainland;
+

@@ -1,8 +1,8 @@
-import {cityX} from './geography.js?v=225';
-import {waterFriend,animalClear,recoverAnimal,animalStep} from './animal-boundaries.js?v=225';
-import {explorePlaces,earnCoins} from './explore-state.js?v=225';
-import {oceanModel} from './ocean-models.js?v=225';
-import {createAnimalDetails} from './animal-details.js?v=225';
+import {cityX} from './geography.js';
+import {waterFriend,animalClear,recoverAnimal,animalStep} from './animal-boundaries.js';
+import {explorePlaces,earnCoins} from './explore-state.js';
+import {oceanModel} from './ocean-models.js';
+import {createAnimalDetails} from './animal-details.js';
 // Repeatable, optional play with six friends in the 3D world.
 export const islandFriends=[
  {id:'dori',icon:'🐬',name:'Dori',where:['Mar abierto de Gorgona','Offshore Gorgona'],game:['Observación marina','Marine observation'],hello:['Observa desde lejos y deja espacio a la fauna marina.','Watch from a distance and give marine wildlife space.']},
@@ -121,7 +121,7 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
   startPanel(f.icon+' '+f.name,tr(f.where));
   panel.append(el('div','friend-hero-face',f.icon),el('p','friend-greeting',tr(f.hello)));
   const actions=el('div','friend-choices');
-  if(!['kai','pip','dori'].includes(f.id))actions.append(btn('🐾 '+say('¡Montar y explorar!','Ride and explore!'),'friend-primary',()=>ride(f.id)));
+  if(!['kai','pip'].includes(f.id))actions.append(btn('🐾 '+say('¡Montar y explorar!','Ride and explore!'),'friend-primary',()=>ride(f.id)));
   else if(f.id==='kai')actions.append(btn('🏐 '+tr(f.game),'friend-primary',()=>startGame(f.id)));
   const chosen=friends.companion===id;
   if(id!=='pip'&&id!=='dori')actions.append(btn(chosen?'🏡 '+say('Me quedo aquí','Stay here'):'🤝 '+say('Ven conmigo','Come with me'),'friend-secondary',()=>{
@@ -320,7 +320,7 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
   directory.textContent='🫶 '+say('AMIGOS','FRIENDS')+' '+friends.completed.filter(id=>islandFriends.some(f=>f.id===id)).length+'/'+islandFriends.length;
  }
  function ride(id,origin=null){
-  if(!['mila','ollie','luna'].includes(id))return false;
+  if(!['mila','ollie','luna','dori'].includes(id))return false;
   let p=origin||nodes.get(id)?.g.position;
   if(!p)return false;
   if(waterFriend(id))p=recoverAnimal(id,p.x,p.z,3.3);
@@ -332,3 +332,4 @@ export function createWildlifeFriends({T,scene,camera,host,panel,state,make,mat,
  function dispose(){close();directory.remove();labels.forEach(l=>l.remove());for(const n of nodes.values())scene.remove(n.g);}
  return {nearest,isNearby,open,openDirectory,close,update,hit,ride,dismount,sendHome,callFriend,called:()=>[...friends.called],sendFriendHome:(id)=>{if(!friends.called.includes(id))return false;friends.called=friends.called.filter(f=>f!==id);save();refresh();return true;},companion:()=>friends.companion,mounted:()=>mounted,isOpen:()=>opened!==null,dispose,hasCompanion:id=>friends.companion===id};
 }
+

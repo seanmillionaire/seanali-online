@@ -27,3 +27,4 @@ export function createChiriquiLife(o){
  }
  let time=0;return {root,animals,farms,update(dt,active,info){root.visible=!info.indoors&&info.x< -230;if(!root.visible||!active)return;time+=Math.min(dt,.1);for(const a of animals){a.g.visible=Math.hypot(a.x-info.x,a.z-info.z)<100;if(!a.g.visible)continue;const near=Math.hypot(a.g.position.x-info.x,a.g.position.z-info.z)<3,phase=(a.phase=(a.phase??a.index)+Math.min(dt,.1)*(near&&a.kind!=='cow'?2:1)),range=a.kind==='cow'?1.2:1.8,nx=a.x+Math.sin(phase*.23)*range,nz=a.z+Math.cos(phase*.23)*range;if(safe(nx,nz)){a.g.position.set(nx,height(nx,nz)+.03,nz);a.g.rotation.y=phase*.23+Math.PI/2;}a.legs.forEach((l,i)=>l.rotation.x=Math.sin(phase*2+i*Math.PI)*.15);a.segments.forEach((s,i)=>s.position.x=Math.sin(phase*3-i*.45)*.10);if(a.kind==='rooster')a.g.position.y+=Math.max(0,Math.sin(phase*4))*.025;}},dispose(){land.dispose();crops.dispose();scene.remove(root);}};
 }
+

@@ -1,6 +1,6 @@
-import {homeReserved} from './mansion-state.js?v=225';
-import {DESTINATIONS} from './geography.js?v=225';
-import {roadDistance,HIGHWAY_WIDTH,isletHeight,inWater,worldIslands} from './explore-state.js?v=225';
+import {homeReserved} from './mansion-state.js';
+import {DESTINATIONS} from './geography.js';
+import {roadDistance,HIGHWAY_WIDTH,isletHeight,inWater,worldIslands} from './explore-state.js';
 // Low-density town parcels leave room for streets, yards, views and future
 // player buildings. The planner is shared with forest exclusions and tests.
 export const RURAL_TOWNS=[
@@ -62,3 +62,4 @@ export function createRuralTowns({T,scene,make,mat,box,geometry,height,state=nul
  }
  return {root,batchCount:batches.size};
 }
+

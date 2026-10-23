@@ -8,3 +8,4 @@ export function flightStep(x,z,vx,vz,dt,target=null){
  }
  return {x:x+dx,z:z+dz,arrived:false};
 }
+

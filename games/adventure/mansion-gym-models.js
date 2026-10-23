@@ -1,4 +1,4 @@
-import {GYM_HEIGHT} from './mansion-floors.js?v=236';
+import {GYM_HEIGHT} from './mansion-floors.js';
 export function mansionStairs(o,parent,m,outside=false){const {T,make,box,cylinder}=o,g=new T.Group();g.name='Walkable mansion staircase';parent.add(g);const stairGlass=o.mat('#92bac3',{transparent:true,opacity:.22,roughness:.18,depthWrite:false});const b=(mat,x,y,z,w,h,d)=>make(box,mat,x,y,z,w,h,d,g);
  // Bottom landing opens from the ground-floor foyer; the top landing enters the gym.
  b(m.stone,-16.8,-.12,13,5.6,.24,2);b(m.stone,outside?-15.65:-16.8,GYM_HEIGHT-.12,-1,outside?7.9:5.6,.24,2);if(outside){b(m.wood,-13.5,GYM_HEIGHT+.08,-1,1,.16,1.8);b(m.wood,-12.5,GYM_HEIGHT+.255,-1,1,.19,1.8);}
@@ -37,3 +37,4 @@ export function mansionGym(o,parent,m,onUse=()=>{},outside=false){const {T,make,
  b(charcoal,3,2.1,-14.20,4,1.25,.10);b(blue,3,2.1,-14.13,3.7,.95,.035);
  const props=[{id:'roof',x:0,z:8,floor:1,enName:'🪜 Go onto the roof',esName:'🪜 Subir a la azotea',fn:()=>onUse('roof')},{id:'treadmill',x:-8,z:-2.8,floor:1,enName:'🏃 Treadmill rhythm run',esName:'🏃 Carrera en cinta',fn:()=>onUse('treadmill')},{id:'yoga',x:7,z:-4.8,floor:1,enName:'🧘 Yoga balance',esName:'🧘 Equilibrio de yoga',fn:()=>onUse('yoga')},{id:'stairsDown',x:-14,z:-1,floor:1,enName:'⬇️ Walk downstairs',esName:'⬇️ Bajar las escaleras',fn:()=>onUse('stairsDown')}];
  return {root,ceiling,props,slats,treadmill,yogaMat};}
+

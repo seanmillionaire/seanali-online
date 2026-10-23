@@ -12,3 +12,4 @@ export function ensureEstateCars(city,fallback={x:cityX(107),z:-50}){
 export function ownedCars(city){return [city.car,city.parkedCar].filter(Boolean);}
 export function selectEstateCar(city,model){if(city.car.model===model)return false;if(city.parkedCar?.model!==model)return false;[city.car,city.parkedCar]=[city.parkedCar,city.car];return true;}
 export function nearestEstateCar(city,x,z,radius=4){return ownedCars(city).filter(p=>Math.hypot(x-p.x,z-p.z)<radius).sort((a,b)=>Math.hypot(x-a.x,z-a.z)-Math.hypot(x-b.x,z-b.z))[0]||null;}
+

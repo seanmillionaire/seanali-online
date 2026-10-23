@@ -52,3 +52,4 @@ export function buildMainlandData(){const initialTerrain=createStartupSampler(te
 return {positions:new Float32Array(mainlandVertices),uv:new Float32Array(mainlandUV),indices:new Uint32Array([...mainlandIndices[0],...mainlandIndices[1]]),firstCount:mainlandIndices[0].length};}
 
 export function buildCoastData(){const coast=coastDistanceField((x,z)=>terrainHeight(x,z)>0||Math.hypot(x/20,z/14)<homeShoreRadius(Math.atan2(z/14,x/20)),512,448,WORLD_EXTENT);for(let j=0;j<coast.height;j++)for(let i=0;i<coast.width;i++){const x=WORLD_EXTENT.left+(i+.5)*WORLD_EXTENT.width/coast.width,z=WORLD_EXTENT.top+(j+.5)*WORLD_EXTENT.height/coast.height;coast.pixels[(j*coast.width+i)*4+1]=freshwaterHabitat(x,z)?255:0;}return coast;}
+

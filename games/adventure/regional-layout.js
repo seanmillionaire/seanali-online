@@ -1,8 +1,8 @@
 import {mallBlocked,mallClearing} from './colon-mall-layout.js';
-import {costaBlocked,costaClearing} from './costa-arriba-layout.js?v=225';
-import {homeReserved} from './mansion-state.js?v=225';
-import {BUILDER_SITES} from './builder-projects.js?v=225';
-import {worldIslands,isletHeight,inWater,roadDistance,HIGHWAY_WIDTH,explorePlaces,exploreItems} from './explore-state.js?v=225';
+import {costaBlocked,costaClearing} from './costa-arriba-layout.js';
+import {homeReserved} from './mansion-state.js';
+import {BUILDER_SITES} from './builder-projects.js';
+import {worldIslands,isletHeight,inWater,roadDistance,HIGHWAY_WIDTH,explorePlaces,exploreItems} from './explore-state.js';
 // Shared render, forest exclusion and collision footprints. No saved destinations move.
 let cached;
 export function regionalParcels(){
@@ -33,7 +33,7 @@ export function regionalParcels(){
  return cached=plots;
 }
 export function regionalParcelActive(p,world){return !homeReserved(p.x,p.z,Math.hypot(p.w,p.d)/2)&&!(world?.estate?.buildings||[]).some(b=>Math.hypot(p.x-b.x,p.z-b.z)<Math.hypot(p.w,p.d)/2+8);}
-export const regionalBlocked=(x,z,world,margin=.32)=>mallBlocked(x,z,margin)||costaBlocked(x,z,margin)||regionalParcels().some(p=>regionalParcelActive(p,world)&&Math.abs(x-p.x)<p.w/2+margin&&Math.abs(z-p.z)<p.d/2+margin);
+export const regionalBlocked=(x,z,world,margin=.32)=>mallBlocked(x,z,margin)||costaBlocked(x,z,margin)||regionalParcels().some(p=>Math.abs(x-p.x)<p.w/2+margin&&Math.abs(z-p.z)<p.d/2+margin&&regionalParcelActive(p,world));
 export const regionalClearing=(x,z,margin=4)=>mallClearing(x,z,margin)||costaClearing(x,z,margin)||regionalParcels().some(p=>Math.abs(x-p.x)<p.w/2+margin&&Math.abs(z-p.z)<p.d/2+margin);
 
 export function regionalTrailClear(x,z){
@@ -42,3 +42,4 @@ export function regionalTrailClear(x,z){
   if(t>=0&&t<=1&&Math.abs(x-land.x-Math.sin(t*5.1)*land.rx*.17)<2.2)return false;
  }return true;
 }
+

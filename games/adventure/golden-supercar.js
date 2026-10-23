@@ -60,3 +60,4 @@ export function createGoldenSupercar({T,scene,make,mat,geometry,box,ball,cylinde
  let time=0;
  return {root,paint:gold,wheels,flames,dispose(){glowMaterial.dispose();root.traverse(o=>{if(o.isInstancedMesh)o.dispose();});},update(speed=0,dt=0){if(dt>0)time+=dt;const power=Math.min(1,Math.abs(speed)/52);glints.forEach((g,i)=>{const pulse=.3+Math.pow(Math.max(0,Math.sin(time*2.7+i*1.9)),10)*1.7;g.scale.y=.12*pulse;g.scale.z=.012*pulse;});for(const w of wheels)if(dt>0)w.rotation.x+=speed*dt/.49;for(let i=0;i<flames.length;i++){const f=flames[i];f.visible=Math.abs(speed)>3;f.scale.set(.7+power*.5,.7+power*.5,(.3+power*1.4)*(1+.15*Math.sin(time*39+i*2)));}}};
 }
+

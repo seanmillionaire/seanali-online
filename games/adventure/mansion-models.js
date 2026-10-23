@@ -1,8 +1,8 @@
 import {detailedDog} from './land-animal-models.js';
 import {inWater} from './explore-state.js';
-import {mansionGym,mansionStairs} from './mansion-gym-models.js?v=236';
-import {botanicalGeometry} from './botanical-geometry.js?v=225';
-import {HOME_WALLS,homeYard} from './mansion-state.js?v=225';
+import {mansionGym,mansionStairs} from './mansion-gym-models.js';
+import {botanicalGeometry} from './botanical-geometry.js';
+import {HOME_WALLS,homeYard} from './mansion-state.js';
 export function mansionPalette({mat,surfaces}){return {wall:mat('#eee9de',{map:surfaces?.plaster,roughness:.8}),stone:mat('#c5c0b4',{roughness:.7}),wood:mat('#9b7653',{map:surfaces?.wood,roughness:.55}),glass:mat('#416578',{metalness:.25,roughness:.18}),white:mat('#faf7ef',{roughness:.45}),black:mat('#20292e',{roughness:.35}),gold:mat('#ac9561',{metalness:.7,roughness:.25}),fabric:mat('#d9a2c7',{roughness:1}),water:mat('#54bdc7',{metalness:.2,roughness:.15}),green:mat('#426c49'),steel:mat('#bac6ca',{metalness:.8,roughness:.22})};}
 export function makeDog(options,parent){return detailedDog(options,parent);}
 export function mansionBase(height,lot){let y=0;for(let x=-13;x<=13;x+=6.5)for(let z=-12;z<=12;z+=6)y=Math.max(y,height(lot.x+x,lot.z+z));return y;}
@@ -16,6 +16,8 @@ export function exteriorMansion(o,lot,stage,style){const {T,scene,make,box,cylin
  if(stage<2){for(const x of [-10,-5,0,5,10])p(cylinder,m.steel,x,4,0,.08,3,.08);return root;}
  b(m.stone,0,4.35,0,22,.32,18);if(stage<3)b(m.white,-6,5,-3,8,.3,8);b(m.glass,6,3.2,-3,7,1.6,9);b(m.stone,6,4.2,-3,8,.2,10);
  for(const x of [-7,7]){b(m.glass,x,2.1,8.12,4.5,2.7,.07);for(const dx of [-2.3,0,2.3])b(m.gold,x+dx,2.1,8.2,.09,2.8,.09);}
+ for(const x of [-1.35,1.35])b(m.gold,x,1.85,8.46,.09,3.5,.1);b(m.gold,0,3.6,8.46,2.8,.1,.1);b(m.stone,0,.48,8.65,2.8,.12,.65);
+ for(const x of [-2.6,2.6]){b(m.black,x,2.2,8.4,.3,.7,.18);b(o.mat('#fff1c0',{emissive:'#ffe4a3',emissiveIntensity:.6}),x,2.2,8.53,.2,.48,.08);}
  b(m.wood,0,1.7,8.3,2.3,3.2,.18);b(m.gold,.7,1.5,8.43,.08,.8,.08);b(m.stone,0,.3,10,5,.3,3);
  for(const x of [-3.8,3.8]){p(cylinder,m.stone,x,2.2,9,.2,4,.2);b(m.wood,x,4.3,9,1,.2,4);}
  b(m.white,0,3.85,9,10,.25,4);for(let x=-4.5;x<5;x+=.55)b(m.wood,x,4.1,9,.12,.18,4);
@@ -132,3 +134,4 @@ export function mansionInterior(o,cfg,onUse){const {T,scene,make,box,cylinder,ba
  const upstairs=mansionGym(o,root,m,onUse);upstairs.root.visible=false;props.push(...upstairs.props);
  const dog=makeDog(o,root);dog.g.position.set(-1.5,0,11);
  return {root,upstairs,props,cfg,bounds:{x:14.5,z:35.5},dog,lamps,meal,fetchBall,steam,washer,partitions,ceiling};}
+

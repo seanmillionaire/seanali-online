@@ -117,3 +117,4 @@ export function mergeNatureGeometry(T,geometry,parts){
  }
  const result=geometry(new T.BufferGeometry());result.setAttribute('position',new T.Float32BufferAttribute(points,3));result.setAttribute('normal',new T.Float32BufferAttribute(normals,3));result.setAttribute('color',new T.Float32BufferAttribute(colors,3));return result;
 }
+

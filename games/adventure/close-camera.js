@@ -10,3 +10,4 @@ export function createCloseCamera({avatar}){
  }
  return {place,movement:(x,z)=>closeMovement(x,z,yaw),heading:()=>yaw,drive(turn,forward,dt){yaw-=Math.max(-1,Math.min(1,turn))*Math.max(0,dt)*1.65;return closeMovement(0,forward,yaw);},face(angle){yaw=angle;},look(dx,dy){yaw-=dx*.004;pitch=Math.max(-1.05,Math.min(1.05,pitch-dy*.003));},reset(angle){yaw=angle;pitch=0;},invalidate(){}};
 }
+

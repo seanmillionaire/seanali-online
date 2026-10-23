@@ -1,5 +1,5 @@
-import {cityX} from './geography.js?v=225';
-import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=225';
+import {cityX} from './geography.js';
+import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js';
 // Shared road and parcel clearances for all city scene generators.
 export const CITY_STREET_X=[77,105,135,163].map(cityX),CITY_STREET_Z=[-85,-61,-35,-12];
 export const CITY_FIXED_PLOTS=[
@@ -62,3 +62,4 @@ export function cityPropSite(x,z,r=.75){
  for(let d=0;d<=18;d+=.5)for(let i=0;i<(d?32:1);i++){const a=x+Math.cos(i*Math.PI/16)*d,b=z+Math.sin(i*Math.PI/16)*d;if(clear(a,b))return {x:a,z:b};}
  return null;
 }
+

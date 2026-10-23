@@ -70,3 +70,4 @@ export function createCarAudio({environment,load,allowed,duck=()=>{},now=()=>per
  }
  return {enter,leave,update,preload,silence(){serial++;stop(start);stop(skid);start=skid=null;stopLoops();},get status(){return {model,occupied,running:loops.length===2,starting:!!start,braking:!!skid,starts,skids,rpm,gear,shifting:shift>0,throttle:loadLevel};},destroy:leave};
 }
+

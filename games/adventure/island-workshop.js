@@ -1,6 +1,6 @@
 // Isla Aventura: collectible inventory -> visible, persistent structures.
 // All meshes are procedural and reuse the game's existing Three.js materials.
-import {worldIslands,volcanoTrailPoint,exploreItems,earnCoins,spendFood} from './explore-state.js?v=225';
+import {worldIslands,volcanoTrailPoint,exploreItems,earnCoins,spendFood} from './explore-state.js';
 const at=(id)=>worldIslands.find(p=>p.id===id);
 export const RESOURCE_INFO={
  shell:{icon:'🐚',es:'Conchas',en:'Shells'},fruit:{icon:'🍌',es:'Plátanos',en:'Bananas'},
@@ -19,6 +19,7 @@ export const BUILD_RECIPES=[
  {id:'pizzaStand',island:'pizzaCity',x:at('pizzaCity').x+18,z:at('pizzaCity').z+6,icon:'🍕',es:'Puesto de pizza',en:'Pizza stand',need:{moneyBag:2,islandTreasure:2,fruit:1},actionEs:'Preparar una pizza',actionEn:'Make a pizza'}
 ];
 export function craftInventory(world){
+ if(world.adminMode){const available=Object.fromEntries(Object.keys(RESOURCE_INFO).map(k=>[k,999]));return {available,total:{...available},spent:{}};}
  const collected=[...new Set(world.collected||[])],spent=world.craft?.spent||{};
  const total=Object.fromEntries(Object.keys(RESOURCE_INFO).map(k=>[k,k==='fruit'?(world.foodTotal?.banana??world.food?.banana??0):k==='moneyBag'?new Set(world.city?.bags||[]).size:collected.filter(id=>exploreItems.some(item=>item.id===id&&item.kind===k)).length]));
  total.islandTreasure+=(world.waterfall?.diamonds||0);
@@ -182,3 +183,4 @@ export function createIslandWorkshop({T,scene,state,make,mat,geometry,ball,box,c
  return {nearest,build,use,update,dispose,recipes:BUILD_RECIPES,inventory:()=>craftInventory(s),
    isBuilt:id=>s.craft?.built?.includes(id)===true,canBuild:id=>canCraft(s,id)};
 }
+

@@ -1,4 +1,4 @@
-import {CANAL_WATERWAY,CANAL_TERMINAL,CANAL_LAYOUT_VERSION} from './geography.js?v=225';
+import {CANAL_WATERWAY,CANAL_TERMINAL,CANAL_LAYOUT_VERSION} from './geography.js';
 export const CRUISE_FARE=10;
 export const CRUISE_BOARD=CANAL_TERMINAL;
 export const CRUISE_DOCK={x:285,z:15};
@@ -31,3 +31,4 @@ export function advanceCruise(cruise,dt,active,speed=CRUISE_SPEED){
  if(cruise.distance<CRUISE_LENGTH)return false;
  cruise.active=false;cruise.completed++;cruise.distance=0;return true;
 }
+

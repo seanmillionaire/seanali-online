@@ -1,4 +1,4 @@
-import {WORLD_BOUNDS} from './geography.js?v=225';
+import {WORLD_BOUNDS} from './geography.js';
 // Panamá Aventura: visible home-building progression. Keep the original seven
 // workshops and treasure histories for existing saves and regional missions.
 export const ESTATE_PLANS=[
@@ -47,6 +47,7 @@ export function findEstateSite(world,type,position,{canStand,height}){
 export function estateCosts(world,type){
  const p=byType(type);
  if(!p)return null;
+ if(world.adminMode)return {banana:0,coconut:0,coins:0,charms:0,starter:false};
  if(type==='cottage'&&!world?.estate?.buildings?.length)return {banana:0,coconut:0,coins:0,charms:0,starter:true};
  return {banana:p.banana,coconut:p.coconut,coins:p.coins,charms:p.charms,starter:false};
 }
@@ -58,7 +59,7 @@ export function estateMissing(world,type,coins){
   coconut:Math.max(0,cost.coconut-(world.food?.coconut||0)),
   coins:Math.max(0,cost.coins-(coins||0)),
   charms:Math.max(0,cost.charms-have.charms),
-  unlock:Math.max(0,(byType(type)?.unlock||0)-(have.buildings?.length||0)),
+  unlock:world.adminMode?0:Math.max(0,(byType(type)?.unlock||0)-(have.buildings?.length||0)),
   cap:(have.buildings?.length||0)>=32
  };
 }
@@ -77,13 +78,14 @@ export function buildEstate(world,type,coins,site){
 }
 export function canUpgradeEstate(world,id,coins){
  const b=world.estate?.buildings?.find(b=>b.id===id);
- if(!b||b.level>=3)return false;
+ if(!b||b.level>=3)return false;if(world.adminMode)return true;
  const banana=b.level===1?1:2,coconut=b.level===1?1:2,cost=b.level===1?10:20,charm=b.level===1?0:1;
  return (world.food?.banana||0)>=banana&&(world.food?.coconut||0)>=coconut&&world.estate.charms>=charm&&coins>=cost;
 }
 export function upgradeEstate(world,id,coins){
  if(!canUpgradeEstate(world,id,coins))return false;
  const b=world.estate.buildings.find(b=>b.id===id),old=b.level;
+ if(world.adminMode){b.level++;return true;}
  world.food.banana-=old===1?1:2;world.food.coconut-=old===1?1:2;
  world.estate.charms-=old===1?0:1;b.level++;return true;
 }
@@ -150,3 +152,4 @@ export function createEstateWorld({T,scene,state,make,mat,geometry,ball,box,cyli
   dispose(){scene.remove(group);aging.clear();visuals.clear();}
  };
 }
+

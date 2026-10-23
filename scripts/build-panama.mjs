@@ -16,3 +16,4 @@ try{
  html=html.replace(/\/games\/adventure\/app(?:\.bundle)?\.js\?v=[a-z\d]+/g,'/games/adventure/app.bundle.js?v='+digest.slice(0,12));writeFileSync(path,html);
  console.log(Object.keys(inputs).length+' source modules bundled; revision '+digest.slice(0,12));
 }finally{rmSync(dir,{recursive:true,force:true});}
+

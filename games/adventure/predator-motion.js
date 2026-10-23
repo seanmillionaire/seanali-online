@@ -1,3 +1,4 @@
 // Game behavior: approach, pursue, then give up outside the home territory.
 export function predatorStep(pos,target,dt,speed,clear){const dx=target.x-pos.x,dz=target.z-pos.z,d=Math.hypot(dx,dz),step=Math.min(d,Math.max(0,Math.min(dt,.1))*speed);if(step<1e-7)return {...pos,moving:false};const h=Math.atan2(dx,dz);for(const a of [0,.4,-.4,.8,-.8,1.25,-1.25]){const heading=h+a,x=pos.x+Math.sin(heading)*step,z=pos.z+Math.cos(heading)*step;if(clear(x,z))return {x,z,heading,moving:true};}return {...pos,moving:false};}
 export function predatorAlert(pos,home,player,{notice=25,leash=48}={}){return !player.protected&&Math.hypot(player.x-pos.x,player.z-pos.z)<notice&&Math.hypot(player.x-home.x,player.z-home.z)<leash;}
+

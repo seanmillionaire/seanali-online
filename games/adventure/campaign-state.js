@@ -91,3 +91,4 @@ export function stepFestivalWork(campaign,id,choice){
  if(choice!==activity.order[stage])return 'retry';
  campaign.work[id]=stage+1;return stage+1===activity.order.length?'complete':'next';
 }
+

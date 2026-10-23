@@ -1,6 +1,7 @@
+import {ESTATE_PLANS} from './estate.js';
 import {cityX,CITY_RESTAURANT} from './geography.js';
-import {floorHeight} from './mansion-floors.js?v=236';
-import {homeMove,homePath} from './mansion-state.js?v=225';
+import {floorHeight} from './mansion-floors.js';
+import {homeMove,homePath} from './mansion-state.js';
 // Five real walkable, furnished interiors. Exterior coordinates are never
 // overwritten while inside, so old saves and world navigation remain safe.
 export const villageHouses=[
@@ -20,7 +21,7 @@ export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geomet
  cssButton.textContent='🚪 '+(es?'Entrar en casa':'Enter house');
  cssButton.setAttribute('aria-label',es?'Entrar en la casa cercana':'Enter nearby house');
  host.append(cssButton);
- let active=null,localX=0,localZ=2,localFloor=0,lastSpot=null,indoorRoute=[];
+ let entryWalk=0,exitedDoor=null,active=null,localX=0,localZ=2,localFloor=0,lastSpot=null,indoorRoute=[];
  const themes={
  sea:{floor:'#e2caa3',wall:'#cfecf0',back:'#9cd7dd',rug:'#65bbc5',accent:'#efbea5',furniture:'#b1845b'},
  books:{floor:'#a27d5a',wall:'#eddfbf',back:'#c8b9d9',rug:'#aa7ca9',accent:'#e7c776',furniture:'#765a46'},
@@ -162,7 +163,7 @@ export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geomet
  }
  // Lazy-build rooms to preserve frame rate on low-power phones.
  function near(x,z){if(active)return null;
-  const owned=estateBuildings().map(b=>({id:'estate-'+b.id,estateId:b.id,x:b.x,z:b.z,es:({cottage:'Mi casita',market:'Mi mercado',villa:'Mi villa',castle:'Mi castillo'})[b.type]||'Mi edificio',en:({cottage:'My cottage',market:'My market',villa:'My villa',castle:'My castle'})[b.type]||'My building',icon:'🏠',theme:({cottage:'sea',market:'pizza',villa:'art',castle:'books'})[b.type]||'play'}));
+  const owned=estateBuildings().map(b=>({id:'estate-'+b.id,estateId:b.id,x:b.x,z:b.z+(ESTATE_PLANS.find(p=>p.type===b.type)?.radius||3)*.75*(1+((b.level||1)-1)*.16)+.5,es:({cottage:'Mi casita',market:'Mi mercado',villa:'Mi villa',castle:'Mi castillo'})[b.type]||'Mi edificio',en:({cottage:'My cottage',market:'My market',villa:'My villa',castle:'My castle'})[b.type]||'My building',icon:'🏠',theme:({cottage:'sea',market:'pizza',villa:'art',castle:'books'})[b.type]||'play'}));
   const workshops=workshopBuildings().map(b=>({id:'workshop-'+b.id,workshopId:b.id,x:b.x,z:b.z,es:b.es,en:b.en,icon:b.icon,theme:'play'}));
   return [...villageHouses,...owned,...workshops,...extraHouses()].filter(h=>Math.hypot(x-h.x,z-h.z)<4.6).sort((a,b)=>Math.hypot(x-a.x,z-a.z)-Math.hypot(x-b.x,z-b.z))[0]||null;}
  function enter(cfg){
@@ -173,6 +174,7 @@ export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geomet
    if(o===active.root||o===avatar||o.isLight||o===camera||(!cfg.mansion&&o.userData?.friendId===companionId()))continue;
    active.saved.set(o,o.visible);o.visible=false;
   }
+  if(cfg.mansion)indoorRoute=homePath({x:localX,z:localZ,floor:localFloor},{x:localFloor===1?-10:0,z:localFloor===1?-1:10,floor:localFloor});else entryWalk=.65;
   active.root.visible=true;
   cssButton.hidden=true;
   onEnter(cfg);
@@ -183,11 +185,12 @@ export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geomet
   if(!active)return;joy?.effect('door');
   active.root.visible=false;
   for(const [o,visible]of active.saved)o.visible=visible;
-  active=null;indoorRoute=[];cssButton.hidden=true;
+  exitedDoor=lastSpot;active=null;indoorRoute=[];cssButton.hidden=true;
  }
  function move(dx,dz,dt,speed=3.3){
   if(!active)return null;
   if(active.cfg.mansion){speed=5.2;if(dx||dz)indoorRoute=[];else if(indoorRoute.length){const target=indoorRoute[0],d=Math.hypot(target.x-localX,target.z-localZ);if(d<.12)indoorRoute.shift();else{dx=(target.x-localX)/d;dz=(target.z-localZ)/d;speed=Math.min(speed,d/Math.max(dt,.001));}}const len=Math.max(1,Math.hypot(dx,dz)),p=homeMove(localX,localZ,dx/len*dt*speed,dz/len*dt*speed,localFloor);localX=p.x;localZ=p.z;localFloor=p.floor;return {x:localX,z:originZ+localZ,y:p.y,floor:localFloor,moving:!!(dx||dz),heading:Math.atan2(dx,dz)};}
+  if(dx||dz)entryWalk=0;else if(entryWalk>0){entryWalk=Math.max(0,entryWalk-dt);dz=-1;}
   if(dx||dz){const len=Math.max(1,Math.hypot(dx,dz));localX=Math.max(-4.25,Math.min(4.25,localX+dx/len*dt*speed));localZ=Math.max(-3.65,Math.min(3.65,localZ+dz/len*dt*speed));}
   return {x:localX,z:originZ+localZ,y:0};
  }
@@ -202,11 +205,14 @@ export function createHouseInteriors({T,scene,camera,avatar,host,make,mat,geomet
   return true;
  }
  function updateDoor(x,z,occupied){
+  if(exitedDoor&&Math.hypot(x-exitedDoor.x,z-exitedDoor.z)>5)exitedDoor=null;
   const found=occupied?null:near(x,z);
+  if(found&&!exitedDoor&&Math.hypot(x-found.x,z-found.z)<(found.mansion?1.8:2.2)){enter(found);return;}
   cssButton.hidden=contextAction||!found;
   if(found){cssButton.textContent=found.icon+' '+(es?'Entrar':'Enter')+' · '+(es?found.es:found.en);cssButton.onclick=()=>enter(found);}
  }
  function dispose(){leave();cssButton.remove();for(const r of rooms.values())scene.remove(r.root);}
  return {place:(x,z,floor=0)=>{if(active){localX=x;localZ=z;localFloor=floor;indoorRoute=[];}},presentation:close=>{if(active?.cfg.mansion){active.ceiling.visible=close&&localFloor===0;if(active.upstairs){active.upstairs.root.visible=localFloor===1||floorHeight(localX,localZ,localFloor)>1.4;active.upstairs.ceiling.visible=close&&localFloor===1;}for(const p of active.partitions){p.scale.y=close?3.2:1.4;p.position.y=close?1.6:.7;}}},hideOutside:()=>{if(active?.cfg.mansion)for(const [o]of active.saved)o.visible=false;},walkTo:(x,z,floor=0)=>{if(active?.cfg.mansion)indoorRoute=homePath({x:localX,z:localZ,floor:localFloor},{x,z,floor});},near,enter,leave,move,position,nearbyProp,inspect,updateDoor,isInside:()=>!!active,current:()=>active?.cfg||null,dispose};
 }
+
 

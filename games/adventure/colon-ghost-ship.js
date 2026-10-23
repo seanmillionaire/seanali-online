@@ -1,5 +1,5 @@
 import {createFruitEmojis} from './fruit-emojis.js';
-import {worldClock} from './world-clock.js?v=225';
+import {worldClock} from './world-clock.js';
 export function ghostPose(distance){const a=distance/100;return {x:-15+Math.cos(a)*100,z:-505+Math.sin(a)*23,heading:Math.atan2(-Math.sin(a)*100,Math.cos(a)*23)};}
 export const ghostVisible=time=>worldClock(time).night;
 export function createColonGhostShip({T,scene,make,mat,geometry,box,ball,cylinder,state,waterMaterial}){
@@ -31,3 +31,4 @@ export function createColonGhostShip({T,scene,make,mat,geometry,box,ball,cylinde
  function blocks(x,z,margin=1.3){if(!root.visible)return false;const h=root.rotation.y,dx=x-root.position.x,dz=z-root.position.z;return Math.abs(dx*Math.cos(h)-dz*Math.sin(h))<width/2+margin&&Math.abs(dx*Math.sin(h)+dz*Math.cos(h))<length/2+margin;}
  update(0,false);return {root,update,blocks,dispose(){emblems.dispose();delete scene.userData.ghostAir;scene.remove(root);root.traverse(o=>{if(o.isInstancedMesh)o.dispose();});}};
 }
+

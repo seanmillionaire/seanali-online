@@ -1,5 +1,5 @@
-import {sanBlasLayout} from './san-blas-layout.js?v=225';
-import {cityX} from './geography.js?v=225';
+import {sanBlasLayout} from './san-blas-layout.js';
+import {cityX} from './geography.js';
 // Shared geography, traffic paths and durable food progression.
 export const SAN_BLAS_ISLANDS=sanBlasLayout(cityX(0));
 export const PANAMA_FOODS={fish:{icon:'🐟',en:'Fresh fish',es:'Pescado fresco'},plantain:{icon:'🍌',en:'Green plantain',es:'Plátano verde'},rice:{icon:'🍚',en:'Rice',es:'Arroz'},patacones:{icon:'🍌',en:'Patacones',es:'Patacones'},fishPlate:{icon:'🍽️',en:'Fried fish with patacones',es:'Pescado frito con patacones'},coconutRice:{icon:'🥥',en:'Coconut rice',es:'Arroz con coco'},raspao:{icon:'🍧',en:'Raspao',es:'Raspao'}};
@@ -38,6 +38,7 @@ export function trafficAdvance(car,cars,time,dt){
   const gap=((other.distance-car.distance)%total+total)%total;
   return gap>.01&&gap<(car.bus||other.bus?7:car.utility||other.utility?5.6:4.5);
  });
+ car.trafficRedStopped=redStop;
  if(redStop||blocked){
   car.wait=(car.wait||0)+step;
   // A red light is never a permanent barrier and gridlock clears naturally.
@@ -47,3 +48,4 @@ export function trafficAdvance(car,cars,time,dt){
  return car.distance+car.speed*step;
 }
 export function soundFalloff(x,z,source,radius=28){return Math.max(0,1-Math.hypot(x-source.x,z-source.z)/radius)**2;}
+

@@ -1,4 +1,4 @@
-import {WORLD_BOUNDS} from './geography.js?v=225';
+import {WORLD_BOUNDS} from './geography.js';
 // Keep gameplay flat; round the far ocean beyond the playable oval into a
 // low globe-like horizon. No rectangular terrain/water corners remain.
 export function roundedOceanGeometry(T,rings=40,sectors=160){
@@ -10,3 +10,4 @@ export function roundedOceanGeometry(T,rings=40,sectors=160){
  }
  const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(positions,3));g.setAttribute('uv',new T.Float32BufferAttribute(uv,2));g.setIndex(indices);g.computeVertexNormals();return g;
 }
+

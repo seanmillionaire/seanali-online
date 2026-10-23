@@ -1,9 +1,9 @@
-import {CANAL_TERMINAL,cityX} from './geography.js?v=225';
-import {roadRibbon,surfaceMesh,cityStreetSurface} from './road-surfaces.js?v=225';
-import {STREET_VENDORS,BARRIO_HOMES} from './city-street-life.js?v=225';
-import {CITY_EXPANSION_PLOTS,CITY_STREET_X,CITY_STREET_Z,cityPropSite} from './city-layout.js?v=225';
-import {createPurpleApartment,PURPLE_APARTMENT} from './purple-apartment.js?v=225';
-import {spendFood} from './explore-state.js?v=225';
+import {CANAL_TERMINAL,cityX} from './geography.js';
+import {roadRibbon,surfaceMesh,cityStreetSurface} from './road-surfaces.js';
+import {STREET_VENDORS,BARRIO_HOMES} from './city-street-life.js';
+import {CITY_EXPANSION_PLOTS,CITY_STREET_X,CITY_STREET_Z,cityPropSite} from './city-layout.js';
+import {createPurpleApartment,PURPLE_APARTMENT} from './purple-apartment.js';
+import {spendFood} from './explore-state.js';
 /* Panama Adventure — substantial zero-dependency Casco Viejo city expansion.
    Roads and landmark buildings are genuine Three.js meshes; activities update
    game state only on meaningful user actions and persist in world.city. */
@@ -432,4 +432,5 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  function dispose(){for(const g of roadGeometries)g.dispose();for(const b of sprites){b.tex.dispose();b.material.dispose();}batches.clear();}
  return {sites:CITY_SITES,near,activityPrompt,interactAt,beginDelivery,update,status,goal,setWaypoint,aimReady,dispose,roadCount:chunks.length,buildingCount,soccerPosition:()=>({x:soccer.x+football.position.x,z:soccer.z+football.position.z}),npcKick:()=>{if(soccerBall.cooldown>0||Math.hypot(soccerBall.vx,soccerBall.vz)>6)return;soccerBall.owner='barrio';soccerBall.cooldown=1.2;soccerBall.vx=(Math.random()-.5)*8;soccerBall.vz=(football.position.z>0?-1:1)*5;soccerBall.vy=1.8;}};
 }
+
 

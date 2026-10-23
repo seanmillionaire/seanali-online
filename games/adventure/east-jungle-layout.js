@@ -6,3 +6,4 @@ export const jungleTrailClear=(x,z)=>Array.from({length:50},(_,i)=>jungleTrailPo
 // One large animal follows a broad loop through a visible forest clearing.
 export const snakeCorridorContains=(x,z)=>Math.abs(Math.hypot((x-645)/48,(z+104)/23)-1)<.38;
 export function giantSnakePose(time=0){const a=time*.022;return {x:645+Math.cos(a)*48,z:-104+Math.sin(a)*23,heading:Math.atan2(-Math.sin(a)*48,Math.cos(a)*23)};}
+

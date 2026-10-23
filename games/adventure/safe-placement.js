@@ -6,3 +6,4 @@ export function findClearPlacement(origin,clear,{radius=.45,maxRadius=80,step=.7
  for(let r=step;r<=maxRadius;r+=step){const count=Math.max(16,Math.ceil(Math.PI*2*r/step));for(let i=0;i<count;i++){const a=i/count*Math.PI*2;point=at(origin.x+Math.sin(a)*r,origin.z+Math.cos(a)*r);if(point)return point;}}
  return null;
 }
+

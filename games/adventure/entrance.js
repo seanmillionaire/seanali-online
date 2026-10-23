@@ -1,20 +1,20 @@
 import {ISLA_LIGHTHOUSE as LH} from './costa-arriba-layout.js';
 import {createRenderBudget} from './render-budget.js';
 import {buildMainlandData,buildCoastData} from './mainland-data.js';
-import {SWELL_GLSL,swellHeight} from './ocean-swells.js?v=225';
-import {roundedOceanGeometry} from './world-horizon.js?v=225';
-import {createStableShadows} from './stable-shadows.js?v=225';
-import {landscapeMaterial} from './landscape-material.js?v=225';
-import {createAtmosphere} from './atmosphere.js?v=225';
-import {cityX} from './geography.js?v=225';
-import {clipLandTriangle} from './terrain-surface.js?v=225';
-import {freshwaterHabitat,organicIslandRadius,homeShoreRadius,WORLD_EXTENT} from './geography.js?v=225';
-import {createActiveVolcano} from './active-volcano.js?v=225';
-import {worldIslands,isletHeight,volcanoTrailPoint,roadsidePoint,nearRoad,HIGHWAY_WIDTH} from './explore-state.js?v=225';
-import {createTropical} from './tropical.js?v=225';
-import {createForestLandscape} from './forest-landscape.js?v=225';
-import {createSurfaceTextures} from './surface-textures.js?v=225';
-import {installPolyHavenMaterials} from './polyhaven-materials.js?v=225';
+import {SWELL_GLSL,swellHeight} from './ocean-swells.js';
+import {roundedOceanGeometry} from './world-horizon.js';
+import {createStableShadows} from './stable-shadows.js';
+import {landscapeMaterial} from './landscape-material.js';
+import {createAtmosphere} from './atmosphere.js';
+import {cityX} from './geography.js';
+import {clipLandTriangle} from './terrain-surface.js';
+import {freshwaterHabitat,organicIslandRadius,homeShoreRadius,WORLD_EXTENT} from './geography.js';
+import {createActiveVolcano} from './active-volcano.js';
+import {worldIslands,isletHeight,volcanoTrailPoint,roadsidePoint,nearRoad,HIGHWAY_WIDTH} from './explore-state.js';
+import {createTropical} from './tropical.js';
+import {createForestLandscape} from './forest-landscape.js';
+import {createSurfaceTextures} from './surface-textures.js';
+import {installPolyHavenMaterials} from './polyhaven-materials.js';
 /* Optional real-time 3D arrival. The adventure remains playable without WebGL. */
 export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import('./vendor/three.module.min.js')}={}) {
   let disposed=false,world=null,pending=null;
@@ -31,8 +31,8 @@ export function createEntrance(host,{motion,label,onMode=()=>{},load=()=>import(
 }
 export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{},mainland=null,onProgress=()=>{}}={}) {
   const startupAt=performance.now();
-  const compact=canvas.parentElement.getBoundingClientRect().width<780||window.matchMedia?.('(pointer: coarse)').matches,budget=createRenderBudget({ratio:window.devicePixelRatio||1,compact,cores:navigator.hardwareConcurrency||8,memory:navigator.deviceMemory||8});
-  const renderer=new T.WebGLRenderer({canvas,antialias:!light&&!compact,alpha:false,powerPreference:'high-performance'});
+  const compact=!!window.matchMedia?.('(pointer: coarse)').matches,budget=createRenderBudget({ratio:window.devicePixelRatio||1,compact,cores:navigator.hardwareConcurrency||8,memory:navigator.deviceMemory||8});
+  const renderer=new T.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:'high-performance'});
   renderer.setPixelRatio(light?1:budget.settings.pixelRatio);renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.02;
   renderer.shadowMap.enabled=!light;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=!light;renderer.shadowMap.needsUpdate=true;
   const scene=new T.Scene();scene.background=new T.Color('#b0d3e2');scene.fog=new T.FogExp2('#b8d6dd',.0022);
@@ -49,7 +49,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{},ma
   const sand=mat('#e8c895'),green=mat('#568d58'),darkGreen=mat('#246b57'),leaf=mat('#79a05b'),trunk=mat('#855b42'),stone=mat('#84958c'),cream=mat('#fff0ca'),wood=mat('#986b44'),red=mat('#ce826c'),blue=mat('#579c9d'),violet=mat('#a99ac0'),gold=mat('#ffda83',{emissive:'#efb449',emissiveIntensity:.32});
   function height(x,z){const ground=isletHeight(x,z);if(ground>0)return ground;const edge=Math.sqrt((x/20)**2+(z/14)**2);const hill=6*Math.exp(-((x+1)**2/30+(z+5)**2/22));return Math.max(.1,(1-edge*edge)*2.8)+hill;}
   // A sculpted, vertex-colored island; this is geometry, not a picture on a plane.
-  const surfaces=createSurfaceTextures(T);
+  const surfaces=createSurfaceTextures(T,{size:256});
   const tropical=createTropical({T,scene,camera,height,geometry,mat,make,ball,renderer,surfaces});
   for(const [material,surface,bump] of [[sand,surfaces.sand,.07],[green,surfaces.grass,.10],
     [darkGreen,surfaces.grass,.10],[leaf,surfaces.grass,.09],[trunk,surfaces.wood,.08],
@@ -473,15 +473,16 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{},ma
   }
   house(-10,5,wood,.95);house(-13,2,wood,.8);house(10,2,wood,.95);house(12,-1,wood,.75);house(9,-4,wood,.65);
   // Lighthouse, its rotating crystal, and a soft sweeping beam.
-  const tower=new T.Group(),ty=height(LH.x,LH.z);tower.position.set(LH.x,ty,LH.z);scene.add(tower);make(cylinder,stone,0,.25,0,2.1,.5,2.1,tower);make(geometry(new T.CylinderGeometry(.8,1.25,6,24)),cream,0,3.3,0,1,1,1,tower);make(cylinder,red,0,3.6,0,1.03,.5,1.03,tower);make(cylinder,stone,0,6.35,0,1.4,.25,1.4,tower);make(cylinder,gold,0,7.1,0,.86,1.3,.86,tower);make(cone,red,0,8,0,1.5,1.1,1.5,tower);
+  const tower=new T.Group(),ty=height(LH.x,LH.z);tower.name='Isla Grande monumental lighthouse';tower.scale.set(1.5,4,1.5);tower.position.set(LH.x,ty,LH.z);scene.add(tower);make(cylinder,stone,0,.25,0,2.1,.5,2.1,tower);make(geometry(new T.CylinderGeometry(.8,1.25,6,24)),cream,0,3.3,0,1,1,1,tower);make(cylinder,red,0,3.6,0,1.03,.5,1.03,tower);make(cylinder,stone,0,6.35,0,1.4,.25,1.4,tower);make(cylinder,gold,0,7.1,0,.86,1.3,.86,tower);make(cone,red,0,8,0,1.5,1.1,1.5,tower);
   const crystal=make(ball,gold,0,7.1,0,.25,.35,.25,tower);
   for(let i=0;i<4;i++){const a=i/4*Math.PI*2;make(cylinder,wood,Math.sin(a),7.1,Math.cos(a),.07,1.4,.07,tower);}make(box,wood,0,1,1.2,.6,1.8,.1,tower);
   const beamMat=new T.MeshBasicMaterial({color:'#ffe9ad',transparent:true,opacity:.07,depthWrite:false,side:T.DoubleSide});materials.add(beamMat);const beam=make(geometry(new T.ConeGeometry(4,32,24,1,true)),beamMat,0,7.1,0,1,1,1,tower);beam.geometry.translate(0,-16,0);beam.rotation.z=Math.PI/2;beam.castShadow=false;beam.receiveShadow=false;
   // Low-cost mainland mesh connects the real regions; lake and canal cuts stay open.
   const landData=mainland||buildMainlandData(),mainlandGeo=geometry(new T.BufferGeometry());
   mainlandGeo.setAttribute('position',new T.BufferAttribute(landData.positions,3));mainlandGeo.setAttribute('uv',new T.BufferAttribute(landData.uv,2));mainlandGeo.setIndex(new T.BufferAttribute(landData.indices,1));mainlandGeo.addGroup(0,landData.firstCount,0);mainlandGeo.addGroup(landData.firstCount,landData.indices.length-landData.firstCount,1);mainlandGeo.computeVertexNormals();
-  const mainlandMaterials=[landscapeMaterial({T,mat,surfaces,vertexColors:false}),
-   mat('#3c424c',{map:surfaces.asphalt,bumpMap:surfaces.asphalt,bumpScale:.035,roughness:1})];
+  // Both legacy terrain groups are land. Asphalt belongs only to road meshes.
+  const mainlandGround=landscapeMaterial({T,mat,surfaces,vertexColors:false});
+  const mainlandMaterials=[mainlandGround,mainlandGround];
   const mainlandMesh=make(mainlandGeo,mainlandMaterials,0,0,0,1,1,1);mainlandMesh.name='Connected Panama mainland · Pacific and Caribbean coasts';mainlandMesh.castShadow=false;
   // Large, irregular forestry corridors: rainforest palms and emergent broadleaf
   // giants on the Pacific mainland, montane pines toward Volcán Barú.
@@ -541,3 +542,4 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{},ma
   };
   function dispose(){if(disposed)return;disposed=true;cancelAnimationFrame(frame);finish=null;explorer?.dispose();shadows.dispose();atmosphere.dispose();volcanoes.forEach(v=>v.dispose());tropical.dispose();polyhaven?.dispose();surfaces.dispose();observer.disconnect();bodyObserver.disconnect();document.removeEventListener('visibilitychange',visibility);canvas.parentElement?.removeEventListener('pointermove',pointer);textures.forEach(t=>t.dispose());geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());sun.shadow.map?.dispose();renderer.dispose();renderer.forceContextLoss();}
 }
+

@@ -95,3 +95,4 @@ export function createAnimalDetails({T,id,root,make,mat,geometry,ball,cone,cylin
  }
  return {animate:(t,{moving=false,flying=false}={})=>animateParts.forEach(fn=>fn(t,moving,flying))};
 }
+

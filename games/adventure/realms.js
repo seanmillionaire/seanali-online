@@ -1,5 +1,5 @@
-import {addFood,worldIslands,explorePlaces,earnCoins} from './explore-state.js?v=225';
-import {oceanModel} from './ocean-models.js?v=225';
+import {addFood,worldIslands,explorePlaces,earnCoins} from './explore-state.js';
+import {oceanModel} from './ocean-models.js';
 export const realmTasks={
  islands:[{id:'visit',icon:'🏝',en:'Find Panama destinations',es:'Descubre destinos de Panamá',target:5},{id:'fruit',icon:'🍌',en:'Eat and grow',es:'Come y crece',target:3},{id:'butterfly',icon:'🦋',en:'Catch and release',es:'Atrapa y libera',target:5},{id:'friends',icon:'🌱',en:'Help island friends',es:'Ayuda a tus amigos',target:3}],
  water:[{id:'reef',icon:'🪸',en:'Restore the reef',es:'Cuida el arrecife',target:6},{id:'pearls',icon:'🐚',en:'Find five pearls',es:'Busca cinco perlas',target:5},{id:'turtle',icon:'🐢',en:'Follow the turtle',es:'Sigue la tortuga',target:5},{id:'seaChest',icon:'💎',en:'Open the sea treasure',es:'Abre el tesoro marino',target:1}],
@@ -46,3 +46,4 @@ export function createRealms({T,scene,host,state,make,geometry,mat,ball,box,cyli
   guide.visible=!!guideTarget&&panel.hidden&&Number.isFinite(guideTarget.x)&&Math.hypot(s.x-guideTarget.x,s.z-guideTarget.z)<100;if(guide.visible)guide.position.set(guideTarget.x,(guideTarget.y??height(guideTarget.x,guideTarget.z))+3+Math.sin(time)*.3,guideTarget.z);
  },dispose(){scene.remove(group);scene.remove(guide);panel.remove();}};
 }
+

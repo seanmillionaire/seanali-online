@@ -18,3 +18,4 @@ export const SAFETY_LESSONS={
  crocodile:{icon:'🐊',en:'Stay back from crocodiles and lake edges. Watch from a safe distance.',es:'Aléjate de los cocodrilos y del borde del lago. Observa desde lejos.'},
  snake:{icon:'🐍',en:'Never touch a wild snake. Step back and tell an adult.',es:'Nunca toques una serpiente silvestre. Aléjate y avisa a un adulto.'}
 };
+

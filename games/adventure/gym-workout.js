@@ -15,3 +15,4 @@ export function createGymWorkout(o){const {host,state,avatar,arms,legs,joy,save,
   if(current.kind==='treadmill'){legs.forEach((l,i)=>l.rotation.x=Math.sin(t*10+i*Math.PI)*.72);arms.forEach((a,i)=>a.rotation.x=-Math.sin(t*10+i*Math.PI)*.6-.3);}
   else{const stage=Math.floor(current.hits/2);avatar.rotation.z=stage===1?Math.sin(t*.8)*.06:0;arms.forEach((a,i)=>{a.rotation.x=stage===2?-.4:-2.6;a.rotation.z=stage===1?(i?-.65:.65):0;});legs.forEach((l,i)=>l.rotation.x=stage===1?(i?-.65:.1):0);}}
  return {start,stop,update,pose,active:()=>!!current,dispose:stop};}
+

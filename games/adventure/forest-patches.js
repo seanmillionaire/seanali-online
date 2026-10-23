@@ -2,13 +2,13 @@ import {ISLA_GRANDE} from './costa-arriba-layout.js';
 import {darienBoulderClear} from './darien-terrain.js';
 import {natureSiteClear,chiriquiContains,waterfallTrailClear} from './rainforest-layout.js';
 import {jungleTrailClear,snakeCorridorContains} from './east-jungle-layout.js';
-import {homeReserved} from './mansion-state.js?v=225';
-import {regionalClearing,regionalTrailClear} from './regional-layout.js?v=225';
-import {cityX} from './geography.js?v=225';
-import {ruralParcels} from './rural-towns.js?v=225';
+import {homeReserved} from './mansion-state.js';
+import {regionalClearing,regionalTrailClear} from './regional-layout.js';
+import {cityX} from './geography.js';
+import {ruralParcels} from './rural-towns.js';
 // Irregular, mixed Panamanian understory and canopy. Gaps are intentional.
-import {mainlandContains,canalWater,gatunWater} from './geography.js?v=225';
-import {worldIslands,isletHeight,roadDistance,HIGHWAY_WIDTH,volcanoTrailPoint} from './explore-state.js?v=225';
+import {mainlandContains,canalWater,gatunWater} from './geography.js';
+import {worldIslands,isletHeight,roadDistance,HIGHWAY_WIDTH,volcanoTrailPoint} from './explore-state.js';
 export const FOREST_PATCHES=[
  {id:'chiriqui-waterfall-cloudforest',x:-452,z:-86,rx:32,rz:33,n:90,biome:'montane'},
  {id:'darien-jungle-west',x:555,z:-63,rx:63,rz:54,n:150,biome:'tropical'},
@@ -112,3 +112,4 @@ export function planForestPatches(density=1){
  }
  return plants;
 }
+

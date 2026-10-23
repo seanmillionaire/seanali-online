@@ -1,6 +1,6 @@
-import {highwayWidth} from './highway-layout.js?v=225';
+import {highwayWidth} from './highway-layout.js';
 // Selected remote barriers stay outside drivable lanes and away from turnoffs.
-import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,roadDistance} from './explore-state.js?v=225';
+import {MAINLAND_ROADS,HIGHWAY_CURVES,HIGHWAY_WIDTH,roadDistance} from './explore-state.js';
 const eligible=new Set(['cityToColon','cityToBaru']);
 const roadNodes=Object.entries(MAINLAND_ROADS).flatMap(([id,pts])=>pts.map(([x,z])=>({id,x,z})));
 export const HIGHWAY_JUNCTIONS=roadNodes.filter(p=>roadNodes.some(q=>q.id!==p.id&&Math.hypot(q.x-p.x,q.z-p.z)<.01))
@@ -48,3 +48,4 @@ export function planHighwayGuardrails(){
  }
  return rails.map(p=>({...p,post:p.index%2===0}));
 }
+

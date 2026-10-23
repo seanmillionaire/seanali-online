@@ -1,6 +1,6 @@
 // Compress uneventful crossings in time while keeping saved geography intact.
-import {inWater} from './explore-state.js?v=225';
-import {freshwaterHabitat} from './geography.js?v=225';
+import {inWater} from './explore-state.js';
+import {freshwaterHabitat} from './geography.js';
 export const SAIL_SPEED={harbor:15,offshore:52};
 // Probe a corridor, not only the endpoint: small cays must slow the boat too.
 export function sailingSpeedLimit(x,z,heading,{water=inWater,fresh=freshwaterHabitat}={}){
@@ -21,3 +21,4 @@ export function sailingVelocity(current,limit,input,dt){
  const wanted=limit*Math.max(0,Math.min(1,input));
  return current+(wanted-current)*(1-Math.exp(-Math.max(0,dt)*(wanted<current?7:2)));
 }
+

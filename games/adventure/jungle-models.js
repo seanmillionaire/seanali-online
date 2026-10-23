@@ -23,3 +23,4 @@ export function jungleModels({T,geometry,mat,make,ball,box,cylinder}){
   for(let n=0;n<7;n++)p(box,dark,-.42+n*.14,1.02,1.91,.065,.36,.04,g);p(box,metal,0,.66,2.05,2.23,.14,.16,g);const spare=p(cylinder,dark,.4,1.07,-2.01,.49,.30,.49,g);spare.rotation.x=Math.PI/2;p(box,dark,0,2.25,.2,1.58,.15,1.45,g);p(ball,cream,-.47,1.72,.61,.16,.21,.15,g);p(box,dark,-.47,1.36,.6,.35,.35,.25,g);return {g};}
  return {jaguar,crocodile,jeep};
 }
+

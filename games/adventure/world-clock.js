@@ -9,3 +9,4 @@ export function worldClock(value=40){
  const icon=hour===7?'🌅':hour===18?'🌇':night?'🌙':'☀️';
  return {phase:units/240,hour,minute,night,icon,time:`${hour%12||12}:${String(minute).padStart(2,'0')} ${hour<12?'AM':'PM'}`,isoTime:`${String(hour).padStart(2,'0')}:${String(minute).padStart(2,'0')}`};
 }
+

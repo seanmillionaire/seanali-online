@@ -19,3 +19,4 @@ export function createCostaResident({T,make,mat,geometry,ball,cylinder},index=0)
  if(dress)for(let k=0;k<3;k++)put(cylinder,colors[k],0,.91+k*.025,0,.149,.024,.112);
  setHumanAge(h,index%5===3?'kid':'adult',index);h.batch();return h;
 }
+

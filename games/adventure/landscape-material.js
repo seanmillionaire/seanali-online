@@ -1,4 +1,4 @@
-import {regionalPalette} from './regional-palette.js?v=225';
+import {regionalPalette} from './regional-palette.js';
 // World-space material blending preserves every existing terrain/collision vertex.
 export function landscapeMaterial({T,mat,surfaces,vertexColors=true,base='grass',region='mainland'}){
  const palette=regionalPalette(region);
@@ -49,3 +49,4 @@ export function landscapeMaterial({T,mat,surfaces,vertexColors=true,base='grass'
  material.customProgramCacheKey=()=>`panama-landscape-${base}-${region}`;
  return material;
 }
+

@@ -67,3 +67,18 @@ export function cityStreetSurface(rectangles,height){
  }
  return {positions,uv,indices};
 }
+
+
+// Ground coverings sample every edge and interior point, rather than floating
+// a flat box at its center height. Shared for streets, plazas and road markings.
+export function terrainPatch(x,z,w,d,height,{lift=.175,step=.5}={}){
+ const nx=Math.max(1,Math.ceil(w/step)),nz=Math.max(1,Math.ceil(d/step)),positions=[],uv=[],indices=[];
+ for(let iz=0;iz<=nz;iz++)for(let ix=0;ix<=nx;ix++){
+  const px=x-w/2+w*ix/nx,pz=z-d/2+d*iz/nz;
+  positions.push(px,height(px,pz)+lift,pz);uv.push(px*.2,pz*.2);
+ }
+ for(let iz=0;iz<nz;iz++)for(let ix=0;ix<nx;ix++){
+  const a=iz*(nx+1)+ix,b=a+nx+1;indices.push(a,b,a+1,a+1,b,b+1);
+ }
+ return {positions,uv,indices};
+}

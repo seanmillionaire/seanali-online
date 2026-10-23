@@ -11,3 +11,4 @@ export function ruggedRockGeometry(T,geometry,seed=0){
 }
 
 export function ruggedRockSurface(T){const size=128,color=new Uint8Array(size*size*4),bump=new Uint8Array(size*size*4),noise=(x,y)=>{const n=Math.sin(x*127.1+y*311.7)*43758.5453;return n-Math.floor(n);};for(let y=0;y<size;y++)for(let x=0;x<size;x++){const grit=noise(x,y),broad=noise(Math.floor(x/9),Math.floor(y/9)),seam=Math.abs(Math.sin(x*.11+y*.17+Math.sin(y*.08)*1.5))<.055,v=185+grit*35+broad*16-(seam?48:0),i=(y*size+x)*4;color.set([v,v+2,v-4,255],i);const h=140+grit*70-(seam?60:0);bump.set([h,h,h,255],i);}const create=(data,srgb)=>{const t=new T.DataTexture(data,size,size,T.RGBAFormat);t.wrapS=t.wrapT=T.RepeatWrapping;t.colorSpace=srgb?T.SRGBColorSpace:T.NoColorSpace;t.generateMipmaps=true;t.minFilter=T.LinearMipmapLinearFilter;t.needsUpdate=true;return t;};return {color:create(color,true),bump:create(bump,false)};}
+

@@ -17,3 +17,4 @@ export function relocateSanBlasPoint(p,layout,version=2){
  if(cay)return {...p,x:p.x+cay.x-cay.oldX,z:p.z+cay.z-cay.oldZ};
  return Math.hypot((p.x-530)/19,(p.z+245)/17)<1.3?{...p,z:p.z-180}:p;
 }
+

@@ -1,6 +1,6 @@
 import {createCruiseHelm,cruiseHullClear} from './cruise-helm.js';
-import {CRUISE_LENGTH,CRUISE_FARE,CRUISE_BOARD,CRUISE_DOCK,cruisePose,buyCruise,advanceCruise} from './cruise-route.js?v=225';
-import {coinBalance} from './explore-state.js?v=225';
+import {CRUISE_LENGTH,CRUISE_FARE,CRUISE_BOARD,CRUISE_DOCK,cruisePose,buyCruise,advanceCruise} from './cruise-route.js';
+import {coinBalance} from './explore-state.js';
 export function createCanalCruise({T,scene,host,state,make,mat,box,ball,cylinder,height,save,refresh,joy,tell}){
  const s=state.world,c=s.city.cruise,es=state.lang==='es',choose=(a,b)=>es?a:b;
  const root=new T.Group();root.name='Panama Canal · monumental locks and one ocean liner';scene.add(root);
@@ -108,3 +108,4 @@ export function createCanalCruise({T,scene,host,state,make,mat,box,ball,cylinder
  function blocks(x,z){const dx=x-ship.position.x,dz=z-ship.position.z,a=ship.rotation.y;return Math.abs(dx*Math.cos(a)-dz*Math.sin(a))<7&&Math.abs(dx*Math.sin(a)+dz*Math.cos(a))<20;}
  return {root,ship,blocks,get ambientDistance(){return ambientDistance;},near,board,update,isActive:()=>c.active,prompt:()=>choose('🚢 Crucero con todos tus amigos · 10 🪙','🚢 Cruise with all friends · 10 coins'),dispose(){host.classList.remove('on-cruise');status.remove();controls.remove();scene.remove(root);signMaterial.dispose();signTexture.dispose();}};
 }
+

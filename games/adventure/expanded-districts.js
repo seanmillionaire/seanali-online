@@ -1,11 +1,12 @@
+import {terrainPatch,surfaceMesh} from './road-surfaces.js';
 import {DARIEN_APPROACH} from './darien-highway.js';
-import {homeReserved,HOME_LOTS} from './mansion-state.js?v=225';
-import {cityX} from './geography.js?v=225';
+import {homeReserved,HOME_LOTS} from './mansion-state.js';
+import {cityX} from './geography.js';
 // Space-first city districts beyond the original Casco Viejo loop.
 // All plots are deterministic, stay on dry land and leave existing gameplay
 // landmarks, highways and saved building locations untouched.
-import {mainlandContains,canalWater,gatunWater} from './geography.js?v=225';
-import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=225';
+import {mainlandContains,canalWater,gatunWater} from './geography.js';
+import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js';
 
 export const EXPANDED_DISTRICTS=[
  {id:'panama-east',name:'Costa del Este · Panama City',
@@ -82,7 +83,14 @@ export function createExtendedDistricts({T,scene,make,mat,box,cylinder,height,su
   terracotta=mat('#cc8767',{roughness:1}),
   trunk=mat('#76563c',{roughness:1}),
   leaf=mat('#39805b',{roughness:.96});
- const batch=new Map();
+ const batch=new Map(),groundLayers=new Map(),groundGeometries=[];
+ function groundPatch(material,x,z,w,d,lift=.175){
+  const data=terrainPatch(x,z,w,d,height,{lift});
+  let layer=groundLayers.get(material);if(!layer)groundLayers.set(material,layer={positions:[],uv:[],indices:[]});
+  const offset=layer.positions.length/3;
+  for(const v of data.positions)layer.positions.push(v);for(const v of data.uv)layer.uv.push(v);for(const i of data.indices)layer.indices.push(offset+i);
+ }
+
  function put(geo,material,x,y,z,w,h,d){
   let layer=batch.get(geo);if(!layer)batch.set(geo,layer=new Map());
   let list=layer.get(material);if(!list)layer.set(material,list=[]);
@@ -90,35 +98,33 @@ export function createExtendedDistricts({T,scene,make,mat,box,cylinder,height,su
  }
  function boxAt(m,x,y,z,w,h,d){put(box,m,x,y,z,w,h,d);}
  function pavement(x,z,w,d){
-  const y=height(x,z);
-  boxAt(stone,x,y+.095,z,w,.16,d);
+  groundPatch(stone,x,z,w,d,.19);
  }
  // Roads are built in one instanced draw per material; corner samples must
  // be dry so no artificial squares hang over the sea or the canal.
  function street(m,x,z,w,d){
   if(homeReserved(x,z,1)||!districtGround(x,z)||!districtGround(x+w*.43,z+d*.43)||!districtGround(x-w*.43,z-d*.43))return;
-  boxAt(m,x,height(x,z)+.074,z,w,.13,d);
+  groundPatch(m,x,z,w,d);
  }
  for(const area of EXPANDED_DISTRICTS){
   const minZ=area.zs[0],maxZ=area.zs.at(-1),minX=area.xs[0],maxX=area.xs.at(-1);
   for(const x of area.xs)for(let z=minZ;z<=maxZ;z+=2.6){
    street(asphalt,x,z,5.7,2.75);
-   if(Math.round((z-minZ)/2.6)%6===2&&districtGround(x,z)&&!homeReserved(x,z,1))boxAt(yellow,x,height(x,z)+.157,z,.12,.018,1.05);
+   if(Math.round((z-minZ)/2.6)%6===2&&districtGround(x,z)&&!homeReserved(x,z,1))groundPatch(yellow,x,z,.12,1.05,.195);
   }
   for(const z of area.zs)for(let x=minX;x<=maxX;x+=2.6){
    street(asphalt,x,z,2.75,5.7);
-   if(Math.round((x-minX)/2.6)%6===2&&districtGround(x,z)&&!homeReserved(x,z,1))boxAt(line,x,height(x,z)+.158,z,1.05,.018,.12);
+   if(Math.round((x-minX)/2.6)%6===2&&districtGround(x,z)&&!homeReserved(x,z,1))groundPatch(line,x,z,1.05,.12,.195);
   }
   // Zebra crossings identify full intersections rather than random white tiles.
   for(const x of area.xs)for(const z of area.zs){
    if(!districtGround(x,z)||homeReserved(x,z,3))continue;
    const y=height(x,z);
-   for(let k=-2;k<=2;k++)boxAt(line,x+k*.68,y+.173,z+4.3,.35,.021,1.16);
+   for(let k=-2;k<=2;k++)groundPatch(line,x+k*.68,z+4.3,.35,1.16,.195);
   }
  }
- // The reserved city mansion parcel is landscaped, never an empty asphalt lot.
- const cityEstate=HOME_LOTS.find(l=>l.id==='city'),lawn=mat('#78946a',{map:surfaces.grass,roughness:1});
- for(let x=cityEstate.x-22;x<=cityEstate.x+22;x+=4)for(let z=cityEstate.z-17;z<=cityEstate.z+36;z+=4){if(roadDistance(x,z)<3.8||!districtGround(x,z)||!districtGround(x+2,z+2)||!districtGround(x-2,z-2))continue;boxAt(lawn,x,height(x,z)+.035,z,4.04,.035,4.04);}
+ // The estate lawn uses the continuous mainland surface. Flat overlay tiles
+ // cut through graded land and exposed dark triangular fragments underneath.
  const seed=(i,j)=>((i*29+j*17+13)%17)/17;
  function luxuryFrontage(b,y){
   const front=b.z+b.d/2,wall=b.style%2?pale:line;
@@ -261,6 +267,9 @@ export function createExtendedDistricts({T,scene,make,mat,box,cylinder,height,su
  }
  // Batch all repeated city pieces: a few dozen draw calls rather than
  // thousands of individual window, roof, street and pavement meshes.
+ for(const [material,data]of groundLayers){
+  const mesh=surfaceMesh(T,g=>(groundGeometries.push(g),g),data,material,material===asphalt?'District connected road network':'District terrain-following pavement');group.add(mesh);
+ }
  const obj=new T.Object3D(),resources=[];
  for(const [geo,materials]of batch)for(const [material,items]of materials){
   if(!items.length)continue;
@@ -271,5 +280,6 @@ export function createExtendedDistricts({T,scene,make,mat,box,cylinder,height,su
   inst.instanceMatrix.needsUpdate=true;inst.computeBoundingSphere?.();
   group.add(inst);resources.push(inst);
  }
- return {group,count:counts,dispose:()=>{scene.remove(group);resources.forEach(m=>m.dispose?.());}};
+ return {group,count:counts,dispose:()=>{scene.remove(group);groundGeometries.forEach(g=>g.dispose());resources.forEach(m=>m.dispose?.());}};
 }
+

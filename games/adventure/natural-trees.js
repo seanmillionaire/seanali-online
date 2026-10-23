@@ -1,8 +1,8 @@
-import {regionalClearing,regionalTrailClear} from './regional-layout.js?v=225';
-import {botanicalGeometry,leafSurface} from './botanical-geometry.js?v=225';
-import {ruralBlocks} from './rural-towns.js?v=225';
+import {regionalClearing,regionalTrailClear} from './regional-layout.js';
+import {botanicalGeometry,leafSurface} from './botanical-geometry.js';
+import {ruralBlocks} from './rural-towns.js';
 // Shared three-dimensional foliage; no spherical crowns or stacked cone trees.
-import {roadsidePoint} from './explore-state.js?v=225';
+import {roadsidePoint} from './explore-state.js';
 export function createNaturalTrees({T,geometry,mat,make,height,scene,surfaces=null}){
  const trees=[],bark=mat('#73634d',{...(surfaces?.wood?{map:surfaces.wood,bumpMap:surfaces.wood}:{}),bumpScale:.13,roughness:1});
  const leafTexture=leafSurface(T);let textureOwner=false;
@@ -56,3 +56,4 @@ export function createNaturalTrees({T,geometry,mat,make,height,scene,surfaces=nu
  }
  return {addTree,update,trees,focus:(x,z,camera=null)=>{focus=Number.isFinite(x)&&Number.isFinite(z)?{x,z,camera}:null;}};
 }
+
