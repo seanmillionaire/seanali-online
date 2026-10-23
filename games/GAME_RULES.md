@@ -237,3 +237,18 @@ A good game should feel like:
 Not a worksheet.
 Not a quiz page only.
 Not a boring button demo.
+
+---
+
+## New 2026-10-23 addendum — everyday-life education and selective hyper-detail
+
+**Applies directly to Panamá Aventura and as a transferable design principle to other games where appropriate.** Read `games/AGENTS.md` and [the additive Game Studio SOP](./GAME_STUDIO_SOP_ADDENDUM_2026-10-23.md). Preserve all 16 existing rules above, the active master SOP, and root release restrictions. This is a design contract, **not** proof that proposed systems already work in the game.
+
+1. **Purpose over graphics:** every important activity should teach a practical idea through enjoyable action and a visible consequence, not by forcing quizzes or a lecture. Make daily life in Panama interesting.
+2. **Four references, original implementation:** SimCity (autonomous connected systems), Minecraft (agency/build/persistence), Grand Theft Auto (continuous reactive open world), and Scarface: The World Is Yours (**selectively detailed physical/visual/audio feedback for memorable actions**). Never copy protected assets or bring criminal, gory or adult violence into a child-facing game.
+3. **Three-layer rule:** world acts independently → child may participate voluntarily → action produces believable, saved effects. Apply to recycling, food, farming, delivery, construction, businesses and community care.
+4. **Selective hyper-detail:** prioritize detailed, responsive moments when materials are sorted, trucks collect bins, ingredients cook, houses assemble, plants grow, or a delivery gets paid. Use stage animation, original sounds, clear state changes, fast-repeat/skip, reduced-motion support, and mobile performance budgets rather than max-detail scenery everywhere.
+5. **Motivating everyday-life loop:** explore → notice a need → help/work → earn → save/spend/build → earn justified trust → improve the neighborhood → unlock a new choice or region. Start with a satisfying Panama City slice, not a sprawling menu of fake jobs.
+6. **Respect without coercion:** positive contributions earn trust; harmful actions have proportional, local, recoverable consequences. Never punish resting, free exploration, or missed login days. Keep respect, in-game wealth, and Panama wellbeing distinct; paid upgrades never buy respect.
+7. **Future online/paid systems:** leaderboards, private parent progress, customized avatars, optional upgrades, affiliates and regional story progression must be implemented only when explicitly scoped and reviewed for child privacy/safety. Their presence in the plan is not authorization to launch them.
+8. **Evidence before done:** verify actual game interaction, autonomous NPC/service behavior, useful state transfer, saved wallets/inventory, mobile/desktop rendering, bilingual UI, and old-save migration. Respect the repo's local-first workflow and no release without explicit approval.
