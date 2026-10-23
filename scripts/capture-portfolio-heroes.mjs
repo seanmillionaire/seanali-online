@@ -11,7 +11,7 @@ const sites = [
   ['try-the-script','https://trythescript.com/'],
   ['swap-your-9-to-5','https://swapyour9to5.com/'],
   ['panama-untold','https://panamauntold.com/'],
-  ['panama-aventura','https://angeliqueali.com/games/adventure/'],
+  ['panama-aventura','https://seanali.online/games/adventure/'],
   ['sean-ali-games','https://seanali.online/games/'],
 ];
 const output = path.resolve('assets/portfolio');
