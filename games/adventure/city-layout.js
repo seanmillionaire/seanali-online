@@ -56,8 +56,9 @@ export function cityBlocksVehicle(x,z){
 }
 
 // Small street props share the road setbacks used by the parcel planner.
+export const cityPropClear=(a,b,r=.75)=>!CITY_STREET_X.some(v=>Math.abs(v-a)<3.075+r+.55)&&!CITY_STREET_Z.some(v=>Math.abs(v-b)<3.075+r+.55)&&roadDistance(a,b)>HIGHWAY_WIDTH/2+r+.6&&!CITY_ALL_PLOTS.some(p=>p.solid!==false&&Math.abs(a-p.x)<p.w/2+r&&Math.abs(b-p.z)<p.d/2+r);
 export function cityPropSite(x,z,r=.75){
- const clear=(a,b)=>!CITY_STREET_X.some(v=>Math.abs(v-a)<3.075+r+.55)&&!CITY_STREET_Z.some(v=>Math.abs(v-b)<3.075+r+.55)&&roadDistance(a,b)>HIGHWAY_WIDTH/2+r+.6&&!CITY_ALL_PLOTS.some(p=>p.solid!==false&&Math.abs(a-p.x)<p.w/2+r&&Math.abs(b-p.z)<p.d/2+r);
+ const clear=(a,b)=>cityPropClear(a,b,r);
  for(let d=0;d<=18;d+=.5)for(let i=0;i<(d?32:1);i++){const a=x+Math.cos(i*Math.PI/16)*d,b=z+Math.sin(i*Math.PI/16)*d;if(clear(a,b))return {x:a,z:b};}
  return null;
 }

@@ -1,3 +1,4 @@
+import {createFruitEmojis} from './fruit-emojis.js';
 import {landAnimalModels} from './land-animal-models.js';
 import {createDetailedBird} from './bird-models.js';
 import {roadRibbon,surfaceMesh} from './road-surfaces.js';
@@ -8,7 +9,7 @@ export function createRainforestWorld(o){
  const stone=mat('#58675f',{roughness:.97}),moss=mat('#264b2e'),bark=mat('#5b4939'),fur=mat('#8b806b'),face=mat('#d7c8a4'),dark=mat('#27291f'),white=mat('#f1fcff',{emissive:'#bceaff',emissiveIntensity:.12}),gem=mat('#8de8ff',{metalness:.6,roughness:.1,emissive:'#37a9d4',emissiveIntensity:.7});
  const rockGeo=geometry(new T.IcosahedronGeometry(1,1)),diamondGeo=geometry(new T.OctahedronGeometry(.48,0)),solidRocks=[],falls=[],sloths=[],perches=[],bins=new Set();let time=0,saveAt=0,waterBuilt=false;
  const p=(g,m,x,y,z,w,h,d,parent=root)=>make(g,m,x,y,z,w,h,d,parent);
- const land=landAnimalModels(o);
+ const land=landAnimalModels(o),emblems=createFruitEmojis(T);
  const waterMat=new T.ShaderMaterial({uniforms:{time:{value:0}},transparent:true,depthWrite:false,side:T.DoubleSide,vertexShader:'varying vec2 v;void main(){v=uv;vec3 p=position;p.z+=sin(uv.y*23.)*.05;gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.);}',fragmentShader:'varying vec2 v;uniform float time;void main(){float flow=sin(v.x*137.+sin(v.y*24.+time*7.)*2.)*.5+.5;float ripple=sin(v.y*100.+time*18.+v.x*7.)*.5+.5;float edge=smoothstep(0.,.13,v.x)*smoothstep(0.,.13,1.-v.x);vec3 color=mix(vec3(.16,.56,.64),vec3(.86,.98,1.),flow*.7+ripple*.3);gl_FragColor=vec4(color,(.43+flow*.45)*edge);#include <tonemapping_fragment>\n#include <colorspace_fragment>\n}'});
  // Shader include directives must start on their own lines.
  waterMat.fragmentShader=waterMat.fragmentShader.replace(';#include',';\n#include');
@@ -21,7 +22,7 @@ export function createRainforestWorld(o){
   const feeder=p(geometry(new T.PlaneGeometry(f.width*.75,9)),riverMat,f.x,f.top+.12,f.z-2,1,1,1,g);feeder.rotation.x=-Math.PI/2;feeder.castShadow=false;
   for(let i=0;i<24;i++){const a=i*2.4,r=9+(i%3)*1.1,x=f.pool.x+Math.cos(a)*r,z=f.pool.z+Math.sin(a)*r*.85;if(Math.abs(z-f.z)>5)p(rockGeo,i%3?stone:moss,x,.12,z,1.1,.55,.8,g);}
   const particles=geometry(new T.BufferGeometry()),points=new Float32Array(150*3);particles.setAttribute('position',new T.BufferAttribute(points,3));const spray=new T.Points(particles,foamMat);spray.name='Waterfall mist and splash';g.add(spray);
-  const crystals=f.id==='chiriqui'?WATERFALL_CRYSTALS.map(c=>{const mesh=p(diamondGeo,gem,c.x,height(c.x,c.z)+.7,c.z,.8+(c.id%3)*.2,1.2,.8,g);mesh.name='Replenishing grotto diamond '+c.id;return {c,mesh};}):[];
+  const crystals=f.id==='chiriqui'?WATERFALL_CRYSTALS.map(c=>{const mesh=emblems.sprite('diamond',c.x,height(c.x,c.z)+.7,c.z,1.05,g);mesh.name='Replenishing grotto diamond '+c.id;return {c,mesh};}):[];
   const birds=[];for(let i=0;i<(f.id==='chiriqui'?24:10);i++){const a=createDetailedBird(o,g,i%3?'parrot':'toucan');a.g.name='Waterfall bird in flight';a.g.scale.setScalar(.65);birds.push({b:a.g,animate:a.animate,i});}
   for(let i=0;i<8;i++){const a=i*2.4,x=f.pool.x+Math.cos(a)*(f.pool.rx+2),z=f.pool.z+Math.sin(a)*(f.pool.rz+2),l=land.reptile(g).g;l.name='Waterfall iguana on riverbank rocks';l.position.set(x,height(x,z)+.02,z);l.rotation.y=a;l.scale.setScalar(.8);}
   falls.push({f,g,points,particles,birds,crystals});return falls.at(-1);
@@ -33,9 +34,9 @@ export function createRainforestWorld(o){
   for(let i=0;i<perches.length;i++){const t=perches[i];if(!t.g&&Math.hypot(t.x-player.x,t.z-player.z)<95)t.g=buildSloth(t,i);if(t.g){t.g.visible=Math.hypot(t.x-player.x,t.z-player.z)<105;t.g.rotation.z=Math.sin(time*.12+i)*.035;}}
   for(const a of falls){a.g.visible=Math.hypot(player.x-a.f.x,player.z-a.f.z)<170;if(!a.g.visible)continue;for(let i=0;i<150;i++){const phase=(time*.55+i*.137)%1;a.points[i*3]=a.f.x+Math.sin(i*12.3+time)*a.f.width*.48;a.points[i*3+1]=.15+Math.sin(phase*Math.PI)*(1+i%4*.3);a.points[i*3+2]=a.f.z+(a.f.id==='chiriqui'?6:5)+phase*3+(i%7)*.12;}a.particles.attributes.position.needsUpdate=true;
    for(const {b,animate,i}of a.birds){const t=time*(.17+i%3*.035)+i*2.4;b.position.set(a.f.x+Math.cos(t)*(11+i%4*3),a.f.top+3+Math.sin(t*.7)*3,a.f.z+Math.sin(t)*(9+i%5));b.rotation.y=Math.atan2(-Math.sin(t),Math.cos(t));animate(time+i,{flying:true});}
-   for(const {c,mesh}of a.crystals){mesh.visible=!state.world.waterfall.claimed.includes(c.id);mesh.rotation.y=time*.4+c.id;if(active&&mesh.visible&&!player.protected&&Math.hypot(c.x-player.x,c.z-player.z)<1.2&&Math.abs(player.y-height(c.x,c.z))<2&&claimWaterfall(state.world,c.id)){mesh.visible=false;onBoost?.();tell('💎 +3 gemas · 🍀 +2 amuletos · 🪙 +5 · ⚡ Impulso','💎 +3 gems · 🍀 +2 charms · 🪙 +5 · ⚡ Boost');save();refresh();}}
+   for(const {c,mesh}of a.crystals){mesh.visible=!state.world.waterfall.claimed.includes(c.id);mesh.position.y=height(c.x,c.z)+.7+Math.sin(time*1.5+c.id)*.08;if(active&&mesh.visible&&!player.protected&&Math.hypot(c.x-player.x,c.z-player.z)<1.2&&Math.abs(player.y-height(c.x,c.z))<2&&claimWaterfall(state.world,c.id)){mesh.visible=false;onBoost?.();tell('💎 +3 gemas · 🍀 +2 amuletos · 🪙 +5 · ⚡ Impulso','💎 +3 gems · 🍀 +2 charms · 🪙 +5 · ⚡ Boost');save();refresh();}}
   }
   if(active){if(replenishWaterfall(state.world,dt)){save();refresh();}if(state.world.waterfall.claimed.length&&time-saveAt>5){saveAt=time;save();}}
  }
- return {root,falls,perches,sloths,solidRocks,clear:(x,z)=>!solidRocks.some(r=>Math.hypot(r.x-x,r.z-z)<r.r+.35),update,dispose(){scene.remove(root);waterMat.dispose();foamMat.dispose();}};
+ return {root,falls,perches,sloths,solidRocks,clear:(x,z)=>!solidRocks.some(r=>Math.hypot(r.x-x,r.z-z)<r.r+.35),update,dispose(){emblems.dispose();land.dispose();scene.remove(root);waterMat.dispose();foamMat.dispose();}};
 }

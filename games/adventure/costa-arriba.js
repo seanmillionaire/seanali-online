@@ -1,6 +1,11 @@
+import {homeReserved} from './mansion-state.js';
+import {createResidentRoutine} from './resident-routine.js';
+import {createCostaResident} from './costa-residents.js';
+import {createCongoGathering} from './costa-congo.js';
 import {roadDistance,HIGHWAY_WIDTH} from './explore-state.js?v=225';
-import {COSTA_HOMES,CARIBBEAN_HOMES,GRANDE_HOMES,CARIBBEAN_COLORS,COSTA_PIER,CRISTO_REEF,ISLA_GRANDE,costaBlocked} from './costa-arriba-layout.js?v=225';
-export function createCostaArriba({T,scene,make,mat,geometry,box,ball,cylinder,height,surfaces,models,inWater,forest}){
+import {COSTA_HOMES,CARIBBEAN_HOMES,GRANDE_HOMES,CARIBBEAN_COLORS,COSTA_PIER,CRISTO_REEF,ISLA_GRANDE,ISLA_LIGHTHOUSE,costaBlocked} from './costa-arriba-layout.js?v=225';
+export function createCostaArriba({T,scene,make,mat,geometry,box,ball,cylinder,height,surfaces,models,inWater,forest,state,joy,motion}){
+ const congo=createCongoGathering({T,scene,make,mat,geometry,box,ball,cylinder,height,surfaces,state,joy,motion});
  const root=new T.Group();root.name='Costa Arriba · Caribbean barrio and Isla Grande reef';scene.add(root);
  const trim=mat('#f8edd5',{map:surfaces?.plaster,roughness:.8}),wood=mat('#775239',{map:surfaces?.wood}),glass=mat('#245766',{roughness:.22,metalness:.15}),metal=mat('#7a989b',{roughness:.7,metalness:.25}),dark=mat('#483b2e'),leaf=mat('#28733d'),pots=mat('#bc7354'),stone=mat('#b7b3a0',{map:surfaces?.rock});
  const batches=new Map(),dummy=new T.Object3D();
@@ -8,9 +13,10 @@ export function createCostaArriba({T,scene,make,mat,geometry,box,ball,cylinder,h
  const roofGeo=geometry(new T.BufferGeometry());roofGeo.setAttribute('position',new T.Float32BufferAttribute([-.5,0,-.5,.5,0,-.5,0,.3,-.5,-.5,0,.5,.5,0,.5,0,.3,.5],3));roofGeo.setIndex([0,2,1,3,4,5,0,3,5,0,5,2,2,5,4,2,4,1]);roofGeo.computeVertexNormals();
  const air=[];
  for(const [i,p]of CARIBBEAN_HOMES.entries()){
-  const accent=mat(CARIBBEAN_COLORS[(i+3)%8],{roughness:.7}),wall=mat(p.color,{map:surfaces?.plaster,roughness:.7}),roof=mat(i%2?'#98776f':'#6c9196',{metalness:.25,roughness:.72}),base=Math.max(...[-1,1].flatMap(a=>[-1,1].map(b=>height(p.x+a*3.5,p.z+b*3))))+.6,H=p.floors*2.7;
+  const accent=mat(CARIBBEAN_COLORS[(i+3)%8],{roughness:.7}),wall=mat(p.color,{map:surfaces?.plaster,roughness:.7}),roof=mat(i%2?'#98776f':'#6c9196',{metalness:.25,roughness:.72}),base=Math.max(...[-1,1].flatMap(a=>[-1,1].map(b=>height(p.x+a*3.5,p.z+b*3))))+(p.stilt?1.5:.18),H=p.floors*2.7;
   const put=(g,m,x,y,z,w,h,d,rz=0)=>{const scale=p.scale||1;x*=scale;y*=scale;z*=scale;w*=scale;h*=scale;d*=scale;const c=Math.cos(p.heading),s=Math.sin(p.heading);part(g,m,p.x+x*c+z*s,base+y,p.z+z*c-x*s,w,h,d,p.heading,rz);};
-  for(const x of [-3.3,0,3.3])for(const z of [-2.7,2.8]){const c=Math.cos(p.heading),s=Math.sin(p.heading),px=p.x+x*(p.scale||1)*c+z*(p.scale||1)*s,pz=p.z+z*(p.scale||1)*c-x*(p.scale||1)*s,ground=height(px,pz);part(box,wood,px,(ground+base)/2,pz,.24,base-ground,.24);}
+  if(p.stilt)for(const x of [-3.3,0,3.3])for(const z of [-2.7,2.8]){const c=Math.cos(p.heading),s=Math.sin(p.heading),px=p.x+x*(p.scale||1)*c+z*(p.scale||1)*s,pz=p.z+z*(p.scale||1)*c-x*(p.scale||1)*s,ground=height(px,pz);part(box,wood,px,(ground+base)/2,pz,.24,base-ground,.24);}
+  if(!p.stilt)put(box,stone,0,-.3,0,7.6,.6,7.1);
   put(box,trim,0,0,0,7.7,.2,7.2);put(box,wall,0,H/2,-.8,7.1,H,5.4);
   // Painted horizontal weatherboards, corner trim and shaded louvered windows.
   for(let floor=0;floor<p.floors;floor++){
@@ -26,7 +32,7 @@ export function createCostaArriba({T,scene,make,mat,geometry,box,ball,cylinder,h
   put(roofGeo,roof,0,H+.15,-.3,8.1,5.6,7.9);put(box,trim,0,H+1.87,-.3,.14,.12,8);
   for(let j=0;j<14;j++)for(const sign of [-1,1])put(box,metal,sign*2,H+.99,-4+j*.57,4.34,.035,.035,-sign*.395);
   for(const x of [-3.5,3.5])put(box,trim,x,H-.05,0,.12,.18,7.7);
-  for(let j=0;j<3;j++)put(box,wood,0,-.45+j*.18,4.15-j*.32,1.5,.18,.38);
+  for(let j=0;j<(p.stilt?8:1);j++)put(box,p.stilt?wood:stone,0,-.18-j*.18,3.8+j*.27,1.5,.18,.32);
   for(const x of [-2.9,2.9]){put(cylinder,pots,x,.24,3.05,.23,.4,.23);put(ball,leaf,x,.63,3.05,.4,.45,.3);}
   // Porch seats and a small table make each yard feel lived in.
   put(box,wood,2,.43,2.8,1,.12,.65);put(box,wood,2,.8,2.53,1,.75,.08);for(const sx of [-.4,.4])put(box,wood,2+sx,.2,2.8,.07,.4,.5);
@@ -42,14 +48,15 @@ export function createCostaArriba({T,scene,make,mat,geometry,box,ball,cylinder,h
  // Reef stones remain submerged; the cross is anchored, never floating.
  for(let i=0;i<7;i++)part(ball,stone,x+Math.sin(i*2.4)*1.4,-.4,z+Math.cos(i*2.4)*1.2,.5,.45,.5);
  // A small timber landing on Isla Grande, separate from the reef landmark.
- for(let i=0;i<18;i++)part(box,wood,175,.5,-461+i*.3,2.4,.16,.27);
- for(const z of [-461,-458,-456])for(const side of [-1,1])part(cylinder,wood,175+side*1.05,-.35,z,.1,2,.1);
+ for(let i=0;i<18;i++)part(box,wood,175,.5,ISLA_GRANDE.z+41+i*.3,2.4,.16,.27);
+ for(const z of [ISLA_GRANDE.z+41,ISLA_GRANDE.z+44,ISLA_GRANDE.z+46])for(const side of [-1,1])part(cylinder,wood,175+side*1.05,-.35,z,.1,2,.1);
  for(const {geo,m,items}of batches.values()){const mesh=new T.InstancedMesh(geo,m,items.length);mesh.name='Costa Arriba crafted architecture';items.forEach((matrix,i)=>mesh.setMatrixAt(i,matrix));mesh.instanceMatrix.needsUpdate=true;mesh.castShadow=true;mesh.receiveShadow=true;mesh.computeBoundingSphere();root.add(mesh);}
  for(let i=0;i<24;i++){const x=45+i*6.2,z=-413-i*.7+Math.sin(i*2.4)*5;if(!inWater(x,z)&&!costaBlocked(x,z,3)&&roadDistance(x,z)>9)forest?.addTree('palm',x,z,.65+(i%3)*.09,12000+i,root);}
- for(let i=0;i<65;i++){const a=i*2.399963,r=.25+(i%8)*.08,x=175+Math.cos(a)*58*r,z=-502+Math.sin(a)*36*r;if(!inWater(x,z)&&!costaBlocked(x,z,2.7)&&Math.hypot(x-175,z+461)>4)forest?.addTree('palm',x,z,.62+(i%4)*.12,13000+i,root);}
+ for(let i=0;i<65;i++){const a=i*2.399963,r=.25+(i%8)*.08,x=175+Math.cos(a)*58*r,z=ISLA_GRANDE.z+Math.sin(a)*36*r;if(Math.hypot(x-ISLA_LIGHTHOUSE.x,z-ISLA_LIGHTHOUSE.z)>20&&!inWater(x,z)&&!costaBlocked(x,z,2.7)&&Math.hypot(x-175,z-ISLA_GRANDE.z-41)>4)forest?.addTree('palm',x,z,.62+(i%4)*.12,13000+i,root);}
  const resources=[];function sign(text,x,z){const canvas=document.createElement('canvas');canvas.width=768;canvas.height=128;const ctx=canvas.getContext('2d');ctx.fillStyle='#125a62';ctx.fillRect(0,0,768,128);ctx.fillStyle='#fff0b8';ctx.font='bold 51px sans-serif';ctx.textAlign='center';ctx.fillText(text,384,83);const tex=new T.CanvasTexture(canvas),m=new T.SpriteMaterial({map:tex,fog:false});resources.push(tex,m);const sprite=new T.Sprite(m);sprite.position.set(x,height(x,z)+3,z);sprite.scale.set(10,1.67,1);root.add(sprite);}
- sign('🏘️ Costa Arriba →',48,-370);sign('⚓ La Guaira · Isla Grande',179,-433);sign('🌴 Isla Grande · Pueblo Caribe',175,-464);
- const safe=(x,z)=>!inWater(x,z)&&!costaBlocked(x,z,.6)&&roadDistance(x,z)>HIGHWAY_WIDTH/2+1.2;
- const residents=COSTA_HOMES.slice(0,6).flatMap((p,i)=>{const q=[[0,6],[0,-6],[6,0],[-6,0]].map(([x,z])=>({x:p.x+x,z:p.z+z})).find(q=>safe(q.x,q.z));if(!q)return [];const g=models.person(root,q.x,height(q.x,q.z),q.z,i+3);return [{...g,x:q.x,z:q.z,phase:i*1.7}];});
- let time=0;return {root,homes:CARIBBEAN_HOMES,blocks:(x,z,margin=1.3)=>Math.hypot(x-CRISTO_REEF.x,z-CRISTO_REEF.z)<1.4+margin,update(dt,active,{x,z,indoors=false}){root.visible=!indoors&&Math.hypot(x-100,z+420)<300;if(active)time+=dt;if(!root.visible)return;for(const p of residents){const nx=p.x+Math.sin(time*.25+p.phase)*1.8,nz=p.z+Math.cos(time*.25+p.phase)*.55;if(safe(nx,nz)){p.g.position.set(nx,height(nx,nz),nz);p.g.rotation.y=Math.atan2(Math.cos(time*.25+p.phase)*1.8,-Math.sin(time*.25+p.phase)*.55);p.animate?.(time*3,true);}p.g.visible=Math.hypot(p.x-x,p.z-z)<120;}},dispose(){resources.forEach(r=>r.dispose());delete scene.userData.costaAir;scene.remove(root);}};
+ sign('🏘️ Costa Arriba →',48,-370);sign('⚓ La Guaira · Isla Grande',179,-433);sign('🌴 Isla Grande · Pueblo Caribe',175,ISLA_GRANDE.z+38);
+ const safe=(x,z)=>!homeReserved(x,z,1)&&!inWater(x,z)&&!costaBlocked(x,z,.6)&&roadDistance(x,z)>HIGHWAY_WIDTH/2+1.2;
+ const residents=COSTA_HOMES.slice(0,14).flatMap((p,i)=>{const q=[[0,6],[0,-6],[6,0],[-6,0]].map(([x,z])=>({x:p.x+x,z:p.z+z})).find(q=>safe(q.x,q.z));if(!q)return [];const g=createCostaResident({T,make,mat,geometry,ball,cylinder},i);g.g.position.set(q.x,height(q.x,q.z),q.z);root.add(g.g);return [{...g,x:q.x,z:q.z,phase:i*1.7}];});
+ for(const [i,p]of residents.entries())p.routine=createResidentRoutine(p,{seed:430+i*137,home:{x:p.x,z:p.z},height,clear:safe,radius:5});
+ let time=0;return {root,congo,residents,homes:CARIBBEAN_HOMES,blocks:(x,z,margin=1.3)=>Math.hypot(x-CRISTO_REEF.x,z-CRISTO_REEF.z)<1.4+margin,update(dt,active,{x,z,indoors=false}){congo.update(dt,active,{x,z,indoors});root.visible=!indoors&&Math.hypot(x-100,z+420)<300;if(active)time+=dt;if(!root.visible)return;for(const p of residents){p.routine.update(dt,active,(nx,nz)=>residents.some(q=>q!==p&&Math.hypot(q.g.position.x-nx,q.g.position.z-nz)<.75)||Math.hypot(x-nx,z-nz)<.85);p.g.visible=Math.hypot(p.x-x,p.z-z)<120;}},dispose(){congo.dispose();resources.forEach(r=>r.dispose());delete scene.userData.costaAir;scene.remove(root);}};
 }

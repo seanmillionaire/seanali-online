@@ -1,18 +1,19 @@
+export function setHumanAge(h,age='adult',index=0){const g=h.g||h;g.userData.ageGroup=age;g.userData.child=age==='kid';g.scale.setScalar(age==='kid'?.90+(index%3)*.045:1.24+(index%3)*.035);return h;}
 // Shared, articulated expedition characters. All dimensions are in world metres.
 // Geometry and fabric maps are cached per renderer, not rebuilt for every visitor.
 const libraries=new WeakMap();
-export function createHuman({T,geometry,mat,make}, {index=0,hero=false,police=false,beach=false,skinTone=null,beachWear='tee-shorts',beachHair='short'}={}){
+export function createHuman({T,geometry,mat,make}, {index=0,ageGroup='adult',hero=false,police=false,beach=false,skinTone=null,outfitColor=null,pantsColor=null,beachWear='tee-shorts',beachHair='short'}={}){
  let lib=libraries.get(geometry);if(!lib){lib=new Map();libraries.set(geometry,lib);}
  const shared=(key,build)=>{if(!lib.has(key))lib.set(key,build());return lib.get(key);};
  const sphere=shared('human sphere',()=>geometry(new T.SphereGeometry(1,16,12))),cylinder=shared('human tapered limb',()=>geometry(new T.CylinderGeometry(.82,1,1,12))),box=shared('human box',()=>geometry(new T.BoxGeometry()));
  const fabric=shared('woven cloth',()=>{const size=64,data=new Uint8Array(size*size*4);for(let y=0;y<size;y++)for(let x=0;x<size;x++){const i=(y*size+x)*4,v=224+((x%3===0?9:0)+(y%3===0?-13:0));data.set([v,v,v,255],i);}const t=new T.DataTexture(data,size,size,T.RGBAFormat);t.wrapS=t.wrapT=T.RepeatWrapping;t.repeat.set(6,6);t.needsUpdate=true;return t;});
  const color=(key,c,extra={})=>shared(key,()=>mat(c,{roughness:.8,...extra}));
- const tones=['#efc6a3','#d2a582','#b98562','#ad7854','#8b6046','#75503c','#50392e'],tone=beach&&skinTone!==null?tones[Math.max(0,Math.min(6,skinTone))]:['#b98562','#d2a582','#8b6046','#ad7854','#75503c'][index%5];const skin=color('skin '+tone,tone,{roughness:.62});
- const outfit=color('outfit '+(beach?'beach'+index%7:hero?'hero':police?'uniform':index%7),beach?['#e6a64f','#41a9ac','#c75c72','#447eae','#e6d0aa','#6c9f71','#b36d43'][index%7]:hero?'#6d777e':police?'#273e52':['#697b78','#b1a58b','#526777','#8c7666','#7c856c','#667080','#a99677'][index%7],{map:fabric,bumpMap:fabric,bumpScale:.008});
- const pants=color('trousers '+(beach?'beach'+beachWear+index%3:hero?'hero':index%3),beach?(beachWear==='swimsuit'?['#e6a64f','#41a9ac','#c75c72','#447eae','#e6d0aa','#6c9f71','#b36d43'][index%7]:['#277f8a','#d27054','#495c8c'][index%3]):hero?'#34474c':['#464b4d','#677063','#50596a'][index%3],{map:fabric,bumpMap:fabric,bumpScale:.008});
+ const tones=['#efc6a3','#d2a582','#b98562','#ad7854','#8b6046','#75503c','#50392e'],tone=skinTone!==null?tones[Math.max(0,Math.min(6,skinTone))]:['#b98562','#d2a582','#8b6046','#ad7854','#75503c'][index%5];const skin=color('skin '+tone,tone,{roughness:.62});
+ const outfit=color('outfit '+(outfitColor||'')+(beach?'beach'+index%7:hero?'hero':police?'uniform':index%7),outfitColor||(beach?['#e6a64f','#41a9ac','#c75c72','#447eae','#e6d0aa','#6c9f71','#b36d43'][index%7]:hero?'#6d777e':police?'#273e52':['#697b78','#b1a58b','#526777','#8c7666','#7c856c','#667080','#a99677'][index%7]),{map:fabric,bumpMap:fabric,bumpScale:.008});
+ const pants=color('trousers '+(pantsColor||'')+(beach?'beach'+beachWear+index%3:hero?'hero':index%3),pantsColor||(beach?(beachWear==='swimsuit'?['#e6a64f','#41a9ac','#c75c72','#447eae','#e6d0aa','#6c9f71','#b36d43'][index%7]:['#277f8a','#d27054','#495c8c'][index%3]):hero?'#34474c':['#464b4d','#677063','#50596a'][index%3]),{map:fabric,bumpMap:fabric,bumpScale:.008});
  const hair=color('hair '+index%3,['#302a25','#44362b','#201e1b'][index%3],{roughness:.96}),boots=color('walking boots','#3d3831',{roughness:.92}),sole=color('shoe soles','#202624'),ivory=color('eye sclera','#c8bbae'),iris=color('eye iris','#34362c',{roughness:.4}),lip=color('lips '+index%3,'#8d5c4b'),stitch=color('seams','#b4b4a4'),metal=color('belt buckle','#8a8e87',{metalness:.55,roughness:.4});
  shared('fabric texture owner',()=>{outfit.addEventListener('dispose',()=>fabric.dispose());return true;});
- const g=new T.Group();g.name=hero?'Angelique':'Detailed local character';g.userData.appearance={skin:tone,beachWear,beachHair};
+ const g=new T.Group();g.name=hero?'Angelique':'Detailed local character';g.userData.appearance={skin:tone,beachWear,beachHair};setHumanAge(g,hero?'kid':ageGroup,index);
  const part=(geo,m,x,y,z,w,h,d,parent=g)=>make(geo,m,x,y,z,w,h,d,parent);
  const torso=shared('anatomical torso',()=>{const points=[[.095,-.25],[.14,-.20],[.175,-.02],[.205,.15],[.19,.22],[.10,.27]].map(([r,y])=>new T.Vector2(r,y));const geo=new T.LatheGeometry(points,18);geo.scale(1,1,.63);return geometry(geo);});
  part(torso,outfit,0,1.115,0,1,1,1);
@@ -72,5 +73,5 @@ export function createHuman({T,geometry,mat,make}, {index=0,hero=false,police=fa
  }
  batch(g);
  g.userData.humanRig={knees,elbows};
- return {g,legs,arms,knees,elbows,ponytail,hat,materials:{skin,outfit,pants,hair},animate(phase,moving=true){knees.forEach((k,i)=>k.rotation.x=moving?Math.max(0,-Math.sin(phase+i*Math.PI))*.55:0);elbows.forEach(e=>e.rotation.x=-.15);}};
+ return {g,legs,arms,knees,elbows,ponytail,hat,batch:()=>batch(g),materials:{skin,outfit,pants,hair},animate(phase,moving=true){knees.forEach((k,i)=>k.rotation.x=moving?Math.max(0,-Math.sin(phase+i*Math.PI))*.55:0);elbows.forEach(e=>e.rotation.x=-.15);}};
 }

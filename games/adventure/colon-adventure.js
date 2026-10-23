@@ -167,5 +167,5 @@ export function createColonAdventure({T,scene,host,state,make,geometry,mat,box,b
   canWalk:(x,z)=>{x-=offsetX;z-=offsetZ;return c.bridge||bridgeDistance(x,z)>1.45||Math.hypot(x-2,z+108)<2;},
   houses:()=>c.treehouse?[{id:'colon-treehouse',colonTreehouse:true,x:(-59),z:(-247),es:'Mi casa del árbol de Colón',en:'My Colón jungle treehouse',icon:'🌳',theme:'play'}]:[],
   expand(){const ok=expandColon(s);if(ok){save();refresh();}return ok;},
-  dispose(){status.remove();rain.material.dispose();wildlife.dispose();if(scene.fog&&baseFog!==undefined)scene.fog.density=baseFog;if(scene.background?.isColor&&baseSky)scene.background.copy(baseSky);if(sun)sun.intensity=baseSun;scene.remove(root,forestRoot);}};
+  dispose(){land.dispose();status.remove();rain.material.dispose();wildlife.dispose();if(scene.fog&&baseFog!==undefined)scene.fog.density=baseFog;if(scene.background?.isColor&&baseSky)scene.background.copy(baseSky);if(sun)sun.intensity=baseSun;scene.remove(root,forestRoot);}};
 }

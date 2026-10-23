@@ -1,3 +1,4 @@
+import {DARIEN_APPROACH} from './darien-highway.js';
 import {homeReserved,HOME_LOTS} from './mansion-state.js?v=225';
 import {cityX} from './geography.js?v=225';
 // Space-first city districts beyond the original Casco Viejo loop.
@@ -17,7 +18,7 @@ export const EXPANDED_DISTRICTS=[
   kind:'caribbean'}
 ];
 export const DISTRICT_ROADS={
- panamaEast:[[163,-61],[175,-61],[181,-57],[197,-57],[213,-57],[229,-57],[245,-57]].map(([x,z])=>[cityX(x),z]),
+ panamaEast:[...[[163,-61],[175,-61],[181,-57],[197,-57],[213,-57],[229,-57]].map(([x,z])=>[cityX(x),z]),...DARIEN_APPROACH],
  colonAccess:[[-50,-365],[-57,-371],[-67,-374],[-72,-372]]
 };
 const within=(r,x,z)=>x>=r.xs[0]&&x<=r.xs.at(-1)&&z>=r.zs[0]&&z<=r.zs.at(-1);

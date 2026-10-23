@@ -18,7 +18,7 @@ for(const r of shippingRoutes())for(let i=0;i<360;i++){const p=shippingPose(r,i/
 for(const r of fishingRoutes())for(let i=0;i<128;i++){const p=fishingPose(r,i/128*Math.PI*2*r.rx);assert(!sanBlasWaters(p.x,p.z,5),'ambient fishing boats excluded from San Blas');}
 for(let d=0;d<630;d+=1){const p=ghostPose(d);assert(p.z< -480);for(const f of [-18,0,18])for(const s of [-4,0,4])assert(marineWater(p.x+Math.sin(p.heading)*f+Math.cos(p.heading)*s,p.z+Math.cos(p.heading)*f-Math.sin(p.heading)*s),'full pirate hull offshore');}
 assert(!ghostVisible(60));assert(ghostVisible(180));assert(!ghostVisible(10));
-globalThis.document={createElement:()=>({width:0,height:0,getContext:()=>({fillRect(){},fillText(){}})})};
+globalThis.document={createElement:()=>({width:0,height:0,getContext:()=>({clearRect(){},fillRect(){},fillText(){}})})};
 const scene=new T.Scene(),geo=[],materials=[],geometry=g=>(geo.push(g),g),mat=(c,o={})=>{const m=new T.MeshStandardMaterial({color:c,...Object.fromEntries(Object.entries(o).filter(([,v])=>v!==undefined))});materials.push(m);return m;},box=geometry(new T.BoxGeometry()),ball=geometry(new T.SphereGeometry(1,8,6)),cylinder=geometry(new T.CylinderGeometry(1,1,1,8)),make=(g,m,x=0,y=0,z=0,w=1,h=w,d=w,parent=scene)=>{const mesh=new T.Mesh(g,m);mesh.position.set(x,y,z);mesh.scale.set(w,h,d);parent.add(mesh);return mesh;};
 const models={person(parent,x,y,z){const g=new T.Group();g.position.set(x,y,z);parent.add(g);return {g};}};
 const coast=createCostaArriba({T,scene,make,mat,geometry,box,ball,cylinder,height:isletHeight,surfaces:{},models,inWater}),ghost=createColonGhostShip({T,scene,make,mat,geometry,box,ball,cylinder,state});

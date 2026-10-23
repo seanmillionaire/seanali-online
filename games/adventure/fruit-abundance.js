@@ -1,3 +1,4 @@
+import {fruitSiteId} from './fruit-site-ids.js';
 import {snakeCorridorContains} from './east-jungle-layout.js';
 import {worldIslands,HIGHWAY_CURVES,roadDistance,inWater,isletHeight} from './explore-state.js?v=225';
 import {homeReserved} from './mansion-state.js?v=225';
@@ -9,7 +10,7 @@ export const MANGO_VARIETIES=[{name:'red',color:'#c74535'},{name:'green',color:'
 export function fruitGroves(){
  const sites=[];
  const offer=(x,z,kind,region)=>{if(snakeCorridorContains(x,z)||inWater(x,z)||isletHeight(x,z)<.4||roadDistance(x,z)<17||homeReserved(x,z,7)||regionalClearing(x,z,6)||ruralBlocks(x,z,7)||sites.some(p=>Math.hypot(p.x-x,p.z-z)<5.5))return;
-  sites.push({id:kind+(1000+sites.length),kind,x,z,region,scale:kind==='banana'?.9:1+(sites.length%4)*.09});};
+  sites.push({id:fruitSiteId(kind,x,z),kind,x,z,region,scale:kind==='banana'?.9:1+(sites.length%4)*.09});};
  const road=HIGHWAY_CURVES.cityToBaru;
  for(let i=1;i<road.length;i++){const a=road[i-1],b=road[i],dx=b[0]-a[0],dz=b[1]-a[1],len=Math.hypot(dx,dz);for(let d=0;d<len;d+=13)for(const side of [-1,1]){const x=a[0]+dx*d/len-dz/len*(22+(i%2)*9)*side,z=a[1]+dz*d/len+dx/len*(22+(i%2)*9)*side;if(x> -405&&x<265)offer(x,z,['mango','banana','coconut'][(sites.length+i)%3],'countryside');}}
  for(const land of worldIslands.filter(p=>!['pizzaCity','sunset','monkeyIslet','colon'].includes(p.id))){
@@ -23,7 +24,7 @@ export function fruitGroves(){
 }
 // Tree crowns and hundreds of harvestable fruit clusters share GPU batches.
 export function createFruitAbundance({T,scene,geometry,mat,ball,cylinder,height,state}){
- const root=new T.Group();root.name='Abundant Panama fruit groves';scene.add(root);const sites=fruitGroves().filter(p=>!(state?.world?.estate?.buildings||[]).some(b=>Math.hypot(p.x-b.x,p.z-b.z)<10)),batches=new Map(),dummy=new T.Object3D(),resources=[];
+ const root=new T.Group();root.name='Abundant Panama fruit groves';scene.add(root);const sites=fruitGroves().filter(p=>Math.hypot(p.x-530,p.z+430)>8&&!(state?.world?.estate?.buildings||[]).some(b=>Math.hypot(p.x-b.x,p.z-b.z)<10)),batches=new Map(),dummy=new T.Object3D(),resources=[];
  const emojis=createFruitEmojis(T),fruitBatches=new Map();
  const bark=mat('#806344'),leaf=mat('#ffffff',{vertexColors:true,side:T.DoubleSide,roughness:.8});
  const crowns=Object.fromEntries(['palm','banana','natural'].map(k=>[k,botanicalGeometry(T,geometry,k)]));
@@ -33,8 +34,13 @@ export function createFruitAbundance({T,scene,geometry,mat,ball,cylinder,height,
   const ground=height(p.x,p.z),s=p.scale,kind=p.kind==='coconut'?'palm':p.kind==='mango'?'natural':'banana',h=kind==='palm'?7:kind==='natural'?6:3.1;
   part(cylinder,bark,p.x,ground+h*s/2,p.z,.27*s,h*s,.27*s);part(crowns[kind],leaf,p.x,ground+h*s,p.z,s,s,s,i*2.4);
   const fruits=[];
-  for(let j=0;j<(p.kind==='banana'?12:18);j++){const a=j*2.399963,ring=p.kind==='mango'?1.7+(j%3)*.5:.42+(j%3)*.16,x=p.x+Math.cos(a)*ring*s,z=p.z+Math.sin(a)*ring*s,y=ground+(h-(p.kind==='mango'?.4:1.05)-(j%4)*.27)*s;
-   const item={x,y,z,size:(p.kind==='banana'?.9:.78)*s,visible:true};if(!fruitBatches.has(p.kind))fruitBatches.set(p.kind,[]);fruitBatches.get(p.kind).push(item);
+  for(let j=0;j<(p.kind==='banana'?12:18);j++){// Hanging bunches sit below and beyond the leaves, rather than inside the crown.
+   const cluster=Math.floor(j/3),slot=j%3,a=cluster*Math.PI/3+i*.37;
+   const ring=p.kind==='mango'?2.65:p.kind==='banana'?1.15:1.05;
+   const x=p.x+(Math.cos(a)*ring+Math.cos(a+Math.PI/2)*(slot-1)*.48)*s;
+   const z=p.z+(Math.sin(a)*ring+Math.sin(a+Math.PI/2)*(slot-1)*.48)*s;
+   const y=ground+(h-(p.kind==='mango'?1.15:1.45)-slot*.48)*s;
+   const item={x,y,z,size:(p.kind==='banana'?.92:.84)*s,visible:true};if(!fruitBatches.has(p.kind))fruitBatches.set(p.kind,[]);fruitBatches.get(p.kind).push(item);
    fruits.push(item);
   }
   if(p.kind==='coconut')for(let j=0;j<4;j++){const x=p.x+1.25+j*.65,z=p.z+1.15;fruitBatches.get('coconut').push({x,y:height(x,z)+.4,z,size:.72,visible:true});}

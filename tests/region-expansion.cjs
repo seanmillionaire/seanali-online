@@ -5,7 +5,7 @@ const assert=require('node:assert/strict');
  const byId=id=>worldIslands.find(p=>p.id===id);
  assert.deepEqual(WORLD_BOUNDS,{x:900,z:760});
  const original=[
-  ['islet',110,85],['wilds',-230,-200],['coconutCoast',560,125],
+  ['islet',330,105],['wilds',-230,-200],['coconutCoast',560,125],
   ['crystalCove',530,-425],['pizzaCity',360,-50],['sunset',-350,-65],['colon',-50,-365]
  ];
  for(const [id,x,z]of original){assert.equal(byId(id).x,x);assert.equal(byId(id).z,z);}

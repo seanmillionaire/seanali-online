@@ -1,10 +1,13 @@
+import {MARGARITA_ROAD,mallGround} from './colon-mall-layout.js';
+import {jungleTrailPoint} from './east-jungle-layout.js';
+import {DARIEN_APPROACH} from './darien-highway.js';
 import {integrateCityFreeway,CITY_FREEWAY_STOP} from './city-freeway-layout.js';
 import {normalizeMorningTheme} from './theme-audio.js';
 import {gorgonaShoreHeight} from './gorgona-shore.js';
 import {repairCoastalSites} from './coastal-sites.js';
-import {rainforestTerrain,normalizeWaterfall} from './rainforest-layout.js';
+import {rainforestTerrain,inlandWaterDistance,normalizeWaterfall} from './rainforest-layout.js';
 import {ensureEstateCars} from './estate-cars.js';
-import {COSTA_ROAD,ISLA_GRANDE,costaDock,costaContains} from './costa-arriba-layout.js?v=225';
+import {COSTA_ROAD,ISLA_GRANDE,ISLA_LIGHTHOUSE,costaDock,costaContains} from './costa-arriba-layout.js?v=225';
 import {highwayExtra} from './highway-layout.js?v=225';
 import {normalizeMansion} from './mansion-state.js?v=225';
 import {cityX,freshwaterHabitat} from './geography.js?v=225';
@@ -40,6 +43,7 @@ export function remoteAccess(from,to){const p=worldIslands.find(i=>i.vehicleOnly
 // A connected mainland corridor: Panama City → Gorgona → Colón and
 // Gorgona → Volcán → Barú. Offshore island footprints remain separate.
 export const MAINLAND_ROADS=integrateCityFreeway({
+ margarita:MARGARITA_ROAD,
  costaArriba:COSTA_ROAD,
  costaBarrio:[[80,-388],[86,-369],[114,-374],[114,-401]],
  cityToColon:[[cityX(77),-61],[cityX(77),-85],[255,-99],[190,-108],[125,-104],[90,-110],[45,-120],[26,-144],[24,-175],[25,-243],[24,-351],[14,-379],[-18,-392],[-47,-389],[-50,-365]],
@@ -58,13 +62,14 @@ export const MAINLAND_ROADS=integrateCityFreeway({
  volcanTownStreet:[[-385,-30],[-385,-8],[-408,-8]],
  boqueteStreet:[[-290,-50],[-265,-50],[-265,-28]],canal:[[325,-26],[325,-17]],
  // Eastern Panama's new neighborhoods, leading outward from downtown.
- panamaEast:[[163,-61],[175,-61],[181,-57],[197,-57],[213,-57],[229,-57],[245,-57]].map(([x,z])=>[cityX(x),z]),
+ panamaEast:[...[[163,-61],[175,-61],[181,-57],[197,-57],[213,-57],[229,-57]].map(([x,z])=>[cityX(x),z]),...DARIEN_APPROACH],
  // Colón is a Caribbean city, not simply the Monkey Island nature park.
  colonCity:[[-50,-365],[-57,-371],[-67,-374],[-72,-372]],
  colonCivic:[[24,-351],[14,-362],[11,-372]]
 });
 export const MAINLAND_STOPS=[
  CITY_FREEWAY_STOP,
+ {id:'margarita',x:-124,z:-375,icon:'🛍️',en:'Margarita · Colón 2000',es:'Margarita · Colón 2000',kind:'mainland'},
  {id:'gorgonaTown',x:-55,z:-16,en:'Chame · Panamá Oeste',es:'Chame · Panamá Oeste'},
  {id:'pizzaCity',x:cityX(120),z:-50,en:'Panama City',es:'Ciudad de Panamá'},
  {id:'colon',x:-50,z:-365,en:'Colón',es:'Colón'},
@@ -218,6 +223,7 @@ export function volcanoTrailPoint(progress){
 // Different topography in every biome. Keep the same coastline/footprints so
 // navigation, saved positions, swim transitions and ocean shader stay aligned.
 function ungradedHeight(x,z){
+ const mallFloor=mallGround(x,z);if(mallFloor>0)return mallFloor;
  let roadFloor=null;
  // Panama City is one consistent urban grade, not rolling island hills.
  // Keep the coastline transition outside the built city to avoid a vertical wall.
@@ -284,8 +290,8 @@ export function bridgeDeckHeight(x,z){
    for(const {path,ys}of profiles)path.forEach((p,i)=>shared.set(p.join(','),Math.max(shared.get(p.join(','))||0,ys[i])));
    for(const {path,ys}of profiles){
     path.forEach((p,i)=>ys[i]=shared.get(p.join(',')));
-    for(let i=1;i<path.length;i++)ys[i]=Math.max(ys[i],ys[i-1]-.24*Math.hypot(path[i][0]-path[i-1][0],path[i][1]-path[i-1][1]));
-    for(let i=path.length-2;i>=0;i--)ys[i]=Math.max(ys[i],ys[i+1]-.24*Math.hypot(path[i][0]-path[i+1][0],path[i][1]-path[i+1][1]));
+    for(let i=1;i<path.length;i++)ys[i]=Math.max(ys[i],ys[i-1]-.18*Math.hypot(path[i][0]-path[i-1][0],path[i][1]-path[i-1][1]));
+    for(let i=path.length-2;i>=0;i--)ys[i]=Math.max(ys[i],ys[i+1]-.18*Math.hypot(path[i][0]-path[i+1][0],path[i][1]-path[i+1][1]));
    }
   }
   bridgeCells=new Map();
@@ -301,7 +307,8 @@ export function bridgeDeckHeight(x,z){
  for(const {a,b,ya,yb,pad}of bridgeCells.get(Math.floor(x/16)+','+Math.floor(z/16))||[]){const dx=b[0]-a[0],dz=b[1]-a[1],t=Math.max(0,Math.min(1,((x-a[0])*dx+(z-a[1])*dz)/(dx*dx+dz*dz||1))),d=Math.hypot(x-a[0]-dx*t,z-a[1]-dz*t),radius=HIGHWAY_WIDTH/2+1+pad;if(d<radius){const weight=(radius-d)**2;total+=weight;deck+=(ya+(yb-ya)*t)*weight;}}
  return total?deck/total:0;
 }
-export function isletHeight(x,z){return Math.max(terrainHeight(x,z),bridgeDeckHeight(x,z));}
+export function jungleBridgeHeight(x,z){if(x<550||x>730)return 0;const p=jungleTrailPoint((x-550)/180);if(Math.abs(z-p.z)>3)return 0;const d=inlandWaterDistance(x,p.z);return d<7?Math.max(0,1.8*(1-Math.max(0,d)/7)):0;}
+export function isletHeight(x,z){return Math.max(terrainHeight(x,z),bridgeDeckHeight(x,z),jungleBridgeHeight(x,z));}
 export const navigableWater=(x,z)=>canalWater(x,z)||inWater(x,z);
 export function terrainHeight(x,z){return gorgonaShoreHeight(x,z,rainforestTerrain(x,z,gradedTerrainHeight(x,z)));}
 function gradedTerrainHeight(x,z){
@@ -352,7 +359,7 @@ function gradedTerrainHeight(x,z){
 export const explorePlaces=[
  {id:'chiriquiFalls',x:-477,z:-60,icon:'🌊',es:'Cascada escondida · Chiriquí',en:'Hidden waterfall · Chiriquí',kind:'mainland'},
  {id:"costaArriba",x:114,z:-401,icon:"🏘️",kind:"mainland",es:"Costa Arriba · Colón",en:"Costa Arriba · Colón"},
- {id:'darienJungle',x:492,z:-58,icon:'🌳',es:'Darién · Selva del Este',en:'Darién · Eastern Jungle',kind:'mainland'},
+ {id:'darienJungle',x:550,z:-68,icon:'🌳',es:'Darién · Selva del Este',en:'Darién · Eastern Jungle',kind:'mainland'},
  {id:'gorgonaTown',x:-55,z:-16,icon:'🌴',es:'Chame · Panamá Oeste',en:'Chame · Panamá Oeste',kind:'mainland'},
  {id:'colonCity',x:-67,z:-374,icon:'🏙️',es:'Ciudad de Colón · Costa Caribe',en:'Colón City · Caribbean Waterfront',kind:'mainland'},
  {id:'colonCivic',x:11,z:-372,icon:'🏘️',es:'Colón · Distrito Cívico y Puerto',en:'Colón · Port and Civic District',kind:'mainland'},
@@ -368,7 +375,7 @@ export const explorePlaces=[
  {id:'ollie',x:-290,z:-50,icon:'🪶',es:'Ollie · Boquete',en:'Ollie · Boquete',kind:'friend'},
  {id:'luna',x:0,z:49.3,icon:'🦀',es:'Luna · Guna Yala',en:'Luna · Guna Yala',kind:'friend'},
  {id:'garden',x:24,z:-9.5,icon:'🌸',es:'Jardín de Flores de Taboga',en:'Taboga Flower Garden',kind:'garden'},
- {id:'beacon',x:-1,z:-2.5,icon:'✦',es:'Faro de la Aventura · Gorgona',en:'Gorgona Adventure Lighthouse',kind:'beacon'},
+ {id:'beacon',x:ISLA_LIGHTHOUSE.x,z:ISLA_LIGHTHOUSE.z+2.5,icon:'🗼',es:'Faro de Isla Grande',en:'Isla Grande Lighthouse',kind:'beacon'},
  {id:'bounce',x:-4,z:6,icon:'🍄',es:'Honguito de Gorgona',en:'Gorgona Bouncy Mushroom',kind:'bounce'},
  {id:'balloon',x:5,z:-7,icon:'🎈',es:'Globo de Panamá',en:'Panama Balloon Ride',kind:'balloon'},
  {id:'boat',x:4,z:16,icon:'⛵',es:'Muelle de Gorgona',en:'Gorgona Boat Dock',kind:'boat'},
@@ -396,7 +403,7 @@ export const exploreItems=[
 ];
 for(const p of exploreItems){const land={fruit:'wilds',glow:'sunset'}[p.kind];if(land)Object.assign(p,islandPoint(land,p.x,p.z));}
 export function normalizeStory(raw){return Object.fromEntries(Object.entries({shells:3,picnic:4,seed:3,song:4,care:2,light:4}).map(([id,length])=>[id,Number.isInteger(raw?.[id])?Math.max(0,Math.min(length,raw[id])):0]));}
-export function freshExplore(){return {morningTheme:normalizeMorningTheme(),waterfall:normalizeWaterfall(),mansion:normalizeMansion(null),panama:normalizePanama(null),campaign:normalizeCampaign(null),colon:normalizeColon(null),estate:normalizeEstate(null),inventoryVersion:1,foodTotal:{banana:0,coconut:0,mango:0},worldVersion:3,travelMode:'walk',geographyVersion:GEOGRAPHY_VERSION,sanBlasGeographyVersion:4,colonLayoutVersion:COLON_LAYOUT_VERSION,realms:{found:[],turtle:0,bird:0},journey:{visited:[],meals:0,swim:0,fly:0,rings:[]},x:4,z:10,dayTime:40,story:normalizeStory(null),collected:[],badges:[],hat:0,pet:false,flowers:0,catches:0,pops:0,flight:0,growth:1,food:{coconut:0,banana:0,mango:0},harvested:{},boat:{x:6.5,z:16,heading:0},regionalProjects:{helped:[]},craft:{built:[],spent:{}},city:{cruise:normalizeCruise(null),bags:[],pizzas:0,car:{model:'lamborghini',x:cityX(114),z:-50,heading:0},parkedCar:{model:'ferrari',x:cityX(107),z:-50,heading:0},activities:{deliveries:[],deliveryActive:false,rallyBest:0,rallyWins:0,soccerGoals:0,soccerShots:0,marketTrades:0,muralColors:0,museum:[],carWashes:0}},friends:{visits:[],completed:[],companion:null}};}
+export function freshExplore(){return {morningTheme:normalizeMorningTheme(),waterfall:normalizeWaterfall(),mansion:normalizeMansion(null),panama:normalizePanama(null),campaign:normalizeCampaign(null),colon:normalizeColon(null),estate:normalizeEstate(null),inventoryVersion:1,foodTotal:{banana:0,coconut:0,mango:0},worldVersion:3,travelMode:'walk',geographyVersion:GEOGRAPHY_VERSION,caribbeanLayoutVersion:1,tabogaLayoutVersion:1,sanBlasGeographyVersion:4,colonLayoutVersion:COLON_LAYOUT_VERSION,realms:{found:[],turtle:0,bird:0},journey:{visited:[],meals:0,swim:0,fly:0,rings:[]},x:4,z:10,dayTime:40,story:normalizeStory(null),collected:[],badges:[],hat:0,pet:false,flowers:0,catches:0,pops:0,flight:0,growth:1,food:{coconut:0,banana:0,mango:0},harvested:{},boat:{x:6.5,z:16,heading:0},regionalProjects:{helped:[]},craft:{built:[],spent:{}},city:{cruise:normalizeCruise(null),bags:[],pizzas:0,car:{model:'lamborghini',x:cityX(114),z:-50,heading:0},parkedCar:{model:'ferrari',x:cityX(107),z:-50,heading:0},activities:{deliveries:[],deliveryActive:false,rallyBest:0,rallyWins:0,soccerGoals:0,soccerShots:0,marketTrades:0,muralColors:0,museum:[],carWashes:0}},friends:{visits:[],completed:[],companion:null}};}
 export function normalizeExplore(raw){raw=migrateGeography(raw);const s=freshExplore();if(!raw||typeof raw!=='object')return s;s.travelMode=normalizeTravelMode(raw.travelMode);const rr=raw.realms||{};s.realms={found:[...new Set((Array.isArray(rr.found)?rr.found:[]).filter(id=>/^(reef-[0-5]|pearl-[0-4]|wind-[0-4]|star-[0-4]|seaChest-0|skyLight-0)$/.test(id)))],turtle:Math.max(0,Math.min(5,Math.floor(Number(rr.turtle)||0))),bird:Math.max(0,Math.min(4,Math.floor(Number(rr.bird)||0)))};const j=raw.journey||{};s.journey={visited:[...new Set((Array.isArray(j.visited)?j.visited:[]).filter(id=>worldIslands.some(p=>p.id===id)))],meals:Math.max(0,Math.min(999,Number(j.meals)||0)),swim:Math.max(0,Math.min(100000,Number(j.swim)||0)),fly:Math.max(0,Math.min(100000,Number(j.fly)||0)),rings:[...new Set((Array.isArray(j.rings)?j.rings:[]).filter(id=>/^(swim|fly)-[0-9]+$/.test(id)))]};// Preserve friendship, a chosen companion, and first-time play rewards across saves.
 const FRIEND_IDS=['pip','dori','mila','ollie','luna','kai'],savedFriends=raw.friends||{};
 s.friends={
@@ -427,7 +434,7 @@ s.regionalProjects={helped:[...new Set((Array.isArray(raw.regionalProjects?.help
 const savedCraft=raw.craft||{},allowedResource=['shell','fruit','glow','islandTreasure','seaTreasure','moneyBag'];
 s.craft={built:[...new Set((Array.isArray(savedCraft.built)?savedCraft.built:[]).filter(id=>['sandcastle','butterflyGarden','treehouse','beachCabana','volcanoCamp','coralNursery','pizzaStand'].includes(id)))],
  spent:Object.fromEntries(allowedResource.map(kind=>[kind,Math.max(0,Math.min(999,Math.floor(Number(savedCraft.spent?.[kind])||0)))]))};
-s.colonLayoutVersion=COLON_LAYOUT_VERSION;
+s.colonLayoutVersion=COLON_LAYOUT_VERSION;s.caribbeanLayoutVersion=1;s.tabogaLayoutVersion=1;
 s.morningTheme=normalizeMorningTheme(raw.morningTheme);s.dayTime=Number.isFinite(raw.dayTime)?((raw.dayTime%240)+240)%240:40;s.story=normalizeStory(raw.story);const ids=new Set(exploreItems.map(x=>x.id));s.collected=[...new Set(Array.isArray(raw.collected)?raw.collected.filter(x=>ids.has(x)):[])];s.badges=[...new Set(Array.isArray(raw.badges)?raw.badges.filter(x=>['picnic','glow','song','garden','treasure','beacon','balloon','boat','volcano-summit'].includes(x)):[])];if(Number.isFinite(raw.x)&&Number.isFinite(raw.z)&&(raw.x/WORLD_BOUNDS.x)**2+(raw.z/WORLD_BOUNDS.z)**2<=1){
  s.x=raw.x;s.z=raw.z;
  if(raw.worldVersion===2){
@@ -468,13 +475,13 @@ export function harvestFood(world,tree){
  if(!tree||!['banana','coconut','mango'].includes(tree.kind)||!new RegExp('^'+tree.kind+'\\d+$').test(tree.id))return false;
  const n=world.harvested[tree.id]||0;
  if(n>=tree.fruits.length||!addFood(world,tree.kind))return false;
- world.harvested[tree.id]=n+1;return true;
+ world.harvested[tree.id]=n+1;tree.fruits[n].visible=false;return true;
 }
 export function collectExplore(s,id){const item=exploreItems.find(x=>x.id===id);if(!item||s.collected.includes(id))return false;if(item.kind==='fruit'&&!addFood(s,'banana',1))return false;s.collected.push(id);if(['islandTreasure','seaTreasure','glow'].includes(item.kind)&&s.estate)s.estate.charms=Math.min(9999,s.estate.charms+1);return true;}
 export function badgeExplore(s,id){if(s.badges.includes(id))return false;s.badges.push(id);return true;}
 export function countExplore(s,kind){return s.collected.filter(id=>exploreItems.find(x=>x.id===id)?.kind===kind).length+(kind==='islandTreasure'?(s.waterfall?.diamonds||0):0);}
 // Small navigation grid: a tap walks around cottages instead of through them.
-export const worldObstacles=[[-10,5,1.55],[-13,2,1.3],[10,2,1.55],[12,-1,1.2],[9,-4,1.1],[-1,-5,1.5]];
+export const worldObstacles=[[-10,5,1.55],[-13,2,1.3],[10,2,1.55],[12,-1,1.2],[9,-4,1.1],[ISLA_LIGHTHOUSE.x,ISLA_LIGHTHOUSE.z,1.5]];
 export function walkable(x,z){return (isletHeight(x,z)>0||Math.hypot(x/20,z/14)<=homeShoreRadius(Math.atan2(z/14,x/20)))&&worldObstacles.every(([a,b,r])=>Math.hypot(x-a,z-b)>r+.3);}
 // Match the sculpted shoreline; the wider lagoon is navigable, but buildings stay solid.
 export function onDock(x,z){return costaDock(x,z)||(x>=3&&x<=5&&z>=11.8&&z<=17.4);}

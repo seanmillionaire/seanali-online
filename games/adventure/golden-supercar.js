@@ -34,28 +34,29 @@ export function createGoldenSupercar({T,scene,make,mat,geometry,box,ball,cylinde
  // White horns and angular bull silhouette, readable without a downloaded logo.
  const ivory=mat('#ffffff',{roughness:.25,metalness:.25});
  if(ferrari){const body=b(ivory,0,.34,1.63,.028,.008,.095);body.rotation.y=-.4;b(ivory,.028,.34,1.58,.035,.008,.035);for(const x of [-1,1]){const leg=b(ivory,x*.025,.34,1.68,.018,.008,.065);leg.rotation.y=x*.6;}}else {b(ivory,0,.337,1.63,.10,.008,.045);for(const side of [-1,1]){b(ivory,side*.043,.34,1.60,.018,.009,.07);const horn=b(ivory,side*.068,.34,1.57,.045,.009,.012);horn.rotation.y=side*.6;}}
- const neon=mat('#b453ff',{emissive:'#a12cff',emissiveIntensity:3,roughness:.25});
+ const neon=mat('#b453ff',{emissive:'#a12cff',emissiveIntensity:6,roughness:.25});
  for(const side of [-1,1])b(neon,side*1.10,-.265,-.03,.035,.035,2.32);
  // A single soft radial texture gives underglow without adding dynamic lights.
- const n=32,data=new Uint8Array(n*n*4);for(let y=0;y<n;y++)for(let x=0;x<n;x++){const i=(y*n+x)*4,r=Math.hypot((x-15.5)/15.5,(y-15.5)/15.5);data[i]=160;data[i+1]=48;data[i+2]=255;data[i+3]=Math.max(0,(1-r)**2*95);}
+ const n=32,data=new Uint8Array(n*n*4);for(let y=0;y<n;y++)for(let x=0;x<n;x++){const i=(y*n+x)*4,r=Math.hypot((x-15.5)/15.5,(y-15.5)/15.5);data[i]=160;data[i+1]=48;data[i+2]=255;data[i+3]=Math.pow(Math.max(0,1-r),1.3)*230;}
  const glowTexture=new T.DataTexture(data,n,n,T.RGBAFormat);glowTexture.needsUpdate=true;glowTexture.colorSpace=T.SRGBColorSpace;
- const glowMaterial=new T.MeshBasicMaterial({map:glowTexture,transparent:true,depthWrite:false,blending:T.AdditiveBlending,side:T.DoubleSide});glowMaterial.addEventListener('dispose',()=>glowTexture.dispose());
- const underglow=p(geometry(new T.PlaneGeometry(1,1)),glowMaterial,0,-.66,0,5.8,7.1,1);underglow.rotation.x=-Math.PI/2;underglow.name='Violet neon underglow';
- const diamond=mat('#f4faff',{metalness:.85,roughness:.07}),brake=mat('#b12140',{metalness:.35,roughness:.43});
+ const glowMaterial=new T.MeshBasicMaterial({map:glowTexture,toneMapped:false,fog:false,transparent:true,depthWrite:false,blending:T.AdditiveBlending,side:T.DoubleSide});glowMaterial.addEventListener('dispose',()=>glowTexture.dispose());
+ const underglow=p(geometry(new T.PlaneGeometry(1,1)),glowMaterial,0,-.64,0,6.8,8,1);underglow.rotation.x=-Math.PI/2;underglow.name='Violet neon underglow';
+ const diamond=mat('#f4faff',{metalness:.85,roughness:.07,emissive:'#b8dfff',emissiveIntensity:.5}),brake=mat('#b12140',{metalness:.35,roughness:.43});
  const tireGeo=geometry(new T.CylinderGeometry(1,1,1,32)),shoulderGeo=geometry(new T.TorusGeometry(.39,.10,8,32));
  if(ferrari){const arch=geometry(new T.TorusGeometry(.53,.075,6,24,Math.PI));for(const side of [-1,1])for(const z of [-1.35,1.4]){const fender=p(arch,gold,side*1.20,-.20,z,1,1,1);fender.rotation.y=Math.PI/2;}}
- const wheels=[];for(const side of [-1,1])for(const z of [-1.35,1.40]){
+ const glints=[],wheels=[];for(const side of [-1,1])for(const z of [-1.35,1.40]){
   const rig=new T.Group();rig.position.set(side*1.10,-.20,z);root.add(rig);wheels.push(rig);
   const tire=p(tireGeo,rubber,0,0,0,.49,.29,.49,rig);tire.rotation.z=Math.PI/2;for(const offset of [-.10,.10]){const shoulder=p(shoulderGeo,rubber,offset,0,0,1,1,1,rig);shoulder.rotation.y=Math.PI/2;}
   for(const [m,r,offset]of [[chrome,.405,.165],[carbon,.353,.19]]){const rim=p(cylinder,m,side*offset,0,0,r,.04,r,rig);rim.rotation.z=Math.PI/2;}
   const disc=p(cylinder,chrome,side*.20,0,0,.29,.025,.29,rig);disc.rotation.z=Math.PI/2;b(brake,side*.24,.05,-.23,.045,.20,.09,rig);
   for(let i=0;i<10;i++){const a=i*Math.PI/5,spoke=b(chrome,side*.223,Math.cos(a)*.20,Math.sin(a)*.20,.035,ferrari?.35:.31,ferrari?.025:.04,rig);spoke.rotation.x=-a+(ferrari?(i%2?.10:-.10):0);}
   const gems=new T.InstancedMesh(geometry(new T.OctahedronGeometry(.025,0)),diamond,20),matrix=new T.Matrix4();for(let i=0;i<20;i++){const a=i*Math.PI/10;matrix.makeTranslation(side*.246,Math.cos(a)*.367,Math.sin(a)*.367);gems.setMatrixAt(i,matrix);}gems.name='Diamond-cut rim highlights';rig.add(gems);
+  for(let j=0;j<2;j++){const glint=b(white,side*.28,.25*(j?1:-1),.22*(j?1:-1),.012,.12,.012,rig);glint.name='Diamond rim glint';glints.push(glint);}
   for(let i=0;i<12;i++){const a=i*Math.PI/6;const tread=b(carbon,0,Math.cos(a)*.482,Math.sin(a)*.482,.29,.014,.065,rig);tread.rotation.x=-a;}
   const hub=p(cylinder,gold,side*.25,0,0,.085,.06,.085,rig);hub.rotation.z=Math.PI/2;
  }
  const flameMat=mat('#ff7018',{emissive:'#ff4e08',emissiveIntensity:2.8,transparent:true,opacity:.88,depthWrite:false}),coreMat=mat('#fff2a0',{emissive:'#ffdc7b',emissiveIntensity:3,transparent:true,opacity:.94,depthWrite:false}),cone=geometry(new T.ConeGeometry(1,1,10)),flames=[];
  for(const x of [-.42,.42]){const exhaust=p(cylinder,chrome,x,-.12,-2.22,.115,.23,.115);exhaust.rotation.x=Math.PI/2;const hole=p(cylinder,carbon,x,-.12,-2.35,.089,.025,.089);hole.rotation.x=Math.PI/2;const f=new T.Group();f.name='Rear exhaust flame';f.position.set(x,-.12,-2.36);root.add(f);const outer=p(cone,flameMat,0,0,-.5,.16,1,.16,f);outer.rotation.x=-Math.PI/2;const core=p(cone,coreMat,0,0,-.23,.085,.46,.085,f);core.rotation.x=-Math.PI/2;f.visible=false;flames.push(f);}
  let time=0;
- return {root,paint:gold,wheels,flames,dispose(){glowMaterial.dispose();root.traverse(o=>{if(o.isInstancedMesh)o.dispose();});},update(speed=0,dt=0){if(dt>0)time+=dt;const power=Math.min(1,Math.abs(speed)/52);for(const w of wheels)if(dt>0)w.rotation.x+=speed*dt/.49;for(let i=0;i<flames.length;i++){const f=flames[i];f.visible=Math.abs(speed)>3;f.scale.set(.7+power*.5,.7+power*.5,(.3+power*1.4)*(1+.15*Math.sin(time*39+i*2)));}}};
+ return {root,paint:gold,wheels,flames,dispose(){glowMaterial.dispose();root.traverse(o=>{if(o.isInstancedMesh)o.dispose();});},update(speed=0,dt=0){if(dt>0)time+=dt;const power=Math.min(1,Math.abs(speed)/52);glints.forEach((g,i)=>{const pulse=.3+Math.pow(Math.max(0,Math.sin(time*2.7+i*1.9)),10)*1.7;g.scale.y=.12*pulse;g.scale.z=.012*pulse;});for(const w of wheels)if(dt>0)w.rotation.x+=speed*dt/.49;for(let i=0;i<flames.length;i++){const f=flames[i];f.visible=Math.abs(speed)>3;f.scale.set(.7+power*.5,.7+power*.5,(.3+power*1.4)*(1+.15*Math.sin(time*39+i*2)));}}};
 }

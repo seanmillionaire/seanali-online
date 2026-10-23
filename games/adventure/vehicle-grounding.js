@@ -1,6 +1,7 @@
 // Local +Z is forward. Each model's actual tire bottoms and low body edges
 // share one road-following pose, independent of the direction of travel.
 export const VEHICLE_GROUND_PROFILES={
+ utility:{track:1,rear:-1.38,front:1.38,tireBottom:0,halfWidth:1.12,halfLength:2.3,bodyBottom:.44},
  jeep:{track:1.03,rear:-1.18,front:1.30,tireBottom:0,halfWidth:1.12,halfLength:2.15,bodyBottom:.47},
  supercar:{track:1.10,rear:-1.35,front:1.40,tireBottom:-.69,halfWidth:1.16,halfLength:2.30,bodyBottom:-.35},
  sedan:{track:.83,rear:-1.02,front:1.04,tireBottom:.01,halfWidth:.84,halfLength:1.72,bodyBottom:.44},

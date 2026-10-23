@@ -1,3 +1,4 @@
+import {ISLA_GRANDE} from './costa-arriba-layout.js';
 import {darienBoulderClear} from './darien-terrain.js';
 import {natureSiteClear,chiriquiContains,waterfallTrailClear} from './rainforest-layout.js';
 import {jungleTrailClear,snakeCorridorContains} from './east-jungle-layout.js';
@@ -14,13 +15,13 @@ export const FOREST_PATCHES=[
  {id:'darien-jungle-heart',x:644,z:-73,rx:78,rz:75,n:235,biome:'tropical'},
  {id:'darien-jungle-east',x:722,z:-100,rx:56,rz:77,n:195,biome:'tropical'},
  {id:"costa-arriba-rainforest",x:112,z:-365,rx:66,rz:17,n:48,biome:"tropical"},
- {id:"isla-grande-palms",x:175,z:-502,rx:52,rz:32,n:75,biome:"island"},
+ {id:"isla-grande-palms",x:ISLA_GRANDE.x,z:ISLA_GRANDE.z,rx:52,rz:32,n:75,biome:"island"},
  {id:'coiba-moist-forest',x:-480,z:160,rx:35,rz:29,n:65,biome:'island'},
  {id:'rey-island-forest',x:680,z:260,rx:31,rz:27,n:45,biome:'island'},
  {id:'escudo-coastal-forest',x:-340,z:-310,rx:29,rz:26,n:50,biome:'island'},
  {id:'cebaco-forest',x:-200,z:260,rx:32,rz:28,n:48,biome:'island'},
  {id:'contadora-green-interior',x:560,z:125,rx:29,rz:25,n:23,biome:'island'},
- {id:'taboga-gardens',x:110,z:85,rx:16,rz:13,n:12,biome:'island'},
+ {id:'taboga-gardens',x:330,z:105,rx:16,rz:13,n:12,biome:'island'},
  {id:'gorgona-palm-grove',x:18,z:-36,rx:27,rz:20,n:54,biome:'tropical'},
  {id:'gorgona-rainforest',x:-23,z:-46,rx:29,rz:23,n:48,biome:'tropical'},
  {id:'pacific-riverside',x:52,z:-72,rx:25,rz:25,n:44,biome:'tropical'},
@@ -60,7 +61,7 @@ function nearTrail(x,z){
 }
 export function forestSiteClear(x,z,biome='tropical',kind=null){
  if(!waterfallTrailClear(x,z)||!natureSiteClear(x,z,1))return false;
- if(!darienBoulderClear(x,z,1.8)||(kind!=='fern'&&snakeCorridorContains(x,z))||!jungleTrailClear(x,z)||homeReserved(x,z,5)||!regionalTrailClear(x,z)||regionalClearing(x,z)||roadDistance(x,z)<HIGHWAY_WIDTH/2+10||townPlots.some(p=>Math.abs(x-p.x)<p.w/2+5&&Math.abs(z-p.z)<p.d/2+5))return false;
+ if(Math.hypot(x-530,z+430)<8||!darienBoulderClear(x,z,1.8)||(kind!=='fern'&&snakeCorridorContains(x,z))||!jungleTrailClear(x,z)||homeReserved(x,z,5)||!regionalTrailClear(x,z)||regionalClearing(x,z)||roadDistance(x,z)<HIGHWAY_WIDTH/2+10||townPlots.some(p=>Math.abs(x-p.x)<p.w/2+5&&Math.abs(z-p.z)<p.d/2+5))return false;
  if(FOREST_CLEARINGS.some(p=>Math.hypot(x-p.x,z-p.z)<p.r))return false;
  if(Math.hypot((x-cityX(120))/67,(z+50)/57)<1.09)return false;
  // Giant rainforest canopy belongs inland, never on offshore beaches.

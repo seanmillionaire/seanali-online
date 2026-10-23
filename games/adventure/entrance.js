@@ -1,3 +1,4 @@
+import {ISLA_LIGHTHOUSE as LH} from './costa-arriba-layout.js';
 import {createRenderBudget} from './render-budget.js';
 import {buildMainlandData,buildCoastData} from './mainland-data.js';
 import {SWELL_GLSL,swellHeight} from './ocean-swells.js?v=225';
@@ -472,7 +473,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{},ma
   }
   house(-10,5,wood,.95);house(-13,2,wood,.8);house(10,2,wood,.95);house(12,-1,wood,.75);house(9,-4,wood,.65);
   // Lighthouse, its rotating crystal, and a soft sweeping beam.
-  const tower=new T.Group(),ty=height(-1,-5);tower.position.set(-1,ty,-5);scene.add(tower);make(cylinder,stone,0,.25,0,2.1,.5,2.1,tower);make(geometry(new T.CylinderGeometry(.8,1.25,6,24)),cream,0,3.3,0,1,1,1,tower);make(cylinder,red,0,3.6,0,1.03,.5,1.03,tower);make(cylinder,stone,0,6.35,0,1.4,.25,1.4,tower);make(cylinder,gold,0,7.1,0,.86,1.3,.86,tower);make(cone,red,0,8,0,1.5,1.1,1.5,tower);
+  const tower=new T.Group(),ty=height(LH.x,LH.z);tower.position.set(LH.x,ty,LH.z);scene.add(tower);make(cylinder,stone,0,.25,0,2.1,.5,2.1,tower);make(geometry(new T.CylinderGeometry(.8,1.25,6,24)),cream,0,3.3,0,1,1,1,tower);make(cylinder,red,0,3.6,0,1.03,.5,1.03,tower);make(cylinder,stone,0,6.35,0,1.4,.25,1.4,tower);make(cylinder,gold,0,7.1,0,.86,1.3,.86,tower);make(cone,red,0,8,0,1.5,1.1,1.5,tower);
   const crystal=make(ball,gold,0,7.1,0,.25,.35,.25,tower);
   for(let i=0;i<4;i++){const a=i/4*Math.PI*2;make(cylinder,wood,Math.sin(a),7.1,Math.cos(a),.07,1.4,.07,tower);}make(box,wood,0,1,1.2,.6,1.8,.1,tower);
   const beamMat=new T.MeshBasicMaterial({color:'#ffe9ad',transparent:true,opacity:.07,depthWrite:false,side:T.DoubleSide});materials.add(beamMat);const beam=make(geometry(new T.ConeGeometry(4,32,24,1,true)),beamMat,0,7.1,0,1,1,1,tower);beam.geometry.translate(0,-16,0);beam.rotation.z=Math.PI/2;beam.castShadow=false;beam.receiveShadow=false;
@@ -503,7 +504,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{},ma
    const rope=mat('#a99d7a');for(const bx of [-1.5,1.5]){const curve=new T.LineCurve3(new T.Vector3(0,3.3,0),new T.Vector3(bx,.2,0));make(geometry(new T.TubeGeometry(curve,1,.009,4,false)),rope,0,0,0,1,1,1,g);}
    g.rotation.y=-.3;bobbing.push({g,y:.25,z});return g;
   }
-  const dockBoat=boat(6.5,16,.75);dockBoat.name='Dock boat';const sailboat=boat(-18,21,1.2);
+  const dockBoat=boat(6.5,16,.75);dockBoat.name='Dock boat';bobbing.splice(bobbing.findIndex(b=>b.g===dockBoat),1);const sailboat=boat(-18,21,1.2);
   // Distant islets and glowing motes give the approach a sense of depth.
   const motePositions=[];for(let i=0;i<60;i++)motePositions.push((rand()-.5)*40,1+rand()*10,(rand()-.5)*30);const motesGeo=geometry(new T.BufferGeometry());motesGeo.setAttribute('position',new T.Float32BufferAttribute(motePositions,3));const moteMat=new T.PointsMaterial({color:'#d8d6c6',size:.025,transparent:true,opacity:.18,depthWrite:false});materials.add(moteMat);const motes=new T.Points(motesGeo,moteMat);scene.add(motes);
   let frame=0,last=0,lastDraw=0,time=0,volcanoTime=0,disposed=false,flight=null,finish=null,width=1,heightPx=1,px=0,py=0;

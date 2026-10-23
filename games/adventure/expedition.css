@@ -196,3 +196,12 @@ body[data-scene="explore"] .explore-world.guided-arrival>:not(canvas):not(.world
 
 /* Compact laptops retain arrows without stacking the two home shortcuts. */
 @media(max-width:780px) and (hover:hover) and (pointer:fine){body[data-scene="explore"] .mansion-garage-launch{bottom:326px}}
+.world-visit-controls{position:absolute;z-index:85;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(90%,440px);padding:14px;border-radius:18px;background:#143949ed;color:#fff;display:flex;gap:8px;flex-wrap:wrap;box-shadow:0 8px 28px #0005}.world-visit-controls[hidden]{display:none}.world-visit-controls strong,.world-visit-controls p{width:100%;margin:0;font-size:16px}.world-visit-controls button{min-height:44px;border:0;border-radius:12px;padding:10px;background:#ffdf63;color:#163c48;font-weight:700}.world-visit-controls a{color:#b9f4ff;padding:12px}.world-visit-active .explore-controls,.world-visit-active .explore-action,.world-visit-active .explore-joystick{visibility:hidden}
+
+.world-visit-active .explore-stick,.world-visit-active .world-arrows,.world-visit-active .world-controls,.world-visit-active .explore-camera-toggle,.world-visit-active .mansion-shortcut,.world-visit-active .car-shortcut{visibility:hidden}
+
+.world-visit-active .camera-view-toggle,.world-visit-active .mobile-game-dock{visibility:hidden}
+
+.world-visit-active .mansion-garage-launch,.world-visit-active .mansion-launch{visibility:hidden}
+
+.world-visit-active .explore-message,.world-visit-active .explore-instructions{visibility:hidden}

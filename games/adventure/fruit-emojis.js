@@ -1,5 +1,5 @@
-// Native color emoji, drawn once per fruit type. No downloaded artwork or sculpted fruit.
-export const FRUIT_EMOJIS=Object.freeze({banana:'🍌',coconut:'🥥',mango:'🥭',pineapple:'🍍'});
+// Native color emoji atlas shared by fruit, readable animals and food props.
+export const FRUIT_EMOJIS=Object.freeze({whale:'🐋',shoe:'👟',shirt:'👕',dress:'👗',bag:'👜',headphones:'🎧',phone:'📱',laptop:'💻',teddy:'🧸',gift:'🎁',sun:'☀️',moon:'🌕',crab:'🦀',diamond:'💎',cow:'🐄',rooster:'🐓',sloth:'🦥',turtle:'🐢',fish:'🐟',rice:'🍚',raspao:'🍧',pirate:'🏴‍☠️',compass:'🧭',strawberry:'🍓',coffee:'☕',banana:'🍌',coconut:'🥥',mango:'🥭',pineapple:'🍍'});
 export const FRUIT_TILES=Object.freeze({4:'coconut',5:'mango',6:'pineapple',7:'banana'});
 export function createFruitEmojis(T){
  const textures=new Map(),materials=new Map(),sprites=new Map(),meshes=[],geometries=[];

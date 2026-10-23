@@ -1,3 +1,4 @@
+import {createFruitEmojis} from './fruit-emojis.js';
 import {advanceThemeClock} from './theme-audio.js';
 import {nightLighting} from './night-lighting.js';
 import {worldClock,DAY_CYCLE_SECONDS} from './world-clock.js?v=225';
@@ -7,9 +8,13 @@ import {worldIslands,marineWater,roadDistance,HIGHWAY_WIDTH,sharkClearance,shark
 import {oceanModel} from './ocean-models.js?v=225';
 // Saved clock keeps its original 240-unit format; one full day takes 20 minutes.
 export const NIGHT_MODE_ENABLED=true;
-export function positionMoon(moon,camera){
- const side=Math.min(85,320*Math.tan((camera.fov||60)*Math.PI/360)*(camera.aspect||1)*.45);
- moon.position.set(-side,105,-320).applyQuaternion(camera.quaternion);moon.quaternion.copy(camera.quaternion);
+export function positionMoon(moon,camera,sideSign=1){
+ const side=sideSign*Math.min(85,320*Math.tan((camera.fov||60)*Math.PI/360)*(camera.aspect||1)*.45);
+ moon.position.set(-side,105,-320).applyQuaternion(camera.quaternion);
+ // Raise the disc without pushing it outside a phone's upper sky. When the
+ // camera tilts down, a more distant sky position keeps the full disc above sea level.
+ if(moon.position.y<24){moon.position.set(-side/320,.78*Math.tan((camera.fov||60)*Math.PI/360),-1).applyQuaternion(camera.quaternion);if(moon.position.y>0)moon.position.multiplyScalar(Math.max(320,24/moon.position.y));else{moon.position.multiplyScalar(900);moon.position.y=24;}}
+ moon.quaternion.copy(camera.quaternion);
 }
 
 // Named and inspectable natural marine habitats. All start in navigable
@@ -45,8 +50,11 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
  // Celestial bodies travel across the upper camera view, away from Angelique and controls.
  const sky=new T.Group();sky.name='Sun moon and stars';scene.add(sky);const owned=[];
  const basic=(color,extra={})=>{const m=new T.MeshBasicMaterial({color,depthTest:true,depthWrite:false,fog:false,toneMapped:false,...extra});owned.push(m);return m;};
- const sunBody=new T.Mesh(ball,basic('#ffe39c')),moon=new T.Mesh(ball,basic('#e3f1ff'));sunBody.name='Sun';moon.name='Moon';sunBody.scale.setScalar(12);moon.scale.setScalar(18);sky.add(sunBody,moon);sunBody.renderOrder=30;moon.renderOrder=30;for(let i=0;i<10;i++){const a=i*Math.PI/5,ray=new T.Mesh(cone,basic('#ffd16e'));ray.position.set(Math.sin(a)*1.4,Math.cos(a)*1.4,0);ray.rotation.z=-a;ray.scale.set(.13,.45,.1);ray.renderOrder=30;sunBody.add(ray);}
- for(let i=0;i<4;i++){const crater=new T.Mesh(ball,basic('#a6bad1'));crater.scale.set(.2,.15,.025);crater.renderOrder=31;crater.position.set(Math.sin(i*2)*.55,Math.cos(i*2)*.5,.85);moon.add(crater);}
+ const celestial=createFruitEmojis(T),sunBody=celestial.sprite('sun',0,0,0,36,sky),moon=celestial.sprite('moon',0,0,0,38,sky);
+ sunBody.name='Sun emoji';moon.name='Moon emoji';sunBody.material.fog=false;moon.material.fog=false;sunBody.renderOrder=30;moon.renderOrder=30;
+ const glowCanvas=typeof document!=='undefined'?document.createElement('canvas'):null;let glowTexture;
+ if(glowCanvas){glowCanvas.width=glowCanvas.height=128;const c=glowCanvas.getContext('2d'),g=c.createRadialGradient(64,64,4,64,64,64);g.addColorStop(0,'rgba(255,255,255,.8)');g.addColorStop(.3,'rgba(255,255,255,.3)');g.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=g;c.fillRect(0,0,128,128);glowTexture=new T.CanvasTexture(glowCanvas);}
+ for(const [body,color] of [[sunBody,'#ffcf70'],[moon,'#b8d7ff']]){const m=new T.SpriteMaterial({map:glowTexture,color,transparent:true,opacity:.85,depthWrite:false,fog:false,toneMapped:false,blending:T.AdditiveBlending});owned.push(m);const halo=new T.Sprite(m);halo.renderOrder=29;halo.scale.set(3.6,3.6,1);body.add(halo);}
  const starDome=new T.Group();starDome.name='Slowly drifting stars';sky.add(starDome);let skyTime=0;
  const focus=new T.SpotLight('#e0edff',0,105,Math.PI*.34,1,1);focus.name='Cinematic night action light';focus.castShadow=false;focus.decay=0;focus.distance=450;focus.angle=Math.PI*.42;const fill=new T.HemisphereLight('#d8e8ff','#778882',0);fill.name='Night visibility fill';scene.add(focus,focus.target,fill);
  const starMaterial=basic('#dceeff',{transparent:true,opacity:0}),stars=[];for(let i=0;i<64;i++){const star=new T.Mesh(ball,starMaterial);star.position.set(Math.sin(i*9.7)*550,100+(i%11)*36,Math.cos(i*9.7)*550);star.scale.setScalar(.65+(i%3)*.25);starDome.add(star);stars.push(star);}
@@ -73,11 +81,11 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
   if(active)skyTime+=Math.max(0,dt);starDome.rotation.y=skyTime*.006;starDome.rotation.z=Math.sin(skyTime*.012)*.025;
   focus.intensity=player&&!player.indoors?lighting.focus:0;focus.position.set(player?.x??0,(player?.y??0)+23,(player?.z??0)+12);focus.target.position.set(player?.x??0,(player?.y??0)+.5,player?.z??0);
   const angle=phase*Math.PI*2;
-  sunBody.position.set(-Math.cos(angle)*650,Math.sin(angle)*650,-290);
+  positionMoon(sunBody,camera,-1);
   // Keep the large moon in the upper view at night, including when steering.
   positionMoon(moon,camera);
-  sunBody.visible=sunBody.position.y>-24;moon.visible=night||day<.4;
-  sunBody.rotation.z=-angle;starMaterial.opacity=(1-day)*.65;
+  sunBody.visible=!night;moon.visible=night;
+  starMaterial.opacity=(1-day)*.65;
   const roadClear=(x,z,r=.7)=>roadDistance(x,z)>HIGHWAY_WIDTH/2+r;
   const waterClear=(x,z,r=.7)=>roadClear(x,z,r)&&[[0,0],[r,0],[-r,0],[0,r],[0,-r]].every(([ox,oz])=>marineWater(x+ox,z+oz));
   for(const a of animals){
@@ -167,7 +175,7 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
     else f.rotation.y=motion?Math.sin(phase)*.16:0;
    });
   }
- },dispose(){scene.remove(sky,group,focus,focus.target,fill);focus.dispose();fill.dispose();owned.forEach(m=>m.dispose());}};
+ },dispose(){scene.remove(sky,group,focus,focus.target,fill);focus.dispose();fill.dispose();celestial.dispose();glowTexture?.dispose();owned.forEach(m=>m.dispose());}};
 }
 
 // Sharks choose individual safe goals rather than replaying a ring of waypoints.

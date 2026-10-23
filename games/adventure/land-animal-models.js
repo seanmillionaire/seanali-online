@@ -1,5 +1,7 @@
+import {createFruitEmojis} from './fruit-emojis.js';
 import {animalBuilder,animalSurface,animalLoft} from './animal-craft.js';
 export function landAnimalModels(o){
+ const emblems=createFruitEmojis(o.T);
  const {T,mat}=o,{p,link,tube,finish}=animalBuilder(o),scales=animalSurface(T,mat),furMap=animalSurface(T,mat,'fur'),hide=mat('#4f6742',{roughness:.86,bumpMap:scales,bumpScale:.035}),pale=mat('#9eaa73',{roughness:.9}),dark=mat('#15221b'),claw=mat('#b6aa83'),amber=mat('#b59a47',{roughness:.38}),fur=mat('#8a8170',{roughness:1,bumpMap:furMap,bumpScale:.035}),face=mat('#c2b598'),mask=mat('#504c3f');
  function reptile(parent,frog=false){const g=new T.Group();parent.add(g);g.name=frog?'Darién forest frog':'Darién green iguana';const legs=[];
   if(frog)p(hide,0,.26,-.04,.18,.13,.24,g);else o.make(animalLoft(T,o.geometry,[[-2.1,.10,.003,.003],[-1.45,.16,.04,.035],[-.8,.21,.10,.09],[-.4,.26,.19,.17],[0,.27,.22,.19],[.4,.29,.15,.13],[.59,.35,.17,.14],[.8,.34,.13,.095],[.87,.34,.005,.005]],81),hide,0,0,0,1,1,1,g);p(pale,0,.18,.12,frog?.14:.16,.10,frog?.18:.44,g);if(frog)p(hide,0,.31,.20,.17,.10,.12,g);
@@ -8,12 +10,9 @@ export function landAnimalModels(o){
   else for(let i=0;i<12;i++){const a=i*2.4;p(mask,Math.cos(a)*.12,.34+(i%2)*.025,Math.sin(a)*.16,.023,.009,.032,g);}
   finish(g);return {g,legs,tail};
  }
- function sloth(parent){const g=new T.Group();g.name='Tree sloth hanging from a branch';parent.add(g);p(fur,0,-.30,-.08,.32,.42,.53,g);p(fur,0,-.47,.43,.24,.24,.23,g);p(face,0,-.49,.59,.20,.18,.08,g);
-  for(const s of [-1,1]){const patch=p(mask,s*.092,-.48,.655,.105,.047,.019,g);patch.rotation.z=-s*.32;p(dark,s*.09,-.47,.675,.022,.018,.013,g);for(const z of [-.43,.28]){link(fur,[s*.22,-.24,z],[s*.47,-.04,z+.09],.10,.07,g);link(fur,[s*.47,-.04,z+.09],[s*.38,.52,z+.03],.07,.045,g);p(mask,s*.38,.53,z+.03,.06,.055,.085,g);for(let j=0;j<3;j++)tube(claw,[[s*.38+(j-1)*.035,.55,z+.07],[s*.38+(j-1)*.035,.66,z+.03],[s*.38+(j-1)*.035,.63,z-.06]],.013,g);}}
-  p(dark,0,-.53,.683,.046,.035,.021,g);link(mask,[-.05,-.59,.66],[.05,-.59,.66],.006,.006,g);for(let i=0;i<18;i++){const z=-.42+i*.045;const tuft=p(fur,Math.sin(i*2.4)*.25,-.39,z,.06,.17,.075,g);tuft.rotation.z=Math.sin(i)*.4;}finish(g);return {g};
- }
- function turtle(parent){const g=new T.Group();parent.add(g);g.name='Beach nesting turtle';p(hide,0,.26,0,.48,.23,.63,g);p(pale,0,.14,.04,.44,.07,.58,g);p(hide,0,.20,.67,.15,.12,.24,g);for(const s of [-1,1]){p(dark,s*.12,.25,.80,.019,.021,.014,g);for(const z of [-.32,.35]){const flipper=p(pale,s*.48,.10,z,.32,.045,.15,g);flipper.rotation.y=s*(z>0?-.4:.5);}}for(let i=0;i<9;i++){const a=i*2.4,r=i<3?.12:.31;const plate=p(i%2?hide:mask,Math.sin(a)*r,.43-(i<3?0:.035),Math.cos(a)*r*1.3,.12,.017,.16,g);plate.rotation.y=a;}link(hide,[0,.14,-.57],[0,.10,-.77],.06,.005,g);finish(g);return {g};}
- return {reptile,sloth,turtle};
+ function sloth(parent){const g=new T.Group();g.name='Tree sloth hanging from a branch';g.userData.nativeEmoji='sloth';parent.add(g);emblems.sprite('sloth',0,-.2,0,1.45,g);return {g};}
+ function turtle(parent){const g=new T.Group();g.name='Beach nesting turtle';g.userData.nativeEmoji='turtle';parent.add(g);emblems.sprite('turtle',0,.50,0,1.15,g);return {g};}
+ return {reptile,sloth,turtle,dispose:()=>emblems.dispose()};
 }
 export function detailedDog(o,parent){const {T,mat}=o,{p,link,tube,finish}=animalBuilder({...o,geometry:o.geometry||((g)=>g)}),g=new T.Group();g.name='Coco · Angelique’s dog';parent.add(g);const map=animalSurface(T,mat,'fur'),fur=mat('#b58a51',{roughness:.93,bumpMap:map,bumpScale:.025}),cream=mat('#dcc79b',{roughness:1}),dark=mat('#292820'),nose=mat('#1e2321',{roughness:.4}),eye=mat('#62482b'),pink=mat('#7d5145');
  p(fur,0,.54,-.03,.24,.26,.56,g);p(cream,0,.57,.32,.22,.28,.23,g);p(fur,0,.85,.40,.205,.235,.25,g);p(cream,0,.76,.64,.16,.12,.23,g);p(nose,0,.80,.85,.075,.053,.04,g);const legs=[];

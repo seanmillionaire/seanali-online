@@ -1,3 +1,4 @@
+import {ISLA_LIGHTHOUSE as LH} from './costa-arriba-layout.js';
 export const FESTIVAL_CHAPTERS=[
  {id:'welcome',project:'home',speaker:'Pip',icon:'🐢',place:'Gorgona',home:{x:3,z:9},
   en:'A beach to come home to',es:'Una playa para volver',
@@ -49,8 +50,8 @@ export const FESTIVAL_CHAPTERS=[
   endEs:'La ciudad está lista. Solo falta encender el faro. Su luz anunciará a todas las islas que el Festival de la Amistad puede empezar.'},
  {id:'festival',speaker:'Pip',icon:'🏮',place:'Gorgona',home:{x:3,z:9},
   en:'Bring the islands together',es:'Reúne a todas las islas',
-  introEn:'Every island has contributed something real: a welcome, flowers, food, shelter, a safe path, and a song. Light Gorgona’s lighthouse, take the captain’s full-map cruise, and return to Pip to open the festival.',
-  introEs:'Cada isla ha aportado algo: una bienvenida, flores, comida, refugio, una ruta y una canción. Enciende el faro de Gorgona, completa el crucero por todo el mapa y vuelve con Pip para abrir el festival.',
+  introEn:'Every island has contributed something real: a welcome, flowers, food, shelter, a safe path, and a song. Light Isla Grande’s lighthouse, take the captain’s full-map cruise, and return to Pip to open the festival.',
+  introEs:'Cada isla ha aportado algo: una bienvenida, flores, comida, refugio, una ruta y una canción. Enciende el faro de Isla Grande, completa el crucero por todo el mapa y vuelve con Pip para abrir el festival.',
   endEn:'The lanterns glow across Gorgona. The friends gather around the places Angelique helped build. The festival belongs to every island—and there will always be more adventures to share.',
   endEs:'Las linternas iluminan Gorgona. Los amigos se reúnen en los lugares que Angelique ayudó a construir. El festival pertenece a todas las islas y siempre habrá más aventuras para compartir.'}
 ];
@@ -72,7 +73,7 @@ export function campaignSnapshot(state,missionStatus){
  const world=state.world,c=world.campaign,chapter=FESTIVAL_CHAPTERS[c.chapter];
  if(!chapter)return {finished:true,index:FESTIVAL_CHAPTERS.length,total:FESTIVAL_CHAPTERS.length,tasks:[],done:0,ready:true,chapter:null};
  let tasks=chapter.project?missionStatus(world,state,chapter.project).tasks.map(t=>({...t})): [
-  {id:'beacon',icon:'💡',es:'Enciende el faro de Gorgona',en:'Light Gorgona’s lighthouse',check:{kind:'festivalBeacon'},go:{x:-1,z:-5},current:world.badges.includes('beacon')?1:0,required:1,complete:world.badges.includes('beacon')},
+  {id:'beacon',icon:'💡',es:'Enciende el faro de Isla Grande',en:'Light Isla Grande’s lighthouse',check:{kind:'festivalBeacon'},go:{x:LH.x,z:LH.z+2.5},current:world.badges.includes('beacon')?1:0,required:1,complete:world.badges.includes('beacon')},
   {id:'cruise',icon:'🚢',es:'Completa el crucero por todo el mapa · 10 monedas',en:'Complete the full-map cruise · 10 coins',check:{kind:'festivalCruise'},go:{x:-67,z:-56},current:Math.min(1,world.city.cruise.completed),required:1,complete:world.city.cruise.completed>0}
  ];
  if(chapter.id==='monkeys')tasks.push({id:'greeting',icon:'🐒',es:'Aprende el saludo de saltos de los monos',en:'Learn the monkeys’ jumping greeting',check:{kind:'festivalMonkeys'},go:{x:110,z:-56},current:Math.min(1,world.colon.monkeyGames),required:1,complete:world.colon.monkeyGames>0});
