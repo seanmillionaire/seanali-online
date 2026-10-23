@@ -16,7 +16,7 @@ const sites = [
 ];
 const output = path.resolve('assets/portfolio');
 await mkdir(output,{recursive:true});
-const browser = await chromium.launch({headless:true,args:['--disable-dev-shm-usage']});
+const browser = await chromium.launch({headless:true,channel:'chrome',args:['--disable-dev-shm-usage']});
 const context = await browser.newContext({viewport:{width:1440,height:900},deviceScaleFactor:1,locale:'en-US',reducedMotion:'reduce'});
 let success=0;
 try {
