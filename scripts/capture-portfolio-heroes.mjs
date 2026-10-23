@@ -11,7 +11,6 @@ const sites = [
   ['try-the-script','https://trythescript.com/'],
   ['swap-your-9-to-5','https://swapyour9to5.com/'],
   ['panama-untold','https://panamauntold.com/'],
-  ['panama-aventura','https://seanali.online/games/adventure/'],
   ['sean-ali-games','https://seanali.online/games/'],
 ];
 const output = path.resolve('assets/portfolio');
@@ -25,7 +24,7 @@ try {
     try {
       const response=await page.goto(url,{waitUntil:'domcontentloaded',timeout:35000});
       if (!response || response.status() >= 400) throw new Error('HTTP '+(response ? response.status() : 'no response'));
-      await page.waitForTimeout(name === 'panama-aventura' ? 5500 : 2700);
+      await page.waitForTimeout(2700);
       await page.evaluate(async()=>{if(document.fonts)await Promise.race([document.fonts.ready,new Promise(ok=>setTimeout(ok,1800))]);scrollTo(0,0)});
       const destination=path.join(output,name+'.jpg');
       await page.screenshot({path:destination,type:'jpeg',quality:86,animations:'disabled',clip:{x:0,y:0,width:1440,height:900},timeout:20000});
