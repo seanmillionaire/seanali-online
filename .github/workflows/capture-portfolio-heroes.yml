@@ -11,7 +11,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: real-portfolio-hero-screenshots
+  group: real-portfolio-hero-screenshots-fast
   cancel-in-progress: true
 
 jobs:
