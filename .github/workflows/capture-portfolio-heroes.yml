@@ -1,0 +1,43 @@
+name: Capture real portfolio hero screenshots
+
+on:
+  push:
+    paths:
+      - '.github/workflows/capture-portfolio-heroes.yml'
+      - 'scripts/capture-portfolio-heroes.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: real-portfolio-hero-screenshots
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install screenshot browser
+        run: |
+          npm install --no-save --no-package-lock --ignore-scripts playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Capture actual website top sections
+        run: node scripts/capture-portfolio-heroes.mjs
+      - name: Commit screenshots
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A assets/portfolio
+          if git diff --cached --quiet; then
+            echo 'No new screenshots to commit'
+            exit 0
+          fi
+          git commit -m 'Save real homepage hero screenshots for services portfolio'
+          git pull --rebase origin main
+          git push origin HEAD:main
