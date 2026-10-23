@@ -205,3 +205,15 @@ FAIL the task if any object occupies a road or important footpath, a road is dis
 - Rural houses use `ruralParcels()` for placement/collision and shared render batches. Protect their yards from forest placement and preserve existing saved estates when rendering infill.
 - Road grading must never fill navigable canal water. Test full cruise hull clearance, highway edges on visible terrain, Gorgona access, and complete ferry segments, not just waypoint endpoints.
 - Focused checks: `world-expansion.cjs`, `geography-layout.cjs`, `region-expansion.cjs`, `road-navigation.cjs`, `builder-persistence-coast.cjs`, `world-expansion-browser.cjs` and `inventory-current-browser.cjs` in `tests/`. Browser checks accept `BASE_URL` and `CHROME_PATH`; world screenshots use `SCREENSHOT_DIR`.
+
+---
+
+## Panamá Aventura — Purposeful living-world and selective hyper-detail addendum (2026-10-23)
+
+For all work under `games/`, also read the scoped `games/AGENTS.md` and additive `games/GAME_STUDIO_SOP_ADDENDUM_2026-10-23.md` alongside `games/GAME_RULES.md`, `games/game-standards.md`, and the existing Game Studio Master SOP. The **SimCity** (autonomous interconnected systems), **Minecraft** (creative/persistent agency), **GTA** (free, reactive open world), and **Scarface: The World Is Yours** (**selective, memorable visual/physical/audio response**) references are **experience-design inspirations only**; never copy protected content or the adult game's gore, criminal behavior or violence into a children's game.
+
+The new Panama design north star is **everyday-life learning through voluntary action**: the world works on its own, the child can help, and the game shows real effects. Intended connected systems include repeatable useful work/coin earning, mainland waste collection and recycling, local whole-food growth/market/cooking/compost, distinct Respect / Wealth / Panama Wellbeing states, Panama City-first progression and save-safe region unlocks, aspirational earned homes/vehicles/businesses, optional story victory, and future privacy-protected child social features and parent-approved purchases. These are **planned design requirements, not claims of implemented or live functionality**.
+
+**New visual quality rule:** animate and sonically/physically detail high-impact actions (a truck lifting a bin, food preparing, a house being built, a plant growing, a customer accepting a delivery) without bloating all scenes. Preserve mobile performance, reduced motion, accessibility, bilingual UI, and skip/fast-repeat options. No punishment for idleness, no pay-to-buy respect or essential learning, and no public child identity disclosure.
+
+All existing geography, world-state, inventory, game, test, local-first, old-save migration and **explicit no-push/no-release-without-authorization** requirements above remain fully binding. Updating these documents alone does not authorize implementation, gameplay redesign, GitHub release, or Vercel deployment.
