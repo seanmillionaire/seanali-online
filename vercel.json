@@ -138,10 +138,6 @@
   ],
   "rewrites": [
     {
-      "source": "/admin",
-      "destination": "/admin/master-plan/index.html"
-    },
-    {
       "source": "/links",
       "destination": "/page-map"
     },
