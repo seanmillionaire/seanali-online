@@ -1,3 +1,5 @@
+import {coastalEstateReserved} from './coastal-estates.js';
+import {iconicReserved} from './iconic-layout.js';
 import {regionalClearing,regionalTrailClear} from './regional-layout.js';
 import {botanicalGeometry,leafSurface} from './botanical-geometry.js';
 import {ruralBlocks} from './rural-towns.js';
@@ -18,7 +20,7 @@ export function createNaturalTrees({T,geometry,mat,make,height,scene,surfaces=nu
  function addTree(kind,x,z,scale=1,seed=0,parent=scene){
   if(!leaves[kind])kind='natural';
   // Preserve trees beside every highway, including the Barú approach.
-  ({x,z}=roadsidePoint(x,z,Math.max(2,3.5*scale),(x,z)=>!ruralBlocks(x,z,3.5*scale)&&!regionalClearing(x,z,Math.max(2,scale*1.5))&&regionalTrailClear(x,z)));
+  ({x,z}=roadsidePoint(x,z,Math.max(2,3.5*scale),(x,z)=>!coastalEstateReserved(x,z,5)&&!iconicReserved(x,z,5)&&!ruralBlocks(x,z,3.5*scale)&&!regionalClearing(x,z,Math.max(2,scale*1.5))&&regionalTrailClear(x,z)));
   const root=new T.Group();root.userData.cameraFoliage=true;root.name=kind==='palm'?'Detailed curved coconut palm':kind==='pine'?'Detailed tall needle pine':kind==='banana'?'Broad-leaf banana plant':'Branching natural rainforest tree';parent.add(root);
   root.position.set(x,height(x,z)-.05,z);root.scale.setScalar(scale);root.rotation.y=seed*2.39996;
   make(kind==='palm'?palmTrunk:kind==='pine'?pineTrunk:kind==='banana'?bananaTrunk:naturalTrunk,bark,0,0,0,1,1,1,root);

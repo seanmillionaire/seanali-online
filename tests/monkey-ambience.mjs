@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {createMonkeyAmbience} from '../games/adventure/monkey-ambience.js';
+let calls=[],stops=0,loaded=false;
+const ambience=createMonkeyAmbience({recordedSound(name,options){calls.push({name,options});return loaded?{stop(){stops++}}:false;}});
+ambience.update(.1,false,true);assert.equal(calls.length,0);
+ambience.update(.1,true,true);assert.equal(calls.length,1);assert.equal(calls[0].options.defer,false);
+loaded=true;for(let i=0;i<11;i++)ambience.update(.1,true,true);assert.equal(calls.length,2);
+for(let i=0;i<150;i++)ambience.update(.1,true,true);assert.equal(calls.length,2,'no overlapping calls');
+ambience.update(.1,false,true);assert.equal(stops,1,'leave stops recording');
+ambience.update(.1,true,true);ambience.update(.1,true,false);assert.equal(stops,2,'pause stops recording');
+ambience.update(.1,true,true);ambience.dispose();assert.equal(stops,3);
+assert(calls.every(c=>c.name==='howler-monkey'&&c.options.rate===1));console.log('PASS monkey area entry, load retry, quiet gaps, exit, pause and disposal');

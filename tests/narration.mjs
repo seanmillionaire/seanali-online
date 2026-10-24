@@ -1,0 +1,4 @@
+import assert from 'node:assert/strict';import {createNarrator} from '../games/adventure/narration.js';
+const state={sound:true,narration:true,playerName:'Sam',lang:'en'},spoken=[],synth={speaking:false,pending:false,cancel(){},getVoices:()=>[],speak:u=>spoken.push(u)};
+const speak=createNarrator({getState:()=>state,joy:{},environment:{document:{hidden:false},speechSynthesis:synth,SpeechSynthesisUtterance:class{constructor(text){this.text=text}}}});
+assert(speak('🗺️ Open your map'));assert.equal(spoken[0].text,'Sam,  Open your map');state.lang='es';speak('Hola, Angelique');assert.equal(spoken[1].text,'Hola, Sam');assert.equal(spoken[1].lang,'es-PA');state.narration=false;assert.equal(speak('hint'),false);assert(speak('hint',{manual:true}));state.sound=false;assert.equal(speak('hint',{manual:true}),false);console.log('PASS personalized EN/ES speech, narration preference and mute');

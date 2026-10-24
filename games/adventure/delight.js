@@ -1,5 +1,5 @@
 import {createCarAudio} from './car-audio.js';
-import {createThemeAudio,morningThemeDue,normalizeMorningTheme} from './theme-audio.js';
+import {createThemeAudio,normalizeMorningTheme} from './theme-audio.js';
 import {createRegionalAmbience} from './regional-ambience.js';
 import {createSoundtrack} from './soundtrack.js';
 /* Recorded foley, activity-aware soundtrack, and independent music/effects mix. */
@@ -16,8 +16,10 @@ export function createDelight({soundEnabled,motionEnabled,storage,language=()=>'
   let preferences={music:.58,effects:.8};try{const stored=JSON.parse((storage??localStorage).getItem('panama-audio-v1'));for(const k of ['music','effects'])if(Number.isFinite(stored?.[k]))preferences[k]=Math.max(0,Math.min(1,stored[k]));}catch{}
   const soundtrack=createSoundtrack({enabled:()=>unlocked&&soundEnabled()&&!destroyed&&(!welcomeHeld||welcomeRevealing)&&scene!=='welcome',volume:musicLevel,environment:()=>context?{context,output:limiter}:null});
   theme=createThemeAudio({language,allowed:()=>!soundtrack.adminIntro&&!(adminMode()&&scene==='welcome')&&unlocked&&soundEnabled()&&!destroyed&&(!welcomeHeld||welcomeRevealing)&&ready(),volume:musicLevel,environment:()=>context?{context,output:limiter}:null,onPriority:(held,exclusive)=>{soundtrack.hold(held);if(master&&context){master.gain.cancelScheduledValues(context.currentTime);master.gain.setValueAtTime(exclusive||welcomeHeld?0:preferences.effects,context.currentTime);}if(exclusive)window.speechSynthesis?.cancel();}});
-  let congoDancing=false;
-  function worldTheme(world,save,active=true){world.morningTheme??=normalizeMorningTheme();const day=world.morningTheme.day;if(active&&!soundtrack.adminIntro&&scene==='explore'&&(!welcomeHeld||welcomeRevealing)&&morningThemeDue(world)&&!congoDancing&&soundtrack.status.key!=='congo'&&!theme.exclusive)theme.morning(()=>{world.morningTheme.played=Math.max(world.morningTheme.played,day);save?.();});}
+  let congoDancing=false,gameplayThemeStarted=false;
+  // Begin with instrumental music, never the recorded spoken morning introduction.
+  // Effects and contextual speech stay available while the opening theme plays.
+  function worldTheme(world,save,active=true){world.morningTheme??=normalizeMorningTheme();if(gameplayThemeStarted||!active||scene!=='explore'||!unlocked||!soundEnabled()||musicLevel()<=0||welcomeHeld)return;if(adminMode()||soundtrack.adminIntro){gameplayThemeStarted=true;return;}gameplayThemeStarted=true;theme.gameplay();}
   function cancelCarGreeting(){clearTimeout(carGreetingTimer);carGreetingTimer=null;carVoiceSerial++;if(carSpeaking)window.speechSynthesis?.cancel();carSpeaking=false;carVoiceState='idle';}
   function carGreeting(language='en',delay=0){clearTimeout(carGreetingTimer);const token=++carVoiceSerial;carVoiceState='queued';const greet=()=>theme.afterMorning(()=>{if(token!==carVoiceSerial||!narration()||!soundEnabled()||document.hidden||destroyed||!('speechSynthesis'in window))return;window.speechSynthesis.cancel();soundtrack.duck(5);theme.duck(5);const u=new SpeechSynthesisUtterance(language==='es'?`Hola, ${playerName()}. ¿Adónde quieres ir?`:`Hi, ${playerName()}. Where do you want to go?`);u.lang=language==='es'?'es-PA':'en-US';const voices=window.speechSynthesis.getVoices();u.voice=voices.find(v=>v.localService&&v.lang.startsWith(language))||voices.find(v=>v.lang.startsWith(language))||null;u.rate=.95;u.volume=preferences.effects;u.onstart=()=>{carVoiceState='speaking';};u.onend=()=>{carSpeaking=false;carVoiceState='spoken';};u.onerror=()=>{carSpeaking=false;carVoiceState='unavailable';};carSpeaking=true;window.speechSynthesis.speak(u);});if(delay>0)carGreetingTimer=setTimeout(greet,delay);else greet();}
   function setAudioLevels(values){for(const k of ['music','effects'])if(Number.isFinite(values[k]))preferences[k]=Math.max(0,Math.min(1,values[k]));try{(storage??localStorage).setItem('panama-audio-v1',JSON.stringify(preferences));}catch{}sync();}

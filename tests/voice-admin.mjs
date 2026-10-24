@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {voiceCommand} from '../games/adventure/phone-voice.js';
+import {fresh,normalize,SAVE_KEY} from '../games/adventure/state.js';
+import {dialAdmin,ADMIN_SAVE_KEY} from '../games/adventure/phone-admin.js';
+import {startCityBalloon,CITY_BALLOON_START} from '../games/adventure/city-balloon-start.js';
+import {homeYard,HOME_LOTS} from '../games/adventure/mansion-state.js';
+import {createSoundtrack} from '../games/adventure/soundtrack.js';
+for(const [s,k]of [['open map','map'],['siguiente misión','mission'],['mochila','bag'],['reciclar','work'],['clima','weather'],['close phone','close'],['777',null]])assert.equal(voiceCommand(s),k);
+assert.equal(normalize({...fresh(),playerName:'<Sam>\n',narration:false}).playerName,'Sam');assert.equal(normalize({...fresh(),narration:false}).narration,false);
+const values=new Map(),storage={getItem:k=>values.get(k),setItem:(k,v)=>values.set(k,v),removeItem:k=>values.delete(k)},state=fresh();dialAdmin('777',state,storage,SAVE_KEY);let admin=JSON.parse(storage.getItem(ADMIN_SAVE_KEY));admin.world.x=888;storage.setItem(ADMIN_SAVE_KEY,JSON.stringify(admin));dialAdmin('777',admin,storage,SAVE_KEY);dialAdmin('777',state,storage,SAVE_KEY);assert.equal(JSON.parse(storage.getItem(ADMIN_SAVE_KEY)).world.x,888,'retain admin possessions/save');startCityBalloon(admin.world);assert.equal(admin.world.flight,110);assert.equal(admin.world.x,CITY_BALLOON_START.x);assert.equal(state.world.flight,0);
+const lot=HOME_LOTS.find(l=>l.id==='boquete'),balloon=homeYard(lot).balloon;assert(balloon.x-lot.x>20&&balloon.z<lot.z,'balloon away from front approach and gym stairs');
+globalThis.document={hidden:false};globalThis.sessionStorage={getItem:()=> '1',setItem(){}};const node=()=>({gain:{value:0,setTargetAtTime(){}},connect(n){return n;},disconnect(){}}),context={currentTime:0,createGain:node,createMediaElementSource:node};let media=[];class Audio{constructor(){this.paused=true;this.currentTime=0;media.push(this);}async play(){this.paused=false;}pause(){this.paused=true;}removeAttribute(){this.src='';}load(){}}
+const music=createSoundtrack({enabled:()=>true,volume:()=>1,environment:()=>({context,output:{}}),createAudio:()=>new Audio()});music.adminStart();music.unlock();await new Promise(r=>setImmediate(r));assert.equal(music.status.key,'todoVa');music.update('city');assert.equal(music.status.key,'todoVa','admin confirmation allowed outside Colon');media.at(-1).onended();await new Promise(r=>setImmediate(r));assert.equal(music.adminIntro,false);assert.notEqual(music.status.key,'todoVa');music.destroy();console.log('PASS voice intents, name/preferences, separate persistent admin save, balloon start, Chiriqui balloon clearance and admin song priority');

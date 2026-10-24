@@ -32,6 +32,6 @@ export function createWelcomeWorld(host,{motion=()=>true,state:initial,options={
    render(scene,view);if(avatar)avatar.visible=visible;if(!disposed)host.classList.add('showcase-ready');
   };}}};
  }});stage.append(caption,skip);}
- return {flyIn(done){ensureGame();done();},skip(){finishArrival();},takeGame(){if(taken||disposed)return null;ensureGame();taken=true;preview=false;last=0;arrivalTime=0;state.world.dayTime=savedTime;stage.classList.remove('welcome-world');stage.removeAttribute('aria-hidden');stage.inert=false;return {host:stage,game,state};},dispose(){disposed=true;if(!taken){game?.dispose();stage.remove();options.joy?.welcomeAudio?.(false);}host.classList.remove('showcase-ready');}};
+ return {flyIn(done){ensureGame();done();},skip(){finishArrival();},takeGame(){if(taken||disposed)return null;ensureGame();taken=true;preview=false;last=0;arrivalTime=0;state.world.dayTime=savedTime;finishArrival();stage.classList.remove('welcome-world');stage.removeAttribute('aria-hidden');stage.inert=false;return {host:stage,game,state};},dispose(){disposed=true;if(!taken){game?.dispose();stage.remove();options.joy?.welcomeAudio?.(false);}host.classList.remove('showcase-ready');}};
 }
 

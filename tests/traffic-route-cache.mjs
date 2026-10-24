@@ -3,3 +3,4 @@ function reference(route,distance){let length=0;const lengths=route.map((p,i)=>{
 let checks=0;for(const points of Object.values(HIGHWAY_CURVES)){const route=trafficLoop(points),n=reference(route,0).length;for(let i=-30;i<=300;i++){const d=(i+.371)*n/97,a=routePose(route,d),b=reference(route,d);for(const k of ['x','z','heading','remaining','length'])assert(Math.abs(a[k]-b[k])<1e-7,k+' cached route parity');checks++;}}console.log('PASS',checks,'cached traffic poses preserve negative distances, wraps, headings, segment remaining distances and route lengths');
 
 const square=[{x:0,z:0},{x:0,z:10},{x:10,z:10},{x:10,z:0}];for(const d of [0,10,20,30,40,-40,80])assert.deepEqual(routePose(square,d),reference(square,d));
+

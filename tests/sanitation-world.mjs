@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import * as T from '../games/adventure/vendor/three.module.min.js';
+import {createSanitation} from '../games/adventure/sanitation.js';
+import {fresh} from '../games/adventure/state.js';
+import {isletHeight} from '../games/adventure/explore-state.js';
+const element=()=>({style:{},dataset:{},append(){},remove(){},setAttribute(){},replaceChildren(){},getContext:()=>({fillText(){}})});globalThis.document={createElement:element};
+const state=fresh(),scene=new T.Scene(),geometries=[],materials=[];const geometry=g=>(geometries.push(g),g);const mat=(c,p)=>(materials.push(new T.MeshStandardMaterial({color:c,...p})),materials.at(-1));const box=geometry(new T.BoxGeometry()),ball=geometry(new T.SphereGeometry(1,8,6)),cylinder=geometry(new T.CylinderGeometry(1,1,1,8));const make=(geo,m,x,y,z,w,h,d,parent)=>{const g=new T.Mesh(geo,m);g.position.set(x,y,z);g.scale.set(w,h,d);parent.add(g);return g;};
+const dept=createSanitation({T,scene,state,host:element(),panel:element(),save(){},refresh(){},joy:{effect(){}},tell(){},make,mat,geometry,box,ball,cylinder,height:isletHeight,prepare(){},navigate(){},forest:{trees:[]}});
+console.log('Stations',dept.stations.map(p=>p.id));assert.equal(dept.vehicles.length,5,'All mainland routes need valid stops');assert(dept.stations.some(p=>p.region===0));
+for(let i=0;i<12000;i++)dept.update(.1,true,{x:0,z:0,indoors:false,protected:false});
+assert(state.world.sanitation.collected>0,'Crews must collect autonomously');assert(state.world.sanitation.elapsed>720);assert.equal(state.world.sanitation.earned,0,'Autonomous work cannot award player money');for(const v of dept.vehicles)assert(Number.isFinite(v.g.position.y));const elapsed=state.world.sanitation.elapsed;dept.update(10,false,{x:0,z:0});assert.equal(state.world.sanitation.elapsed,elapsed);dept.dispose();assert.equal(scene.children.length,0);console.log('World simulation passed',state.world.sanitation.collected);geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());
+assert(state.world.sanitation.processed.waste+state.world.sanitation.processed.recycle>0,'Autonomous trucks must unload rather than delete their loads');assert(state.world.sanitation.trucks.city.cycles>0);assert(state.world.sanitation.unlocked.includes('gorgona'),'Actual throughput earns coverage');assert.equal(state.world.sanitation.sorted,0,'Crews do not fabricate player impact');

@@ -23,3 +23,4 @@ const start=performance.now();
 for(const [id,path] of Object.entries(HIGHWAY_CURVES))for(let i=1;i<path.length;i+=4){const [x,z]=path[i],a=path[i-1],h=Math.atan2(x-a[0],z-a[1]);for(const kind of Object.keys(VEHICLE_GROUND_PROFILES))for(const direction of [0,Math.PI])verify(x,z,h+direction,surface,kind);routes++;}
 const ms=performance.now()-start;for(const g of geometries)g.dispose();material.dispose();
 console.log('PASS '+checks+' support checks: all headings, up/down ramps, banks, crests, valleys and '+routes+' real road positions; sedan, bus and both supercar profiles; '+ms.toFixed(0)+'ms road regression');
+

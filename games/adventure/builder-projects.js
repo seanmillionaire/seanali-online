@@ -1,3 +1,4 @@
+import {coastalEstateReserved} from './coastal-estates.js';
 import {expandWorldPoint,cityX} from './geography.js';
 // Permanent dry-land work sites for Mateo and Sofía. Deterministic positions
 // mean finished houses never move when a builder starts a new job.
@@ -25,6 +26,7 @@ const protectedLocations={
 for(const [id,pts]of Object.entries(protectedLocations)){const region=({taboga:'islet',contadora:'coconutCoast',bocas:'wilds',colon:'colon'})[id];if(region)protectedLocations[id]=pts.map(([x,z,r])=>{const p=expandWorldPoint(x,z,region);return [p.x,p.z,r];});}
 export function builderSiteSafe(area,p,chosen=[]){
  const half=Math.hypot(PROJECT_SIZE.w/2,PROJECT_SIZE.d/2);
+ if(coastalEstateReserved(p.x,p.z,half+1))return false;
  const offset=(x,z)=>Math.hypot((x-area.x)/area.rx,(z-area.z)/area.rz);
  if(area.id!=='city'&&offset(p.x,p.z)>.77)return false;
  if(inWater(p.x,p.z)||isletHeight(p.x,p.z)<.32)return false;
@@ -41,7 +43,7 @@ export function builderSiteSafe(area,p,chosen=[]){
 }
 function pickIslandSite(area,wanted,claimed){
  // Walk a staggered outward spiral; every chosen house must fit on actual dry terrain.
- const steps=area.id==='city'?[0,2.2,4.4,6.6,8.8,11,13.2,15.4,18.2,22,26,30,34,38]:[0,2.2,4.4,6.6,8.8,11,13.2,15.4,18.2];
+ const steps=area.id==='city'?[0,2.2,4.4,6.6,8.8,11,13.2,15.4,18.2,22,26,30,34,38]:[0,2.2,4.4,6.6,8.8,11,13.2,15.4,18.2,21,24,27,30,34];
  for(const radius of steps){
   const spokes=radius===0?1:24;
   for(let k=0;k<spokes;k++){

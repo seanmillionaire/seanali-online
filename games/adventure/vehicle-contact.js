@@ -34,3 +34,10 @@ export function safeVehicleExit(car,canStand){
  return null;
 }
 
+
+// Walking and traffic use the same hull and gap. Existing contact can be left
+// only by moving outward; this never permits entering or crossing a vehicle.
+export function pedestrianVehicleClear(next,obstacles,from=null){
+ const body=p=>({...p,heading:0,length:.45,width:.45});
+ return obstacles.every(obstacle=>vehicleEscapeClear(body(next),obstacle,from?body(from):null));
+}

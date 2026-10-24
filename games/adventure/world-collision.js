@@ -1,3 +1,4 @@
+import {iconicBlocked} from './iconic-layout.js';
 import {JUNGLE_BOULDERS} from './darien-terrain.js';
 import {GORGONA_FISH_SHACK} from './gorgona-coast.js';
 import {homeLot} from './mansion-state.js';
@@ -17,7 +18,7 @@ export function createWorldCollision({state,trees=[],rocks=[],extraClear=()=>tru
  const nearby=(x,z)=>(cells.get(Math.floor(x/size)+','+Math.floor(z/size))||[]);
  const touching=(p,x,z)=>Math.hypot(p.x-x,p.z-z)<p.r+(p.soft?.16:.32);
  function hardClear(x,z){
-  if(!extraClear(x,z))return false;
+  if(iconicBlocked(x,z)||!extraClear(x,z))return false;
   if(Math.abs(x-GORGONA_FISH_SHACK.x)<GORGONA_FISH_SHACK.w/2+.3&&Math.abs(z-GORGONA_FISH_SHACK.z)<GORGONA_FISH_SHACK.d/2+.3)return false;
   const lot=homeLot(state.world);if(lot&&state.world.mansion.stage>=3&&x-lot.x> -19.9&&x-lot.x< -15&&z-lot.z> -2.35&&z-lot.z<14.35)return false;if(lot&&state.world.mansion.stage>0&&Math.abs(x-lot.x)<10.4&&Math.abs(z-lot.z)<8.7)return false;
   if(regionalBlocked(x,z,state.world)||!traversable(x,z)||ruralBlocks(x,z,.32)||estateBlocked(state.world,x,z)||districtVehicleBlocked(x,z))return false;
@@ -57,6 +58,6 @@ export function createCityAirCollision(T,scene,height){
   const x=(bounds.min.x+bounds.max.x)/2,z=(bounds.min.z+bounds.max.z)/2;
   for(const p of boxes)if(Math.abs(x-p.x)<p.w/2&&Math.abs(z-p.z)<p.d/2&&bounds.max.x-bounds.min.x<p.w*1.6&&bounds.max.z-bounds.min.z<p.d*1.6&&bounds.max.y>p.bottom+1)p.top=Math.max(p.top,bounds.max.y);
  });
- return {boxes,clear(x,y,z,radius=1.35){return ![...boxes,...(scene.userData.gorgonaAir||[]),...(scene.userData.costaAir||[]),...(scene.userData.ghostAir||[]),...(scene.userData.mansionAir?[scene.userData.mansionAir]:[])].some(p=>y+2>p.bottom&&y-radius<p.top&&Math.abs(x-p.x)<p.w/2+radius&&Math.abs(z-p.z)<p.d/2+radius);}};
+ return {boxes,clear(x,y,z,radius=1.35){return ![...boxes,...(scene.userData.iconicAir||[]),...(scene.userData.coastalEstateAir||[]),...(scene.userData.gorgonaAir||[]),...(scene.userData.costaAir||[]),...(scene.userData.ghostAir||[]),...(scene.userData.mansionAir?[scene.userData.mansionAir]:[])].some(p=>y+2>p.bottom&&y-radius<p.top&&Math.abs(x-p.x)<p.w/2+radius&&Math.abs(z-p.z)<p.d/2+radius);}};
 }
 

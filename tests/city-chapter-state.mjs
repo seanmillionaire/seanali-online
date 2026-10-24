@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {fresh,normalize} from '../games/adventure/state.js';
+import {cityAccess,cityChapterActive,advanceCityChapter,CITY_START} from '../games/adventure/city-chapter-state.js';
+import {earnCoins,coinBalance} from '../games/adventure/explore-state.js';
+const freshSave=fresh();assert(cityChapterActive(freshSave));assert.equal(freshSave.world.x,CITY_START.x);assert(cityAccess(freshSave,390,-48));assert(!cityAccess(freshSave,0,0));assert(!cityAccess(freshSave,330,105));
+const old=fresh();delete old.cityChapter;old.world.x=-50;old.world.z=-365;earnCoins(old,'city-plaza');const migrated=normalize(old);assert.equal(migrated.cityChapter,null);assert.equal(migrated.world.x,-50);assert.equal(coinBalance(old),coinBalance(migrated));assert(cityAccess(migrated,-500,200));
+freshSave.cityChapter.step=2;freshSave.cityChapter.stage=2;freshSave.cityChapter.parcel=3;freshSave.cityChapter.opened=['phone','bag'];const restored=normalize(freshSave);assert.equal(restored.cityChapter.stage,2);assert.equal(restored.cityChapter.parcel,3);assert.deepEqual(restored.cityChapter.opened,['phone','bag']);
+assert.equal(earnCoins(restored,'city-intro-delivery'),6);assert.equal(earnCoins(restored,'city-intro-delivery'),0);assert.equal(coinBalance(normalize(restored)),6);
+for(let i=0;i<7;i++)advanceCityChapter(restored);assert(!cityChapterActive(restored));assert(cityAccess(restored,3,9));assert(!cityAccess(restored,-50,-365));restored.world.campaign.chapter=1;assert(cityAccess(restored,-50,-365));
+const admin=fresh();admin.adminMode=true;assert(!cityChapterActive(admin));assert(cityAccess(admin,-600,200));console.log('PASS fresh city start, legacy saves, exact resume, single payment, Gorgona unlock, admin bypass');

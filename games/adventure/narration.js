@@ -6,7 +6,7 @@ export function preferredVoice(voices,lang,uri=''){
 export function createNarrator({getState,joy,environment=globalThis}){
  return function speak(message,{interrupt=true,manual=false}={}){
   const state=getState(),synth=environment.speechSynthesis;
-  if(joy.morningExclusive||(!state.narration&&!manual)||!state.sound||environment.document?.hidden||!synth)return false;
+  if((joy.morningExclusive&&!manual)||(!state.narration&&!manual)||!state.sound||environment.document?.hidden||!synth)return false;
   try{if(!interrupt&&(synth.speaking||synth.pending))return false;if(interrupt)synth.cancel();joy.duck?.();const text=typeof message==='string'?message:message?.[state.lang]||'',name=state.playerName||'Angelique';
    const words=(text.includes('Angelique')?text.replaceAll('Angelique',name):name+', '+text).replace(/[^\p{L}\p{N}\p{P}\p{Z}]/gu,'');
    const u=new environment.SpeechSynthesisUtterance(words);u.lang=state.lang==='es'?'es-PA':'en-US';const voices=synth.getVoices();u.voice=preferredVoice(voices,state.lang,state.voiceURI);u.rate=.96;synth.speak(u);return true;

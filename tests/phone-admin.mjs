@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {dialAdmin,activeSaveKey,ADMIN_SAVE_KEY,ADMIN_ACTIVE_KEY} from '../games/adventure/phone-admin.js';
+import {fresh,normalize,unlocked,SAVE_KEY} from '../games/adventure/state.js';
+import {coinBalance} from '../games/adventure/explore-state.js';
+const values=new Map(),storage={getItem:k=>values.get(k)||null,setItem:(k,v)=>values.set(k,v),removeItem:k=>values.delete(k)};
+const s=fresh();s.world.sanitation.earned=17;const original=JSON.stringify(s);
+assert.equal(dialAdmin('123',s,storage,SAVE_KEY),false);assert.equal(values.size,0);
+assert.equal(dialAdmin('777',s,storage,SAVE_KEY),true);assert.equal(JSON.stringify(s),original);assert.equal(storage.getItem(SAVE_KEY),original);assert.equal(activeSaveKey(storage,SAVE_KEY),ADMIN_SAVE_KEY);
+const sandbox=normalize(JSON.parse(storage.getItem(ADMIN_SAVE_KEY)));assert.equal(sandbox.adminMode,true);assert.equal(sandbox.world.adminMode,true);assert.equal(coinBalance(sandbox),1000000);assert.equal(unlocked(sandbox,47),true);assert.deepEqual(sandbox.completed,s.completed);assert.equal(sandbox.world.sanitation.unlocked.length,5);
+assert.equal(dialAdmin('777',sandbox,storage,SAVE_KEY),true);assert.equal(activeSaveKey(storage,SAVE_KEY),SAVE_KEY);assert.equal(storage.getItem(SAVE_KEY),original);assert.equal(storage.getItem(ADMIN_ACTIVE_KEY),null);
+assert.throws(()=>dialAdmin('777',s,{setItem(){throw Error('quota');}},SAVE_KEY));console.log('PASS dialer code, separate sandbox save, normal progress preservation, normalization and exit');

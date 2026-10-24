@@ -1,3 +1,5 @@
+import {COASTAL_ESTATES,estateGroundPlan,estateDockSurface} from './coastal-estates.js';
+import {ICONIC_PLACES,AMADOR_ROAD,iconicLandHeight,valleyRelief} from './iconic-layout.js';
 import {normalizeSanitation} from './sanitation-state.js';
 import {MARGARITA_ROAD,mallGround} from './colon-mall-layout.js';
 import {jungleTrailPoint} from './east-jungle-layout.js';
@@ -44,6 +46,9 @@ export function remoteAccess(from,to){const p=worldIslands.find(i=>i.vehicleOnly
 // A connected mainland corridor: Panama City → Gorgona → Colón and
 // Gorgona → Volcán → Barú. Offshore island footprints remain separate.
 export const MAINLAND_ROADS=integrateCityFreeway({
+ amador:AMADOR_ROAD,
+ panamaViejo:[[469,-57],[488,-42],[488,-18],[478,-18]],
+ elValle:[[-155,-41],[-170,-48],[-170,-72]],
  margarita:MARGARITA_ROAD,
  costaArriba:COSTA_ROAD,
  costaBarrio:[[80,-388],[86,-369],[114,-374],[114,-401]],
@@ -69,6 +74,7 @@ export const MAINLAND_ROADS=integrateCityFreeway({
  colonCivic:[[24,-351],[14,-362],[11,-372]]
 });
 export const MAINLAND_STOPS=[
+ ...ICONIC_PLACES.filter(p=>p.id!=='boquete'),
  CITY_FREEWAY_STOP,
  {id:'margarita',x:-124,z:-375,icon:'🛍️',en:'Margarita · Plaza del Sol',es:'Margarita · Plaza del Sol',kind:'mainland'},
  {id:'gorgonaTown',x:-55,z:-16,en:'Chame · Panamá Oeste',es:'Chame · Panamá Oeste'},
@@ -200,7 +206,7 @@ export function relocateEstateRoadObstructions(estate){
  }
  return moved;
 }
-export function mainlandAt(x,z){return (mainlandContains(x,z)&&!canalWater(x,z)&&!gatunWater(x,z))||nearRoad(x,z,HIGHWAY_WIDTH/2)||Math.hypot(x/18.7,z/12.5)<=1||worldIslands.some(i=>['pizzaCity','colon','sunset'].includes(i.id)&&Math.hypot((x-i.x)/i.rx,(z-i.z)/i.rz)<1);}
+export function mainlandAt(x,z){return ((mainlandContains(x,z)||iconicLandHeight(x,z)>0)&&!canalWater(x,z)&&!gatunWater(x,z))||nearRoad(x,z,HIGHWAY_WIDTH/2)||Math.hypot(x/18.7,z/12.5)<=1||worldIslands.some(i=>['pizzaCity','colon','sunset'].includes(i.id)&&Math.hypot((x-i.x)/i.rx,(z-i.z)/i.rz)<1);}
 // A sculpted, safely walkable dormant volcano. The center dips to form a real
 // bowl-shaped crater; the highest rock is the circular rim around the summit.
 export function volcanoRelief(u,v){
@@ -226,6 +232,7 @@ export function volcanoTrailPoint(progress){
 function ungradedHeight(x,z){
  const mallFloor=mallGround(x,z);if(mallFloor>0)return mallFloor;
  let roadFloor=null;
+ const valleyRadius=Math.hypot((x+170)/38,(z+72)/25);if(valleyRadius<.66)return .25;
  // Panama City is one consistent urban grade, not rolling island hills.
  // Keep the coastline transition outside the built city to avoid a vertical wall.
  const urbanRadius=Math.hypot((x-cityX(120))/58,(z+50)/48);
@@ -251,7 +258,7 @@ function ungradedHeight(x,z){
   }
  // A real sea-level canal cut through the eastern city waterfront.
  
- let h=mainlandContains(x,z)&&Math.hypot(x/20,z/14)>1.02?mainlandRelief(x,z):0;
+ let h=Math.max(iconicLandHeight(x,z),valleyRelief(x,z),mainlandContains(x,z)&&Math.hypot(x/20,z/14)>1.02?mainlandRelief(x,z):0);
  for(const land of worldIslands){
   const u=(x-land.x)/land.rx,v=(z-land.z)/land.rz,rawRadius2=u*u+v*v;
   if(rawRadius2>1.22)continue;
@@ -299,7 +306,8 @@ export function bridgeDeckHeight(x,z){
   bridgeCells=new Map();
   for(const {id,path,ys}of profiles)for(let i=1;i<path.length;i++){
    if(Math.max(ys[i-1],ys[i])<=0)continue;const a=path[i-1],b=path[i],q={a,b,ya:ys[i-1],yb:ys[i],pad:Math.max(highwayExtra(id,...a),highwayExtra(id,...b))};
-   const reach=HIGHWAY_WIDTH/2+1+q.pad+Math.max(q.ya,q.yb)/.18;
+   q.dx=b[0]-a[0];q.dz=b[1]-a[1];q.length2=q.dx*q.dx+q.dz*q.dz||1;q.radius=HIGHWAY_WIDTH/2+1+q.pad;q.maximum=Math.max(q.ya,q.yb);
+   const reach=q.radius+q.maximum/.18;
    for(let ix=Math.floor((Math.min(a[0],b[0])-reach)/16);ix<=Math.floor((Math.max(a[0],b[0])+reach)/16);ix++)for(let iz=Math.floor((Math.min(a[1],b[1])-reach)/16);iz<=Math.floor((Math.max(a[1],b[1])+reach)/16);iz++){const key=ix+','+iz;if(!bridgeCells.has(key))bridgeCells.set(key,[]);bridgeCells.get(key).push(q);}
   }
  }
@@ -308,19 +316,20 @@ export function bridgeDeckHeight(x,z){
  // previously dropped several metres where a city street crossed its edge.
  // The maximum of continuous 18% approach profiles has no switching seam.
  const water=canalWater(x,z)||gatunWater(x,z);
- for(const {a,b,ya,yb,pad}of bridgeCells.get(Math.floor(x/16)+','+Math.floor(z/16))||[]){
-  const dx=b[0]-a[0],dz=b[1]-a[1],t=Math.max(0,Math.min(1,((x-a[0])*dx+(z-a[1])*dz)/(dx*dx+dz*dz||1))),d=Math.hypot(x-a[0]-dx*t,z-a[1]-dz*t),radius=HIGHWAY_WIDTH/2+1+pad;
+ for(const {a,dx,dz,length2,ya,yb,radius,maximum}of bridgeCells.get(Math.floor(x/16)+','+Math.floor(z/16))||[]){
+  if(maximum<=deck)continue;const t=Math.max(0,Math.min(1,((x-a[0])*dx+(z-a[1])*dz)/length2)),px=x-a[0]-dx*t,pz=z-a[1]-dz*t;
+  const reach=water?radius:radius+(maximum-deck)/.18;if(px*px+pz*pz>reach*reach)continue;const d=Math.hypot(px,pz);
   if(water&&d>radius)continue;
   deck=Math.max(deck,ya+(yb-ya)*t-.18*Math.max(0,d-radius));
  }
  return deck;
 }
 export function jungleBridgeHeight(x,z){if(x<550||x>730)return 0;const p=jungleTrailPoint((x-550)/180);if(Math.abs(z-p.z)>3)return 0;const d=inlandWaterDistance(x,p.z);return d<7?Math.max(0,1.8*(1-Math.max(0,d)/7)):0;}
-let startupHeights=null;
-export function cacheStartupHeights(){const cache=new Map();startupHeights=cache;return ()=>{if(startupHeights===cache)startupHeights=null;};}
-export function isletHeight(x,z){const key=startupHeights?x+','+z:null;if(startupHeights?.has(key))return startupHeights.get(key);const value=Math.max(terrainHeight(x,z),bridgeDeckHeight(x,z),jungleBridgeHeight(x,z));if(startupHeights&&startupHeights.size<100000)startupHeights.set(key,value);return value;}
+let startupHeights=null,startupHeightCount=0;
+export function cacheStartupHeights(){const cache=new Map();startupHeights=cache;startupHeightCount=0;return ()=>{if(startupHeights===cache){startupHeights=null;startupHeightCount=0;}};}
+export function isletHeight(x,z){let row=startupHeights?.get(x);if(row?.has(z))return row.get(z);const bridge=bridgeDeckHeight(x,z),value=Math.max(terrainHeight(x,z,bridge),bridge,jungleBridgeHeight(x,z));if(startupHeights&&startupHeightCount<250000){if(!row){row=new Map();startupHeights.set(x,row);}row.set(z,value);startupHeightCount++;}return value;}
 export const navigableWater=(x,z)=>canalWater(x,z)||inWater(x,z);
-export function terrainHeight(x,z){const ground=gorgonaShoreHeight(x,z,rainforestTerrain(x,z,gradedTerrainHeight(x,z)));return ground>0&&!canalWater(x,z)&&!gatunWater(x,z)?Math.max(ground,bridgeDeckHeight(x,z)):ground;}
+export function terrainHeight(x,z,bridge=bridgeDeckHeight(x,z)){const ground=gorgonaShoreHeight(x,z,rainforestTerrain(x,z,gradedTerrainHeight(x,z)));return ground>0&&!canalWater(x,z)&&!gatunWater(x,z)?Math.max(ground,bridge):ground;}
 function gradedTerrainHeight(x,z){
  const base=ungradedHeight(x,z);
  // Road shoulders must not fill the canal or navigable open water.
@@ -367,6 +376,7 @@ function gradedTerrainHeight(x,z){
  return grade*(1-blend)+base*blend;
 }
 export const explorePlaces=[
+ ...ICONIC_PLACES,
  {id:'chiriquiFalls',x:-477,z:-60,icon:'🌊',es:'Cascada escondida · Chiriquí',en:'Hidden waterfall · Chiriquí',kind:'mainland'},
  {id:"costaArriba",x:114,z:-401,icon:"🏘️",kind:"mainland",es:"Costa Arriba · Colón",en:"Costa Arriba · Colón"},
  {id:'darienJungle',x:550,z:-68,icon:'🌳',es:'Darién · Selva del Este',en:'Darién · Eastern Jungle',kind:'mainland'},
@@ -492,10 +502,12 @@ export function badgeExplore(s,id){if(s.badges.includes(id))return false;s.badge
 export function countExplore(s,kind){return s.collected.filter(id=>exploreItems.find(x=>x.id===id)?.kind===kind).length+(kind==='islandTreasure'?(s.waterfall?.diamonds||0):0);}
 // Small navigation grid: a tap walks around cottages instead of through them.
 export const worldObstacles=[[-10,5,1.55],[-13,2,1.3],[10,2,1.55],[12,-1,1.2],[9,-4,1.1],[ISLA_LIGHTHOUSE.x,ISLA_LIGHTHOUSE.z,1.5]];
-export function walkable(x,z){return (isletHeight(x,z)>0||Math.hypot(x/20,z/14)<=homeShoreRadius(Math.atan2(z/14,x/20)))&&worldObstacles.every(([a,b,r])=>Math.hypot(x-a,z-b)>r+.3);}
+const coastalDockPlans=new Map();
+export function coastalDockHeight(x,z){for(const p of COASTAL_ESTATES){if(Math.abs(x-p.x)>5||Math.abs(z-p.z)>72)continue;let plan=coastalDockPlans.get(p.id);if(!plan){plan=estateGroundPlan(p,isletHeight);coastalDockPlans.set(p.id,plan);}const h=estateDockSurface(p,plan,x,z);if(Number.isFinite(h))return h;}return -Infinity;}
+export function walkable(x,z){return (Number.isFinite(coastalDockHeight(x,z))||isletHeight(x,z)>0||Math.hypot(x/20,z/14)<=homeShoreRadius(Math.atan2(z/14,x/20)))&&worldObstacles.every(([a,b,r])=>Math.hypot(x-a,z-b)>r+.3);}
 // Match the sculpted shoreline; the wider lagoon is navigable, but buildings stay solid.
 export function onDock(x,z){return costaDock(x,z)||(x>=3&&x<=5&&z>=11.8&&z<=17.4);}
-export function inWater(x,z){if(onDock(x,z)||isletHeight(x,z)>0)return false;const a=Math.atan2(z/14,x/20);return Math.hypot(x/20,z/14)>homeShoreRadius(a);}
+export function inWater(x,z){if(onDock(x,z)||Number.isFinite(coastalDockHeight(x,z))||isletHeight(x,z)>0)return false;const a=Math.atan2(z/14,x/20);return Math.hypot(x/20,z/14)>homeShoreRadius(a);}
 // Keep the hull clear, including saved boats that overlap a shore or world boundary.
 export function boatClear(x,z){if(Math.hypot(x/(WORLD_BOUNDS.x-1),z/(WORLD_BOUNDS.z-1))>=1||!navigableWater(x,z))return false;for(let i=0;i<8;i++){const a=i*Math.PI/4;if(!navigableWater(x+Math.sin(a)*1.1,z+Math.cos(a)*1.1))return false;}return true;}
 export function recoverBoat(x,z){if(boatClear(x,z))return {x,z};for(let r=.15;r<=6;r+=.15)for(let i=0;i<32;i++){const a=i*Math.PI/16,nx=x+Math.sin(a)*r,nz=z+Math.cos(a)*r;if(boatClear(nx,nz))return {x:nx,z:nz};}if(mainlandContains(x,z)||worldIslands.some(p=>p.id==='islaGrande'&&Math.hypot((x-p.x)/p.rx,(z-p.z)/p.rz)<1.2))for(let r=7;r<=90;r++)for(let i=0;i<64;i++){const a=i*Math.PI/32,nx=x+Math.sin(a)*r,nz=z+Math.cos(a)*r;if(boatClear(nx,nz))return {x:nx,z:nz};}return {x:6.5,z:16};}
@@ -575,7 +587,7 @@ export function nextIslandAdventure(state){
 }
 // Fixed rewards keep the wallet explainable and prevent repeat-click farming.
 export const islandShop=[{id:'coral',cost:15,hat:4,es:'Sombrero coral',en:'Coral hat'},{id:'ocean',cost:30,hat:5,es:'Sombrero océano',en:'Ocean hat'},{id:'sunshine',cost:45,hat:6,es:'Sombrero sol',en:'Sunshine hat'}];
-export function coinValue(id){if(id==='city-intro-delivery')return 6;if(id==='colon-monkey-play')return 12;if(/^region-help-(home|islet|wilds|coconutCoast|sunset|crystalCove|pizzaCity|colon)$/.test(id))return 25;
+export function coinValue(id){if(/^landmark-(amador|panamaViejo|elValle)$/.test(id))return 6;if(id==='city-intro-delivery')return 6;if(id==='colon-monkey-play')return 12;if(/^region-help-(home|islet|wilds|coconutCoast|sunset|crystalCove|pizzaCity|colon)$/.test(id))return 25;
  if(/^city-(?:rally|soccer|mural|carwash|plaza|canal|delivery-finish)$/.test(id))return 12;
  if(/^city-delivery-[0-2]$/.test(id))return 7;
  if(/^city-market-[1-3]$/.test(id))return 5;

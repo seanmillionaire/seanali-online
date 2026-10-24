@@ -1,3 +1,4 @@
+import {coastalEstateReserved} from './coastal-estates.js';
 import {ISLA_LIGHTHOUSE as LH} from './costa-arriba-layout.js';
 import {createRenderBudget} from './render-budget.js';
 import {buildMainlandData,buildCoastData} from './mainland-data.js';
@@ -120,6 +121,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{},ma
   }
   function jungleTree(x,z,i){tropical.forest.addTree(i%7===0?'pine':i%4===0?'natural':'palm',x,z,1+(i%3)*.13,i);}
   function beachShade(x,z,i){
+   if(coastalEstateReserved(x,z,2))return;
    const y=height(x,z),g=new T.Group();g.name='Canvas beach parasol and recliner';g.position.set(x,y,z);scene.add(g);
    const fabric=mat(i%2?'#8c9a91':'#c3b99e',{map:surfaces.plaster,side:T.DoubleSide,roughness:.98});
    make(cylinder,beachWood,0,1.22,0,.045,2.44,.045,g);make(cone,fabric,0,2.45,0,1.5,.40,1.5,g);
@@ -223,7 +225,7 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{},ma
     // parasols and surfboards; deliberately flat and open for boating.
     for(let i=0;i<9;i++){
      const a=i*2.4,r=.37+(i%4)*.16,p=place(land,Math.sin(a)*r,Math.cos(a)*r);
-     tropical.palm(p.x,p.z,.75+(i%3)*.13,true);
+     if(!coastalEstateReserved(p.x,p.z,2))tropical.palm(p.x,p.z,.75+(i%3)*.13,true);
     }
     for(let i=0;i<5;i++){
      const a=i*2.4,p=place(land,Math.sin(a)*.38,Math.cos(a)*.36);
@@ -231,13 +233,14 @@ export function buildIsland(T,canvas,motion,setup,{light=false,onError=()=>{},ma
     }
     for(let i=0;i<7;i++){
      const a=i*2.4,p=place(land,Math.sin(a)*.75,Math.cos(a)*.68);
+     if(coastalEstateReserved(p.x,p.z,1))continue;
      const board=make(box,i%2?beachBlue:beachCoral,p.x,p.y+.75,p.z,.24,1.48,.12);
      board.rotation.z=Math.sin(a)*.25;
      make(ball,beachShell,p.x+.38,p.y+.1,p.z+.2,.4,.19,.32);
     }
     for(let i=0;i<7;i++){
      const a=i*2.4,p=place(land,Math.sin(a)*.60,Math.cos(a)*.63);
-     tropical.card(4,p.x,p.y,p.z,.7,.7);
+     if(!coastalEstateReserved(p.x,p.z,1))tropical.card(4,p.x,p.y,p.z,.7,.7);
     }
    }else if(land.id==='sunset'){
     // Volcán Barú: the tallest mountain in this fantasy archipelago.

@@ -1,3 +1,4 @@
+import {AMADOR_ISLANDS,AMADOR_ROAD} from './iconic-layout.js';
 import {freewayDistance} from './city-freeway-layout.js';
 import {HIGHWAY_CURVES} from './explore-state.js';
 import {DARIEN_RIVERS,JUNGLE_PONDS,CHIRIQUI_FALL} from './rainforest-layout.js';
@@ -25,6 +26,8 @@ export function createWorldMap({host,panel,world,islands,places,language,onTrave
   gradient.append(svgEl('stop',{offset:'0%','stop-color':'#77cfd4'}),svgEl('stop',{offset:'100%','stop-color':'#267eac'}));
   defs.append(gradient);svg.append(defs);
   svg.append(svgEl('ellipse',{cx:0,cy:0,rx:WORLD_EXTENT.width/2,ry:WORLD_EXTENT.height/2,fill:'url(#'+(mini?'ocean-mini':'ocean-big')+')'}));
+  for(const p of AMADOR_ISLANDS)svg.append(svgEl('ellipse',{cx:p.x,cy:p.z,rx:p.rx,ry:p.rz,fill:'#86b574',stroke:'#ead6a7','stroke-width':2}));
+  svg.append(svgEl('polyline',{points:AMADOR_ROAD.map(p=>p.join(',')).join(' '),fill:'none',stroke:'#86b574','stroke-width':17}));
   svg.append(svgEl('path',{d:SMOOTH_MAINLAND_OUTLINE.map((p,i)=>(i?'L':'M')+p[0]+' '+p[1]).join(' ')+' Z',fill:'#86b574',stroke:'#e9d7a6','stroke-width':3}));
   svg.append(svgEl('path',{d:HIGHWAY_CURVES.cityFreeway.map((p,i)=>(i?'L':'M')+p.join(' ')).join(' ')+' Z',fill:'#86b574',stroke:'#86b574','stroke-width':32}));
   svg.append(svgEl('ellipse',{cx:-444,cy:-80,rx:43,ry:43,fill:'#487b47'}));

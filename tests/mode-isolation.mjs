@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {loadGameMode,routeMode,modeSaveKey,STORY_SAVE_KEY,STORY_START} from '../games/adventure/game-mode.js';
+import {fresh,normalize,SAVE_KEY} from '../games/adventure/state.js';
+import {cityAccess} from '../games/adventure/city-chapter-state.js';
+const data=new Map(),store={getItem:k=>data.get(k)||null,setItem:(k,v)=>data.set(k,String(v)),removeItem:k=>data.delete(k)};
+const original=fresh();original.world.panama.pantry.plantain=4;original.playerName='Sam';store.setItem(SAVE_KEY,JSON.stringify(original));const saved=store.getItem(SAVE_KEY);
+const live=loadGameMode(store,'live');assert.equal(live.cityChapter,null);assert(cityAccess(live,-500,240));assert.equal(store.getItem(SAVE_KEY),saved);assert.equal(JSON.parse(store.getItem(STORY_SAVE_KEY)).world.panama.pantry.plantain,4);
+store.removeItem(STORY_SAVE_KEY);const story=loadGameMode(store,'story');assert.equal(story.world.x,STORY_START.x);assert.equal(story.cityChapter.arrivalSeen,false);assert.equal(story.adminMode,false);assert(cityAccess(story,288,-67));assert(!cityAccess(story,-500,240));store.setItem(STORY_SAVE_KEY,JSON.stringify(story));
+const admin=loadGameMode(store,'admin');assert(admin.adminMode&&admin.world.adminMode);assert.equal(admin.cityChapter,null);assert(cityAccess(admin,-500,240));assert.equal(store.getItem(SAVE_KEY),saved);assert.equal(loadGameMode(store,'story').adminMode,false);assert.equal(loadGameMode(store,'live').adminMode,false);
+assert.equal(normalize(JSON.parse(store.getItem(STORY_SAVE_KEY))).cityChapter.arrivalSeen,false);
+assert.equal(routeMode('/games/panama/story/','?mode=admin'),'story');assert.equal(routeMode('/games/panama/admin/'),'admin');assert.equal(routeMode('/games/panama/'),'live');assert.equal(new Set(['live','story','admin'].map(modeSaveKey)).size,3);
+console.log('PASS live/story/admin saves isolated; preexisting story progress backed up; world access distinct; outside-city arrival preserved');

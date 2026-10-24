@@ -19,3 +19,11 @@ await faded.morning();assert.equal(gainNodes.at(-1).gain.value,0,'opening theme 
 time=2.4;faded.sync();assert(Math.abs(gainNodes.at(-1).gain.value-.18)<1e-6,'halfway through gentle fade');
 time=4.8;faded.sync();assert(Math.abs(gainNodes.at(-1).gain.value-.36)<1e-6,'quieter final theme gain');
 assert(faded.exclusive);faded.destroy();console.log('PASS silent theme start, 4.8-second fade and softer theme level');
+
+// Language selection is read at playback time, including an in-progress switch.
+let language='en',languageClaims=0;allowed=true;hidden=false;volume=.6;
+const localized=createThemeAudio({language:()=>language,allowed:()=>allowed,volume:()=>volume,hidden:()=>hidden,now:()=>time,environment:()=>({context,output:{}}),createAudio:()=>new Media()});
+await localized.morning(()=>languageClaims++);assert(audios.at(-1).src.endsWith('panama-morning-theme-en.mp3'));const english=audios.at(-1);
+language='es';localized.sync();await Promise.resolve();assert(english.paused&&!english.src);assert(audios.at(-1).src.endsWith('panama-morning-theme.mp3'));assert.equal(languageClaims,1,'language switch does not claim a second morning');
+volume=0;localized.sync();language='en';localized.sync();assert(audios.at(-1).paused);volume=.6;localized.sync();await Promise.resolve();assert(audios.at(-1).src.endsWith('panama-morning-theme-en.mp3'));assert(localized.exclusive);assert.equal(languageClaims,1);localized.destroy();
+console.log('PASS English dawn selection, live EN/ES switch, muted language change and once-per-day preservation');

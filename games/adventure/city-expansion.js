@@ -1,7 +1,11 @@
+import {createHuman} from './character-model.js';
+import {residentStyle} from './regional-residents.js';
+import {createResidentRoutine} from './resident-routine.js';
+import {pedestrianSpace} from './pedestrian-space.js';
 import {CANAL_TERMINAL,cityX} from './geography.js';
 import {roadRibbon,surfaceMesh,cityStreetSurface} from './road-surfaces.js';
 import {STREET_VENDORS,BARRIO_HOMES} from './city-street-life.js';
-import {CITY_EXPANSION_PLOTS,CITY_STREET_X,CITY_STREET_Z,cityPropSite} from './city-layout.js';
+import {CITY_EXPANSION_PLOTS,CITY_STREET_X,CITY_STREET_Z,cityPropSite,cityPropClear} from './city-layout.js';
 import {createPurpleApartment,PURPLE_APARTMENT} from './purple-apartment.js';
 import {spendFood} from './explore-state.js';
 /* Panama Adventure — substantial zero-dependency Casco Viejo city expansion.
@@ -147,14 +151,12 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  }
  // The full-size canal and its single ocean liner are owned by canal-cruise.js.
  // An inhabited city: people cross plazas and sidewalks on independent routes.
- const pedestrians=[];
+ const pedestrians=[],pedestrianGeometry=[],peopleSpace=pedestrianSpace(scene);
  for(let i=0;i<8;i++){
-  const g=new T.Group();g.name='Casco Viejo pedestrian '+(i+1);group.add(g);
-  const clothing=palette[i%palette.length],personSkin=mat(i%2?'#c78c67':'#a87451');
-  makeObj(cylinder,clothing,0,1.02,0,.23,.72,.23,g);
-  makeObj(ball,personSkin,0,1.67,0,.23,.27,.22,g);
-  const legs=[-.13,.13].map(dx=>{const limb=new T.Group();limb.position.set(dx,.72,0);g.add(limb);makeObj(cylinder,dark,0,-.38,0,.095,.64,.095,limb);return limb;});
-  pedestrians.push({g,legs,i});
+  const home=cityPropSite(cityX(93)+(i%4)*18,i<4?-56:-30,.5);if(!home)continue;
+  const human=createHuman({T,geometry:g=>{pedestrianGeometry.push(g);return g;},mat,make},{...residentStyle(home.x,home.z,i+16),index:i+16});
+  human.g.name='Casco Viejo pedestrian '+(i+1);human.g.position.set(home.x,height(home.x,home.z),home.z);group.add(human.g);human.batch();
+  human.routine=createResidentRoutine(human,{seed:2301+i*97,home,height,radius:2.4,speed:.65,clear:(x,z)=>cityPropClear(x,z,.4)});peopleSpace.add(human);pedestrians.push(human);
  }
  // Soccer: visible pitch, striped goal and ball that reacts to shooting.
  const soccer=CITY_SITES.find(q=>q.id==='soccer'),field=new T.Group();
@@ -325,13 +327,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
  }
  function update(dt,active,{x,z,driving=false,flying=false,indoors=false}={}){
   if(!active||indoors)return;
-  for(const p of pedestrians){
-   const a=performance.now()*.00017*(p.i%3+1)+p.i*1.7;
-   const cx=cityX(93)+(p.i%4)*18,cz=p.i<4?-56:-30;
-   const px=cx+Math.cos(a)*.6,pz=cz+Math.sin(a)*.6;
-   p.g.position.set(px,height(px,pz),pz);p.g.rotation.y=-a;
-   p.legs.forEach((leg,j)=>leg.rotation.x=Math.sin(a*22+j*Math.PI)*.35);
-  }
+  for(const p of pedestrians){p.routine.update(dt,active,(px,pz)=>pedestrians.some(q=>q!==p&&Math.hypot(q.g.position.x-px,q.g.position.z-pz)<.8)||Math.hypot(px-x,pz-z)<.75);}
   const nearField=Math.hypot(x-soccer.x,z-soccer.z)<28;
   if(nearField&&active&&!driving&&!flying&&!indoors){
    const px=x-soccer.x,pz=z-soccer.z;
@@ -429,7 +425,7 @@ export function createCityExpansion({T,group,scene,state,make,mat,box,ball,cylin
   cityWaypoint=CITY_SITES.find(p=>p.id===id)||null;return cityWaypoint;
  }
  function aimReady(){return Math.abs(Math.sin(performance.now()*.0035))<.76;}
- function dispose(){for(const g of roadGeometries)g.dispose();for(const b of sprites){b.tex.dispose();b.material.dispose();}batches.clear();}
+ function dispose(){for(const p of pedestrians)peopleSpace.remove(p);for(const g of pedestrianGeometry)g.dispose();for(const g of roadGeometries)g.dispose();for(const b of sprites){b.tex.dispose();b.material.dispose();}batches.clear();}
  return {sites:CITY_SITES,near,activityPrompt,interactAt,beginDelivery,update,status,goal,setWaypoint,aimReady,dispose,roadCount:chunks.length,buildingCount,soccerPosition:()=>({x:soccer.x+football.position.x,z:soccer.z+football.position.z}),npcKick:()=>{if(soccerBall.cooldown>0||Math.hypot(soccerBall.vx,soccerBall.vz)>6)return;soccerBall.owner='barrio';soccerBall.cooldown=1.2;soccerBall.vx=(Math.random()-.5)*8;soccerBall.vz=(football.position.z>0?-1:1)*5;soccerBall.vy=1.8;}};
 }
 

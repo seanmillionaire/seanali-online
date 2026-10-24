@@ -1,3 +1,5 @@
+import {iconicReserved} from './iconic-layout.js';
+import {coastalEstateReserved} from './coastal-estates.js';
 import {fruitSiteId} from './fruit-site-ids.js';
 import {snakeCorridorContains} from './east-jungle-layout.js';
 import {worldIslands,HIGHWAY_CURVES,roadDistance,inWater,isletHeight} from './explore-state.js';
@@ -24,7 +26,7 @@ export function fruitGroves(){
 }
 // Tree crowns and hundreds of harvestable fruit clusters share GPU batches.
 export function createFruitAbundance({T,scene,geometry,mat,ball,cylinder,height,state}){
- const root=new T.Group();root.name='Abundant Panama fruit groves';scene.add(root);const sites=fruitGroves().filter(p=>Math.hypot(p.x-530,p.z+430)>8&&!(state?.world?.estate?.buildings||[]).some(b=>Math.hypot(p.x-b.x,p.z-b.z)<10)),batches=new Map(),dummy=new T.Object3D(),resources=[];
+ const root=new T.Group();root.name='Abundant Panama fruit groves';scene.add(root);const sites=fruitGroves().filter(p=>!iconicReserved(p.x,p.z,5)&&!coastalEstateReserved(p.x,p.z,5)&&Math.hypot(p.x-530,p.z+430)>8&&!(state?.world?.estate?.buildings||[]).some(b=>Math.hypot(p.x-b.x,p.z-b.z)<10)),batches=new Map(),dummy=new T.Object3D(),resources=[];
  const emojis=createFruitEmojis(T),fruitBatches=new Map();
  const bark=mat('#806344'),leaf=mat('#ffffff',{vertexColors:true,side:T.DoubleSide,roughness:.8});
  const crowns=Object.fromEntries(['palm','banana','natural'].map(k=>[k,botanicalGeometry(T,geometry,k)]));

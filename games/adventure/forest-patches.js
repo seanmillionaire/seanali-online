@@ -1,3 +1,5 @@
+import {iconicReserved} from './iconic-layout.js';
+import {coastalEstateReserved} from './coastal-estates.js';
 import {ISLA_GRANDE} from './costa-arriba-layout.js';
 import {darienBoulderClear} from './darien-terrain.js';
 import {natureSiteClear,chiriquiContains,waterfallTrailClear} from './rainforest-layout.js';
@@ -60,6 +62,7 @@ function nearTrail(x,z){
  }return false;
 }
 export function forestSiteClear(x,z,biome='tropical',kind=null){
+ if(iconicReserved(x,z,5)||coastalEstateReserved(x,z,4))return false;
  if(!waterfallTrailClear(x,z)||!natureSiteClear(x,z,1))return false;
  if(Math.hypot(x-530,z+430)<8||!darienBoulderClear(x,z,1.8)||(kind!=='fern'&&snakeCorridorContains(x,z))||!jungleTrailClear(x,z)||homeReserved(x,z,5)||!regionalTrailClear(x,z)||regionalClearing(x,z)||roadDistance(x,z)<HIGHWAY_WIDTH/2+10||townPlots.some(p=>Math.abs(x-p.x)<p.w/2+5&&Math.abs(z-p.z)<p.d/2+5))return false;
  if(FOREST_CLEARINGS.some(p=>Math.hypot(x-p.x,z-p.z)<p.r))return false;

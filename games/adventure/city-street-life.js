@@ -7,13 +7,16 @@ import {trafficJamStep} from './traffic-yield.js';
 import {vehicleOverlap,trafficFootprint} from './vehicle-contact.js';
 import {cityX} from './geography.js';
 import {CITY_BARRIO_PLOTS,cityPropSite,cityPropClear} from './city-layout.js';
-import {TRAFFIC_ROUTES,routePose,trafficAdvance,soundFalloff} from './panama-state.js';
+import {TRAFFIC_ROUTES,routePose,spaceCityTraffic,trafficAdvance,soundFalloff} from './panama-state.js';
 export const STREET_VENDORS=[{id:'raspao-centro',x:cityX(129),z:-53,kind:'raspao'},{id:'raspao-barrio',x:cityX(99),z:-18,kind:'raspao'},{id:'mercado-food',x:cityX(150),z:-56,kind:'market'}];
 export const BARRIO_HOMES=[{id:'barrio-casa-1',x:CITY_BARRIO_PLOTS[0].x,z:CITY_BARRIO_PLOTS[0].z+CITY_BARRIO_PLOTS[0].d/2+.5,es:'Casa del barrio · Cancha',en:'Barrio home · Football field',icon:'🏘️',theme:'sea'},{id:'barrio-casa-2',x:CITY_BARRIO_PLOTS[1].x,z:CITY_BARRIO_PLOTS[1].z+CITY_BARRIO_PLOTS[1].d/2+.5,es:'Casa del barrio · Balcón',en:'Barrio balcony home',icon:'🏘️',theme:'art'}];
 export function createCityStreetLife({state,T,scene,make,mat,box,ball,cylinder,height,roadHeight=height,models,joy,surfaces,football=()=>null,npcKick=()=>{},otherTraffic=()=>[]}){
  const root=new T.Group();root.name='Panama City moving traffic and barrio street life';scene.add(root);const {white,dark,blue,red,yellow,glass,green}=models.colors;
  const piece=(m,x,y,z,w,h,d,parent=root)=>make(box,m,x,y,z,w,h,d,parent);
- const vehicles=[];for(let i=0;i<13;i++){const bus=i>=10,police=i===9,taxi=i<7,route=TRAFFIC_ROUTES[bus?(i-10)%3:i%3],utility=i===7||i===8,g=bus?models.bus(root):utility?models.utility(root,i===8):models.sedan(root,police,taxi);vehicles.push({g,bus,police,taxi,utility,route,distance:i*43+13*Math.sin(i*2.39),speed:(bus?6.4:police?5.5:taxi?5.3:4.7)+Math.sin(i*1.73)*.75});}
+ const vehicles=[];for(let i=0;i<13;i++){const bus=i>=10,police=i===9,taxi=i<7,route=TRAFFIC_ROUTES[bus?(i-10)%3:i%3],utility=i===7||i===8,g=bus?models.bus(root):utility?models.utility(root,i===8):models.sedan(root,police,taxi);vehicles.push({g,bus,police,taxi,utility,route,distance:0,speed:(bus?6.4:police?5.5:taxi?5.3:4.7)+Math.sin(i*1.73)*.75});}
+ // Even spacing prevents overlapping spawn hulls and leaves the collection depot clear.
+ spaceCityTraffic(vehicles);
+
  const signals=[];for(const [x,z]of [[cityX(105),-61],[cityX(135),-61],[cityX(105),-35],[cityX(135),-35]]){const y=height(x,z);piece(dark,x+3.4,y+1.9,z+3.4,.12,3.8,.12);piece(dark,x+3.4,y+3.5,z+3.4,.55,1,.4);for(const side of [-1,1]){const m=mat(side<0?'#e53430':'#67c258',{emissive:side<0?'#e53430':'#67c258',emissiveIntensity:.5});const mesh=make(ball,m,x+3.4,y+3.5+side*.22,z+3.64,.15,.15,.08,root);signals.push({mesh,side});}}
  const people=[],police=[];
  for(let i=0;i<4;i++){const x=cityX(92)+i*15,z=-54,p=models.person(root,x,height(x,z),z,i,true);const site=cityPropSite(x,z,1);p.home=site||{x,z};p.police=true;people.push(p);police.push(p);}
