@@ -1,7 +1,7 @@
 {
   "esbuild": "0.25.12",
   "bundle": "games/adventure/app.bundle.js",
-  "digest": "845cfafaaf2afd4454feb467d4cc46ff5793bdb670027eca19eed0a831f10ff3",
+  "digest": "272ae4eafd49615609cc940af16054cd4216a0ee60bd8108df1751a071702767",
   "inputs": {
     "games/adventure/active-volcano.js": "c251b46f5a1d3ce2ef51a74f04d9a7124b36fc2b8213021e6e4035397f5e34fd",
     "games/adventure/adventure-icons.js": "f70762f93708b8546be15fb0d10444fe66d5bf6148e42970447cb5db5dd475f6",
@@ -99,8 +99,8 @@
     "games/adventure/leisure-visits.js": "4d941de68400741120525fc8bd98bcb7306b9895722cbdb9a328b206a5331d97",
     "games/adventure/location-label.js": "4cb1b67e68a78c93b044691ea4d53592310d759ee465265f9ba47a10ee13d22e",
     "games/adventure/mainland-data.js": "b2654874cfff16958f1dbae6f91358c71999782ab8996548b01955e959188475",
-    "games/adventure/mainland-loader.js": "4463cd64bac260614778ae827b393edc34b9fcb7433d1a9c403682bd57d41900",
-    "games/adventure/mainland-revision.js": "e8bfcf769766b14caf41a12ac3c52927f7f52a3c2a8b646baa7d9f2e9f9f2192",
+    "games/adventure/mainland-loader.js": "ad99c4a71415ee6183d4c90d45846b527fdad42a27081b0d1eec1ae80b515976",
+    "games/adventure/mainland-revision.js": "5fe8289872f908bb5900744ba880a41747f5d45a13a78774a3296021694344df",
     "games/adventure/mall-shopping.js": "779f41f4aa0376cd8e503e5aaf78be28b2a7fd96adc020bdbd472f8263f11e06",
     "games/adventure/mansion-access.js": "fe4baa964594a7ed21ccf0c3c01e76083c6ea92efc2f2f30f204565bbb0ef2d2",
     "games/adventure/mansion-floors.js": "4a9a9034549ff4e117099fd20f37837e19f13c4be16dfb0bf99294bedba91692",
