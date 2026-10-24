@@ -9,19 +9,22 @@ async function request(options){const r=await fetch('/api/master-plan',{credenti
 function post(body){return request({method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});}
 async function load(){try{snapshot=await request();$('#login').hidden=true;$('#dashboard').hidden=false;$('#snapshot').textContent='Updates checked · '+date(snapshot.capturedAt)+' Panama time';const old=Date.now()-Date.parse(snapshot.capturedAt)>86400000;$('#notice').textContent=old?'These updates were checked more than a day ago. I need a fresh check before treating them as today’s status.':'The date above is when the source updates were checked. Prices, sales and the live customer experience still need their own check. A completed build means the code built successfully; it does not mean someone tested the whole experience.';render();}catch(e){if(e.status===401){lock();}else{lock();$('#login-error').textContent=e.message;}}}
 const statusLabel = {TEST:'Test next',HOLD:'On hold',SCALE:'Grow it',FIX:'Fix first',KILL:'Stop'};
+function disclosure(title,...content){const d=el('details'),sum=el('summary',title),body=el('div',undefined,'inside');body.append(...content);d.append(sum,body);return d;}
+function openProject(id){$('#search').value='';$('#type').value='';$('#status').value='';renderProjects();$('#portfolio').open=true;const card=$('#project-'+id);if(card){card.open=true;card.querySelector('.next-step').open=true;card.scrollIntoView({behavior:'smooth',block:'start'});}}
 function renderActivity(){
-  let events=[...snapshot.commits.map(x=>({...x,kind:'push'})),...snapshot.builds.map(x=>({...x,kind:'build'}))].sort((a,b)=>b.date.localeCompare(a.date));
-  if(feed!=='all') events=events.filter(x=>x.kind===feed);
-  const host=$('#activity');host.replaceChildren();
-  for(const e of events.slice(0,limit)){
-    const row=el('article',undefined,'event'),time=el('time',date(e.date));time.dateTime=e.date;
-    const body=el('div'),project=snapshot.projects.find(p=>p.id===e.projectId)||snapshot.projects.find(p=>p.repo===e.repo);
-    const state=e.kind==='build'?(e.state==='READY'?'Build completed':e.state)+' · '+(e.target==='production'?'Production':'Preview'):'Code updated';
-    body.append(el('span',state,'tag '+e.kind),el('p',project?.name||e.repo,'activity-project'),el('h3',e.displayTitle||e.title),el('p',e.meaning||project?.next||''));
-    const proof=el('details',undefined,'activity-proof');proof.append(el('summary','Original update & source'));
-    proof.append(el('p',e.title+' · '+e.sha.slice(0,8)),link('Open original update ↗',e.url));body.append(proof);row.append(time,body);host.append(row);
-  }
-  $('#more').hidden=events.length<=limit;
+ const groups=new Map();
+ for(const e of [...snapshot.commits.map(x=>({...x,kind:'push'})),...snapshot.builds.map(x=>({...x,kind:'build'}))].sort((a,b)=>b.date.localeCompare(a.date))){if(!groups.has(e.repo))groups.set(e.repo,[]);groups.get(e.repo).push(e);}
+ const host=$('#activity');host.replaceChildren();
+ for(const [repo,events] of groups){
+ const project=snapshot.projects.find(p=>p.repo===repo),latest=events[0];
+ const themes=[...new Set(events.map(e=>e.meaning||e.displayTitle||e.title))].slice(0,3);
+ const summary=el('div');for(const theme of themes)summary.append(el('p',theme));
+ summary.append(el('p','Last update · '+date(latest.date),'small'));
+ const build=events.find(e=>e.kind==='build');if(build)summary.append(el('p','Latest saved build: '+build.state+' · '+(build.target==='production'?'Production':'Preview'),'small'));
+ const next=el('button','Show my next step');next.addEventListener('click',()=>openProject(project.id));if(project)summary.append(next);
+ const proof=disclosure('See the original updates');const body=proof.querySelector('.inside');const seen=new Set();for(const e of events){const key=e.sha+e.kind;if(seen.has(key))continue;seen.add(key);body.append(link((e.kind==='build'?'Build · ':'Code · ')+e.title,e.url));}
+ summary.append(proof);const row=disclosure(project?.name||repo,summary);row.className='repo-row';row.querySelector('summary').append(el('span',repo,'repo-name'));host.append(row);
+ }
 }
 function clipPanel(p){
  const c=p.clip,box=el('section',undefined,'clip-panel');
@@ -36,13 +39,24 @@ function clipPanel(p){
  box.append(el('p','I add the video and fill the fields myself. This link does not send the brief, generate clips or publish anything automatically.','small'));
  return box;
 }
-function renderProjects(){const q=$('#search').value.toLowerCase().trim(),type=$('#type').value,status=$('#status').value;const projects=snapshot.projects.filter(p=>(!q||JSON.stringify(p).toLowerCase().includes(q))&&(!type||p.type===type)&&(!status||p.status===status)).sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||''));$('#project-count').textContent=projects.length+' / '+snapshot.projects.length+' projects';$('#empty').hidden=projects.length>0;const host=$('#projects');host.replaceChildren();for(const p of projects){const card=el('article',undefined,'project');card.id='project-'+p.id;const top=el('div',undefined,'project-top'),heading=el('div',undefined,'project-heading'),name=el('div');name.append(el('span',p.type,'kicker'),el('h3',p.name));heading.append(name,el('span',statusLabel[p.status]||p.status,'tag '+p.status.toLowerCase()));top.append(heading,el('p',p.description),el('div',p.updatedAt?'Latest code update · '+date(p.updatedAt):'My shared content app · export test still to do','project-meta'));const next=el('div',undefined,'next');next.append(el('strong','Do this first'),el('p',p.next));top.append(next);if(p.done){const done=el('div',undefined,'done-line');done.append(el('strong','I’m done when…'),el('p',p.done));top.append(done);}const details=el('details'),summary=el('summary','My steps, clip brief & links'),body=el('div',undefined,'details-body');body.append(el('h4','Why I’m doing this'),el('p',p.why));if(p.steps){body.append(el('h4','My steps, in order'));const steps=el('ol',undefined,'project-steps');for(const step of p.steps)steps.append(el('li',step));body.append(steps);}body.append(el('h4','What I’m watching'),el('p',p.metric),el('p',p.statusBasis,'small'));if(p.offers.length){body.append(el('h4','My offers & tools'));const offers=el('ul',undefined,'offers');for(const o of p.offers){const li=el('li');li.append(link(o.name+' ↗',o.url),el('p',o.description),el('p',o.verification,'small'));offers.append(li);}body.append(offers);}if(p.clip)body.append(clipPanel(p));const links=el('div',undefined,'links');links.append(link(p.repo?'Code & original updates ↗':'Open my app ↗',p.source));if(p.url&&p.repo)links.append(link('Open the site ↗',p.url));body.append(links);details.append(summary,body);if(p.clip){const clipAction=el('button','Get my clip brief ↓','clip-jump');clipAction.type='button';clipAction.addEventListener('click',()=>{details.open=true;body.querySelector('.clip-panel').scrollIntoView({behavior:'smooth',block:'start'});});top.append(clipAction);}card.append(top,details);host.append(card);}}
-function render(){renderActivity();renderProjects();const pri=$('#priority-list');pri.replaceChildren();snapshot.priorities.forEach((p,i)=>{const row=el('article',undefined,'priority'),body=el('div');body.append(el('h3',p.title),el('p',p.detail));if(p.first){const first=el('div',undefined,'priority-first');first.append(el('strong','First action'),el('p',p.first));body.append(first);}if(p.done){const done=el('div',undefined,'priority-done');done.append(el('strong','What I want at the end'),el('p',p.done));body.append(done);}const a=el('a','Open my steps ↓');a.href='#project-'+p.project;a.addEventListener('click',()=>{$('#search').value='';$('#type').value='';$('#status').value='';renderProjects();$('#project-'+p.project+' details').open=true;});body.append(a);row.append(el('span',String(i+1).padStart(2,'0'),'number'),body);pri.append(row);});const sources=$('#sources');sources.replaceChildren(...snapshot.sources.map(s=>link(s.name+' ↗',s.url)));$('#coverage').textContent=snapshot.projects.length+' projects across '+new Set(snapshot.projects.map(p=>p.repo).filter(Boolean)).size+' of my code repositories, plus my Clip Factory app, business directory and SOPs. Work in other accounts or still on my computer may not be included. Sales results have not been added here.';}
+function renderProjects(){
+ const q=$('#search').value.toLowerCase().trim(),type=$('#type').value,status=$('#status').value;
+ const projects=snapshot.projects.filter(p=>(!q||[p.name,p.description,...p.offers.map(o=>o.name)].join(' ').toLowerCase().includes(q))&&(!type||p.type===type)&&(!status||p.status===status));
+ $('#project-count').textContent=projects.length+' projects';$('#empty').hidden=projects.length>0;const host=$('#projects');host.replaceChildren();
+ for(const p of projects){
+ const what=disclosure('1. What is this?',el('p',p.description));
+ const next=disclosure('2. What do I do first?',el('p',p.next,'big-action'));next.className='next-step';
+ if(p.url)next.querySelector('.inside').append(link('Open '+p.name+' ↗',p.url));
+ const steps=el('div');(p.steps||[]).forEach((step,i)=>steps.append(disclosure('Step '+(i+1),el('p',step))));next.querySelector('.inside').append(disclosure('Then what?',steps),disclosure('How do I know I’m done?',el('p',p.done||p.metric)));
+ const card=disclosure(p.name,what,next);card.id='project-'+p.id;card.className='project';
+ if(p.clip)card.querySelector('.inside').append(disclosure('3. Make social clips',clipPanel(p)));
+ const more=el('div');more.append(el('p',p.why),el('p',p.metric));for(const o of p.offers)more.append(link(o.name+' ↗',o.url));more.append(link('Original source ↗',p.source));card.querySelector('.inside').append(disclosure('Links & extra details',more));host.append(card);
+ }
+}
+function render(){renderActivity();renderProjects();const pri=$('#priority-list');pri.replaceChildren();snapshot.priorities.forEach((p,i)=>{const body=el('div');body.append(el('p',p.first||p.detail,'big-action'));const a=el('button','Walk me through it →');a.addEventListener('click',()=>openProject(p.project));body.append(a,disclosure('Why this? What does finished look like?',el('p',p.detail),el('p',p.done)));const row=disclosure(String(i+1)+'. '+p.title,body);row.className='priority';pri.append(row);});const sources=$('#sources');sources.replaceChildren(...snapshot.sources.map(s=>link(s.name+' ↗',s.url)));$('#coverage').textContent='Saved plan: '+snapshot.projects.length+' projects. Open only the one I want to work on. Updates are a snapshot, not a live feed.';}
 $('#login-form').addEventListener('submit',async e=>{e.preventDefault();const b=e.target.querySelector('button');b.disabled=true;$('#login-error').textContent='';try{await post({key:$('#key').value});$('#key').value='';await load();}catch(err){$('#login-error').textContent=err.message;}finally{b.disabled=false;}});
 $('#logout').addEventListener('click',async()=>{try{await post({action:'logout'});lock();}catch(e){$('#notice').textContent='Unable to clear your server session. Close this browser session to lock access.';}});
 $('#reload').addEventListener('click',load);
 for(const s of ['#search','#type','#status'])$(s).addEventListener('input',renderProjects);
-for(const b of document.querySelectorAll('[data-feed]'))b.addEventListener('click',()=>{feed=b.dataset.feed;limit=6;for(const t of document.querySelectorAll('[data-feed]')){t.classList.toggle('active',t===b);t.setAttribute('aria-pressed',String(t===b));}renderActivity();});
-$('#more').addEventListener('click',()=>{limit+=6;renderActivity();});
 window.addEventListener('pageshow',e=>{if(e.persisted){lock();load();}});
 load();
