@@ -89,10 +89,16 @@ function renderWorkspace(){
  const select=$('#day-project');select.replaceChildren();
  for(const b of brands){const candidates=snapshot.projects.filter(p=>matches(p,b));const saved=candidates.find(p=>p.id===workspace.active)||candidates.find(p=>workspace.jobs[p.id])||candidates[0];const option=el('option',b.name);option.value=saved?.id||'missing:'+b.id;option.disabled=!saved;select.append(option);}
  if(!brandFor(snapshot.projects.find(p=>p.id===workspace.active)))workspace.active=[...select.options].find(o=>!o.disabled)?.value||'';
- select.value=workspace.active;selectProject(workspace.active,false);
+ select.value=workspace.active;$('#creative-idea').value=workspace.idea||'';selectProject(workspace.active,false);renderProjectChips();
  const list=$('#tool-list');list.replaceChildren();
  for(const id of ['organic','ideas','images','metricool']){const t=resolvedTool(id);if(t?.url){const box=disclosure(t.name,el('p',t.description));box.querySelector('.inside').append(toolButton(id));list.append(box);}}
 }
+function renderProjectChips(){
+ const host=$('#project-chips');host.replaceChildren();
+ for(const option of $('#day-project').options){const b=el('button',option.textContent,'project-chip');b.type='button';b.disabled=option.disabled;b.setAttribute('aria-pressed',String(workspace.focusProject===option.value));b.addEventListener('click',()=>{syncFields();workspace.focusProject=option.value;selectProject(option.value);$('#day-project').value=option.value;renderProjectChips();});host.append(b);}
+}
+$('#creative-idea').addEventListener('input',()=>{workspace.idea=$('#creative-idea').value;saveWork();});
+$('#clear-project').addEventListener('click',()=>{workspace.focusProject='';saveWork();renderStep();renderProjectChips();});
 function selectProject(id,persist=true){
  workspace.active=id;const p=snapshot.projects.find(p=>p.id===id);if(!p){$('#workbench').hidden=true;return;}
  if(!currentJob())workspace.jobs[id]={step:0,draft:'',notes:'',link:'',topic:'',review:{}};
@@ -105,17 +111,17 @@ function openTool(id){const t=resolvedTool(id);if(!t?.url)return;syncFields();if
 function closeTool(){$('#tool-frame').src='about:blank';$('#tool-workspace').hidden=true;activeTool=null;$('#workbench').scrollIntoView({behavior:'smooth'});}
 function renderStep(){
  const j=currentJob(),p=snapshot.projects.find(p=>p.id===workspace.active),brand=brandFor(p);if(!j||!brand)return;
- $('#workbench').hidden=false;$('#work-project').textContent=brand.name;$('#work-title').textContent='2. Make something useful';$('#work-goal').textContent=j.outcome||'Choose what to create. Review it before you share it.';
+ $('#workbench').hidden=false;$('#work-project').textContent=brand.name;$('#work-title').textContent='Open a studio';$('#work-goal').textContent=workspace.focusProject?'A few tools for '+brand.name+'. Switch projects or show all whenever you like.':'Jump into any tool. There is no required order.';$('#work-project').textContent=workspace.focusProject?brand.name:'EXPLORE';
  $('#work-steps').replaceChildren();$('#work-steps').hidden=true;$('#step-back').hidden=true;$('#step-next').hidden=true;
  const body=$('#work-step-body');body.replaceChildren();const actions=el('div',undefined,'factory-actions');
- for(const id of brand.factories){const t=resolvedTool(id),card=el('section',undefined,'factory-card');card.append(toolButton(id),el('p',t.description));actions.append(card);}
+ for(const id of (workspace.focusProject?brand.factories:Object.keys(factoryTools))){const t=resolvedTool(id),card=el('section',undefined,'factory-card');card.append(toolButton(id),el('p',t.description));actions.append(card);}
  body.append(actions);
- if(!['hm','sean','angelique'].includes(brand.id))body.append(el('p','Uses your existing Expert Clip Factory — not a separate '+brand.name+' factory. Enter '+brand.name+' as the creator and check the offer link in the export.','small'));
+ if(workspace.focusProject&&!['hm','sean','angelique'].includes(brand.id))body.append(el('p','Uses your existing Expert Clip Factory — not a separate '+brand.name+' factory. Enter '+brand.name+' as the creator and check the offer link in the export.','small'));
  body.append(el('p','Files process in the factory tab. Download the finished pack before closing it. Your project notes stay here.','small'));
- const review=disclosure('3. Review & keep my finished files',el('p','Watch or listen to the entire final export. A rendered file is not automatically ready for social.'));
+ const review=disclosure('Before sharing · review & keep my files',el('p','Watch or listen to the entire final export. A rendered file is not automatically ready for social.'));
  for(const [key,text] of [['truth','The full export plays correctly; voice, cuts and captions are clear.'],['link','The offer, claims and link match this project.'],['brand','The correct brand and channels are selected.']]){const lab=el('label',undefined,'review-check'),input=el('input');input.type='checkbox';input.checked=!!j.review?.[key];input.addEventListener('change',()=>{j.review={...j.review,[key]:input.checked};saveWork();});lab.append(input,el('span',text));review.querySelector('.inside').append(lab);}
  const metricool=resolvedTool('metricool');if(metricool?.url)review.querySelector('.inside').append(toolButton('metricool'));review.querySelector('.inside').append(el('p','Nothing is posted automatically. Save the downloaded-file or published-post link in your notes below.','small'));body.append(review);
- if(p.clip)body.append(disclosure('Need a recording brief?',clipPanel(p)));
+ if(workspace.focusProject&&p.clip)body.append(disclosure('Need a recording brief?',clipPanel(p)));
 }
 $('#day-project').addEventListener('change',e=>{syncFields();closeTool();selectProject(e.target.value);});
 $('#start-day').addEventListener('click',()=>{const id=$('#day-project').value;workspace.active=id;if(!currentJob())workspace.jobs[id]={step:0,draft:'',notes:'',link:'',topic:'',review:{}};syncFields();renderStep();$('#workbench').scrollIntoView({behavior:'smooth'});});
@@ -123,8 +129,8 @@ for(const id of ['day-outcome','day-draft','day-link','day-notes'])$('#'+id).add
 $('#step-next').addEventListener('click',()=>{syncFields();const j=currentJob();if(j.step===3&&!['truth','link','brand'].every(k=>j.review?.[k]))return;j.step=Math.min(5,j.step+1);saveWork();renderStep();});
 $('#step-back').addEventListener('click',()=>{syncFields();currentJob().step=Math.max(0,currentJob().step-1);saveWork();renderStep();});
 $('#close-tool').addEventListener('click',closeTool);
-$('#export-day').addEventListener('click',()=>{syncFields();const p=snapshot.projects.find(p=>p.id===workspace.active),j=currentJob();const blob=new Blob([JSON.stringify({project:p.name,...j},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob),a=el('a');a.href=url;a.download='my-work-'+p.id+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
-window.addEventListener('message',event=>{const frame=$('#tool-frame');if(event.origin!==location.origin||event.source!==frame.contentWindow||!activeTool||!snapshot)return;const message=event.data;if(!message||typeof message!=='object')return;if(message.type==='sean-tool-ready'){const p=snapshot.projects.find(p=>p.id===workspace.active),j=currentJob();frame.contentWindow.postMessage({type:'sean-work-context',project:p?.name,projectId:p?.id,topic:j?.topic||'',outcome:j?.outcome||''},location.origin);}if(message.type==='sean-save-output'&&typeof message.text==='string'){const j=currentJob();if(!j){$('#capture-status').textContent='Start a project above before saving an output.';return;}const addition=message.text.slice(0,60000);j.draft=(j.draft?j.draft+'\n\n--- '+activeTool.name+' ---\n\n':'')+addition;j.draft=j.draft.slice(-60000);$('#day-draft').value=j.draft;saveWork();$('#capture-status').textContent='Saved to my project draft. Use Back to return to my next step.';}});
+$('#export-day').addEventListener('click',()=>{syncFields();const p=snapshot.projects.find(p=>p.id===workspace.active),j=currentJob();const blob=new Blob([JSON.stringify({idea:workspace.idea||'',project:p.name,...j},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob),a=el('a');a.href=url;a.download='my-work-'+p.id+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
+window.addEventListener('message',event=>{const frame=$('#tool-frame');if(event.origin!==location.origin||event.source!==frame.contentWindow||!activeTool||!snapshot)return;const message=event.data;if(!message||typeof message!=='object')return;if(message.type==='sean-tool-ready'){const p=snapshot.projects.find(p=>p.id===workspace.active),j=currentJob();frame.contentWindow.postMessage({type:'sean-work-context',project:p?.name,projectId:p?.id,topic:j?.topic||'',outcome:j?.outcome||''},location.origin);}if(message.type==='sean-save-output'&&typeof message.text==='string'){const j=currentJob();if(!j){$('#capture-status').textContent='Start a project above before saving an output.';return;}const addition=message.text.slice(0,60000);j.draft=(j.draft?j.draft+'\n\n--- '+activeTool.name+' ---\n\n':'')+addition;j.draft=j.draft.slice(-60000);$('#day-draft').value=j.draft;saveWork();$('#capture-status').textContent='Saved to my project draft. Return to my creative space whenever you like.';}});
 
 load();
 
