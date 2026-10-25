@@ -91,7 +91,7 @@ const factoryTools={
 };
 // Inventory-only entries are not runnable tools until their real hosted origins are verified.
 const pendingStudios=[
- {id:'genie-shorts',name:'Manifestation Genie Shorts',brands:['genie'],status:'Hosting pending',description:'30-second narrated shorts. Private source is ready; hosted installation is waiting for the source archive download block to be resolved.'},
+ {id:'genie-shorts',name:'Manifestation Genie Shorts',source:'https://github.com/seanmillionaire/manifestation-genie-shorts-factory',brands:['genie'],status:'Hosting pending',description:'30-second narrated shorts. Private source is ready; hosted installation is waiting for the source archive download block to be resolved.'},
  {id:'panama-documentary',name:'Panama Untold Shorts & Documentaries',brands:['panama'],status:'Hosting pending',description:'Eight visitor-short directions plus documentary mode. Private source is ready; hosted installation is waiting for the source archive download block to be resolved.'},
  {id:'meta-ads',name:'AI Meta Ads Creative Factory',brands:['hm','genie','panama','sean','angelique','swap'],status:'Local-only · cloud version pending',description:'The current app needs a local server and local AI engine. It is not available in this cloud workspace. A browser photo-ad editor and its AI-generation limits need a separate decision.'}
 ];
