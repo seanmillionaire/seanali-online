@@ -5,6 +5,17 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/admin",
+      "has": [
+        {
+          "type": "host",
+          "value": "seanali.online"
+        }
+      ],
+      "destination": "https://landers-git-feat-private-master-plan-sean-alis-projects.vercel.app/admin",
+      "permanent": false
+    },
+    {
       "source": "/money",
       "destination": "/meditation",
       "permanent": true
