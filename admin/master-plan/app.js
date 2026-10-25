@@ -4,7 +4,7 @@ let snapshot,feed='all',limit=6;
 const date=v=>new Intl.DateTimeFormat('en-US',{dateStyle:'medium',timeStyle:'short',timeZone:'America/Panama'}).format(new Date(v));
 const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
 const link=(text,url)=>{const a=el('a',text);try{const u=new URL(url);if(u.protocol!=='https:')return el('span',text);a.href=u.href;a.target='_blank';a.rel='noopener noreferrer';}catch{return el('span',text);}return a;};
-function lock(){if(document.querySelector('#tool-frame')){document.querySelector('#tool-frame').src='about:blank';document.querySelector('#tool-workspace').hidden=true;}snapshot=undefined;$('#dashboard').hidden=true;$('#login').hidden=false;for(const id of ['activity','projects','priority-list','sources','social-accounts'])$('#'+id).replaceChildren();$('#key').value='';}
+function lock(){if(document.querySelector('#tool-frame')){document.querySelector('#tool-frame').src='about:blank';document.querySelector('#tool-workspace').hidden=true;}activeTool=null;snapshot=undefined;$('#dashboard').hidden=true;$('#login').hidden=false;for(const id of ['activity','projects','priority-list','sources','social-accounts'])$('#'+id).replaceChildren();$('#key').value='';}
 async function request(options){const r=await fetch('/api/master-plan',{credentials:'same-origin',cache:'no-store',...options});const body=await r.json();if(!r.ok){const e=new Error(body.error||'Unable to load the plan.');e.status=r.status;throw e;}return body;}
 function post(body){return request({method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});}
 async function load(){try{snapshot=await request();$('#login').hidden=true;$('#dashboard').hidden=false;$('#snapshot').textContent='Updates checked · '+date(snapshot.capturedAt)+' Panama time';const old=Date.now()-Date.parse(snapshot.capturedAt)>86400000;$('#notice').textContent=old?'These updates were checked more than a day ago. I need a fresh check before treating them as today’s status.':'The date above is when the source updates were checked. Prices, sales and the live customer experience still need their own check. A completed build means the code built successfully; it does not mean someone tested the whole experience.';render();}catch(e){if(e.status===401){lock();}else{lock();$('#login-error').textContent=e.message;}}}
@@ -79,10 +79,10 @@ const normalize=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300
 const matches=(p,b)=>[p.id,p.repo?.split('/').pop(),p.name].some(v=>b.aliases.includes(normalize(v)));
 const brandFor=p=>brands.find(b=>p&&matches(p,b));
 const factoryTools={
- 'clips':{id:'clips',name:'Clip my recording',url:'https://sean-ali-clip-factory.darkrain20.chatgpt.site/',description:'Existing Sean Ali Expert Clip Factory. Add this project’s recording; set its creator, topic and CTA before exporting MP4, captions and SEO.',embedded:true,remote:true},
- 'angelique-factory':{id:'angelique-factory',name:'Make Angelique clips',url:'https://angelique-panama-video-pack.darkrain20.chatgpt.site/factory',description:'Add an Angelique video. Choose clips, check Spanish or English captions, then download MP4, SRT and SEO.',embedded:true,remote:true},
- 'hm-shorts':{id:'hm-shorts',name:'Create meditation shorts',url:'https://hypnotic-meditations-shorts-producer.darkrain20.chatgpt.site/',description:'Choose a theme and voice. Review raw narration before rendering your shorts and publishing pack.',embedded:true,remote:true},
- 'hm-audio':{id:'hm-audio',name:'Assemble meditation audio',url:'https://hm-audio-meditation-factory.darkrain20.chatgpt.site/',description:'Bring existing narration, music and ambience. Listen to the finished mix, then export WAV and QA notes. This tool does not generate a voice.',embedded:true,remote:true}
+ 'clips':{id:'clips',name:'Clip my recording',url:'https://sean-ali-clip-factory.darkrain20.chatgpt.site/',description:'Upload your recording, choose UGC, Gold or Smoke, and add your own saved footage. Original speech stays unchanged. Export clips, captions, SEO and a batch tracker.',embedded:true,remote:true},
+ 'angelique-factory':{id:'angelique-factory',name:'Make Angelique clips',url:'https://angelique-panama-video-pack.darkrain20.chatgpt.site/factory',description:'Add an Angelique video. Keep the natural voice pace, check Spanish or English captions, and export MP4, SRT, SEO and a batch tracker.',embedded:true,remote:true},
+ 'hm-shorts':{id:'hm-shorts',name:'Create meditation shorts',url:'https://hypnotic-meditations-shorts-producer.darkrain20.chatgpt.site/',description:'Create guided shorts up to 45 seconds. Review the voice-only hook and quiet meditation transition before rendering. Export shorts, raw narration, metadata and a tracker.',embedded:true,remote:true},
+ 'hm-audio':{id:'hm-audio',name:'Make a 60-second meditation',url:'https://hm-audio-meditation-factory.darkrain20.chatgpt.site/',description:'Choose a topic and generate a complete 60-second meditation locally. Listen before unlocking WAV downloads. Own-narration assembly is still available. Export script, metadata and tracker.',embedded:true,remote:true}
 };
 const resolvedTool=id=>factoryTools[id]||snapshot.tools?.find(t=>t.id===id);
 function renderWorkspace(){
@@ -105,10 +105,18 @@ function selectProject(id,persist=true){
  const j=currentJob();$('#day-outcome').value=j.outcome||'';$('#day-draft').value=j.draft||'';$('#day-link').value=j.link||'';$('#day-notes').value=j.notes||'';renderStep();if(persist)saveWork();
 }
 function toolButton(id){const t=resolvedTool(id);const b=el('button',t?'Open '+t.name:'Tool not available');b.type='button';b.disabled=!t?.url;b.addEventListener('click',()=>openTool(id));return b;}
-function openTool(id){const t=resolvedTool(id);if(!t?.url)return;syncFields();if(!t.embedded){location.assign(t.url);return;}
- activeTool=t;$('#tool-note').parentElement.querySelector('#tool-fullscreen')?.remove();if(t.remote){const full=el('button','Open full screen / sign in');full.id='tool-fullscreen';full.addEventListener('click',()=>{syncFields();location.assign(t.url);});$('#tool-note').after(full);}$('#tool-title').textContent=t.name;$('#tool-note').textContent=t.description;$('#tool-workspace').hidden=false;$('#capture-status').textContent=t.remote?'Download my finished asset before closing this tool. Then save its file link in my notes.':'Use “Save output to my dashboard” inside the tool to bring its draft back here.';$('#tool-frame').src=t.remote?t.url:t.url+'?dashboard=1';$('#tool-workspace').scrollIntoView({behavior:'smooth'});
+function openTool(id){const t=resolvedTool(id);if(!t?.url)return;syncFields();
+ if(activeTool?.id===id){$('#tool-workspace').hidden=false;$('#tool-workspace').scrollIntoView({behavior:'smooth'});return;}
+ if(activeTool&&!window.confirm('Switch studios? Download any finished files first. Switching discards files and unfinished processing in the open studio.'))return;
+ if(!t.embedded){location.assign(t.url);return;}
+ activeTool=t;$('#tool-note').parentElement.querySelector('#tool-fullscreen')?.remove();
+ if(t.remote){const full=link('Open separately / sign in ↗',t.url);full.id='tool-fullscreen';$('#tool-note').after(full);}
+ $('#tool-title').textContent=t.name;$('#tool-note').textContent=t.description;$('#tool-workspace').hidden=false;
+ $('#capture-status').textContent=t.remote?'Back keeps this studio open. Download media and its tracker here before switching studios. A separate tab starts its own session; files and history do not sync to this office.':'Use “Save output to my dashboard” inside the tool to bring its draft back here.';
+ $('#tool-frame').src=t.remote?t.url:t.url+'?dashboard=1';$('#tool-workspace').scrollIntoView({behavior:'smooth'});
 }
-function closeTool(){$('#tool-frame').src='about:blank';$('#tool-workspace').hidden=true;activeTool=null;$('#workbench').scrollIntoView({behavior:'smooth'});}
+function closeTool(){$('#tool-workspace').hidden=true;$('#workbench').scrollIntoView({behavior:'smooth'});}
+window.addEventListener('beforeunload',event=>{if(activeTool){event.preventDefault();event.returnValue='';}});
 function renderStep(){
  const j=currentJob(),p=snapshot.projects.find(p=>p.id===workspace.active),brand=brandFor(p);if(!j||!brand)return;
  $('#workbench').hidden=false;$('#work-project').textContent=brand.name;$('#work-title').textContent='Open a studio';$('#work-goal').textContent=workspace.focusProject?'A few tools for '+brand.name+'. Switch projects or show all whenever you like.':'Jump into any tool. There is no required order.';$('#work-project').textContent=workspace.focusProject?brand.name:'EXPLORE';
@@ -117,13 +125,13 @@ function renderStep(){
  for(const id of (workspace.focusProject?brand.factories:Object.keys(factoryTools))){const t=resolvedTool(id),card=el('section',undefined,'factory-card');card.append(toolButton(id),el('p',t.description));actions.append(card);}
  body.append(actions);
  if(workspace.focusProject&&!['hm','sean','angelique'].includes(brand.id))body.append(el('p','Uses your existing Expert Clip Factory — not a separate '+brand.name+' factory. Enter '+brand.name+' as the creator and check the offer link in the export.','small'));
- body.append(el('p','Files process in the factory tab. Download the finished pack before closing it. Your project notes stay here.','small'));
+ body.append(el('p','Each studio runs here on its existing site. Download the finished pack before closing this page. Its tracker stays in that studio’s browser storage, not this office.','small'));
  const review=disclosure('Before sharing · review & keep my files',el('p','Watch or listen to the entire final export. A rendered file is not automatically ready for social.'));
  for(const [key,text] of [['truth','The full export plays correctly; voice, cuts and captions are clear.'],['link','The offer, claims and link match this project.'],['brand','The correct brand and channels are selected.']]){const lab=el('label',undefined,'review-check'),input=el('input');input.type='checkbox';input.checked=!!j.review?.[key];input.addEventListener('change',()=>{j.review={...j.review,[key]:input.checked};saveWork();});lab.append(input,el('span',text));review.querySelector('.inside').append(lab);}
  const metricool=resolvedTool('metricool');if(metricool?.url)review.querySelector('.inside').append(toolButton('metricool'));review.querySelector('.inside').append(el('p','Nothing is posted automatically. Save the downloaded-file or published-post link in your notes below.','small'));body.append(review);
  if(workspace.focusProject&&p.clip)body.append(disclosure('Need a recording brief?',clipPanel(p)));
 }
-$('#day-project').addEventListener('change',e=>{syncFields();closeTool();selectProject(e.target.value);});
+$('#day-project').addEventListener('change',e=>{syncFields();selectProject(e.target.value);});
 $('#start-day').addEventListener('click',()=>{const id=$('#day-project').value;workspace.active=id;if(!currentJob())workspace.jobs[id]={step:0,draft:'',notes:'',link:'',topic:'',review:{}};syncFields();renderStep();$('#workbench').scrollIntoView({behavior:'smooth'});});
 for(const id of ['day-outcome','day-draft','day-link','day-notes'])$('#'+id).addEventListener('input',syncFields);
 $('#step-next').addEventListener('click',()=>{syncFields();const j=currentJob();if(j.step===3&&!['truth','link','brand'].every(k=>j.review?.[k]))return;j.step=Math.min(5,j.step+1);saveWork();renderStep();});
