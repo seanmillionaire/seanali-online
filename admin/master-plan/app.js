@@ -1,0 +1,168 @@
+'use strict';
+const $=s=>document.querySelector(s);
+let snapshot,feed='all',limit=6;
+const date=v=>new Intl.DateTimeFormat('en-US',{dateStyle:'medium',timeStyle:'short',timeZone:'America/Panama'}).format(new Date(v));
+const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
+const link=(text,url)=>{const a=el('a',text);try{const u=new URL(url);if(u.protocol!=='https:')return el('span',text);a.href=u.href;a.target='_blank';a.rel='noopener noreferrer';}catch{return el('span',text);}return a;};
+function lock(){if(document.querySelector('#tool-frame')){document.querySelector('#tool-frame').src='about:blank';document.querySelector('#tool-workspace').hidden=true;}activeTool=null;pendingTool=null;$('#studio-switch').hidden=true;snapshot=undefined;$('#dashboard').hidden=true;$('#login').hidden=false;for(const id of ['activity','projects','priority-list','sources','social-accounts','company-wall','factory-wall'])$('#'+id).replaceChildren();for(const id of ['key','owner-code','owner-new-password','owner-confirm-password','current-password','change-password','change-confirm'])$('#'+id).value='';}
+async function readResponse(r){try{return await r.json();}catch{const e=new Error('The office sign-in service is temporarily unavailable. Please try again shortly.');e.status=r.status;throw e;}}
+async function request(options){const r=await fetch('/api/master-plan',{credentials:'same-origin',cache:'no-store',...options});const body=await readResponse(r);if(!r.ok){const e=new Error(body.error||'Unable to load the plan.');e.status=r.status;throw e;}return body;}
+function post(body){return request({method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});}
+async function load(){try{snapshot=await request();$('#login').hidden=true;$('#dashboard').hidden=false;$('#snapshot').textContent='Updates checked · '+date(snapshot.capturedAt)+' Panama time';const old=Date.now()-Date.parse(snapshot.capturedAt)>86400000;$('#notice').textContent=old?'These updates were checked more than a day ago. I need a fresh check before treating them as today’s status.':'The date above is when the source updates were checked. Prices, sales and the live customer experience still need their own check. A completed build means the code built successfully; it does not mean someone tested the whole experience.';render();}catch(e){if(e.status===401){lock();}else{lock();$('#login-error').textContent=e.message;}}}
+const statusLabel = {TEST:'Test next',HOLD:'On hold',SCALE:'Grow it',FIX:'Fix first',KILL:'Stop'};
+function disclosure(title,...content){const d=el('details'),sum=el('summary',title),body=el('div',undefined,'inside');body.append(...content);d.append(sum,body);return d;}
+function openProject(id){$('#reference-plan').open=true;$('#search').value='';$('#type').value='';$('#status').value='';renderProjects();$('#portfolio').open=true;const card=$('#project-'+id);if(card){card.open=true;card.querySelector('.next-step').open=true;card.scrollIntoView({behavior:'smooth',block:'start'});}}
+function renderActivity(){
+ const groups=new Map();
+ for(const e of [...snapshot.commits.map(x=>({...x,kind:'push'})),...snapshot.builds.map(x=>({...x,kind:'build'}))].sort((a,b)=>b.date.localeCompare(a.date))){if(!groups.has(e.repo))groups.set(e.repo,[]);groups.get(e.repo).push(e);}
+ const host=$('#activity');host.replaceChildren();
+ for(const [repo,events] of groups){
+ const project=snapshot.projects.find(p=>p.repo===repo),latest=events[0];
+ const themes=[...new Set(events.map(e=>e.meaning||e.displayTitle||e.title))].slice(0,3);
+ const summary=el('div');for(const theme of themes)summary.append(el('p',theme));
+ summary.append(el('p','Last update · '+date(latest.date),'small'));
+ const build=events.find(e=>e.kind==='build');if(build)summary.append(el('p','Latest saved build: '+build.state+' · '+(build.target==='production'?'Production':'Preview'),'small'));
+ const next=el('button','Show my next step');next.addEventListener('click',()=>openProject(project.id));if(project)summary.append(next);
+ const proof=disclosure('See the original updates');const body=proof.querySelector('.inside');const seen=new Set();for(const e of events){const key=e.sha+e.kind;if(seen.has(key))continue;seen.add(key);body.append(link((e.kind==='build'?'Build · ':'Code · ')+e.title,e.url));}
+ summary.append(proof);const row=disclosure(project?.name||repo,summary);row.className='repo-row';row.querySelector('summary').append(el('span',repo,'repo-name'));host.append(row);
+ }
+}
+function clipPanel(p){
+ const c=p.clip,box=el('section',undefined,'clip-panel');
+ box.append(el('span','MY CONTENT PLAN','eyebrow'),el('h4','Turn this project into clips'),el('p',c.record));
+ const angles=el('ol',undefined,'project-steps');for(const angle of c.angles||[])angles.append(el('li',angle));box.append(angles);
+ const brief=['Project: '+p.name,'Pack name: '+c.pack,'Clips: '+c.count,'Channel / creator: '+c.creator,'Area of expertise: '+p.description,'What I record: '+c.record,'Ideas to cover:',...(c.angles||[]).map((x,i)=>(i+1)+'. '+x),'Call to action: '+c.cta,'Review before publishing: captions, cuts, vertical framing, claims, destination and playable export.'].join('\n');
+ const label=el('label','My ready-to-copy brief'),field=el('textarea');field.readOnly=true;field.value=brief;field.rows=7;field.id='clip-brief-'+p.id;label.htmlFor=field.id;box.append(label,field);
+ const actions=el('div',undefined,'clip-actions'),copy=el('button','Copy my brief'),msg=el('p','', 'small');copy.type='button';msg.setAttribute('role','status');
+ copy.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(brief);msg.textContent='Copied. Open Clip Factory and use these notes to fill the matching fields.';}catch{field.focus();field.select();msg.textContent='The brief is selected. Copy it, then open Clip Factory.';}});
+ actions.append(copy,link('Open Clip Factory ↗',c.url));box.append(actions,msg);
+ if(c.hold)box.append(el('p',c.hold,'small'));
+ box.append(el('p','I add the video and fill the fields myself. This link does not send the brief, generate clips or publish anything automatically.','small'));
+ return box;
+}
+function renderProjects(){
+ const q=$('#search').value.toLowerCase().trim(),type=$('#type').value,status=$('#status').value;
+ const projects=snapshot.projects.filter(p=>(!q||[p.name,p.description,...p.offers.map(o=>o.name)].join(' ').toLowerCase().includes(q))&&(!type||p.type===type)&&(!status||p.status===status));
+ $('#project-count').textContent=projects.length+' projects';$('#empty').hidden=projects.length>0;const host=$('#projects');host.replaceChildren();
+ for(const p of projects){
+ const what=disclosure('1. What is this?',el('p',p.description));
+ const next=disclosure('2. What do I do first?',el('p',p.next,'big-action'));next.className='next-step';
+ if(p.url)next.querySelector('.inside').append(link('Open '+p.name+' ↗',p.url));
+ const steps=el('div');(p.steps||[]).forEach((step,i)=>steps.append(disclosure('Step '+(i+1),el('p',step))));next.querySelector('.inside').append(disclosure('Then what?',steps),disclosure('How do I know I’m done?',el('p',p.done||p.metric)));
+ const card=disclosure(p.name,what,next);card.id='project-'+p.id;card.className='project';
+ if(p.clip)card.querySelector('.inside').append(disclosure('3. Make social clips',clipPanel(p)));
+ const more=el('div');more.append(el('p',p.why),el('p',p.metric));for(const o of p.offers)more.append(link(o.name+' ↗',o.url));more.append(link('Original source ↗',p.source));card.querySelector('.inside').append(disclosure('Links & extra details',more));host.append(card);
+ }
+}
+function render(){renderActivity();renderProjects();renderWorkspace();const social=$('#social-accounts');social.replaceChildren();for(const account of snapshot.socialAccounts||[]){const body=el('div');for(const channel of account.channels)body.append(el('p',channel));body.append(el('p',account.note));social.append(disclosure(account.brand,body));}const pri=$('#priority-list');pri.replaceChildren();snapshot.priorities.forEach((p,i)=>{const body=el('div');body.append(el('p',p.first||p.detail,'big-action'));const a=el('button','Walk me through it →');a.addEventListener('click',()=>openProject(p.project));body.append(a,disclosure('Why this? What does finished look like?',el('p',p.detail),el('p',p.done)));const row=disclosure(String(i+1)+'. '+p.title,body);row.className='priority';pri.append(row);});const sources=$('#sources');sources.replaceChildren(...snapshot.sources.map(s=>link(s.name+' ↗',s.url)));$('#coverage').textContent='Saved plan: '+snapshot.projects.length+' projects. Open only the one I want to work on. Updates are a snapshot, not a live feed.';}
+$('#login-form').addEventListener('submit',async e=>{e.preventDefault();const b=e.target.querySelector('button');b.disabled=true;$('#login-error').textContent='';try{await passwordAction({action:'login',password:$('#key').value});$('#key').value='';await load();}catch(err){$('#login-error').textContent=err.message;}finally{b.disabled=false;}});
+async function passwordAction(body){const r=await fetch('/api/master-plan-auth',{method:'POST',credentials:'same-origin',cache:'no-store',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const value=await readResponse(r);if(!r.ok)throw Error(value.error||'Unable to update sign-in.');return value;}
+$('#send-owner-code').addEventListener('click',async()=>{const button=$('#send-owner-code');button.disabled=true;$('#owner-setup-status').textContent='Sending your code…';try{await passwordAction({action:'send-code'});$('#password-setup-form').hidden=false;$('#owner-setup-status').textContent='Check your owner email for the code, then choose your password here.';}catch(e){$('#owner-setup-status').textContent=e.message;}finally{button.disabled=false;}});
+$('#password-setup-form').addEventListener('submit',async e=>{e.preventDefault();const b=e.target.querySelector('button');if($('#owner-new-password').value!==$('#owner-confirm-password').value){$('#owner-setup-status').textContent='The passwords do not match.';return;}b.disabled=true;try{await passwordAction({action:'set-password',otp:$('#owner-code').value.trim(),password:$('#owner-new-password').value});for(const id of ['owner-code','owner-new-password','owner-confirm-password'])$('#'+id).value='';$('#password-setup-form').hidden=true;$('#owner-setup-status').textContent='Password saved. Opening your office…';await load();}catch(e){$('#owner-setup-status').textContent=e.message;}finally{b.disabled=false;}});
+$('#password-change-form').addEventListener('submit',async e=>{e.preventDefault();const b=e.target.querySelector('button');if($('#change-password').value!==$('#change-confirm').value){$('#change-status').textContent='The passwords do not match.';return;}b.disabled=true;try{await passwordAction({action:'change-password',currentPassword:$('#current-password').value,newPassword:$('#change-password').value});for(const id of ['current-password','change-password','change-confirm'])$('#'+id).value='';$('#change-status').textContent='Password updated. Other sign-in sessions were revoked.';}catch(e){$('#change-status').textContent=e.message;}finally{b.disabled=false;}});
+$('#logout').addEventListener('click',async()=>{try{await post({action:'logout'});lock();}catch(e){$('#notice').textContent='Unable to clear your server session. Close this browser session to lock access.';}});
+$('#reload').addEventListener('click',load);
+for(const s of ['#search','#type','#status'])$(s).addEventListener('input',renderProjects);
+window.addEventListener('pageshow',e=>{if(e.persisted){lock();load();}});
+const WORK_KEY='sean-private-workspace-v1';
+let workspace={active:'',jobs:{}},activeTool,pendingTool;
+try{const saved=JSON.parse(localStorage.getItem(WORK_KEY)||'null');if(saved&&typeof saved.jobs==='object'&&saved.jobs&&!Array.isArray(saved.jobs))workspace=saved;}catch{}
+const stepNames=['Choose','Write','Create','Review','Publish','Learn'];
+function currentJob(){return workspace.jobs[workspace.active];}
+function saveWork(){try{localStorage.setItem(WORK_KEY,JSON.stringify(workspace));$('#day-save-status').textContent='Saved in this browser · '+date(new Date().toISOString())+'. Export for a backup.';}catch{$('#day-save-status').textContent='Browser storage is unavailable. Export my work before leaving.';}}
+function syncFields(){const j=currentJob();if(!j)return;j.outcome=$('#day-outcome').value;j.draft=$('#day-draft').value;j.link=$('#day-link').value;j.notes=$('#day-notes').value;j.updatedAt=new Date().toISOString();saveWork();}
+// Six real brands, not every repository or product in the reference snapshot.
+const brands=[
+ {id:'hm',name:'Hypnotic Meditations',aliases:['hm','hypnoticmeditations'],factories:['hm-shorts','hm-audio']},
+ {id:'genie',name:'Manifestation Genie',aliases:['reborn-refined','manifestation-genie-app-v1','manifestationgenie'],factories:['clips']},
+ {id:'panama',name:'Panama Untold',aliases:['panamauntold'],factories:['clips']},
+ {id:'sean',name:'Sean Ali',aliases:['seanali-online','seanali'],factories:['clips']},
+ {id:'angelique',name:'Angelique Ali',aliases:['angeliqueali-website','angeliqueali'],factories:['angelique-factory']},
+ {id:'swap',name:'Swap Your9to5',aliases:['swapyour9to5'],factories:['clips']}
+];
+const normalize=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9-]/g,'');
+const matches=(p,b)=>[p.id,p.repo?.split('/').pop(),p.name].some(v=>b.aliases.includes(normalize(v)));
+const brandFor=p=>brands.find(b=>p&&matches(p,b));
+const factoryTools={
+ 'clips':{id:'clips',name:'Clip my recording',url:'https://sean-ali-clip-factory.darkrain20.chatgpt.site/',description:'Upload your recording, choose UGC, Gold or Smoke, and add your own saved footage. Original speech stays unchanged. Export clips, captions, SEO and a batch tracker.',embedded:true,remote:true},
+ 'angelique-factory':{id:'angelique-factory',name:'Make Angelique clips',url:'https://angelique-panama-video-pack.darkrain20.chatgpt.site/factory',description:'Add an Angelique video. Keep the natural voice pace, check Spanish or English captions, and export MP4, SRT, SEO and a batch tracker.',embedded:true,remote:true},
+ 'hm-shorts':{id:'hm-shorts',name:'Create meditation shorts',url:'https://hypnotic-meditations-shorts-producer.darkrain20.chatgpt.site/',description:'Create guided shorts up to 45 seconds. Review the voice-only hook and quiet meditation transition before rendering. Export shorts, raw narration, metadata and a tracker.',embedded:true,remote:true},
+ 'hm-audio':{id:'hm-audio',name:'Make a 60-second meditation',url:'https://hm-audio-meditation-factory.darkrain20.chatgpt.site/',description:'Choose a topic and generate a complete 60-second meditation locally. Listen before unlocking WAV downloads. Own-narration assembly is still available. Export script, metadata and tracker.',embedded:true,remote:true}
+};
+// Curated starting ideas, not generated recommendations or scheduled obligations.
+const studioDirections={
+ hm:[{title:'A calming short',tool:'hm-shorts',brief:'Make one guided short (45 seconds or less) around one everyday moment of overwhelm. Start with a clear voice-only hook, then transition into a quiet meditation. Avoid medical promises.'},{title:'A one-minute reset',tool:'hm-audio',brief:'Create a complete 60-second meditation around grounding and slowing down. Keep the invitation gentle. Listen to the entire WAV before sharing.'},{title:'A new Meta ad angle',brief:'Plan one fresh meditation-offer ad: one specific everyday problem, one honest benefit, and a reply or destination that matches the verified offer. Review earlier winning ads; no invented guarantees. This is an editable brief, not a launched ad.'}],
+ genie:[{title:'A manifestation short',tool:'clips',brief:'Clip an existing recording around one grounded manifestation practice. Keep the original speech, a strong opening, and the Manifestation Genie identity. Use only footage you own.'},{title:'A new Meta ad angle',brief:'Plan a simple creator-photo or existing-footage ad for the current Manifestation Genie offer. Match the overlay, copy and landing page to the actual offer. Review claims before production; no promised financial outcomes.'},{title:'A longer YouTube idea',brief:'Outline a YouTube story about a manifestation practice: lived problem, personal experiment, useful lesson and grounded next step. Long-form editing is not installed here; this brief is for recording and later production.'}],
+ panama:[{title:'A destination short',tool:'clips',brief:'Clip owned Panama footage around one destination and one genuinely useful detail. Keep local voices and natural moments. Verify place names and any practical travel advice.'},{title:'A YouTube story',brief:'Outline a Panama Untold destination story: arrival, an unexpected local detail, people and places, and what a visitor should know. Use real footage. This is a recording brief; the short-clip tool is not a long-form editor.'},{title:'A new place to explore',brief:'Choose one Panama destination or local story worth covering next. Note what to film, who could contribute, and what facts need checking. Save source and website links here.'}],
+ sean:[{title:'Clip an insight',tool:'clips',brief:'Choose an existing Sean recording with one lived lesson. Speak to the younger version of Sean: the mistake, what changed, and one next move. Preserve original speech and use owned footage.'},{title:'A longer YouTube story',brief:'Outline one personal story for YouTube: the moment I got it wrong, what it cost, what I learned, and what I would tell my younger self. No invented autobiography. Long-form production is a separate step.'},{title:'A new Meta ad angle',brief:'Plan one simple, mobile-first ad using Sean’s real photo or existing footage and CapCut-style text. Match the overlay to the verified offer. Keep it credible and unpolished, not a new generic template.'}],
+ angelique:[{title:'A gameplay moment',tool:'angelique-factory',brief:'Pick an Angelique gameplay moment with a clear beginning and payoff. Keep her natural voice pace, check bilingual captions, and avoid covering existing baked-in captions. Watch the finished clip before sharing.'},{title:'A day-in-my-world short',tool:'angelique-factory',brief:'Use an existing Angelique video for a short about something she explored, learned or enjoyed—not only games. Preserve the natural voice and personality. Check every caption and the final vertical framing.'},{title:'A longer adventure idea',brief:'Outline a longer Angelique adventure: what we are exploring, a small discovery, a challenge and a genuine ending. This is a filming idea, not an automatic long-form export.'}],
+ swap:[{title:'One practical short',tool:'clips',brief:'Clip an owned recording about one practical step toward building an independent business. Keep the original voice, make the advice concrete, and avoid income guarantees. Use the Swap Your 9 to 5 identity.'},{title:'A YouTube walkthrough',brief:'Outline a clear walkthrough of one useful business skill: starting point, demonstration, common mistake and next action. Verify all examples. Long-form editing is not installed here.'},{title:'A new Meta ad angle',brief:'Plan one honest ad for a verified Swap Your 9 to 5 offer: audience problem, specific skill or resource, and matching next step. No earnings promises or unverified testimonials. This saves a brief only.'}]
+};
+const companySites={angelique:'https://angeliqueali.com',hm:'https://hypnoticmeditations.ai',genie:'https://manifestationgenie.ai',panama:'https://panamauntold.com',sean:'https://seanali.online',swap:'https://swapyour9to5.com'};
+function previewImage(id,label){const wrap=el('div',undefined,'preview-window');if(id==='hm-audio'){wrap.append(el('p','Private audio studio · sign in to see this workspace','preview-unavailable'));return wrap;}const img=el('img');img.src='/admin/master-plan/previews/'+id+'.jpg';img.alt=label+' — actual website preview';img.loading='lazy';img.width=1200;img.height=750;const unavailable=el('p','Visual preview not available yet. Open the actual site or studio below.','preview-unavailable');unavailable.hidden=true;img.addEventListener('error',()=>{img.hidden=true;unavailable.hidden=false;});wrap.append(img,unavailable);return wrap;}
+function projectForBrand(b){const choices=snapshot.projects.filter(p=>matches(p,b));return choices.find(p=>p.id===workspace.active)||choices.find(p=>workspace.jobs[p.id])||choices[0];}
+function startDirection(brandId,index){const b=brands.find(x=>x.id===brandId),p=b&&projectForBrand(b),d=studioDirections[brandId]?.[index];if(!p||!d)return;syncFields();workspace.focusProject=p.id;selectProject(p.id);$('#day-project').value=p.id;const j=currentJob(),brief='— '+b.name+' · '+d.title+' —\n'+d.brief;if(!(j.draft||'').includes(brief))j.draft=(j.draft?j.draft+'\n\n':'')+brief;$('#day-draft').value=j.draft;saveWork();renderProjectChips();$('#saved-work').open=true;$('#direction-status').textContent=d.tool?'Starting brief saved below. The studio opens here; copy the brief if useful. It is not sent automatically.':'Planning idea saved below. Edit it freely. This does not generate or publish media.';if(d.tool)openTool(d.tool);else $('#saved-work').scrollIntoView({behavior:'smooth'});}
+function renderVisualHome(){const wall=$('#company-wall');wall.replaceChildren();for(const b of brands){const p=projectForBrand(b),card=el('article',undefined,'company-card');card.append(previewImage(b.id,b.name));const body=el('div',undefined,'company-body');body.append(el('h3',b.name),el('p','Website preview · 25 Oct 2026','preview-date'));const site=companySites[b.id]||p?.url;if(site)body.append(link('Explore website ↗',site));const directions=el('div',undefined,'direction-list');for(const [i,d]of (studioDirections[b.id]||[]).entries()){const button=el('button',d.title+(d.tool?' ↗':' · idea'),'direction-button');button.type='button';button.disabled=!p;button.addEventListener('click',()=>startDirection(b.id,i));directions.append(button);}body.append(directions);if(!p)body.append(el('p','Project details are not available in the current private snapshot.','small'));card.append(body);wall.append(card);}const shelf=$('#factory-wall');shelf.replaceChildren();for(const [id,t]of Object.entries(factoryTools)){const card=el('article',undefined,'studio-card');card.append(previewImage(id,t.name),toolButton(id),el('p',t.description,'small'));shelf.append(card);}}
+const resolvedTool=id=>factoryTools[id]||snapshot.tools?.find(t=>t.id===id);
+function renderWorkspace(){
+ const select=$('#day-project');select.replaceChildren();
+ for(const b of brands){const candidates=snapshot.projects.filter(p=>matches(p,b));const saved=candidates.find(p=>p.id===workspace.active)||candidates.find(p=>workspace.jobs[p.id])||candidates[0];const option=el('option',b.name);option.value=saved?.id||'missing:'+b.id;option.disabled=!saved;select.append(option);}
+ if(!brandFor(snapshot.projects.find(p=>p.id===workspace.active)))workspace.active=[...select.options].find(o=>!o.disabled)?.value||'';
+ select.value=workspace.active;$('#creative-idea').value=workspace.idea||'';selectProject(workspace.active,false);renderProjectChips();renderVisualHome();
+ const list=$('#tool-list');list.replaceChildren();
+ for(const id of ['organic','ideas','images','metricool']){const t=resolvedTool(id);if(t?.url){const box=disclosure(t.name,el('p',t.description));box.querySelector('.inside').append(toolButton(id));list.append(box);}}
+}
+function renderProjectChips(){
+ const host=$('#project-chips');host.replaceChildren();
+ for(const option of $('#day-project').options){const b=el('button',option.textContent,'project-chip');b.type='button';b.disabled=option.disabled;b.setAttribute('aria-pressed',String(workspace.focusProject===option.value));b.addEventListener('click',()=>{syncFields();workspace.focusProject=option.value;selectProject(option.value);$('#day-project').value=option.value;renderProjectChips();});host.append(b);}
+}
+$('#creative-idea').addEventListener('input',()=>{workspace.idea=$('#creative-idea').value;saveWork();});
+$('#clear-project').addEventListener('click',()=>{workspace.focusProject='';saveWork();renderStep();renderProjectChips();});
+function selectProject(id,persist=true){
+ workspace.active=id;const p=snapshot.projects.find(p=>p.id===id);if(!p){$('#workbench').hidden=true;return;}
+ if(!currentJob())workspace.jobs[id]={step:0,draft:'',notes:'',link:'',topic:'',review:{}};
+ const j=currentJob();$('#day-outcome').value=j.outcome||'';$('#day-draft').value=j.draft||'';$('#day-link').value=j.link||'';$('#day-notes').value=j.notes||'';renderStep();if(persist)saveWork();
+}
+function toolButton(id){const t=resolvedTool(id);const b=el('button',t?'Open '+t.name:'Tool not available');b.type='button';b.disabled=!t?.url;b.addEventListener('click',()=>openTool(id));return b;}
+function openTool(id,confirmed=false){const t=resolvedTool(id);if(!t?.url)return;syncFields();
+ if(activeTool?.id===id){pendingTool=null;$('#studio-switch').hidden=true;$('#tool-workspace').hidden=false;$('#tool-workspace').scrollIntoView({behavior:'smooth'});return;}
+ if(activeTool&&!confirmed){pendingTool=id;$('#studio-switch-copy').textContent='Open '+t.name+' instead of '+activeTool.name+'? Download any finished files first. Switching discards files and unfinished processing in the current studio.';$('#studio-switch').hidden=false;$('#tool-workspace').hidden=false;$('#studio-switch').scrollIntoView({behavior:'smooth'});$('#keep-studio').focus();return;}
+ pendingTool=null;$('#studio-switch').hidden=true;
+ if(!t.embedded){location.assign(t.url);return;}
+ activeTool=t;$('#tool-note').parentElement.querySelector('#tool-fullscreen')?.remove();
+ if(t.remote){const full=link('Open separately / sign in ↗',t.url);full.id='tool-fullscreen';$('#tool-note').after(full);}
+ $('#tool-title').textContent=t.name;$('#tool-note').textContent=t.description;$('#tool-workspace').hidden=false;
+ $('#capture-status').textContent=t.remote?'Back keeps this studio open. Download media and its tracker here before switching studios. A separate tab starts its own session; files and history do not sync to this office.':'Use “Save output to my dashboard” inside the tool to bring its draft back here.';
+ $('#studio-load-status').textContent='Opening the studio… If this area stays blank or requests a login, use “Open separately / sign in” above. Embedded sign-in may be restricted by the studio.';
+ $('#tool-frame').src=t.remote?t.url:t.url+'?dashboard=1';$('#tool-workspace').scrollIntoView({behavior:'smooth'});
+}
+$('#keep-studio').addEventListener('click',()=>{pendingTool=null;$('#studio-switch').hidden=true;$('#tool-title').scrollIntoView({behavior:'smooth'});});
+$('#confirm-studio-switch').addEventListener('click',()=>{const id=pendingTool;if(id)openTool(id,true);});
+$('#tool-frame').addEventListener('load',()=>{if(activeTool)$('#studio-load-status').textContent='If the studio is blank or asks you to sign in, use “Open separately / sign in” above. A frame response does not confirm the studio is ready.';});
+function closeTool(){pendingTool=null;$('#studio-switch').hidden=true;$('#tool-workspace').hidden=true;$('#workbench').scrollIntoView({behavior:'smooth'});}
+window.addEventListener('beforeunload',event=>{if(activeTool){event.preventDefault();event.returnValue='';}});
+function renderStep(){
+ const j=currentJob(),p=snapshot.projects.find(p=>p.id===workspace.active),brand=brandFor(p);if(!j||!brand)return;
+ $('#workbench').hidden=false;$('#work-project').textContent=brand.name;$('#work-title').textContent='My working notes';$('#work-goal').textContent=workspace.focusProject?'A few tools for '+brand.name+'. Switch projects or show all whenever you like.':'Jump into any tool. There is no required order.';$('#work-project').textContent=workspace.focusProject?brand.name:'EXPLORE';
+ $('#work-steps').replaceChildren();$('#work-steps').hidden=true;$('#step-back').hidden=true;$('#step-next').hidden=true;
+ const body=$('#work-step-body');body.replaceChildren();const actions=el('div',undefined,'factory-actions');actions.hidden=true;
+ for(const id of (workspace.focusProject?brand.factories:Object.keys(factoryTools))){const t=resolvedTool(id),card=el('section',undefined,'factory-card');card.append(toolButton(id),el('p',t.description));actions.append(card);}
+ body.append(actions);
+ if(workspace.focusProject&&!['hm','sean','angelique'].includes(brand.id))body.append(el('p','Uses your existing Expert Clip Factory — not a separate '+brand.name+' factory. Enter '+brand.name+' as the creator and check the offer link in the export.','small'));
+ body.append(el('p','Each studio runs here on its existing site. Download the finished pack before closing this page. Its tracker stays in that studio’s browser storage, not this office.','small'));
+ const review=disclosure('Before sharing · review & keep my files',el('p','Watch or listen to the entire final export. A rendered file is not automatically ready for social.'));
+ for(const [key,text] of [['truth','The full export plays correctly; voice, cuts and captions are clear.'],['link','The offer, claims and link match this project.'],['brand','The correct brand and channels are selected.']]){const lab=el('label',undefined,'review-check'),input=el('input');input.type='checkbox';input.checked=!!j.review?.[key];input.addEventListener('change',()=>{j.review={...j.review,[key]:input.checked};saveWork();});lab.append(input,el('span',text));review.querySelector('.inside').append(lab);}
+ const metricool=resolvedTool('metricool');if(metricool?.url)review.querySelector('.inside').append(toolButton('metricool'));review.querySelector('.inside').append(el('p','Nothing is posted automatically. Save the downloaded-file or published-post link in your notes below.','small'));body.append(review);
+ if(workspace.focusProject&&p.clip)body.append(disclosure('Need a recording brief?',clipPanel(p)));
+}
+$('#day-project').addEventListener('change',e=>{syncFields();selectProject(e.target.value);});
+$('#start-day').addEventListener('click',()=>{const id=$('#day-project').value;workspace.active=id;if(!currentJob())workspace.jobs[id]={step:0,draft:'',notes:'',link:'',topic:'',review:{}};syncFields();renderStep();$('#workbench').scrollIntoView({behavior:'smooth'});});
+for(const id of ['day-outcome','day-draft','day-link','day-notes'])$('#'+id).addEventListener('input',syncFields);
+$('#step-next').addEventListener('click',()=>{syncFields();const j=currentJob();if(j.step===3&&!['truth','link','brand'].every(k=>j.review?.[k]))return;j.step=Math.min(5,j.step+1);saveWork();renderStep();});
+$('#step-back').addEventListener('click',()=>{syncFields();currentJob().step=Math.max(0,currentJob().step-1);saveWork();renderStep();});
+$('#close-tool').addEventListener('click',closeTool);
+$('#export-day').addEventListener('click',()=>{syncFields();const p=snapshot.projects.find(p=>p.id===workspace.active),j=currentJob();const blob=new Blob([JSON.stringify({idea:workspace.idea||'',project:p.name,...j},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob),a=el('a');a.href=url;a.download='my-work-'+p.id+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
+window.addEventListener('message',event=>{const frame=$('#tool-frame');if(event.origin!==location.origin||event.source!==frame.contentWindow||!activeTool||!snapshot)return;const message=event.data;if(!message||typeof message!=='object')return;if(message.type==='sean-tool-ready'){const p=snapshot.projects.find(p=>p.id===workspace.active),j=currentJob();frame.contentWindow.postMessage({type:'sean-work-context',project:p?.name,projectId:p?.id,topic:j?.topic||'',outcome:j?.outcome||''},location.origin);}if(message.type==='sean-save-output'&&typeof message.text==='string'){const j=currentJob();if(!j){$('#capture-status').textContent='Start a project above before saving an output.';return;}const addition=message.text.slice(0,60000);j.draft=(j.draft?j.draft+'\n\n--- '+activeTool.name+' ---\n\n':'')+addition;j.draft=j.draft.slice(-60000);$('#day-draft').value=j.draft;saveWork();$('#capture-status').textContent='Saved to my project draft. Return to my creative space whenever you like.';}});
+
+load();
+

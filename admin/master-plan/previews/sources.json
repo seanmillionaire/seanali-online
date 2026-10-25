@@ -1,0 +1,129 @@
+[
+  {
+    "id": "hm",
+    "sourceUrl": "https://hypnoticmeditations.ai/",
+    "capturedAt": "2026-10-25T11:00:00Z",
+    "file": "hm.jpg",
+    "dimensions": [
+      1173,
+      751
+    ],
+    "status": "captured",
+    "sensitivity": "public-homepage",
+    "note": "Genuine cloud-browser viewport screenshot; no generated stand-in."
+  },
+  {
+    "id": "genie",
+    "sourceUrl": "https://www.manifestationgenie.ai/",
+    "capturedAt": "2026-10-25T11:00:00Z",
+    "file": "genie.jpg",
+    "dimensions": [
+      1173,
+      751
+    ],
+    "status": "captured",
+    "sensitivity": "public-homepage",
+    "note": "Genuine cloud-browser viewport screenshot; no generated stand-in."
+  },
+  {
+    "id": "sean",
+    "sourceUrl": "https://seanali.online/",
+    "capturedAt": "2026-10-25T11:00:00Z",
+    "file": "sean.jpg",
+    "dimensions": [
+      1173,
+      751
+    ],
+    "status": "captured",
+    "sensitivity": "public-homepage",
+    "note": "Genuine cloud-browser viewport screenshot; no generated stand-in."
+  },
+  {
+    "id": "panama",
+    "sourceUrl": "https://panamauntold.com/",
+    "capturedAt": "2026-10-25T11:00:00Z",
+    "file": "panama.jpg",
+    "dimensions": [
+      1173,
+      751
+    ],
+    "status": "captured",
+    "sensitivity": "public-homepage",
+    "note": "Genuine cloud-browser viewport screenshot; no generated stand-in."
+  },
+  {
+    "id": "swap",
+    "sourceUrl": "https://www.swapyour9to5.com/",
+    "capturedAt": "2026-10-25T11:00:00Z",
+    "file": "swap.jpg",
+    "dimensions": [
+      1173,
+      751
+    ],
+    "status": "captured",
+    "sensitivity": "public-homepage",
+    "note": "Genuine cloud-browser viewport screenshot; no generated stand-in."
+  },
+  {
+    "id": "angelique",
+    "sourceUrl": "https://angeliqueali.com/",
+    "capturedAt": "2026-10-25T11:00:00Z",
+    "file": "angelique.jpg",
+    "dimensions": [
+      1173,
+      751
+    ],
+    "status": "captured",
+    "sensitivity": "public-homepage",
+    "note": "Genuine cloud-browser viewport screenshot; no generated stand-in."
+  },
+  {
+    "id": "clips",
+    "sourceUrl": "https://sean-ali-clip-factory.darkrain20.chatgpt.site/",
+    "capturedAt": "2026-10-25T11:00:00Z",
+    "file": "clips.jpg",
+    "dimensions": [
+      1173,
+      751
+    ],
+    "status": "captured",
+    "sensitivity": "empty-default-factory-ui-no-private-data",
+    "note": "Genuine cloud-browser viewport screenshot; no generated stand-in."
+  },
+  {
+    "id": "angelique-factory",
+    "sourceUrl": "https://angelique-panama-video-pack.darkrain20.chatgpt.site/factory",
+    "capturedAt": "2026-10-25T11:00:00Z",
+    "file": "angelique-factory.jpg",
+    "dimensions": [
+      1173,
+      751
+    ],
+    "status": "captured",
+    "sensitivity": "empty-default-factory-ui-no-private-data",
+    "note": "Genuine cloud-browser viewport screenshot; no generated stand-in."
+  },
+  {
+    "id": "hm-shorts",
+    "sourceUrl": "https://hypnotic-meditations-shorts-producer.darkrain20.chatgpt.site/",
+    "capturedAt": "2026-10-25T11:00:00Z",
+    "file": "hm-shorts.jpg",
+    "dimensions": [
+      1173,
+      751
+    ],
+    "status": "captured",
+    "sensitivity": "empty-default-factory-ui-no-private-data",
+    "note": "Genuine cloud-browser viewport screenshot; no generated stand-in."
+  },
+  {
+    "id": "hm-audio",
+    "sourceUrl": "https://hm-audio-meditation-factory.darkrain20.chatgpt.site/",
+    "capturedAt": "2026-10-25T11:00:00Z",
+    "file": null,
+    "dimensions": null,
+    "status": "unavailable-sign-in-required",
+    "sensitivity": "private-auth-wall",
+    "note": "Log in to access. No sign-in performed; no replacement preview fabricated."
+  }
+]
