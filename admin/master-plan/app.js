@@ -84,9 +84,9 @@ const normalize=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300
 const matches=(p,b)=>[p.id,p.repo?.split('/').pop(),p.name].some(v=>b.aliases.includes(normalize(v)));
 const brandFor=p=>brands.find(b=>p&&matches(p,b));
 const factoryTools={
- 'clips':{id:'clips',name:'Clip my recording',url:'https://sean-ali-clip-factory.darkrain20.chatgpt.site/',description:'Upload your recording, choose UGC, Gold or Smoke, and add your own saved footage. Original speech stays unchanged. Export clips, captions, SEO and a batch tracker.',embedded:true,remote:true},
- 'angelique-factory':{id:'angelique-factory',name:'Make Angelique clips',url:'https://angelique-panama-video-pack.darkrain20.chatgpt.site/factory',description:'Add an Angelique video. Keep the natural voice pace, check Spanish or English captions, and export MP4, SRT, SEO and a batch tracker.',embedded:true,remote:true},
- 'hm-shorts':{id:'hm-shorts',name:'Create meditation shorts',url:'https://hypnotic-meditations-shorts-producer.darkrain20.chatgpt.site/',description:'Create guided shorts up to 45 seconds. Review the voice-only hook and quiet meditation transition before rendering. Export shorts, raw narration, metadata and a tracker.',embedded:true,remote:true},
+ 'clips':{id:'clips',name:'Clip my recording',url:'https://sean-ali-clip-factory.darkrain20.chatgpt.site/',description:'Upload your recording, choose UGC, Gold or Smoke, and use your own saved footage. Add an optional custom batch title; script icons follow conservative timed phrases and can be switched off. Original speech stays unchanged. Export clips, SEO and tracker.',embedded:true,remote:true},
+ 'angelique-factory':{id:'angelique-factory',name:'Make Angelique clips',url:'https://angelique-panama-video-pack.darkrain20.chatgpt.site/factory',description:'Add an Angelique video. Keep the natural voice pace and check Spanish or English captions. Optional video-only zoom/lightning starts off. Export MP4, SRT, SEO and a batch tracker.',embedded:true,remote:true},
+ 'hm-shorts':{id:'hm-shorts',name:'Create meditation shorts',url:'https://hypnotic-meditations-shorts-producer.darkrain20.chatgpt.site/',description:'Create guided shorts up to 45 seconds, edit each on-screen title, and optionally blend up to five of your own videos (250 MB total). Review the voice-only hook and quiet meditation transition. Export shorts, raw narration, metadata and tracker.',embedded:true,remote:true},
  'hm-audio':{id:'hm-audio',name:'Make a 60-second meditation',url:'https://hm-audio-meditation-factory.darkrain20.chatgpt.site/',description:'Choose a topic and generate a complete 60-second meditation locally. Listen before unlocking WAV downloads. Own-narration assembly is still available. Export script, metadata and tracker.',embedded:true,remote:true}
 };
 // Curated starting ideas, not generated recommendations or scheduled obligations.
@@ -132,7 +132,7 @@ function openTool(id,confirmed=false){const t=resolvedTool(id);if(!t?.url)return
  activeTool=t;$('#tool-note').parentElement.querySelector('#tool-fullscreen')?.remove();
  if(t.remote){const full=link('Open separately / sign in ↗',t.url);full.id='tool-fullscreen';$('#tool-note').after(full);}
  $('#tool-title').textContent=t.name;$('#tool-note').textContent=t.description;$('#tool-workspace').hidden=false;
- $('#capture-status').textContent=t.remote?'Back keeps this studio open. Download media and its tracker here before switching studios. A separate tab starts its own session; files and history do not sync to this office.':'Use “Save output to my dashboard” inside the tool to bring its draft back here.';
+ $('#capture-status').textContent=t.remote?'This hosted studio processes media in your browser, not on a background cloud renderer. Keep it open while working. Back keeps the studio open; download files before switching. Separate tabs and this office do not sync files or history.':'Use “Save output to my dashboard” inside the tool to bring its draft back here.';
  $('#studio-load-status').textContent='Opening the studio… If this area stays blank or requests a login, use “Open separately / sign in” above. Embedded sign-in may be restricted by the studio.';
  $('#tool-frame').src=t.remote?t.url:t.url+'?dashboard=1';$('#tool-workspace').scrollIntoView({behavior:'smooth'});
 }
