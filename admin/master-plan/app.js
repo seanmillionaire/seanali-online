@@ -4,7 +4,7 @@ let snapshot,feed='all',limit=6;
 const date=v=>new Intl.DateTimeFormat('en-US',{dateStyle:'medium',timeStyle:'short',timeZone:'America/Panama'}).format(new Date(v));
 const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
 const link=(text,url)=>{const a=el('a',text);try{const u=new URL(url);if(u.protocol!=='https:')return el('span',text);a.href=u.href;a.target='_blank';a.rel='noopener noreferrer';}catch{return el('span',text);}return a;};
-function lock(){if(document.querySelector('#tool-frame')){document.querySelector('#tool-frame').src='about:blank';document.querySelector('#tool-workspace').hidden=true;}activeTool=null;snapshot=undefined;$('#dashboard').hidden=true;$('#login').hidden=false;for(const id of ['activity','projects','priority-list','sources','social-accounts','company-wall','factory-wall'])$('#'+id).replaceChildren();for(const id of ['key','owner-code','owner-new-password','owner-confirm-password','current-password','change-password','change-confirm'])$('#'+id).value='';}
+function lock(){if(document.querySelector('#tool-frame')){document.querySelector('#tool-frame').src='about:blank';document.querySelector('#tool-workspace').hidden=true;}activeTool=null;pendingTool=null;$('#studio-switch').hidden=true;snapshot=undefined;$('#dashboard').hidden=true;$('#login').hidden=false;for(const id of ['activity','projects','priority-list','sources','social-accounts','company-wall','factory-wall'])$('#'+id).replaceChildren();for(const id of ['key','owner-code','owner-new-password','owner-confirm-password','current-password','change-password','change-confirm'])$('#'+id).value='';}
 async function readResponse(r){try{return await r.json();}catch{const e=new Error('The office sign-in service is temporarily unavailable. Please try again shortly.');e.status=r.status;throw e;}}
 async function request(options){const r=await fetch('/api/master-plan',{credentials:'same-origin',cache:'no-store',...options});const body=await readResponse(r);if(!r.ok){const e=new Error(body.error||'Unable to load the plan.');e.status=r.status;throw e;}return body;}
 function post(body){return request({method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});}
@@ -65,7 +65,7 @@ $('#reload').addEventListener('click',load);
 for(const s of ['#search','#type','#status'])$(s).addEventListener('input',renderProjects);
 window.addEventListener('pageshow',e=>{if(e.persisted){lock();load();}});
 const WORK_KEY='sean-private-workspace-v1';
-let workspace={active:'',jobs:{}},activeTool;
+let workspace={active:'',jobs:{}},activeTool,pendingTool;
 try{const saved=JSON.parse(localStorage.getItem(WORK_KEY)||'null');if(saved&&typeof saved.jobs==='object'&&saved.jobs&&!Array.isArray(saved.jobs))workspace=saved;}catch{}
 const stepNames=['Choose','Write','Create','Review','Publish','Learn'];
 function currentJob(){return workspace.jobs[workspace.active];}
@@ -124,17 +124,22 @@ function selectProject(id,persist=true){
  const j=currentJob();$('#day-outcome').value=j.outcome||'';$('#day-draft').value=j.draft||'';$('#day-link').value=j.link||'';$('#day-notes').value=j.notes||'';renderStep();if(persist)saveWork();
 }
 function toolButton(id){const t=resolvedTool(id);const b=el('button',t?'Open '+t.name:'Tool not available');b.type='button';b.disabled=!t?.url;b.addEventListener('click',()=>openTool(id));return b;}
-function openTool(id){const t=resolvedTool(id);if(!t?.url)return;syncFields();
- if(activeTool?.id===id){$('#tool-workspace').hidden=false;$('#tool-workspace').scrollIntoView({behavior:'smooth'});return;}
- if(activeTool&&!window.confirm('Switch studios? Download any finished files first. Switching discards files and unfinished processing in the open studio.'))return;
+function openTool(id,confirmed=false){const t=resolvedTool(id);if(!t?.url)return;syncFields();
+ if(activeTool?.id===id){pendingTool=null;$('#studio-switch').hidden=true;$('#tool-workspace').hidden=false;$('#tool-workspace').scrollIntoView({behavior:'smooth'});return;}
+ if(activeTool&&!confirmed){pendingTool=id;$('#studio-switch-copy').textContent='Open '+t.name+' instead of '+activeTool.name+'? Download any finished files first. Switching discards files and unfinished processing in the current studio.';$('#studio-switch').hidden=false;$('#tool-workspace').hidden=false;$('#studio-switch').scrollIntoView({behavior:'smooth'});$('#keep-studio').focus();return;}
+ pendingTool=null;$('#studio-switch').hidden=true;
  if(!t.embedded){location.assign(t.url);return;}
  activeTool=t;$('#tool-note').parentElement.querySelector('#tool-fullscreen')?.remove();
  if(t.remote){const full=link('Open separately / sign in ↗',t.url);full.id='tool-fullscreen';$('#tool-note').after(full);}
  $('#tool-title').textContent=t.name;$('#tool-note').textContent=t.description;$('#tool-workspace').hidden=false;
  $('#capture-status').textContent=t.remote?'Back keeps this studio open. Download media and its tracker here before switching studios. A separate tab starts its own session; files and history do not sync to this office.':'Use “Save output to my dashboard” inside the tool to bring its draft back here.';
+ $('#studio-load-status').textContent='Opening the studio… If this area stays blank or requests a login, use “Open separately / sign in” above. Embedded sign-in may be restricted by the studio.';
  $('#tool-frame').src=t.remote?t.url:t.url+'?dashboard=1';$('#tool-workspace').scrollIntoView({behavior:'smooth'});
 }
-function closeTool(){$('#tool-workspace').hidden=true;$('#workbench').scrollIntoView({behavior:'smooth'});}
+$('#keep-studio').addEventListener('click',()=>{pendingTool=null;$('#studio-switch').hidden=true;$('#tool-title').scrollIntoView({behavior:'smooth'});});
+$('#confirm-studio-switch').addEventListener('click',()=>{const id=pendingTool;if(id)openTool(id,true);});
+$('#tool-frame').addEventListener('load',()=>{if(activeTool)$('#studio-load-status').textContent='If the studio is blank or asks you to sign in, use “Open separately / sign in” above. A frame response does not confirm the studio is ready.';});
+function closeTool(){pendingTool=null;$('#studio-switch').hidden=true;$('#tool-workspace').hidden=true;$('#workbench').scrollIntoView({behavior:'smooth'});}
 window.addEventListener('beforeunload',event=>{if(activeTool){event.preventDefault();event.returnValue='';}});
 function renderStep(){
  const j=currentJob(),p=snapshot.projects.find(p=>p.id===workspace.active),brand=brandFor(p);if(!j||!brand)return;
@@ -160,3 +165,4 @@ $('#export-day').addEventListener('click',()=>{syncFields();const p=snapshot.pro
 window.addEventListener('message',event=>{const frame=$('#tool-frame');if(event.origin!==location.origin||event.source!==frame.contentWindow||!activeTool||!snapshot)return;const message=event.data;if(!message||typeof message!=='object')return;if(message.type==='sean-tool-ready'){const p=snapshot.projects.find(p=>p.id===workspace.active),j=currentJob();frame.contentWindow.postMessage({type:'sean-work-context',project:p?.name,projectId:p?.id,topic:j?.topic||'',outcome:j?.outcome||''},location.origin);}if(message.type==='sean-save-output'&&typeof message.text==='string'){const j=currentJob();if(!j){$('#capture-status').textContent='Start a project above before saving an output.';return;}const addition=message.text.slice(0,60000);j.draft=(j.draft?j.draft+'\n\n--- '+activeTool.name+' ---\n\n':'')+addition;j.draft=j.draft.slice(-60000);$('#day-draft').value=j.draft;saveWork();$('#capture-status').textContent='Saved to my project draft. Return to my creative space whenever you like.';}});
 
 load();
+
