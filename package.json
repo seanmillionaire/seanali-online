@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@neondatabase/auth": "0.7.0-beta"
+  },
+  "name": "sean-private-office",
+  "private": true
+}

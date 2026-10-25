@@ -1,3 +1,4 @@
+import {ownerSession,authHandler} from '../lib/master-plan-neon.mjs';
 import { createHash, createHmac, timingSafeEqual, randomBytes } from 'node:crypto';
 import { gunzipSync } from 'node:zlib';
 const COOKIE = '__Host-sean-master-plan';
@@ -22,6 +23,13 @@ export default async function handler(req,res) {
   res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
   res.setHeader('X-Content-Type-Options','nosniff');
   res.setHeader('Content-Type','application/json; charset=utf-8');
+  if(process.env.MASTER_PLAN_AUTH_MODE==='neon') {
+    if(req.method==='POST'&&req.body?.action==='logout')return authHandler(req,res);
+    if(req.method!=='GET')return res.status(405).json({error:'Use password sign-in.'});
+    try{if(!await ownerSession(req.headers.cookie))return res.status(401).json({error:'Sign in to view your master plan.'});}
+    catch{return res.status(503).json({error:'Owner sign-in is temporarily unavailable.'});}
+    try{return res.status(200).json(readData());}catch{return res.status(503).json({error:'Private snapshot is unavailable. Refresh the server-side snapshot.'});}
+  }
   const keyHash=process.env.MASTER_PLAN_ACCESS_KEY_SHA256;
   if(!/^[a-f0-9]{64}$/.test(keyHash||'') || (process.env.MASTER_PLAN_SESSION_SECRET||'').length<32) return res.status(503).json({error:'Private access is not configured.'});
   if(req.method==='POST') {
@@ -45,3 +53,4 @@ export default async function handler(req,res) {
   if(!authorized(req))return res.status(401).json({error:'Sign in to view your master plan.'});
   try{return res.status(200).json(readData());}catch{return res.status(503).json({error:'Private snapshot is unavailable. Refresh the server-side snapshot.'});}
 }
+
