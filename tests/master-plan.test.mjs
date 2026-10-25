@@ -3,8 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {gzipSync} from 'node:zlib';
-const source=readFileSync(new URL('../api/master-plan.js',import.meta.url),'utf8');
-const {default:handler}=await import('data:text/javascript;base64,'+Buffer.from(source.replace("'../lib/master-plan-neon.mjs'",JSON.stringify(new URL('../lib/master-plan-neon.mjs',import.meta.url).href))).toString('base64'));
+import handler from '../api/master-plan.js';
 const key='test-only-32-byte-random-key-not-for-deployment';
 const origin='https://preview.example.com';
 const configure=()=>{process.env.MASTER_PLAN_ACCESS_KEY_SHA256=createHash('sha256').update(key).digest('hex');process.env.MASTER_PLAN_SESSION_SECRET='x'.repeat(64);process.env.MASTER_PLAN_ORIGIN=origin;process.env.MASTER_PLAN_DATA_GZIP=gzipSync(JSON.stringify({projects:[{name:'PRIVATE SENTINEL'}],commits:[],builds:[]})).toString('base64');};
@@ -15,3 +14,5 @@ test('logout clears cookie and corrupt data fails safely',async()=>{configure();
 test('static shell contains no private snapshot or external trackers',()=>{const html=readFileSync(new URL('../admin/master-plan/index.html',import.meta.url),'utf8');assert.ok(!/analytics|whop|facebook|googletagmanager/i.test(html.match(/<script[^>]*>/g).join('')));assert.ok(!html.includes('PRIVATE SENTINEL'));const js=readFileSync(new URL('../admin/master-plan/app.js',import.meta.url),'utf8');assert.ok(!js.includes('innerHTML'));});
 
 test('Neon mode never accepts the former key or signed legacy session',async()=>{configure();const legacy=await call('POST',{key},{origin,'content-type':'application/json'});const cookie=legacy.headers['Set-Cookie'].split(';')[0];process.env.MASTER_PLAN_AUTH_MODE='neon';try{assert.equal((await call('GET',null,{cookie})).code,401);assert.equal((await call('POST',{key},{origin,'content-type':'application/json'})).code,405);assert.ok(!JSON.stringify(await call()).includes('PRIVATE SENTINEL'));}finally{delete process.env.MASTER_PLAN_AUTH_MODE;}});
+
+test('deployment declares native ESM and both route entrypoints import directly',async()=>{assert.equal(JSON.parse(readFileSync(new URL('../package.json',import.meta.url))).type,'module');assert.equal(typeof (await import('../api/master-plan-auth.js')).default,'function');});
