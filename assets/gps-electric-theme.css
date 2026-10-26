@@ -1,0 +1,84 @@
+/* GPS-only presentation layer. No app state, wording, events or tracking changes.
+   Decorative SVGs follow existing step markup; no requests, JS or dependencies. */
+@media screen {
+.simple-gps.guided-shell { --gps-cta: #ff5c00; --gps-cta-hover: #ed5200; --gps-ink: #171717; color: var(--gps-ink); background: #fff; }
+.simple-gps .guided-rail { background: #fff7f1; color: #171717; border-right: 1px solid #f0dfd2; }
+.simple-gps :is(.simple-brand,.quiz-mobile-brand,.quiz-rail-footer p,.quiz-rail-welcome p,.quiz-journey button,.guided-kicker,.guided-top-progress,.guided-help,.guided-sound-toggle,.guided-footer-note) { color: #292929; }
+.simple-gps .quiz-rail-welcome h2 { font-family: Manrope,Arial,sans-serif; font-weight: 800; letter-spacing: -1px; font-size: 30px; }
+.simple-gps .quiz-rail-welcome::before { content: ''; display: block; width: 46px; height: 5px; border-radius: 3px; margin-bottom: 20px; background: #ff5c00; }
+.simple-gps .quiz-journey { gap: 9px; }
+.simple-gps .quiz-journey button { border-radius: 12px; padding: 12px; }
+.simple-gps .quiz-journey button.current { background: #ff5c00; color: #171717; box-shadow: 0 5px 0 #ffdbc5; }
+.simple-gps .quiz-journey button.current > span { background: #171717; color: #fff; border-color: #171717; }
+.simple-gps .quiz-journey button.done > span { background: #fff; color: #171717; border-color: #ff5c00; }
+.simple-gps .quiz-journey button:enabled:hover:not(.current) { background: #ffe5d4; }
+.simple-gps .guided-topbar { border-bottom: 1px solid #e9e4df; }
+.simple-gps .guided-top-progress i { height: 6px; background: #eee9e5; }
+.simple-gps .guided-top-progress i::after { background: #ff5c00; }
+.simple-gps .guided-content { background: #fff; padding: 24px 42px; }
+.simple-gps .guided-card { color: #171717; padding: 8px 12px 28px; animation: gps-arrive 420ms ease-out both; }
+.simple-gps .guided-card h1 { color: #171717; font-family: Manrope,Arial,sans-serif; font-size: clamp(36px,3.2vw,48px); line-height: 1.12; font-weight: 800; letter-spacing: -1.8px; max-width: 680px; }
+.simple-gps .guided-card :is(h2,b,label,legend) { color: #171717; }
+.simple-gps .guided-card :is(.guided-intro,.quiz-reassurance,.guided-voice-note,.gps-tools-intro p,.gps-use-tools,.gps-free-note,.gps-download-gate p,.gps-download-gate small) { color: #49433f; }
+.simple-gps .guided-intro { line-height: 1.6; }
+.simple-gps .guided-card::before { content: ''; display: block; position: static; width: 100%; height: 112px; margin: 0 0 22px; border: 0; border-radius: 18px; background-color: #fff4eb; background-image: var(--gps-scene); background-repeat: no-repeat; background-size: auto 105px; background-position: center; pointer-events: none; animation: gps-scene 650ms ease-out both; }
+.simple-gps .guided-card.quiz-welcome::before { height: 120px; background-size: auto 116px; }
+.simple-gps .guided-kicker { font-weight: 800; }
+.simple-gps .guided-kicker svg { color: #b63e00; }
+.simple-gps .quiz-start button { border: 1px solid #c9b9ae; border-radius: 14px; background: #fff; box-shadow: 0 3px 0 #f1ece8; transition: transform 180ms ease, background 180ms ease, border-color 180ms ease; }
+.simple-gps .quiz-start button:hover { border-color: #ff5c00; background: #fff4eb; transform: translateX(3px); }
+.simple-gps .quiz-start button:active { transform: translateX(1px); }
+.simple-gps .quiz-start button > svg:first-child { display: block; color: #b63e00; }
+.simple-gps .quiz-start button > svg:last-child { padding: 6px; width: 34px; height: 34px; background: #ff5c00; border-radius: 50%; color: #171717; }
+.simple-gps .quiz-start small { color: #49433f; }
+.simple-gps .quiz-reassurance svg { color: #b63e00; }
+.simple-gps :is(.guided-button:not(.secondary),.gps-final-downloads button,.gps-download-form-row button) { background: #ff5c00; color: #171717; border: 1px solid #ff5c00; border-radius: 10px; font-weight: 800; box-shadow: 0 3px 0 #cc4600; transition: transform 160ms ease, background 160ms ease; }
+.simple-gps :is(.guided-button:not(.secondary),.gps-final-downloads button,.gps-download-form-row button):hover:not(:disabled) { background: #ff7629; border-color: #ff5c00; transform: translateY(-2px); }
+.simple-gps .guided-button.secondary { color: #292929; border: 1px solid #d5cdc7; border-radius: 10px; }
+.simple-gps .guided-button:disabled { background: #eee7e1; border-color: #cfc4bb; color: #625950; opacity: 1; box-shadow: none; }
+.simple-gps :is(.guided-field input,.guided-field textarea,.gps-download-form-row input) { color: #171717; border: 1px solid #91877e; border-radius: 12px; background: #fff; }
+.simple-gps :is(.guided-field input,.guided-field textarea,.gps-download-form-row input):focus { border-color: #171717; box-shadow: 0 0 0 3px #ffceb1; }
+.simple-gps .guided-mic { background: #fff0e5; border: 1px solid #b3a296; color: #171717; border-radius: 9px; }
+.simple-gps .guided-mic.listening { background: #ff5c00; color: #171717; }
+.simple-gps :is(.guided-checklist,.guided-privacy-note,.guided-summary-item) { background: #fff6ef; color: #292929; border-color: #efd8c7; border-radius: 14px; }
+.simple-gps :is(.guided-checklist > span,.guided-checklist p,.guided-checklist svg,.guided-summary-item span,.guided-summary-item b,.guided-privacy-note span) { color: #292929; }
+.simple-gps .guided-impact { background: #fff; border: 1px solid #a99a90; color: #171717; border-radius: 12px; transition: background 160ms ease, transform 160ms ease; }
+.simple-gps .guided-impact:hover { background: #fff4eb; }
+.simple-gps .guided-impact.picked { background: #ffebdd; border: 2px solid #a93a00; color: #171717; }
+.simple-gps .guided-help-panel { background: #fff8f2; color: #171717; border: 1px solid #bd8a68; border-radius: 14px; box-shadow: 0 12px 32px #17171718; }
+.simple-gps .guided-help-panel p { color: #49433f; }
+.simple-gps .guided-footer { border-top: 1px solid #e9e4df; }
+.simple-gps .gps-tool-card { padding: 24px; border: 1px solid #e3d3c7; border-radius: 18px; background: #fffaf6; }
+.simple-gps :is(.gps-tool-number,.gps-tool-summary dt,.gps-download-gate a) { color: #923300; }
+.simple-gps :is(.gps-tool-summary dd,.gps-use-tools li) { color: #292929; }
+.simple-gps :is(button,a):focus-visible { outline: 3px solid #171717; outline-offset: 4px; }
+.simple-gps :is(.guided-help,.guided-sound-toggle) { min-width: 44px; min-height: 44px; }
+@keyframes gps-arrive { from { opacity: .6; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes gps-scene { from { background-position: 45% center; } to { background-position: 50% center; } }
+@media (max-width:900px) {
+ .simple-gps .guided-content,.simple-gps .guided-content:has(.quiz-welcome) { padding: 20px; }
+ .simple-gps .guided-card::before,.simple-gps .guided-card.quiz-welcome::before { height: 80px; background-size: auto 78px; margin-bottom: 18px; border-radius: 14px; }
+ .simple-gps .guided-card h1 { font-size: 36px; letter-spacing: -1.3px; }
+ .simple-gps .guided-intro,.simple-gps .quiz-welcome .guided-intro { font-size: 18px; line-height: 1.5; }
+ .simple-gps .quiz-welcome .quiz-start button { min-height: 88px; padding: 14px; margin-top: 12px; }
+ .simple-gps .quiz-start b { font-size: 17px; line-height: 1.4; }
+ .simple-gps .quiz-start small { font-size: 15px; }
+ .simple-gps .quiz-start button > svg:first-child { display: none; }
+ .simple-gps .quiz-welcome .quiz-reassurance { font-size: 15px; color: #49433f; margin: 20px 0; max-width: none; text-align: left; justify-content: flex-start; }
+ .simple-gps .guided-field label { font-size: 16px; }
+ .simple-gps .guided-button { font-size: 17px; }
+ .simple-gps .gps-tool-card { padding: 20px; }
+}
+@media (max-width:360px) { .simple-gps .guided-content,.simple-gps .guided-content:has(.quiz-welcome) { padding: 16px; } .simple-gps .guided-card h1 { font-size: 34px; } }
+@media (prefers-reduced-motion:reduce) { .simple-gps *, .simple-gps *::before, .simple-gps *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+}
+.simple-gps .guided-card.quiz-welcome { --gps-scene: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20244%20136%22%20fill%3D%22none%22%20stroke%3D%22%23171717%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M18%20100C56%20100%2032%2032%2083%2032S130%20106%20177%2080%20185%2027%20224%2027%22%20stroke-dasharray%3D%225%207%22/%3E%3Ccircle%20cx%3D%2218%22%20cy%3D%22100%22%20r%3D%226%22%20fill%3D%22%23171717%22/%3E%3Ccircle%20cx%3D%22224%22%20cy%3D%2227%22%20r%3D%2218%22%20fill%3D%22%23ff5c00%22%20stroke%3D%22none%22/%3E%3Cpath%20d%3D%22m224%2014%204%209%209%204-9%204-4%209-4-9-9-4%209-4Z%22%20fill%3D%22white%22%20stroke%3D%22none%22/%3E%3Ccircle%20cx%3D%22123%22%20cy%3D%2263%22%20r%3D%2237%22%20fill%3D%22white%22/%3E%3Cpath%20d%3D%22m138%2042-9%2028-28%2013%2010-29Z%22%20fill%3D%22%23ff5c00%22/%3E%3Cpath%20d%3D%22m111%2054%2018%2016%22/%3E%3C/svg%3E"); }
+.simple-gps .guided-card:has(#guided-name) { --gps-scene: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20244%20136%22%20fill%3D%22none%22%20stroke%3D%22%23171717%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%2252%22%20y%3D%2223%22%20width%3D%22140%22%20height%3D%2288%22%20rx%3D%2214%22%20fill%3D%22white%22/%3E%3Ccircle%20cx%3D%2291%22%20cy%3D%2257%22%20r%3D%2213%22%20fill%3D%22%23ff5c00%22%20stroke%3D%22none%22/%3E%3Cpath%20d%3D%22M70%2091c0-29%2042-29%2042%200m18-38h43m-43%2017h29m-29%2017h38%22/%3E%3Cpath%20d%3D%22m207%2026%205%2010%2011%204-11%204-5%2011-4-11-11-4%2011-4Z%22%20fill%3D%22%23ff5c00%22%20stroke%3D%22none%22/%3E%3C/svg%3E"); }
+.simple-gps .guided-card:has(#guided-location) { --gps-scene: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20244%20136%22%20fill%3D%22none%22%20stroke%3D%22%23171717%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m27%2048%2062-18%2066%2020%2062-18v72l-62%2018-66-20-62%2018Z%22%20fill%3D%22white%22/%3E%3Cpath%20d%3D%22M89%2030v72m66-52v72%22%20stroke%3D%22%23d5d5d5%22/%3E%3Cpath%20d%3D%22M158%2035c0%2024-30%2049-30%2049s-30-25-30-49a30%2030%200%200%201%2060%200Z%22%20fill%3D%22%23ff5c00%22%20stroke%3D%22none%22/%3E%3Ccircle%20cx%3D%22128%22%20cy%3D%2235%22%20r%3D%2210%22%20fill%3D%22white%22%20stroke%3D%22none%22/%3E%3Cpath%20d%3D%22M110%20102h36%22/%3E%3C/svg%3E"); }
+.simple-gps .guided-card:has(#guided-success) { --gps-scene: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20244%20136%22%20fill%3D%22none%22%20stroke%3D%22%23171717%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%22122%22%20cy%3D%2267%22%20r%3D%2251%22%20fill%3D%22white%22/%3E%3Ccircle%20cx%3D%22122%22%20cy%3D%2267%22%20r%3D%2234%22%20stroke%3D%22%23ff5c00%22/%3E%3Ccircle%20cx%3D%22122%22%20cy%3D%2267%22%20r%3D%2216%22%20fill%3D%22%23ff5c00%22%20stroke%3D%22none%22/%3E%3Cpath%20d%3D%22m122%2067%2071-44m-17-3%2017%203-5%2017%22/%3E%3Cpath%20d%3D%22M31%20103h27m-14-13v26%22%20stroke%3D%22%23ff5c00%22/%3E%3C/svg%3E"); }
+.simple-gps .guided-card:has(.guided-impact-grid) { --gps-scene: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20244%20136%22%20fill%3D%22none%22%20stroke%3D%22%23171717%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M122%20117V64m0%2034C66%2099%2061%2073%2063%2059c31-5%2054%209%2059%2039m0-16c49%200%2062-24%2059-42-30-4-56%2010-59%2042%22%20fill%3D%22white%22/%3E%3Cpath%20d%3D%22M122%2065c-27-23-34-41-19-51%2011-7%2019%202%2019%202s8-9%2019-2c15%2010%208%2028-19%2051Z%22%20fill%3D%22%23ff5c00%22%20stroke%3D%22none%22/%3E%3Cpath%20d%3D%22M92%20118h60%22/%3E%3C/svg%3E"); }
+.simple-gps .guided-card:has(#guided-future) { --gps-scene: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20244%20136%22%20fill%3D%22none%22%20stroke%3D%22%23171717%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M25%2097h194M42%20115h160%22/%3E%3Cpath%20d%3D%22M76%2096a47%2047%200%200%201%2094%200%22%20fill%3D%22%23ff5c00%22%20stroke%3D%22none%22/%3E%3Cpath%20d%3D%22M123%2012v14m-59%207%2010%2010m-40%2025%2014%204m134-39-10%2010m40%2025-14%204%22%20stroke%3D%22%23ff5c00%22/%3E%3Cpath%20d%3D%22M98%2097c-25%2016%2064%2013%2035%2032%22%20fill%3D%22none%22/%3E%3C/svg%3E"); }
+.simple-gps .guided-card:has(#guided-whyNow) { --gps-scene: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20244%20136%22%20fill%3D%22none%22%20stroke%3D%22%23171717%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%22122%22%20cy%3D%2267%22%20r%3D%2249%22%20fill%3D%22white%22/%3E%3Cpath%20d%3D%22M122%2029v38l29%2016%22%20stroke-width%3D%225%22/%3E%3Ccircle%20cx%3D%22122%22%20cy%3D%2267%22%20r%3D%225%22%20fill%3D%22%23ff5c00%22%20stroke%3D%22none%22/%3E%3Cpath%20d%3D%22m188%2020%205%2012%2013%205-13%205-5%2012-5-12-13-5%2013-5Z%22%20fill%3D%22%23ff5c00%22%20stroke%3D%22none%22/%3E%3Cpath%20d%3D%22M40%2092h17m-9-8v17%22/%3E%3C/svg%3E"); }
+.simple-gps .guided-card:has(.guided-summary) { --gps-scene: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20244%20136%22%20fill%3D%22none%22%20stroke%3D%22%23171717%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%2270%22%20y%3D%2213%22%20width%3D%22108%22%20height%3D%22112%22%20rx%3D%2212%22%20fill%3D%22white%22/%3E%3Cpath%20d%3D%22m87%2041%205%205%2010-12m-15%2036%205%205%2010-12m-15%2036%205%205%2010-12%22%20stroke%3D%22%23ff5c00%22%20stroke-width%3D%224%22/%3E%3Cpath%20d%3D%22M115%2041h44m-44%2029h36m-36%2029h41%22/%3E%3C/svg%3E"); }
+.simple-gps .guided-card:has(#guided-responsibility) { --gps-scene: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20244%20136%22%20fill%3D%22none%22%20stroke%3D%22%23171717%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M30%20119h52V89h44V59h44V29h47%22%20stroke-width%3D%223%22/%3E%3Cpath%20d%3D%22M49%2091%20171%2016m-22-1%2022%201-6%2021%22%20stroke%3D%22%23ff5c00%22%20stroke-width%3D%225%22/%3E%3Ccircle%20cx%3D%2237%22%20cy%3D%22104%22%20r%3D%226%22%20fill%3D%22%23171717%22%20stroke%3D%22none%22/%3E%3C/svg%3E"); }
+.simple-gps .guided-card.gps-final-screen { --gps-scene: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20244%20136%22%20fill%3D%22none%22%20stroke%3D%22%23171717%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%2239%22%20y%3D%2221%22%20width%3D%2283%22%20height%3D%22102%22%20rx%3D%2210%22%20fill%3D%22white%22/%3E%3Cpath%20d%3D%22M56%2043h42M56%2061h29m-29%2018h36m-36%2018h22%22/%3E%3Ccircle%20cx%3D%22168%22%20cy%3D%2269%22%20r%3D%2248%22%20fill%3D%22%23ff5c00%22%20stroke%3D%22none%22/%3E%3Cpath%20d%3D%22m168%2029%209%2030%2030%2010-30%2010-9%2030-9-30-30-10%2030-10Z%22%20fill%3D%22white%22%20stroke%3D%22none%22/%3E%3Ccircle%20cx%3D%22168%22%20cy%3D%2269%22%20r%3D%227%22%20fill%3D%22%23171717%22%20stroke%3D%22none%22/%3E%3C/svg%3E"); }
