@@ -162,8 +162,8 @@ function manualDone(key,labelText){
  input.addEventListener('change',()=>{workspace.doneChecks=workspace.doneChecks||{};workspace.doneChecks[key]=input.checked;label.className='manual-done'+(input.checked?' is-done':'');saveWork();});label.append(input,el('span',labelText||'Reviewed by me'));return label;
 }
 function renderProductionReview(){
- let section=$('#production-review');if(!section){section=el('section',undefined,'production-review production-checklist');section.id='production-review';section.setAttribute('aria-labelledby','production-title');$('#visual-home').before(section);}section.className='production-review production-checklist';section.replaceChildren();
- const title=el('h2',"Today's production");title.id='production-title';section.append(title);const review=snapshot.productionReview;
+ let section=$('#production-review');if(!section){section=el('details',undefined,'production-review production-checklist');section.id='production-review';section.setAttribute('aria-labelledby','production-title');$('#visual-home').before(section);}section.className='production-review production-checklist';section.replaceChildren();
+ const title=el('h2',"Today's production");title.id='production-title';const summary=el('summary',undefined,'production-toggle');summary.append(title);section.append(summary);const review=snapshot.productionReview;if(review)summary.append(el('span',review.reviewDate+' · Panama time','production-summary-date'));
  if(!review){section.append(el('p','No delivery has been verified yet.'));return;}
  const today=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Panama',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
  section.append(el('p',review.reviewDate+' · Panama time'+(today===review.reviewDate?'':' · Previous delivery'),'production-date'),el('p','✓ File prepared · Your checkmarks mean reviewed, not published. Saved in this browser.','small'));
