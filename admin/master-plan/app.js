@@ -114,7 +114,7 @@ function renderWorkspace(){
  const select=$('#day-project');select.replaceChildren();
  for(const b of brands){const candidates=snapshot.projects.filter(p=>matches(p,b));const saved=candidates.find(p=>p.id===workspace.active)||candidates.find(p=>workspace.jobs[p.id])||candidates[0];const option=el('option',b.name);option.value=saved?.id||'missing:'+b.id;option.disabled=!saved;select.append(option);}
  if(!brandFor(snapshot.projects.find(p=>p.id===workspace.active)))workspace.active=[...select.options].find(o=>!o.disabled)?.value||'';
- select.value=workspace.active;$('#creative-idea').value=workspace.idea||'';renderNotepadTasks();selectProject(workspace.active,false);renderProjectChips();renderVisualHome();
+ select.value=workspace.active;$('#creative-idea').value=workspace.idea||'';selectProject(workspace.active,false);renderProjectChips();renderVisualHome();
  const list=$('#tool-list');list.replaceChildren();
  for(const id of ['organic','ideas','images','metricool']){const t=resolvedTool(id);if(t?.url){const box=disclosure(t.name,el('p',t.description));box.querySelector('.inside').append(toolButton(id));list.append(box);}}
 }
@@ -123,7 +123,7 @@ function renderProjectChips(){
  for(const option of $('#day-project').options){const b=el('button',option.textContent,'project-chip');b.type='button';b.disabled=option.disabled;b.setAttribute('aria-pressed',String(workspace.focusProject===option.value));b.addEventListener('click',()=>{syncFields();workspace.focusProject=option.value;selectProject(option.value);$('#day-project').value=option.value;renderProjectChips();});host.append(b);}
 }
 $('#show-all-studios').addEventListener('click',()=>{workspace.showAllStudios=!workspace.showAllStudios;saveWork();renderVisualHome();});
-$('#creative-idea').addEventListener('input',()=>{workspace.idea=$('#creative-idea').value;saveWork();renderNotepadTasks();});
+$('#creative-idea').addEventListener('input',()=>{workspace.idea=$('#creative-idea').value;saveWork();});
 $('#clear-project').addEventListener('click',()=>{workspace.focusProject='';saveWork();renderStep();renderProjectChips();});
 function selectProject(id,persist=true){
  workspace.active=id;const p=snapshot.projects.find(p=>p.id===id);if(!p){$('#workbench').hidden=true;return;}
@@ -133,14 +133,6 @@ function selectProject(id,persist=true){
 function toolButton(id){const t=resolvedTool(id);if(!t?.url)return el('span','Tool not available');const a=link('Open '+t.name+' ↗',t.url);a.className='studio-new-tab';a.addEventListener('click',syncFields);return a;}
 function openTool(id){const t=resolvedTool(id);if(!t?.url)return;syncFields();const a=link('Open '+t.name,t.url);if(a.tagName==='A')a.click();}
 function renderStep(){ $('#workbench').hidden=true; }
-function renderNotepadTasks(){
- const host=$('#notepad-tasks');host.replaceChildren();
- const lines=String(workspace.idea||'').split('\n');
- lines.forEach((line,index)=>{const match=line.match(/^(\s*(?:[-*]\s+)?\[)([ xX])(\]\s*)(.+)$/)|| (line.trim()?['','[',' ','] ',line]:null);if(!match)return;
-  const label=el('label',undefined,'notepad-task'),check=el('input'),text=el('span',match[4]);check.type='checkbox';check.checked=match[2].toLowerCase()==='x';
-  label.className+=' '+(check.checked?'is-done':'');check.addEventListener('change',()=>{const latest=String(workspace.idea||'').split('\n');if(latest[index]!==line){renderNotepadTasks();return;}latest[index]=match[1]+(check.checked?'x':' ')+match[3]+match[4];workspace.idea=latest.join('\n');$('#creative-idea').value=workspace.idea;saveWork();renderNotepadTasks();});label.append(check,text);host.append(label);
- });
-}
 $('#day-project').addEventListener('change',e=>{syncFields();selectProject(e.target.value);});
 $('#start-day').addEventListener('click',()=>{const id=$('#day-project').value;workspace.active=id;if(!currentJob())workspace.jobs[id]={step:0,draft:'',notes:'',link:'',topic:'',review:{}};syncFields();renderStep();$('#visual-home').scrollIntoView({behavior:'smooth'});});
 for(const id of ['day-outcome','day-draft','day-link','day-notes'])$('#'+id).addEventListener('input',syncFields);
@@ -202,3 +194,4 @@ function renderSoundtrack(){
  box.append(row,el('p','Music opens in a new tab. In-office playback is unavailable.','small'));
  $('#visual-home').before(box);
 }
+
