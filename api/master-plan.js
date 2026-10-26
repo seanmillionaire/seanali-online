@@ -15,7 +15,7 @@ function readData() {
   if (!compressed) throw new Error('No snapshot');
   const data=JSON.parse(gunzipSync(Buffer.from(compressed,'base64'),{maxOutputLength:1048576}).toString());
   if(!Array.isArray(data.projects)||!Array.isArray(data.commits)||!Array.isArray(data.builds))throw new Error('Invalid snapshot');
-  return data;
+  return {...data, productionReview: {"reviewDate":"2026-10-26","timeZone":"America/Panama","updatedAt":"2026-10-26T11:29:41Z","groups":[{"company":"HM","status":"NOT APPROVED · audio review pending","notes":"Voice preview and copy drafts are available in your dot chat. Listen to the full audio and review the copy before using either.","copy":"Subject: The bills keep showing up\nPreview: Try this before you force another positive thought.\n\nAudio pilot working title: Before the First Scroll\nA one-minute guided pause before opening the day's feeds or messages."},{"company":"Genie","status":"NOT APPROVED · test export","notes":"Visual-review MP4 delivered in your dot chat. Watch the full video and review audio, captions and pacing. Audio review is pending."},{"company":"Panama","status":"NOT APPROVED · test export","notes":"Visual-review MP4 delivered in your dot chat. Check the story, visuals, captions and place names. Audio review is pending."}]}};
 }
 export default async function handler(req,res) {
   res.setHeader('Cache-Control','private, no-store, max-age=0');
