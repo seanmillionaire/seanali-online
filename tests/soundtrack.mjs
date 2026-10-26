@@ -21,7 +21,7 @@ for(time=56;time<70;time++)music.update({x:-50,z:-365});
 assert.equal(audios.at(-1),colonAudio,'staying in Colón must not restart the song');
 colonAudio.currentTime=178;tick();await Promise.resolve();assert.equal(music.status.title,TRACKS.reggae.title,'Colón keeps its existing music in the mix');
 time+=4;tick();
-for(const region of ['city','west','bocas'])assert(REGIONAL_PLAYLISTS[region].includes('todoVa'));
+for(const region of ['city','west','bocas'])assert(!REGIONAL_PLAYLISTS[region].includes('todoVa'),'Todo Va remains scoped to Colón/Costa');
 
 for(let i=0;i<8;i++)music.next();await Promise.resolve();assert(music.status.players<=2,'rapid skips bounded');
 enabled=false;music.sync();assert(audios.every(a=>a.paused),'mute pauses every stream');enabled=true;music.sync();assert(music.status.playing);hidden=true;music.sync();assert(audios.every(a=>a.paused));hidden=false;music.sync();volume=0;music.sync();assert(!music.status.playing);volume=.8;music.sync();assert(music.status.playing);
@@ -45,7 +45,9 @@ time=0;const costa=createSoundtrack({enabled:()=>true,volume:()=>.6,environment:
 // A visit has one Congo opener, then the owner's instrumental and Todo Va.
 time=0;const visit=createSoundtrack({enabled:()=>true,volume:()=>.6,environment:()=>({context,output:{}}),createAudio:()=>new Media(),now:()=>time});
 visit.focus('costa');await Promise.resolve();assert.equal(visit.status.key,'congo');
-for(const key of ['theme','todoVa','reggae','salsa','reggae','reggae']){time+=4;tick();visit.next();await Promise.resolve();assert.equal(visit.status.key,key);visit.focus('costa');await Promise.resolve();assert.equal(visit.status.key,key,'dance join cannot replay opener');}
+for(const key of ['theme','reggae','reggae','salsa','reggae','reggae']){time+=4;tick();visit.next();await Promise.resolve();assert.equal(visit.status.key,key);visit.focus('costa');await Promise.resolve();assert.equal(visit.status.key,key,'dance join cannot replay opener');}
 visit.update('colon');time+=11;visit.update('colon');await Promise.resolve();visit.update('costa');time+=11;visit.update('costa');await Promise.resolve();assert.equal(visit.status.key,'congo','new visit earns a new opener');visit.destroy();
 console.log('PASS once-per-visit Congo, theme, Todo Va, continuing regional rotation and return visit');
-time=0;const boundary=createSoundtrack({enabled:()=>true,volume:()=>.6,environment:()=>({context,output:{}}),createAudio:()=>new Media(),now:()=>time});boundary.focus('costa');await Promise.resolve();const leaving=audios.at(-1);time=4;tick();boundary.update({x:-50,z:-365});assert.equal(boundary.status.mood,'colon','leaving Costa has no ten-second delay');await Promise.resolve();assert.equal(boundary.status.key,'todoVa');time+=.7;tick();assert(leaving.paused&&!leaving.src,'Congo released within 0.7 seconds');boundary.destroy();console.log('PASS immediate regional exit and short independent Congo fade');
+time=0;const boundary=createSoundtrack({enabled:()=>true,volume:()=>.6,environment:()=>({context,output:{}}),createAudio:()=>new Media(),now:()=>time});boundary.focus('costa');await Promise.resolve();const leaving=audios.at(-1);time=4;tick();boundary.update({x:-50,z:-365});assert.equal(boundary.status.mood,'colon','leaving Costa has no ten-second delay');await Promise.resolve();assert.equal(boundary.status.key,'reggae','previously played Todo Va does not repeat this session');time+=.7;tick();assert(leaving.paused&&!leaving.src,'Congo released within 0.7 seconds');boundary.destroy();console.log('PASS immediate regional exit and short independent Congo fade');
+
+assert.equal(TRACKS.congo.file,'viene-la-ola');assert.equal(TRACKS.congo.title,'Viene la Ola');assert(audios.every(a=>a.playbackRate===1),'original tempo preserved');

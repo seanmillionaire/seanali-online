@@ -144,16 +144,14 @@
     "rightsNote": "Supplied directly by the game owner for installation; not part of the CC libraries."
   },
   {
-    "id": "los-congos-de-panama",
-    "title": "Los Congos de Panamá",
-    "duration": "00:02:35",
-    "durationSeconds": 154.646,
-    "file": "los-congos-de-panama.mp3",
-    "bytes": 1992795,
-    "artist": "Panama1519 (uploader; performers not identified)",
-    "source": "https://commons.wikimedia.org/wiki/File:Los_Congos_de_Panam%C3%A1.ogg",
-    "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/6/6f/Los_Congos_de_Panam%C3%A1.ogg/Los_Congos_de_Panam%C3%A1.ogg.mp3",
-    "license": "PD-Panama (as listed by Wikimedia Commons)",
-    "notes": "Unmodified Wikimedia MP3 transcode of Panamanian Congo recording. No claim this is the specific Ola ola recording."
+    "id": "viene-la-ola",
+    "title": "Viene la Ola",
+    "duration": "00:01:46",
+    "durationSeconds": 106.344,
+    "file": "viene-la-ola.mp3",
+    "bytes": 2564633,
+    "source": "Original MP3 supplied by the game owner",
+    "rightsNote": "User states this is their own original song and authorizes game use. Not part of the public-domain music library.",
+    "sha256": "4765261aa7bd1117c5d6ceb3cd922e7c030729b8dc8369e1599636ca1004bcb2"
   }
 ]

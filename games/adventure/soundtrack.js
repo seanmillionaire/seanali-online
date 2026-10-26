@@ -2,7 +2,7 @@ import {costaContains,ISLA_GRANDE,CONGO_GATHERING} from './costa-arriba-layout.j
 // Full-length recordings stream on demand; only two players exist during a crossfade.
 export const TRACKS={
  theme:{file:'panama-menu-theme',extension:'mp3',title:'Panamá Aventura · Instrumental'},
- congo:{file:'los-congos-de-panama',extension:'mp3',title:'Los Congos de Panamá'},
+ congo:{file:'viene-la-ola',extension:'mp3',title:'Viene la Ola'},
  frutaTropical:{file:'fruta-tropical',extension:'mp3',title:'Fruta Tropical'},
  todoVa:{file:'todo-va',extension:'mp3',title:'Todo Va'},
  salsa:{file:'no-frills-salsa',extension:'mp3',title:'No Frills Salsa'},
@@ -64,7 +64,7 @@ export function createSoundtrack({enabled,volume,environment,createAudio=()=>new
  async function start(key){if(!running())return;key=safeKey(key);const env=environment();if(!env)return;const request=++serial;
   // Bound memory and streams even when a child rapidly changes modes.
   for(const p of [...players])if(p!==current&&p.exitAt===undefined)release(p);
-  const audio=createAudio();audio.preload='auto';audio.playbackRate=key==='congo'?1.1:1;audio.preservesPitch=true;audio.src=new URL('./assets/audio/music/'+TRACKS[key].file+'.'+(TRACKS[key].extension||'m4a'),import.meta.url).href;
+  const audio=createAudio();audio.preload='auto';audio.playbackRate=1;audio.preservesPitch=true;audio.src=new URL('./assets/audio/music/'+TRACKS[key].file+'.'+(TRACKS[key].extension||'m4a'),import.meta.url).href;
   const gain=env.context.createGain(),node=env.context.createMediaElementSource(audio);gain.gain.value=0;node.connect(gain).connect(env.output);
   const p={audio,gain,node,context:env.context,key,fadeAt:now(),pending:true,lastPosition:0};players.push(p);
   audio.onended=()=>{if(adminIntro&&key==='todoVa')adminIntro=false;if(current===p&&running()&&!players.some(v=>v.pending))start(nextKey());};

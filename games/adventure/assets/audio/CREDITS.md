@@ -75,7 +75,7 @@ Supplied directly by the game owner for installation. Artist and license metadat
 
 ## Costa Arriba · Congo music and costume references (October 22, 2026)
 
-- `music/los-congos-de-panama.mp3` — **Los Congos de Panamá**, uploaded by Panama1519; performers/date not identified. Wikimedia Commons lists the recording as **PD-Panama**. Unmodified MP3 transcode, 154.646 seconds. Source/license description: https://commons.wikimedia.org/wiki/File:Los_Congos_de_Panam%C3%A1.ogg . MP3 SHA256: 8fb7e3e9181da2e60e7959824376fcabf852f29f780b53fee23a8eba336d246a . This is a Panamanian Congo recording, not represented as the specific “Ola ola” performance requested as a stylistic reference.
-- `congo-rhythm.js` contains measured energy-rise cue times from that recording; dancers follow its playback position.
+- `music/viene-la-ola.mp3` — **Viene la Ola**, original recording supplied by the game owner, who states ownership and authorizes its use. 106.344 seconds, unmodified playback at 1×.
+- `congo-rhythm.js` contains measured energy-rise cue times from Viene la Ola; dancers follow its playback position.
 - Original modeled costumes reference Diablos y Congos of Colón: MiCultura https://micultura.gob.pa/2025/05/05/los-congos-se-toman-portobelo/ and https://sicultura.micultura.gob.pa/manifestaciones-culturales/festival-de-la-pollera-congo-y-de-mascaras-de-diablos-congos . Visual references reviewed through image search: https://www.panamaamerica.com.pa/variedades/festival-de-diablos-y-congos-que-actividades-ofrecera-al-publico-1248601 . Photos are references only, not redistributed assets.
 - The red-and-black masked Diablos de Congo and community Congo dance/drumming are distinct roles in this scene; it does not present the full ritual or imply that all Congo participants wear devil masks.
