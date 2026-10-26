@@ -171,16 +171,23 @@ window.addEventListener('message',event=>{const frame=$('#tool-frame');if(event.
 load();
 
 
+function productionCopy(text,label){
+ const details=el('details'),summary=el('summary',label||'Copy & captions'),field=el('textarea');field.readOnly=true;field.value=text;field.rows=7;field.setAttribute('aria-label',label||'Copy & captions');
+ const button=el('button','Copy text'),status=el('p','','small');button.type='button';status.setAttribute('role','status');button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(text);status.textContent='Copied.';}catch{field.focus();field.select();status.textContent='Text selected. Copy it with your device.';}});details.append(summary,field,button,status);return details;
+}
 function renderProductionReview(){
  let section=$('#production-review');if(!section){section=el('section',undefined,'production-review');section.id='production-review';section.setAttribute('aria-labelledby','production-title');$('#today').before(section);}section.replaceChildren();
  const title=el('h2',"Today's production");title.id='production-title';section.append(title);
  const review=snapshot.productionReview;
  const today=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Panama',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
- section.append(el('p','Today: '+today+' · Panama time','small'));
- if(!review){section.append(el('p','No production review snapshot is available. Review files are delivered in your dot chat.'));return;}
- section.append(el('p','Review snapshot: '+review.reviewDate+(today===review.reviewDate?'':' · Previous sample set; no current-day production verified.'),'small'));
- section.append(el('p','Manual snapshot — not automatically populated daily. Review files are delivered in your dot chat. Previews and downloads are not connected here.','small'));
+ if(!review){section.append(el('p','No delivery has been verified yet.'));return;}
+ section.append(el('p',review.reviewDate+' · Panama time'+(today===review.reviewDate?'':' · Previous delivery — today’s batch is not yet verified.'),'production-status'));
+ section.append(el('p','Open a file to watch or download it in your private Google Drive. Sign in as hypnoticmeditationsai@gmail.com if asked. You publish manually.','small'));
  const groups=el('div',undefined,'production-groups');
- for(const item of review.groups||[]){const card=el('article',undefined,'production-group');card.append(el('h3',item.company),el('p',item.status,'production-status'),el('p',item.notes));
- if(item.copy){const details=el('details'),summary=el('summary','View draft copy'),copy=el('p',item.copy,'production-copy');details.append(summary,copy);card.append(details);}groups.append(card);}section.append(groups);
+ for(const item of review.groups||[]){const card=el('article',undefined,'production-group');card.append(el('h3',item.company),el('p',item.status,'production-status'));
+ for(const asset of item.assets||[]){const file=el('div',undefined,'production-asset');file.append(el('h4',asset.title),el('p',[asset.duration,(asset.size/1000000).toFixed(1)+' MB'].filter(Boolean).join(' · '),'small'));const open=link('Open preview / download ↗',asset.url);open.className='production-file-link';file.append(open);if(asset.copy)file.append(productionCopy(asset.copy));card.append(file);}
+ if(item.copy)card.append(productionCopy(item.copy,'Draft copy & product brief'));
+ if(item.notes)card.append(el('p',item.notes,'small'));groups.append(card);}section.append(groups);
+ const details=disclosure('Delivery & daily rotation',el('p','Current-day delivery only, not an archive. Save anything you want to keep before the next verified morning delivery. Old generated delivery files are replaced or moved to Drive Trash only after the new batch is verified; originals and source footage are not removed. Trash may still use Drive storage.','small'),el('p','Owner approvals are recorded. Assistant listening is not independently verified. These are the latest verified files, not a live rendering status.','small'));
+ if(review.folderUrl)details.querySelector('.inside').append(link('Open all current files ↗',review.folderUrl));section.append(details);
 }
