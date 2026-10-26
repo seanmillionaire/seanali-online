@@ -187,20 +187,18 @@ function renderDailyEmail(){
 }
 
 
-// Existing owner-supplied tracks already published with Panama Aventura.
-// No private audio URLs, uploads, autoplay, or new media copies.
+// Verified public songs on the owner's official Suno profile. No embedded player or media policy changes.
 function renderSoundtrack(){
  if($('#office-soundtrack'))return;
  const box=el('details',undefined,'office-soundtrack');box.id='office-soundtrack';
  box.append(el('summary','My soundtrack'));
- const row=el('div',undefined,'soundtrack-controls'),label=el('label','Choose a track'),select=el('select');
- select.id='soundtrack-track';label.htmlFor=select.id;
- const tracks=[['todo-va','Todo Va'],['fruta-tropical','Fruta Tropical'],['viene-la-ola','Viene la Ola']];
+ const row=el('div',undefined,'soundtrack-controls'),profile=link('Open my Suno music ↗','https://suno.com/@seanali');
+ const label=el('label','Choose a song'),select=el('select');select.id='soundtrack-track';label.htmlFor=select.id;
+ const tracks=[["3dc70ba3-090c-4156-abc3-ba71ea4a121c","Todo Va"],["9d2455d4-c45e-42e3-8445-442004b08420","Fruta Tropical"],["676a627c-9db4-4b0d-ae02-f1ee20e2fb48","One-Dub Pulse"],["18c9a7b2-e482-49c4-a46e-836708579ce8","Mentalidad de Campeón"],["1bb1d042-3190-405a-b137-cb49ddacc793","Abundance on Deck"],["65fb719b-d34b-499f-a726-136c3b6c5c4d","Seven-Seven-Seven"],["bab1db9c-8dc3-4201-b6a8-21dd0a4aebe6","Rise in Favor"],["42e71068-9b42-4f6a-bcb5-64d48503a008","Clean Money"],["e0c6b36c-fb7c-4b61-970c-4c6b31bf1278","Caribbean Streets"],["1242d75d-9c4b-4710-a3f3-2c2bd7ca2fcb","Dinero Limpio"],["1863067e-7867-426d-bf4e-308a548f26d9","Give Thanks for the Facts"]];
  for(const [id,title] of tracks){const option=el('option',title);option.value=id;select.append(option);}
- const player=el('audio');player.controls=true;player.preload='none';player.volume=0.35;player.setAttribute('aria-label','My soundtrack player');
- const status=el('p','','small');status.setAttribute('role','status');
- const choose=()=>{player.pause();player.src='https://seanali.online/games/adventure/assets/audio/music/'+select.value+'.mp3';player.setAttribute('aria-label',select.selectedOptions[0].textContent+' player');status.textContent='Press play when you want music.';};
- select.addEventListener('change',choose);player.addEventListener('error',()=>{status.textContent='This track could not load. Choose another track or try again later.';});
- player.addEventListener('play',()=>{status.textContent='Playing · '+select.selectedOptions[0].textContent;});player.addEventListener('pause',()=>{if(!player.ended)status.textContent='Paused.';});player.addEventListener('ended',()=>{status.textContent='Finished. Choose a track or play again.';});
- row.append(label,select,player);box.append(row,status);$('#visual-home').before(box);choose();
+ const open=link('Open song on Suno ↗','https://suno.com/song/'+tracks[0][0]);
+ select.addEventListener('change',()=>{open.href='https://suno.com/song/'+select.value;open.setAttribute('aria-label','Open '+select.selectedOptions[0].textContent+' on Suno in a new tab');});
+ row.append(profile,label,select,open);
+ box.append(row,el('p','Music opens in a new tab. In-office playback is unavailable.','small'));
+ $('#visual-home').before(box);
 }
