@@ -1,3 +1,4 @@
+import {movePoint,DESTINATIONS,CANAL_TERMINAL} from './geography.js';
 import {ISLA_LIGHTHOUSE as LH} from './costa-arriba-layout.js';
 export const FESTIVAL_CHAPTERS=[
  {id:'welcome',project:'home',speaker:'Pip',icon:'🐢',place:'Gorgona',home:{x:3,z:9},
@@ -54,7 +55,7 @@ export const FESTIVAL_CHAPTERS=[
   introEs:'Cada isla ha aportado algo: una bienvenida, flores, comida, refugio, una ruta y una canción. Enciende el faro de Isla Grande, completa el crucero por todo el mapa y vuelve con Pip para abrir el festival.',
   endEn:'The lanterns glow across Gorgona. The friends gather around the places Angelique helped build. The festival belongs to every island—and there will always be more adventures to share.',
   endEs:'Las linternas iluminan Gorgona. Los amigos se reúnen en los lugares que Angelique ayudó a construir. El festival pertenece a todas las islas y siempre habrá más aventuras para compartir.'}
-];
+].map(ch=>({...ch,home:movePoint(ch.project||'home',ch.home.x,ch.home.z)}));
 export const FESTIVAL_WORK={
  sandcastle:{icons:['🧱','🐚','🚩'],order:[0,0,1,2],en:['Shape the base','Raise the walls','Place the shells','Raise the welcome flag'],es:['Forma la base','Levanta los muros','Coloca las conchas','Izar la bandera']},
  butterflyGarden:{icons:['🌱','💧','🦋'],order:[0,1,0,2],en:['Plant the first flowers','Water the soil','Plant the border','Release the butterflies'],es:['Planta las flores','Riega la tierra','Planta el borde','Libera las mariposas']},
@@ -74,9 +75,9 @@ export function campaignSnapshot(state,missionStatus){
  if(!chapter)return {finished:true,index:FESTIVAL_CHAPTERS.length,total:FESTIVAL_CHAPTERS.length,tasks:[],done:0,ready:true,chapter:null};
  let tasks=chapter.project?missionStatus(world,state,chapter.project).tasks.map(t=>({...t})): [
   {id:'beacon',icon:'💡',es:'Enciende el faro de Isla Grande',en:'Light Isla Grande’s lighthouse',check:{kind:'festivalBeacon'},go:{x:LH.x,z:LH.z+2.5},current:world.badges.includes('beacon')?1:0,required:1,complete:world.badges.includes('beacon')},
-  {id:'cruise',icon:'🚢',es:'Completa el crucero por todo el mapa · 10 monedas',en:'Complete the full-map cruise · 10 coins',check:{kind:'festivalCruise'},go:{x:-67,z:-56},current:Math.min(1,world.city.cruise.completed),required:1,complete:world.city.cruise.completed>0}
+  {id:'cruise',icon:'🚢',es:'Completa el crucero por todo el mapa · 10 monedas',en:'Complete the full-map cruise · 10 coins',check:{kind:'festivalCruise'},go:{...CANAL_TERMINAL},current:Math.min(1,world.city.cruise.completed),required:1,complete:world.city.cruise.completed>0}
  ];
- if(chapter.id==='monkeys')tasks.push({id:'greeting',icon:'🐒',es:'Aprende el saludo de saltos de los monos',en:'Learn the monkeys’ jumping greeting',check:{kind:'festivalMonkeys'},go:{x:110,z:-56},current:Math.min(1,world.colon.monkeyGames),required:1,complete:world.colon.monkeyGames>0});
+ if(chapter.id==='monkeys')tasks.push({id:'greeting',icon:'🐒',es:'Aprende el saludo de saltos de los monos',en:'Learn the monkeys’ jumping greeting',check:{kind:'festivalMonkeys'},go:{x:DESTINATIONS.colon.at[0],z:DESTINATIONS.colon.at[1]},current:Math.min(1,world.colon.monkeyGames),required:1,complete:world.colon.monkeyGames>0});
  return {finished:false,index:c.chapter,total:FESTIVAL_CHAPTERS.length,chapter,tasks,done:tasks.filter(t=>t.complete).length,ready:tasks.every(t=>t.complete),task:tasks.find(t=>!t.complete)||null};
 }
 export function acceptCampaign(world){const c=world.campaign;if(c.chapter>=FESTIVAL_CHAPTERS.length)return false;c.started=true;c.accepted=true;c.introSeen=true;return true;}

@@ -1,8 +1,6 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert/strict');
 const root=__dirname+'/../games/adventure/';const read=f=>fs.readFileSync(root+f,'utf8').replace(/^import .*$/gm,'').replaceAll('export ','');
-const ctx=vm.createContext({normalizeEstate:()=>({buildings:[]}),estateCoinCost:()=>0});
-vm.runInContext(['campaign-state.js','colon-state.js','cruise-route.js','explore-state.js','island-workshop.js','region-projects.js'].map(f=>f==='island-workshop.js'?read(f).replace(/\bat\b/g,'workshopAt'):read(f)).join('\n'),ctx);
-const run=s=>vm.runInContext(s,ctx);
+(async()=>{const modules=await Promise.all(['campaign-state.js','colon-state.js','cruise-route.js','explore-state.js','island-workshop.js','region-projects.js'].map(f=>import(root+f)));const ctx=vm.createContext(Object.assign({},...modules));const run=s=>vm.runInContext(s,ctx);
 assert.equal(run('normalizeCampaign(null).chapter'),0);assert.equal(run('normalizeCampaign({chapter:Infinity}).chapter'),0);
 run('var state={world:freshExplore(),wallet:{rewards:[]}};');assert.equal(run('campaignSnapshot(state,missionStatus).ready'),false);
 assert.equal(run('acceptCampaign(state.world)'),true);
@@ -17,3 +15,5 @@ assert.equal(run('normalizeExplore(state.world).campaign.work.sandcastle'),4);
 run("state.world.campaign.chapter=8;state.world.campaign.accepted=true;state.world.badges=['beacon'];state.world.city.cruise.completed=1");assert.equal(run('turnInCampaign(state,campaignSnapshot(state,missionStatus))'),true);assert.equal(run('campaignSnapshot(state,missionStatus).finished'),true);
 assert.equal(run('turnInCampaign(state,campaignSnapshot(state,missionStatus))'),false);
 console.log('PASS legacy saves, chapter gates, return distance, work persistence, wrong choice, finale, duplicate hand-in');
+
+})().catch(e=>{console.error(e);process.exitCode=1});

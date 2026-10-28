@@ -1,3 +1,5 @@
+import {initializeShowFleet,showCarAdvance,finishShowCarStep} from './amador-fleet.js';
+import {pedestrianSpace} from './pedestrian-space.js';
 import {flightAltitude,clearFlightAltitude} from './plane-clearance.js';
 import {setHumanAge} from './character-model.js';
 import {createResidentRoutine} from './resident-routine.js';
@@ -22,16 +24,22 @@ export function trafficLoop(points,lane=1.8){
  for(let i=points.length-2;i>=0;i--){const n=side(i),lane=laneAt(i);path.push({x:points[i][0]-n.x*lane,z:points[i][1]-n.z*lane});}
  turn(0,-1);return path;
 }
-export const AMBIENT_ROADS=['cityToGorgona','gorgonaBeachAccess','cityToColon','cityToBaru','panamaEast'];
+export const AMBIENT_ROADS=['cityToGorgona','cityToColon','cityToBaru','panamaEast','amador'];
 export const VISITOR_HABITATS=[{id:'Gorgona beach',x:4,z:10,rx:13,rz:3},{id:'Nueva Gorgona town',x:-55,z:-8,rx:34,rz:12},{id:'Gorgona western beach',x:-48,z:15,rx:24,rz:3},
  ...worldIslands.filter(p=>!['sunset','pizzaCity','monkeyIslet'].includes(p.id)&&(!p.guna||p.community)).map(p=>({id:p.en||p.id,x:p.x,z:p.z,rx:p.rx*.38,rz:p.rz*.38})),
  {id:'Boquete walkers',x:-290,z:-42,rx:18,rz:16},{id:'Volcán visitors',x:-385,z:-18,rx:18,rz:14}].filter(h=>!h.id.startsWith('Gorgona')&&h.id!=='Nueva Gorgona town'&&h.id!=='Playa Gorgona');
 
 export function createWorldAmbience({T,scene,models,make,mat,geometry,box,ball,cone,height,roadHeight=height,state,forest,otherTraffic=()=>[]}){
  const root=new T.Group();root.name='Living Panama · visitors traffic and flyovers';scene.add(root);
- const cars=[],people=[],routes=AMBIENT_ROADS.flatMap(id=>(FOUR_LANE_ROADS.has(id)?[0,1]:[0]).map(lane=>({id,lane,path:trafficLoop(HIGHWAY_CURVES[id],(x,z)=>highwayLane(id,lane,x,z))})));
- for(const r of routes){const total=routePose(r.path,0).length,count=r.id==='gorgonaBeachAccess'?2:r.id==='panamaEast'?2:4;
-  for(let i=0;i<count;i++){const bus=r.id!=='gorgonaBeachAccess'&&r.lane===0&&i===0,g=bus?models.bus(root):models.sedan(root,false,(i+r.lane)%3===0);g.name=(bus?'Diablo Rojo route · ':'Roaming car · ')+r.id+' '+(i+1);cars.push({g,route:r.path,distance:total*((i+.12+r.lane*.43+.17*Math.sin(i*2.39+r.id.length))/count),bus,speed:r.id==='gorgonaBeachAccess'?3.6+i*.55:6.4+((i*7+r.lane*3+r.id.length)%11)*.23,id:r.id});}}
+ const cars=[],people=[],routes=AMBIENT_ROADS.flatMap(id=>(FOUR_LANE_ROADS.has(id)?[0,1]:[0]).map(lane=>({id,lane,path:trafficLoop(id==='cityToGorgona'?[...HIGHWAY_CURVES.cityToGorgona,...HIGHWAY_CURVES.gorgonaBeachAccess.slice(1)]:id==='cityToBaru'?[...HIGHWAY_CURVES.cityToGorgona,...HIGHWAY_CURVES.cityToBaru.slice(1)]:HIGHWAY_CURVES[id],(x,z)=>id==='cityToGorgona'&&HIGHWAY_CURVES.gorgonaBeachAccess.some(p=>p[0]===x&&p[1]===z)?1.8:highwayLane(id,lane,x,z))})));
+ for(const r of routes){const total=routePose(r.path,0).length,count=1;
+  for(let i=0;i<count;i++){const bus=r.id!=='amador'&&r.id!=='gorgonaBeachAccess'&&r.lane===0&&i===0,g=bus?models.bus(root):models.sedan(root,false,(i+r.lane)%3===0);g.name=(bus?'Diablo Rojo route · ':'Roaming car · ')+r.id+' '+(i+1);cars.push({g,route:r.path,distance:total*((i+.12+r.lane*.43+.17*Math.sin(i*2.39+r.id.length))/count),bus,speed:r.id==='gorgonaBeachAccess'?3.6+i*.55:6.4+((i*7+r.lane*3+r.id.length)%11)*.23,id:r.id});}}
+ const showCars=initializeShowFleet({models,root,state,trafficLoop});cars.push(...showCars);const pedestrians=pedestrianSpace(scene);
+ // A bounded reservation at shared forks prevents opposing turns from
+ // entering together. This uses the same cars and swept avoidance owner.
+ const junctions=[[50,-20],[247.30208285298175,-29.92481075453291],[251.3685015438629,-99.50282286315745],[-10,-370],[345,-35],[453,240],[-370,-108]].map(([x,z],i)=>({x,z,r:i===3?55:i===0||i===6?40:20,owner:null}));
+ const junctionDistance=(j,p)=>Math.hypot(p.x-j.x,p.z-j.z);
+ for(const c of cars)if(!c.showCar){let n=0;while(junctions.some(j=>junctionDistance(j,routePose(c.route,c.distance))<j.r+14)&&n++<200)c.distance+=2;}
  // Keep each walk on dry, unobstructed ground with room for the whole body.
  function clear(x,z){
   if(homeReserved(x,z,1)||regionalBlocked(x,z,state.world,.65)||inWater(x,z)||!traversable(x,z)||roadDistance(x,z)<HIGHWAY_WIDTH/2+1||ruralBlocks(x,z,.65)||estateBlocked(state.world,x,z))return false;
@@ -68,15 +76,23 @@ export function createWorldAmbience({T,scene,models,make,mat,geometry,box,ball,c
  }
  make(box,blue,0,1,-4,.15,2,1.8,plane);make(box,white,0,.9,1.5,.045,.4,.2,plane).name='Communications antenna';
  plane.scale.setScalar(2.8);plane.visible=false;let clock=0,flyAt=45,flight=null,flights=0;
+
  const random=p=>{p.seed=(p.seed*1664525+1013904223)>>>0;return p.seed/4294967296;};
  function update(dt,active,{x=0,z=0,y=height(x,z),indoors=false}={}){
   root.visible=!indoors;if(!active)return;dt=Math.max(0,Math.min(dt,.1));clock+=dt;
   // Simulation continues off camera, so arriving in another town reveals moving life.
   const poses=cars.map(c=>routePose(c.route,c.distance));
+  for(const j of junctions){if(j.owner&&(j.owner.parked||junctionDistance(j,routePose(j.owner.route,j.owner.distance))>j.r+10))j.owner=null;if(!j.owner)j.owner=cars.filter((c,i)=>!c.parked&&junctionDistance(j,poses[i])<j.r+10).sort((a,b)=>junctionDistance(j,routePose(a.route,a.distance))-junctionDistance(j,routePose(b.route,b.distance)))[0]||null;}
   cars.forEach((c,i)=>{const p=poses[i],ahead=(q)=>{const dx=q.x-p.x,dz=q.z-p.z;return dx*Math.sin(p.heading)+dz*Math.cos(p.heading)>0&&Math.hypot(dx,dz)<(c.bus?12:9)&&Math.abs(dx*Math.cos(p.heading)-dz*Math.sin(p.heading))<1.8;};
-   const blocked=(!indoors&&ahead({x,z}))||poses.some((q,j)=>j!==i&&ahead(q)&&(Math.cos(q.heading-p.heading)>.5||j<i));
-   const obstacles=[...ownedCars(state.world.city),...(!indoors?[{x,z,length:.45,width:.45}]:[])];
-   c.distance=trafficJamStep(c,blocked?c.distance:c.distance+dt*c.speed,[...cars,...otherTraffic()],obstacles,dt);
+   const blocked=(!indoors&&ahead({x,z}))||poses.some((q,j)=>j!==i&&ahead(q)&&Math.cos(q.heading-p.heading)>.7); // Shared swept hull checks arbitrate cars; a broad look-ahead cone deadlocks crossing lanes.
+   const obstacles=[...ownedCars(state.world.city),...pedestrians.near(p.x,p.z,12),...(!indoors?[{x,z,length:.45,width:.45}]:[])];
+   c.pending=(c.pending||0)+dt;const nearbyBefore=Math.hypot(p.x-x,p.z-z),interval=nearbyBefore>180?.4:nearbyBefore>90?.1:0;
+   if(dt>0&&c.pending<interval)return;const steps=Math.max(1,Math.ceil(c.pending/.1)),step=c.pending/steps;c.pending=0;
+   for(let tick=0;tick<steps;tick++){const proposed=c.showCar?showCarAdvance(c,state.world.dayTime,step,cars):c.distance+step*c.speed;
+    const entering=junctions.some(j=>j.owner&&j.owner!==c&&junctionDistance(j,routePose(c.route,c.distance))>=j.r+4&&junctionDistance(j,routePose(c.route,proposed))<j.r+4);
+    if(!c.parked)c.distance=trafficJamStep(c,blocked||entering?c.distance:proposed,[...cars,...otherTraffic()],obstacles,step,{red:blocked||entering||proposed===c.distance});
+    if(c.showCar)finishShowCarStep(c,state.world.dayTime);
+   }
    const q=routePose(c.route,c.distance),nearby=Math.hypot(q.x-x,q.z-z);if(nearby<165)placeGroundVehicle(c.g,q,roadHeight,c.bus?'bus':'sedan');else{c.g.position.x=q.x;c.g.position.z=q.z;c.g.rotation.y=q.heading;}
    const detail=c.g.userData.visualDetail;if(detail)detail.visible=Math.hypot(q.x-x,q.z-z)<28;c.g.visible=Math.hypot(q.x-x,q.z-z)<155;
   });
@@ -90,6 +106,6 @@ export function createWorldAmbience({T,scene,models,make,mat,geometry,box,ball,c
    if(d>310){flight=null;plane.visible=false;flyAt=clock+150+(flights%3)*20;}}
  }
  update(0,true,{x:state.world.x,z:state.world.z});
- return {root,cars,people,plane,clear,update,get clock(){return clock;},dispose(){scene.remove(root);}};
+ return {root,cars,showCars,people,plane,clear,update,get clock(){return clock;},dispose(){scene.remove(root);}};
 }
 

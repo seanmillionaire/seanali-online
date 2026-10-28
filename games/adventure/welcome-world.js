@@ -1,3 +1,4 @@
+import {arrivalSequence} from './arrival-sequence.js';
 import {loadMainlandData} from './mainland-loader.js';
 import {createExplore} from './explore.js';
 import {fresh} from './state.js';
@@ -7,12 +8,13 @@ export function createWelcomeWorld(host,{motion=()=>true,state:initial,options={
  // Fetch the small compressed terrain while the welcome page is visible.
  loadMainlandData();
  const stage=document.createElement('main');stage.className='explore-world welcome-world';stage.setAttribute('aria-hidden','true');stage.inert=true;host.prepend(stage);
+ const story=initial?.gameMode==='story'&&!initial?.started&&!initial?.adminMode;
  const state=initial?JSON.parse(JSON.stringify(initial)):fresh(),savedTime=state.world.dayTime;state.world.dayTime=60;
- let preview=true,taken=false,disposed=false,elapsed=0,last=0,arriving=true,arrivalTime=0;
+ let preview=true,taken=false,disposed=false,elapsed=0,last=0,arriving=true,arrivalTime=0,heard=false;
  const caption=document.createElement('div');caption.className='arrival-guide-card';caption.setAttribute('role','status');caption.textContent=state.lang==='es'?'🇵🇦 Bienvenida a tu Panamá, Angelique':'🇵🇦 Welcome to your Panama, Angelique';
  const skip=document.createElement('button');skip.type='button';skip.className='arrival-skip';skip.textContent=state.lang==='es'?'👣 Jugar ahora':'👣 Play now';skip.onclick=finishArrival;
  function finishArrival(){if(!arriving)return;arriving=false;stage.classList.remove('guided-arrival');stage.style.setProperty('--welcome-view','1');caption.remove();skip.remove();options.joy?.welcomeAudio?.(false);}
- const saveWorld=()=>{if(!preview)options.save?.();};saveWorld.defer=()=>{if(!preview){if(options.save?.defer)options.save.defer();else options.save?.();}};
+ const saveWorld=()=>{if(!preview&&!arriving)options.save?.();};saveWorld.defer=()=>{if(!preview&&!arriving){if(options.save?.defer)options.save.defer();else options.save?.();}};
  let game=null;
  function ensureGame(){if(game)return;stage.classList.add('guided-arrival');stage.style.setProperty('--welcome-view','0');game=createExplore(stage,{...options,state,save:saveWorld,paused:()=>preview||arriving||!!options.paused?.(),motion,joy:options.joy||{effect(){},gesture(){},note(){},boat(){}},openBook:options.openBook||(()=>{}),openHome:options.openHome||(()=>{}),load:async()=>{
   const T=await import('./vendor/three.module.min.js');
@@ -20,11 +22,11 @@ export function createWelcomeWorld(host,{motion=()=>true,state:initial,options={
    if(!preview){
     if(!arriving){render(scene,camera);return;}
     const now=performance.now();if(last&&!document.hidden)arrivalTime+=Math.min((now-last)/1000,.1);last=now;
-    const duration=motion()?(matchMedia('(pointer: coarse), (max-width: 780px)').matches?.65:1.2):.1,t=Math.min(1,arrivalTime/duration),ease=t*t*(3-2*t),avatar=scene.getObjectByName('Angelique');
+    const phase=arrivalSequence({elapsed:arrivalTime,story,motion:motion(),audio:options.joy?.themeStatus,heard});heard=phase.heard;const t=phase.progress,ease=t*t*(3-2*t),avatar=scene.getObjectByName('Angelique');
     stage.style.setProperty('--welcome-view',String(ease));options.joy?.welcomeReveal?.(ease);options.joy?.worldTheme?.(state.world,options.save,true);
     view.copy(camera);if(motion()){view.position.y+=(1-ease)*20;view.position.z+=(1-ease)*12;if(avatar){const focus=avatar.position.clone();focus.y+=1;view.lookAt(focus);view.quaternion.slerp(camera.quaternion,ease);}}
     const visible=avatar?.visible;if(avatar)avatar.visible=true;render(scene,view);if(avatar)avatar.visible=visible;
-    if(t>=1)finishArrival();return;
+    if(phase.done)finishArrival();return;
    }
    const now=performance.now();if(motion()&&last&&!document.hidden)elapsed+=Math.min((now-last)/1000,.1);last=now;
    view.copy(camera);view.position.set(440+Math.sin(elapsed*.035)*10,64,38);view.lookAt(385,16,-58);view.updateMatrixWorld();
@@ -32,6 +34,6 @@ export function createWelcomeWorld(host,{motion=()=>true,state:initial,options={
    render(scene,view);if(avatar)avatar.visible=visible;if(!disposed)host.classList.add('showcase-ready');
   };}}};
  }});stage.append(caption,skip);}
- return {flyIn(done){ensureGame();done();},skip(){finishArrival();},takeGame(){if(taken||disposed)return null;ensureGame();taken=true;preview=false;last=0;arrivalTime=0;state.world.dayTime=savedTime;finishArrival();stage.classList.remove('welcome-world');stage.removeAttribute('aria-hidden');stage.inert=false;return {host:stage,game,state};},dispose(){disposed=true;if(!taken){game?.dispose();stage.remove();options.joy?.welcomeAudio?.(false);}host.classList.remove('showcase-ready');}};
+ return {flyIn(done){ensureGame();done();},skip(){finishArrival();},takeGame(){if(taken||disposed)return null;ensureGame();taken=true;preview=false;last=0;arrivalTime=0;state.world.dayTime=savedTime;options.joy?.welcomeAudio?.(false);if(state.adminMode)finishArrival();stage.classList.remove('welcome-world');stage.removeAttribute('aria-hidden');stage.inert=false;return {host:stage,game,state};},dispose(){disposed=true;if(!taken){game?.dispose();stage.remove();options.joy?.welcomeAudio?.(false);}host.classList.remove('showcase-ready');}};
 }
 

@@ -44,7 +44,7 @@ export function createIslandLife({T,scene,camera,state,make,mat,geometry,ball,co
  [[-8,24],[130,14],[-140,-145],[cityX(200),-90]].forEach(([x,z],i)=>animal('Manta ray',x,z,i));
  // Visible shallow-water octopuses with independently moving arms.
  MARINE_HABITATS.octopuses.forEach(([x,z],i)=>animal('Octopus',x,z,i));
- const shoals=[[-11,24],[108,25],[-135,-130],[cityX(220),75],[-300,90],[30,155],[260,160],[460,230],[-460,240],[-340,-260],[-170,325],[670,315],...worldIslands.filter(p=>p.guna).filter((_,i)=>i%3===0).map(p=>[p.x+p.rx+7,p.z])].filter(([x,z])=>marineWater(x,z));
+ const shoals=[[-11,24],[108,25],[-135,-130],[cityX(220),75],[-300,90],[30,155],[260,160],[490,210],[-460,240],[-340,-260],[-170,325],[670,315],...worldIslands.filter(p=>p.guna).filter((_,i)=>i%3===0).map(p=>[p.x+p.rx+7,p.z])].filter(([x,z])=>marineWater(x,z));
  shoals.forEach(([x,z],i)=>{for(let k=0;k<6;k++)animal('Reef fish',x+(k%3)*.7,z+Math.floor(k/3)*.7,i*6+k);});
 
  // Celestial bodies travel across the upper camera view, away from Angelique and controls.

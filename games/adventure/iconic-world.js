@@ -1,3 +1,4 @@
+import {AMADOR_BENCHES} from './amador-layout.js';
 import {ICONIC_VOLUMES,ICONIC_PLACES,AMADOR_ISLANDS} from './iconic-layout.js';
 // A few large readable silhouettes. Shared instance batches, no new texture downloads.
 export function createIconicWorld({T,scene,mat,box,cylinder,ball,height,geometry}){
@@ -32,7 +33,7 @@ export function createIconicWorld({T,scene,mat,box,cylinder,ball,height,geometry
  // Shaded open market; children can walk between the stalls.
  for(const dx of [-7,7])for(const dz of [-7,7]){const x=-170+dx,z=-72+dz,y=height(x,z);b(wood,x,y+.8,z,3.8,1.6,1.7);b(dx<0?red:green,x,y+3.2,z,5,.18,3.5);for(const sx of [-1,1])part(cylinder,wood,x+sx*2,y+1.6,z,.10,3.2,.10);for(let j=0;j<4;j++)part(ball,dx<0?mat('#e9bb45'):green,x-1.2+j*.8,y+1.8,z,.35,.32,.35);}
  // Low waterfront benches mark the causeway's walking/cycling destination.
- for(const p of AMADOR_ISLANDS.slice(1))for(const dx of [-5,5]){const x=p.x+dx,z=p.z,y=height(x,z);b(wood,x,y+.7,z,2.5,.25,.8);for(const side of [-1,1])b(darkStone,x+side*.9,y+.35,z,.18,.7,.7);}
+ for(const p of AMADOR_BENCHES){const x=p.x,z=p.z,y=height(x,z);b(wood,x,y+.7,z,2.5,.25,.8);for(const side of [-1,1])b(darkStone,x+side*.9,y+.35,z,.18,.7,.7);}
  for(const {geo,m,items}of batches.values()){const mesh=new T.InstancedMesh(geo,m,items.length);items.forEach((v,i)=>mesh.setMatrixAt(i,v));mesh.instanceMatrix.needsUpdate=true;mesh.computeBoundingSphere();mesh.castShadow=false;mesh.receiveShadow=true;root.add(mesh);meshes.push(mesh);}
  scene.userData.iconicAir=air;
  return {root,dispose(){scene.remove(root);delete scene.userData.iconicAir;meshes.forEach(m=>m.dispose());}};

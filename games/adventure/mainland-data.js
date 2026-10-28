@@ -13,8 +13,8 @@ export function buildMainlandData(){const initialTerrain=createStartupSampler(te
   // Overlap the existing region meshes slightly from below: no empty moat or z-fighting.
   // Subdivide waterline edges fivefold to remove blocky land endings without
   // multiplying all inland polygons; clip the final boundary precisely.
-  for(let x=-493;x<MAINLAND_EAST+1;x+=3)for(let z=x>520?-216:-456;z<(x>=373&&x<=472?198:54);z+=3)
-  if(z>=-167||(x>=-125&&x<=80)||costaContains(x,z)||jungleContains(x,z))for(const [sx,sz,size] of shorelineTiles(x,z,3,inland,5)){
+  for(let x=-493;x<MAINLAND_EAST+1;x+=3)for(let z=x>520?-216:-456;z<(x>=373&&x<=472?258:54);z+=3)
+  if(z>=-167||(x>=-125&&x<=80)||(z>=-280&&x>=40&&x<=400)||costaContains(x,z)||jungleContains(x,z))for(const [sx,sz,size] of shorelineTiles(x,z,3,inland,5)){
    const corners=[[sx,0,sz],[sx+size,0,sz],[sx,0,sz+size],[sx+size,0,sz+size]];
    for(const tri of [[0,2,1],[1,2,3]]){
     const vertices=clipLandTriangle(tri.map(i=>corners[i]),inland);

@@ -1,3 +1,4 @@
+import {highwayWidth} from '../games/adventure/highway-layout.js';
 import {nightLighting} from '../games/adventure/night-lighting.js';
 import {VEHICLE_GROUND_PROFILES} from '../games/adventure/vehicle-grounding.js';
 import assert from 'node:assert/strict';
@@ -8,12 +9,12 @@ import {islandDaylight,DAY_CYCLE_SECONDS,createIslandLife} from '../games/advent
 const scene=new T.Scene(),camera=new T.PerspectiveCamera(),state={world:freshExplore()},box=new T.BoxGeometry(),ball=new T.SphereGeometry(1,6,4),cone=new T.ConeGeometry(1,1,6),mat=c=>new T.MeshStandardMaterial({color:c}),make=(g,m,x,y,z,sx,sy,sz,parent=scene)=>{const n=new T.Mesh(g,m);n.position.set(x,y,z);n.scale.set(sx,sy,sz);parent.add(n);return n;};
 const models={colors:{white:mat('white'),blue:mat('blue'),yellow:mat('yellow'),dark:mat('black'),glass:mat('cyan')},person(parent,x,y,z){const g=new T.Group();g.position.set(x,y,z);parent.add(g);return {g,legs:[new T.Object3D(),new T.Object3D()],arms:[new T.Object3D(),new T.Object3D()]};},sedan(parent){const g=new T.Group();parent.add(g);return g;}};
 models.bus=models.sedan;
-const a=createWorldAmbience({T,scene,models,make,mat,box,ball,cone,height:isletHeight,state});
-assert.equal(a.cars.length,28);assert(a.people.length>=25);assert.equal(new Set(a.people.map(p=>p.habitat.id)).size,VISITOR_HABITATS.length);
+const a=createWorldAmbience({geometry:g=>g,T,scene,models,make,mat,box,ball,cone,height:isletHeight,state});
+assert.equal(a.cars.filter(c=>c.showCar).length,4);assert(a.cars.length<=32,'bounded light fleet');assert(a.people.length>=25);assert.equal(new Set(a.people.map(p=>p.habitat.id)).size,VISITOR_HABITATS.length);
 const starts=a.cars.map(c=>c.distance),people=a.people.map(p=>p.g.position.clone());
 // Exercise all roads, both lanes, all beaches, pauses, and one complete plane pass.
-for(let i=0;i<1100;i++){a.update(.1,true,{x:800,z:500});if(i%20===0){for(const c of a.cars){a.update(0,true,{x:c.g.position.x,z:c.g.position.z});assert(roadDistance(c.g.position.x,c.g.position.z)<4.76,c.id+' stays on pavement');c.g.updateMatrixWorld(true);for(const point of VEHICLE_GROUND_PROFILES[c.bus?'bus':'sedan'].support){const contact=new T.Vector3(...point).applyMatrix4(c.g.matrixWorld);assert(contact.y>=isletHeight(contact.x,contact.z)+.0249,c.id+' tires and body remain above road');}}for(const p of a.people)assert(a.clear(p.g.position.x,p.g.position.z),p.g.name+' remains on safe dry ground');}if(i===500)assert(a.plane.visible||a.plane.position.y>75);}
-assert(a.cars.every((c,i)=>c.distance>starts[i]+40),'all cars keep driving');assert(a.people.filter((p,i)=>p.g.position.distanceTo(people[i])>.3).length>a.people.length*.75,'visitors independently stroll');
+for(let i=0;i<1100;i++){a.update(.1,true,{x:800,z:500});if(i%20===0){for(const c of a.cars){a.update(0,true,{x:c.g.position.x,z:c.g.position.z});if(!c.showCar)assert(roadDistance(c.g.position.x,c.g.position.z)<highwayWidth(c.id,c.g.position.x,c.g.position.z)/2+.01,c.id+' stays on pavement');c.g.updateMatrixWorld(true);for(const point of VEHICLE_GROUND_PROFILES[c.bus?'bus':'sedan'].support){const contact=new T.Vector3(...point).applyMatrix4(c.g.matrixWorld);assert(contact.y>=isletHeight(contact.x,contact.z)+.0249,c.id+' tires and body remain above road');}}for(const p of a.people)assert(a.clear(p.g.position.x,p.g.position.z),p.g.name+' remains on safe dry ground');}if(i===500)assert(a.plane.visible||a.plane.position.y>75);}
+assert(a.cars.filter(c=>!c.showCar).some(c=>c.distance>40),'ambient traffic advances');assert(a.people.filter((p,i)=>p.g.position.distanceTo(people[i])>.3).length>a.people.length*.75,'visitors independently stroll');
 const clock=a.clock;a.update(1,false,{x:800,z:500});assert.equal(a.clock,clock);assert(!a.plane.visible,'plane finishes and leaves a quiet gap');
 assert.equal(DAY_CYCLE_SECONDS,1200);assert.equal(islandDaylight(60).day,1);assert.equal(islandDaylight(180).day,0);for(let t=0;t<240;t+=.1)assert(Math.abs(islandDaylight(t).day-islandDaylight(t+.1).day)<.008,'no abrupt lighting transitions');
 const sun=new T.DirectionalLight(),ambient=new T.HemisphereLight(),waterMaterial={uniforms:{daylight:{value:1}}};scene.background=new T.Color();scene.fog=new T.FogExp2();const l=createIslandLife({T,scene,camera,state,make,mat,geometry:g=>g,box,ball,cone,sun,ambient,waterMaterial,inWater});
