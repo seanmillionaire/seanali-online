@@ -159,7 +159,7 @@ function manualDone(key,labelText,row,section){
  input.addEventListener('change',()=>{workspace.completionChecks=workspace.completionChecks||{};workspace.completionChecks[key]=input.checked;label.className='manual-done'+(input.checked?' is-done':'');saveWork();section.applyCompletion?.();});label.append(input,el('span',labelText));return label;
 }
 function renderProductionReview(){
- let section=$('#production-review');if(!section){section=el('details',undefined,'production-review production-checklist');section.id='production-review';section.setAttribute('aria-labelledby','production-title');$('#visual-home').before(section);}section.className='production-review production-checklist';section.replaceChildren();
+ let section=$('#production-review');if(!section){section=el('details',undefined,'production-review production-checklist');section.id='production-review';section.setAttribute('aria-labelledby','production-title');$('#today').after(section);}section.className='production-review production-checklist';section.replaceChildren();
  const title=el('h2',"Today's production");title.id='production-title';const summary=el('summary',undefined,'production-toggle');summary.append(title);section.append(summary);const review=snapshot.productionReview;if(review)summary.append(el('span',review.reviewDate+' · Panama time','production-summary-date'));
  if(!review){section.append(el('p','No delivery has been verified yet.'));return;}
  const today=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Panama',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
@@ -171,7 +171,7 @@ function renderProductionReview(){
  section.append(disclosure('Access & review details',el('p','Files open in your private Google Drive. Use its download control. You publish manually. Original footage stays untouched; only prior-day managed deliveries move to Trash after a verified replacement.','small'),el('p','Prepared means a verified output file exists. Posted and Finished are your own checkmarks, not platform receipts or quality verification. Earlier Reviewed checks are kept separately and are not converted into Posted or Sent. Assistant listening is not independently verified.','small')));applyCompletion();
 }
 function renderDailyEmail(){
- let section=$('#daily-email');if(!section){section=el('section',undefined,'daily-email');section.id='daily-email';section.setAttribute('aria-labelledby','daily-email-title');$('#production-review').after(section);}section.replaceChildren();
+ let section=$('#daily-email');if(!section){section=el('section',undefined,'daily-email');section.id='daily-email';section.setAttribute('aria-labelledby','daily-email-title');$('.studios-shelf').before(section);}section.replaceChildren();
  const title=el('h2','Daily email');title.id='daily-email-title';section.append(title);
  const email=snapshot.dailyEmail;section.append(el('p',email?.status||'Open AWeber to review your drafts.','small'));
  const open=link('Open AWeber in new tab ↗','https://www.aweber.com/users/messages');open.className='daily-email-open';section.append(open);
@@ -192,6 +192,6 @@ function renderSoundtrack(){
  select.addEventListener('change',()=>{open.href='https://suno.com/song/'+select.value;open.setAttribute('aria-label','Open '+select.selectedOptions[0].textContent+' on Suno in a new tab');});
  row.append(profile,label,select,open);
  box.append(row,el('p','Music opens in a new tab. In-office playback is unavailable.','small'));
- $('#visual-home').before(box);
+ $('#today').after(box);
 }
 
