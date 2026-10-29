@@ -227,7 +227,6 @@ export default function Home() {
 
   const renderStep = () => {
     if (welcome) return <>
-      <h1>Discover What Your Dream Life Looks Like</h1>
       <p className="guided-intro">Use your Dream Life GPS to get clear on what matters most and find a simple first step toward it.</p>
       <fieldset className="quiz-start"><legend>What feels most like you right now?</legend>
         {[
