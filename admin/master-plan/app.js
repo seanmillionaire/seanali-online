@@ -173,9 +173,8 @@ function renderProductionReview(){
 function renderDailyEmail(){
  let section=$('#daily-email');if(!section){section=el('section',undefined,'daily-email');section.id='daily-email';section.setAttribute('aria-labelledby','daily-email-title');$('.studios-shelf').before(section);}section.replaceChildren();
  const title=el('h2','Daily email');title.id='daily-email-title';section.append(title);
- const email=snapshot.dailyEmail;section.append(el('p',email?.status||'Open AWeber to review your drafts.','small'));
+ section.append(el('p','Review and send today’s AWeber email.','small'));
  const open=link('Open AWeber in new tab ↗','https://www.aweber.com/users/messages');open.className='daily-email-open';section.append(open);
- if(email){const applyCompletion=completionControls(section,'email');section.append(el('p',email.date+' · Panama time · Choose one for the HM list.','small'));const choices=el('div',undefined,'daily-email-choices');for(const draft of email.drafts||[]){const card=el('div',undefined,'daily-email-draft');card.append(el('span','DRAFT','eyebrow'),link(draft.subject+' ↗',draft.url),manualDone('email|'+email.date+'|'+draft.id,'Sent',card,section));choices.append(card);}section.append(choices,el('p','Send in AWeber yourself, then mark Sent here. This is your note, not a verified AWeber send receipt. Show completed to undo.','small'));applyCompletion();}
 }
 
 
