@@ -4,7 +4,7 @@ let snapshot,feed='all',limit=6;
 const date=v=>new Intl.DateTimeFormat('en-US',{dateStyle:'medium',timeStyle:'short',timeZone:'America/Panama'}).format(new Date(v));
 const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
 const link=(text,url)=>{const a=el('a',text);try{const u=new URL(url);if(u.protocol!=='https:')return el('span',text);a.href=u.href;a.target='_blank';a.rel='noopener noreferrer';}catch{return el('span',text);}return a;};
-function lock(){const soundtrack=document.querySelector('#office-soundtrack');soundtrack?.querySelector('audio')?.pause();soundtrack?.remove();document.querySelector('#production-review')?.remove();document.querySelector('#daily-email')?.remove();snapshot=undefined;$('#dashboard').hidden=true;$('#login').hidden=false;for(const id of ['activity','projects','priority-list','sources','social-accounts','company-wall','factory-wall','company-jumps'])$('#'+id).replaceChildren();for(const id of ['key','owner-code','owner-new-password','owner-confirm-password','current-password','change-password','change-confirm'])$('#'+id).value='';}
+function lock(){stopWorldRotation();const soundtrack=document.querySelector('#office-soundtrack');soundtrack?.querySelector('audio')?.pause();soundtrack?.remove();document.querySelector('#production-review')?.remove();document.querySelector('#daily-email')?.remove();snapshot=undefined;$('#dashboard').hidden=true;$('#login').hidden=false;for(const id of ['activity','projects','priority-list','sources','social-accounts','company-wall','factory-wall','company-jumps'])$('#'+id).replaceChildren();for(const id of ['key','owner-code','owner-new-password','owner-confirm-password','current-password','change-password','change-confirm'])$('#'+id).value='';}
 async function readResponse(r){try{return await r.json();}catch{const e=new Error('The office sign-in service is temporarily unavailable. Please try again shortly.');e.status=r.status;throw e;}}
 async function request(options){const r=await fetch('/api/master-plan',{credentials:'same-origin',cache:'no-store',...options});const body=await readResponse(r);if(!r.ok){const e=new Error(body.error||'Unable to load the plan.');e.status=r.status;throw e;}return body;}
 function post(body){return request({method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});}
@@ -92,7 +92,7 @@ const factoryTools={
  'hm-audio':{id:'hm-audio',name:'Make a 60-second meditation',url:'https://hm-audio-meditation-factory.darkrain20.chatgpt.site/',description:'Choose a topic and generate a complete 60-second meditation locally. Listen before unlocking WAV downloads. Own-narration assembly is still available. Export script, metadata and tracker.',remote:true}
 };
 factoryTools['meta-ads']={id:'meta-ads',name:'AI Meta Ad Factory · Creative Factory',url:new URL('/api/creative-factory?action=app',location.href).href,description:'Photo-ad studio: import your photo or saved scene, edit text and export placements. New AI photo generation is not available.',remote:true};
-for(const brand of brands)if(!brand.factories.includes('meta-ads'))brand.factories.push('meta-ads');
+// The ad studio is a single global capability, never repeated inside worlds.
 const pendingStudios=[];
 function studioCard(id){const t=factoryTools[id]||pendingStudios.find(x=>x.id===id),card=el('article',undefined,'studio-card');card.setAttribute('data-studio-id',id);if(t?.url){card.append(previewImage(id,t.name));const actions=el('div',undefined,'studio-open-actions'),tab=toolButton(id);tab.className='studio-new-tab';actions.append(tab);card.append(actions);if(['hm-audio','panama-documentary'].includes(id))card.append(el('p','Available hosted studio · ChatGPT sign-in / owner consent may be required.','studio-state'));}else{card.className+=' studio-pending';card.append(el('span',t.status,'studio-state'),el('h3',t.name),el('p',t.description,'studio-blocker'));if(t.source)card.append(link('Source code on GitHub ↗',t.source));}return card;}
 // Curated starting ideas, not generated recommendations or scheduled obligations.
@@ -108,21 +108,88 @@ const companySites={angelique:'https://angeliqueali.com',hm:'https://hypnoticmed
 function previewImage(id,label){const wrap=el('div',undefined,'preview-window');if(['hm-audio','genie-shorts','panama-documentary','meta-ads'].includes(id)){wrap.append(el('p',id==='hm-audio'?'Private audio studio · sign in to see this workspace':'Open the live studio below to see its current workspace','preview-unavailable'));return wrap;}const img=el('img');img.src='/admin/master-plan/previews/'+id+'.jpg';img.alt=label+' — actual website preview';img.loading='lazy';img.width=1200;img.height=750;const unavailable=el('p','Visual preview not available yet. Open the actual site or studio below.','preview-unavailable');unavailable.hidden=true;img.addEventListener('error',()=>{img.hidden=true;unavailable.hidden=false;});wrap.append(img,unavailable);return wrap;}
 function projectForBrand(b){const choices=snapshot.projects.filter(p=>matches(p,b));return choices.find(p=>p.id===workspace.active)||choices.find(p=>workspace.jobs[p.id])||choices[0];}
 function startDirection(brandId,index){const b=brands.find(x=>x.id===brandId),p=b&&projectForBrand(b),d=studioDirections[brandId]?.[index];if(!p||!d?.tool)return;syncFields();workspace.focusProject=p.id;selectProject(p.id);$('#day-project').value=p.id;workspace.visualBrand=brandId;saveWork();openTool(d.tool);}
-function renderVisualHome(){const wall=$('#company-wall'),jumps=$('#company-jumps');const selected=brands.find(b=>b.id===workspace.visualBrand)||brandFor(snapshot.projects.find(p=>p.id===workspace.active))||brands[0];wall.replaceChildren();jumps.replaceChildren();for(const b of brands){const p=projectForBrand(b),card=el('article',undefined,'company-card');card.id='company-card-'+b.id;card.hidden=b.id!==selected.id;const jump=el('button',b.name);jump.type='button';jump.setAttribute('aria-pressed',String(b.id===selected.id));jump.addEventListener('click',()=>{syncFields();workspace.visualBrand=b.id;if(p){workspace.focusProject=p.id;selectProject(p.id);$('#day-project').value=p.id;renderProjectChips();}saveWork();renderVisualHome();$('#company-jumps').querySelector('[aria-pressed="true"]').focus();});jumps.append(jump);const site=companySites[b.id]||p?.url,preview=previewImage(b.id,b.name);preview.title='Actual website preview · 25 Oct 2026';card.append(preview);const body=el('div',undefined,'company-body');body.append(el('h3',b.name));if(site)body.append(link('Visit website ↗',site));const directions=el('div',undefined,'direction-list');for(const id of b.factories){const t=factoryTools[id],row=el('div',undefined,'world-studio');row.append(el('h4',t.name));const actions=el('div',undefined,'studio-open-actions'),tab=toolButton(id);tab.textContent='Open in new tab ↗';tab.className='studio-new-tab';actions.append(tab);row.append(actions);directions.append(row);}for(const t of pendingStudios.filter(t=>t.brands.includes(b.id))){const row=el('div',undefined,'world-pending');row.append(el('strong',t.name),el('p',t.status,'small'));if(t.source)row.append(link('Source code on GitHub ↗',t.source));directions.append(row);}body.append(directions);if(!p)body.append(el('p','Project details are not available in the current private snapshot.','small'));card.append(body);wall.append(card);}const shelf=$('#factory-wall');shelf.replaceChildren();const ids=workspace.showAllStudios?[...Object.keys(factoryTools),...pendingStudios.map(t=>t.id)]:[...selected.factories,...pendingStudios.filter(t=>t.brands.includes(selected.id)).map(t=>t.id)];if(workspace.showAllStudios)for(const id of ids)shelf.append(studioCard(id));shelf.hidden=!workspace.showAllStudios;$('#show-all-studios').textContent=workspace.showAllStudios?'Show '+selected.name+' studios':'Show all 7 studios';$('#show-all-studios').setAttribute('aria-pressed',String(!!workspace.showAllStudios));$('#studio-inventory-status').hidden=!workspace.showAllStudios;$('#studio-inventory-status').textContent=workspace.showAllStudios?'7 hosted studio links. Some studios require ChatGPT sign-in. Availability is not a completed production run.':'Studios for '+selected.name+'. Pending tools are labeled below.';}
+const worldMood={
+ hm:'Make space for a calmer, clearer day.',genie:'Turn a wish into a meaningful next step.',panama:'Share the places and people worth discovering.',sean:'Share something you wish you knew sooner.',angelique:'Let curiosity lead the adventure.',swap:'Help someone take their next independent step.'
+};
+const worldRotation={index:0,paused:false,hovered:false,focused:false,editing:false,timer:null};
+const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+function stopWorldRotation(){clearInterval(worldRotation.timer);worldRotation.timer=null;}
+function updateWorldRotation(){
+ stopWorldRotation();
+ const motion=$('#world-motion');motion.textContent=reducedMotion.matches?'Rotation off':worldRotation.paused?'Resume rotation':'Pause rotation';motion.disabled=reducedMotion.matches;motion.setAttribute('aria-pressed',String(worldRotation.paused||reducedMotion.matches));
+ if(reducedMotion.matches||worldRotation.paused||worldRotation.hovered||worldRotation.focused||worldRotation.editing||document.hidden||$('#dashboard').hidden)return;
+ worldRotation.timer=setInterval(()=>showWorld(worldRotation.index+1),7000);
+}
+function showWorld(index,manual=false){
+ worldRotation.index=(index+brands.length)%brands.length;
+ if(manual){worldRotation.paused=true;$('#world-announcement').textContent=brands[worldRotation.index].name;}
+ for(const [i,b] of brands.entries()){$('#company-card-'+b.id).hidden=i!==worldRotation.index;const button=$('#world-jump-'+b.id);button.setAttribute('aria-pressed',String(i===worldRotation.index));}
+ $('#world-position').textContent=(worldRotation.index+1)+' / '+brands.length;
+ updateWorldRotation();
+}
+function renderVisualHome(){
+ const wall=$('#company-wall'),jumps=$('#company-jumps');wall.replaceChildren();jumps.replaceChildren();
+ const selected=brands.find(b=>b.id===workspace.visualBrand)||brandFor(snapshot.projects.find(p=>p.id===workspace.active))||brands[0];worldRotation.index=brands.indexOf(selected);
+ for(const [i,b] of brands.entries()){
+  const card=el('article',undefined,'company-card');card.id='company-card-'+b.id;card.setAttribute('role','group');card.setAttribute('aria-roledescription','slide');card.setAttribute('aria-label',(i+1)+' of '+brands.length+' · '+b.name);
+  const preview=previewImage(b.id,b.name);preview.title='Saved website preview · 25 Oct 2026';card.append(preview);
+  const body=el('div',undefined,'company-body');body.append(el('span','A WORLD OF POSSIBILITY','eyebrow'),el('h3',b.name),el('p',worldMood[b.id],'world-mood'));
+  const visit=link('Explore the website ↗',companySites[b.id]);visit.className='world-site';body.append(visit);
+  const directions=el('div',undefined,'direction-list');for(const id of b.factories){const t=factoryTools[id],row=el('div',undefined,'world-studio');row.append(el('h4',t.name));const tab=toolButton(id);tab.textContent='Open studio ↗';row.append(tab);directions.append(row);}body.append(directions);card.append(body);wall.append(card);
+  const jump=el('button',b.name);jump.id='world-jump-'+b.id;jump.type='button';jump.setAttribute('aria-controls',card.id);jump.addEventListener('click',()=>showWorld(i,true));jumps.append(jump);
+ }
+ showWorld(worldRotation.index);
+ renderCapabilities();
+}
+function capabilityCard(title,description,icon,action){
+ const card=el('article',undefined,'capability-card'),mark=el('span',icon,'capability-icon');mark.setAttribute('aria-hidden','true');card.append(mark,el('h3',title),el('p',description));action.classList.add('capability-action');card.append(action);return card;
+}
+function panelAction(label,id){const button=el('button',label,'quiet');button.type='button';button.setAttribute('aria-controls',id);button.addEventListener('click',()=>{const panel=$('#'+id);panel.open=true;panel.querySelector('summary').focus();panel.scrollIntoView({behavior:reducedMotion.matches?'instant':'smooth',block:'start'});});return button;}
+function renderCapabilities(){
+ const grid=$('#factory-wall');grid.replaceChildren();
+ const labels={
+ 'clips':['Clip my recording','Turn an existing recording into short clips.','✂'],
+ 'angelique-factory':['Make Angelique clips','Keep her voice and personality in every clip.','☀'],
+ 'hm-shorts':['Create meditation shorts','Make a short moment of calm to share.','◒'],
+ 'hm-audio':['Create a meditation','Make and review a 60-second guided audio.','♫'],
+ 'genie-shorts':['Create Genie shorts','Bring a manifestation practice to the screen.','✧'],
+ 'panama-documentary':['Tell a Panama story','Open the shorts and documentary studio.','↗'],
+ 'meta-ads':['AI Meta Ad Factory','Design photo ads with your images and text. New AI image generation is unavailable.','▧']
+ };
+ for(const [id,t] of Object.entries(factoryTools)){const [title,description,icon]=labels[id],action=toolButton(id);action.textContent='Open studio ↗';grid.append(capabilityCard(title,description,icon,action));}
+ const toolNames={organic:['Write a script','Shape scripts and captions in Content Station.','✎'],ideas:['Shape an idea','Turn a rough thought into a campaign brief.','✧'],images:['Design an image','Open the canvas and image-prompt builder.','▧'],metricool:['Plan your posts','Review and schedule in Metricool.','↗']};
+ for(const id of ['organic','ideas','images','metricool']){const t=resolvedTool(id);if(t?.url){const [title,description,icon]=toolNames[id],action=toolButton(id);action.textContent='Open tool ↗';grid.append(capabilityCard(title,description,icon,action));}}
+ grid.append(capabilityCard('Review prepared work','Open your existing production deliveries and review notes.','✓',panelAction('Open my deliveries ↓','production-review')),capabilityCard('Set the mood','Choose a soundtrack from your Suno music.','♫',panelAction('Choose a song ↓','office-soundtrack')));
+}
+$('#world-prev').addEventListener('click',()=>showWorld(worldRotation.index-1,true));
+$('#world-next').addEventListener('click',()=>showWorld(worldRotation.index+1,true));
+$('#world-motion').addEventListener('click',()=>{worldRotation.paused=!worldRotation.paused;updateWorldRotation();});
+$('#visual-home').addEventListener('mouseenter',()=>{worldRotation.hovered=true;updateWorldRotation();});
+$('#visual-home').addEventListener('mouseleave',()=>{worldRotation.hovered=false;updateWorldRotation();});
+$('#visual-home').addEventListener('focusin',()=>{worldRotation.focused=true;updateWorldRotation();});
+$('#visual-home').addEventListener('focusout',e=>{worldRotation.focused=$('#visual-home').contains(e.relatedTarget);updateWorldRotation();});
+$('#visual-home').addEventListener('keydown',e=>{if(e.target.tagName==='SELECT')return;if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();showWorld(worldRotation.index+(e.key==='ArrowRight'?1:-1),true);}});
+let worldTouch=null,worldSwiped=false;
+$('#company-wall').addEventListener('pointerdown',e=>{if(e.pointerType==='mouse')return;worldSwiped=false;worldTouch={x:e.clientX,y:e.clientY};worldRotation.paused=true;updateWorldRotation();},{passive:true});
+$('#company-wall').addEventListener('pointerup',e=>{if(!worldTouch)return;const dx=e.clientX-worldTouch.x,dy=e.clientY-worldTouch.y;worldTouch=null;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.4){worldSwiped=true;showWorld(worldRotation.index+(dx<0?1:-1),true);}},{passive:true});
+$('#company-wall').addEventListener('pointercancel',()=>{worldTouch=null;});
+$('#company-wall').addEventListener('click',e=>{if(worldSwiped){e.preventDefault();worldSwiped=false;}},true);
+$('#creative-idea').addEventListener('focus',()=>{worldRotation.editing=true;updateWorldRotation();});
+$('#creative-idea').addEventListener('blur',()=>{worldRotation.editing=false;updateWorldRotation();});
+reducedMotion.addEventListener('change',updateWorldRotation);
+document.addEventListener('visibilitychange',updateWorldRotation);
 const resolvedTool=id=>factoryTools[id]||snapshot.tools?.find(t=>t.id===id);
 function renderWorkspace(){
  const select=$('#day-project');select.replaceChildren();
  for(const b of brands){const candidates=snapshot.projects.filter(p=>matches(p,b));const saved=candidates.find(p=>p.id===workspace.active)||candidates.find(p=>workspace.jobs[p.id])||candidates[0];const option=el('option',b.name);option.value=saved?.id||'missing:'+b.id;option.disabled=!saved;select.append(option);}
  if(!brandFor(snapshot.projects.find(p=>p.id===workspace.active)))workspace.active=[...select.options].find(o=>!o.disabled)?.value||'';
  select.value=workspace.active;$('#creative-idea').value=workspace.idea||'';selectProject(workspace.active,false);renderProjectChips();renderVisualHome();
- const list=$('#tool-list');list.replaceChildren();
- for(const id of ['organic','ideas','images','metricool']){const t=resolvedTool(id);if(t?.url){const box=disclosure(t.name,el('p',t.description));box.querySelector('.inside').append(toolButton(id));list.append(box);}}
+
 }
 function renderProjectChips(){
  const host=$('#project-chips');host.replaceChildren();
  for(const option of $('#day-project').options){const b=el('button',option.textContent,'project-chip');b.type='button';b.disabled=option.disabled;b.setAttribute('aria-pressed',String(workspace.focusProject===option.value));b.addEventListener('click',()=>{syncFields();workspace.focusProject=option.value;selectProject(option.value);$('#day-project').value=option.value;renderProjectChips();});host.append(b);}
 }
-$('#show-all-studios').addEventListener('click',()=>{workspace.showAllStudios=!workspace.showAllStudios;saveWork();renderVisualHome();});
 $('#creative-idea').addEventListener('input',()=>{workspace.idea=$('#creative-idea').value;saveWork();});
 $('#clear-project').addEventListener('click',()=>{workspace.focusProject='';saveWork();renderStep();renderProjectChips();});
 function selectProject(id,persist=true){
@@ -130,7 +197,7 @@ function selectProject(id,persist=true){
  if(!currentJob())workspace.jobs[id]={step:0,draft:'',notes:'',link:'',topic:'',review:{}};
  const j=currentJob();$('#day-outcome').value=j.outcome||'';$('#day-draft').value=j.draft||'';$('#day-link').value=j.link||'';$('#day-notes').value=j.notes||'';renderStep();if(persist)saveWork();
 }
-function toolButton(id){const t=resolvedTool(id);if(!t?.url)return el('span','Tool not available');const a=link('Open '+t.name+' ↗',t.url);a.className='studio-new-tab';a.addEventListener('click',syncFields);return a;}
+function toolButton(id){const t=resolvedTool(id);if(!t?.url)return el('span','Tool not available');const a=link('Open '+t.name+' ↗',new URL(t.url,location.href).href);a.className='studio-new-tab';a.addEventListener('click',syncFields);return a;}
 function openTool(id){const t=resolvedTool(id);if(!t?.url)return;syncFields();const a=link('Open '+t.name,t.url);if(a.tagName==='A')a.click();}
 function renderStep(){ $('#workbench').hidden=true; }
 $('#day-project').addEventListener('change',e=>{syncFields();selectProject(e.target.value);});
@@ -159,7 +226,7 @@ function manualDone(key,labelText,row,section){
  input.addEventListener('change',()=>{workspace.completionChecks=workspace.completionChecks||{};workspace.completionChecks[key]=input.checked;label.className='manual-done'+(input.checked?' is-done':'');saveWork();section.applyCompletion?.();});label.append(input,el('span',labelText));return label;
 }
 function renderProductionReview(){
- let section=$('#production-review');if(!section){section=el('details',undefined,'production-review production-checklist');section.id='production-review';section.setAttribute('aria-labelledby','production-title');$('#today').after(section);}section.className='production-review production-checklist';section.replaceChildren();
+ let section=$('#production-review');if(!section){section=el('details',undefined,'production-review production-checklist');section.id='production-review';section.setAttribute('aria-labelledby','production-title');$('#office-panels').append(section);}section.className='production-review production-checklist';section.replaceChildren();
  const title=el('h2',"Today's production");title.id='production-title';const summary=el('summary',undefined,'production-toggle');summary.append(title);section.append(summary);const review=snapshot.productionReview;if(review)summary.append(el('span',review.reviewDate+' · Panama time','production-summary-date'));
  if(!review){section.append(el('p','No delivery has been verified yet.'));return;}
  const today=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Panama',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
@@ -171,7 +238,7 @@ function renderProductionReview(){
  section.append(disclosure('Access & review details',el('p','Files open in your private Google Drive. Use its download control. You publish manually. Original footage stays untouched; only prior-day managed deliveries move to Trash after a verified replacement.','small'),el('p','Prepared means a verified output file exists. Posted and Finished are your own checkmarks, not platform receipts or quality verification. Earlier Reviewed checks are kept separately and are not converted into Posted or Sent. Assistant listening is not independently verified.','small')));applyCompletion();
 }
 function renderDailyEmail(){
- let section=$('#daily-email');if(!section){section=el('section',undefined,'daily-email');section.id='daily-email';section.setAttribute('aria-labelledby','daily-email-title');$('.studios-shelf').before(section);}section.replaceChildren();
+ let section=$('#daily-email');if(!section){section=el('section',undefined,'daily-email');section.id='daily-email';section.setAttribute('aria-labelledby','daily-email-title');$('#today').before(section);}section.replaceChildren();
  const title=el('h2','Daily email');title.id='daily-email-title';section.append(title);
  section.append(el('p','Review and send today’s AWeber email.','small'));
  const open=link('Open AWeber in new tab ↗','https://www.aweber.com/users/messages');open.className='daily-email-open';section.append(open);
@@ -191,6 +258,7 @@ function renderSoundtrack(){
  select.addEventListener('change',()=>{open.href='https://suno.com/song/'+select.value;open.setAttribute('aria-label','Open '+select.selectedOptions[0].textContent+' on Suno in a new tab');});
  row.append(profile,label,select,open);
  box.append(row,el('p','Music opens in a new tab. In-office playback is unavailable.','small'));
- $('#today').after(box);
+ $('#office-panels').append(box);
 }
+
 
